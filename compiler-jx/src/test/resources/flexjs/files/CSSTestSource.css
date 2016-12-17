@@ -20,6 +20,7 @@
 */
 
 @namespace basic "library://ns.apache.org/flexjs/basic";
+@namespace "http://www.w3.org/1999/xhtml";
 
 /*
 //----------------------------
@@ -53,12 +54,21 @@
 .outer.inner {
   width: 512px;
 }
+
+.outer .inner {
+  width: 512px;
+}
+
 .outer > .innerTitle {
   color: #fff;
   height: 176px;
   background: url('assets/welcome_card.jpg') center / cover;
 }
-.outer > .innerMenu {
+.outer>.innerMenu {
+  color: #fff;
+}
+
+.outer> .innerMenu > h4 {
   color: #fff;
 }
 

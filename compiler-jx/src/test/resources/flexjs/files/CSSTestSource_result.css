@@ -49,14 +49,24 @@
 }
 
 
-.outer > .innerTitle {
+.outer .inner {
+        width: 512px;
+}
+
+
+.outer>.innerTitle {
         height: 176px;
         color: #fff;
         background: url('assets/welcome_card.jpg') center / cover;
 }
 
 
-.outer > .innerMenu {
+.outer>.innerMenu {
+        color: #fff;
+}
+
+
+.outer>.innerMenu>h4 {
         color: #fff;
 }
 
@@ -67,7 +77,7 @@
 }
 
 
-.outerother-square > .innerTitle {
+.outerother-square>.innerTitle {
         color: #fff;
         background: url('assets/dog.png') bottom right 15% no-repeat #46B6AC;
 }

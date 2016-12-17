@@ -231,10 +231,21 @@ compoundSelector
 {
     $ruleset::subjects.add(simpleSelectorStack.peek());
 }
-    :   ^(I_SELECTOR simpleSelector[simpleSelectorStack]+)   
+    :   ^(I_SELECTOR firstSelector[simpleSelectorStack] moreSelectors[simpleSelectorStack]*)   
     ;
     
-simpleSelector [Stack<CSSSelector> simpleSelectorStack]
+moreSelectors [Stack<CSSSelector> simpleSelectorStack]
+    :   ^(I_CHILD_SELECTOR simpleSelector[simpleSelectorStack, CombinatorType.CHILD])
+    |   ^(I_PRECEDED_SELECTOR simpleSelector[simpleSelectorStack, CombinatorType.PRECEDED])
+    |   ^(I_SIBLING_SELECTOR simpleSelector[simpleSelectorStack, CombinatorType.SIBLING])
+    |   ^(I_SIMPLE_SELECTOR simpleSelector[simpleSelectorStack, CombinatorType.DESCENDANT]) 
+    ;
+
+firstSelector [Stack<CSSSelector> simpleSelectorStack]
+    :   ^(I_SIMPLE_SELECTOR simpleSelector[simpleSelectorStack, CombinatorType.DESCENDANT])
+    ;
+
+simpleSelector [Stack<CSSSelector> simpleSelectorStack, CombinatorType combinatorType]
 scope
 {
     String namespace;
@@ -248,7 +259,7 @@ scope
     if (simpleSelectorStack.isEmpty())
         combinator = null;
     else                    
-        combinator = new CSSCombinator(simpleSelectorStack.peek(), CombinatorType.DESCENDANT, $start, tokenStream);
+        combinator = new CSSCombinator(simpleSelectorStack.peek(), combinatorType, $start, tokenStream);
 }
 @after
 {
@@ -261,8 +272,9 @@ scope
         tokenStream);
     simpleSelectorStack.push(simpleSelector);
 }
-    :   ^(I_SIMPLE_SELECTOR simpleSelectorFraction+)
+    :   simpleSelectorFraction+
     ;    
+   
     
 simpleSelectorFraction
     :   elementSelector
@@ -286,9 +298,6 @@ conditionSelector
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
     |   ^(DOUBLE_COLON dc=ID) { type = ConditionType.PSEUDO; name = $dc.text; } 
     |   attributeSelector { type = ConditionType.ATTRIBUTE; name = curAttribute.substring(1); }
-    |   childSelector { type = ConditionType.CHILD; name = ConditionType.CHILD.toString(); }
-    |   precededSelector { type = ConditionType.PRECEDED; name = ConditionType.PRECEDED.toString(); }
-    |   siblingSelector { type = ConditionType.SIBLING; name = ConditionType.SIBLING.toString(); }
     ;
   
 elementSelector
@@ -303,18 +312,6 @@ elementSelector
         { $simpleSelector::element = $STAR.text; }
     ;
     
-childSelector
-    :   '>' simpleSelectorFraction
-    ;
-    
-precededSelector
-    :   TILDE simpleSelectorFraction
-    ;
-    
-siblingSelector
-    :   '+' simpleSelectorFraction
-    ;
-
 attributeSelector
     :   open = SQUARE_OPEN attributeName attributeOperator* attributeValue* close = SQUARE_END
 	{ curAttribute = $open.text + curAttribute + $close.text; }

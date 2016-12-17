@@ -26,7 +26,10 @@ package org.apache.flex.compiler.css;
  */
 public enum CombinatorType
 {
-    DESCENDANT(" ");
+    DESCENDANT(" "),
+    CHILD(">"),
+    PRECEDED("+"),
+    SIBLING("~");
 
     private CombinatorType(String text)
     {

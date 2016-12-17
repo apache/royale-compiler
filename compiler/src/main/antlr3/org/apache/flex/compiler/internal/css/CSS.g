@@ -33,7 +33,7 @@ options
 tokens
 { 
     I_RULES; I_MEDIUM_CONDITIONS; I_DECL; I_RULE; I_SELECTOR_GROUP; I_SELECTOR; 
-    I_SIMPLE_SELECTOR; I_ARRAY; 
+    I_SIMPLE_SELECTOR; I_CHILD_SELECTOR; I_PRECEDED_SELECTOR; I_SIBLING_SELECTOR; I_ARRAY; 
 }
 
 @header 
@@ -108,13 +108,36 @@ public void displayRecognitionError(String[] tokenNames, RecognitionException e)
 
 /**
  * Check if the cursor is at the end of a simple selector.
+ * @return -1 if not end
+ * @return 0 if end
+ * @return 1 if ended by Child combinator
+ * @return 2 if ended by Preceded combinator
+ * @return 3 if ended by Sibling combinator
  */
-private final boolean endOfSimpleSelector()
+private final int endOfSimpleSelector()
 {
     final CommonToken nextToken = (CommonToken) getTokenStream().LT(1);
     if (nextToken == null)
-        return true;
+        return 0;
     
+    final int nextType = nextToken.getType();
+
+    if (nextType == CHILD) 
+    { 
+        getTokenStream().consume();
+        return 1;
+    }
+    if (nextType == PRECEDED)
+    {
+        getTokenStream().consume();
+        return 2;
+    }
+    if (nextType == TILDE)
+    {
+        getTokenStream().consume();
+        return 3;
+    }
+
     // Check if there's white space between the previous token and the next token.
     final CommonToken lastToken = (CommonToken) getTokenStream().LT(-1);
     if (lastToken != null && nextToken != null)
@@ -123,18 +146,17 @@ private final boolean endOfSimpleSelector()
         final int nextStart = nextToken.getStartIndex();
         if (lastStop + 1 < nextStart)
         {
-            return true;
+            return 0;
         }
     }
     
     // If the next token is "{" or ",", it's also end of a selector.
-    final int nextType = nextToken.getType();
     if (nextType == BLOCK_OPEN || nextType == COMMA)
     {
-        return true;
+        return 0;
     }
     
-    return false;
+    return -1;
 }
 
 }
@@ -250,9 +272,6 @@ selectorGroup
  * Each compound selector has one "subject", which is the element name of the
  * right most simple selector in the chain.
  * 
- * Currently, only descendant combinator (space) is supported.
- * If we need to support combinators, add the terminals in this production.
- * 
  * For example:
  * s|VBox s|HBox.content s|Button
  */
@@ -277,8 +296,9 @@ compoundSelector
 				simpleSelectorStopToken = $l.stop;
 				
 				adaptor.addChild(currentSimpleSelectorNode, $l.tree);
-				
-			    if (endOfSimpleSelector()) 
+			    
+                            int end = endOfSimpleSelector();
+			    if (end != -1) 
 			    {
 			        adaptor.setTokenBoundaries(
                         currentSimpleSelectorNode,
@@ -289,7 +309,14 @@ compoundSelector
                     simpleSelectorStartToken = null;
                     simpleSelectorStopToken = null;
                     
-			    	currentSimpleSelectorNode = adaptor.create(I_SIMPLE_SELECTOR, "I_SIMPLE_SELECTOR");			   
+                                if (end == 1)
+                                  currentSimpleSelectorNode =  adaptor.create(I_CHILD_SELECTOR, "I_CHILD_SELECTOR");
+                                else if (end == 2)		   
+			    	  currentSimpleSelectorNode = adaptor.create(I_PRECEDED_SELECTOR, "I_PRECEDED_SELECTOR");			   
+                                else if (end == 3)			   
+			    	  currentSimpleSelectorNode = adaptor.create(I_SIBLING_SELECTOR, "I_SIBLING_SELECTOR");
+                                else
+                              	  currentSimpleSelectorNode = adaptor.create(I_SIMPLE_SELECTOR, "I_SIMPLE_SELECTOR");			   
 			    }
 			}
         )+
@@ -336,9 +363,6 @@ condition
         | COLON^ ID 
         | DOUBLE_COLON^ ID 
         | attributeSelector
-        | childSelector
-        | precededSelector
-        | siblingSelector
         ) 
     ;
   
@@ -446,18 +470,6 @@ singleValue
 formatOption
     :   FORMAT ARGUMENTS	-> ^(FORMAT ARGUMENTS)
 	;
-
-childSelector
-    :   '>' simpleSelectorFraction
-    ;
-    
-precededSelector
-    :   TILDE simpleSelectorFraction
-    ;
-    
-siblingSelector
-    :   '+' simpleSelectorFraction
-    ;
     
 attributeSelector
     :   SQUARE_OPEN attributeName attributeOperator* attributeValue* SQUARE_END
@@ -515,6 +527,8 @@ LOCAL : 'local' ;
 SCALE : 'scale' ;
 NULL : 'null' ;
 ONLY : 'only' ;
+CHILD : '>' ;
+PRECEDED : '+' ;
 NOT
     :  'not'
     ;

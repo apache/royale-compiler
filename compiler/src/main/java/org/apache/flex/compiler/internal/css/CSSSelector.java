@@ -116,16 +116,8 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
     	for (int i = 0; i < n; i++)
     	{
     		ICSSSelectorCondition condition = conditions.get(i);
-    		if (condition.getConditionType() == ConditionType.CHILD)
-    		{
-    			String prefix = condition.getConditionType().prefix + " ";
-    			s.insert(0, prefix);
-    		}
-    		else
-    		{
-        		s.append(condition.getConditionType().prefix);
-    			s.append(condition.getValue());
-    		}
+    		s.append(condition.getConditionType().prefix);
+			s.append(condition.getValue());
     	}
     	return s.toString();
     }

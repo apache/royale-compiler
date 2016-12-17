@@ -40,24 +40,9 @@ public enum ConditionType
     PSEUDO(":"),
 
     /**
-     * For example: <code>s|Panel > s|Label</code>
-     */
-    CHILD(">"),
-
-    /**
      * For example: <code>s|Panel:not(:first-child)</code>
      */
     NOT("not"),
-
-    /**
-     * For example: <code>s|Panel ~ s|Label</code>
-     */
-    PRECEDED("~"),
-
-    /**
-     * For example: <code>s|Panel + s|Label</code>
-     */
-    SIBLING("+"),
 
     /**
      * For example: <code>s|Label[loadingState]</code>

@@ -272,7 +272,10 @@ public class CSSSemanticAnalyzer
             final String qname = xmlNameResolver.resolveXMLNameToQualifiedName(xmlName, MXMLDialect.MXML_2009);
             if (qname == null)
             {
-                problems.add(new CSSUndefinedTypeProblem((CSSSelector)selector));
+            	if (defaultNamespace != null && defaultNamespace.getURI().equals("http://www.w3.org/1999/xhtml"))
+            		builder.put(selector, selector.getElementName());
+            	else
+            		problems.add(new CSSUndefinedTypeProblem((CSSSelector)selector));
             }
             else
             {
