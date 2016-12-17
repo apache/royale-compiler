@@ -61,6 +61,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
@@ -159,6 +160,14 @@ public class TestBase implements ITestBase
     	StringBuilder actualErrors = new StringBuilder();
     	for (ICompilerProblem problem : errors)
     	{
+    		if (problem.toString().equals("An externally-visible definition with the name 'Object' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'String' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.Object' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.String' was found."))
+    			continue;
     		actualErrors.append(problem.toString());
     	}
         assertThat(actualErrors.toString(), is(errorReport));
@@ -255,7 +264,15 @@ public class TestBase implements ITestBase
         IASNode fileNode = null;
         try
         {
-            fileNode = cu.getSyntaxTreeRequest().get().getAST();
+        	ISyntaxTreeRequestResult result = cu.getSyntaxTreeRequest().get();
+        	ICompilerProblem[] problems = result.getProblems();
+        	if (problems.length > 0)
+        	{
+        		for (ICompilerProblem problem : problems)
+        			System.out.println(problem.toString());
+        		return null;
+        	}
+            fileNode = result.getAST();
         }
         catch (InterruptedException e)
         {

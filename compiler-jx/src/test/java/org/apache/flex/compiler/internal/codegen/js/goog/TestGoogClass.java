@@ -199,7 +199,7 @@ public class TestGoogClass extends TestClass
                 + "public static const A:int = 42;"
                 + "protected static const B:Number = 42;"
                 + "private static const C:Number = 42;"
-                + "foo_bar static const C:String = 'me' + 'you';");
+                + "foo_bar static const C:String = 'me' + 'you';}");
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n/**\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
     }

@@ -241,7 +241,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     public void testGlobalFunctionInClass()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function b():String { var s:String; s = encodeURIComponent('foo'); return s;}",
+                "public class B {public function b():String { var s:String; s = encodeURIComponent('foo'); return s;}}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("s = encodeURIComponent('foo')");

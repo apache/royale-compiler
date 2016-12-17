@@ -53,7 +53,7 @@ public class TestFlexJSEmitter extends TestGoogEmitter
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
                 + "public function myFunction(value: String): String{"
-                + "return \"Don't \" + _privateVar + value; }";
+                + "return \"Don't \" + _privateVar + value; }}}";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
 	        assertOutWithMetadata("/**\n" +

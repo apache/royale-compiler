@@ -165,7 +165,7 @@ public class TestClass extends ASTestBase
                 + "public static const A:int = 42;"
                 + "protected static const B:Number = 42;"
                 + "private static const C:Number = 42;"
-                + "foo_bar static const C:String = 'me' + 'you';");
+                + "foo_bar static const C:String = 'me' + 'you';}");
         asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic static const A:int = 42;\n\t"
                 + "protected static const B:Number = 42;\n\tprivate static const "
