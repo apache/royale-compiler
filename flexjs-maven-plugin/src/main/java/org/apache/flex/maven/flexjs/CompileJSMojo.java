@@ -80,11 +80,6 @@ public class CompileJSMojo
     }
 
     @Override
-    protected void handleExitCode(int exitCode) throws MojoExecutionException {
-        // Ignore exit codes ... for now ...
-    }
-
-    @Override
     protected boolean isForceSwcExternalLibraryPath() {
         // The forceSwcExternalLibraryPath should only apply to Flash compilations.
         return false;
