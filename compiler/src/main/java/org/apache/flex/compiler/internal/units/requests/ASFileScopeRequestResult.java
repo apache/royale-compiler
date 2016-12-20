@@ -97,6 +97,12 @@ public class ASFileScopeRequestResult extends FileScopeRequestResultBase
                             IPackageDefinition packageDef = (IPackageDefinition)def;
                             ASScope packageScope = (ASScope)packageDef.getContainedScope();
                             IScopedNode scopeNode = packageScope.getScopeNode();
+                            if (scopeNode == null)
+                            {
+                                //FLEX-35226: it's possible for the scope node
+                                //to be null in an empty MXML class -JT
+                                continue;
+                            }
                             ContainerNode packageNode = (ContainerNode)scopeNode;
                             if (packageNode.getRemovedConditionalCompileNode())
                                 ignoreMissingMainDefinition = true;
