@@ -47,6 +47,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSASDocEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.EventDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
@@ -65,6 +66,7 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -120,7 +122,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         writeNewline("}");
@@ -251,7 +253,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         final IDefinitionNode[] members = node.getAllMemberNodes();
         if (members.length > 0)
@@ -335,7 +337,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
         	writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         if (members.length > 0)
@@ -406,7 +408,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -452,7 +454,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -479,7 +481,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -506,7 +508,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -553,7 +555,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -581,7 +583,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeNewline(",");
         if (asDoc != null)
         {
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
             writeNewline(",");
         }
         write("  \"return\": \"");
@@ -607,9 +609,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         addToIndex(node.getDefinition(), asDoc);
     }
     
-    public void writeASDoc(ASDocComment asDoc)
+    public void writeASDoc(ASDocComment asDoc, FlexJSASDocProject project)
     {
-    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
     	List<String> tagList = project.tags;
     	asDoc.compile();
         write("  \"description\": \"");
@@ -747,7 +748,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc);
+        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -868,9 +869,24 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	out.write("{ \"name\": \"");
         	out.write(key);
         	out.write("\",\n");
-        	out.write("  \"description\": \"");
-        	out.write(record.description);
-        	out.write("\"}");
+        	DefinitionBase def = (DefinitionBase)record.definition;
+            ASDocComment asDoc = (ASDocComment) def.getExplicitSourceComment();
+            if (asDoc != null)
+            {
+            	setBufferWrite(true);
+            	StringBuilder sb = new StringBuilder();
+            	setBuilder(sb);
+            	writeASDoc(asDoc, project);
+            	setBufferWrite(false);
+            	out.write(sb.toString());
+            }
+            else
+            {
+	        	out.write("  \"description\": \"");
+	        	out.write(record.description);
+	        	out.write("\"");
+            }
+        	out.write("}");
     	}
 		out.write("]}");
         try {
