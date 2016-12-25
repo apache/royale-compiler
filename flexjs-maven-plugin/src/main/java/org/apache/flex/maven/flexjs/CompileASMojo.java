@@ -53,12 +53,12 @@ public class CompileASMojo
     }
 
     @Override
-    protected String getConfigFileName() {
+    protected String getConfigFileName() throws MojoExecutionException {
         return "compile-as-config.xml";
     }
 
     @Override
-    protected File getOutput() {
+    protected File getOutput() throws MojoExecutionException {
         return new File(outputDirectory, outputFileName);
     }
 
@@ -89,7 +89,7 @@ public class CompileASMojo
     }
 
     @Override
-    protected List<Define> getDefines() {
+    protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
         defines.add(new Define("COMPILE::JS", "false"));
         defines.add(new Define("COMPILE::SWF", "true"));

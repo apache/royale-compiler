@@ -77,7 +77,7 @@ public class CompileAppMojo
     }
 
     @Override
-    protected String getConfigFileName() {
+    protected String getConfigFileName() throws MojoExecutionException {
         if(outputJavaScript) {
             return "compile-app-javascript-config.xml";
         }
@@ -93,7 +93,7 @@ public class CompileAppMojo
     }
 
     @Override
-    protected File getOutput() {
+    protected File getOutput() throws MojoExecutionException {
         if(outputJavaScript) {
             return new File(outputDirectory, "javascript");
         }
@@ -175,7 +175,7 @@ public class CompileAppMojo
     }*/
 
     @Override
-    protected List<Define> getDefines() {
+    protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
         defines.add(new Define("COMPILE::JS", "false"));
         defines.add(new Define("COMPILE::SWF", "true"));

@@ -104,9 +104,9 @@ public abstract class BaseMojo
         return false;
     }
 
-    protected abstract String getConfigFileName();
+    protected abstract String getConfigFileName() throws MojoExecutionException;
 
-    protected abstract File getOutput();
+    protected abstract File getOutput() throws MojoExecutionException;
 
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = new VelocityContext();
@@ -278,7 +278,7 @@ public abstract class BaseMojo
     protected void handleExitCode(int exitCode) throws MojoExecutionException {
         // Allow normal execution and execution with warnings.
         if(!((exitCode == 0) || (!failOnCompilerWarnings && (exitCode == 2)))) {
-            throw new MojoExecutionException("There were errors during the build.");
+            throw new MojoExecutionException("There were errors during the build. Got return code " + exitCode);
         }
     }
 
@@ -345,7 +345,7 @@ public abstract class BaseMojo
         return libraries;
     }
 
-    protected List<Define> getDefines() {
+    protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = new LinkedList<Define>();
         if(this.defines != null) {
             for(Define define : this.defines) {

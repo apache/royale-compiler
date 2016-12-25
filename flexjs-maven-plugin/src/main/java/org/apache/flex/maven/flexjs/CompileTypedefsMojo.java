@@ -55,11 +55,11 @@ public class CompileTypedefsMojo
     }
 
     @Override
-    protected String getConfigFileName() {
+    protected String getConfigFileName() throws MojoExecutionException {
         return "compile-extern-config.xml";
     }
 
-    protected File getOutput() {
+    protected File getOutput() throws MojoExecutionException {
         return new File(outputDirectory, outputFileName);
     }
 
@@ -91,7 +91,7 @@ public class CompileTypedefsMojo
     }
 
     @Override
-    protected List<Define> getDefines() {
+    protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
         defines.add(new Define("COMPILE::JS", "true"));
         defines.add(new Define("COMPILE::SWF", "false"));

@@ -56,7 +56,7 @@ public class GenerateExterncMojo
     }
 
     @Override
-    protected String getConfigFileName() {
+    protected String getConfigFileName() throws MojoExecutionException {
         return "generate-externc-config.xml";
     }
 
@@ -66,7 +66,7 @@ public class GenerateExterncMojo
     }
 
     @Override
-    protected File getOutput() {
+    protected File getOutput() throws MojoExecutionException {
         return new File(outputDirectory, outputDirectoryName);
     }
 
@@ -117,7 +117,7 @@ public class GenerateExterncMojo
     }
 
     @Override
-    protected List<Define> getDefines() {
+    protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
         defines.add(new Define("COMPILE::JS", "true"));
         defines.add(new Define("COMPILE::SWF", "false"));
