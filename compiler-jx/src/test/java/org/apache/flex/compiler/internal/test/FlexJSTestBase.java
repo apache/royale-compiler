@@ -41,6 +41,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     public void setUp()
     {
+        backend = createBackend();
     	project = new FlexJSProject(workspace, backend);
         super.setUp();
 
