@@ -28,22 +28,27 @@ import java.io.IOException;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
 
 public class TestExternChrome extends ExternalsTestBase
 {
+
+    private static final Logger logger = LogManager.getLogger(TestExternChrome.class);
+
     @Test
     public void test_classes() throws IOException
     {
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
-        if (model.problems.getProblems().size() > 0)
-        {
-        	for (ICompilerProblem problem : model.problems.getProblems())
-        		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
+        if (model.problems.getProblems().size() > 0) {
+        	for (ICompilerProblem problem : model.problems.getProblems()) {
+                logger.info(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());
+            }
         }
         assertEquals(0, model.problems.getProblems().size());
 
@@ -82,10 +87,10 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
-        if (model.problems.getProblems().size() > 0)
-        {
-        	for (ICompilerProblem problem : model.problems.getProblems())
-        		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
+        if (model.problems.getProblems().size() > 0) {
+        	for (ICompilerProblem problem : model.problems.getProblems()) {
+                logger.info(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());
+            }
         }
         assertEquals(0, model.problems.getProblems().size());
 

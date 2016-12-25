@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.databinding;
 import static org.apache.flex.abc.ABCConstants.*;
 
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.abc.visitors.IABCVisitor;
+import org.apache.flex.compiler.clients.Optimizer;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.internal.abc.FunctionGeneratorHelper;
@@ -46,6 +48,8 @@ import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A bunch of static, low level helpers for generating instruction lists
@@ -60,6 +64,7 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
  */
 public class BindingCodeGenUtils
 {
+    private static final Logger logger = LogManager.getLogger(BindingCodeGenUtils.class);
 
     private static final Name NAME_VOID = new Name(IASLanguageConstants.void_);
 
@@ -535,7 +540,7 @@ public class BindingCodeGenUtils
         insns.addInstruction(OP_dup);
         if (!useSocketForTrace)
         {
-            System.out.println("** Warning: diagnostic trace not using socket. Will be invisible when running most unit tests");
+            logger.info("** Warning: diagnostic trace not using socket. Will be invisible when running most unit tests");
             insns.addInstruction(OP_findpropstrict, new Object[] { new Name("trace") } );
             insns.addInstruction(OP_swap);
             insns.addInstruction(OP_callpropvoid, new Object[] { new Name("trace"), 1 } );
@@ -714,7 +719,7 @@ public class BindingCodeGenUtils
     {
         if (doLog)
         {
-            System.out.println("MXMLBindingDirHelp: " + s);
+            logger.info("MXMLBindingDirHelp: " + s);
         }
     }
     
@@ -724,7 +729,7 @@ public class BindingCodeGenUtils
         assert s != null;
         if (doLog)
         {
-            System.out.println("MXMLBindingDirHelp: " + s);
+            logger.info("MXMLBindingDirHelp: " + s);
             insns.addInstruction(OP_debugfile, s);
         }
     }

@@ -44,6 +44,8 @@ import org.apache.flex.compiler.internal.targets.ITargetAttributes;
 import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.ISWCFileEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.URL;
@@ -52,6 +54,8 @@ import java.util.*;
 
 public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 {
+
+    private static final Logger logger = LogManager.getLogger(MXMLFlexJSPublisher.class);
 
     public static final String FLEXJS_OUTPUT_DIR_NAME = "bin";
     public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "js-debug";
@@ -285,7 +289,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                         String code = IOUtils.toString(is, "UTF-8");
                         is.close();
                         JarSourceFile externFile = new JarSourceFile(key, code,true);
-                        System.out.println("using extern: " + key);
+                        logger.info("using extern: " + key);
                         compilerWrapper.addJSExternsFile(externFile);
 
                         // Write the extern into the filesystem.
@@ -369,7 +373,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         }
 
         // if (ok)
-        System.out.println("The project '" + projectName + "' has been successfully compiled and optimized.");
+        logger.info("The project '" + projectName + "' has been successfully compiled and optimized.");
 
         return true;
     }

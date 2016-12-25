@@ -53,6 +53,8 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Erik de Bruin
@@ -60,6 +62,9 @@ import org.apache.flex.compiler.units.ICompilationUnit;
  */
 public class ASDOCJSC extends MXMLJSC
 {
+
+    private static final Logger logger = LogManager.getLogger(ASDOCJSC.class);
+
     /*
      * Exit code enumerations.
      */
@@ -153,7 +158,7 @@ public class ASDOCJSC extends MXMLJSC
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
-        System.out.println((endTime - startTime) / 1e9 + " seconds");
+        logger.info((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }
@@ -223,7 +228,7 @@ public class ASDOCJSC extends MXMLJSC
                         final File outputClassFile = getOutputClassFile(
                                 cu.getQualifiedNames().get(0), outputFolder);
 
-                        System.out.println("Compiling file: " + outputClassFile);
+                        logger.info("Compiling file: " + outputClassFile);
 
                         ICompilationUnit unit = cu;
 

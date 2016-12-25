@@ -27,9 +27,13 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JSPublisher implements IJSPublisher
 {
+
+    private static final Logger logger = LogManager.getLogger(JSPublisher.class);
 
     public JSPublisher(FlexJSProject project, Configuration config)
     {
@@ -67,21 +71,18 @@ public class JSPublisher implements IJSPublisher
 
     private String getOutputFilePath()
     {
-        if (configuration.getOutput() == null)
-        {
+        if (configuration.getOutput() == null) {
             final String extension = "." + project.getBackend().getOutputExtension();
             return FilenameUtils.removeExtension(configuration.getTargetFile())
                     .concat(extension);
-        }
-        else {
+        } else {
             return configuration.getOutput();
         }
     }
 
     public boolean publish(ProblemQuery problems) throws IOException
     {
-        System.out
-                .println("The project has been successfully compiled and optimized.");
+        logger.info("The project has been successfully compiled and optimized.");
         return true;
     }
 

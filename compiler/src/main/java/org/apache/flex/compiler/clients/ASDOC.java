@@ -46,6 +46,8 @@ import org.apache.flex.swc.io.SWCWriter;
 import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Documentation compiler entry point.
@@ -55,6 +57,9 @@ import org.apache.flex.utils.FilenameNormalization;
  */
 public class ASDOC extends MXMLC implements FlexTool
 {
+
+    private static final Logger logger = LogManager.getLogger(ASDOC.class);
+
     /**
      * Entry point for <code>compc</code> tool.
      * 
@@ -205,8 +210,9 @@ public class ASDOC extends MXMLC implements FlexTool
     @Override
     protected void reportTargetCompletion()
     {
-        if (asdocOutputMessage != null)
-            println(asdocOutputMessage);
+        if (asdocOutputMessage != null) {
+            logger.info(asdocOutputMessage);
+        }
     }
 
     /**

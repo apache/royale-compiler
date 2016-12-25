@@ -16,6 +16,9 @@ package utils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.flex.utils.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,11 +36,13 @@ import java.util.List;
  */
 public class FlashplayerSecurityHandler {
 
+    private static final Logger logger = LogManager.getLogger(FlashplayerSecurityHandler.class);
+
     public void trustFile(File directory) {
         File securityTrustFile = new File(getSecuritySettingsDirectory(), "apache-flex-maven-plugin.cfg");
 
         if(!securityTrustFile.exists()) {
-            System.out.println(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());
+            logger.info(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());
             try {
                 if(!securityTrustFile.createNewFile()) {
                     throw new RuntimeException("Could not create FlashPlayer security trust file at: " +
@@ -48,7 +53,7 @@ public class FlashplayerSecurityHandler {
                         securityTrustFile.getPath(), e);
             }
         } else {
-            System.out.println(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());
+            logger.info(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());
         }
 
         // Check if the current directory is already listed in the file, if not, append it to the file.
@@ -56,10 +61,10 @@ public class FlashplayerSecurityHandler {
             List<String> trustedDirectories = FileUtils.readLines(securityTrustFile, "UTF-8");
             if(!trustedDirectories.contains(directory.getAbsolutePath())) {
                 FileUtils.writeStringToFile(securityTrustFile, directory.getAbsolutePath() + "\n", "UTF-8", true);
-                System.out.println(" - Added directory '" + directory.getAbsolutePath() +
+                logger.info(" - Added directory '" + directory.getAbsolutePath() +
                         "' to FlashPlayer security trust file at: " + securityTrustFile.getPath());
             } else {
-                System.out.println(" - Directory '" + directory.getAbsolutePath() +
+                logger.info(" - Directory '" + directory.getAbsolutePath() +
                         "' already listed in FlashPlayer security trust file at: " + securityTrustFile.getPath());
             }
         } catch (IOException e) {

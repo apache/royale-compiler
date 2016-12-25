@@ -98,12 +98,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The entry-point class for mxmlc.
  */
 public class MXMLC implements FlexTool
 {
+    private static final Logger logger = LogManager.getLogger(MXMLC.class);
+
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String SWF_EXT = ".swf";
     private static final String DEFAULT_VAR = "file-specs";
@@ -353,34 +357,35 @@ public class MXMLC implements FlexTool
             
             int errorCount = errors.size();
             int warningCount = warnings.size();
-            if (warningCount > 0)
-            {
-                System.err.println(Messages.getString("MXMLC.WarningsHeader"));
+            if (warningCount > 0) {
+                logger.error(Messages.getString("MXMLC.WarningsHeader"));
                 printer.printProblems(warnings);                    
 
             }
             
-            if (errorCount > 0)
-            {
-                System.err.println(Messages.getString("MXMLC.ErrorsHeader"));
+            if (errorCount > 0) {
+                logger.error(Messages.getString("MXMLC.ErrorsHeader"));
                 printer.printProblems(errors);
             }
             
             // Output summary of errors and warnings
-            if (errorCount == 1)
-                System.err.println(Messages.getString("MXMLC.1_error"));
-            else if (errorCount > 0)
-                System.err.println(Messages.getString("MXMLC.multiple_errors_format", 
-                        Collections.<String,Object>singletonMap("errorCount", errors.size())));
+            if (errorCount == 1) {
+                logger.error(Messages.getString("MXMLC.1_error"));
+            } else if (errorCount > 0) {
+                logger.error(Messages.getString("MXMLC.multiple_errors_format",
+                        Collections.<String, Object>singletonMap("errorCount", errors.size())));
+            }
 
-            if (warningCount == 1)
-                System.err.println(Messages.getString("MXMLC.1_warning"));
-            else if (warningCount > 0)
-                System.err.println(Messages.getString("MXMLC.multiple_warnings_format", 
-                        Collections.<String,Object>singletonMap("warningCount", warnings.size())));
-            
-            if (errorCount > 0)
+            if (warningCount == 1) {
+                logger.error(Messages.getString("MXMLC.1_warning"));
+            } else if (warningCount > 0) {
+                logger.error(Messages.getString("MXMLC.multiple_warnings_format",
+                        Collections.<String, Object>singletonMap("warningCount", warnings.size())));
+            }
+
+            if (errorCount > 0) {
                 exitCode = ExitCode.FAILED_WITH_ERRORS;
+            }
         }
         
         return exitCode;
@@ -408,16 +413,6 @@ public class MXMLC implements FlexTool
     private ISWF swfTarget;
     private String swfOutputMessage;
     
-    /**
-     * Print a message.
-     * 
-     * @param msg Message text.
-     */
-    public void println(final String msg)
-    {
-        System.out.println(msg);
-    }
-
     /**
      * Wait till the workspace to finish compilation and close.
      */
@@ -474,9 +469,10 @@ public class MXMLC implements FlexTool
                         DEFAULT_VAR,
                         LocalizationManager.get(),
                         L10N_CONFIG_PREFIX);
-                println(getStartMessage());
-                if (usage != null)
-                    println(usage);
+                logger.info(getStartMessage());
+                if (usage != null) {
+                    logger.info(usage);
+                }
 
                 // Create a default configuration so we can exit gracefully.
                 config = new Configuration();
@@ -506,7 +502,7 @@ public class MXMLC implements FlexTool
             // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null)
             {
-                println(VersionInfo.buildMessage());
+                logger.info(VersionInfo.buildMessage());
                 return false;
             }
 
@@ -520,19 +516,19 @@ public class MXMLC implements FlexTool
             
             for (String fileName : projectConfigurator.getLoadedConfigurationFiles())
             {
-                println(Messages.getString("MXMLC.Loading_configuration_format", 
+                logger.info(Messages.getString("MXMLC.Loading_configuration_format",
                         Collections.<String,Object>singletonMap("configurationName", fileName)));                
             }
             
             // Add a blank line between the configuration list and the rest of 
             // the output to make the start of the output easier to detect.
-            println(""); 
+            logger.info("");
             
             if (config.isVerbose())
             {
                 for (final IFileSpecification themeFile : project.getThemeFiles())
                 {
-                    println(Messages.getString("MXMLC.Found_theme_file_format", 
+                    logger.info(Messages.getString("MXMLC.Found_theme_file_format",
                             Collections.<String, Object>singletonMap("themePath", 
                                     themeFile.getPath())));
                 }
@@ -690,7 +686,7 @@ public class MXMLC implements FlexTool
         if (swfOutputMessage != null)
         {
             reportRequiredRSLs(target);
-            println(swfOutputMessage);
+            logger.info(swfOutputMessage);
         }
     }
 
@@ -733,7 +729,7 @@ public class MXMLC implements FlexTool
             }
         }
 
-        println(Joiner.on("\n\n").join(astDump));
+        logger.info(Joiner.on("\n\n").join(astDump));
     }
 
     /**
@@ -784,8 +780,8 @@ public class MXMLC implements FlexTool
             
             if (requiredRSLs.isEmpty() && legacyRSLs.isEmpty())
                 return;
-            
-            println(Messages.getString("MXMLC.Required_RSLs"));                
+
+            logger.info(Messages.getString("MXMLC.Required_RSLs"));
             
             // loop thru the RSLs and print out the required RSLs.
             for (RSLSettings rslSettings : requiredRSLs)
@@ -800,16 +796,16 @@ public class MXMLC implements FlexTool
                         assert false; // One RSL URL is required.
                         break;
                     case 1:
-                        println(Messages.getString("MXMLC.required_rsl_url_format", 
+                        logger.info(Messages.getString("MXMLC.required_rsl_url_format",
                                 params));
                         break;
                     case 2:
-                        println(Messages.getString("MXMLC.required_rsl_url_with_1_failover_format",
+                        logger.info(Messages.getString("MXMLC.required_rsl_url_with_1_failover_format",
                                 params));
                         break;
                     default:
                         params.put("failoverCount", rslURLs.size() - 1);
-                        println(Messages.getString("MXMLC.required_rsl_url_with_multiple_failovers_format", 
+                        logger.info(Messages.getString("MXMLC.required_rsl_url_with_multiple_failovers_format",
                                 params));
                         break;
                 }
@@ -818,7 +814,7 @@ public class MXMLC implements FlexTool
             
             // All -runtime-shared-libraries are required
             for (String rslURL : legacyRSLs)
-                println(Messages.getString("MXMLC.required_rsl_url_format", 
+                logger.info(Messages.getString("MXMLC.required_rsl_url_format",
                         Collections.<String,Object>singletonMap("rslPath", rslURL)));
         }
     }
@@ -980,7 +976,7 @@ public class MXMLC implements FlexTool
     private void verboseMessage(String s)
     {
         if (config.isVerbose())
-            println(s);
+            logger.info(s);
     }
 
     /**
@@ -1074,8 +1070,8 @@ public class MXMLC implements FlexTool
                     keywords,
                     LocalizationManager.get(),
                     L10N_CONFIG_PREFIX);
-        println(getStartMessage());
-        println(usages);
+        logger.info(getStartMessage());
+        logger.info(usages);
     }
 
     /**

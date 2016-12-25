@@ -70,6 +70,8 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.flex.tools.FlexTool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Command line optimizer - can read in a swf, apply the optimizations usually done during swf linking,
@@ -77,6 +79,8 @@ import org.apache.flex.tools.FlexTool;
  */
 public class Optimizer implements FlexTool
 {
+    private static final Logger logger = LogManager.getLogger(Optimizer.class);
+
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_VAR = "input";
     private static final String L10N_CONFIG_PREFIX = "org.apache.flex.compiler.internal.config.configuration";
@@ -160,7 +164,7 @@ public class Optimizer implements FlexTool
                             params.put("byteCount", swfSize);
                             params.put("path", outputFile.getCanonicalPath());
                             params.put("seconds", seconds);
-                            System.out.println(Messages.getString(
+                            logger.info(Messages.getString(
                                     "MXMLC.bytes_written_to_file_in_seconds_format",
                                     params));
                         }
@@ -234,9 +238,10 @@ public class Optimizer implements FlexTool
                         DEFAULT_VAR,
                         LocalizationManager.get(),
                         L10N_CONFIG_PREFIX);
-                System.out.println(getStartMessage());
-                if (usage != null)
-                    System.out.println(usage);
+                logger.info(getStartMessage());
+                if (usage != null) {
+                    logger.info(usage);
+                }
 
                 // Create a default configuration so we can exit gracefully.
                 config = new OptimizerConfiguration();
@@ -257,7 +262,7 @@ public class Optimizer implements FlexTool
             // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null)
             {
-                System.out.println(VersionInfo.buildMessage());
+                logger.info(VersionInfo.buildMessage());
                 return false;
             }
 
@@ -310,8 +315,8 @@ public class Optimizer implements FlexTool
                     keywords,
                     LocalizationManager.get(),
                     L10N_CONFIG_PREFIX);
-        System.out.println(getStartMessage());
-        System.out.println(usages);
+        logger.info(getStartMessage());
+        logger.info(usages);
     }
     
     /**

@@ -19,10 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilterWriter;
 import java.io.IOException;
@@ -66,10 +63,11 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.utils.NativeUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Concrete implementation of the 'FlexJS' JavaScript production.
@@ -80,7 +78,9 @@ import org.apache.flex.compiler.utils.NativeUtils;
 public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmitter, IJSFlexJSASDocEmitter
 {
 
-	private boolean firstMember = true;
+    private static final Logger logger = LogManager.getLogger(JSFlexJSASDocEmitter.class);
+
+    private boolean firstMember = true;
 	
     @Override
     public String postProcess(String output)
@@ -786,45 +786,39 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
 	    final File indexFile = new File(outputFolder, "index.json");
 	    FileWriter out = new FileWriter(indexFile);
 		out.write("{  \"index\": [");
-	    System.out.println("Compiling file: " + indexFile);
+	    logger.info("Compiling file: " + indexFile);
     	Set<String> keys = project.index.keySet();
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
     	boolean firstLine = true;
-    	for (String key : keyList)
-    	{
+    	for (String key : keyList) {
         	List<FlexJSASDocProject.ASDocRecord> list = project.index.get(key);
-        	for (FlexJSASDocProject.ASDocRecord record : list)
-        	{
-        		if (!firstLine)
-        			out.write(",\n");
+        	for (FlexJSASDocProject.ASDocRecord record : list) {
+        		if (!firstLine) {
+                    out.write(",\n");
+                }
         		firstLine = false;
 	        	out.write("{ \"name\": \"");
 	        	out.write(key);
 	        	out.write("\",\n");
 	        	out.write("  \"type\": ");
-	        	if (record.definition instanceof ClassDefinition)
-	        		out.write("\"Class\",\n");
-	        	else if (record.definition instanceof InterfaceDefinition)
-	        		out.write("\"Interface\",\n");
-	        	else if (record.definition instanceof EventDefinition)
-	        		out.write("\"Event\",\n");
-	        	else if (record.definition instanceof AccessorDefinition)
-	        	{
+	        	if (record.definition instanceof ClassDefinition) {
+                    out.write("\"Class\",\n");
+                } else if (record.definition instanceof InterfaceDefinition) {
+                    out.write("\"Interface\",\n");
+                } else if (record.definition instanceof EventDefinition) {
+                    out.write("\"Event\",\n");
+                } else if (record.definition instanceof AccessorDefinition) {
 	        		out.write("\"Property\",\n");
 	        		out.write("  \"class\": \"");
 	        		out.write(formatQualifiedName(record.definition.getParent().getQualifiedName()));
 	        		out.write("\",\n");
-	        	}
-	        	else if (record.definition instanceof VariableDefinition)
-	        	{
+	        	} else if (record.definition instanceof VariableDefinition) {
 	        		out.write("\"Property\",\n");
 	        		out.write("  \"class\": \"");
 	        		out.write(formatQualifiedName(record.definition.getParent().getQualifiedName()));
 	        		out.write("\",\n");
-	        	}
-	        	else if (record.definition instanceof FunctionDefinition)
-	        	{
+	        	} else if (record.definition instanceof FunctionDefinition) {
 	        		out.write("\"Method\",\n");
 	        		out.write("  \"class\": \"");
 	        		out.write(formatQualifiedName(record.definition.getParent().getQualifiedName()));
@@ -855,15 +849,16 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
 	    final File indexFile = new File(outputFolder, "classes.json");
 	    FileWriter out = new FileWriter(indexFile);
 		out.write("{  \"classes\": [");
-	    System.out.println("Compiling file: " + indexFile);
+	    logger.info("Compiling file: " + indexFile);
     	Set<String> keys = project.classes.keySet();
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
     	boolean firstLine = true;
     	for (String key : keyList)
     	{
-    		if (!firstLine)
-    			out.write(",\n");
+    		if (!firstLine) {
+                out.write(",\n");
+            }
     		firstLine = false;
         	FlexJSASDocProject.ASDocRecord record = project.classes.get(key);
         	out.write("{ \"name\": \"");
@@ -871,17 +866,14 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	out.write("\",\n");
         	DefinitionBase def = (DefinitionBase)record.definition;
             ASDocComment asDoc = (ASDocComment) def.getExplicitSourceComment();
-            if (asDoc != null)
-            {
+            if (asDoc != null) {
             	setBufferWrite(true);
             	StringBuilder sb = new StringBuilder();
             	setBuilder(sb);
             	writeASDoc(asDoc, project);
             	setBufferWrite(false);
             	out.write(sb.toString());
-            }
-            else
-            {
+            } else {
 	        	out.write("  \"description\": \"");
 	        	out.write(record.description);
 	        	out.write("\"");
@@ -908,13 +900,13 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
 	    final File indexFile = new File(outputFolder, "tags.json");
 	    FileWriter out = new FileWriter(indexFile);
 		out.write("{  \"tags\": [");
-	    System.out.println("Compiling file: " + indexFile);
+	    logger.info("Compiling file: " + indexFile);
     	Collections.sort(project.tags);
     	boolean firstLine = true;
-    	for (String tag : project.tags)
-    	{
-    		if (!firstLine)
-    			out.write(",\n");
+    	for (String tag : project.tags) {
+    		if (!firstLine) {
+                out.write(",\n");
+            }
     		firstLine = false;
         	out.write("\"");
         	out.write(tag);

@@ -19,6 +19,10 @@
 
 package org.apache.flex.utils;
 
+import org.apache.flex.swc.SWCDepends;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Code to read and write Base64-encoded text.  Fairly
  * special-purpose, not quite ready for general streaming as they
@@ -27,6 +31,9 @@ package org.apache.flex.utils;
  */
 public class Base64
 {
+
+    private static final Logger logger = LogManager.getLogger(Base64.class);
+
     private static final char alphabet[] =
     {
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
@@ -267,13 +274,13 @@ public class Base64
                 }
             }
         }
-        System.out.println(mesg);
+        logger.info(mesg);
 
         if (printData)
         {
-            System.out.println("Decoded: " + new String(raw));
-            System.out.println("Encoded: " + encoded);
-            System.out.println("Decoded: " + new String(check));
+            logger.info("Decoded: " + new String(raw));
+            logger.info("Encoded: " + encoded);
+            logger.info("Decoded: " + new String(check));
         }
 
         /*

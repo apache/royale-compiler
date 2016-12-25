@@ -58,6 +58,8 @@ import org.apache.flex.utils.Trace;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A class that allows a client change compiler settings and to 
@@ -65,6 +67,8 @@ import com.google.common.collect.Lists;
  */
 public class Configurator implements ICompilerSettings, IConfigurator, ICompilerSettingsConstants, Cloneable
 {
+
+    private static final Logger logger = LogManager.getLogger(Configurator.class);
 
     /**
      * Marker class for RSLSettings because RSLSettings need special handling
@@ -1378,7 +1382,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             }
             else
             {
-                // System.err.println("unprocessed compiler options: " + key + EQUALS_STRING + value);
+                logger.warn("unprocessed compiler options: " + key + EQUALS_STRING + value);
             }
         }
         
@@ -1425,7 +1429,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             }
             else
             {
-                // System.err.println("unprocessed compiler options: " + key + EQUALS_STRING + value);
+                logger.warn("unprocessed compiler options: " + key + EQUALS_STRING + value);
             }
         }
 

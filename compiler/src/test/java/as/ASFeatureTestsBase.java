@@ -22,6 +22,8 @@ package as;
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.FlashplayerSecurityHandler;
 
 import java.io.BufferedWriter;
@@ -45,7 +47,10 @@ import static org.junit.Assert.fail;
  */
 public class ASFeatureTestsBase
 {
-	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
+
+    private static final Logger logger = LogManager.getLogger(ASFeatureTestsBase.class);
+
+    private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
 
 	protected File generateTempFile(String source)
 	{
@@ -77,7 +82,7 @@ public class ASFeatureTestsBase
 	
 	protected String compile(File tempASFile, String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, boolean checkExitCode)
 	{
-        System.out.println("Generating test:");
+        logger.info("Generating test:");
 
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
         // Build the list of SWCs to compile against on the library path.
@@ -119,7 +124,7 @@ public class ASFeatureTestsBase
             cmdLine.append(arg).append(" ");
         }
 	    
-        System.out.println("Compiling test:\n" + cmdLine.toString());
+        logger.info("Compiling test:\n" + cmdLine.toString());
         int exitCode = mxmlc.mainNoExit(args.toArray(new String[args.size()]));
 
         // Check that there were no compilation problems.
@@ -131,7 +136,7 @@ public class ASFeatureTestsBase
             sb.append('\n');
         }
         
-        System.out.println("After compile:\n" + sb.toString());
+        logger.info("After compile:\n" + sb.toString());
         if (checkExitCode)
             assertThat(sb.toString(), exitCode, is(0));
         return sb.toString();
@@ -162,7 +167,7 @@ public class ASFeatureTestsBase
 		String[] runArgs = new String[] { testAdapter.getFlashplayerDebugger().getPath(), swf };
 		try
 		{
-			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
+			logger.info("Executing test:\n" + Arrays.toString(runArgs));
 
 			// TODO: Hack to add the directory containing the temp swf to the flashplayer trust.
 			new FlashplayerSecurityHandler().trustFile(tempASFile.getParentFile());

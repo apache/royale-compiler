@@ -37,6 +37,7 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
@@ -49,9 +50,13 @@ import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.deps.DepsGenerator;
 import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
 import com.google.javascript.jscomp.deps.ModuleLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 {
+
+    private static final Logger logger = LogManager.getLogger(JSGoogPublisher.class);
 
     public static final String GOOG_INTERMEDIATE_DIR_NAME = "js-intermediate";
     public static final String GOOG_RELEASE_DIR_NAME = "js-release";
@@ -165,7 +170,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         appendSourceMapLocation(projectReleaseJSFile, projectName);
 
-        System.out.println("The project '" + projectName
+        logger.info("The project '" + projectName
                 + "' has been successfully compiled and optimized.");
 
         return true;

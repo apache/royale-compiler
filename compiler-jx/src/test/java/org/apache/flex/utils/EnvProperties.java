@@ -19,6 +19,10 @@
 
 package org.apache.flex.utils;
 
+import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,6 +38,8 @@ import java.util.Properties;
  *  3) for key FLEX_HOME & PLAYERGLOBAL_HOME sets a default value.
  */
 public class EnvProperties {
+
+    private static final Logger logger = LogManager.getLogger(EnvProperties.class);
 
     /**
      * FLEX_HOME
@@ -94,12 +100,12 @@ public class EnvProperties {
                 prefix = "env.";
             }
         } catch (FileNotFoundException e) {
-            System.out.println(envFileName + " not found");
+            logger.error(envFileName + " not found");
             try {
                 File f = new File("unittest.properties");
                 p.load(new FileInputStream( f ));
             } catch (FileNotFoundException e1) {
-                System.out.println("unittest.properties not found");
+                logger.error("unittest.properties not found");
             } catch (IOException e1) {
                 // Ignore
             }
@@ -108,42 +114,44 @@ public class EnvProperties {
         }
 
         SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
-        if(SDK == null)
-        {
+        if(SDK == null) {
             SDK = FilenameNormalization.normalize("../../../../flex-sdk");
             File mxmlc = new File(SDK + "/lib/mxmlc.jar");
-            if (!mxmlc.exists())
+            if (!mxmlc.exists()) {
                 SDK = FilenameNormalization.normalize("../../../compiler/lib");
+            }
         }
-        System.out.println("environment property - FLEX_HOME = " + SDK);
+        logger.info("environment property - FLEX_HOME = " + SDK);
 
         FPSDK = p.getProperty(prefix + "PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
-        if(FPSDK == null)
+        if(FPSDK == null) {
             FPSDK = FilenameNormalization.normalize("../../../frameworks/libs/player");
-        System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
+        }
+        logger.info("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
 
         FPVER = p.getProperty(prefix + "PLAYERGLOBAL_VERSION", System.getenv("PLAYERGLOBAL_VERSION"));
-        if (FPVER == null)
+        if (FPVER == null) {
             FPVER = "11.1";
-        System.out.println("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
+        }
+        logger.info("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
 
         TLF = p.getProperty(prefix + "TLF_HOME", System.getenv("TLF_HOME"));
-        if (TLF == null)
-        {
+        if (TLF == null) {
             TLF = FilenameNormalization.normalize("../../../../flex-tlf");
         }
-        System.out.println("environment property - TLF_HOME = " + TLF);
+        logger.info("environment property - TLF_HOME = " + TLF);
 
         AIRSDK = p.getProperty(prefix + "AIR_HOME", System.getenv("AIR_HOME"));
-        System.out.println("environment property - AIR_HOME = " + AIRSDK);
+        logger.info("environment property - AIR_HOME = " + AIRSDK);
 
         FDBG = p.getProperty(prefix + "FLASHPLAYER_DEBUGGER", System.getenv("FLASHPLAYER_DEBUGGER"));
-        System.out.println("environment property - FLASHPLAYER_DEBUGGER = " + FDBG);
+        logger.info("environment property - FLASHPLAYER_DEBUGGER = " + FDBG);
 
         ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
-        if (ASJS == null)
+        if (ASJS == null) {
             ASJS = FilenameNormalization.normalize("../../../../flex-asjs");
-        System.out.println("environment property - ASJS_HOME = " + ASJS);
+        }
+        logger.info("environment property - ASJS_HOME = " + ASJS);
     }
 
 }

@@ -80,6 +80,8 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.swc.ISWC;
 
 import com.google.common.base.Joiner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Erik de Bruin
@@ -88,7 +90,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IMXMLFlexJSEmitter
 {
 
-	// the instances in a container
+    private static final Logger logger = LogManager.getLogger(MXMLFlexJSEmitter.class);
+
+    // the instances in a container
     private ArrayList<MXMLDescriptorSpecifier> currentInstances;
     private ArrayList<MXMLDescriptorSpecifier> currentPropertySpecifiers;
     private ArrayList<MXMLDescriptorSpecifier> descriptorTree;
@@ -1162,37 +1166,37 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         String s = "";
         
         IExpressionNode left = node.getLeftOperandNode();
-        if (left instanceof FunctionCallNode) //  probably a cast
-        {
+        if (left instanceof FunctionCallNode) {
             IASNode child = ((FunctionCallNode)left).getArgumentsNode().getChild(0);
-            if (child instanceof IdentifierNode)
-                s = getSourceStringFromIdentifierNode((IdentifierNode)child);
-            else if (child instanceof MemberAccessExpressionNode)
-                s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)child);
+            if (child instanceof IdentifierNode) {
+                s = getSourceStringFromIdentifierNode((IdentifierNode) child);
+            } else if (child instanceof MemberAccessExpressionNode) {
+                s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode) child);
+            }
+        } else if (left instanceof MemberAccessExpressionNode) {
+            s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode) left);
+        } else if (left instanceof IdentifierNode) {
+            s = getSourceStringFromIdentifierNode((IdentifierNode) left);
+        } else {
+            logger.warn("expected binding member access left node" + node.toString());
         }
-        else if (left instanceof MemberAccessExpressionNode)
-            s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)left);
-        else if (left instanceof IdentifierNode)
-            s = getSourceStringFromIdentifierNode((IdentifierNode)left);
-        else
-            System.out.println("expected binding member access left node" + node.toString());
         s += ".";
         
         IExpressionNode right = node.getRightOperandNode();
-        if (right instanceof FunctionCallNode) //  probably a cast
-        {
+        if (right instanceof FunctionCallNode) {
             IASNode child = ((FunctionCallNode)right).getArgumentsNode().getChild(0);
-            if (child instanceof IdentifierNode)
-                s += getSourceStringFromIdentifierNode((IdentifierNode)child);
-            else if (child instanceof MemberAccessExpressionNode)
-                s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)child);
+            if (child instanceof IdentifierNode) {
+                s += getSourceStringFromIdentifierNode((IdentifierNode) child);
+            } else if (child instanceof MemberAccessExpressionNode) {
+                s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode) child);
+            }
+        } else if (right instanceof MemberAccessExpressionNode) {
+            s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode) right);
+        } else if (right instanceof IdentifierNode) {
+            s += getSourceStringFromIdentifierNode((IdentifierNode) right);
+        } else {
+            logger.warn("expected binding member access right node" + node.toString());
         }
-        else if (right instanceof MemberAccessExpressionNode)
-            s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)right);
-        else if (right instanceof IdentifierNode)
-            s += getSourceStringFromIdentifierNode((IdentifierNode)right);
-        else
-            System.out.println("expected binding member access right node" + node.toString());
         
         return s;
     }

@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.fxg.logging;
 import java.io.PrintStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -29,6 +31,9 @@ import org.apache.commons.io.IOUtils;
  */
 public class SystemLogger extends AbstractLogger
 {
+
+    private static final Logger logger = LogManager.getLogger(SystemLogger.class);
+
     public SystemLogger()
     {
         super(NONE);
@@ -40,6 +45,7 @@ public class SystemLogger extends AbstractLogger
         if (level < getLevel())
             return;
 
+        // TODO: Refactor this ...
         PrintStream ps = level > INFO ? System.err : System.out;
 
         try

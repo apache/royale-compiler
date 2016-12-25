@@ -24,9 +24,14 @@ import java.util.ArrayList;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DocEmitterUtils
 {
+
+    private static final Logger logger = LogManager.getLogger(DocEmitterUtils.class);
+
     public static void loadImportIgnores(JSFlexJSEmitter emitter, String doc)
     {
         ArrayList<String> ignoreList = new ArrayList<String>();
@@ -39,7 +44,7 @@ public class DocEmitterUtils
             ignorable = ignorable.substring(0, endIndex);
             ignorable = ignorable.trim();
             ignoreList.add(ignorable);
-            System.out.println("Found ignorable: " + ignorable);
+            logger.info("Found ignorable: " + ignorable);
             index = doc.indexOf(ignoreToken, index + endIndex);
         }
         

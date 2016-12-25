@@ -40,9 +40,13 @@ import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.WarningLevel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JSClosureCompilerWrapper
 {
+
+    private static final Logger logger = LogManager.getLogger(JSClosureCompilerWrapper.class);
 
     public JSClosureCompilerWrapper(List<String> args)
     {
@@ -116,7 +120,7 @@ public class JSClosureCompilerWrapper
         }
         catch (IOException error)
         {
-            System.out.println(error);
+            logger.error(error);
         }
         
         /*
@@ -145,7 +149,7 @@ public class JSClosureCompilerWrapper
         }
         catch (IOException error)
         {
-            System.out.println(error);
+            logger.error(error);
         }
     }
     

@@ -32,6 +32,8 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -57,6 +59,9 @@ import com.google.common.collect.SetMultimap;
  */
 public class MXMLManifestManager implements IMXMLManifestManager
 {
+
+    private static final Logger logger = LogManager.getLogger(MXMLManifestManager.class);
+
     /**
      * Helper method to get the class name from the
      * class info. Takes are of checking if the class
@@ -266,9 +271,9 @@ public class MXMLManifestManager implements IMXMLManifestManager
                     }
                 }
             }
+        } else {
+            logger.info("Unable to parse " + manifestFileName);
         }
-        else
-            System.out.println("Unable to parse " + manifestFileName);
     }
     
     /**

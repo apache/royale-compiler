@@ -33,6 +33,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.flex.compiler.internal.codegen.databinding.WatcherAnalyzer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -57,6 +60,8 @@ import com.google.common.collect.ImmutableSet;
  */
 public class FileConfigurator
 {
+
+    private static final Logger logger = LogManager.getLogger(FileConfigurator.class);
 
     public static class SAXConfigurationException extends SAXParseException
     {
@@ -240,7 +245,7 @@ public class FileConfigurator
                     contextStack.push(newctx);
                     return;
                 }
-                System.err.println("Unknown tag:" + fullname);
+                logger.error("Unknown tag:" + fullname);
                 throw new SAXConfigurationException(
                         new ConfigurationException.UnknownVariable(
                                                     fullname, source, locator.getLineNumber()),

@@ -19,6 +19,9 @@
 
 package org.apache.flex.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Date;
 
 /**
@@ -45,6 +48,9 @@ import java.util.Date;
  */
 public class Trace
 {
+
+    private static final Logger logger = LogManager.getLogger(Trace.class);
+
     public static final boolean all = (System.getProperty("trace.flex") != null);
     
     public static final boolean phase = all || (System.getProperty("trace.phase") != null);
@@ -112,26 +118,29 @@ public class Trace
      * is also shown in the date.
      */
     public static void trace(String str) {
-        if (timeStamp)
-            System.err.print(new Date());
+        if (timeStamp) {
+            logger.error(new Date());
+        }
         
-        if (timeStampMs || timeStampMsRel)
-        {
-        	if (timeStampMsRel && (t0 == 0))
-        		t0 = System.currentTimeMillis();
-        
-        	System.err.print((System.currentTimeMillis() - t0) + " ");
+        if (timeStampMs || timeStampMsRel) {
+        	if (timeStampMsRel && (t0 == 0)) {
+                t0 = System.currentTimeMillis();
+            }
+
+            logger.error((System.currentTimeMillis() - t0) + " ");
         }
 
-        if(caller)
-            System.err.print(ExceptionUtil.getCallAt(new Throwable(), 1) + " ");
+        if(caller) {
+            logger.error(ExceptionUtil.getCallAt(new Throwable(), 1) + " ");
+        }
 
         System.err.println(str);
 
-        if (stackLines > 0)
-            System.err.println(ExceptionUtil.getStackTraceLines(new Throwable(), stackLines));
-        else if (stackPrefix != null)
-            System.err.println(ExceptionUtil.getStackTraceUpTo(new Throwable(), stackPrefix));
+        if (stackLines > 0) {
+            logger.error(ExceptionUtil.getStackTraceLines(new Throwable(), stackLines));
+        } else if (stackPrefix != null) {
+            logger.error(ExceptionUtil.getStackTraceUpTo(new Throwable(), stackPrefix));
+        }
     }
     /** Reset the relative clock to zero
      * Only has an effect when -Dtrace.timeStampMsRel is enabled

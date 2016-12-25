@@ -52,6 +52,7 @@ import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.swc.SWCDepends;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.SWF;
 import org.apache.flex.swf.SWFFrame;
@@ -91,12 +92,17 @@ import org.apache.flex.utils.Base64;
 import org.apache.flex.utils.Trace;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Dump a SWF model to XML. Usage: swfdump [-abc] file1.swf
  */
 public final class SWFDump
 {
+
+    private static final Logger logger = LogManager.getLogger(SWFDump.class);
+
     /**
      * Dump a SWF at a given URL.
      * 
@@ -2385,15 +2391,15 @@ public final class SWFDump
     public static void main(String[] args) throws IOException
     {
         // This message should not be localized.
-        System.err.println("Apache Flex SWF Dump Utility");
-        System.err.println(VersionInfo.buildMessage());
-        System.err.println("");
+        logger.error("Apache Flex SWF Dump Utility");
+        logger.error(VersionInfo.buildMessage());
+        logger.error("");
 
         if (args.length == 0)
         {
             // TODO: decide which options to implement.
             //            System.err.println("Usage: swfdump [-encode] [-asm] [-abc] [-showbytecode] [-showdebugsource] [-showoffset] [-noglyphs] [-save file.swf] [-nofunctions] [-out file.swfx] file1.swf ...");
-            System.err.println("Usage: swfdump [-abc] file1.swf");
+            logger.error("Usage: swfdump [-abc] file1.swf");
             System.exit(1);
         }
 
@@ -2501,13 +2507,15 @@ public final class SWFDump
             }
             else
             {
-                System.err.println("unknown argument " + args[index]);
+                logger.error("unknown argument " + args[index]);
                 ++index;
             }
         }
 
-        if (out == null)
+        if (out == null) {
+            // TODO: Refactor this ...
             out = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"), true);
+        }
 
         File f = new File(args[index]);
         URL[] urls = new URL[0];
@@ -2607,13 +2615,13 @@ public final class SWFDump
                 if (Trace.error)
                     e.printStackTrace();
 
-                System.err.println("");
-                System.err.println("An unrecoverable error occurred.  The given file " + urls[i] + " may not be");
-                System.err.println("a valid swf.");
+                logger.error("");
+                logger.error("An unrecoverable error occurred.  The given file " + urls[i] + " may not be");
+                logger.error("a valid swf.");
             }
             catch (FileNotFoundException e)
             {
-                System.err.println("Error: " + e.getMessage());
+                logger.error("Error: " + e.getMessage());
                 System.exit(1);
             }
         }

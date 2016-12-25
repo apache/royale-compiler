@@ -46,9 +46,14 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 {
+
+    private static final Logger logger = LogManager.getLogger(JSFlexJSDocEmitter.class);
+
     private List<String> classIgnoreList;
     private List<String> ignoreList;
     private List<String> coercionList;
@@ -139,8 +144,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                             == JSSessionModel.ImplicitBindableImplementation.EXTENDS) {
                         superClass = (IClassDefinition) project.resolveQNameToDefinition(BindableEmitter.DISPATCHER_CLASS_QNAME);
                         if (superClass == null) {
-                            System.out.println(BindableEmitter.DISPATCHER_CLASS_QNAME+" not resolved for implicit super class in "+classDefinition.getQualifiedName());
-                        } else qname = BindableEmitter.DISPATCHER_CLASS_QNAME;
+                            logger.info(BindableEmitter.DISPATCHER_CLASS_QNAME+" not resolved for implicit super class in "+classDefinition.getQualifiedName());
+                        } else {
+                            qname = BindableEmitter.DISPATCHER_CLASS_QNAME;
+                        }
                     }
                 }
 
@@ -164,20 +171,21 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                                     .getContainingScope(),
                                     DependencyType.INHERITANCE, true);
                     if (type == null) {
-                        System.out.println(iReference.getDisplayString()
+                        logger.info(iReference.getDisplayString()
                                 + " not resolved in "
                                 + classDefinition.getQualifiedName());
                     } else {
                         emitImplements(type, project.getActualPackageName(type.getPackageName()));
                     }
-                    if (type.getQualifiedName() == BindableEmitter.DISPATCHER_INTERFACE_QNAME)
-                        sawIEventDispatcher=true;
+                    if (type.getQualifiedName() == BindableEmitter.DISPATCHER_INTERFACE_QNAME) {
+                        sawIEventDispatcher = true;
+                    }
                 }
                 //support implicit bindable implementation for 'implements' IEventDispatcher:
                 if (needsIEventDispatcher && !sawIEventDispatcher) {
                     ITypeDefinition type = (ITypeDefinition) project.resolveQNameToDefinition(BindableEmitter.DISPATCHER_INTERFACE_QNAME);
                     if (type == null) {
-                        System.out.println(BindableEmitter.DISPATCHER_INTERFACE_QNAME+" not resolved for implicit implementation in "+classDefinition.getQualifiedName());
+                        logger.info(BindableEmitter.DISPATCHER_INTERFACE_QNAME+" not resolved for implicit implementation in "+classDefinition.getQualifiedName());
                     } else {
                         emitImplements(type, project.getActualPackageName(type.getPackageName()));
                     }

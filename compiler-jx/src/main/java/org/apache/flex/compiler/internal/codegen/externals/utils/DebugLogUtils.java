@@ -20,9 +20,14 @@
 package org.apache.flex.compiler.internal.codegen.externals.utils;
 
 import com.google.javascript.rhino.Node;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class DebugLogUtils
 {
+
+    private static final Logger logger = LogManager.getLogger(DebugLogUtils.class);
+
     private static boolean logEnabled = false;
     private static boolean errEnabled = false;
 
@@ -34,14 +39,16 @@ public final class DebugLogUtils
 
     public static void log(String message)
     {
-        if (logEnabled)
-            System.out.println(message);
+        if (logEnabled) {
+            logger.info(message);
+        }
     }
 
     public static void err(String message)
     {
-        if (errEnabled)
+        if (errEnabled) {
             System.err.println(message);
+        }
     }
 
     public static void err(Node n)

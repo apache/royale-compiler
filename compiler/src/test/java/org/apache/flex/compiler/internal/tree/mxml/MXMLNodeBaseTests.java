@@ -31,6 +31,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.flex.utils.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 
 import java.io.BufferedWriter;
@@ -49,6 +51,8 @@ import java.util.List;
 @Ignore
 public class MXMLNodeBaseTests 
 {
+
+	private static final Logger logger = LogManager.getLogger(MXMLNodeBaseTests.class);
 
 	protected static Workspace workspace = new Workspace();
 	
@@ -178,8 +182,9 @@ public class MXMLNodeBaseTests
 			ICompilerProblem[] problems = result.getProblems();
 			if (problems != null && problems.length > 0)
 			{
-				for (ICompilerProblem problem : problems)
-					System.out.printf("%s(%d): %s\n", problem.getSourcePath(), problem.getLine(), problem.toString());
+				for (ICompilerProblem problem : problems) {
+					logger.info("%s(%d): %s\n", problem.getSourcePath(), problem.getLine(), problem.toString());
+				}
 			}
 		}
 		catch (InterruptedException e)

@@ -57,6 +57,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLModelPropertyNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * data that describes a single databinding expression.
@@ -64,6 +66,9 @@ import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
  */
 public class BindingInfo implements Comparable<BindingInfo>
 {
+
+    private static final Logger logger = LogManager.getLogger(BindingInfo.class);
+
     /**
      * This form of the constructor is used for the "normal" case,
      * like <s:Button label="{foo}"/>
@@ -310,7 +315,7 @@ public class BindingInfo implements Comparable<BindingInfo>
         {
             // there will be (presumably) some cases where we can't make a destination string.
             // For now, however, any case where we fail to do so is probably a bug
-            System.err.println("findDestinationString can't parse parent: " + parent);
+            logger.error("findDestinationString can't parse parent: " + parent);
         }
         return destString;
     }

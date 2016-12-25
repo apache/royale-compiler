@@ -103,6 +103,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * ActionScript Compiler command-line interface.
@@ -114,6 +116,8 @@ import com.google.common.collect.Sets.SetView;
  */
 public class ASC
 {
+
+    private static final Logger logger = LogManager.getLogger(ASC.class);
 
     private static final String DOUBLE_QUOTE = "\"";
     

@@ -59,6 +59,8 @@ import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.swc.io.SWCReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Erik de Bruin
@@ -66,6 +68,9 @@ import org.apache.flex.swc.io.SWCReader;
  */
 public class COMPJSC extends MXMLJSC
 {
+
+    private static final Logger logger = LogManager.getLogger(COMPJSC.class);
+
     /*
      * Exit code enumerations.
      */
@@ -155,7 +160,7 @@ public class COMPJSC extends MXMLJSC
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
-        System.out.println((endTime - startTime) / 1e9 + " seconds");
+        logger.info((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }
@@ -280,8 +285,8 @@ public class COMPJSC extends MXMLJSC
                     	{
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-	                        System.out.println("Compiling file: " + outputClassFile);
+
+                            logger.info("Compiling file: " + outputClassFile);
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -310,7 +315,7 @@ public class COMPJSC extends MXMLJSC
                     	{
                     		String outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), jsOut).getPath();
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            logger.info("Compiling file: " + outputClassFile);
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -359,7 +364,7 @@ public class COMPJSC extends MXMLJSC
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            logger.info(e);
             final ICompilerProblem problem = new InternalCompilerProblem(e);
             problems.add(problem);
         }

@@ -40,6 +40,8 @@ import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem2;
 import org.apache.flex.utils.NonLockingStringReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Tokenizes MXML files.  Uses RawTagTokenizer to get basic tokens.  Ignores comments (<!--...-->),
@@ -48,6 +50,9 @@ import org.apache.flex.utils.NonLockingStringReader;
  */
 public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 {
+
+	private static final Logger logger = LogManager.getLogger(MXMLTokenizer.class);
+
 	/**
 	 * Start offset (for when you're parsing a section of the document that
 	 * doesn't start at the beginning)
@@ -419,7 +424,7 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
             List<MXMLToken> tokens = tokenizer.parseTokens(fileSpec.createReader());
             for (MXMLToken token : tokens)
             {
-                System.out.println(token.toDumpString());
+				logger.info(token.toDumpString());
             }
         }
         catch (FileNotFoundException e)

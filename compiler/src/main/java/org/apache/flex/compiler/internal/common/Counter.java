@@ -19,6 +19,10 @@
 
 package org.apache.flex.compiler.internal.common;
 
+import org.apache.flex.compiler.internal.codegen.databinding.MXMLBindingDirectiveHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +37,9 @@ import java.util.Map;
  */
 public class Counter
 {
+
+    private static final Logger logger = LogManager.getLogger(Counter.class);
+
     /**
      * Flag that enables counting of instances of TokenBase.
      */
@@ -132,7 +139,7 @@ public class Counter
         
         for (String key  : keys)
         {
-            System.out.println(getCount(key) + "\t" + key);
+            logger.info(getCount(key) + "\t" + key);
         }
     }
 }

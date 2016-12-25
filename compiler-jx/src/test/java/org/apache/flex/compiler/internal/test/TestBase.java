@@ -46,6 +46,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -68,6 +69,8 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -78,6 +81,9 @@ import com.google.common.collect.Iterables;
 @Ignore
 public class TestBase implements ITestBase
 {
+
+    private static final Logger logger = LogManager.getLogger(TestBase.class);
+
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     protected List<ICompilerProblem> errors;
@@ -262,20 +268,17 @@ public class TestBase implements ITestBase
         }
 
         IASNode fileNode = null;
-        try
-        {
+        try {
         	ISyntaxTreeRequestResult result = cu.getSyntaxTreeRequest().get();
         	ICompilerProblem[] problems = result.getProblems();
-        	if (problems.length > 0)
-        	{
-        		for (ICompilerProblem problem : problems)
-        			System.out.println(problem.toString());
+        	if (problems.length > 0) {
+        		for (ICompilerProblem problem : problems) {
+                    logger.warn(problem.toString());
+                }
         		return null;
         	}
             fileNode = result.getAST();
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -324,7 +327,7 @@ public class TestBase implements ITestBase
                     sb.append(error.toString() + "\n");
                 }
         	}
-        	System.out.println(sb.toString());
+        	logger.info(sb.toString());
         	return compiledFileNames;
         }
         List<ICompilationUnit> reachableCompilationUnits = project

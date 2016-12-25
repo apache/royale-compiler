@@ -43,6 +43,8 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -51,6 +53,9 @@ import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
  */
 public class WatcherAnalyzer
 {
+
+    private static final Logger logger = LogManager.getLogger(WatcherAnalyzer.class);
+
     /**
      * Constructor
      * 
@@ -325,7 +330,7 @@ public class WatcherAnalyzer
             type = determineWatcherType(def);  // figure out what kind of watcher to make
             if (type == WatcherType.ERROR)
             {
-                System.err.println("can't get watcher for " + def);
+                logger.error("can't get watcher for " + def);
                 return;         // This should never happen. If it does, there is presumably a bug.
                                 // But - better to recover here, than to go on and NPE.
                                 // This is a workaround for CMP-1283

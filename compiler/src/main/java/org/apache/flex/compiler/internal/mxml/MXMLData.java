@@ -36,6 +36,7 @@ import org.apache.flex.compiler.common.MutablePrefixMap;
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.fxg.logging.SystemLogger;
 import org.apache.flex.compiler.internal.parsing.mxml.BalancingMXMLProcessor;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLTokenizer;
@@ -49,6 +50,8 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;
 import org.apache.flex.utils.FastStack;
 import org.apache.flex.utils.FastStack.IFastStackDecorator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Encapsulation of an MXML file, with individual units for each open tag, close
@@ -56,6 +59,8 @@ import org.apache.flex.utils.FastStack.IFastStackDecorator;
  */
 public class MXMLData implements IMXMLData
 {
+
+    private static final Logger logger = LogManager.getLogger(MXMLData.class);
 
     private final class TokenizerPayload
     {
@@ -906,7 +911,7 @@ public class MXMLData implements IMXMLData
     {
         for (IMXMLUnitData unit : getUnits())
         {
-            System.out.println(((MXMLUnitData)unit).toDumpString());
+            logger.info(((MXMLUnitData)unit).toDumpString());
         }
     }
 

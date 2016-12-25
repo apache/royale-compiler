@@ -81,6 +81,8 @@ import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Erik de Bruin
@@ -89,6 +91,9 @@ import com.google.common.collect.Iterables;
 public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         FlexTool
 {
+
+    private static final Logger logger = LogManager.getLogger(MXMLJSC.class);
+
     @Override
     public ProblemQuery getProblemQuery()
     {
@@ -233,7 +238,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
-        System.out.println((endTime - startTime) / 1e9 + " seconds");
+        logger.info((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }
@@ -419,8 +424,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    {
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-	                        System.out.println("Compiling file: " + outputClassFile);
+
+                            logger.info("Compiling file: " + outputClassFile);
 	
 	                        ICompilationUnit unit = cu;
 	

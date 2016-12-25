@@ -43,10 +43,14 @@ import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.ISWCFileEntry;
 
 import com.google.common.io.Files;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GoogDepsWriter {
 
-    public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
+	private static final Logger logger = LogManager.getLogger(GoogDepsWriter.class);
+
+	public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.mainName = mainClassName;
@@ -56,7 +60,7 @@ public class GoogDepsWriter {
 		this.swcs = swcs;
 		for (ISWC swc : swcs)
 		{
-			System.out.println("using SWC: " + swc.getSWCFile().getAbsolutePath());
+			logger.info("using SWC: " + swc.getSWCFile().getAbsolutePath());
 		}
 	}
 	
@@ -144,15 +148,14 @@ public class GoogDepsWriter {
 		visited.put(current.className, current);
 		
 		filePathsInOrder.add(current.filePath);
-		if (removeCirculars)
+		if (removeCirculars) {
 			removeCirculars(current);
-        System.out.println("Dependencies calculated for '" + current.filePath + "'");
+		}
+        logger.info("Dependencies calculated for '" + current.filePath + "'");
 
 		ArrayList<String> deps = current.deps;
-		for (String className : deps)
-		{
-			if (!visited.containsKey(className) && !isGoogClass(className))
-			{
+		for (String className : deps) {
+			if (!visited.containsKey(className) && !isGoogClass(className)) {
 				GoogDep gd = depMap.get(className);
 				sortFunction(gd, arr);
 			}
@@ -162,8 +165,9 @@ public class GoogDepsWriter {
 	
 	private void addDeps(String className)
 	{
-		if (depMap.containsKey(className) || isGoogClass(className))
+		if (depMap.containsKey(className) || isGoogClass(className)) {
 			return;
+		}
 		
 		// build goog dependency list
 		GoogDep gd = new GoogDep();
@@ -186,25 +190,19 @@ public class GoogDepsWriter {
 		ArrayList<String> deps = getDirectDependencies(gd.filePath);
 		
 		gd.deps = new ArrayList<String>();
-		for (String dep : deps)
-		{
-			if (gd.fileInfo.impls != null && gd.fileInfo.impls.contains(dep))
-			{
-				if (!requireMap.containsKey(dep))
-				{
+		for (String dep : deps) {
+			if (gd.fileInfo.impls != null && gd.fileInfo.impls.contains(dep)) {
+				if (!requireMap.containsKey(dep)) {
 					// we are first class that needs this dependency
 					// at prototype initialization time
 					requireMap.put(dep, className);
 				}
-			}
-			else if (depMap.containsKey(dep) && !isGoogClass(dep))
-		    {
+			} else if (depMap.containsKey(dep) && !isGoogClass(dep)) {
 		        continue;
 		    }
 			gd.deps.add(dep);
 		}
-        for (String dep : deps)
-        {
+        for (String dep : deps) {
             addDeps(dep);
         }
 	}
@@ -238,14 +236,14 @@ public class GoogDepsWriter {
 	                        	// don't add the require if some class needs it at static initialization
 	                        	// time and that class is not this class
 	                        	suppressCount++;
-	                        	System.out.println(gd.filePath + " removing circular (static): " + s);
+	                        	logger.warn(gd.filePath + " removing circular (static): " + s);
 	                        	continue;
 	                        }
 	                        else if (!gd.deps.contains(s))
 	                        {
 	                        	// someone require'd this class
 	                        	suppressCount++;
-	                        	System.out.println(gd.filePath + " removing circular: " + s);
+	                        	logger.warn(gd.filePath + " removing circular: " + s);
 	                        	continue;
 	                        }
                         }
@@ -262,64 +260,51 @@ public class GoogDepsWriter {
             		{
                 		String line = finalLines.get(fi.suppressLine);
                 		int c = line.indexOf("@suppress {");
-                		if (c > -1)
-                		{
-                			if (!line.contains("missingRequire"))
-                			{
+                		if (c > -1) {
+                			if (!line.contains("missingRequire")) {
                 				line = line.substring(0, c) + "@suppress {missingRequire|" + line.substring(c + 11);
                 				finalLines.remove(fi.suppressLine);
                 				finalLines.add(fi.suppressLine, line);
                 			}
-                		}
-                		else
-                			System.out.println("Confused by @suppress in " + className);
+                		} else {
+							logger.error("Confused by @suppress in " + className);
+						}
                 	}
                 	else                		
                 	{
                 		// the @suppress was for the constructor or some other thing so add a top-level
                 		// @suppress
-                		if (fi.fileoverviewLine > -1)
-                		{
+                		if (fi.fileoverviewLine > -1) {
                 			// there is already a fileOverview but no @suppress
                 			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
-                		}
-                		else if (fi.googProvideLine > -1)
-                		{
+                		} else if (fi.googProvideLine > -1) {
                 			finalLines.add(fi.googProvideLine, " */");
                 			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
                 			finalLines.add(fi.googProvideLine, " *  @fileoverview");
                 			finalLines.add(fi.googProvideLine, "/**");
-                		}
-                		else
-                		{
-                			System.out.println("Confused by @suppress in " + className);
+                		} else {
+                			logger.error("Confused by @suppress in " + className);
                 		}
                 	}
             	}
             	else
             	{
-            		if (fi.fileoverviewLine > -1)
-            		{
+            		if (fi.fileoverviewLine > -1) {
             			// there is already a fileoverview but no @suppress
             			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
-            		}
-            		else if (fi.googProvideLine > -1)
-            		{
+            		} else if (fi.googProvideLine > -1) {
             			finalLines.add(fi.googProvideLine, " */");
             			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
             			finalLines.add(fi.googProvideLine, " *  @fileoverview");
             			finalLines.add(fi.googProvideLine, "/**");
-            		}
-            		else
-            		{
-            			System.out.println("Confused by @suppress in " + className);
+            		} else {
+            			logger.error("Confused by @suppress in " + className);
             		}                		
             	}
             }
             File file = new File(gd.filePath);  
             PrintWriter out = new PrintWriter(new FileWriter(file));  
-            for (String s : finalLines)
-            {
+            for (String s : finalLines) {
                 out.println(s);
             }
             out.close();
@@ -486,13 +471,13 @@ public class GoogDepsWriter {
 									        File.separator + assetFileName);
 							        FileUtils.copyFile(assetFile, destFile);
 
-							        System.out.println("Copied assets of the '" + nameOfClass + "' class");
+									logger.info("Copied assets of the '" + nameOfClass + "' class");
 						        }
 					        }
     				    }
     				}
     			} catch (IOException e) {
-    				System.out.println("Error copying file for class: " + className);
+					logger.error("Error copying file for class: " + className);
     			}
     			return fn;
     		}
@@ -554,18 +539,18 @@ public class GoogDepsWriter {
     		    				inStream.close();
     		    				outStream.flush();
     		    				outStream.close();
-						        System.out.println("Copied asset " + assetName);
+								logger.info("Copied asset " + assetName);
     						}
     					}
     				}
     			} catch (IOException e) {
-    				System.out.println("Error copying file for class: " + className);
+					logger.error("Error copying file for class: " + className);
     			}
     			return fn;
     		}
         }
-        
-		System.out.println("Could not find file for class: " + className);
+
+		logger.error("Could not find file for class: " + className);
 		problems.add(new FileNotFoundProblem(className));
 		problemsFound = true;
 		return "";

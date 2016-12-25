@@ -70,6 +70,8 @@ import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.swc.catalog.XMLFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * swcdepends command line utility.
@@ -84,6 +86,8 @@ import org.apache.flex.swc.catalog.XMLFormatter;
  */
 public class SWCDepends
 {
+
+    private static final Logger logger = LogManager.getLogger(SWCDepends.class);
 
     // XML names
     public static final String SWC_DEPENDENCY_ORDER_ELEMENT = "swc-dependency-order";
@@ -326,21 +330,21 @@ public class SWCDepends
 
                 if (config.getShowTypes())
                 {
-                    System.out.print("\t\t" + entry.getKey() + "\t");
+                    logger.info("\t\t" + entry.getKey() + "\t");
                     
                     StringBuilder sb = new StringBuilder();
                     for (Iterator<DependencyType>iter = entry.getValue().iterator(); 
                          iter.hasNext();)
                     {
                         DependencyType type = iter.next();
-                        
-                        System.out.print(type.getSymbol());
+
+                        logger.info(type.getSymbol());
                         sb.append(type.getSymbol());
                         
                         if (iter.hasNext())
                         {
                             sb.append(",");
-                            System.out.print(" ");
+                            logger.info(" ");
                         }
                     }
                     
@@ -511,7 +515,7 @@ public class SWCDepends
      */
     protected void println(final String msg)
     {
-        System.out.println(msg);
+        logger.info(msg);
     }
 
     /**

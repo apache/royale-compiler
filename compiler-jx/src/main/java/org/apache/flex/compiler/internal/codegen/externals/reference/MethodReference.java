@@ -31,9 +31,13 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MethodReference extends MemberReference
 {
+
+    private static final Logger logger = LogManager.getLogger(MethodReference.class);
 
     private boolean isStatic;
     private MethodReference override;
@@ -135,7 +139,7 @@ public class MethodReference extends MemberReference
         }
         else
         {
-            System.out.println(getQualifiedName() + " parameters not found! " + " " + comment.getParameterCount());
+            logger.info(getQualifiedName() + " parameters not found! " + " " + comment.getParameterCount());
         }
     }
 

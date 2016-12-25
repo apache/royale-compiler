@@ -40,12 +40,17 @@ import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.tools.FlexTool;
 
 import com.google.javascript.jscomp.Result;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Michael Schmalle
  */
 public class EXTERNC implements FlexTool
 {
+
+    private static final Logger logger = LogManager.getLogger(EXTERNC.class);
+
     static enum ExitCode
     {
         SUCCESS(0),
@@ -154,7 +159,7 @@ public class EXTERNC implements FlexTool
         final int exitCode = compiler.mainNoExit(args, System.err);
 
         long endTime = System.nanoTime();
-        System.out.println((endTime - startTime) / 1e9 + " seconds");
+        logger.info((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }

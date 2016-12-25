@@ -31,9 +31,14 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ASWriter implements IASWriter
 {
+
+    private static final Logger logger = LogManager.getLogger(ASWriter.class);
+
     private FlexJSProject project;
 
     private List<ICompilerProblem> problems;
@@ -73,7 +78,7 @@ public class ASWriter implements IASWriter
 
         walker.visitCompilationUnit(compilationUnit);
 
-        System.out.println(writer.toString());
+        logger.info(writer.toString());
 
         try
         {

@@ -28,9 +28,14 @@ import com.google.common.base.Strings;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FunctionUtils
 {
+
+    private static final Logger logger = LogManager.getLogger(FunctionUtils.class);
+
     /**
      * Compute the type of a function or method parameter.
      * 
@@ -162,41 +167,34 @@ public class FunctionUtils
 
         String paramType;
 
-        if (parameterType == null)
-        {
-        	System.out.println("no parameter type for " + paramName + " " + reference.getQualifiedName());
+        if (parameterType == null) {
+            logger.info("no parameter type for " + paramName + " " + reference.getQualifiedName());
             paramType = "Object";
-            if (outputJS)
-            	sb.append(paramName);
-        }
-        else if (parameterType.isVarArgs())
-        {
-        	if (outputJS)
-        		sb.append("var_").append(paramName);
-        	else
-        		sb.append("...").append(paramName);
-        }
-        else
-        {
+            if (outputJS) {
+                sb.append(paramName);
+            }
+        } else if (parameterType.isVarArgs()) {
+        	if (outputJS) {
+                sb.append("var_").append(paramName);
+            } else {
+                sb.append("...").append(paramName);
+            }
+        } else {
             paramType = JSTypeUtils.toParamTypeString(reference, paramName);
-            if (hasTemplate(reference) && containsTemplate(reference, paramType))
-            {
+            if (hasTemplate(reference) && containsTemplate(reference, paramType)) {
                 paramType = "Object";
             }
 
-            if (outputJS && parameterType.isOptionalArg())
-            {
+            if (outputJS && parameterType.isOptionalArg()) {
             	sb.append("opt_");
             	sb.append(paramName);            	
+            } else {
+                sb.append(paramName);
             }
-            else
-            	sb.append(paramName);
-            if (!outputJS)
-            {
+            if (!outputJS) {
                 sb.append(":");
                 sb.append(paramType);            	
-	            if (parameterType.isOptionalArg())
-	            {
+	            if (parameterType.isOptionalArg()) {
 	                sb.append(" = ");
 	                sb.append(toDefaultParameterValue(paramType));
 	            }
@@ -208,14 +206,15 @@ public class FunctionUtils
 
     private static String toDefaultParameterValue(String paramType)
     {
-        if (paramType.equals("Function"))
+        if (paramType.equals("Function")) {
             return "null";
-        else if (paramType.equals("Number"))
+        } else if (paramType.equals("Number")) {
             return "0";
-        else if (paramType.equals("String"))
+        } else if (paramType.equals("String")) {
             return "''";
-        else if (paramType.equals("Boolean"))
+        } else if (paramType.equals("Boolean")) {
             return "false";
+        }
         return "null";
     }
 

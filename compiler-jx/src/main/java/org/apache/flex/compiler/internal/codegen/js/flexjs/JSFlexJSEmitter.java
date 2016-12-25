@@ -115,6 +115,8 @@ import org.apache.flex.compiler.utils.ASNodeUtils;
 import com.google.common.base.Joiner;
 import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Concrete implementation of the 'FlexJS' JavaScript production.
@@ -124,6 +126,8 @@ import org.apache.flex.utils.FilenameNormalization;
  */
 public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 {
+
+    private static final Logger logger = LogManager.getLogger(JSFlexJSEmitter.class);
 
     private JSFlexJSDocEmitter docEmitter = null;
 
@@ -445,10 +449,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	{
             List<IFunctionNode> anonFns = fnNode.getLocalFunctions();
             int i = anonFns.indexOf(node.getFunctionNode());
-            if (i < 0)
-            	System.out.println("missing index for " + node.toString());
-            else
-            	write("__localFn" + Integer.toString(i) + "__");
+            if (i < 0) {
+                logger.info("missing index for " + node.toString());
+            } else {
+                write("__localFn" + Integer.toString(i) + "__");
+            }
     	}
     }
 
@@ -944,11 +949,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             	write(ns + "::");
         	}
     		write(((IIdentifierNode)node).getName());
-    	}
-    	else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    		writeChainName(node);
-    	else
-    		System.out.println("unexpected node in emitClosureEnd");
+    	} else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID) {
+            writeChainName(node);
+        } else {
+            logger.info("unexpected node in emitClosureEnd");
+        }
     	write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
     }
@@ -966,14 +971,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
     private void writeChainName(IASNode node)
     {
-    	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    	{
+    	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID) {
     		node = ((IMemberAccessExpressionNode)node).getRightOperandNode();
     	}
-    	if (node.getNodeID() == ASTNodeID.IdentifierID)
-    		write(((IdentifierNode)node).getName());
-    	else
-    		System.out.println("unexpected node in emitClosureEnd");
+    	if (node.getNodeID() == ASTNodeID.IdentifierID) {
+            write(((IdentifierNode) node).getName());
+        } else {
+            logger.info("unexpected node in emitClosureEnd");
+        }
     }
 
     @Override

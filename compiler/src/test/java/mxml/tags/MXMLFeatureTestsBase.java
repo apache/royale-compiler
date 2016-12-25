@@ -22,6 +22,8 @@ package mxml.tags;
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -45,11 +47,14 @@ import static org.junit.Assert.fail;
  */
 public class MXMLFeatureTestsBase
 {
+
+	private static final Logger logger = LogManager.getLogger(MXMLFeatureTestsBase.class);
+
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
     
 	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{
-		System.out.println("Generating test:");
+		logger.info("Generating test:");
 
 		// Write the MXML into a temp file.
 		ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
@@ -109,7 +114,7 @@ public class MXMLFeatureTestsBase
 		for(String arg : args) {
 			cmdLine.append(arg).append(" ");
 		}
-		System.out.println("Compiling test:\n" + cmdLine.toString());
+		logger.info("Compiling test:\n" + cmdLine.toString());
 		int exitCode = mxmlc.mainNoExit(args.toArray(new String[args.size()]));
 
 		// Check that there were no compilation problems.
@@ -134,7 +139,7 @@ public class MXMLFeatureTestsBase
 		String[] runArgs = new String[] { testAdapter.getFlashplayerDebugger().getPath(), swf };
 		try
 		{
-			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
+			logger.info("Executing test:\n" + Arrays.toString(runArgs));
 			exitCode = executeCommandWithTimeout(runArgs, 40);
 		}
 		catch (Exception e)

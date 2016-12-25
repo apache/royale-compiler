@@ -28,6 +28,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.flex.compiler.internal.common.Counter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -47,6 +50,8 @@ import org.apache.flex.compiler.filespecs.FileSpecification;
  */
 public class FlashBuilderConfigurator
 {
+
+    private static final Logger logger = LogManager.getLogger(FlashBuilderConfigurator.class);
 
     public static class SAXConfigurationException extends SAXParseException
     {
@@ -137,11 +142,12 @@ public class FlashBuilderConfigurator
             // add new last arg which is path to app
             fbArgs.add(aspr.applicationPath);
         }
-        
-        System.out.println("using FlashBuilder Project Files");
-        System.out.println("FlashBuilder settings:");
-        for (String arg : fbArgs)
-            System.out.println("    " + arg);
+
+        logger.info("using FlashBuilder Project Files");
+        logger.info("FlashBuilder settings:");
+        for (String arg : fbArgs) {
+            logger.info("    " + arg);
+        }
         return fbArgs.toArray(new String[fbArgs.size()]);
     }
 

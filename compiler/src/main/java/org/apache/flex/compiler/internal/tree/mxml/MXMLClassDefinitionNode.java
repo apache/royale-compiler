@@ -42,6 +42,7 @@ import org.apache.flex.compiler.internal.mxml.StateGroupDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
+import org.apache.flex.compiler.internal.targets.SWFTarget;
 import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
@@ -70,6 +71,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import com.google.common.collect.ArrayListMultimap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 
@@ -81,6 +84,8 @@ import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     implements IMXMLClassDefinitionNode, IScopedNode
 {
+
+    private static final Logger logger = LogManager.getLogger(MXMLClassDefinitionNode.class);
 
     /**
      * Constructor
@@ -1027,13 +1032,13 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
 
         for (String state : states)
         {
-            System.out.println("State " + state);
+            logger.info("State " + state);
             List<IMXMLNode> nodes = getNodesDependentOnState(state);
             if (nodes != null)
             {
                 for (IMXMLNode node : nodes)
                 {
-                    System.out.println("  " + node);
+                    logger.info("  " + node);
                 }
             }
         }

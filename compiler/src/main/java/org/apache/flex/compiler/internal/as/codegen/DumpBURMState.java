@@ -22,14 +22,20 @@ package org.apache.flex.compiler.internal.as.codegen;
 import java.io.File;
 import java.util.Date;
 
+import org.apache.flex.compiler.clients.Optimizer;
 import org.apache.flex.compiler.internal.testing.NodesToXMLStringFormatter;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class containing debug code that dumps BURM state to an XML file.
  */
 final class DumpBURMState
 {
+
+    private static final Logger logger = LogManager.getLogger(DumpBURMState.class);
+
     static void dump(CmcEmitter burm, IASNode n)
     {
         // un-comment the following line to enable dumping of BURM errors.
@@ -65,10 +71,10 @@ final class DumpBURMState
         }
         catch (Exception e)
         {
-            System.err.println("Unable to dump due to: " + e.toString());
+            logger.error("Unable to dump due to: " + e.toString());
             try
             {
-                System.err.println(new NodesToXMLStringFormatter(n).toString());
+                logger.error(new NodesToXMLStringFormatter(n).toString());
             } 
             catch ( Exception cantformat)
             {

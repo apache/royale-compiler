@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import java.util.List;
 
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
@@ -84,6 +85,8 @@ import org.apache.flex.compiler.utils.DefinitionUtils;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.as.IASBlockVisitor;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A base implementation of the {@link IASBlockVisitor} that will walk the
@@ -93,6 +96,9 @@ import org.apache.flex.compiler.visitor.as.IASBlockWalker;
  */
 public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 {
+
+    private static final Logger logger = LogManager.getLogger(ASBlockWalker.class);
+
     boolean isDebug;
 
     private IASEmitter emitter;
@@ -654,7 +660,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     {
         if (isDebug)
         {
-            System.out.println(message);
+            logger.info(message);
         }
     }
 }

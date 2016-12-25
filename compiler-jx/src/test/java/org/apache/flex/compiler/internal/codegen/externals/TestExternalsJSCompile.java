@@ -36,6 +36,7 @@ import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.flex.compiler.internal.codegen.as.ASWriter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -47,6 +48,8 @@ import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +59,9 @@ import com.google.common.collect.Iterables;
 
 public class TestExternalsJSCompile
 {
+
+    private static final Logger logger = LogManager.getLogger(TestExternalsJSCompile.class);
+
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     private static File tempDir = new File(testAdapter.getTempDir());
@@ -205,7 +211,7 @@ public class TestExternalsJSCompile
                     final File outputClassFile = getOutputClassFile(qname
                             + "_output", outputRootDir);
 
-                    System.out.println(outputClassFile);
+                    logger.info(outputClassFile);
 
                     ASFilterWriter writer = backend.createWriterBuffer(project);
                     IASEmitter emitter = backend.createEmitter(writer);
@@ -214,7 +220,7 @@ public class TestExternalsJSCompile
 
                     walker.visitCompilationUnit(cu);
 
-                    System.out.println(writer.toString());
+                    logger.info(writer.toString());
 
                     BufferedOutputStream out = new BufferedOutputStream(
                             new FileOutputStream(outputClassFile));

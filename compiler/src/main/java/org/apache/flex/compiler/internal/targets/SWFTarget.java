@@ -49,7 +49,6 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.BuildCanceledException;
-import org.apache.flex.compiler.internal.caches.SWFCache;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -82,6 +81,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Concrete implementation of ITarget for building a collection of source files
@@ -89,6 +90,9 @@ import com.google.common.collect.Sets;
  */
 public abstract class SWFTarget extends Target implements ISWFTarget
 {
+
+    private static final Logger logger = LogManager.getLogger(SWFTarget.class);
+
     protected static final class SWFFrameInfo
     {
         public static final boolean EXTERNS_ALLOWED = true;
@@ -427,7 +431,7 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                        Collection<EmitterClassVisitor> classes = emitter.getDefinedClasses();
 	                        for (EmitterClassVisitor clazz : classes)
 	                        {
-	                        	System.out.println("scanning for overrides: " + clazz.getInstanceInfo().name.getBaseName());
+                                logger.info("scanning for overrides: " + clazz.getInstanceInfo().name.getBaseName());
 	                        	Iterator<Trait> instanceTraits = clazz.instanceTraits.iterator();
 	                        	while (instanceTraits.hasNext())
 	                        	{
