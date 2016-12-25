@@ -44,7 +44,8 @@ public class TestFlexJSStatements extends TestGoogStatements
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace, backend);
+        backend = createBackend();
+        project = new FlexJSProject(workspace, backend);
         super.setUp();
     }
     
