@@ -31,7 +31,7 @@ public class NodePublisher extends JSCPublisher
 {
     public NodePublisher(Configuration config, FlexJSProject project)
     {
-        super(config, project);
+        super(project, config);
     }
 
     @Override

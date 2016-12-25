@@ -27,9 +27,9 @@ import java.util.Set;
 
 import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.BuildCanceledException;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.driver.js.JSApplication;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.IJSTarget;
@@ -51,10 +51,10 @@ public class JSTarget extends Target implements IJSTarget
      * 
      * @param project the owner project
      */
-    public JSTarget(IASProject project, ITargetSettings targetSettings,
-            ITargetProgressMonitor progressMonitor)
+    public JSTarget(FlexJSProject project, ITargetSettings targetSettings,
+                    ITargetProgressMonitor progressMonitor)
     {
-        super((CompilerProject) project, targetSettings, progressMonitor);
+        super(project, targetSettings, progressMonitor);
     }
 
     @Override
@@ -182,8 +182,8 @@ public class JSTarget extends Target implements IJSTarget
             final Collection<ICompilerProblem> problems)
             throws InterruptedException
     {
-        final JSSharedData sharedData = JSSharedData.instance;
-        sharedData.beginCodeGen();
+/*        final JSSharedData sharedData = JSSharedData.instance;
+        sharedData.beginCodeGen();*/
 
         BuiltCompilationUnitSet builtCompilationUnits = getBuiltCompilationUnitSet();
 
@@ -206,7 +206,7 @@ public class JSTarget extends Target implements IJSTarget
         //            for (ICompilationUnit cu : cuList)
         //                compilationUnits.add(cu);
         //        }
-        sharedData.endCodeGen();
+//        sharedData.endCodeGen();
     }
 
     private ICompilationUnit getRootClassCompilationUnit()

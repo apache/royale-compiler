@@ -37,8 +37,8 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -58,9 +58,9 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
     protected JSGoogConfiguration googConfiguration;
 
-    public JSGoogPublisher(Configuration config)
+    public JSGoogPublisher(FlexJSProject project, Configuration config)
     {
-        super(config);
+        super(project, config);
         googConfiguration = (JSGoogConfiguration) config;
     }
 
@@ -81,7 +81,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         final String intermediateDirPath = getOutputFolder().getPath();
 
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
-        final String outputFileName = projectName + "." + JSSharedData.OUTPUT_EXTENSION;
+        final String outputFileName = projectName + "." + project.getBackend().getOutputExtension();
 
         File releaseDir = new File(
                 new File(intermediateDirPath).getParentFile(),

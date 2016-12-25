@@ -59,7 +59,7 @@ public class FlexJSSWCTarget extends JSTarget implements IJSTarget
      * 
      * @param project the owner project
      */
-    public FlexJSSWCTarget(IASProject project, ITargetSettings targetSettings,
+    public FlexJSSWCTarget(FlexJSProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);

@@ -32,8 +32,8 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.JSBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 
 /**
  * A concrete implementation of the {@link IBackend} API for the 'goog' code
@@ -65,9 +65,9 @@ public class GoogBackend extends JSBackend
     }
 
     @Override
-    public JSGoogPublisher createPublisher(IASProject project,
+    public JSGoogPublisher createPublisher(FlexJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
-        return new JSGoogPublisher(config);
+        return new JSGoogPublisher(project, config);
     }
 }

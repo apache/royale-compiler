@@ -44,8 +44,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace);
-    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	project = new FlexJSProject(workspace, backend);
+    	project.config = new JSGoogConfiguration();
     	project.setProxyBaseClass("flash.utils.Proxy");
         super.setUp();
     }

@@ -38,11 +38,11 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.flex.compiler.internal.codegen.as.ASWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.as.BeforeAfterStrategy;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
@@ -79,14 +79,14 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public ITarget createTarget(IASProject project, ITargetSettings settings,
-            ITargetProgressMonitor monitor)
+    public ITarget createTarget(FlexJSProject project, ITargetSettings settings,
+                                ITargetProgressMonitor monitor)
     {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IASBlockWalker createWalker(IASProject project,
+    public IASBlockWalker createWalker(FlexJSProject project,
             List<ICompilerProblem> errors, IASEmitter emitter)
     {
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
@@ -101,7 +101,7 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(IASProject project,
+    public IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -109,7 +109,7 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public ASFilterWriter createWriterBuffer(IASProject project)
+    public ASFilterWriter createWriterBuffer(FlexJSProject project)
     {
         StringWriter out = new StringWriter();
         ASFilterWriter writer = new ASFilterWriter(out);
@@ -129,7 +129,7 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public IASWriter createWriter(IASProject project,
+    public IASWriter createWriter(FlexJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -137,7 +137,7 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public IASWriter createMXMLWriter(IASProject project,
+    public IASWriter createMXMLWriter(FlexJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -151,7 +151,7 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public IPublisher createPublisher(IASProject project,
+    public IPublisher createPublisher(FlexJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return null;

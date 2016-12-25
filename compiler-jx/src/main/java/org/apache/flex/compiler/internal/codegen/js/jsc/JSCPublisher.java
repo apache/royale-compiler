@@ -32,9 +32,9 @@ import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 
 public class JSCPublisher extends MXMLFlexJSPublisher
 {
-    public JSCPublisher(Configuration config, FlexJSProject project)
+    public JSCPublisher(FlexJSProject project, Configuration config)
     {
-        super(config, project);
+        super(project, config);
         this.project = project;
     }
 

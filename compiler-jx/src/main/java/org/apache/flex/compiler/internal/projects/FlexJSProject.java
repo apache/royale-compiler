@@ -31,6 +31,7 @@ import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
@@ -60,9 +61,10 @@ public class FlexJSProject extends FlexProject
      *
      * @param workspace The {@code Workspace} containing this project.
      */
-    public FlexJSProject(Workspace workspace)
+    public FlexJSProject(Workspace workspace, IBackend backend)
     {
         super(workspace);
+        this.backend = backend;
     }
 
     private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
@@ -72,6 +74,8 @@ public class FlexJSProject extends FlexProject
 
     public JSGoogConfiguration config;
     public Configurator configurator;
+
+    private IBackend backend;
 
     public ICompilationUnit mainCU;
 
@@ -354,4 +358,9 @@ public class FlexJSProject extends FlexProject
 		}
     	return null;
     }
+
+    public IBackend getBackend() {
+        return backend;
+    }
+
 }

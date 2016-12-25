@@ -36,7 +36,6 @@ import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.ASDocConfiguration;
@@ -154,7 +153,7 @@ public class ASDOCJSC extends MXMLJSC
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
-        JSSharedData.instance.stdout((endTime - startTime) / 1e9 + " seconds");
+        System.out.println((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }
@@ -162,7 +161,7 @@ public class ASDOCJSC extends MXMLJSC
     public ASDOCJSC(IBackend backend)
     {
         super(backend);
-        project = new FlexJSASDocProject(workspace);
+        project = new FlexJSASDocProject(workspace, backend);
     }
 
     /**
@@ -231,13 +230,13 @@ public class ASDOCJSC extends MXMLJSC
                         IASWriter writer;
                         if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                         {
-                            writer = JSSharedData.backend.createWriter(project,
+                            writer = project.getBackend().createWriter(project,
                                     (List<ICompilerProblem>) errors, unit,
                                     false);
                         }
                         else
                         {
-                            writer = JSSharedData.backend.createMXMLWriter(
+                            writer = project.getBackend().createMXMLWriter(
                                     project, (List<ICompilerProblem>) errors,
                                     unit, false);
                         }
@@ -251,7 +250,7 @@ public class ASDOCJSC extends MXMLJSC
                     }
                 }
                 compilationSuccess = true;
-                IJSFlexJSASDocEmitter emitter = (IJSFlexJSASDocEmitter)JSSharedData.backend.createEmitter(null);
+                IJSFlexJSASDocEmitter emitter = (IJSFlexJSASDocEmitter) project.getBackend().createEmitter(null);
                 emitter.outputIndex(outputFolder, (FlexJSASDocProject)project);
                 emitter.outputClasses(outputFolder, (FlexJSASDocProject)project);
                 emitter.outputTags(outputFolder, (FlexJSASDocProject)project);
@@ -333,7 +332,7 @@ public class ASDOCJSC extends MXMLJSC
     {
         if (config.getOutput() == null)
         {
-            final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
+            final String extension = "." + project.getBackend().getOutputExtension();
             return FilenameUtils.removeExtension(config.getTargetFile()).concat(
                     extension);
         }
@@ -372,7 +371,7 @@ public class ASDOCJSC extends MXMLJSC
             qname = cname[cname.length - 1];
         }
 
-        return new File(sdirPath + qname + "." + JSSharedData.OUTPUT_EXTENSION);
+        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
     }
 
     /**
@@ -393,7 +392,7 @@ public class ASDOCJSC extends MXMLJSC
         else
             return false;
 
-        target = JSSharedData.backend.createTarget(project,
+        target = project.getBackend().createTarget(project,
                 getTargetSettings(), null);
 
         return true;

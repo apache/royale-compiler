@@ -37,7 +37,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace);
+    	project = new FlexJSProject(workspace, backend);
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	ArrayList<String> values = new ArrayList<String>();
     	values.add("Event");

@@ -35,7 +35,7 @@ public class TestFlexJSClass extends TestGoogClass
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace);
+    	project = new FlexJSProject(workspace, backend);
         super.setUp();
     }
     

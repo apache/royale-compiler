@@ -49,7 +49,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace);
+    	project = new FlexJSProject(workspace, backend);
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	try {

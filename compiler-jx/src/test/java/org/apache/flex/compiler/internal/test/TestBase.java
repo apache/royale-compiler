@@ -85,7 +85,7 @@ public class TestBase implements ITestBase
     protected static EnvProperties env = EnvProperties.initiate();
 
     protected static Workspace workspace = new Workspace();
-    protected FlexProject project;
+    protected FlexJSProject project;
 
     protected IBackend backend;
     protected ASFilterWriter writer;
@@ -117,13 +117,13 @@ public class TestBase implements ITestBase
 
         if (project == null)
         {
-        	project = new FlexProject(workspace);
+            backend = createBackend();
+        	project = new FlexJSProject(workspace, backend);
         	project.setProxyBaseClass("flash.utils.Proxy");
         }
         project.setProblems(errors);
         FlexProjectConfigurator.configure(project);
 
-        backend = createBackend();
         writer = backend.createWriterBuffer(project);
 
         try
@@ -301,10 +301,8 @@ public class TestBase implements ITestBase
         ICompilationUnit mainCU = Iterables
                 .getOnlyElement(workspace.getCompilationUnits(
                         FilenameNormalization.normalize(mainFileName), project));
-        
-        if (project instanceof FlexJSProject)
-            ((FlexJSProject) project).mainCU = mainCU;
-        
+
+        project.mainCU = mainCU;
         Configurator projectConfigurator = backend.createConfigurator();
 
         JSTarget target = (JSTarget) backend.createTarget(project,

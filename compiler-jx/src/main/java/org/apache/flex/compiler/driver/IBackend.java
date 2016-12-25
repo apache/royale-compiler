@@ -31,11 +31,10 @@ import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
@@ -74,13 +73,13 @@ public interface IBackend
      * Creates a javascript target that will be used to build the compiled
      * javascript source file.
      * 
-     * @param project The current {@link ICompilerProject}.
+     * @param project The current {@link FlexJSProject}.
      * @param settings The target's custom settings.
      * @param monitor The compilation monitor used during asynchronous parsing
      *        of {@link ICompilationUnit}s.
      * @return A new {@link JSTarget} used during compilation.
      */
-    ITarget createTarget(IASProject project, ITargetSettings settings,
+    ITarget createTarget(FlexJSProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor);
 
     IDocEmitter createDocEmitter(IASEmitter emitter);
@@ -89,35 +88,35 @@ public interface IBackend
 
     IMXMLEmitter createMXMLEmitter(FilterWriter writer);
 
-    ASFilterWriter createWriterBuffer(IASProject project);
+    ASFilterWriter createWriterBuffer(FlexJSProject project);
 
-    IASWriter createWriter(IASProject project, List<ICompilerProblem> errors,
-            ICompilationUnit compilationUnit, boolean enableDebug);
+    IASWriter createWriter(FlexJSProject project, List<ICompilerProblem> errors,
+                           ICompilationUnit compilationUnit, boolean enableDebug);
 
-    IASWriter createMXMLWriter(IASProject project,
+    IASWriter createMXMLWriter(FlexJSProject project,
             List<ICompilerProblem> errors, ICompilationUnit compilationUnit,
             boolean enableDebug);
 
-    IASBlockWalker createWalker(IASProject project,
+    IASBlockWalker createWalker(FlexJSProject project,
             List<ICompilerProblem> errors, IASEmitter emitter);
 
-    IPublisher createPublisher(IASProject project,
+    IPublisher createPublisher(FlexJSProject project,
             List<ICompilerProblem> errors, Configuration config);
 
     /**
      * Creates an AST walker capable of traversing MXML AST and calling back to
      * the {@link IASBlockWalker} for ActionScript source code production.
      * <p>
-     * Use the {@link #createWalker(IASProject, List, ASFilterWriter)} method
+     * Use the {@link #createWalker(FlexJSProject, List, ASFilterWriter)} method
      * first and pass that instance into this method's <code>walker</code>
      * parameter.
      * 
-     * @param project The current {@link IASProject}.
+     * @param project The current {@link FlexJSProject}.
      * @param errors The current {@link ICompilerProblem} list.
      * @param emitter The current {@link IASEmitter} that is used for it's
      *        emitter and is available for callbacks to it's visit methods.
      */
-    IMXMLBlockWalker createMXMLWalker(IASProject project,
+    IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker);
 

@@ -27,15 +27,14 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 
 public class ASWriter implements IASWriter
 {
-    private IASProject project;
+    private FlexJSProject project;
 
     private List<ICompilerProblem> problems;
 
@@ -50,8 +49,8 @@ public class ASWriter implements IASWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public ASWriter(IASProject project, List<ICompilerProblem> problems,
-            ICompilationUnit compilationUnit, boolean enableDebug)
+    public ASWriter(FlexJSProject project, List<ICompilerProblem> problems,
+                    ICompilationUnit compilationUnit, boolean enableDebug)
     {
         this.project = project;
         this.problems = problems;
@@ -68,11 +67,9 @@ public class ASWriter implements IASWriter
     @Override
     public void writeTo(OutputStream out)
     {
-        ASFilterWriter writer = JSSharedData.backend
-                .createWriterBuffer(project);
-        IASEmitter emitter = JSSharedData.backend.createEmitter(writer);
-        IASBlockWalker walker = JSSharedData.backend.createWalker(project,
-                problems, emitter);
+        ASFilterWriter writer = project.getBackend().createWriterBuffer(project);
+        IASEmitter emitter = project.getBackend().createEmitter(writer);
+        IASBlockWalker walker = project.getBackend().createWalker(project, problems, emitter);
 
         walker.visitCompilationUnit(compilationUnit);
 

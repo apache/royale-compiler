@@ -24,9 +24,9 @@ import java.io.FilterWriter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.FlexJSTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
 
@@ -45,8 +45,8 @@ public class FlexJSBackend extends GoogBackend
     }
 
     @Override
-    public JSTarget createTarget(IASProject project, ITargetSettings settings,
-            ITargetProgressMonitor monitor)
+    public JSTarget createTarget(FlexJSProject project, ITargetSettings settings,
+                                 ITargetProgressMonitor monitor)
     {
         return new FlexJSTarget(project, settings, monitor);
     }

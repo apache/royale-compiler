@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 
 /**
@@ -37,9 +39,9 @@ public class FlexJSASDocProject extends FlexJSProject
      *
      * @param workspace The {@code Workspace} containing this project.
      */
-    public FlexJSASDocProject(Workspace workspace)
+    public FlexJSASDocProject(Workspace workspace, IBackend backend)
     {
-        super(workspace);
+        super(workspace, backend);
     }
     
     public class ASDocRecord

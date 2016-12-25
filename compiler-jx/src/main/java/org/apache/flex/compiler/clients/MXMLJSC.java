@@ -48,7 +48,6 @@ import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
@@ -234,7 +233,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
-        JSSharedData.instance.stdout((endTime - startTime) / 1e9 + " seconds");
+        System.out.println((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }
@@ -255,13 +254,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     
     public MXMLJSC(IBackend backend)
     {
-        JSSharedData.backend = backend;
         workspace = new Workspace();
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
-        project = new FlexJSProject(workspace);
+        project = new FlexJSProject(workspace, backend);
         problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
-        JSSharedData.OUTPUT_EXTENSION = backend.getOutputExtension();
-        JSSharedData.workspace = workspace;
         asFileHandler = backend.getSourceFileHandlerInstance();
     }
 
@@ -276,7 +272,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
         catch (Exception e)
         {
-            JSSharedData.instance.stderr(e.toString());
+            System.err.println(e.toString());
         }
         finally
         {
@@ -310,10 +306,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             final boolean continueCompilation = configure(args);
 
             // ToDo (erikdebruin): use JSSharedData for globals ...
-            keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
+//            keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
 
-            if (outProblems != null && !config.isVerbose())
-                JSSharedData.STDOUT = JSSharedData.STDERR = null;
+/*            if (outProblems != null && !config.isVerbose())
+                JSSharedData.STDOUT = JSSharedData.STDERR = null;*/
 
             if (continueCompilation)
             {
@@ -338,9 +334,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
         catch (Exception e)
         {
-            if (outProblems == null)
-                JSSharedData.instance.stderr(e.getMessage());
-            else
+            if (outProblems == null) {
+                System.err.println(e.getMessage());
+            } else
             {
                 final ICompilerProblem unexpectedExceptionProblem = new UnexpectedExceptionProblem(
                         e);
@@ -400,7 +396,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         return false;
                 }
 
-                jsPublisher = (IJSPublisher) JSSharedData.backend.createPublisher(
+                jsPublisher = (IJSPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -431,12 +427,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = (IJSWriter) JSSharedData.backend.createWriter(project,
+	                            writer = (IJSWriter) project.getBackend().createWriter(project,
 	                                    errors, unit, false);
 	                        }
 	                        else
 	                        {
-	                            writer = (IJSWriter) JSSharedData.backend.createMXMLWriter(
+	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
 	                                    project, errors, unit, false);
 	                        }
 	
@@ -544,7 +540,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         if (config.getOutput() == null)
         {
-            final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
+            final String extension = "." + project.getBackend().getOutputExtension();
             return FilenameUtils.removeExtension(config.getTargetFile()).concat(
                     extension);
         }
@@ -581,7 +577,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             qname = cname[cname.length - 1];
         }
 
-        return new File(sdirPath + qname + "." + JSSharedData.OUTPUT_EXTENSION);
+        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
     }
 
     /**
@@ -607,7 +603,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             qname = cname[cname.length - 1];
         }
 
-        return new File(sdirPath + qname + "." + JSSharedData.OUTPUT_EXTENSION + ".map");
+        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension() + ".map");
     }
 
     /**
@@ -669,7 +665,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         if (settings != null)
             project.setTargetSettings(settings);
 
-        target = JSSharedData.backend.createTarget(project,
+        target = project.getBackend().createTarget(project,
                 getTargetSettings(), null);
 
         return true;
@@ -691,7 +687,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     protected Configurator createConfigurator()
     {
-        return JSSharedData.backend.createConfigurator();
+        return project.getBackend().createConfigurator();
     }
 
     /**
@@ -721,12 +717,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             }
 
             projectConfigurator.applyToProject(project);
-            problems = new ProblemQuery(
-                    projectConfigurator.getCompilerProblemSettings());
+            project.config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
 
-            project.config = (JSGoogConfiguration)projectConfigurator.getConfiguration();
             config = projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
+
+            problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
             problems.addAll(projectConfigurator.getConfigurationProblems());
 
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$

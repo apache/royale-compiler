@@ -28,7 +28,6 @@ import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher
 import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 
 /**
  * A concrete implementation of the {@link IBackend} API for the 'node' code
@@ -39,9 +38,9 @@ import org.apache.flex.compiler.projects.IASProject;
 public class NodeBackend extends JSCBackend
 {
     @Override
-    public MXMLFlexJSPublisher createPublisher(IASProject project,
+    public MXMLFlexJSPublisher createPublisher(FlexJSProject project,
                                                List<ICompilerProblem> errors, Configuration config)
     {
-        return new NodePublisher(config, (FlexJSProject) project);
+        return new NodePublisher(config, project);
     }
 }

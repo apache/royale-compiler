@@ -37,7 +37,7 @@ public class TestFlexJSEmitter extends TestGoogEmitter
     @Override
     public void setUp()
     {
-        project = new FlexJSProject(workspace);
+        project = new FlexJSProject(workspace, backend);
 
         super.setUp();
     }

@@ -30,7 +30,6 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.codegen.js.goog.JarSourceFile;
@@ -77,9 +76,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         }
     }
 
-    public MXMLFlexJSPublisher(Configuration config, FlexJSProject project)
+    public MXMLFlexJSPublisher(FlexJSProject project, Configuration config)
     {
-        super(config);
+        super(project, config);
         this.isMarmotinniRun = googConfiguration.getMarmotinni() != null;
         this.outputPathParameter = configuration.getOutput();
         this.useStrictPublishing = googConfiguration.getStrictPublish();
@@ -148,7 +147,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         final File intermediateDir = outputFolder;
 
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
-        final String outputFileName = projectName + "." + JSSharedData.OUTPUT_EXTENSION;
+        final String outputFileName = projectName + "." + project.getBackend().getOutputExtension();
 
         // The "release" is the "js-release" directory.
         File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);

@@ -41,7 +41,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace);
+    	project = new FlexJSProject(workspace, backend);
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);

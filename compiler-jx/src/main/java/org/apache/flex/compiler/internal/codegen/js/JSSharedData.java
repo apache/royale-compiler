@@ -37,32 +37,29 @@ public class JSSharedData
     public static final boolean OUTPUT_TIMESTAMPS = true;
     public static final String COMPILER_VERSION = "329449.1";
 
-    public final static JSSharedData instance = new JSSharedData();
+/*    public final static JSSharedData instance = new JSSharedData();
 
-    public static IBackend backend;
-    public static String OUTPUT_EXTENSION;
     public static Workspace workspace;
+*/
+/*    public static PrintStream STDOUT = System.out;
+    public static PrintStream STDERR = System.err;*/
 
-    public static PrintStream STDOUT = System.out;
-    public static PrintStream STDERR = System.err;
-
-    @SuppressWarnings("unused")
-    private Boolean m_verbose = false;
+/*    private Boolean m_verbose = false;
     private final ReadWriteLock m_verboseLock = new ReentrantReadWriteLock();
 
     private Object m_codeGenMonitor = new Object();
     private long m_codeGenCounter = 0;
     private final ReadWriteLock m_codeGenCounterLock = new ReentrantReadWriteLock();
-
-    public static String now()
+*/
+/*    public static String now()
     {
         final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
         return sdf.format(cal.getTime());
     }
-
-    public void stdout(String s)
+*/
+/*    public void stdout(String s)
     {
         if (STDOUT != null)
         {
@@ -80,9 +77,9 @@ public class JSSharedData
             STDERR.println(s);
             m_verboseLock.writeLock().unlock();
         }
-    }
+    }*/
 
-    public void beginCodeGen()
+/*    public void beginCodeGen()
     {
         m_codeGenCounterLock.writeLock().lock();
         m_codeGenCounter++;
@@ -102,15 +99,6 @@ public class JSSharedData
                 m_codeGenMonitor.notifyAll();
             }
         }
-    }
+    }*/
 
-    public static String getTimeStampString()
-    {
-        if (JSSharedData.OUTPUT_TIMESTAMPS)
-            return "CROSS-COMPILED BY " + JSSharedData.COMPILER_NAME + " ("
-                    + JSSharedData.COMPILER_VERSION + ") ON "
-                    + JSSharedData.now() + "\n";
-        else
-            return "CROSS-COMPILED BY " + JSSharedData.COMPILER_NAME + "\n";
-    }
 }

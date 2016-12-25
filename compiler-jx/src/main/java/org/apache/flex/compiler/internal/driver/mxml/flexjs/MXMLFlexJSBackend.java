@@ -45,7 +45,6 @@ import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -76,7 +75,7 @@ public class MXMLFlexJSBackend extends MXMLBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(IASProject project,
+    public IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -108,7 +107,7 @@ public class MXMLFlexJSBackend extends MXMLBackend
     }
 
     @Override
-    public IJSWriter createMXMLWriter(IASProject project,
+    public IJSWriter createMXMLWriter(FlexJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -116,16 +115,16 @@ public class MXMLFlexJSBackend extends MXMLBackend
     }
 
     @Override
-    public JSTarget createTarget(IASProject project, ITargetSettings settings,
+    public JSTarget createTarget(FlexJSProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
         return new FlexJSTarget(project, settings, monitor);
     }
 
     @Override
-    public MXMLFlexJSPublisher createPublisher(IASProject project,
+    public MXMLFlexJSPublisher createPublisher(FlexJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
-        return new MXMLFlexJSPublisher(config, (FlexJSProject) project);
+        return new MXMLFlexJSPublisher(project, config);
     }
 }

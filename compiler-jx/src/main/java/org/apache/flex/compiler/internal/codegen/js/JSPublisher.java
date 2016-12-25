@@ -26,15 +26,18 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 
 public class JSPublisher implements IJSPublisher
 {
 
-    public JSPublisher(Configuration config)
+    public JSPublisher(FlexJSProject project, Configuration config)
     {
+        this.project = project;
         this.configuration = config;
     }
 
+    protected FlexJSProject project;
     protected File outputFolder;
     protected File outputParentFolder;
 
@@ -66,7 +69,7 @@ public class JSPublisher implements IJSPublisher
     {
         if (configuration.getOutput() == null)
         {
-            final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
+            final String extension = "." + project.getBackend().getOutputExtension();
             return FilenameUtils.removeExtension(configuration.getTargetFile())
                     .concat(extension);
         }

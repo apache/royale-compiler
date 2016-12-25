@@ -52,6 +52,9 @@ import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 {
 
@@ -392,7 +395,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         begin();
         write(ASEmitterTokens.SPACE);
         writeToken(JSGoogDocEmitterTokens.STAR);
-        write(JSSharedData.getTimeStampString());
+        write(getTimeStampString());
         end();
     }
 
@@ -525,6 +528,23 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     protected String formatQualifiedName(String name)
     {
         return name;
+    }
+
+    public static String now() {
+        final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+        return sdf.format(cal.getTime());
+    }
+
+    public static String getTimeStampString() {
+        if (JSSharedData.OUTPUT_TIMESTAMPS) {
+            return "CROSS-COMPILED BY " + JSSharedData.COMPILER_NAME + " ("
+                    + JSSharedData.COMPILER_VERSION + ") ON "
+                    + now() + "\n";
+        } else {
+            return "CROSS-COMPILED BY " + JSSharedData.COMPILER_NAME + "\n";
+        }
     }
 
 }

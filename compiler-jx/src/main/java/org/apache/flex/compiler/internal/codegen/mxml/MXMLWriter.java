@@ -28,10 +28,9 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
@@ -44,8 +43,8 @@ public class MXMLWriter extends JSWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public MXMLWriter(IASProject project, List<ICompilerProblem> problems,
-            ICompilationUnit compilationUnit, boolean enableDebug)
+    public MXMLWriter(FlexJSProject project, List<ICompilerProblem> problems,
+                      ICompilationUnit compilationUnit, boolean enableDebug)
     {
         super(project, problems, compilationUnit, enableDebug);
     }
@@ -53,7 +52,7 @@ public class MXMLWriter extends JSWriter
     @Override
     public void writeTo(OutputStream out, File sourceMapOut)
     {
-        IJSBackend backend = (IJSBackend) JSSharedData.backend;
+        IJSBackend backend = (IJSBackend) project.getBackend();
         JSFilterWriter writer = (JSFilterWriter) backend.createWriterBuffer(project);
 
         IJSEmitter asEmitter = (IJSEmitter) backend.createEmitter(writer);

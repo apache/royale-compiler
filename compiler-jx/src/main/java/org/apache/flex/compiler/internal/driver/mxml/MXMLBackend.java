@@ -28,11 +28,11 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.driver.js.JSBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IBlockWalker;
@@ -60,7 +60,7 @@ public class MXMLBackend extends JSBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(IASProject project,
+    public IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {

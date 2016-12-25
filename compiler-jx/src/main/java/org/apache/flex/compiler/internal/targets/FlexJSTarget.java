@@ -37,7 +37,6 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.IJSTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
@@ -53,11 +52,11 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
      * 
      * @param project the owner project
      */
-    public FlexJSTarget(IASProject project, ITargetSettings targetSettings,
+    public FlexJSTarget(FlexJSProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
-        flexProject = (FlexJSProject)project;
+        flexProject = project;
     }
     
     private final FlexJSProject flexProject;

@@ -58,8 +58,8 @@ public class TestFlexJSProject extends TestGoogProject
     @Override
     public void setUp()
     {
-        project = new FlexJSProject(workspace);
-        ((FlexJSProject)project).config = new JSGoogConfiguration();
+        project = new FlexJSProject(workspace, backend);
+        project.config = new JSGoogConfiguration();
         super.setUp();
     }
     

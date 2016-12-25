@@ -97,11 +97,11 @@ public class TestExternalsJSCompile
 
         client = new EXTERNC(config);
 
+        backend = new FlexJSBackend();
         if (project == null)
-            project = new FlexJSProject(workspace);
+            project = new FlexJSProject(workspace, backend);
         FlexProjectConfigurator.configure(project);
 
-        backend = new FlexJSBackend();
         //writer = backend.createWriterBuffer(project);
         //emitter = backend.createEmitter(writer);
         //walker = backend.createWalker(project, errors, emitter);
