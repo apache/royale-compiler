@@ -34,6 +34,7 @@
 
   <properties>
     <maven.version>3.3.1</maven.version>
+    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flexjs-maven-plugin:cleanup-branch</sonar.moduleKey>
   </properties>
 
   <dependencies>

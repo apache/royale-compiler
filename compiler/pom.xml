@@ -32,6 +32,10 @@
   <name>Apache Flex - FlexJS: Compiler: Compiler</name>
   <description>The Apache Flex Falcon Compiler</description>
 
+  <properties>
+    <sonar.moduleKey>org.apache.flex.flexjs.compiler:compiler:cleanup-branch</sonar.moduleKey>
+  </properties>
+
   <build>
     <plugins>
       <!--
