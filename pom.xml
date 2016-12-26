@@ -54,7 +54,8 @@
     <compiler-build-tools.version>1.0.0</compiler-build-tools.version>
     <compiler-jburg-types.version>1.0.0</compiler-jburg-types.version>
 
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flexjs-compiler-parent:cleanup-branch</sonar.moduleKey>
+    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flexjs-compiler-cleanup</sonar.moduleKey>
+    <sonar.projectName>Apache Flex - FlexJS: Compiler: Parent (cleanup)</sonar.projectName>
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
     <!-- Tell sonar where the coverage reports are located -->

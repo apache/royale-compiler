@@ -32,7 +32,8 @@
   <name>Apache Flex - FlexJS: FlexJS Ant Tasks</name>
 
   <properties>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flexjs-ant-tasks:cleanup-branch</sonar.moduleKey>
+    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flexjs-ant-tasks-cleanup</sonar.moduleKey>
+    <sonar.projectName>Apache Flex - FlexJS: FlexJS Ant Tasks (cleanup)</sonar.projectName>
   </properties>
 
   <dependencies>

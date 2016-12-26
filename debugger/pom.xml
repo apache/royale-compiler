@@ -32,7 +32,8 @@
   <name>Apache Flex - FlexJS: Compiler: Debugger</name>
 
   <properties>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:debugger:cleanup-branch</sonar.moduleKey>
+    <sonar.moduleKey>org.apache.flex.flexjs.compiler:debugger-cleanup</sonar.moduleKey>
+    <sonar.projectName>Apache Flex - FlexJS: Compiler: Debugger (cleanup)</sonar.projectName>
   </properties>
 
   <build>

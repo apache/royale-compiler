@@ -35,7 +35,8 @@
   </description>
 
   <properties>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:compiler-test-utils:cleanup-branch</sonar.moduleKey>
+    <sonar.moduleKey>org.apache.flex.flexjs.compiler:compiler-test-utils-cleanup</sonar.moduleKey>
+    <sonar.projectName>Apache Flex - FlexJS: Compiler: Test Utils (cleanup)</sonar.projectName>
   </properties>
 
   <dependencies>
