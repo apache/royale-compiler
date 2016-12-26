@@ -34,8 +34,6 @@
 
   <properties>
     <maven.version>3.3.1</maven.version>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flexjs-maven-plugin-cleanup</sonar.moduleKey>
-    <sonar.projectName>Apache Flex - FlexJS: FlexJS Maven Plugin (cleanup)</sonar.projectName>
   </properties>
 
   <dependencies>

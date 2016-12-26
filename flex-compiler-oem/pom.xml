@@ -31,11 +31,6 @@
 
   <name>Apache Flex - FlexJS: Compiler: OEM Layer</name>
 
-  <properties>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:flex-compiler-oem-cleanup</sonar.moduleKey>
-    <sonar.projectName>Apache Flex - FlexJS: Compiler: OEM Layer (cleanup)</sonar.projectName>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.flex.flexjs.compiler</groupId>

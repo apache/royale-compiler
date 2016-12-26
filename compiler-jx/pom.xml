@@ -31,11 +31,6 @@
 
   <name>Apache Flex - FlexJS: Compiler: Compiler-JX</name>
 
-  <properties>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:compiler-jx-cleanup</sonar.moduleKey>
-    <sonar.projectName>Apache Flex - FlexJS: Compiler: Compiler-JX (cleanup)</sonar.projectName>
-  </properties>
-
   <build>
     <plugins>
       <!-- Make the surefire execute all unit-tests -->

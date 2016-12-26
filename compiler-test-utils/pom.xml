@@ -34,11 +34,6 @@
     Shared test code, which is needed by the compiler and the compiler-jx test-suites.
   </description>
 
-  <properties>
-    <sonar.moduleKey>org.apache.flex.flexjs.compiler:compiler-test-utils-cleanup</sonar.moduleKey>
-    <sonar.projectName>Apache Flex - FlexJS: Compiler: Test Utils (cleanup)</sonar.projectName>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
