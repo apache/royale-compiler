@@ -141,6 +141,11 @@ public class ReferenceCompiler
         {
             return FilenameUtils.getBaseName(getFile().getAbsolutePath());
         }
+        
+        public String toString()
+        {
+        	return getFile().getName();
+        }
     }
     
     public static class ReferenceErrorManager implements ErrorManager

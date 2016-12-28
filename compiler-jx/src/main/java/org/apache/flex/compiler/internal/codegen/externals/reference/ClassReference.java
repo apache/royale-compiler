@@ -788,7 +788,8 @@ public class ClassReference extends BaseReference
         }
         if (!isInterface())
         {
-        	sb.append(" * @");
+        	if (!outputJS)
+        		sb.append(" * @");
             emitImplements(sb);
             sb.append("\n");
             List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
@@ -883,7 +884,7 @@ public class ClassReference extends BaseReference
     {
         if (outputJS)
         {
-            sb.append(" * @extends ");
+            sb.append("extends ");
             String value = JSTypeUtils.toClassTypeString(this);
             sb.append(value);
             sb.append("\n");
@@ -914,7 +915,12 @@ public class ClassReference extends BaseReference
 
             sb.append(value);
             if (outputJS)
-                sb.append("\n");
+            {
+            	if (i < len - 1)
+            		sb.append("\n * @implements ");
+            	else
+            		sb.append("\n");
+            }
             else
             {
                 if (i < len - 1)
