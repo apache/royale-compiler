@@ -139,7 +139,32 @@
       <param name="dest.filename" value="${guava.name}.jar"/>
       <param name="license.use.apache" value="true"/>
     </antcall>
-    
+
+    <!--  log4j -->
+    <property name="log4j.version" value="2.7"/>
+    <property name="log4j-api.name" value="log4j-api"/>
+    <property name="log4j-core.name" value="log4j-core"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${log4j-api.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/apache/logging/log4j/${log4j-api.name}/${log4j.version}"/>
+      <param name="src.filename" value="${log4j-api.name}-${log4j.version}.jar"/>
+      <param name="src.checksum" value="to-be-updated"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${log4j-api.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
+    <antcall target="download-dependency">
+      <param name="name" value="${log4j-core.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/apache/logging/log4j/${log4j-core.name}/${log4j.version}"/>
+      <param name="src.filename" value="${log4j-core.name}-${log4j.version}.jar"/>
+      <param name="src.checksum" value="to-be-updated"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${log4j-core.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
+
     <!--  jburg -->
     <property name="jburg.name" value="jburg"/>
     <property name="jburg.version" value="1.10.2"/>

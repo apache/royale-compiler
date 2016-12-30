@@ -51,7 +51,7 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, junit-jar, commons-compress-jar, commons-lang3-jar"
+	<target name="main" depends="prepare, junit-jar, log4j-api-jar, log4j-core-jar,commons-compress-jar, commons-lang3-jar"
 		    description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
@@ -134,6 +134,58 @@
             <param name="srcJarFile" value="junit-4.10.jar"/>
             <param name="destDir" value="${external.lib.dir}"/>
             <param name="destJarFile" value="junit-4.10.jar"/>
+        </antcall>
+    </target>
+
+    <!--
+        log4j
+    -->
+
+    <target name="log4j-core-jar-check" description="Checks if log4j-core JAR exists.">
+        <condition property="log4j-core.jar.exists">
+            <and>
+                <available file="${external.lib.dir}/log4j-core-2.7.jar"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="log4j-core-jar" depends="log4j-core-jar-check" unless="log4j-core.jar.exists"
+            description="Copies the log4j-core JAR to the lib directory.">
+        <echo message="Obtaining lib/external/log4j-core-2.7.jar"/>
+        <antcall target="log4j-core-download-jar"/>
+    </target>
+
+    <target name="log4j-core-download-jar" depends="log4j-core-jar-check" unless="log4j-core.jar.exists"
+            description="Downloads the log4j-core jar.">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=org/apache/logging/log4j/log4j-core/2.7"/>
+            <param name="srcJarFile" value="log4j-core-2.7.jar"/>
+            <param name="destDir" value="${external.lib.dir}"/>
+            <param name="destJarFile" value="log4j-core-2.7.jar"/>
+        </antcall>
+    </target>
+
+    <target name="log4j-api-jar-check" description="Checks if log4j-api JAR exists.">
+        <condition property="log4j-api.jar.exists">
+            <and>
+                <available file="${external.lib.dir}/log4j-api-2.7.jar"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="log4j-api-jar" depends="log4j-api-jar-check" unless="log4j-api.jar.exists"
+            description="Copies the log4j-api JAR to the lib directory.">
+        <echo message="Obtaining lib/external/log4j-api-2.7.jar"/>
+        <antcall target="log4j-api-download-jar"/>
+    </target>
+
+    <target name="log4j-api-download-jar" depends="log4j-api-jar-check" unless="log4j-api.jar.exists"
+            description="Downloads the log4j-api jar.">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=org/apache/logging/log4j/log4j-api/2.7"/>
+            <param name="srcJarFile" value="log4j-api-2.7.jar"/>
+            <param name="destDir" value="${external.lib.dir}"/>
+            <param name="destJarFile" value="log4j-api-2.7.jar"/>
         </antcall>
     </target>
 
