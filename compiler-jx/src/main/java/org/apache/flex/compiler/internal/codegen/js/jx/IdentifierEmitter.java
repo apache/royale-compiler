@@ -207,6 +207,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 getEmitter().emitClosureStart();
             }
 
+            boolean wroteSelf = false;
             if (EmitterUtils.writeThis(getProject(), getModel(), node))
             {
                 IFunctionObjectNode functionObjectNode = (IFunctionObjectNode) node
@@ -222,9 +223,15 @@ public class IdentifierEmitter extends JSSubEmitter implements
 
                 startMapping(node);
                 if (functionObjectNode != null)
+                {
                     write(JSGoogEmitterTokens.SELF);
+                    wroteSelf = true;
+                }
                 else if (functionNode != null && functionDef.getFunctionClassification() == FunctionClassification.LOCAL)
+                {
                     write(JSGoogEmitterTokens.SELF);
+                    wroteSelf = true;
+                }
                 else
                     write(ASEmitterTokens.THIS);
 
@@ -247,7 +254,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	write(node.getName());
 
                 writeToken(ASEmitterTokens.COMMA);
-                write(ASEmitterTokens.THIS);
+                if (wroteSelf)
+                    write(JSGoogEmitterTokens.SELF);
+                else
+                	write(ASEmitterTokens.THIS);
                 getEmitter().emitClosureEnd(node, nodeDef);
                 emitName = false;
             }

@@ -884,6 +884,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
     
     @Test
+    public void testMethodAsParamInLocalFunction()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() { function c(f:Function):void {c(d); }; } public function d() {}}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n    c(org.apache.flex.utils.Language.closure(self.d, self, 'd'));\n  };\n  \n}");
+    }
+    
+    @Test
     public void testNativeGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
