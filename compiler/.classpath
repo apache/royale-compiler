@@ -23,5 +23,7 @@
 	<classpathentry kind="lib" path="lib/external/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="lib/external/jburg.jar"/>
 	<classpathentry kind="lib" path="lib/external/commons-compress-1.10.jar"/>
+	<classpathentry kind="lib" path="lib/external/log4j-api.jar"/>
+	<classpathentry kind="lib" path="lib/external/log4j-core.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

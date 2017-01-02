@@ -67,6 +67,8 @@
     <path id="classpath">
         <filelist dir="${falcon.lib.dir}/external">
             <file name="antlr.jar" />
+            <file name="log4j-core.jar" />
+            <file name="log4j-api.jar" />
         </filelist>
 		<filelist dir="${lib}">
 			<file name="commons-io.jar" />
@@ -101,7 +103,7 @@
 	
 	<target name="main" depends="prebuild,compile">
         
-        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar ../../lib/external/log4j-api.jar ../../compiler/lib/external/log4j-api.jar ../../lib/external/log4j-core.jar ../../compiler/lib/external/log4j-core.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.jx" tofile="${classes.dir}/META-INF/NOTICE"/>

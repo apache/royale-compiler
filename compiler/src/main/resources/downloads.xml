@@ -149,7 +149,7 @@
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="org/apache/logging/log4j/${log4j-api.name}/${log4j.version}"/>
       <param name="src.filename" value="${log4j-api.name}-${log4j.version}.jar"/>
-      <param name="src.checksum" value="to-be-updated"/>
+      <param name="src.checksum" value="8c6059adc8248076dfbfec5b875ead3d"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${log4j-api.name}.jar"/>
       <param name="license.use.apache" value="true"/>
@@ -159,7 +159,7 @@
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="org/apache/logging/log4j/${log4j-core.name}/${log4j.version}"/>
       <param name="src.filename" value="${log4j-core.name}-${log4j.version}.jar"/>
-      <param name="src.checksum" value="to-be-updated"/>
+      <param name="src.checksum" value="2b63e0e5063fdaccf669a1e26384f3fd"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${log4j-core.name}.jar"/>
       <param name="license.use.apache" value="true"/>
