@@ -21,8 +21,10 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.tree.as.IFileNode;
@@ -254,6 +256,74 @@ public class TestFlexJSEmitter extends TestGoogEmitter
 				"};\n");
     }
     
+    @Test
+    public void testInjectHTML()
+    {
+        String code = "package com.example.components {\n"
+        		+ "public class TestClass {"
+        	    + "/**\n"
+        	    + " * <inject_html>\n"
+        		+ " * This will be injected.\n"
+        		+ " * </inject_html>\n"
+        		+ " */\n"
+                + "public function TestClass() { } } }";
+        IFileNode node = compileAS(code);
+        asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n" +
+				" * com.example.components.TestClass\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('com.example.components.TestClass');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+        	    " * <inject_html>\n" +
+				" * This will be injected.\n" +
+        		" * </inject_html>\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"com.example.components.TestClass = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"com.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"com.example.components.TestClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'TestClass': { type: '', declaredBy: 'com.example.components.TestClass'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n");
+    }
+    
 
     @Override
     @Test
@@ -343,7 +413,14 @@ public class TestFlexJSEmitter extends TestGoogEmitter
     {
         super.addDependencies();
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
-        MXMLJSC.keepASDoc = true;
+        if (project.config == null)
+        	project.config = new JSGoogConfiguration();
+        try {
+			project.config.setKeepASDoc(null, true);
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }

@@ -152,7 +152,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     public static JSOutputType jsOutputType;
-    public static boolean keepASDoc;
 
     @Override
     public String getName()
@@ -304,9 +303,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         try
         {
             final boolean continueCompilation = configure(args);
-
-            // ToDo (erikdebruin): use JSSharedData for globals ...
-//            keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
 
 /*            if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;*/

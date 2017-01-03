@@ -39,6 +39,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
@@ -105,6 +106,9 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
+    	FlexJSProject fjp = (FlexJSProject)project;
+        boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
+        
         coercionList = null;
         ignoreList = null;
         emitStringConversions = true;
@@ -120,7 +124,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             
             if (node.isConstructor())
             {
-                if (asDoc != null && MXMLJSC.keepASDoc)
+                if (asDoc != null && keepASDoc)
                     write(changeAnnotations(asDoc.commentNoEnd()));
                 else
                     begin();
@@ -192,7 +196,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 String ns = node.getNamespace();
                 if (ns != null)
                 {
-                    if (asDoc != null && MXMLJSC.keepASDoc)
+                    if (asDoc != null && keepASDoc)
                     {
                         String docText = asDoc.commentNoEnd();
                         String keepToken = JSFlexJSEmitterTokens.EMIT_COERCION
@@ -224,7 +228,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 	            {
 	                if (!hasDoc)
 	                {
-	                    if (asDoc != null && MXMLJSC.keepASDoc)
+	                    if (asDoc != null && keepASDoc)
 	                        write(changeAnnotations(asDoc.commentNoEnd()));
 	                    else
 	                        begin();
@@ -253,7 +257,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 	                {
 	                    if (!hasDoc)
 	                    {
-	                        if (asDoc != null && MXMLJSC.keepASDoc)
+	                        if (asDoc != null && keepASDoc)
 	                            write(changeAnnotations(asDoc.commentNoEnd()));
 	                        else
 	                            begin();
@@ -275,7 +279,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 {
                     if (!hasDoc)
                     {
-                        if (asDoc != null && MXMLJSC.keepASDoc)
+                        if (asDoc != null && keepASDoc)
                             write(changeAnnotations(asDoc.commentNoEnd()));
                         else
                             begin();
@@ -337,6 +341,8 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     public void emitInterfaceMemberDoc(IDefinitionNode node,
             ICompilerProject project)
     {
+    	FlexJSProject fjp =  (FlexJSProject)project;
+        boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         boolean hasDoc = false;
 
         ASDocComment asDoc = (ASDocComment) ((IFunctionNode) node)
@@ -345,7 +351,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         String returnType = ((IFunctionNode) node).getReturnType();
         if (returnType != "" && returnType != ASEmitterTokens.VOID.getToken()) // has return
         {
-            if (asDoc != null && MXMLJSC.keepASDoc)
+            if (asDoc != null && keepASDoc)
                 write(changeAnnotations(asDoc.commentNoEnd()));
             else
                 begin();
@@ -363,7 +369,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         {
             if (!hasDoc)
             {
-                if (asDoc != null && MXMLJSC.keepASDoc)
+                if (asDoc != null && keepASDoc)
                     write(changeAnnotations(asDoc.commentNoEnd()));
                 else
                     begin();

@@ -59,7 +59,6 @@ public class TestFlexJSExpressions extends TestGoogExpressions
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		MXMLJSC.keepASDoc = true;
     	((FlexJSProject)project).config = config;
         super.setUp();
     }

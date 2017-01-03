@@ -31,6 +31,7 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -53,13 +54,17 @@ public class ClassEmitter extends JSSubEmitter implements
     @Override
     public void emit(IClassNode node)
     {
+    	boolean keepASDoc = false;
+        FlexJSProject project = (FlexJSProject)getEmitter().getWalker().getProject();
+        keepASDoc = project.config != null && project.config.getKeepASDoc();
+    	
         getModel().pushClass(node.getDefinition());
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
         
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
-        if (asDoc != null && MXMLJSC.keepASDoc)
+        if (asDoc != null && keepASDoc)
             DocEmitterUtils.loadImportIgnores(fjs, asDoc.commentNoEnd());
 
         IClassDefinition definition = node.getDefinition();
