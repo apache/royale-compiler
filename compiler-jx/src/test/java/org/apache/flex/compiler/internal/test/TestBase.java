@@ -123,6 +123,13 @@ public class TestBase implements ITestBase
         }
         project.setProblems(errors);
         FlexProjectConfigurator.configure(project);
+        try {
+	        Configurator projectConfigurator = backend.createConfigurator();
+	        project.setTargetSettings(projectConfigurator.getTargetSettings(null));
+        }
+        catch (UnsupportedOperationException e)
+        {
+        }
 
         writer = backend.createWriterBuffer(project);
 
@@ -164,9 +171,37 @@ public class TestBase implements ITestBase
     			continue;
     		if (problem.toString().equals("An externally-visible definition with the name 'String' was unexpectedly found."))
     			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'Boolean' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'Number' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'Error' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'RangeError' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'ReferenceError' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'TypeError' was unexpectedly found."))
+    			continue;
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.Object' was found."))
     			continue;
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.String' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.Number' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.Boolean' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.Error' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.RangeError' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.ReferenceError' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.TypeError' was found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'FalconTest_A' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().startsWith("No externally-visible definition with the name 'TestFlexJSGlobalFunctions"))
     			continue;
     		actualErrors.append(problem.toString());
     	}
@@ -176,6 +211,19 @@ public class TestBase implements ITestBase
     protected void assertOut(String code, boolean keepMetadata)
     {
     	mCode = removeGeneratedString(writer.toString());
+    	if (!keepMetadata)
+    		mCode = removeMetadata(mCode);
+        //System.out.println(mCode);
+        /*if (!code.equals(mCode)) {
+            System.out.println("mCode:\n"+mCode);
+            System.out.println("code:\n"+code);
+        }*/
+        assertThat(mCode, is(code));
+    }
+    
+    protected void assertOutPostProcess(String code, boolean keepMetadata)
+    {
+    	mCode = removeGeneratedString(asEmitter.postProcess(writer.toString()));
     	if (!keepMetadata)
     		mCode = removeMetadata(mCode);
         //System.out.println(mCode);
@@ -273,6 +321,7 @@ public class TestBase implements ITestBase
         		return null;
         	}
             fileNode = result.getAST();
+            project.getDependencies(cu);
         }
         catch (InterruptedException e)
         {
