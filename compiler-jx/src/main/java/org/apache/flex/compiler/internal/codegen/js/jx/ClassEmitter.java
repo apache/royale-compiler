@@ -24,6 +24,7 @@ import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -87,15 +88,11 @@ public class ClassEmitter extends JSSubEmitter implements
         				IASNode afterChild = child.getChild(j + 1);
         				if (afterChild.getNodeID() == ASTNodeID.IdentifierID)
         				{
-                            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                            write(ASEmitterTokens.PAREN_OPEN);
-                            write(ASEmitterTokens.SINGLE_QUOTE);
-                            getEmitter().emitIdentifier((IdentifierNode)afterChild);                            
-                            write(ASEmitterTokens.SINGLE_QUOTE);
-                            write(ASEmitterTokens.PAREN_CLOSE);
-                            writeNewline(ASEmitterTokens.SEMICOLON);
-                            writeNewline();
-                            writeNewline();
+        					IDefinition def = ((IdentifierNode)afterChild).resolve(project);
+        					if (def instanceof IClassDefinition)
+        					{
+        						fjs.usedNames.add(def.getQualifiedName());
+        					}
         				}
         			}
         		}
