@@ -184,6 +184,7 @@ public class BindingInfo implements Comparable<BindingInfo>
     private  String sourceString;
     private int twoWayCounterpart = -1;     // index of two way counterpart, or -1
     public IMXMLNode node;
+    public ClassDefinition classDef; // non-null if binding to static const or var
     
     // The expression node that represents the destination
     // this is used for more complex destinations, like inside an XML object
@@ -496,6 +497,19 @@ public class BindingInfo implements Comparable<BindingInfo>
             		IDefinition leftDef = leftSide.resolve(project);
 		        	if (leftDef.isPublic())
 		        	{
+		        		if (leftDef instanceof ClassDefinition)
+		        			classDef = (ClassDefinition)leftDef;
+		        		sourceString = leftDef.getBaseName() + "." + def.getBaseName();
+		                isSimplePublicProperty = true;            		
+		        	}
+            	}
+            	else if (leftSide instanceof MemberAccessExpressionNode)
+            	{
+            		IDefinition leftDef = leftSide.resolve(project);
+		        	if (leftDef.isPublic())
+		        	{
+		        		if (leftDef instanceof ClassDefinition)
+		        			classDef = (ClassDefinition)leftDef;
 		        		sourceString = leftDef.getBaseName() + "." + def.getBaseName();
 		                isSimplePublicProperty = true;            		
 		        	}

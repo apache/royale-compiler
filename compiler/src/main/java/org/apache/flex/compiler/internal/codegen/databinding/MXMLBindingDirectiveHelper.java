@@ -214,8 +214,16 @@ public class MXMLBindingDirectiveHelper
             else if (s.contains(".") && !isFlexSDK)
             {
                 String[] parts = s.split("\\.");
-                for (String part : parts)
-                    ret.addInstruction(OP_pushstring, part);
+                if (bi.classDef != null)
+                {
+                    ret.addInstruction(OP_pushstring, bi.classDef.getQualifiedName());                	
+                    ret.addInstruction(OP_pushstring, parts[1]);                	
+                }
+                else
+                {
+                    for (String part : parts)
+                        ret.addInstruction(OP_pushstring, part);                	
+                }
                 ret.addInstruction(OP_newarray, parts.length);
             }
             else

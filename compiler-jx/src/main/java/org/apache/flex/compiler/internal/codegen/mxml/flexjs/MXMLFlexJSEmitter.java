@@ -973,16 +973,32 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             }
             else if (s.contains("."))
             {
-                String[] parts = s.split("\\.");
-                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
-                        parts[0] + ASEmitterTokens.DOUBLE_QUOTE.getToken());
-                int n = parts.length;
-                for (int i = 1; i < n; i++)
-                {
-                    String part = parts[i];
-                    write(", " +  ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
-                }
-                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+            	if (bi.classDef != null)
+            	{
+	                String[] parts = s.split("\\.");
+	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
+	                        bi.classDef.getQualifiedName() + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+	                int n = parts.length;
+	                for (int i = 1; i < n; i++)
+	                {
+	                    String part = parts[i];
+	                    write(", " +  ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+	                }
+	                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());            		
+            	}
+            	else
+            	{
+	                String[] parts = s.split("\\.");
+	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
+	                        parts[0] + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+	                int n = parts.length;
+	                for (int i = 1; i < n; i++)
+	                {
+	                    String part = parts[i];
+	                    write(", " +  ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+	                }
+	                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+            	}
             }
             else
                 writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s + 
