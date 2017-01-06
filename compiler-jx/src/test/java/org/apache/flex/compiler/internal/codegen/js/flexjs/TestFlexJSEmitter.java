@@ -69,6 +69,8 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		"\n" +
         		"goog.provide('com.example.components.MyEventTarget');\n" +
         		"\n" +
+        		"goog.require('flash.events.EventDispatcher');\n" +
+        		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +

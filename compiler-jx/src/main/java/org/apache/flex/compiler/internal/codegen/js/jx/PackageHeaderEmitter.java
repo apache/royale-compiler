@@ -306,6 +306,11 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                         continue;
                 }
 
+                if (NativeUtils.isJSNative(imp))
+                {
+                    continue;
+                }
+
                 if (writtenRequires.indexOf(imp) == -1)
                 {
 

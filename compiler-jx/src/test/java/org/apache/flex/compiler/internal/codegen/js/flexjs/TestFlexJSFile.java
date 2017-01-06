@@ -77,8 +77,8 @@ public class TestFlexJSFile extends FlexJSTestBase
         
         //writeResultToFile(writer.toString(), fileName);
         
-        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true,
-                "flexjs" + File.separator + "files"));
+        assertOutPostProcess(getCodeFromFile(fileName + "_result", true,
+                "flexjs" + File.separator + "files"), true);
     }
 
     @Test
@@ -95,8 +95,8 @@ public class TestFlexJSFile extends FlexJSTestBase
         
         //writeResultToFile(writer.toString(), fileName);
         
-        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true,
-                "flexjs" + File.separator + "files"));
+        assertOutPostProcess(getCodeFromFile(fileName + "_result", true,
+                "flexjs" + File.separator + "files"), true);
     }
 
     @Override

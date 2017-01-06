@@ -88,6 +88,7 @@ public class NativeUtils
     {
         // (erikdebruin) Ref.: https://cwiki.apache.org/confluence/display/FLEX/Full+Table
         
+        Event("Event"),
         Array("Array"),
         Date("Date"),
         Math("Math"),

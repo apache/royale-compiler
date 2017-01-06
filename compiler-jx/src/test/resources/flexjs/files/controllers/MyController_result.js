@@ -21,6 +21,12 @@
 
 goog.provide('controllers.MyController');
 
+goog.require('FlexJSTest_again');
+goog.require('MyInitialView');
+goog.require('models.MyModel');
+goog.require('org.apache.flex.core.IDocument');
+goog.require('org.apache.flex.utils.Language');
+
 
 
 /**
@@ -172,4 +178,3 @@ controllers.MyController.prototype.FLEXJS_REFLECTION_INFO = function () {
     }
   };
 };
-

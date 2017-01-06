@@ -21,6 +21,9 @@
 
 goog.provide('models.MyModel');
 
+goog.require('org.apache.flex.events.Event');
+goog.require('org.apache.flex.events.EventDispatcher');
+
 
 
 /**
@@ -131,4 +134,3 @@ models.MyModel.prototype.FLEXJS_REFLECTION_INFO = function () {
     }
   };
 };
-
