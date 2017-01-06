@@ -978,6 +978,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	                String[] parts = s.split("\\.");
 	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
 	                        bi.classDef.getQualifiedName() + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+	                usedNames.add(bi.classDef.getQualifiedName());
 	                int n = parts.length;
 	                for (int i = 1; i < n; i++)
 	                {

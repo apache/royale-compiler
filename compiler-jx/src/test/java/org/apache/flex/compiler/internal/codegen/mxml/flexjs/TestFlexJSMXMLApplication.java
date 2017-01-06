@@ -295,8 +295,8 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
-                + "    import org.apache.flex.events.ValueChangeEvent;"
-                + "]]></fx:Script><basic:initialView><basic:Label text=\"{ValueChangeEvent.VALUE_CHANGE}\"/></basic:initialView></basic:Application>";
+                + "    import org.apache.flex.net.HTTPConstants;"
+                + "]]></fx:Script><basic:initialView><basic:Label text=\"{HTTPConstants.GET}\"/></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
@@ -316,7 +316,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
         		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('org.apache.flex.events.ValueChangeEvent');\n" +
+        		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -364,7 +364,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" */\n" +
         		"AppName.prototype._bindings = [\n" +
         		"1,\n" +
-        		"[\"org.apache.flex.events.ValueChangeEvent\", \"VALUE_CHANGE\"],\n" +
+        		"[\"org.apache.flex.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
         		"[\"$ID0\", \"text\"],\n" +
         		"];\n" +
@@ -410,8 +410,8 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
-                + "    import org.apache.flex.events.ValueChangeEvent;"
-                + "]]></fx:Script><basic:initialView><basic:Label text=\"{org.apache.flex.events.ValueChangeEvent.VALUE_CHANGE}\"/></basic:initialView></basic:Application>";
+                + "    import org.apache.flex.net.HTTPConstants;"
+                + "]]></fx:Script><basic:initialView><basic:Label text=\"{org.apache.flex.net.HTTPConstants.GET}\"/></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
@@ -431,7 +431,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
         		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('org.apache.flex.events.ValueChangeEvent');\n" +
+        		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -479,7 +479,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" */\n" +
         		"AppName.prototype._bindings = [\n" +
         		"1,\n" +
-        		"[\"org.apache.flex.events.ValueChangeEvent\", \"VALUE_CHANGE\"],\n" +
+        		"[\"org.apache.flex.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
         		"[\"$ID0\", \"text\"],\n" +
         		"];\n" +
