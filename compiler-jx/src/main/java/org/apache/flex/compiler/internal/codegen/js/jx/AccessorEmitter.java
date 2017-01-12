@@ -32,6 +32,7 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
@@ -121,6 +122,36 @@ public class AccessorEmitter extends JSSubEmitter implements
                 }
                 if (setterNode != null)
                 {
+                	boolean isBindable = false;                
+                	IAccessorDefinition setterDef = (IAccessorDefinition)setterNode.getDefinition();
+                	IAccessorDefinition getterDef = null;
+                	if (getterNode != null)
+                		getterDef = (IAccessorDefinition)getterNode.getDefinition();
+                	if (setterDef.isBindable() || (getterDef != null && getterDef.isBindable()))
+                	{
+                		if (setterDef.isBindable())
+                		{
+                			IMetaTag[] tags = setterDef.getMetaTagsByName("Bindable");
+                			if (tags.length > 1)
+                        		isBindable = true;
+                			else if (tags.length == 1)
+                			{
+                				if (tags[0].getAllAttributes().length == 0)
+                					isBindable = true;
+                			}
+                		}
+                		else if (getterDef != null && getterDef.isBindable())
+                		{
+                			IMetaTag[] tags = getterDef.getMetaTagsByName("Bindable");
+                			if (tags.length > 1)
+                        		isBindable = true;
+                			else if (tags.length == 1)
+                			{
+                				if (tags[0].getAllAttributes().length == 0)
+                					isBindable = true;
+                			}                			
+                		}
+                	}
                     writeNewline();
                     writeNewline();
                     writeNewline();
@@ -139,6 +170,8 @@ public class AccessorEmitter extends JSSubEmitter implements
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
+                        if (isBindable)
+                        	write(JSFlexJSEmitterTokens.BINDABLE_PREFIX);
                         write(JSFlexJSEmitterTokens.SETTER_PREFIX);
                     	write(propName);
                     }
@@ -151,6 +184,63 @@ public class AccessorEmitter extends JSSubEmitter implements
                     fjs.emitDefinePropertyFunction(setterNode);
                     
                     write(ASEmitterTokens.SEMICOLON);
+                    
+                    if (isBindable)
+                    {
+                    	writeNewline();
+                    	writeNewline();
+                    	writeNewline();
+                        write(getEmitter().formatQualifiedName(qname));
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSEmitterTokens.PROTOTYPE);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    	write(propName);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.FUNCTION);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write("value");
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+                        write(ASEmitterTokens.VAR);
+                        write(ASEmitterTokens.SPACE);
+                        write("oldValue");
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                    	write(propName);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        writeNewline(ASEmitterTokens.SEMICOLON);
+                        write(ASEmitterTokens.IF);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write("oldValue != value");
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.BINDABLE_PREFIX);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    	write(propName);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write("value");
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        writeNewline(ASEmitterTokens.SEMICOLON);
+                        writeNewline("    this.dispatchEvent("+fjs.formatQualifiedName(BindableEmitter.VALUECHANGE_EVENT_QNAME)+".createUpdateEvent(");
+                        writeNewline("         this, \"" + propName + "\", oldValue, value));");
+                        writeNewline(ASEmitterTokens.BLOCK_CLOSE);
+                        write(ASEmitterTokens.BLOCK_CLOSE);
+                        write(ASEmitterTokens.SEMICOLON);                        
+                        
+                    }
                 }
             }
         }

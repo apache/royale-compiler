@@ -183,6 +183,10 @@ public class TestBase implements ITestBase
     			continue;
     		if (problem.toString().equals("An externally-visible definition with the name 'TypeError' was unexpectedly found."))
     			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'int' was unexpectedly found."))
+    			continue;
+    		if (problem.toString().equals("An externally-visible definition with the name 'uint' was unexpectedly found."))
+    			continue;
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.Object' was found."))
     			continue;
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.String' was found."))
@@ -198,6 +202,10 @@ public class TestBase implements ITestBase
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.ReferenceError' was found."))
     			continue;
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.TypeError' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.int' was found."))
+    			continue;
+    		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.uint' was found."))
     			continue;
     		if (problem.toString().equals("An externally-visible definition with the name 'FalconTest_A' was unexpectedly found."))
     			continue;
