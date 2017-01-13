@@ -1240,6 +1240,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
     
     @Test
+    public void testVisitStringLiteralChinese()
+    {
+    	// a = "你好";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \"你好\"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"你好\"");
+    }
+
+    @Test
     public void testVisitCallFunctionReturnedFromFunction()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function foo(a:String, b:String):Function { return null }; return foo(3, 4)(1, 2);", 
