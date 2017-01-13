@@ -32,7 +32,11 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map.Entry;
+import java.util.Collections;
+import java.util.Set;
 
 public class BindableEmitter extends JSSubEmitter implements
         ISubEmitter<IClassDefinition>
@@ -230,7 +234,17 @@ public class BindableEmitter extends JSSubEmitter implements
         writeNewline(ASEmitterTokens.BLOCK_OPEN);
 
         boolean firstTime = true;
-        for (Entry<String,BindableVarInfo> var : getModel().getBindableVars().entrySet())
+        Set<Entry<String,BindableVarInfo>> entries = getModel().getBindableVars().entrySet();
+        ArrayList<Entry<String,BindableVarInfo>> listOfEntries = new ArrayList<Entry<String,BindableVarInfo>>();
+        listOfEntries.addAll(entries);
+        class CustomComparator implements Comparator<Entry<String,BindableVarInfo>> {
+            @Override
+            public int compare(Entry<String,BindableVarInfo> o1, Entry<String,BindableVarInfo> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        }        
+        Collections.sort(listOfEntries, new CustomComparator());
+        for (Entry<String,BindableVarInfo> var : listOfEntries)
         {
             if (!var.getValue().isStatic) {
                 if (firstTime)

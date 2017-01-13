@@ -256,6 +256,23 @@ public class TestFlexJSClass extends TestGoogClass
         		  " */\n" +
         		  "org.apache.flex.A.prototype.e;Object.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n" +
         		  "/** @export\n" +
+    			  "  * @type {Object} */\n" +
+    			  "a: {\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "  get: function() {\n" +
+    			  "  return this.a_;\n" +
+    			  "  },\n" +
+    			  "\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "set: function(value) {\n" +
+    			  "if (value != this.a_) {\n" +
+    			  "    var oldValue = this.a_;\n" +
+    			  "    this.a_ = value;\n" +
+    			  "    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
+    			  "         this, \"a\", oldValue, value));\n" +
+    			  "}\n" +
+    			  "}}," +
+    			  "/** @export\n" +
         		  "  * @private\n" +
         		  "  * @type {string} */\n" +
         		  "b: {\n" +
@@ -288,22 +305,6 @@ public class TestFlexJSClass extends TestGoogClass
     			  "    this.c_ = value;\n" +
     			  "    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
     			  "         this, \"c\", oldValue, value));\n" +
-    			  "}\n" +
-    			  "}},/** @export\n" +
-    			  "  * @type {Object} */\n" +
-    			  "a: {\n" +
-    			  "/** @this {org.apache.flex.A} */\n" +
-    			  "  get: function() {\n" +
-    			  "  return this.a_;\n" +
-    			  "  },\n" +
-    			  "\n" +
-    			  "/** @this {org.apache.flex.A} */\n" +
-    			  "set: function(value) {\n" +
-    			  "if (value != this.a_) {\n" +
-    			  "    var oldValue = this.a_;\n" +
-    			  "    this.a_ = value;\n" +
-    			  "    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
-    			  "         this, \"a\", oldValue, value));\n" +
     			  "}\n" +
     			  "}}}\n" +
         		  ");");
