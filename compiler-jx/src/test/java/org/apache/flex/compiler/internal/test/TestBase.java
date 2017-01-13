@@ -618,7 +618,7 @@ public class TestBase implements ITestBase
                 code = getCodeFromFile(input, false, inputDir);
             }
 
-            BufferedWriter out = new BufferedWriter(new FileWriter(tempASFile));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempASFile),"UTF-8"));
             out.write(code);
             out.close();
         }

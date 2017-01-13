@@ -1239,7 +1239,6 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         assertOut("\"\\u2028\"");
     }
     
-    @Ignore
     @Test
     public void testVisitStringLiteralChinese()
     {
