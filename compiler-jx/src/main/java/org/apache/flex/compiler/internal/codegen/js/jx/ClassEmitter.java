@@ -213,7 +213,7 @@ public class ClassEmitter extends JSSubEmitter implements
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
-            if (dnode.getNodeID() == ASTNodeID.VariableID)
+            if (dnode.getNodeID() == ASTNodeID.VariableID || dnode.getNodeID() == ASTNodeID.BindableVariableID)
             {
             	IVariableNode varnode = ((IVariableNode)dnode);
                 IExpressionNode vnode = varnode.getAssignedValueNode();
@@ -223,6 +223,10 @@ public class ClassEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     write(dnode.getName());
+                    if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
+                    {
+                    	write("_");
+                    }
                     write(ASEmitterTokens.SPACE);
                     writeToken(ASEmitterTokens.EQUAL);
                     getEmitter().getWalker().walk(vnode);

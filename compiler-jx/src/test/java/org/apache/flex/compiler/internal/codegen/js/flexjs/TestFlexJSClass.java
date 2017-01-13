@@ -311,6 +311,96 @@ public class TestFlexJSClass extends TestGoogClass
     }
 
     @Test
+    public void testBindableFieldsWithInitialComplexValue()
+    {
+        IClassNode node = getClassNode("public class A {[Bindable] public var a:Object = { foo: 1 };[Bindable] protected var b:String; "
+                + "[Bindable] private var c:int; internal var d:uint; var e:Number}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n" +
+        		  " */\norg.apache.flex.A = function() {\n\n" +
+        		  "this.a_ = {foo:1};\n" +
+        		  "};\n\n\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @type {Object}\n" +
+        		  " */\n" +
+        		  "org.apache.flex.A.prototype.a_;\n\n\n" +
+        		  "/**\n" +
+        		  " * @protected\n" +
+        		  " * @type {string}\n" +
+        		  " */\n" +
+        		  "org.apache.flex.A.prototype.b_;\n\n\n" +
+        		  "/**\n" +
+        		  " * @private\n" +
+        		  " * @type {number}\n" +
+        		  " */\n" +
+        		  "org.apache.flex.A.prototype.c_ = 0;\n\n\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @type {number}\n" +
+        		  " */\n" +
+        		  "org.apache.flex.A.prototype.d = 0;\n\n\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @type {number}\n" +
+        		  " */\n" +
+        		  "org.apache.flex.A.prototype.e;Object.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n" +
+        		  "/** @export\n" +
+    			  "  * @type {Object} */\n" +
+    			  "a: {\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "  get: function() {\n" +
+    			  "  return this.a_;\n" +
+    			  "  },\n" +
+    			  "\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "set: function(value) {\n" +
+    			  "if (value != this.a_) {\n" +
+    			  "    var oldValue = this.a_;\n" +
+    			  "    this.a_ = value;\n" +
+    			  "    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
+    			  "         this, \"a\", oldValue, value));\n" +
+    			  "}\n" +
+    			  "}}," +
+    			  "/** @export\n" +
+        		  "  * @private\n" +
+        		  "  * @type {string} */\n" +
+        		  "b: {\n" +
+        		  "/** @this {org.apache.flex.A} */\n" +
+        		  "  get: function() {\n" +
+        		  "  return this.b_;\n" +
+    			  "  },\n" +
+    			  "\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "set: function(value) {\n" +
+    			  "if (value != this.b_) {\n" +
+    			  "    var oldValue = this.b_;\n" +
+    			  "    this.b_ = value;\n" +
+    			  "    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
+    			  "         this, \"b\", oldValue, value));\n" +
+    			  "}\n" +
+    			  "}},/** @export\n" +
+    			  "  * @private\n" +
+    			  "  * @type {number} */\n" +
+    			  "c: {\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "  get: function() {\n" +
+    			  "  return this.c_;\n" +
+    			  "  },\n" +
+    			  "\n" +
+    			  "/** @this {org.apache.flex.A} */\n" +
+    			  "set: function(value) {\n" +
+    			  "if (value != this.c_) {\n" +
+    			  "    var oldValue = this.c_;\n" +
+    			  "    this.c_ = value;\n" +
+    			  "    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
+    			  "         this, \"c\", oldValue, value));\n" +
+    			  "}\n" +
+    			  "}}}\n" +
+        		  ");");
+    }
+
+    @Test
     public void testBindableClass()
     {
         IClassNode node = getClassNode("[Bindable] public class A {public var a:Object;protected var b:String; "
