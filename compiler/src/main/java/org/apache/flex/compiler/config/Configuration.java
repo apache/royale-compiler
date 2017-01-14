@@ -3964,7 +3964,11 @@ public class Configuration
         for (String pathElement : pathElements)
         {
             pathElement = expandRuntimeTokens(pathElement, configurationValue.getBuffer());
-            pathElement = pathElement.replace(FLEX_VERSION_TOKEN, getClass().getPackage().getImplementationVersion());
+            String flexVersion =  getClass().getPackage().getImplementationVersion();
+            if (flexVersion != null)
+            {
+                pathElement = pathElement.replace(FLEX_VERSION_TOKEN, flexVersion);
+            }
 
             String playerExpandedPath = pathElement.replaceAll(TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED,
                     targetPlayerMajorVersion).replaceAll(TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED,
