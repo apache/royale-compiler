@@ -3902,6 +3902,7 @@ public class Configuration
     // Special Case for Apache.  These are not currently exposed with command line options.
     public static final String PLAYERGLOBAL_HOME_TOKEN = "{playerglobalHome}";
     public static final String AIR_HOME_TOKEN = "{airHome}";
+    public static final String FLEX_VERSION_TOKEN = "{flexVersion}";
 
     public static final String STRICT = "compiler.strict";
     public static final String AS3 = "compiler.as3";
@@ -3963,6 +3964,7 @@ public class Configuration
         for (String pathElement : pathElements)
         {
             pathElement = expandRuntimeTokens(pathElement, configurationValue.getBuffer());
+            pathElement = pathElement.replace(FLEX_VERSION_TOKEN, getClass().getPackage().getImplementationVersion());
 
             String playerExpandedPath = pathElement.replaceAll(TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED,
                     targetPlayerMajorVersion).replaceAll(TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED,
