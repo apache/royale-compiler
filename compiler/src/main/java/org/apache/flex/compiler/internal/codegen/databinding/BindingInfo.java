@@ -37,9 +37,11 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -509,9 +511,20 @@ public class BindingInfo implements Comparable<BindingInfo>
 		        	if (leftDef.isPublic())
 		        	{
 		        		if (leftDef instanceof ClassDefinition)
+		        		{
 		        			classDef = (ClassDefinition)leftDef;
-		        		sourceString = leftDef.getBaseName() + "." + def.getBaseName();
-		                isSimplePublicProperty = true;            		
+			        		sourceString = leftDef.getBaseName() + "." + def.getBaseName();
+			                isSimplePublicProperty = true;            		
+		        		}
+		        		else
+		        		{
+		            		sourceString = buildChain((MemberAccessExpressionNode) leftSide);
+		            		if (sourceString != null)
+		            		{
+		            			sourceString += "." + def.getBaseName();
+				                isSimplePublicProperty = true;            		
+		            		}
+		        		}
 		        	}
             	}
             	else if (leftSide instanceof IFunctionCallNode)
@@ -534,6 +547,29 @@ public class BindingInfo implements Comparable<BindingInfo>
             	}
             }
         }
-
+    }
+    
+    private String buildChain(MemberAccessExpressionNode mae)
+    {
+    	IExpressionNode left = mae.getLeftOperandNode();
+    	if (left.getNodeID() == ASTNodeID.IdentifierID)
+    	{
+    		IExpressionNode right = mae.getRightOperandNode();
+    		if (right.getNodeID() == ASTNodeID.IdentifierID)
+    		{
+    			return ((IdentifierNode)left).getName() + "." + ((IdentifierNode)right).getName();
+    		}
+    	}
+    	else if (left.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+    	{
+    		IExpressionNode right = mae.getRightOperandNode();
+    		if (right.getNodeID() == ASTNodeID.IdentifierID)
+    		{
+    			String l = buildChain((MemberAccessExpressionNode)left);
+    			if (l == null) return null;
+    			return l + "." + ((IdentifierNode)right).getName();
+    		}    		
+    	}
+    	return null;
     }
 }
