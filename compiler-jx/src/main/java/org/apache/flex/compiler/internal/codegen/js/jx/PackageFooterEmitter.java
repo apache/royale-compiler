@@ -175,6 +175,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	  // Removed this exclusion to support interface reflection (GD)
       //  if (!(tnode instanceof IInterfaceNode))
       //  {
+	    if (!getEmitter().getModel().isExterns)
+	    {
 		    writeNewline();
 		    writeNewline();
 		    writeNewline();
@@ -191,6 +193,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
 		    write(ASEmitterTokens.PAREN_CLOSE);
 		    write(ASEmitterTokens.SEMICOLON);
+	    }
        // }
 
 	    collectReflectionData(tnode);

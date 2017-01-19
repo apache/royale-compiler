@@ -49,6 +49,13 @@ public class JSWriter implements IJSWriter
     @SuppressWarnings("unused")
     private boolean enableDebug;
 
+    private boolean isExterns = false;
+
+    public boolean isExterns()
+    {
+    	return this.isExterns;
+    }
+    
     /**
      * Create a JSApplication writer.
      * 
@@ -91,6 +98,8 @@ public class JSWriter implements IJSWriter
 
         walker.visitCompilationUnit(compilationUnit);
 
+        isExterns = emitter.getModel().isExterns;
+        
         try
         {
             jsOut.write(emitter.postProcess(writer.toString()).getBytes());

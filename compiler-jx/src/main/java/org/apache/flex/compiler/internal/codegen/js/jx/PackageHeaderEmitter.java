@@ -67,9 +67,22 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         ITypeDefinition type = EmitterUtils.findType(containedScope
                 .getAllLocalDefinitions());
         String qname = null;
+        boolean isExterns = false;
         if (type != null)
         {
             qname = type.getQualifiedName();
+            ITypeNode typeNode = type.getNode();
+            if (typeNode instanceof ClassNode)
+            {
+                ClassNode classNode = (ClassNode) typeNode;
+                ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
+                if (asDoc != null)
+                {
+                    String asDocString = asDoc.commentNoEnd();
+                    isExterns = asDocString.contains(JSFlexJSEmitterTokens.EXTERNS.getToken());
+                    getEmitter().getModel().isExterns = isExterns;
+                }
+            }
         }
         if (qname == null)
         {
@@ -119,6 +132,8 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline(" * " + qname);
         writeNewline(" *");
         writeNewline(" * @fileoverview");
+        if (isExterns)
+        	writeNewline(" * @externs");
         writeNewline(" *");
         // need to suppress access controls so access to protected/private from defineProperties
         // doesn't generate warnings.

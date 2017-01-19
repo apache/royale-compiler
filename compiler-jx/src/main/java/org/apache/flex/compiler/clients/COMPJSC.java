@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.clients;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,6 +44,7 @@ import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
+import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
@@ -201,6 +203,7 @@ public class COMPJSC extends MXMLJSC
                 String outputFolderName = getOutputFilePath();
             	File swcFile = new File(outputFolderName);
             	File jsOut = new File("js/out");
+            	File externsOut = new File("externs");
                 ZipFile zipFile = null;
             	ZipOutputStream zipOutputStream = null;
             	String catalog = null;
@@ -308,9 +311,7 @@ public class COMPJSC extends MXMLJSC
                     	}
                     	else
                     	{
-                    		String outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), jsOut).getPath();
-	                        System.out.println("Compiling file: " + outputClassFile);
+	                        System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -328,8 +329,16 @@ public class COMPJSC extends MXMLJSC
 	                                    unit, false);
 	                        }
 	                        problems.addAll(errors);
+	                        ByteArrayOutputStream temp = new ByteArrayOutputStream();
+	                        writer.writeTo(temp);
+	                        boolean isExterns = false;
+	                        if (writer instanceof JSWriter)
+	                        	isExterns = ((JSWriter)writer).isExterns();
+                    		String outputClassFile = getOutputClassFile(
+	                                cu.getQualifiedNames().get(0), isExterns ? externsOut : jsOut).getPath();
+	                        System.out.println("Writing file: " + outputClassFile);     	
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
-	                        writer.writeTo(zipOutputStream);
+	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
 	                        zipOutputStream.closeEntry();
 	                        writer.close();

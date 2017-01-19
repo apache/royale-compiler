@@ -41,6 +41,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     QNAME("qName"),
     UNDERSCORE("_"),
     EMIT_COERCION("@flexjsemitcoercion"),
+    EXTERNS("@externs"),
     IGNORE_COERCION("@flexjsignorecoercion"),
     IGNORE_IMPORT("@flexjsignoreimport"),
     IGNORE_STRING_COERCION("@flexjsnoimplicitstringconversion"),
