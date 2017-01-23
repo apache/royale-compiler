@@ -242,6 +242,19 @@ public class TestBase implements ITestBase
         assertThat(mCode, is(code));
     }
     
+    protected void assertOutMXMLPostProcess(String code, boolean keepMetadata)
+    {
+    	mCode = removeGeneratedString(mxmlEmitter.postProcess(writer.toString()));
+    	if (!keepMetadata)
+    		mCode = removeMetadata(mCode);
+        //System.out.println(mCode);
+        /*if (!code.equals(mCode)) {
+            System.out.println("mCode:\n"+mCode);
+            System.out.println("code:\n"+code);
+        }*/
+        assertThat(mCode, is(code));
+    }
+    
     protected void assertOut(String code)
     {
         assertOut(code, false);

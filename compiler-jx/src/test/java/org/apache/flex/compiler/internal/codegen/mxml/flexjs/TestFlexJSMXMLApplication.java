@@ -670,6 +670,123 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
 
+    @Test
+    public void testXMLUsage()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+        		+ "<fx:Script><![CDATA["
+        		+ "    public var xml:XML = new XML();\n"
+                + "]]></fx:Script><basic:initialView><basic:Label text=\"Hello World\"/></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+
+        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.html.Label');\n" +
+        		"goog.require('XML');\n" +
+        		"goog.require('XML');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.xml = new XML();\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.flex.html.Label}\n" +
+        		"   */\n" +
+        		"  this.$ID0_;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes\n" +
+        		"  ([1,\n" +
+        		"'initialView',\n" +
+        		"false,\n" +
+        		"[org.apache.flex.html.Label, 2, '_id', true, '$ID0', 'text', true, 'Hello World', 0, 0, null],\n" +
+        		"0,\n" +
+        		"0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @type {XML}\n" +
+        		" */\n" +
+        		"AppName.prototype.xml;\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"        'xml': { type: 'XML'}\n" +
+        		"      };\n" +
+        		"    },\n" +
+				"    accessors: function () {return {};},\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
