@@ -81,3 +81,8 @@
   color: #fff;
   background: url('assets/dog.png') bottom right 15% no-repeat #46B6AC;
 }
+
+.usescalc {
+  color: #fff;
+  width: calc((100% - 50px)/3;
+}

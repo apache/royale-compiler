@@ -404,6 +404,8 @@ singleValue returns [CSSPropertyValue propertyValue]
         { $propertyValue = new CSSURLAndFormatPropertyValue($URL.text, $url.text, $format.text, $start, tokenStream); }
     |   ^(LOCAL l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
+    |   ^(CALC l=ARGUMENTS)
+        { $propertyValue = new CSSFunctionCallPropertyValue($CALC.text, $l.text, $start, tokenStream); }
     |   s=STRING   
         { $propertyValue = new CSSStringPropertyValue($s.text, $start, tokenStream); }                   
     |   ID

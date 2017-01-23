@@ -454,6 +454,7 @@ singleValue
     								-> ^(EMBED ARGUMENTS)
     |   URL ARGUMENTS formatOption*   -> ^(URL ARGUMENTS formatOption*)
     |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
+    |   CALC ARGUMENTS		        -> ^(CALC ARGUMENTS)
     |   ALPHA_VALUE
     |   SCALE_VALUE
     |   RECT_VALUE
@@ -524,6 +525,7 @@ EMBED : 'Embed' ;
 URL : 'url' ;
 FORMAT : 'format' ;
 LOCAL : 'local' ;
+CALC : 'calc' ;
 SCALE : 'scale' ;
 NULL : 'null' ;
 ONLY : 'only' ;
