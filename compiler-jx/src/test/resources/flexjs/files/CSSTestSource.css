@@ -22,6 +22,12 @@
 @namespace basic "library://ns.apache.org/flexjs/basic";
 @namespace "http://www.w3.org/1999/xhtml";
 
+table.tableSection tr>td:last-child
+{ /* removing fraction of width i.e 2% to align the tbody columns with thead columns. */ /* It is must as we need to consider the tbody scroll width too */ /* if the width is in pixels, then (width - 18px) would be enough */ width: 31%; }
+/** for older browsers (IE8), if you know number of columns in your table **/
+table.tableSection tr>td:first-child + td + td
+{ width : 31%; }
+
 /*
 //----------------------------
 // Named styles

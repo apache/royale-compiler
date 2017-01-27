@@ -66,6 +66,11 @@ public class EnvProperties {
     public String ASJS;
 
     /**
+     * GOOG_HOME
+     */
+    public String GOOG;
+
+    /**
      * PLAYERGLOBAL_VERSION
      */
     public String FPVER;
@@ -144,6 +149,9 @@ public class EnvProperties {
         if (ASJS == null)
             ASJS = FilenameNormalization.normalize("../../../../flex-asjs");
         System.out.println("environment property - ASJS_HOME = " + ASJS);
+        
+        GOOG = p.getProperty(prefix + "GOOG_HOME", System.getenv("GOOG_HOME"));
+        System.out.println("environment property - GOOG_HOME = " + GOOG);
     }
 
 }

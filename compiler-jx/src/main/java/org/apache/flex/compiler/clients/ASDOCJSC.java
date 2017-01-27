@@ -160,7 +160,6 @@ public class ASDOCJSC extends MXMLJSC
 
     public ASDOCJSC(IBackend backend)
     {
-        super(backend);
         project = new FlexJSASDocProject(workspace, backend);
     }
 

@@ -38,10 +38,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.flex.compiler.clients.MXMLJSC.ExitCode;
-import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
-import org.apache.flex.compiler.clients.problems.ProblemPrinter;
-import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.js.IJSApplication;
@@ -54,25 +51,26 @@ import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
+import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
+import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
 import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.swc.io.SWCReader;
-import org.apache.flex.utils.ArgumentUtil;
 
 /**
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class COMPJSC extends MXMLJSC
+public class COMPJSCFlex extends MXMLJSC
 {
     /*
      * Exit code enumerations.
@@ -126,7 +124,7 @@ public class COMPJSC extends MXMLJSC
     {
         long startTime = System.nanoTime();
 
-        final COMPJSC mxmlc = new COMPJSC();
+        final COMPJSCFlex mxmlc = new COMPJSCFlex();
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
@@ -136,138 +134,15 @@ public class COMPJSC extends MXMLJSC
         return exitCode;
     }
 
-    @Override
-    public int mainNoExit(final String[] args, List<ICompilerProblem> problems,
-            Boolean printProblems)
+    public COMPJSCFlex()
     {
-        int exitCode = -1;
-        try
-        {
-            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
-        }
-        catch (Exception e)
-        {
-            System.err.println(e.toString());
-        }
-        finally
-        {
-            if (problems != null && !problems.isEmpty())
-            {
-                if (printProblems)
-                {
-                    final WorkspaceProblemFormatter formatter = new WorkspaceProblemFormatter(
-                            workspace);
-                    final ProblemPrinter printer = new ProblemPrinter(formatter);
-                    printer.printProblems(problems);
-                }
-            }
-        }
-        return exitCode;
-    }
+        IBackend backend = new MXMLFlexJSSWCBackend();
 
-    /**
-     * Entry point that doesn't call <code>System.exit()</code>. This is for
-     * unit testing.
-     * 
-     * @param args command line arguments
-     * @return exit code
-     */
-    private int _mainNoExit(final String[] args,
-            List<ICompilerProblem> outProblems)
-    {
-        ExitCode exitCode = ExitCode.SUCCESS;
-        try
-        {
-            final boolean continueCompilation = configure(args);
-
-/*            if (outProblems != null && !config.isVerbose())
-                JSSharedData.STDOUT = JSSharedData.STDERR = null;*/
-
-            if (continueCompilation)
-            {
-
-            	targetloop:
-            	for (String target : config.getCompilerTargets())
-            	{
-            		int result = 0;
-            		switch (JSTargetType.fromString(target))
-	                {
-	                case SWF:
-	                    COMPC compc = new COMPC();
-	                    result = compc.mainNoExit(args);
-	                    if (result != 0)
-	                    {
-	                    	problems.addAll(compc.problems.getProblems());
-	                    	break targetloop;
-	                    }
-	                    break;
-	                case JS_FLEX:
-	                	COMPJSCFlex flex = new COMPJSCFlex();
-	                    result = flex.mainNoExit(args, problems.getProblems(), false);
-	                    if (result != 0)
-	                    {
-	                    	break targetloop;
-	                    }
-	                    break;
-	                case JS_NATIVE:
-	                	COMPJSCNative jsc = new COMPJSCNative();
-	                    result = jsc.mainNoExit(args, problems.getProblems(), false);
-	                    if (result != 0)
-	                    {
-	                    	break targetloop;
-	                    }
-	                    break;
-	                // if you add a new js-output-type here, don't forget to also add it
-	                // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
-	                }
-            	}
-                if (problems.hasFilteredProblems())
-                {
-                    if (problems.hasErrors())
-                        exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
-                    else
-                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
-                }
-            }
-            else if (problems.hasFilteredProblems())
-            {
-                exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
-            }
-            else
-            {
-                exitCode = ExitCode.PRINT_HELP;
-            }
-        }
-        catch (Exception e)
-        {
-            if (outProblems == null) {
-                System.err.println(e.getMessage());
-            } else
-            {
-                final ICompilerProblem unexpectedExceptionProblem = new UnexpectedExceptionProblem(
-                        e);
-                problems.add(unexpectedExceptionProblem);
-            }
-            exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
-        }
-        finally
-        {
-            waitAndClose();
-
-            if (outProblems != null && problems.hasFilteredProblems())
-            {
-                for (ICompilerProblem problem : problems.getFilteredProblems())
-                {
-                    outProblems.add(problem);
-                }
-            }
-        }
-        return exitCode.code;
-    }
-
-    public COMPJSC()
-    {
-        super();
+        workspace = new Workspace();
+        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        project = new FlexJSProject(workspace, backend);
+        problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
+        asFileHandler = backend.getSourceFileHandlerInstance();
     }
 
     /**

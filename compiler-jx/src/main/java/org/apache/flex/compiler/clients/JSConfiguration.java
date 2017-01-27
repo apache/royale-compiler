@@ -19,11 +19,22 @@
 
 package org.apache.flex.compiler.clients;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
+import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
+import org.apache.flex.compiler.internal.config.annotations.Arguments;
 import org.apache.flex.compiler.internal.config.annotations.Config;
+import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * The {@link JSConfiguration} class holds all compiler arguments needed for
@@ -43,22 +54,42 @@ public class JSConfiguration extends Configuration
     }
 
     //
-    // 'js-output-type'
+    // 'compiler.targets' option
     //
 
-    private String jsOutputType = MXMLJSC.JSOutputType.FLEXJS.getText();
+    protected final List<String> targets = new ArrayList<String>();
 
-    public String getJSOutputType()
+    public List<String> getCompilerTargets()
     {
-        return jsOutputType;
+    	if (targets.size() == 0)
+    		targets.add(JSTargetType.JS_FLEX.getText());
+        return targets;
     }
+
+    /**
+     * The list of compiler outputs to generate
+     */
+    @Config(allowMultiple = true, isPath = false)
+    @Mapping({ "compiler", "targets" })
+    @Arguments("type")
+    @InfiniteArguments
+    public void setCompilerTargets(ConfigurationValue cv, String[] targetlist)
+    {
+    	for (String target : targetlist)
+    		targets.add(target);
+    }
+
+    //
+    // 'js-output-type'
+    //
 
     @Config
     @Mapping("js-output-type")
     public void setJSOutputType(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-        jsOutputType = value;
+         targets.clear();
+         targets.add(value);
     }
 
     //

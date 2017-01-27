@@ -132,12 +132,12 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         // XXX (mschmalle) until we figure out what is going on with this configuration, just skip
         // HTML generation for JSC output type
-        String outputType = googConfiguration.getJSOutputType();
-        if (!outputType.equals(JSOutputType.JSC.getText()))
-        {
+        //String outputType = googConfiguration.getJSOutputType();
+        //if (!outputType.equals(JSOutputType.JSC.getText()))
+        //{
             writeHTML("intermediate", projectName, intermediateDirPath);
             writeHTML("release", projectName, releaseDirPath);
-        }
+        //}
 
         ArrayList<String> optionList = new ArrayList<String>();
 

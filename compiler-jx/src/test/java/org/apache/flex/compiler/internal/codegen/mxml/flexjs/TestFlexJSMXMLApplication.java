@@ -21,13 +21,16 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
@@ -785,6 +788,27 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"};";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+
+    @Test
+    public void testFlexJSMainFileDual()
+    {
+        MXMLJSC mxmlc = new MXMLJSC();
+        String[] args = new String[7];
+        args[0] = "-compiler.targets=SWF,JSFlex";
+        args[1] = "-remove-circulars";
+        args[2] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs")).getPath();
+        args[3] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
+        args[4] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again.swf").getPath();
+        if (env.GOOG != null)
+        	args[5] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
+        else
+        	args[5] = "-define=COMPILE::temp,false";
+        args[6] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again.mxml").getPath();
+
+        ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+        int result = mxmlc.mainNoExit(args, problems, true);
+        assertThat(result, is(0));
     }
 
     @Override
