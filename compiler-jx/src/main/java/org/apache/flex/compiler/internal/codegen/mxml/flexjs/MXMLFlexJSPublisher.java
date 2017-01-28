@@ -111,6 +111,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         {
             // FB usually specified -output <project-path>/bin-release/app.swf
             if (outputPathParameter.contains(".swf")) {
+            	if (outputParentFolder == null)
+            		outputParentFolder = new File(outputPathParameter);
                 outputParentFolder = outputParentFolder.getParentFile().getParentFile();
             } else {
                 outputParentFolder = new File(outputPathParameter);
