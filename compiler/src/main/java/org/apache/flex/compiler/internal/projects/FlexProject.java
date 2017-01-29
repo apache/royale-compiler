@@ -2129,12 +2129,13 @@ public class FlexProject extends ASProject implements IFlexProject
             thisPackage = scopeDef.getPackageName();
         else
         {
-            if (scope instanceof PackageScope)
-                thisPackage = ((PackageScope)scope).getDefinition().getBaseName();
-            else
+            while (!(scope instanceof PackageScope))
             {
-                return null;
+            	scope = scope.getContainingScope();
             }
+            if (!(scope instanceof PackageScope))
+            	return null;
+            thisPackage = ((PackageScope)scope).getDefinition().getBaseName();
         }
         String package1 = def1.getPackageName();
         String package2 = def2.getPackageName();
