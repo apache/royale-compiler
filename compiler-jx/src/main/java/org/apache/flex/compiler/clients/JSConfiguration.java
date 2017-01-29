@@ -33,6 +33,7 @@ import org.apache.flex.compiler.internal.config.annotations.Arguments;
 import org.apache.flex.compiler.internal.config.annotations.Config;
 import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
+import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
 
 import com.google.common.collect.ImmutableList;
 
@@ -110,5 +111,61 @@ public class JSConfiguration extends Configuration
     {
         sourceMap = value;
     }
+
+    //
+    // 'compiler.js-external-library-path' option
+    //
+
+    private final List<String> jsexternalLibraryPath = new ArrayList<String>();
+
+    @Override
+    public List<String> getCompilerExternalLibraryPath()
+    {
+    	if (jsexternalLibraryPath.size() > 0)
+    		return jsexternalLibraryPath;
+    	return super.getCompilerExternalLibraryPath();
+    }
+
+    @Config(allowMultiple = true, isPath = true)
+    @Mapping({ "compiler", "js-external-library-path" })
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setCompilerJsExternalLibraryPath(ConfigurationValue cv, String[] pathlist) throws ConfigurationException
+    {
+        final ImmutableList<String> pathElements = ImmutableList.copyOf(pathlist);
+        final ImmutableList<String> resolvedPaths = expandTokens(pathElements, locales, cv,
+                !reportMissingCompilerLibraries);
+        jsexternalLibraryPath.addAll(resolvedPaths);
+    }
+
+    //
+    // 'compiler.js-library-path' option
+    //
+
+    private final List<String> jslibraryPath = new ArrayList<String>();
+
+    @Override
+    public List<String> getCompilerLibraryPath()
+    {
+    	if (jslibraryPath.size() > 0)
+    		return jslibraryPath;
+    	return super.getCompilerLibraryPath();
+    }
+
+    /**
+     * Links SWC files to the resulting application SWF file. The compiler only links in those classes for the SWC file
+     * that are required. You can specify a directory or individual SWC files.
+     */
+    @Config(allowMultiple = true, isPath = true)
+    @Mapping({ "compiler", "js-library-path" })
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setCompilerJsLibraryPath(ConfigurationValue cv, String[] pathlist) throws CannotOpen
+    {
+        final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
+                !reportMissingCompilerLibraries);
+        jslibraryPath.addAll(resolvedPaths);
+    }
+
 
 }

@@ -811,6 +811,39 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertThat(result, is(0));
     }
 
+    @Test
+    public void testFlexJSMainFileDualFlash()
+    {
+    	/* this should error because a Flash APi is used */
+        MXMLJSC mxmlc = new MXMLJSC();
+        String[] args = new String[18];
+        args[0] = "-compiler.targets=SWF,JSFlex";
+        args[1] = "-remove-circulars";
+        args[2] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Core.swc")).getPath();
+        args[3] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Binding.swc")).getPath();
+        args[4] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Network.swc")).getPath();
+        args[5] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Collections.swc")).getPath();
+        args[6] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/projects/Basic/target/Basic.swc")).getPath();
+        args[7] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
+        args[8] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again_Flash.swf").getPath();
+        if (env.GOOG != null)
+        	args[9] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
+        else
+        	args[9] = "-define=COMPILE::temp,false";
+        args[10] = "-compiler.allow-subclass-overrides";
+        args[11] = "-compiler.js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/CoreJS.swc")).getPath();
+        args[12] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/BindingJS.swc")).getPath();
+        args[13] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/NetworkJS.swc")).getPath();
+        args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/CollectionsJS.swc")).getPath();
+        args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/BasicJS.swc")).getPath();
+        args[16] = "-compiler.js-external-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
+        args[17] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again_Flash.mxml").getPath();
+
+        int result = mxmlc.mainNoExit(args, errors, true);
+        assertThat(result, is(3));
+        assertErrors("Access of possibly undefined property scrollRect.");
+    }
+
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {

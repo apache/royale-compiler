@@ -2224,7 +2224,7 @@ public class Configuration
     //
 
     private final List<String> libraryPath = new ArrayList<String>();
-    private boolean reportMissingCompilerLibraries = true;
+    protected boolean reportMissingCompilerLibraries = true;
 
     /**
      * Sets whether to report missing libraries in the configuration. If this is false any missing libraries will not be
@@ -2264,7 +2264,7 @@ public class Configuration
     // 'compiler.locale' option
     //
 
-    private final List<String> locales = new ArrayList<String>();
+    protected final List<String> locales = new ArrayList<String>();
 
     public List<String> getCompilerLocales()
     {
