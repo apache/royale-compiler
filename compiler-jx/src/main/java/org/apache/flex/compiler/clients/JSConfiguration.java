@@ -21,7 +21,9 @@ package org.apache.flex.compiler.clients;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
@@ -167,5 +169,131 @@ public class JSConfiguration extends Configuration
         jslibraryPath.addAll(resolvedPaths);
     }
 
+    /**
+     * Syntax:<br/>
+     * <code>-define=&lt;name&gt;,&lt;value&gt;</code> where name is <code>NAMESPACE::name</code> and value is a legal
+     * definition value (e.g. <code>true</code> or <code>1</code> or <code>!CONFIG::debugging</code>)
+     *
+     * Example: <code>-define=CONFIG::debugging,true</code>
+     *
+     * In <code>flex-config.xml</code>:<br/>
+     * 
+     * <pre>
+     * <flex-config>
+     *    <compiler>
+     *       <define>
+     *          <name>CONFIG::debugging</name>
+     *          <value>true</value>
+     *       </define>
+     *       ...
+     *    </compile>
+     * </flex-config>
+     * </pre>
+     *
+     * Values:<br/>
+     * Values are ActionScript expressions that must coerce and evaluate to constants at compile-time. Effectively, they
+     * are replaced in AS code, verbatim, so <code>-define=TEST::oneGreaterTwo,"1>2"</code> will getCompiler coerced and
+     * evaluated, at compile-time, to <code>false</code>.
+     *
+     * It is good practice to wrap values with double-quotes, so that MXMLC correctly parses them as a single argument:
+     * <br/>
+     * <code>-define=TEST::oneShiftRightTwo,"1 >> 2"</code>
+     *
+     * Values may contain compile-time constants and other configuration values:<br/>
+     * <code>-define=CONFIG::bool2,false -define=CONFIG::and1,"CONFIG::bool2 && false" TestApp.mxml</code>
+     *
+     * String values on the command-line <i>must</i> be surrounded by double-quotes, and either escape-quoted (
+     * <code>"\"foo\""</code> or <code>"\'foo\'"</code>) or single-quoted (<code>"'foo'"</code>).
+     *
+     * String values in configuration files need only be single- or double- quoted:<br/>
+     * 
+     * <pre>
+     * <flex-config>
+     *    <compiler>
+     *       <define>
+     *          <name>NAMES::Organization</name>
+     *          <value>'Apache Software Foundation'</value>
+     *       </define>
+     *       <define>
+     *          <name>NAMES::Application</name>
+     *          <value>"Flex 4.8.0"</value>
+     *       </define>
+     *       ...
+     *    </compile>
+     * </flex-config>
+     * </pre>
+     *
+     * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and <code>''</code> or
+     * <code>""</code> in configuration files.
+     * 
+     * Finally, if you have existing definitions in a configuration file, and you would like to add to them with the
+     * command-line (let's say most of your build setCompilertings are in the configuration, and that you are adding one
+     * temporarily using the command-line), you use the following syntax: <code>-define+=TEST::temporary,false</code>
+     * (noting the plus sign)
+     * 
+     * Note that definitions can be overridden/redefined if you use the append ("+=") syntax (on the commandline or in a
+     * user config file, for instance) with the same namespace and name, and a new value.
+     * 
+     * Definitions cannot be removed/undefined. You can undefine ALL existing definitions from (e.g. from
+     * flex-config.xml) if you do not use append syntax ("=" or append="false").
+     * 
+     * IMPORTANT FOR FLEXBUILDER If you are using "Additional commandline arguments" to "-define", don't use the
+     * following syntax though I suggest it above: -define+=CONFIG::foo,"'value'" The trouble is that FB parses the
+     * double quotes incorrectly as <"'value'> -- the trailing double-quote is dropped. The solution is to avoid inner
+     * double-quotes and put them around the whole expression: -define+="CONFIG::foo,'value'"
+     */
+    private Map<String, String> jsconfigVars;
+
+    /**
+     * @return A list of ConfigVars
+     */
+    @Override
+    public Map<String, String> getCompilerDefine()
+    {
+    	if (jsconfigVars.size() > 0)
+    		return jsconfigVars;
+    	return super.getCompilerDefine();
+    }
+
+    @Config(advanced = true, allowMultiple = true)
+    @Arguments({ "name", "value" })
+    public void setJsCompilerDefine(ConfigurationValue cv, String name, String value) throws ConfigurationException
+    {
+        if (jsconfigVars == null)
+        	jsconfigVars = new LinkedHashMap<String, String>();
+
+        jsconfigVars.put(name, value);
+    }
+
+    //
+    // 'output' option
+    //
+
+    private String jsoutput;
+
+    @Override
+    public String getOutput()
+    {
+    	if (jsoutput != null)
+    		return jsoutput;
+    	return super.getOutput();
+    }
+
+    @Config
+    @Arguments("filename")
+    public void setJsOutput(ConfigurationValue val, String output) throws ConfigurationException
+    {
+        this.jsoutput = getOutputPath(val, output);
+    }
+
+    @Override
+    protected String overrideDefinedValue(String name, String value)
+    {
+    	if (name.equals("COMPILE::SWF") && value.equals("AUTO"))
+    		return "false";
+    	if (name.equals("COMPILE::JS") && value.equals("AUTO"))
+    		return "true";
+    	return value;
+    }
 
 }

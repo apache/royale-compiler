@@ -397,6 +397,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     			  arg.startsWith("-remove-circulars") ||
     			  arg.startsWith("-compiler.js-external-library-path") ||
     			  arg.startsWith("-compiler.js-library-path") ||
+    			  arg.startsWith("-compiler.js-define") ||
+    			  arg.startsWith("-js-output") ||
     			  arg.startsWith("-source-map")))
     			list.add(arg);						
     	}

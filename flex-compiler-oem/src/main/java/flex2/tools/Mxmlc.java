@@ -61,7 +61,6 @@ public final class Mxmlc extends Tool {
 
     public static int mxmlcNoExit(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        COMPILER = MXMLC.class;
         JS_COMPILER = MxmlJSC.class;
 
         return compile(args);
@@ -69,7 +68,6 @@ public final class Mxmlc extends Tool {
 
     public static void mxmlc(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        COMPILER = MXMLC.class;
         JS_COMPILER = MxmlJSC.class;
 
         compile(args);
