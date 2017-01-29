@@ -150,6 +150,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 asEmitterUsedNames.remove(usedName);
             }
         }
+        System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
+        System.out.println(currentClassName + " mxml: " + usedNames.toString());
         usedNames.addAll(asEmitterUsedNames);
 
         boolean foundXML = false;
