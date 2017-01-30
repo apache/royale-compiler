@@ -257,6 +257,26 @@ public class CommandLineConfiguration extends ToolsConfiguration
 	}
 
 	//
+	// 'js-output' option
+	//
+	
+	public void cfgJsOutput(ConfigurationValue val, String output) throws ConfigurationException
+	{
+        this.output = Configuration.getOutputPath(val, output);
+	}
+
+	public static ConfigurationInfo getJsOutputInfo()
+	{
+	    return new ConfigurationInfo(1, "filename")
+	    {
+	        public boolean isRequired()
+	        {
+	            return false;
+	        }
+	    };
+	}
+
+	//
 	// 'projector' option (hidden)
 	//
 	

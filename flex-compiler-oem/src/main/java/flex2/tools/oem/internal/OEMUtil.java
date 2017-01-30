@@ -40,8 +40,8 @@ import flex2.tools.CompcConfiguration;
 import flex2.tools.ToolsConfiguration;
 import flex2.tools.oem.*;
 
-import org.apache.flex.compiler.clients.COMPC;
-import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.clients.COMPJSC;
+import org.apache.flex.compiler.clients.MXMLJSC;
 
 /**
  * A collection of utility methods used by classes in flex2.tools.oem.
@@ -145,7 +145,7 @@ public class OEMUtil
             													 ApplicationCompilerConfiguration.getAliases());
             cfgbuf.setDefaultVar("--file-specs" /*Mxmlc.FILE_SPECS*/);            
             DefaultsConfigurator.loadDefaults(cfgbuf);
-            MXMLC mxmlc = new MXMLC();
+            MXMLJSC mxmlc = new MXMLJSC();
             mxmlc.configure(args);
             ApplicationCompilerConfiguration configuration = processMXMLCConfiguration(mxmlc.config);
             
@@ -271,7 +271,7 @@ public class OEMUtil
             ConfigurationBuffer cfgbuf = new ConfigurationBuffer(LibraryCompilerConfiguration.class,
             													 LibraryCompilerConfiguration.getAliases());
 	        DefaultsConfigurator.loadOEMCompcDefaults( cfgbuf );
-            COMPC compc = new COMPC();
+            COMPJSC compc = new COMPJSC();
             compc.configure(args);
             LibraryCompilerConfiguration configuration = processCOMPCCConfiguration(compc.config);
             configuration.keepLinkReport(keepLinkReport);
@@ -331,7 +331,7 @@ public class OEMUtil
                     ApplicationCompilerConfiguration.getAliases());
             cfgbuf.setDefaultVar("--file-specs" /*Mxmlc.FILE_SPECS*/);            
             DefaultsConfigurator.loadDefaults(cfgbuf);
-            MXMLC mxmlc = new MXMLC();
+            MXMLJSC mxmlc = new MXMLJSC();
             mxmlc.configure(args);
             ApplicationCompilerConfiguration configuration = processMXMLCConfiguration(mxmlc.config);
             

@@ -250,7 +250,7 @@ public class JSConfiguration extends Configuration
     @Override
     public Map<String, String> getCompilerDefine()
     {
-    	if (jsconfigVars.size() > 0)
+    	if (jsconfigVars != null)
     		return jsconfigVars;
     	return super.getCompilerDefine();
     }

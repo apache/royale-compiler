@@ -235,7 +235,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
-    protected JSConfiguration config;
+    public JSConfiguration config;
     protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
@@ -742,7 +742,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      * @param args command line arguments
      * @return True if mxmlc should continue with compilation.
      */
-    protected boolean configure(final String[] args)
+    public boolean configure(final String[] args)
     {
     	projectConfigurator = new Configurator(JSGoogConfiguration.class);
     	

@@ -617,6 +617,146 @@ public class CompilerConfiguration implements As3Configuration,
         };
     }
 
+    //
+    // 'compiler.js-define' option
+    //
+
+    /**
+     * Syntax:<br/>
+     * <code>-define=&lt;name&gt;,&lt;value&gt;</code>
+     * where name is <code>NAMESPACE::name</code> and value is a legal definition value
+     * (e.g. <code>true</code> or <code>1</code> or <code>!CONFIG::debugging</code>)
+     *
+     * Example: <code>-define=CONFIG::debugging,true</code>
+     *
+     * In <code>flex-config.xml</code>:<br/>
+     * <pre>
+     * <flex-config>
+     *    <compiler>
+     *       <define>
+     *          <name>CONFIG::debugging</name>
+     *          <value>true</value>
+     *       </define>
+     *       ...
+     *    </compile>
+     * </flex-config>
+     * </pre>
+     *
+     * Values:<br/>
+     * Values are ActionScript expressions that must coerce and evaluate to constants at compile-time.
+     * Effectively, they are replaced in AS code, verbatim, so <code>-define=TEST::oneGreaterTwo,"1>2"</code>
+     * will get coerced and evaluated, at compile-time, to <code>false</code>.
+     *
+     * It is good practice to wrap values with double-quotes,
+     * so that MXMLC correctly parses them as a single argument:<br/>
+     * <code>-define=TEST::oneShiftRightTwo,"1 >> 2"</code>
+     *
+     * Values may contain compile-time constants and other configuration values:<br/>
+     * <code>-define=CONFIG::bool2,false -define=CONFIG::and1,"CONFIG::bool2 && false" TestApp.mxml</code>
+     *
+     * String values on the command-line <i>must</i> be surrounded by double-quotes, and either
+     * escape-quoted (<code>"\"foo\""</code> or <code>"\'foo\'"</code>) or single-quoted
+     * (<code>"'foo'"</code>).
+     *
+     * String values in configuration files need only be single- or double- quoted:<br/>
+     * <pre>
+     * <flex-config>
+     *    <compiler>
+     *       <define>
+     *          <name>NAMES::Company</name>
+     *          <value>'Apache Software Foundation'</value>
+     *       </define>
+     *       <define>
+     *          <name>NAMES::Application</name>
+     *          <value>"Flex 4.7"</value>
+     *       </define>
+     *       ...
+     *    </compile>
+     * </flex-config>
+     * </pre>
+     *
+     * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and
+     * <code>''</code> or <code>""</code> in configuration files.
+     * 
+     * Finally, if you have existing definitions in a configuration file, and you would
+     * like to add to them with the command-line (let's say most of your build settings
+     * are in the configuration, and that you are adding one temporarily using the
+     * command-line), you use the following syntax:
+     * <code>-define+=TEST::temporary,false</code> (noting the plus sign)
+     * 
+     * Note that definitions can be overridden/redefined if you use the append ("+=") syntax
+     * (on the commandline or in a user config file, for instance) with the same namespace
+     * and name, and a new value.
+     * 
+     * Definitions cannot be removed/undefined. You can undefine ALL existing definitions
+     * from (e.g. from flex-config.xml) if you do not use append syntax ("=" or append="false").
+     * 
+     * IMPORTANT FOR FLEXBUILDER
+     * If you are using "Additional commandline arguments" to "-define", don't use the following
+     * syntax though I suggest it above:
+     *     -define+=CONFIG::foo,"'value'"
+     * The trouble is that FB parses the double quotes incorrectly as <"'value'> -- the trailing
+     * double-quote is dropped. The solution is to avoid inner double-quotes and put them around the whole expression:
+     *    -define+="CONFIG::foo,'value'"
+     */
+	private ObjectList<ConfigVar> jsconfigVars = new ObjectList<ConfigVar>();
+    
+    /**
+     * @return A list of ConfigVars
+     */
+    public ObjectList<ConfigVar> jsgetDefine()
+    {
+        return configVars;
+    }
+
+    public void cfgJsDefine( ConfigurationValue _cv, final String _name, String _value )
+        throws ConfigurationException
+    {
+        assert _name  != null;
+        assert _value != null;
+        assert _cv    != null;
+
+        // macromedia.asc.embedding.Main.parseConfigVar(_name + "=" + _value)
+        final int ns_end = _name.indexOf("::");
+        if( (ns_end == -1) || (ns_end == 0) || (ns_end == _name.length()-2) )
+        {
+            throw new ConfigurationException.BadDefinition(_name + " " + _value,
+                                                           _cv.getVar(),
+                                                           _cv.getSource(),
+                                                           _cv.getLine());
+        }
+        
+        final String ns = _name.substring(0, ns_end);
+        final String name = _name.substring(ns_end + 2);
+        
+        if (configVars == null)
+        {
+            configVars = new ObjectList<ConfigVar>();
+        }
+
+        // try removing any existing definition
+        for (final Iterator<ConfigVar> iter = configVars.iterator(); iter.hasNext();)
+        {
+            final ConfigVar other = iter.next();
+            if (ns.equals(other.ns) && name.equals(other.name))
+            {
+                iter.remove();
+                break;
+            }
+        }
+        
+        configVars.add(new ConfigVar(ns, name, _value));
+    }
+    
+    public static ConfigurationInfo getJsDefineInfo()
+    {
+        return new ConfigurationInfo(new String[] {"name", "value"})
+        {
+            public boolean allowMultiple() { return true; }
+            public boolean isAdvanced()    { return true; }
+        };
+    }
+
 	//
     // 'compiler.conservative' option (hidden)
     //
@@ -825,6 +965,50 @@ public class CompilerConfiguration implements As3Configuration,
 	}
 
     public static ConfigurationInfo getExternalLibraryPathInfo()
+    {
+        return new ConfigurationInfo( -1, new String[] { "path-element" } )
+        {
+            public boolean allowMultiple()
+            {
+                return true;
+            }
+
+	        public String[] getSoftPrerequisites()
+	        {
+		        return PATH_TOKENS;
+	        }
+
+            public boolean isPath()
+            {
+                return true;
+            }
+
+            public boolean doChecksum()
+            {
+            	return false;
+            }
+        };
+    }
+
+    //
+    // 'compiler.js-external-library-path' option
+    //
+
+    private VirtualFile[] jsexternalLibraryPath;
+
+    public VirtualFile[] getJsExternalLibraryPath()
+    {
+        return jsexternalLibraryPath;
+    }
+
+    public void cfgJsExternalLibraryPath( ConfigurationValue cv, String[] pathlist ) throws ConfigurationException
+    {
+    	String[] locales = getLocales();
+    	VirtualFile[] newPathElements = expandTokens(pathlist, locales, cv);
+    	jsexternalLibraryPath = (VirtualFile[])merge(jsexternalLibraryPath, newPathElements, VirtualFile.class);
+	}
+
+    public static ConfigurationInfo getJsExternalLibraryPathInfo()
     {
         return new ConfigurationInfo( -1, new String[] { "path-element" } )
         {
@@ -1227,6 +1411,103 @@ public class CompilerConfiguration implements As3Configuration,
             public boolean doChecksum()
             {
             	return false;
+            }
+        };
+    }
+
+    //
+    // 'compiler.js-library-path' option
+    //
+
+    /**
+     * A list of SWC component libraries or directories containing SWCs.
+     * All SWCs found in the library-path are merged together
+     * and resolved via priority and version.
+     * The order in the library-path is ignored.
+     *
+     * The specified compiler.library-path can have path elements
+     * which contain a special {locale} token.
+     * If you compile for a single locale,
+     * this token is replaced by the specified locale.
+     * If you compile for multiple locales,
+     * any path element with the {locale} token
+	 * is expanded into multiple path elements,
+	 * one for each locale.
+     * If you compile for no locale,
+     * any path element with {locale} is ignored.
+     */
+    private VirtualFile[] jslibraryPath;
+
+    public VirtualFile[] getJsLibraryPath()
+    {
+        return jslibraryPath;
+    }
+
+    public void cfgJsLibraryPath( ConfigurationValue cv, String[] pathlist ) throws ConfigurationException
+    {
+    	String[] locales = getLocales();
+    	VirtualFile[] newPathElements = expandTokens(pathlist, locales, cv);
+    	libraryPath = (VirtualFile[])merge(libraryPath, newPathElements, VirtualFile.class);
+    }
+
+    public static ConfigurationInfo getJsLibraryPathInfo()
+    {
+        return new ConfigurationInfo( -1, new String[] { "path-element" } )
+        {
+            public boolean allowMultiple()
+            {
+                return true;
+            }
+
+	        public String[] getSoftPrerequisites()
+	        {
+		        return PATH_TOKENS;
+	        }
+
+            public boolean isPath()
+            {
+                return true;
+            }
+
+            public boolean doChecksum()
+            {
+            	return false;
+            }
+        };
+    }
+
+    //
+    // 'compiler.targets' option
+    //
+
+    /*
+     * This is never null. If you specify "no targets"
+     * it will compile to JS.
+     */
+    private String[] targets = new String[] {};
+
+    public String[] getTargets()
+    {
+        return targets;
+    }
+
+	public String targets()
+	{
+		return targets.length > 0 ? locales[0] : null;
+	}
+
+    public void cfgTarget( ConfigurationValue cv, String[] newTargets )
+    {
+        locales = (String[])merge(newTargets, targets, String.class);
+    }
+
+    public static ConfigurationInfo getTargetInfo()
+    {
+        return new ConfigurationInfo( -1, new String[] { "target-element" } )
+        {
+            public boolean allowMultiple()
+            {
+                return true;
             }
         };
     }
