@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -75,6 +76,10 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.swf.ISWF;
+import org.apache.flex.swf.SWF;
+import org.apache.flex.swf.types.RGB;
+import org.apache.flex.swf.types.Rect;
 import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
@@ -243,6 +248,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
+    private MXMLC mxmlc;
+    public boolean noLink;
+    public OutputStream err;
     
     public MXMLJSC()
     {
@@ -307,8 +315,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             		switch (JSTargetType.fromString(target))
 	                {
 	                case SWF:
-	                    MXMLC mxmlc = new MXMLC();
-	                    result = mxmlc.mainNoExit(removeJSArgs(args));
+	                    mxmlc = new MXMLC();
+	                    if (noLink)
+	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
+	                    else
+	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
 	                    if (result != 0)
 	                    {
 	                    	problems.addAll(mxmlc.problems.getProblems());
@@ -851,5 +862,28 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected void close()
     {
         workspace.close();
+    }
+    
+    /**
+     * return a data structure for FB integration
+     * @return
+     */
+    public ISWF getSWFTarget()
+    {
+    	SWF swf = new SWF();
+    	Rect rect = new Rect(getTargetSettings().getDefaultWidth(),
+    						getTargetSettings().getDefaultHeight());
+    	swf.setFrameSize(rect);
+    	// we might need to report actual color some day
+    	swf.setBackgroundColor(new RGB(255, 255, 255));
+    	swf.setTopLevelClass(config.getTargetFile());
+    	return swf;
+    }
+    
+    public long writeSWF(OutputStream output)
+    {
+    	if (mxmlc != null)
+    		return mxmlc.writeSWF(output);
+    	return 0;
     }
 }

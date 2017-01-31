@@ -978,6 +978,11 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 		addFiles(COMPILER_LIBRARY_PATH, paths);
 	}
 	
+	public void setTargets(String[] targets)
+	{
+		args.put(COMPILER_TARGETS, targets);
+	}
+	
 	/**
 	 * Sets the locales that the compiler would use to replace <code>{locale}</code> tokens that appear in some configuration values.
 	 * This is equivalent to using <code>mxmlc/compc --compiler.locale</code>.

@@ -28,6 +28,7 @@ package flex2.tools.oem.internal;
 interface ConfigurationConstants
 {
     String USE_NETWORK                                          = "--use-network";
+    String REMOVE_CIRCULARS                                     = "--remove-circulars";
     String RUNTIME_SHARED_LIBRARIES                             = "--runtime-shared-libraries";
     String RAW_METADATA                                         = "--raw-metadata";
     String PROJECTOR                                            = "--projector";
@@ -38,6 +39,7 @@ interface ConfigurationConstants
     String METADATA_DATE                                        = "--metadata.date";
     String METADATA_CREATOR                                     = "--metadata.creator";
     String METADATA_CONTRIBUTOR                                 = "--metadata.contributor";
+    String JS_OUTPUT                                            = "--js-output";
     String LINK_REPORT                                          = "--link-report";
     String SIZE_REPORT                                          = "--size-report";
     String LICENSES_LICENSE                                     = "--licenses.license";
@@ -104,7 +106,9 @@ interface ConfigurationConstants
     String COMPILER_NAMESPACES_NAMESPACE                        = "--compiler.namespaces.namespace";
     String COMPILER_MOBILE                                      = "--compiler.mobile";
     String COMPILER_LOCALE                                      = "--compiler.locale";
+    String COMPILER_TARGETS                                     = "--compiler.targets";
     String COMPILER_LIBRARY_PATH                                = "--compiler.library-path";
+    String COMPILER_JS_LIBRARY_PATH                             = "--compiler.js-library-path";
     String COMPILER_INCLUDE_LIBRARIES                           = "--compiler.include-libraries";
     String COMPILER_KEEP_GENERATED_ACTIONSCRIPT                 = "--compiler.keep-generated-actionscript";
     String COMPILER_KEEP_AS3_METADATA                           = "--compiler.keep-as3-metadata";
@@ -119,6 +123,7 @@ interface ConfigurationConstants
     String COMPILER_FONTS_FLASH_TYPE                            = "--compiler.fonts.flash-type";
     String COMPILER_FONTS_ADVANCED_ANTI_ALIASING                = "--compiler.fonts.advanced-anti-aliasing";
     String COMPILER_EXTERNAL_LIBRARY_PATH                       = "--compiler.external-library-path";
+    String COMPILER_JS_EXTERNAL_LIBRARY_PATH                    = "--compiler.js-external-library-path";
     String COMPILER_ES                                          = "--compiler.es";
     String COMPILER_DEFAULTS_CSS_URL                            = "--compiler.defaults-css-url";
     String COMPILER_DEBUG                                       = "--compiler.debug";
@@ -133,6 +138,7 @@ interface ConfigurationConstants
     String VERIFY_DIGESTS                                       = "--verify-digests";
     String COMPILER_COMPUTE_DIGEST                              = "--compute-digest";
     String COMPILER_DEFINE                                      = "--compiler.define";
+    String COMPILER_JS_DEFINE                                   = "--compiler.js-define";
     String COMPILER_MXML_COMPATIBILITY							= "--compiler.mxml.compatibility-version";
     String COMPILER_EXTENSIONS                                  = "--compiler.extensions.extension";
     String REMOVE_UNUSED_RSLS                                   = "--remove-unused-rsls";

@@ -1496,12 +1496,12 @@ public class CompilerConfiguration implements As3Configuration,
 		return targets.length > 0 ? locales[0] : null;
 	}
 
-    public void cfgTarget( ConfigurationValue cv, String[] newTargets )
+    public void cfgTargets( ConfigurationValue cv, String[] newTargets )
     {
-        locales = (String[])merge(newTargets, targets, String.class);
+        targets = (String[])merge(newTargets, targets, String.class);
     }
 
-    public static ConfigurationInfo getTargetInfo()
+    public static ConfigurationInfo getTargetsInfo()
     {
         return new ConfigurationInfo( -1, new String[] { "target-element" } )
         {

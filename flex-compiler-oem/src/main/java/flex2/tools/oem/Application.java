@@ -33,7 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.problems.ProblemFormatter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
@@ -622,15 +622,16 @@ public class Application implements Builder
     
             //Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
     
-            mxmlc = new MXMLC();
+            mxmljsc = new MXMLJSC();
+            mxmljsc.noLink = true;
             //int returnValue = mxmlc.mainCompileOnly(constructCommandLine2(tempOEMConfiguration.configuration), null);
-            int returnValue = mxmlc.mainCompileOnly(constructCommandLine(oemConfiguration), null);
+            int returnValue = mxmljsc.mainNoExit(constructCommandLine(oemConfiguration), null, true);
             if (returnValue == 0)
                 returnValue = OK;
             else
                 returnValue = FAIL;
             
-            processMXMLCReport(mxmlc, tempOEMConfiguration);
+            processMXMLCReport(mxmljsc, tempOEMConfiguration);
             
             clean(returnValue == FAIL /* cleanData */,
                   false /* cleanCache */,
@@ -650,15 +651,15 @@ public class Application implements Builder
 
     public long link(OutputStream output)
     {
-        return mxmlc.writeSWF(output);
+        return mxmljsc.writeSWF(output);
     }
     
-    private MXMLC mxmlc = new MXMLC();
+    private MXMLJSC mxmljsc = new MXMLJSC();
     private List<Source> sources;
     private SimpleMovie movie;
     private SourceList sourceList;
     
-    void processMXMLCReport(MXMLC mxmlc, OEMConfiguration config)
+    void processMXMLCReport(MXMLJSC mxmljsc, OEMConfiguration config)
     {
         /* not sure we need this
         ApplicationCompilerConfiguration acc = ((ApplicationCompilerConfiguration)config.configuration);
@@ -685,7 +686,7 @@ public class Application implements Builder
             }
         }
         */
-        ProblemQuery pq = mxmlc.getProblems();
+        ProblemQuery pq = mxmljsc.getProblemQuery();
         List<ICompilerProblem> probs = pq.getProblems();
         for (ICompilerProblem prob : probs)
         {
@@ -774,7 +775,7 @@ public class Application implements Builder
             }
             
         }
-        ISWF swf = mxmlc.getSWFTarget();
+        ISWF swf = mxmljsc.getSWFTarget();
         movie = new SimpleMovie(null);
         org.apache.flex.swf.types.Rect r = swf.getFrameSize();
         flash.swf.types.Rect fr = new flash.swf.types.Rect();
