@@ -228,7 +228,7 @@ public class FlexJSProject extends FlexProject
         try {
             qnames = cu.getQualifiedNames();
             String qname = qnames.get(0);
-            if (qname.equals("QName"))
+            if (qname.equals("QName") || qname.equals("XML") || qname.equals("XMLList"))
                 return false;
         } catch (InterruptedException e1) {
             // TODO Auto-generated catch block
