@@ -71,7 +71,7 @@ import org.apache.flex.swc.io.SWCReader;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class COMPJSCNative extends MXMLJSC
+public class COMPJSCNative extends MXMLJSCNative
 {
     /*
      * Exit code enumerations.

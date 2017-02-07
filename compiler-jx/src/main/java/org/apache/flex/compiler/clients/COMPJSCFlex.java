@@ -70,7 +70,7 @@ import org.apache.flex.swc.io.SWCReader;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class COMPJSCFlex extends MXMLJSC
+public class COMPJSCFlex extends MXMLJSCFlex
 {
     /*
      * Exit code enumerations.
