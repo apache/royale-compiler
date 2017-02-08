@@ -129,6 +129,113 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
     }
 
     @Test
+    public void testFunctionAssignmentInScript()
+    {
+        String code = "" + "<fx:Script><![CDATA["
+                + "    private var foo:Function = bar;"
+                + "    public function bar():void {};"
+                + "]]></fx:Script>";
+
+        IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
+                IMXMLScriptNode.class, FlexJSTestBase.WRAP_LEVEL_DOCUMENT);
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
+        	.getAncestorOfType(IMXMLDocumentNode.class);
+        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = org.apache.flex.utils.Language.closure(this.bar, this, 'bar');\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+				"/**\n" +
+				" * @private\n" +
+				" * @type {Function}\n" +
+				" */\n" +
+				"AppName.prototype.foo;\n" +
+        		"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" */\n" +
+				"AppName.prototype.bar = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {return {};},\n" +
+        		"    accessors: function () {return {};},\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+        		"        'bar': { type: 'void', declaredBy: 'AppName'},\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n" +
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n";
+        	
+        assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
+    }
+
+    @Test
     public void testComplexInitializersInScript()
     {
         String code = "" + "<fx:Script><![CDATA["
