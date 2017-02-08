@@ -541,6 +541,8 @@ public class GoogDepsWriter {
     						if (included.contains(".png") ||
     							included.contains(".gif") ||
     							included.contains(".jpg") ||
+    							included.contains(".jpeg") ||
+    							included.contains(".svg") ||
     							included.contains(".json"))
     						{
     							fileEntry = includedfiles.get(included);

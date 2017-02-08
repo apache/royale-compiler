@@ -164,9 +164,13 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                 FileFilterUtils.suffixFileFilter(".gif"));
         IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".jpg"));
+        IOFileFilter jpegSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".jpeg"));
+        IOFileFilter svgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".svg"));
         IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".json"));
-        IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter, jpgSuffixFilter, gifSuffixFilter,
+        IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter, jpgSuffixFilter, jpegSuffixFilter, svgSuffixFilter, gifSuffixFilter,
                 jsonSuffixFilter);
         IOFileFilter resourceFilter = FileFilterUtils.or(DirectoryFileFilter.DIRECTORY, assetFiles);
         // The source directory is the directory containing the Main class.
