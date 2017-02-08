@@ -468,6 +468,7 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                                        				{
 	                                        					String base = name.getBaseName();
 	                                        					if (base == null) continue;
+	                                        					if (name.getQualifiers().length() != 1) continue;
 	                                        					Namespace ns = name.getSingleQualifier();
 	                                        					if (ns == null) continue;
 	                                        					String nsName = ns.getName();
@@ -526,6 +527,7 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 		                                        				{
 		                                        					String base = name.getBaseName();
 		                                        					if (base == null) continue;
+		                                        					if (name.getQualifiers().length() != 1) continue;
 		                                        					Namespace ns = name.getSingleQualifier();
 		                                        					if (ns == null) continue;
 		                                        					String nsName = ns.getName();
