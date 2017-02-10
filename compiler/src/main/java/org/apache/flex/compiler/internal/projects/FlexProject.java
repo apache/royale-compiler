@@ -2284,6 +2284,36 @@ public class FlexProject extends ASProject implements IFlexProject
                 }
             }
         }
+		IMetaTag[] metas = func.getAllMetaTags();
+		for (IMetaTag meta : metas)
+		{
+			if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
+			{
+				IMetaTagAttribute attr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_ALTPARAMS);
+				if (attr != null)
+				{
+					// format is expectedQName:allowedQName,expectedQName:allowedQName.
+					// we don't know which parameter it is so we're assuming for now that any mapping
+					// applies to all occurences of that type in the parameter list
+					String paramList = attr.getValue();
+					String[] paramMap;
+					if (paramList.contains(","))
+						paramMap = paramList.split(",");
+					else
+					{
+						paramMap = new String[1];
+						paramMap[0] = paramList;
+					}
+					for (String item : paramMap)
+					{
+						String[] parts = item.split(":");
+						if (expectedDefinition.getQualifiedName().equals(parts[0]))
+							if (((ITypeDefinition)actualDefinition).isInstanceOf(parts[1], this))
+								return true;
+					}
+				}
+			}
+    	}
         return false;
     }
 
