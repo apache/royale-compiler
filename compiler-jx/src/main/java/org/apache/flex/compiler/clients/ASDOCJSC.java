@@ -58,7 +58,7 @@ import org.apache.flex.compiler.units.ICompilationUnit;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class ASDOCJSC extends MXMLJSC
+public class ASDOCJSC extends MXMLJSCFlex
 {
     /*
      * Exit code enumerations.
@@ -117,7 +117,7 @@ public class ASDOCJSC extends MXMLJSC
         {
             if (s.contains("js-output-type"))
             {
-                jsOutputType = JSOutputType.fromString(s.split("=")[1]);
+                jsOutputType = MXMLJSC.JSOutputType.fromString(s.split("=")[1]);
 
                 switch (jsOutputType)
                 {
