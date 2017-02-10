@@ -80,6 +80,8 @@
 #end
     </theme>
 
+    <allow-subclass-overrides>$allowSubclassOverrides</allow-subclass-overrides>
+
     <mxml>
       <children-as-data>true</children-as-data>
       <imports>
