@@ -328,7 +328,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    break;
 	                case JS_FLEX:
 	                	MXMLJSCFlex flex = new MXMLJSCFlex();
-	                    result = flex.mainNoExit(args, problems.getProblems(), false);
+	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
 	                    	break targetloop;
@@ -336,7 +336,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    break;
 	                case JS_NODE:
 	                	MXMLJSCNode node = new MXMLJSCNode();
-	                    result = node.mainNoExit(args, problems.getProblems(), false);
+	                    result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
 	                    	break targetloop;
@@ -344,7 +344,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    break;
 	                case JS_NATIVE:
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
-	                    result = jsc.mainNoExit(args, problems.getProblems(), false);
+	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
 	                    	break targetloop;
@@ -398,7 +398,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         return exitCode.code;
     }
     
-    private String[] removeJSArgs(String[] args)
+    protected String[] removeJSArgs(String[] args)
     {
     	ArrayList<String> list = new ArrayList<String>();
     	for (String arg : args)
@@ -410,12 +410,36 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     			  arg.startsWith("-compiler.js-library-path") ||
     			  arg.startsWith("-compiler.js-define") ||
     			  arg.startsWith("-js-output") ||
+    			  arg.startsWith("-js-load-config") ||
     			  arg.startsWith("-source-map")))
     			list.add(arg);						
     	}
     	return list.toArray(new String[0]);
     }
 
+    protected String[] removeASArgs(String[] args)
+    {
+    	ArrayList<String> list = new ArrayList<String>();
+    	boolean hasJSLoadConfig = false;
+    	for (String arg : args)
+    	{
+    		if (arg.startsWith("-js-load-config"))
+    			hasJSLoadConfig = true;
+    	}
+    	if (!hasJSLoadConfig)
+    		return args;
+    	for (String arg : args)
+    	{
+    		if (!arg.startsWith("-load-config"))
+    		{
+    			if (arg.startsWith("-js-load-config"))
+    				arg = arg.substring(3);
+    			list.add(arg);	
+    		}
+    	}
+    	return list.toArray(new String[0]);
+    }
+    
     /**
      * Main body of this program. This method is called from the public static
      * method's for this program.

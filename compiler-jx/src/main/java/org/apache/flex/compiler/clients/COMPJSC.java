@@ -52,6 +52,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -194,7 +195,8 @@ public class COMPJSC extends MXMLJSC
 	                {
 	                case SWF:
 	                    COMPC compc = new COMPC();
-	                    result = compc.mainNoExit(args);
+	                    compc.configurationClass = JSGoogConfiguration.class;
+	                    result = compc.mainNoExit(removeJSArgs(args));
 	                    if (result != 0)
 	                    {
 	                    	problems.addAll(compc.problems.getProblems());
@@ -203,7 +205,7 @@ public class COMPJSC extends MXMLJSC
 	                    break;
 	                case JS_FLEX:
 	                	COMPJSCFlex flex = new COMPJSCFlex();
-	                    result = flex.mainNoExit(args, problems.getProblems(), false);
+	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
 	                    	break targetloop;
@@ -211,7 +213,7 @@ public class COMPJSC extends MXMLJSC
 	                    break;
 	                case JS_NATIVE:
 	                	COMPJSCNative jsc = new COMPJSCNative();
-	                    result = jsc.mainNoExit(args, problems.getProblems(), false);
+	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
 	                    	break targetloop;

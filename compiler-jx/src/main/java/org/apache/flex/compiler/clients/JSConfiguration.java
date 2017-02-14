@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
@@ -296,4 +297,21 @@ public class JSConfiguration extends Configuration
     	return value;
     }
 
+    /**
+     * @return JS equivalent of -load-config
+     */
+    public String getJsLoadConfig()
+    {
+    	return null;
+    }
+
+    /**
+     * Placeholder.  MXMLJSC picks off these values and changes them to load-config for the JS compilers
+     */
+    @Config(allowMultiple = true)
+    @Arguments("filename")
+    public void setJsLoadConfig(ConfigurationValue cv, String filename) throws ConfigurationException
+    {
+        
+    }
 }

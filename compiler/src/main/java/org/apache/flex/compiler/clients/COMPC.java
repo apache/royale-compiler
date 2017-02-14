@@ -108,7 +108,7 @@ public class COMPC extends MXMLC implements FlexTool
     @Override
     protected Configurator createConfigurator()
     {
-        return new Configurator(COMPCConfiguration.class);
+        return new Configurator(configurationClass);
     }
 
     @Override

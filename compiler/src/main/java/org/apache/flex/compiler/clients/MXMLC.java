@@ -399,6 +399,7 @@ public class MXMLC implements FlexTool
     public ProblemQuery problems;
     public ConfigurationBuffer configBuffer;
 
+	public Class<? extends Configuration> configurationClass = Configuration.class;
     protected Configurator projectConfigurator;
 
     protected ICompilationUnit mainCU;
@@ -449,9 +450,9 @@ public class MXMLC implements FlexTool
      * @return a new instance or subclass of {@link Configurator}. 
      * 
      */
-    protected Configurator createConfigurator()
+	protected Configurator createConfigurator()
     {
-        return new Configurator();
+        return new Configurator(configurationClass);
     }
     
     /**
