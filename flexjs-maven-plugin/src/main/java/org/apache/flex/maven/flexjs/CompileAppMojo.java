@@ -177,8 +177,8 @@ public class CompileAppMojo
     @Override
     protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
-        defines.add(new Define("COMPILE::JS", "false"));
-        defines.add(new Define("COMPILE::SWF", "true"));
+        defines.add(new Define("COMPILE::JS", outputJavaScript ? "true" : "false"));
+        defines.add(new Define("COMPILE::SWF", outputJavaScript ? "false" : "true"));
         return defines;
     }
 
