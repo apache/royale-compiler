@@ -176,6 +176,9 @@ public class COMPJSC extends MXMLJSC
     private int _mainNoExit(final String[] args,
             List<ICompilerProblem> outProblems)
     {
+    	System.out.println("args:");
+    	for (String arg : args)
+    		System.out.println(arg);
         ExitCode exitCode = ExitCode.SUCCESS;
         try
         {
@@ -186,7 +189,9 @@ public class COMPJSC extends MXMLJSC
 
             if (continueCompilation)
             {
-
+            	List<String> targets = config.getCompilerTargets();
+            	for (String target : targets)
+            		System.out.println("target:" + target);
             	targetloop:
             	for (String target : config.getCompilerTargets())
             	{
@@ -194,6 +199,7 @@ public class COMPJSC extends MXMLJSC
             		switch (JSTargetType.fromString(target))
 	                {
 	                case SWF:
+	                	System.out.println("COMPC");
 	                    COMPC compc = new COMPC();
 	                    compc.configurationClass = JSGoogConfiguration.class;
 	                    result = compc.mainNoExit(removeJSArgs(args));
@@ -204,6 +210,7 @@ public class COMPJSC extends MXMLJSC
 	                    }
 	                    break;
 	                case JS_FLEX:
+	                	System.out.println("COMPCJSCFlex");
 	                	COMPJSCFlex flex = new COMPJSCFlex();
 	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)

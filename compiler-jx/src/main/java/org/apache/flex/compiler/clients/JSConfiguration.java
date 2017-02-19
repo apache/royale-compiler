@@ -34,9 +34,11 @@ import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
 import org.apache.flex.compiler.internal.config.annotations.Arguments;
 import org.apache.flex.compiler.internal.config.annotations.Config;
+import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
 import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
 import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
+import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 
 import com.google.common.collect.ImmutableList;
 
@@ -79,6 +81,7 @@ public class JSConfiguration extends Configuration
     @InfiniteArguments
     public void setCompilerTargets(ConfigurationValue cv, String[] targetlist)
     {
+        targets.clear();
     	for (String target : targetlist)
     		targets.add(target);
     }
@@ -92,8 +95,10 @@ public class JSConfiguration extends Configuration
     public void setJSOutputType(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-         targets.clear();
-         targets.add(value);
+    	// ignore if set via compiler.targets
+    	if (targets.size() > 0) return;
+        targets.clear();
+        targets.add(value);
     }
 
     //
@@ -121,12 +126,9 @@ public class JSConfiguration extends Configuration
 
     private final List<String> jsexternalLibraryPath = new ArrayList<String>();
 
-    @Override
-    public List<String> getCompilerExternalLibraryPath()
+    public List<String> getCompilerJsExternalLibraryPath()
     {
-    	if (jsexternalLibraryPath.size() > 0)
-    		return jsexternalLibraryPath;
-    	return super.getCompilerExternalLibraryPath();
+    	return jsexternalLibraryPath;
     }
 
     @Config(allowMultiple = true, isPath = true)
@@ -147,12 +149,9 @@ public class JSConfiguration extends Configuration
 
     private final List<String> jslibraryPath = new ArrayList<String>();
 
-    @Override
-    public List<String> getCompilerLibraryPath()
+    public List<String> getCompilerJsLibraryPath()
     {
-    	if (jslibraryPath.size() > 0)
-    		return jslibraryPath;
-    	return super.getCompilerLibraryPath();
+    	return jslibraryPath;
     }
 
     /**
@@ -287,16 +286,6 @@ public class JSConfiguration extends Configuration
         this.jsoutput = getOutputPath(val, output);
     }
 
-    @Override
-    protected String overrideDefinedValue(String name, String value)
-    {
-    	if (name.equals("COMPILE::SWF") && value.equals("AUTO"))
-    		return "false";
-    	if (name.equals("COMPILE::JS") && value.equals("AUTO"))
-    		return "true";
-    	return value;
-    }
-
     /**
      * @return JS equivalent of -load-config
      */
@@ -314,4 +303,62 @@ public class JSConfiguration extends Configuration
     {
         
     }
+    
+    //////////////////////////////////////////////////////////////////////////
+    // compiler.js-namespaces
+    //////////////////////////////////////////////////////////////////////////
+
+    private List<MXMLNamespaceMapping> jsmanifestMappings;
+
+    public List<MXMLNamespaceMapping> getCompilerJsNamespacesManifestMappings()
+    {
+        return jsmanifestMappings;
+    }
+
+    /**
+     * Configures a list of many manifests mapped to a single namespace URI.
+     * <namespace> <uri>library:adobe/flex/something</uri> <manifest>something-manifest.xml</manifest>
+     * <manifest>something-else-manifest.xml</manifest> ... </namespace>
+     * 
+     * @param cfgval The configuration value context.
+     * @param args A List of values for the namespace element, with the first item expected to be the uri and the
+     *        remaining are manifest paths.
+     */
+    @Config(allowMultiple = true)
+    @Mapping({ "compiler", "js-namespaces", "namespace" })
+    @Arguments({ "uri", "manifest" })
+    @InfiniteArguments
+    @FlexOnly
+    public void setCompilerJsNamespacesNamespace(ConfigurationValue cfgval, List<String> args)
+            throws ConfigurationException
+    {
+        if (args == null)
+            throw new ConfigurationException.CannotOpen(null, cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+
+        // allow -compiler.namespaces.namespace= which means don't add
+        // anything, which matches the behavior of things like -compiler.library-path
+        // which don't throw an error in this case either.
+        if (args.isEmpty())
+            return;
+
+        if (args.size() < 2)
+            throw new ConfigurationException.NamespaceMissingManifest("namespace", cfgval.getSource(),
+                    cfgval.getLine());
+
+        if (args.size() % 2 != 0)
+            throw new ConfigurationException.IncorrectArgumentCount(args.size() + 1, args.size(), cfgval.getVar(),
+                    cfgval.getSource(), cfgval.getLine());
+
+        if (jsmanifestMappings == null)
+            jsmanifestMappings = new ArrayList<MXMLNamespaceMapping>();
+
+        for (int i = 0; i < args.size() - 1; i += 2)
+        {
+            final String uri = args.get(i);
+            final String manifestFile = args.get(i + 1);
+            final String path = resolvePathStrict(manifestFile, cfgval);
+            jsmanifestMappings.add(new MXMLNamespaceMapping(uri, path));
+        }
+    }
+
 }

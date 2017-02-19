@@ -28,10 +28,20 @@
 #end
         </library-path>
 
+        <js-library-path>
+            #foreach($artifact in $jsLibraries)            <path-element>$artifact.file</path-element>
+            #end
+        </js-library-path>
+
         <external-library-path>
 #foreach($artifact in $externalLibraries)            <path-element>$artifact.file</path-element>
 #end
         </external-library-path>
+
+        <js-external-library-path>
+            #foreach($artifact in $jsExternalLibraries)            <path-element>$artifact.file</path-element>
+            #end
+        </js-external-library-path>
 
         <theme>
 #foreach($artifact in $themeLibraries)           <filename>$artifact.file</filename>
@@ -50,6 +60,14 @@
             </namespace>
 #end
         </namespaces>
+
+        <js-namespaces>
+#foreach($jsnamespace in $jsNamespaces)            <namespace>
+                <uri>$jsnamespace.uri</uri>
+                <manifest>$jsnamespace.manifest</manifest>
+            </namespace>
+#end
+        </js-namespaces>
 
         <keep-as3-metadata>
 #foreach($metadata in $keepAs3Metadata)            <name>$metadata</name>

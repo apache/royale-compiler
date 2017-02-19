@@ -44,7 +44,7 @@ public class CompileASMojo
 
     @Override
     protected String getToolGroupName() {
-        return "Falcon";
+        return "FlexJS";
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CompileASMojo
 
     @Override
     protected String getConfigFileName() throws MojoExecutionException {
-        return "compile-as-config.xml";
+        return "compile-swf-config.xml";
     }
 
     @Override
@@ -78,6 +78,14 @@ public class CompileASMojo
     }
 
     @Override
+    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
+        List<String> args = super.getCompilerArgs(configFile);
+        args.add("-compiler.targets=SWF,JSFlex");
+        args.add("-compiler.strict-xml=true");
+        return args;
+    }
+
+    @Override
     protected List<Namespace> getNamespaces() {
         List<Namespace> namespaces = new LinkedList<Namespace>();
         for(Namespace namespace : super.getNamespaces()) {
@@ -89,10 +97,21 @@ public class CompileASMojo
     }
 
     @Override
+    protected List<Namespace> getNamespacesJS() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        for(Namespace namespace : super.getNamespaces()) {
+            if(namespace.getType().equals(Namespace.TYPE_DEFAULT) || namespace.getType().equals(Namespace.TYPE_JS)) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
+    }
+    
+    @Override
     protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
-        defines.add(new Define("COMPILE::JS", "false"));
-        defines.add(new Define("COMPILE::SWF", "true"));
+        defines.add(new Define("COMPILE::JS", "AUTO"));
+        defines.add(new Define("COMPILE::SWF", "AUTO"));
         return defines;
     }
 
@@ -100,5 +119,11 @@ public class CompileASMojo
     protected boolean includeLibrary(Artifact library) {
         return !"typedefs".equalsIgnoreCase(library.getClassifier());
     }
+    
+    @Override
+    protected boolean includeLibraryJS(Artifact library) {
+        return "typedefs".equalsIgnoreCase(library.getClassifier());
+    }
+
 
 }

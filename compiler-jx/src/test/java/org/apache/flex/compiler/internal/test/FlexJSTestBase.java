@@ -63,6 +63,7 @@ public class FlexJSTestBase extends TestBase
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\rpc.swc")));
         libraries.add(new File(env.ASJS + "/frameworks/libs/Core.swc"));
+        libraries.add(new File(env.ASJS + "/frameworks/libs/Basic.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/libs/HTML.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/libs/Binding.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/libs/Network.swc"));

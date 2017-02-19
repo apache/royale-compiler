@@ -456,6 +456,7 @@ public class FileConfigurator
     protected static final ImmutableSet<String> VALID_SUBTREE_TAG = ImmutableSet.of(
             "compiler",
             "compiler.namespaces",
+            "compiler.js-namespaces",
             "compiler.fonts",
             "compiler.fonts.languages",
             "compiler.mxml",

@@ -157,7 +157,7 @@ public class TestFlexJSProject extends TestGoogProject
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
+        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config, (FlexJSProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/overrides").getPath();
@@ -180,7 +180,7 @@ public class TestFlexJSProject extends TestGoogProject
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
+        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config, (FlexJSProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/bad_overrides").getPath();

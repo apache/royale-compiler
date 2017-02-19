@@ -23,10 +23,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
@@ -37,6 +40,7 @@ import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.targets.ITargetAttributes;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
@@ -361,6 +365,54 @@ public class FlexJSProject extends FlexProject
 
     public IBackend getBackend() {
         return backend;
+    }
+
+    @Override
+    protected void overrideDefines(Map<String, String> defines)
+    {
+    	if (defines.containsKey("COMPILE::SWF"))
+    	{
+    		if (defines.get("COMPILE::SWF").equals("AUTO"))
+    			defines.put("COMPILE::SWF", "false");
+    	}
+    	if (defines.containsKey("COMPILE::JS"))
+    	{
+    		if (defines.get("COMPILE::JS").equals("AUTO"))
+    			defines.put("COMPILE::JS", "true");
+    	}
+    }
+
+    /**
+     * List of external libraries so it can be overridden
+     */
+    public List<String> getCompilerExternalLibraryPath(Configuration config)
+    {
+    	List<String> list = ((JSConfiguration)config).getCompilerJsExternalLibraryPath();
+    	if (list != null && list.size() > 0)
+    		return list;
+    	return config.getCompilerExternalLibraryPath();
+    }
+
+    /**
+     * List of libraries so it can be overridden
+     */
+    public List<String> getCompilerLibraryPath(Configuration config)
+    {
+    	List<String> list = ((JSConfiguration)config).getCompilerJsLibraryPath();
+    	if (list != null && list.size() > 0)
+    		return list;
+    	return config.getCompilerLibraryPath();
+    }
+    
+    /**
+     * List of libraries so it can be overridden
+     */
+    public List<MXMLNamespaceMapping> getCompilerNamespacesManifestMappings(Configuration config)
+    {
+    	List<MXMLNamespaceMapping> list = ((JSConfiguration)config).getCompilerJsNamespacesManifestMappings();
+    	if (list != null && list.size() > 0)
+    		return list;
+    	return config.getCompilerNamespacesManifestMappings();
     }
 
 }

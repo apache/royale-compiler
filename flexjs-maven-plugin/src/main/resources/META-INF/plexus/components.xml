@@ -46,7 +46,6 @@
                             <compile>
                                 org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-as,
                                 org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-js,
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-extern,
                             </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources

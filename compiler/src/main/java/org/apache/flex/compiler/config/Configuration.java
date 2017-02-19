@@ -1870,16 +1870,7 @@ public class Configuration
         if (configVars == null)
             configVars = new LinkedHashMap<String, String>();
 
-        configVars.put(name, overrideDefinedValue(name, value));
-    }
-
-    protected String overrideDefinedValue(String name, String value)
-    {
-    	if (name.equals("COMPILE::SWF") && value.equals("AUTO"))
-    		return "true";
-    	if (name.equals("COMPILE::JS") && value.equals("AUTO"))
-    		return "false";
-    	return value;
+        configVars.put(name, value);
     }
     
     //

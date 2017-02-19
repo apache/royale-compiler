@@ -39,6 +39,7 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.compiler.asdoc.IASDocBundleDelegate;
 import org.apache.flex.compiler.common.DependencyTypeSet;
 import org.apache.flex.compiler.common.XMLName;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
@@ -1774,12 +1775,27 @@ public class FlexProject extends ASProject implements IFlexProject
     @Override
     public void setDefineDirectives(Map<String, String> defines)
     {
+    	overrideDefines(defines);
         // TODO: This seems strange. Each call to the setter
         // adds new defines. How do you get rid of the old ones?
         addConfigVariables(defines);
         clean();
     }
 
+    protected void overrideDefines(Map<String, String> defines)
+    {
+    	if (defines.containsKey("COMPILE::SWF"))
+    	{
+    		if (defines.get("COMPILE::SWF").equals("AUTO"))
+    			defines.put("COMPILE::SWF", "true");
+    	}
+    	if (defines.containsKey("COMPILE::JS"))
+    	{
+    		if (defines.get("COMPILE::JS").equals("AUTO"))
+    			defines.put("COMPILE::JS", "false");
+    	}
+    }
+    
     @Override
     public void setExtensionLibraries(Map<File, List<String>> extensions)
     {
@@ -2317,4 +2333,27 @@ public class FlexProject extends ASProject implements IFlexProject
         return false;
     }
 
+    /**
+     * List of external libraries so it can be overridden
+     */
+    public List<String> getCompilerExternalLibraryPath(Configuration config)
+    {
+    	return config.getCompilerExternalLibraryPath();
+    }
+
+    /**
+     * List of libraries so it can be overridden
+     */
+    public List<String> getCompilerLibraryPath(Configuration config)
+    {
+    	return config.getCompilerLibraryPath();
+    }
+
+    /**
+     * List of libraries so it can be overridden
+     */
+    public List<MXMLNamespaceMapping> getCompilerNamespacesManifestMappings(Configuration config)
+    {
+    	return config.getCompilerNamespacesManifestMappings();
+    }
 }
