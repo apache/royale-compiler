@@ -21,9 +21,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * goal which compiles a project into a flexjs swc library.
@@ -69,14 +71,19 @@ public class CompileJSMojo
 
     @Override
     public void execute() throws MojoExecutionException {
-        File outputDirectory = getOutput();
-        if(!outputDirectory.exists()) {
-            if(!outputDirectory.mkdirs()) {
-                throw new MojoExecutionException("Could not create output directory " + outputDirectory.getPath());
-            }
+        // FlexJS requires an existing SWC. If we skipped
+        // the AS compilation, this doesn't exist yet so
+        // we simply generate an empty swc and use that.
+        if(!getOutput().exists()) {
+            createEmptySwc(getOutput());
         }
 
         super.execute();
+
+        if(getOutput().exists()) {
+            // Attach the file created by the compiler as artifact file to maven.
+            project.getArtifact().setFile(getOutput());
+        }
     }
 
     @Override
@@ -115,6 +122,42 @@ public class CompileJSMojo
     @Override
     protected boolean includeLibrary(Artifact library) {
         return "typedefs".equalsIgnoreCase(library.getClassifier());
+    }
+
+    private void createEmptySwc(File outputFile) throws MojoExecutionException {
+        if(!outputFile.getParentFile().exists()) {
+            if(!outputFile.getParentFile().mkdirs()) {
+                throw new MojoExecutionException("Could not create directory " + outputFile.getParent());
+            }
+        }
+
+        // Create a dummy swc (A zip file which contains a minimal catalog.xml) */
+        try {
+            OutputStream stream = new FileOutputStream(outputFile);
+            stream = new BufferedOutputStream(stream);
+            ZipOutputStream zipStream = new ZipOutputStream(stream);
+            ZipEntry entry = new ZipEntry("catalog.xml");
+            zipStream.putNextEntry(entry);
+            byte[] dummyCatalog = (
+                    "<?xml version=\"1.0\" ?>\n" +
+                    "<swc xmlns=\"http://www.adobe.com/flash/swccatalog/9\">\n" +
+                    "    <versions>\n" +
+                    "        <swc version=\"1.2\"/>\n" +
+                    "        <compiler name=\"Apache Flex - FlexJS: Compiler: Compiler\" version=\"0.8\" build=\"0-SNAPSHOT\"/>\n" +
+                    "    </versions>\n" +
+                    "    <features>\n" +
+                    "    </features>\n" +
+                    "    <libraries>\n" +
+                    "    </libraries>\n" +
+                    "</swc>").getBytes();
+            zipStream.write(dummyCatalog);
+            zipStream.closeEntry();
+            zipStream.close();
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException("Could not create empty zip file at " + outputFile.getPath());
+        } catch (IOException e) {
+            throw new MojoExecutionException("Could not create empty zip file at " + outputFile.getPath());
+        }
     }
 
 }
