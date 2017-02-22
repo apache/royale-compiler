@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSASDocEmitter;
 import org.apache.flex.compiler.driver.IBackend;
@@ -42,11 +43,15 @@ import org.apache.flex.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocDITABackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
+import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSASDocProject;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
+import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
@@ -160,8 +165,20 @@ public class ASDOCJSC extends MXMLJSCFlex
 
     public ASDOCJSC(IBackend backend)
     {
+    	super(backend);
         project = new FlexJSASDocProject(workspace, backend);
     }
+    
+    protected void init()
+    {
+        IBackend backend = new MXMLFlexJSBackend();
+        workspace = new Workspace();
+        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        project = new FlexJSProject(workspace, backend);
+        problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
+        asFileHandler = backend.getSourceFileHandlerInstance();    	
+    }
+
 
     /**
      * Main body of this program. This method is called from the public static

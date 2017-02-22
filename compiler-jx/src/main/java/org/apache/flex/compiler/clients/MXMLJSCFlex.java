@@ -178,7 +178,11 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
     
     public MXMLJSCFlex()
     {
-        IBackend backend = new MXMLFlexJSBackend();
+    	this(new MXMLFlexJSBackend());
+    }
+    
+    public MXMLJSCFlex(IBackend backend)
+    {
         workspace = new Workspace();
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
         project = new FlexJSProject(workspace, backend);
