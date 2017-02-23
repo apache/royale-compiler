@@ -316,6 +316,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                {
 	                case SWF:
 	                    mxmlc = new MXMLC();
+	                    mxmlc.configurationClass = JSGoogConfiguration.class;
 	                    if (noLink)
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
