@@ -717,59 +717,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         ArrayList<PackageFooterEmitter.AccessorData> accessorData = new ArrayList<PackageFooterEmitter.AccessorData>();
         HashMap<String, PropertyNodes> accessors = asEmitter.getModel().getPropertyMap();
-        for (String propName : accessors.keySet())
-        {
-        	PropertyNodes p = accessors.get(propName);
-
-        	IFunctionNode accessorNode = p.getter;
-        	if (accessorNode == null)
-        		accessorNode = p.setter;
-            String ns = accessorNode.getNamespace();
-            if (ns == IASKeywordConstants.PUBLIC)
-            {
-            	PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
-            	accessorData.add(data);
-            	data.name = accessorNode.getName();
-
-                data.isStatic = accessorNode.hasModifier(ASModifier.STATIC);
-            	if (p.getter != null)
-            	{
-                     data.type = p.getter.getReturnTypeNode().resolveType(fjs).getQualifiedName();
-                     if (p.setter !=null) {
-                         data.access = "readwrite";
-                     } else data.access = "readonly";
-                }
-            	else
-                {
-                     data.type = p.setter.getVariableTypeNode().resolveType(fjs).getQualifiedName();
-                     data.access = "writeonly";
-                }
-
-	    	    data.declaredBy = (cdef.getQualifiedName());
-        	    IMetaTagsNode metaData = accessorNode.getMetaTags();
-        	    if (metaData != null)
-        	    {
-        	    	IMetaTagNode[] tags = metaData.getAllTags();
-        	    	if (tags.length > 0)
-        	    	{
-        	    		data.metaData = tags;
-    	    			/* accessors don't need exportProp since they are referenced via the defineProp data structure
-        	    		for (IMetaTagNode tag : tags)
-        	    		{
-        	    			String tagName =  tag.getTagName();
-        	    			if (exportMetadata.contains(tagName))
-        	    			{
-        	    				if (data.isStatic)
-        	    					exportSymbols.add(data.name);
-        	    				else
-            	    				exportProperties.add(data.name);
-        	    			}
-        	    		}
-        	    			*/
-        	    	}
-        	    }
-            }
-        }
+        //instance accessors
+        collectAccessors(accessors,accessorData,cdef);
+        accessors = asEmitter.getModel().getStaticPropertyMap();
+        //static accessors
+        collectAccessors(accessors,accessorData,cdef);
 
         //additional bindables
         HashMap<String, BindableVarInfo> bindableVars = asEmitter.getModel().getBindableVars();
@@ -897,6 +849,65 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 formatQualifiedName(cdef.getQualifiedName()),
                 exportProperties,
                 exportSymbols);
+    }
+
+    private void collectAccessors(HashMap<String, PropertyNodes> accessors, ArrayList<PackageFooterEmitter.AccessorData> accessorData,IClassDefinition cdef ) {
+        JSFlexJSEmitter asEmitter = (JSFlexJSEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        FlexJSProject fjs = (FlexJSProject) getMXMLWalker().getProject();
+
+        for (String propName : accessors.keySet())
+        {
+            PropertyNodes p = accessors.get(propName);
+
+            IFunctionNode accessorNode = p.getter;
+            if (accessorNode == null)
+                accessorNode = p.setter;
+            String ns = accessorNode.getNamespace();
+            if (ns == IASKeywordConstants.PUBLIC)
+            {
+                PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
+                accessorData.add(data);
+                data.name = accessorNode.getName();
+
+                data.isStatic = accessorNode.hasModifier(ASModifier.STATIC);
+                if (p.getter != null)
+                {
+                    data.type = p.getter.getReturnTypeNode().resolveType(fjs).getQualifiedName();
+                    if (p.setter !=null) {
+                        data.access = "readwrite";
+                    } else data.access = "readonly";
+                }
+                else
+                {
+                    data.type = p.setter.getVariableTypeNode().resolveType(fjs).getQualifiedName();
+                    data.access = "writeonly";
+                }
+
+                data.declaredBy = (cdef.getQualifiedName());
+                IMetaTagsNode metaData = accessorNode.getMetaTags();
+                if (metaData != null)
+                {
+                    IMetaTagNode[] tags = metaData.getAllTags();
+                    if (tags.length > 0)
+                    {
+                        data.metaData = tags;
+    	    			/* accessors don't need exportProp since they are referenced via the defineProp data structure
+        	    		for (IMetaTagNode tag : tags)
+        	    		{
+        	    			String tagName =  tag.getTagName();
+        	    			if (exportMetadata.contains(tagName))
+        	    			{
+        	    				if (data.isStatic)
+        	    					exportSymbols.add(data.name);
+        	    				else
+            	    				exportProperties.add(data.name);
+        	    			}
+        	    		}
+        	    			*/
+                    }
+                }
+            }
+        }
     }
 
     //--------------------------------------------------------------------------
