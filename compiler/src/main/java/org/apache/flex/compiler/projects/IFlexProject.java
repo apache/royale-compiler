@@ -30,6 +30,7 @@ import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.css.ICSSManager;
+import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
 import org.apache.flex.compiler.internal.config.IWriteOnlyProjectSettings;
 import org.apache.flex.compiler.internal.css.CSSManager;
@@ -223,5 +224,9 @@ public interface IFlexProject extends IASProject, IXMLNameResolver, IWriteOnlyPr
      */
     List<MXMLNamespaceMapping> getCompilerNamespacesManifestMappings(Configuration config);
 
+    /**
+     * True if Rule will work on the destination platform
+     */
+    boolean isPlatformRule(ICSSRule rule);
 
 }

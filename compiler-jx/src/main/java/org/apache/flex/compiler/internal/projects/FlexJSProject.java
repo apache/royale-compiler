@@ -31,6 +31,8 @@ import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
+import org.apache.flex.compiler.css.ICSSMediaQueryCondition;
+import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
@@ -52,6 +54,8 @@ import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author aharui
@@ -414,5 +418,17 @@ public class FlexJSProject extends FlexProject
     		return list;
     	return config.getCompilerNamespacesManifestMappings();
     }
+    
+	@Override
+	public boolean isPlatformRule(ICSSRule rule) {
+        ImmutableList<ICSSMediaQueryCondition> mqlist = rule.getMediaQueryConditions();
+        int n = mqlist.size();
+        if (n > 0)
+        {
+            if (mqlist.get(0).toString().equals("-flex-flash"))
+                return false;
+        }
+		return true;
+	}
 
 }

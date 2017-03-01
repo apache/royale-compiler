@@ -44,6 +44,7 @@ import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.css.ICSSManager;
+import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
@@ -2356,4 +2357,10 @@ public class FlexProject extends ASProject implements IFlexProject
     {
     	return config.getCompilerNamespacesManifestMappings();
     }
+
+	@Override
+	public boolean isPlatformRule(ICSSRule rule) {
+		return true;
+	}
+
 }
