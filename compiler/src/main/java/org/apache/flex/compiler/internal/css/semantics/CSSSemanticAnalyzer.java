@@ -219,12 +219,13 @@ public class CSSSemanticAnalyzer
             final IXMLNameResolver xmlNameResolver,
             final ICSSDocument css,
             final Collection<ICompilerProblem> problems,
+            final IFlexProject project,
             final boolean isCompatibilityVersion3)
     {
         assert xmlNameResolver != null : "Expected xmlNameResolver";
         assert css != null : "Expected CSS";
 
-        final ImmutableSet<ICSSSelector> allSelectors = getAllSelectors(css);
+        final ImmutableSet<ICSSSelector> allSelectors = getAllSelectors(css, project);
 
         if (isCompatibilityVersion3)
             return resolveSelectorsAsFlex3Style(allSelectors);
@@ -314,13 +315,15 @@ public class CSSSemanticAnalyzer
      * @param document CSS document
      * @return All the selectors in the CSS.
      */
-    public static ImmutableSet<ICSSSelector> getAllSelectors(final ICSSDocument document)
+    public static ImmutableSet<ICSSSelector> getAllSelectors(final ICSSDocument document, final IFlexProject project)
     {
         assert document != null : "Expected CSS document";
 
         final ImmutableSet.Builder<ICSSSelector> builder = new ImmutableSet.Builder<ICSSSelector>();
         for (final ICSSRule rule : document.getRules())
         {
+        	if (!project.isPlatformRule(rule))
+        		continue;
             for (final ICSSSelector subject : rule.getSelectorGroup())
             {
                 ICSSSelector selector = subject;
@@ -469,7 +472,7 @@ public class CSSSemanticAnalyzer
     {
         final boolean isFlex3CSS = flexProject.getCSSManager().isFlex3CSS();
         final ImmutableMap<ICSSSelector, String> resolvedSelectors =
-                resolveSelectors(flexProject, cssDocument, problems, isFlex3CSS);
+                resolveSelectors(flexProject, cssDocument, problems, flexProject, isFlex3CSS);
         final Predicate<ICSSRule> predicate;
         if (isFlex3CSS)
         {
