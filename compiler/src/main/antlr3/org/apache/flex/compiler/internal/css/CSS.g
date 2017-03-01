@@ -580,9 +580,9 @@ RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 
 /** Arguments of a function call property value. */
 ARGUMENTS
-    :   '(' ( options {greedy=false;}: . )* ')'
+    :   '(' ( options {greedy=false;}: ARGUMENTS | . )* ')'
     ;
- 
+
 /**
  * Match multiple semi-colons in Lexer level so that the parser can have a 
  * finite number of look ahead, instead of LL(*);
