@@ -46,8 +46,8 @@
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
-    <property name="sdk" value="${flextasks}/../compiler/lib"/>
-    <property name="compiler" value="${flextasks}/../compiler"/>
+    <property name="sdk" value="${flextasks}/../compiler-jx/lib"/>
+    <property name="compiler" value="${flextasks}/../compiler-jx"/>
 
     <property name="src.depend" value="true"/>
 
@@ -76,7 +76,7 @@
     -->
 
     <path id="classpath">
-        <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
+        <fileset dir="${compiler}/lib" includes="**/*.jar"/>
         <fileset dir="${compiler}/../compiler-build-tools/target/classes" includes="**/*.class"/>
     </path>
 
@@ -116,7 +116,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="compiler.jar"/>
+                <attribute name="Class-Path" value="jsc.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar"/>
             </manifest>
             <fileset dir="${flextasks}/src/main/resources" includes="flexTasks.tasks"/>
             <fileset dir="${flextasks}/target/classes" includes="${flextasks.ant.binaries}"/>
@@ -153,7 +153,7 @@
 
     <target name="clean" description="clean">
         <delete dir="${flextasks}/target" failonerror="false"/>
-        <delete dir="${sdk}/falcon-flextasks.jar" failonerror="false"/>
+        <delete file="${sdk}/falcon-flextasks.jar" failonerror="false"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">

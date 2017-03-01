@@ -237,9 +237,9 @@ public abstract class FlexTask extends Java
         if (flexHomeProperty == null)
             throw new BuildException("FLEX_HOME must be set to use the Flex Ant Tasks");
 		
-        String falconHomeProperty = getProject().getProperty("FALCON_HOME");
+        String falconHomeProperty = getProject().getProperty("FALCONJX_HOME");
         if (falconHomeProperty == null)
-            throw new BuildException("FALCON_HOME must be set to use the Flex Ant Tasks");
+            throw new BuildException("FALCONJX_HOME must be set to use the Flex Ant Tasks");
 				
         System.setProperty("FLEX_HOME", flexHomeProperty);
         String flexlibProperty = flexHomeProperty.concat("/frameworks/");
@@ -361,7 +361,7 @@ public abstract class FlexTask extends Java
         }
         catch (ClassNotFoundException ignoredClassNotFoundException)
         {
-            String flexHomeProperty = getProject().getProperty("FALCON_HOME");
+            String flexHomeProperty = getProject().getProperty("FALCONJX_HOME");
 
             if (flexHomeProperty != null)
             {
@@ -408,7 +408,7 @@ public abstract class FlexTask extends Java
             else
             {
                 throw new BuildException("The class, " + className +
-                                         ", must be in the classpath or the FALCON_HOME property must be set.",
+                                         ", must be in the classpath or the FALCONJX_HOME property must be set.",
                                          getLocation());
             }
         }

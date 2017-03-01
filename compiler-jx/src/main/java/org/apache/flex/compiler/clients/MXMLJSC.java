@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.flex.compiler.clients.MXMLC.ExitCode;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
@@ -188,6 +189,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
 
         final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
     }
 
     public static JSOutputType jsOutputType;
@@ -225,6 +231,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public static int staticMainNoExit(final String[] args)
     {
         long startTime = System.nanoTime();
+        System.out.println("MXMLJSC");
+        for (String arg : args)
+        	System.out.println(arg);
         final MXMLJSC mxmlc = new MXMLJSC();
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
@@ -911,4 +920,21 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     		return mxmlc.writeSWF(output);
     	return 0;
     }
+    
+    /**
+     * Determines whether an exit code should be considered
+     * a fatal failure, such as for an Ant task.
+     * 
+     * @param code A numeric exit code.
+     * @return <code>true</code> if the Ant task failed.
+     */
+    public static boolean isFatalFailure(final int code)
+    {
+        // This method really belongs in ExitCode
+        // but that would complicate FlexTask.
+        return code == ExitCode.FAILED_WITH_ERRORS.getCode() ||
+               code == ExitCode.FAILED_WITH_EXCEPTIONS.getCode() ||
+               code == ExitCode.FAILED_WITH_CONFIG_PROBLEMS.getCode();
+    }
+
 }

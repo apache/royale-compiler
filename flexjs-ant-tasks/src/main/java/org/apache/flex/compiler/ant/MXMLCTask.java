@@ -80,9 +80,9 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
 
 	private static final String TASK_NAME = "mxmlc";
 	
-	private static final String TOOL_JAR_FILE_NAME = "compiler.jar";
+	private static final String TOOL_JAR_FILE_NAME = "jsc.jar";
 
-	private static final String TOOL_CLASS_NAME = "org.apache.flex.compiler.clients.MXMLC";
+	private static final String TOOL_CLASS_NAME = "org.apache.flex.compiler.clients.MXMLJSC";
 
 	private static final String TOOL_METHOD_NAME = "staticMainNoExit";
 	
@@ -158,6 +158,7 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
         new ConfigBoolean(new OptionSpec("compiler.warn-unlikely-function-value")),
         new ConfigBoolean(new OptionSpec("compiler.warn-xml-class-has-changed")),
         new ConfigBoolean(new OptionSpec("static-link-runtime-shared-libraries", "static-rsls")),
+        new ConfigBoolean(new OptionSpec("skip-transpile")),
         new ConfigBoolean(new OptionSpec("verify-digests")),
         new ConfigBoolean(new OptionSpec("use-direct-blit")),
         new ConfigBoolean(new OptionSpec("use-gpu")),
@@ -170,6 +171,8 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
         new ConfigString(new OptionSpec("compiler.locale")),
         new ConfigString(new OptionSpec("compiler.mxml.compatibility-version")),
         new ConfigString(new OptionSpec("compiler.services")),
+        new ConfigString(new OptionSpec("compiler.targets")),
+        new ConfigString(new OptionSpec("closure-lib")),
         new ConfigString(new OptionSpec("debug-password")),
         new ConfigString(new OptionSpec("dump-config")),
         new ConfigString(new OptionSpec("link-report")),
@@ -215,11 +218,17 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
     private static final OptionSpec EXTERNAL_LIBRARY_PATH =
     	new OptionSpec("compiler.external-library-path", "el");
     
+    private static final OptionSpec JS_EXTERNAL_LIBRARY_PATH =
+    new OptionSpec("compiler.js-external-library-path");
+    
     private static final OptionSpec INCLUDE_LIBRARIES =
     	new OptionSpec("compiler.include-libraries");
     
     private static final OptionSpec LIBRARY_PATH =
     	new OptionSpec("compiler.library-path", "l");
+    
+    private static final OptionSpec JS_LIBRARY_PATH =
+    new OptionSpec("compiler.js-library-path", "l");
     
     private static final OptionSpec SOURCE_PATH =
     	new OptionSpec("compiler.source-path", "sp");
@@ -409,6 +418,12 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
             nestedFileSets.add(fs);
             return fs;
         }
+        else if (JS_EXTERNAL_LIBRARY_PATH.matches(name))
+        {
+            FlexFileSet fs = new FlexSWCFileSet(JS_EXTERNAL_LIBRARY_PATH, true);
+            nestedFileSets.add(fs);
+            return fs;
+        }
         else if (INCLUDE_LIBRARIES.matches(name))
         {
             FlexFileSet fs = new FlexSWCFileSet(INCLUDE_LIBRARIES, true);
@@ -418,6 +433,12 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
         else if (LIBRARY_PATH.matches(name))
         {
             FlexFileSet fs = new FlexSWCFileSet(LIBRARY_PATH, true);
+            nestedFileSets.add(fs);
+            return fs;
+        }
+        else if (JS_LIBRARY_PATH.matches(name))
+        {
+            FlexFileSet fs = new FlexSWCFileSet(JS_LIBRARY_PATH, true);
             nestedFileSets.add(fs);
             return fs;
         }

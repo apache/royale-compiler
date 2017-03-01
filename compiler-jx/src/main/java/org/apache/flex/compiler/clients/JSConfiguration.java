@@ -77,7 +77,7 @@ public class JSConfiguration extends Configuration
      */
     @Config(allowMultiple = true, isPath = false)
     @Mapping({ "compiler", "targets" })
-    @Arguments("type")
+    @Arguments("target")
     @InfiniteArguments
     public void setCompilerTargets(ConfigurationValue cv, String[] targetlist)
     {

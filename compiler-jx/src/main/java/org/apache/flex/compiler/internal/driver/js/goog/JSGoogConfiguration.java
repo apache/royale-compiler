@@ -173,6 +173,7 @@ public class JSGoogConfiguration extends JSConfiguration
 
     @Config(allowMultiple = true)
     @Mapping("sdk-js-lib")
+    @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
     public void setSDKJSLib(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
@@ -193,6 +194,7 @@ public class JSGoogConfiguration extends JSConfiguration
 
     @Config(allowMultiple = true)
     @Mapping("external-js-lib")
+    @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
     public void setExternalJSLib(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
@@ -306,6 +308,7 @@ public class JSGoogConfiguration extends JSConfiguration
 
     @Config(allowMultiple = true)
     @Mapping("js-compiler-option")
+    @Arguments("option")
     @InfiniteArguments
     public void setJSCompilerOptions(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
@@ -326,6 +329,7 @@ public class JSGoogConfiguration extends JSConfiguration
 
     @Config(allowMultiple = true)
     @Mapping("js-output-optimization")
+    @Arguments("optimization")
     @InfiniteArguments
     public void setJSOutputOptimizations(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
