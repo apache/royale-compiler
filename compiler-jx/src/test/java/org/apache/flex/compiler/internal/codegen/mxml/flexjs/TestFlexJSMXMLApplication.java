@@ -824,7 +824,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         args[3] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Binding.swc")).getPath();
         args[4] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Network.swc")).getPath();
         args[5] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Collections.swc")).getPath();
-        args[6] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/projects/Basic/target/Basic.swc")).getPath();
+        args[6] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Basic.swc")).getPath();
         args[7] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
         args[8] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again_Flash.swf").getPath();
         if (env.GOOG != null)
