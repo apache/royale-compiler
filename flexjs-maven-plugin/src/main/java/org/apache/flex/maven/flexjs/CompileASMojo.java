@@ -117,12 +117,14 @@ public class CompileASMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        return !"typedefs".equalsIgnoreCase(library.getClassifier());
+        return !("typedefs".equalsIgnoreCase(library.getClassifier()) ||
+                 "js".equalsIgnoreCase(library.getClassifier()));
     }
     
     @Override
     protected boolean includeLibraryJS(Artifact library) {
-        return "typedefs".equalsIgnoreCase(library.getClassifier());
+        return "typedefs".equalsIgnoreCase(library.getClassifier()) ||
+                "js".equalsIgnoreCase(library.getClassifier());
     }
 
 

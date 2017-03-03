@@ -57,11 +57,25 @@
         
         <mxml>
             <children-as-data>true</children-as-data>
+            <imports>
+                <implicit-import>org.apache.flex.events.*</implicit-import>
+                <implicit-import>org.apache.flex.geom.*</implicit-import>
+                <implicit-import>org.apache.flex.core.ClassFactory</implicit-import>
+                <implicit-import>org.apache.flex.core.IFactory</implicit-import>
+            </imports>
         </mxml>
-
         <binding-value-change-event>org.apache.flex.events.ValueChangeEvent</binding-value-change-event>
         <binding-value-change-event-kind>org.apache.flex.events.ValueChangeEvent</binding-value-change-event-kind>
         <binding-value-change-event-type>valueChange</binding-value-change-event-type>
+        <binding-event-handler-event>org.apache.flex.events.Event</binding-event-handler-event>
+        <binding-event-handler-class>org.apache.flex.events.EventDispatcher</binding-event-handler-class>
+        <binding-event-handler-interface>org.apache.flex.events.IEventDispatcher</binding-event-handler-interface>
+        <states-class>org.apache.flex.states.State</states-class>
+        <states-instance-override-class>org.apache.flex.states.AddItems</states-instance-override-class>
+        <states-property-override-class>org.apache.flex.states.SetProperty</states-property-override-class>
+        <states-event-override-class>org.apache.flex.states.SetEventHandler</states-event-override-class>
+        <component-factory-class>org.apache.flex.core.ClassFactory</component-factory-class>
+        <component-factory-interface>org.apache.flex.core.IFactory</component-factory-interface>
 
         <show-deprecation-warnings>false</show-deprecation-warnings>
 
@@ -93,7 +107,15 @@
     </include-namespaces>
 #end
 
-    <js-output-type>FLEXJS</js-output-type>
+#foreach($includeFile in $includeFiles)    <include-file>
+    <name>$includeFile.name</name>
+    <path>$includeFile.path</path>
+</include-file>
+#end
+
+#if($includeLookupOnly)
+<include-lookup-only>$includeLookupOnly</include-lookup-only>
+#end
 
     <keep-asdoc>true</keep-asdoc>
 

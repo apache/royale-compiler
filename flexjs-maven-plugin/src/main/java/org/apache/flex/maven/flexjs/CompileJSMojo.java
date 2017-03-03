@@ -94,7 +94,7 @@ public class CompileJSMojo
         
         if(getOutput().exists()) {
             // Add the extern to the artifact.
-            projectHelper.attachArtifact(project, getOutput(), "typedefs");
+            projectHelper.attachArtifact(project, getOutput(), "js");
         }
     }
     
@@ -119,7 +119,8 @@ public class CompileJSMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        return "typedefs".equalsIgnoreCase(library.getClassifier());
+        return "typedefs".equalsIgnoreCase(library.getClassifier()) ||
+                "js".equalsIgnoreCase(library.getClassifier());
     }
 
     /* return false since we will already list the libraries we want on the

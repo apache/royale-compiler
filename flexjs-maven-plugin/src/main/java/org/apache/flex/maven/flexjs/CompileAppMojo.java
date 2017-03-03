@@ -49,14 +49,13 @@ public class CompileAppMojo
 
     /**
      * Allows providing of a custom htmlTemplate which overrides the built-in one.
-     * This option is only effective if outputJavaScript is true.
      */
     @Parameter
     protected String htmlTemplate;
 
-    @Parameter(defaultValue = "false")
-    protected boolean outputJavaScript;
-
+    @Parameter
+    protected String targets = "SWF,JSFlex";
+    
     @Parameter(defaultValue = "false")
     protected boolean removeCirculars;
 
@@ -65,10 +64,7 @@ public class CompileAppMojo
 
     @Override
     protected String getToolGroupName() {
-        if(outputJavaScript) {
-            return "FlexJS";
-        }
-        return "Falcon";
+        return "FlexJS";
     }
 
     @Override
@@ -78,10 +74,7 @@ public class CompileAppMojo
 
     @Override
     protected String getConfigFileName() throws MojoExecutionException {
-        if(outputJavaScript) {
-            return "compile-app-javascript-config.xml";
-        }
-        return "compile-app-flash-config.xml";
+        return "compile-app-config.xml";
     }
 
     @Override
@@ -94,9 +87,6 @@ public class CompileAppMojo
 
     @Override
     protected File getOutput() throws MojoExecutionException {
-        if(outputJavaScript) {
-            return new File(outputDirectory, "javascript");
-        }
         return new File(outputDirectory, flashOutputFileName);
     }
 
@@ -110,6 +100,9 @@ public class CompileAppMojo
             throw new MojoExecutionException("Could not find main class");
         }
         List<String> args = super.getCompilerArgs(configFile);
+        File jsOutput = new File(outputDirectory, "javascript");
+        args.add("-js-output=" + jsOutput.getAbsolutePath());
+        args.add("-compiler.targets=" + targets);
         args.add(mainClassPath);
         return args;
     }
@@ -119,11 +112,8 @@ public class CompileAppMojo
         super.execute();
 
         if(getOutput().exists()) {
-            // If we are building JavaScript output, the war plugin will attach the war
-            if(!outputJavaScript) {
-                // Attach the file created by the compiler as artifact file to maven.
-                project.getArtifact().setFile(getOutput());
-            }
+            // Attach the file created by the compiler as artifact file to maven.
+            project.getArtifact().setFile(getOutput());
         }
     }
 
@@ -184,20 +174,18 @@ public class CompileAppMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        // Strip out all externs except if the dependency was declared inside the pom itself.
-        return !"typedefs".equalsIgnoreCase(library.getClassifier()) ||
-                (outputJavaScript && library.getDependencyTrail().size() == 2);
+        return !("typedefs".equalsIgnoreCase(library.getClassifier()) ||
+                 "js".equalsIgnoreCase(library.getClassifier()));
     }
 
     @Override
-    protected boolean isForceSwcExternalLibraryPath() {
-        // The forceSwcExternalLibraryPath should only apply to Flash compilations.
-        if(outputJavaScript) {
-            return false;
-        }
-        return super.isForceSwcExternalLibraryPath();
+    protected boolean includeLibraryJS(Artifact library) {
+        // Strip out all externs except if the dependency was declared inside the pom itself.
+        return ("typedefs".equalsIgnoreCase(library.getClassifier()) ||
+                "js".equalsIgnoreCase(library.getClassifier()));
+        // || library.getDependencyTrail().size() == 2;
     }
-
+    
     /*private void zipDirectory(File source, File target) {
         byte[] buffer = new byte[1024];
         try {
