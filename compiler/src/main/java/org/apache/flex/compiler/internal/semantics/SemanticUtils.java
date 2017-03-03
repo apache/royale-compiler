@@ -832,7 +832,12 @@ public class SemanticUtils
     public static boolean hasDynamicBase(Binding binding, ICompilerProject project)
     {
         ExpressionNodeBase base = getBaseNode(binding);
-        return base != null && base.isDynamicExpression(project);
+        if (base != null && base.isDynamicExpression(project))
+        	return true;
+        // the JS version of XML is not currently dynamic so special case it here.
+        if (base != null && base.getNodeID() == ASTNodeID.IdentifierID && IdentifierNode.isXMLish(base.resolveType(project), project))
+        	return true;
+        return false;
     }
 
     /**
