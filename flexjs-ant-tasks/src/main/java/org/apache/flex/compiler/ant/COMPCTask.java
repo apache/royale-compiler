@@ -219,6 +219,9 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
     private static final OptionSpec JS_EXTERNAL_LIBRARY_PATH =
     new OptionSpec("compiler.js-external-library-path");
     
+    private static final OptionSpec SWF_EXTERNAL_LIBRARY_PATH =
+    new OptionSpec("compiler.swf-external-library-path");
+    
     private static final OptionSpec INCLUDE_LIBRARIES =
     	new OptionSpec("compiler.include-libraries");
     
@@ -227,6 +230,9 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
     
     private static final OptionSpec JS_LIBRARY_PATH =
     new OptionSpec("compiler.js-library-path");
+    
+    private static final OptionSpec SWF_LIBRARY_PATH =
+    new OptionSpec("compiler.swf-library-path");
     
     private static final OptionSpec SOURCE_PATH =
     	new OptionSpec("compiler.source-path", "sp");
@@ -433,6 +439,12 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
             nestedFileSets.add(fs);
             return fs;
         }
+        else if (SWF_EXTERNAL_LIBRARY_PATH.matches(name))
+        {
+            FlexFileSet fs = new FlexSWCFileSet(SWF_EXTERNAL_LIBRARY_PATH, true);
+            nestedFileSets.add(fs);
+            return fs;
+        }
         else if (INCLUDE_LIBRARIES.matches(name))
         {
             FlexFileSet fs = new FlexSWCFileSet(INCLUDE_LIBRARIES, true);
@@ -448,6 +460,12 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
         else if (JS_LIBRARY_PATH.matches(name))
         {
             FlexFileSet fs = new FlexSWCFileSet(JS_LIBRARY_PATH, true);
+            nestedFileSets.add(fs);
+            return fs;
+        }
+        else if (SWF_LIBRARY_PATH.matches(name))
+        {
+            FlexFileSet fs = new FlexSWCFileSet(SWF_LIBRARY_PATH, true);
             nestedFileSets.add(fs);
             return fs;
         }
