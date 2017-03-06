@@ -31,6 +31,7 @@ import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.embedding.transcoders.DataTranscoder;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 
 /**
@@ -245,7 +246,8 @@ public class FlexProjectConfigurator
             project.setProxyBaseClass(configValue);
 
             project.setStrictXML(configuration.isStrictXML());
-
+            
+            DataTranscoder.embedClassName = configuration.getByteArrayEmbedClass();
         }
     }
 }
