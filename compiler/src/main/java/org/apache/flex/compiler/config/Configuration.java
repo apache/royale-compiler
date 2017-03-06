@@ -2041,6 +2041,37 @@ public class Configuration
     }
 
     //
+    // 'compiler.swf-external-library-path' option
+    //
+
+    private final List<String> swfExternalLibraryPath = new ArrayList<String>();
+
+    public List<String> getCompilerSwfExternalLibraryPath()
+    {
+        return swfExternalLibraryPath;
+    }
+
+    @Config(allowMultiple = true, isPath = true)
+    @Mapping({ "compiler", "swf-external-library-path" })
+    @Arguments(Arguments.PATH_ELEMENT)
+    @SoftPrerequisites({ "target-player", "exclude-native-js-libraries" })
+    @InfiniteArguments
+    public void setCompilerSwfExternalLibraryPath(ConfigurationValue cv, String[] pathlist) throws ConfigurationException
+    {
+        pathlist = removeNativeJSLibrariesIfNeeded(pathlist);
+
+        final ImmutableList<String> pathElements = ImmutableList.copyOf(pathlist);
+        final ImmutableList<String> resolvedPaths = expandTokens(pathElements, locales, cv,
+                !reportMissingCompilerLibraries);
+        swfExternalLibraryPath.addAll(resolvedPaths);
+
+        // TODO: Review usages of "compilingForAIR", because only looking at path elements
+        // on library path isn't enough. There might be a folder on the library path that
+        // contains AIR libraries.
+        compilingForAIR = containsAIRLibraries(pathElements);
+    }
+    
+    //
     // 'compiler.generated-directory' option
     // This can only be configured using getter and setter.
     //
@@ -2258,6 +2289,47 @@ public class Configuration
         final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
                 !reportMissingCompilerLibraries);
         libraryPath.addAll(resolvedPaths);
+    }
+
+    //
+    // 'compiler.swf-library-path' option
+    //
+
+    private final List<String> swfLibraryPath = new ArrayList<String>();
+    protected boolean reportMissingCompilerSwfLibraries = true;
+
+    /**
+     * Sets whether to report missing libraries in the configuration. If this is false any missing libraries will not be
+     * warned about, and the filename will also be added to list of libraries in the project when it doesn't exist. If
+     * reportMissingCompilerLibraries is true, any missing libraries will not be added to the project.
+     * 
+     * @param reportMissingCompilerLibraries true to report missing libraries
+     */
+    public void setReportMissingCompilerSwfLibraries(boolean reportMissingCompilerLibraries)
+    {
+        this.reportMissingCompilerLibraries = reportMissingCompilerLibraries;
+    }
+
+    public List<String> getCompilerSwfLibraryPath()
+    {
+        return swfLibraryPath;
+    }
+
+    /**
+     * Links SWC files to the resulting application SWF file. The compiler only links in those classes for the SWC file
+     * that are required. You can specify a directory or individual SWC files.
+     */
+    @Config(allowMultiple = true, isPath = true)
+    @Mapping({ "compiler", "swf-library-path" })
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    @SoftPrerequisites({ "locale", "target-player", "exclude-native-js-libraries" })
+    public void setCompilerSwfLibraryPath(ConfigurationValue cv, String[] pathlist) throws CannotOpen
+    {
+        pathlist = removeNativeJSLibrariesIfNeeded(pathlist);
+        final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
+                !reportMissingCompilerLibraries);
+        swfLibraryPath.addAll(resolvedPaths);
     }
 
     //
