@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -75,6 +76,7 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
 import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
@@ -738,4 +740,40 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
     {
         workspace.close();
     }
+    
+    public List<String> getSourceList()
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        LinkedList<ICompilerProblem> problemList = new LinkedList<ICompilerProblem>();
+        try
+        {
+            ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
+            roots.add(mainCU);
+            Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
+            roots.addAll(incs);
+            project.mixinClassNames = new TreeSet<String>();
+            List<ICompilationUnit> units = project.getReachableCompilationUnitsInSWFOrder(roots);
+            for (ICompilationUnit unit : units)
+            {
+                UnitType ut = unit.getCompilationUnitType();
+                if (ut == UnitType.AS_UNIT || ut == UnitType.MXML_UNIT)
+                {
+                    list.add(unit.getAbsoluteFilename());
+                }
+            }
+        }
+        catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
+    
+    public String getMainSource()
+    {
+        return mainCU.getAbsoluteFilename();
+    }
+
 }

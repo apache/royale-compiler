@@ -26,4 +26,9 @@ import java.util.List;
 public interface JSCompilerEntryPoint {
     public int mainNoExit(final String[] args, List<ICompilerProblem> problems,
                           Boolean printProblems);
+    
+    public List<String> getSourceList();
+    
+    public String getMainSource();
+
 }

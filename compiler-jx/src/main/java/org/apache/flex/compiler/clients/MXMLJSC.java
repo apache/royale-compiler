@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -77,6 +78,7 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.SWF;
 import org.apache.flex.swf.types.RGB;
@@ -86,6 +88,7 @@ import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 /**
@@ -258,6 +261,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
     private MXMLC mxmlc;
+    private JSCompilerEntryPoint lastCompiler;
     public boolean noLink;
     public OutputStream err;
     
@@ -338,6 +342,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    break;
 	                case JS_FLEX:
 	                	MXMLJSCFlex flex = new MXMLJSCFlex();
+	                	lastCompiler = flex;
 	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
@@ -346,6 +351,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    break;
 	                case JS_NODE:
 	                	MXMLJSCNode node = new MXMLJSCNode();
+	                	lastCompiler = node;
 	                    result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
@@ -354,6 +360,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    break;
 	                case JS_NATIVE:
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
+	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
@@ -898,6 +905,25 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         workspace.close();
     }
     
+    public List<String> getSourceList()
+    {
+        if (lastCompiler != null)
+        	return lastCompiler.getSourceList();
+        if (mxmlc != null)
+        	return mxmlc.getSourceList();
+        return null;
+    }
+    
+    public String getMainSource()
+    {
+        if (lastCompiler != null)
+        	return lastCompiler.getMainSource();
+        if (mxmlc != null)
+        	return mxmlc.getMainSource();
+        return null;
+    }
+    
+
     /**
      * return a data structure for FB integration
      * @return

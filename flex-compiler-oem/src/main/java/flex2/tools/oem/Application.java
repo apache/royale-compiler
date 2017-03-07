@@ -56,6 +56,7 @@ import flex2.compiler.util.PerformanceData;
 import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.linker.SimpleMovie;
 import flex2.tools.ToolsConfiguration;
+import flex2.tools.oem.internal.ApplicationCompilerConfiguration;
 import flex2.tools.oem.internal.OEMConfiguration;
 import flex2.tools.oem.internal.OEMReport;
 import flex2.tools.oem.internal.OEMUtil;
@@ -300,6 +301,8 @@ public class Application implements Builder
     // clean() would null out the following variables.
     private String cacheName, configurationReport;
     private List<Message> messages;
+    private boolean setOutputCalled;
+    private int loaded = 0;
 
     /**
      * @inheritDoc
@@ -378,6 +381,7 @@ public class Application implements Builder
      */
     public void setOutput(File output)
     {
+    	setOutputCalled = true;
         this.output = output;
     }
 
@@ -533,6 +537,9 @@ public class Application implements Builder
      */
     public void clean()
     {
+    	// assuming FB takes care of deleting bin-release and bin-debug, we want to delete bin.
+    	// but this also gets called when quitting FB.
+    	setOutputCalled = false;
     }
 
     /**
@@ -540,6 +547,7 @@ public class Application implements Builder
      */
     public void load(InputStream in) throws IOException
     {
+    	loaded++;
     }
 
     /**
@@ -547,6 +555,7 @@ public class Application implements Builder
      */
     public long save(OutputStream out) throws IOException
     {
+    	loaded--;
         return 1;
     }
 
@@ -661,12 +670,11 @@ public class Application implements Builder
     
     void processMXMLCReport(MXMLJSC mxmljsc, OEMConfiguration config)
     {
-        /* not sure we need this
         ApplicationCompilerConfiguration acc = ((ApplicationCompilerConfiguration)config.configuration);
         sources = new ArrayList<Source>();
         VirtualFile[] sourcePaths = acc.getCompilerConfiguration().getSourcePath();
-        List<String> sourceFiles = mxmlc.getSourceList();
-        String mainFile = mxmlc.getMainSource();
+        List<String> sourceFiles = mxmljsc.getSourceList();
+        String mainFile = mxmljsc.getMainSource();
         for (String sourceFile : sourceFiles)
         {
             for (VirtualFile sourcePath : sourcePaths)
@@ -685,7 +693,6 @@ public class Application implements Builder
                 }
             }
         }
-        */
         ProblemQuery pq = mxmljsc.getProblemQuery();
         List<ICompilerProblem> probs = pq.getProblems();
         for (ICompilerProblem prob : probs)

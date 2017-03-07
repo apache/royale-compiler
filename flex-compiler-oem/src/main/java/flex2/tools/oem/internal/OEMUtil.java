@@ -212,6 +212,30 @@ public class OEMUtil
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        List<String> libraries = config.getCompilerLibraryPath();
+        String[] libs = new String[libraries.size()];
+        libraries.toArray(libs);
+        try
+        {
+            cc.cfgLibraryPath(null, libs);
+        }
+        catch (ConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        List<String> sources = config.getCompilerSourcePath();
+        String[] srcs = new String[sources.size()];
+        sources.toArray(srcs);
+        try
+        {
+            cc.cfgSourcePath(null, srcs);
+        }
+        catch (ConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	    
 	    return acc;
 	}

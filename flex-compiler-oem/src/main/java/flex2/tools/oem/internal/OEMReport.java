@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -158,7 +159,7 @@ public class OEMReport implements Report
 		
         if (sources != null)
         {
-            //processSources(sources, sourceNames, assetNames, libraryNames, data, locations);
+            processSources(sources, sourceNames, assetNames, libraryNames, data, locations);
         }
 
 		timestamps = new HashMap<String, Long>();
@@ -292,10 +293,6 @@ public class OEMReport implements Report
 	
 	public boolean contentUpdated()
 	{
-	    // AJH for now, just return true to force another build.  Someday be smarter about what sources
-	    // we have and what their time stamps are.
-	    return true;
-	    /*
 		for (Iterator<String> i = timestamps.keySet().iterator(); i.hasNext(); )
 		{
 			String path = i.next();
@@ -308,7 +305,6 @@ public class OEMReport implements Report
 			}
 		}
 		return false;
-		*/
 	}
 	
 	public String[] getSourceNames(Object report)
@@ -526,10 +522,18 @@ public class OEMReport implements Report
 			}
 		}
 	}
+	*/
 	
 	private void processSources(List<Source> sources, TreeSet<String> sourceNames, TreeSet<String> assetNames,
                                 TreeSet<String> libraryNames, Map<String, Data> data, Map<String, String> locations)
 	{
+		// use this version for now
+		for (Source s : sources)
+		{
+			sourceNames.add(s.getName());
+		}
+		/*
+		// AJH not sure why all this is needed
 		for (Source s : sources)
 		{
 			CompilationUnit u = (s == null) ? null : s.getCompilationUnit();
@@ -609,8 +613,10 @@ public class OEMReport implements Report
 				data.put(s.getName(), d);
 			}
 		}
+		*/
 	}
 
+	/*
 	private void processFrames(SimpleMovie movie)
 	{
 		int count = movie == null ? 0 : movie.frames.size();
