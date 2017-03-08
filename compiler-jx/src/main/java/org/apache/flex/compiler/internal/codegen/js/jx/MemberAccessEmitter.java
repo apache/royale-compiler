@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
@@ -85,7 +86,9 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		boolean descendant = (node.getOperator() == OperatorType.DESCENDANT_ACCESS);
         		boolean child = (node.getOperator() == OperatorType.MEMBER_ACCESS) && 
         							(!(parentNode instanceof FunctionCallNode)) &&
-        							rightNode.getNodeID() != ASTNodeID.Op_AtID;
+        							rightNode.getNodeID() != ASTNodeID.Op_AtID &&
+        							!((rightNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID) && 
+        									(((DynamicAccessNode)rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID));
         		if (descendant || child)
 	        	{
 	        		writeLeftSide(node, leftNode, rightNode);

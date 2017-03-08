@@ -1060,9 +1060,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         else if (node.getNodeID() == ASTNodeID.Op_AtID)
         {
-        	write("attribute('");
-            getWalker().walk(node.getOperandNode());
-        	write("')");
+        	IASNode op = node.getOperandNode();
+        	if (op != null)
+        	{
+            	write("attribute('");
+        		getWalker().walk(node.getOperandNode());
+            	write("')");
+        	}
+        	else if (node.getParent().getNodeID() == ASTNodeID.ArrayIndexExpressionID)
+        	{
+        		DynamicAccessNode parentNode = (DynamicAccessNode)node.getParent();
+            	write("attribute(");
+        		getWalker().walk(parentNode.getRightOperandNode());        		
+            	write(")");
+        	}
+        		
         	return;
         }
 

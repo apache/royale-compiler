@@ -23,6 +23,7 @@ import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 
@@ -39,6 +40,8 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
     {
         IExpressionNode leftOperandNode = node.getLeftOperandNode();
         getWalker().walk(leftOperandNode);
+        if (leftOperandNode.getNodeID() == ASTNodeID.Op_AtID)
+        	return;
 
         startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SQUARE_OPEN);
