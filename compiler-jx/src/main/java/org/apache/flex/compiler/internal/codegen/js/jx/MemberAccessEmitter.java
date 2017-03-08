@@ -269,7 +269,10 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         {
         	write(ASEmitterTokens.COMMA);
         	write(ASEmitterTokens.SPACE);
-        	writeLeftSide(node, leftNode, rightNode);
+        	if (leftNode.getNodeID() == ASTNodeID.SuperID)
+        		write(ASEmitterTokens.THIS);
+        	else
+        		writeLeftSide(node, leftNode, rightNode);
         	getEmitter().emitClosureEnd(node, def);
         }
         
@@ -309,6 +312,17 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.THIS);
                 write(ASEmitterTokens.PAREN_CLOSE);
+                return false;
+            }
+            else if (leftNode.getNodeID() == ASTNodeID.SuperID
+                    && (rightDef != null && rightDef instanceof FunctionDefinition))
+            {
+                write(getEmitter().formatQualifiedName(
+                        getEmitter().getModel().getCurrentClass().getQualifiedName()));
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSGoogEmitterTokens.SUPERCLASS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(rightDef.getBaseName());
                 return false;
             }
         }

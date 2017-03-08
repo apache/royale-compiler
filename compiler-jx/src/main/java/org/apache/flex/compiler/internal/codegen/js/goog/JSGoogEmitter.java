@@ -909,7 +909,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             if (definition instanceof FunctionDefinition &&
                     !((FunctionDefinition)definition).isStatic() &&
                     (!(definition instanceof AccessorDefinition)) &&
-                    node instanceof MemberAccessExpressionNode)
+                    node instanceof MemberAccessExpressionNode &&
+                    ((MemberAccessExpressionNode)node).getLeftOperandNode().getNodeID() != ASTNodeID.SuperID)
             {
                 emitClosureStart();
                 getWalker().walk(node);
