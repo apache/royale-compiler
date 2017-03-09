@@ -83,4 +83,63 @@ public class ASInheritanceTests  extends ASFeatureTestsBase{
 
         compileAndExpectErrors(source, false,false,false, null,"No default constructor found in base class A.\n");
     }
+    
+    @Test
+    public void InterfaceOverrideError()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+                {
+                };
+        String[] declarations = new String[]
+                {
+                };
+        String[] testCode = new String[]
+                {
+
+                };
+        String[] extra = new String[]
+                {
+                        "interface A {",
+                        "function get text():String;",
+                        "}",
+                        "interface B extends A {",
+                        "function get text():String;",
+                        "}"
+                };
+        String source = getAS(imports, declarations, testCode, extra);
+
+        compileAndExpectErrors(source, false,false,false, null,"Cannot override an interface method.  Method text conflicts with a method in base interface A.\n");
+    }
+
+    @Test
+    public void InterfaceOverrideOK()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+                {
+                };
+        String[] declarations = new String[]
+                {
+                };
+        String[] testCode = new String[]
+                {
+
+                };
+        String[] extra = new String[]
+                {
+                        "interface A {",
+                        "function get text():String;",
+                        "}",
+                        "interface B extends A {",
+                        "function set text(value:String):void;",
+                        "}"
+                };
+        String source = getAS(imports, declarations, testCode, extra);
+
+        compileAndRun(source);;
+    }
+
 }

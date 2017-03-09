@@ -2799,7 +2799,14 @@ public class MethodBodySemanticChecker
         if( conflicts.size() > 0 )
         {
             for( IFunctionDefinition overriden : conflicts )
+            {
+            	if ((overriden instanceof SetterDefinition &&
+            		funcDef instanceof GetterDefinition) ||
+            		(overriden instanceof GetterDefinition &&
+            		funcDef instanceof SetterDefinition))
+            		continue;
                 addProblem(new InterfaceMethodOverrideProblem(iNode, funcDef.getBaseName(), overriden.getParent().getBaseName()));
+            }
         }
 
     }
