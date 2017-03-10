@@ -602,6 +602,8 @@ public class GoogDepsWriter {
 				    additionalHTML.add(s);
 				    continue;
                 }
+                else
+                	otherScanning(s);
 				int c = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 				if (c > -1)
 				{
@@ -620,6 +622,10 @@ public class GoogDepsWriter {
 			e.printStackTrace();
 		}
 		return deps;
+	}
+	
+	protected void otherScanning(String s)
+	{		
 	}
 	
 	private String getDependencies(ArrayList<String> deps)
