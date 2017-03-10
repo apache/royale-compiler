@@ -46,6 +46,7 @@ import org.apache.flex.compiler.internal.embedding.transcoders.TranscoderBase;
 import org.apache.flex.compiler.internal.embedding.transcoders.XMLTranscoder;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.ASProject;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.SourcePathManager;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
@@ -589,7 +590,7 @@ public class EmbedData
 
         Map<String,String> searchedLocations = new LinkedHashMap<String,String>();
         String containingSourcePath = new File(containingSourceFilename).getParent();
-        String sourceFile = getResolvedSourcePath(project, containingSourcePath, 
+        String sourceFile = getResolvedSourcePath(project, containingSourcePath,
                 sourceValue, searchedLocations);
         if (sourceFile == null)
         {
@@ -621,7 +622,7 @@ public class EmbedData
         String sourceFile = null;
         if (new File(filename).isAbsolute())
         {
-            searchedLocations.put(FilenameNormalization.normalize(filename), "QuotedPath"); 
+            searchedLocations.put(FilenameNormalization.normalize(filename), "QuotedPath");
             sourceFile = SourcePathManager.getSourceFileInPath(null, filename);
             if (sourceFile != null)
                 return sourceFile;
@@ -641,7 +642,21 @@ public class EmbedData
 
         if (project instanceof ASProject)
         {
-            sourceFile = getResolvedSourcePath((ASProject)project, filename, 
+            sourceFile = getResolvedSourcePath((ASProject)project, filename,
+                    searchedLocations);
+        }
+        if (project instanceof FlexProject)
+        {
+            FlexProject flexProject = (FlexProject) project;
+            String packagePath = null;
+            if((containingSourcePath != null) && !flexProject.getSourcePath().isEmpty()) {
+                for (File sourcePath : flexProject.getSourcePath()) {
+                    if (containingSourcePath.startsWith(sourcePath.getAbsolutePath())) {
+                        packagePath = containingSourcePath.substring(sourcePath.getAbsolutePath().length() + 1);
+                    }
+                }
+            }
+            sourceFile = getResolvedSourcePath((FlexProject)project, filename, packagePath,
                     searchedLocations);
         }
 
@@ -674,6 +689,48 @@ public class EmbedData
             {
                 sourceFile = swcSource.getPath();
             }            
+        }
+
+        return sourceFile;
+    }
+
+    private String getResolvedSourcePath(FlexProject project, String filename, String packagePath,
+                                         Map<String,String> searchedLocations)
+    {
+        // Only files that start with a leading "/" are resolved using the
+        // source path.
+        String sourceFile = null;
+        boolean isAbsolute = filename.startsWith("/");
+        if (isAbsolute)
+        {
+            searchedLocations.put(filename.substring(1), "EmbedOnSourcePath");
+            sourceFile = project.getSourceFileFromSourcePath(filename.substring(1));
+        }
+
+        if (sourceFile != null)
+            return sourceFile;
+
+        // Not in the source path, so finally look for the file within the libraries.
+        // Absolute files are not looked up using the library path.
+        if (!isAbsolute)
+        {
+            for(File sourceDirectory : project.getSourcePath()) {
+                File potentialFile = sourceDirectory;
+                if(packagePath != null) {
+                    potentialFile = new File(potentialFile, packagePath);
+                }
+                searchedLocations.put(filename, potentialFile.getAbsolutePath());
+                potentialFile = new File(potentialFile, filename);
+                if(potentialFile.exists()) {
+                    return potentialFile.getAbsolutePath();
+                }
+            }
+            searchedLocations.put(filename, "EmbedOnLibraryPath");
+            swcSource = project.getSourceFileFromLibraryPath(filename);
+            if (swcSource != null)
+            {
+                sourceFile = swcSource.getPath();
+            }
         }
 
         return sourceFile;
