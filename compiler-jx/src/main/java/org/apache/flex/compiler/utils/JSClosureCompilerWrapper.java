@@ -102,6 +102,10 @@ public class JSClosureCompilerWrapper
 
     public void compile()
     {
+    	System.out.println("list of source files");
+    	for (SourceFile file : jsSourceFiles_)
+    		System.out.println(file.getName());
+    	System.out.println("end of list of source files");
         compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
 
         try
@@ -228,9 +232,9 @@ public class JSClosureCompilerWrapper
             DependencyOptions dopts = new DependencyOptions();
             ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
             entryPoints.add(ModuleIdentifier.forClosure(projectName));
-            dopts.setDependencyPruning(true)
-                 .setDependencySorting(true)
-                 .setMoocherDropping(true)
+            dopts.setDependencyPruning(false)
+                 .setDependencySorting(false)
+                 .setMoocherDropping(false)
                  .setEntryPoints(entryPoints);
             options_.setDependencyOptions(dopts);
             

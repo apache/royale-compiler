@@ -237,6 +237,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         }
         // Dump a copy of the closure lib files to the intermediate directory. Without this
         // the application will not be able to run.
+        closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
         for(SourceFile closureSourceFile : closureSourceFiles) {
             FileUtils.write(new File(new File(intermediateDir, "library/closure"),
                     closureSourceFile.getName()), closureSourceFile.getCode());
@@ -409,6 +410,138 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 	        }
         }
     }
+
+    protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, String entryPoint)
+    {
+    	ArrayList<String> sortedFiles = new ArrayList<String>();
+    	
+    	for (SourceFile sourceFile : files)
+    	{
+    		if (sourceFile.getOriginalPath().endsWith("deps.js"))
+    		{
+    			ArrayList<String> deps = new ArrayList<String>();
+    	        try
+    	        {
+    	            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(path + sourceFile.getOriginalPath()), "UTF8"));
+
+    	            while (true)
+    	            {
+	    	            String line = in.readLine();
+	    	            if (line.startsWith("//") || line.trim().length() == 0)
+	    	            	continue;
+	    	            deps.add(line);
+    	            }
+    	        }
+	            catch (Exception e)
+	            {
+	                // nothing to see, move along...
+	            }
+
+	            sortClosureFile(deps, entryPoint, sortedFiles);
+	            
+	            ArrayList<SourceFile> list = new ArrayList<SourceFile>();
+	            ArrayList<String> seen = new ArrayList<String>();
+	            sortedFiles.add("goog/deps.js");
+	            sortedFiles.add("goog/base.js");
+	            int n = sortedFiles.size();
+	            for (int i = n - 1; i >= 0; i--)
+	            {
+	            	String fileName = sortedFiles.get(i);
+	            	if (seen.contains(fileName)) continue;
+	            	seen.add(fileName);
+	            	
+	            	for (SourceFile file : files)
+	            	{
+	            		if (file.getOriginalPath().contains(fileName))
+	            		{
+	            			list.add(file);
+	            			files.remove(file);
+	            			break;
+	            		}
+	            	}
+	            }
+	            list.addAll(files);
+	            return list;
+    		}
+    	}
+    	return null;
+    }
+    
+    private void sortClosureFile(List<String> deps, String entryPoint, List<String> sortedFiles)
+    {
+    	String provided = getProvidedFile(deps, entryPoint);
+        sortedFiles.add(provided);
+        List<String> reqs = getRequires(deps, entryPoint);
+        if (reqs == null) return;
+        for (String req : reqs)
+        {
+        	sortClosureFile(deps, req, sortedFiles);
+        }
+    }
+    
+    private String getProvidedFile(List<String> deps, String name)
+    {
+    	for (String dep : deps)
+    	{
+    		int open = dep.indexOf("[");
+    		int close = dep.indexOf("]");
+			String list = dep.substring(open + 1, close);
+			String[] parts = list.split(",");
+			ArrayList<String> provideds = new ArrayList<String>();
+			for (String part : parts)
+			{
+				part = part.trim();
+				if (part.startsWith("'"))
+					part = part.substring(1, part.length() - 1);
+				provideds.add(part);    				
+			}
+    		if (provideds.contains(name))
+    		{
+    			open = dep.indexOf("'");
+    			close = dep.indexOf("'", open + 1);
+    			return dep.substring(open + 1, close);    			
+    		}
+    	}
+    	return null;
+    }
+    
+    private List<String> getRequires(List<String> deps, String name)
+    {
+    	for (String dep : deps)
+    	{
+    		int open = dep.indexOf("[");
+    		int close = dep.indexOf("]");
+			String list = dep.substring(open + 1, close);
+			String[] parts = list.split(",");
+			ArrayList<String> provideds = new ArrayList<String>();
+			for (String part : parts)
+			{
+				part = part.trim();
+				if (part.startsWith("'"))
+					part = part.substring(1, part.length() - 1);
+				provideds.add(part);    				
+			}
+    		if (provideds.contains(name))
+    		{
+    			open = dep.indexOf("[", close + 1);
+    			close = dep.indexOf("]", open + 1);
+    			if (open + 1 == close)
+    				return null;
+    			String list2 = dep.substring(open + 1, close);
+    			String[] parts2 = list2.split(",");
+    			ArrayList<String> reqs = new ArrayList<String>();
+    			for (String part : parts2)
+    			{
+    				part = part.trim();
+    				if (part.startsWith("'"))
+    					part = part.substring(1, part.length() - 1);
+    				reqs.add(part);    				
+    			}
+    			return reqs;
+    		}
+    	}
+    	return null;
+    }    
 
     protected String readCode(File file)
     {
