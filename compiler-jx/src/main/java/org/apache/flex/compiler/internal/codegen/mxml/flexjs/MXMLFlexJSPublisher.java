@@ -237,11 +237,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         }
         // Dump a copy of the closure lib files to the intermediate directory. Without this
         // the application will not be able to run.
-        closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
         for(SourceFile closureSourceFile : closureSourceFiles) {
             FileUtils.write(new File(new File(intermediateDir, "library/closure"),
                     closureSourceFile.getName()), closureSourceFile.getCode());
         }
+        closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
 
 
         /////////////////////////////////////////////////////////////////////////////////
