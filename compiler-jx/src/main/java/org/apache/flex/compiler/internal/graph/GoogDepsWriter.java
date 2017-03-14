@@ -372,6 +372,11 @@ public class GoogDepsWriter {
 	boolean onProtoChain(String name, String base)
 	{
 		GoogDep gd = depMap.get(name);
+		if (gd == null)
+		{
+			System.out.println("no dep info for " + name);
+			return false;
+		}
 		if (gd.fileInfo.impls != null)
 		{
 			if (gd.fileInfo.impls.contains(base))
