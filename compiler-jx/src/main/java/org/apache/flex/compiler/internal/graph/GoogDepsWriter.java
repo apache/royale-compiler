@@ -130,6 +130,7 @@ public class GoogDepsWriter {
     public ArrayList<String> additionalHTML = new ArrayList<String>();
     
     private HashMap<String, GoogDep> visited = new HashMap<String, GoogDep>();
+    private HashMap<String, GoogDep> inArray = new HashMap<String, GoogDep>();
     
 	private ArrayList<GoogDep> sort(String rootClassName)
 	{
@@ -148,16 +149,46 @@ public class GoogDepsWriter {
 			removeCirculars(current);
         System.out.println("Dependencies calculated for '" + current.filePath + "'");
 
+		ArrayList<GoogDep> visitedButNotAdded = new ArrayList<GoogDep>();
 		ArrayList<String> deps = current.deps;
 		for (String className : deps)
 		{
-			if (!visited.containsKey(className) && !isGoogClass(className))
+			if (!isGoogClass(className))
 			{
-				GoogDep gd = depMap.get(className);
-				sortFunction(gd, arr);
+				if (!visited.containsKey(className))
+				{
+					GoogDep gd = depMap.get(className);
+					sortFunction(gd, arr);
+				}
+				else
+				{
+			        if (!inArray.containsKey(className))
+			        {
+			        	// if we get here, we haven't yet added the dependency to the
+			        	// array of GoogDeps because we are computing its dependencies.
+			        	// For example, class A extends B which references class C which
+			        	// extends B.  This isn't a circular reference.  But B needs to
+			        	// be in the array before C instead of just before A.
+			        	visitedButNotAdded.add(depMap.get(className));
+				        System.out.println("Visited but haven't added: '" + className + "'");
+			        }
+				}
 			}
 		}
-		arr.add(current);
+		for (GoogDep gdep : visitedButNotAdded)
+		{
+			if (!inArray.containsKey(gdep.className))
+			{
+				arr.add(gdep);
+				inArray.put(gdep.className, gdep);
+			}
+		}
+		if (!inArray.containsKey(current.className))
+		{
+			arr.add(current);
+			inArray.put(current.className, current);
+		}
+		
 	}
 	
 	private void addDeps(String className)
@@ -248,6 +279,13 @@ public class GoogDepsWriter {
 	                        	System.out.println(gd.filePath + " removing circular: " + s);
 	                        	continue;
 	                        }
+	                        else if (gd.deps.contains(s) && !isGoogClass(s) && onProtoChain(s, className))
+	                        {
+	                        	// if we are on the proto chain of s, then take away our require of s
+	                        	suppressCount++;
+	                        	System.out.println(gd.filePath + " removing circular (proto): " + s);
+	                        	continue;
+	                        }
                         }
                     }
             	}
@@ -329,6 +367,22 @@ public class GoogDepsWriter {
         {
             e.printStackTrace();
         }		
+	}
+	
+	boolean onProtoChain(String name, String base)
+	{
+		GoogDep gd = depMap.get(name);
+		if (gd.fileInfo.impls != null)
+		{
+			if (gd.fileInfo.impls.contains(base))
+				return true;
+			for (String s : gd.fileInfo.impls)
+			{
+				if (!isGoogClass(s) && onProtoChain(s, base))
+					return true;
+			}
+		}
+		return false;
 	}
 	
 	FileInfo getFileInfo(List<String> lines, String className)
