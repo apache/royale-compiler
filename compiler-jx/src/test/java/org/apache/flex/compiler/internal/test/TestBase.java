@@ -27,6 +27,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -37,6 +38,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
@@ -743,6 +749,20 @@ public class TestBase implements ITestBase
                     }
                 }
             }
+            else if (line.contains("<!--") && isResult)
+            {
+                // eat opening comment which should be apache header
+                while (line != null)
+                {
+                    line = in.readLine();
+                    if (line.contains("-->"))
+                    {
+                        line = in.readLine();
+                        break;
+                    }
+                }            	
+            }
+
             while (line != null)
             {
                 code += line + "\n";
@@ -781,6 +801,35 @@ public class TestBase implements ITestBase
         }
 
         return null;
+    }
+
+    protected int compileAndPublishProject(String projectFolderPath,
+            String projectName, String mainFileName)
+    {
+    	String sourceFolderName = tempDir + "/" + projectName + "/src";
+        IOFileFilter asFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".as"));
+        File sourceFolder = new File(sourceFolderName);
+        File projectFolder = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), projectFolderPath);
+        try {
+			FileUtils.copyDirectory(projectFolder, sourceFolder, asFilter);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int numArgs = 3;
+		if (env.GOOG != null) numArgs++;
+		String[] args = new String[numArgs];
+		File mainFile = new File(sourceFolder, mainFileName);
+		//args[0] = "-compiler.targets=JS";
+		int index = 0;
+		args[index++] = "-external-library-path=" + env.ASJS + "/js/libs/js.swc";
+		args[index++] = "-remove-circulars";
+		if (env.GOOG != null)
+			args[index++] = "-closure-lib=" + env.GOOG;
+		args[index++] = mainFile.getAbsolutePath();
+		int exitCode = MXMLJSC.staticMainNoExit(args);
+		return exitCode;
     }
 
 }
