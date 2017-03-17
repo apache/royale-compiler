@@ -76,6 +76,7 @@ import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.flex.compiler.tree.mxml.*;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.swc.ISWC;
 
@@ -99,7 +100,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLDescriptorSpecifier> instances;
     // all instances in the document AND its subdocuments
     private ArrayList<MXMLDescriptorSpecifier> allInstances = new ArrayList<MXMLDescriptorSpecifier>();
-    private ArrayList<MXMLScriptSpecifier> scripts;
+    private ArrayList<IMXMLScriptNode> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
     private IClassDefinition documentDefinition;
@@ -344,7 +345,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         events = new ArrayList<MXMLEventSpecifier>();
         instances = new ArrayList<MXMLDescriptorSpecifier>();
-        scripts = new ArrayList<MXMLScriptSpecifier>();
+        scripts = new ArrayList<IMXMLScriptNode>();
         //styles = new ArrayList<MXMLStyleSpecifier>();
 
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
@@ -411,7 +412,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         ArrayList<MXMLDescriptorSpecifier> oldDescriptorTree;
         MXMLDescriptorSpecifier oldPropertiesTree;
         ArrayList<MXMLEventSpecifier> oldEvents;
-        ArrayList<MXMLScriptSpecifier> oldScripts;
+        ArrayList<IMXMLScriptNode> oldScripts;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentInstances;
         ArrayList<MXMLDescriptorSpecifier> oldInstances;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentPropertySpecifiers;
@@ -431,7 +432,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         oldInstances = instances;
         instances = new ArrayList<MXMLDescriptorSpecifier>();
         oldScripts = scripts;
-        scripts = new ArrayList<MXMLScriptSpecifier>();
+        scripts = new ArrayList<IMXMLScriptNode>();
         //styles = new ArrayList<MXMLStyleSpecifier>();
 
         oldCurrentInstances = currentInstances;
@@ -1293,13 +1294,49 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected void emitScripts()
     {
-        for (MXMLScriptSpecifier script : scripts)
+        for (IMXMLScriptNode node : scripts)
         {
-            String output = script.output();
+            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                    .getASEmitter();
 
-            if (!output.equals(""))
+            int len = node.getChildCount();
+            if (len > 0)
             {
-                writeNewline(output);
+                for (int i = 0; i < len; i++)
+                {
+                    IASNode cnode = node.getChild(i);
+                    if (cnode.getNodeID() == ASTNodeID.VariableID) {
+                        ((JSFlexJSEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
+                    } else {
+                        if (cnode.getNodeID() == ASTNodeID.BindableVariableID) {
+                            IVariableNode variableNode = (IVariableNode) cnode;
+                            BindableVarInfo bindableVarInfo = new BindableVarInfo();
+                            bindableVarInfo.isStatic = variableNode.hasModifier(ASModifier.STATIC);;
+                            bindableVarInfo.namespace = variableNode.getNamespace();
+                            IMetaTagsNode metaTags = variableNode.getMetaTags();
+                            if (metaTags != null) {
+                                IMetaTagNode[] tags = metaTags.getAllTags();
+                                if (tags.length > 0)
+                                    bindableVarInfo.metaTags = tags;
+                            }
+
+                            bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
+                            ((JSFlexJSEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
+                        }
+                    }
+
+                    if (!(cnode instanceof IImportNode))
+                    {
+                        asEmitter.getWalker().walk(cnode);
+                        write(ASEmitterTokens.SEMICOLON.getToken());
+
+                        if (i == len - 1)
+                            indentPop();
+
+                        writeNewline();
+                        writeNewline();
+                    }
+                }
             }
         }
     }
@@ -2061,61 +2098,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitScript(IMXMLScriptNode node)
     {
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
-
-        String nl = ASEmitterTokens.NEW_LINE.getToken();
-
-        StringBuilder sb = null;
-        MXMLScriptSpecifier scriptSpecifier = null;
-
-        int len = node.getChildCount();
-        if (len > 0)
-        {
-            for (int i = 0; i < len; i++)
-            {
-                IASNode cnode = node.getChild(i);
-                if (cnode.getNodeID() == ASTNodeID.VariableID) {
-                    ((JSFlexJSEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
-                } else {
-                    if (cnode.getNodeID() == ASTNodeID.BindableVariableID) {
-                        IVariableNode variableNode = (IVariableNode) cnode;
-                        BindableVarInfo bindableVarInfo = new BindableVarInfo();
-                        bindableVarInfo.isStatic = variableNode.hasModifier(ASModifier.STATIC);;
-                        bindableVarInfo.namespace = variableNode.getNamespace();
-                        IMetaTagsNode metaTags = variableNode.getMetaTags();
-                        if (metaTags != null) {
-                            IMetaTagNode[] tags = metaTags.getAllTags();
-                            if (tags.length > 0)
-                                bindableVarInfo.metaTags = tags;
-                        }
-
-                        bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
-                        ((JSFlexJSEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
-                    }
-                }
-
-                if (!(cnode instanceof IImportNode))
-                {
-                    sb = new StringBuilder();
-                    scriptSpecifier = new MXMLScriptSpecifier();
-
-                    sb.append(asEmitter.stringifyNode(cnode));
-
-                    sb.append(ASEmitterTokens.SEMICOLON.getToken());
-
-                    if (i == len - 1)
-                        indentPop();
-
-                    sb.append(nl);
-                    sb.append(nl);
-
-                    scriptSpecifier.fragment = sb.toString();
-
-                    scripts.add(scriptSpecifier);
-                }
-            }
-        }
+        //save the script for emitting later in emitScripts()
+        //previously, we stringified the node and saved that instead of the
+        //node, but source maps don't work when you stringify a node -JT
+        scripts.add(node);
     }
 
     @Override
