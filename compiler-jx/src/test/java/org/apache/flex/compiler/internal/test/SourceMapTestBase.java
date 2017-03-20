@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.test;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.tree.as.IASNode;
 
 import com.google.debugging.sourcemap.FilePosition;
@@ -48,8 +49,8 @@ public class SourceMapTestBase extends ASTestBase
             sourceStartColumn += node.getColumn();
         }
         boolean foundMapping = false;
-        List<IJSEmitter.SourceMapMapping> mappings = jsEmitter.getSourceMapMappings();
-        for (IJSEmitter.SourceMapMapping mapping : mappings)
+        List<IMappingEmitter.SourceMapMapping> mappings = jsEmitter.getSourceMapMappings();
+        for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
             FilePosition sourcePosition = mapping.sourceStartPosition;
             FilePosition startPosition = mapping.destStartPosition;

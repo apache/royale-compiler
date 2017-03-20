@@ -34,8 +34,10 @@ import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -58,6 +60,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
@@ -81,12 +84,13 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.swc.ISWC;
 
 import com.google.common.base.Joiner;
+import com.google.debugging.sourcemap.FilePosition;
 
 /**
  * @author Erik de Bruin
  */
 public class MXMLFlexJSEmitter extends MXMLEmitter implements
-        IMXMLFlexJSEmitter
+        IMXMLFlexJSEmitter, IMappingEmitter
 {
 
 	// the instances in a container
@@ -130,10 +134,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
      *  deferred instance = local3[ nodeToIndexMap.get(an instance) ]
      */
     protected Map<IMXMLNode, Integer> nodeToIndexMap;
+
+    private SourceMapMapping lastMapping;
+
+    private List<SourceMapMapping> sourceMapMappings;
+
+    public List<SourceMapMapping> getSourceMapMappings()
+    {
+        return sourceMapMappings;
+    }
     
     public MXMLFlexJSEmitter(FilterWriter out)
     {
         super(out);
+        sourceMapMappings = new ArrayList<SourceMapMapping>();
     }
 
     @Override
@@ -163,8 +177,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	boolean stillSearching = true;
         ArrayList<String> namesToAdd = new ArrayList<String>();
         ArrayList<String> foundRequires = new ArrayList<String>();
-    	for (String line : lines)
-    	{
+        int len = lines.length;
+        for (int i = 0; i < len; i++)
+        {
+            String line = lines[i];
     		if (stillSearching)
     		{
 	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -179,7 +195,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	    			sawRequires = true;
                     foundRequires.add(s);
 	    			if (!usedNames.contains(s))
-	    				continue;
+                    {
+                        removeLineFromMappings(i);
+                        continue;
+                    }
 	    		}
 	    		else if (sawRequires)
 	    		{
@@ -202,8 +221,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     }
 
                     for (String nameToAdd : namesToAdd) {
-                        //System.out.println("adding late requires:"+nameToAdd);
                         finalLines.add(createRequireLine(nameToAdd,false));
+                        addLineToMappings(i);
                     }
 
 	    			endRequires = finalLines.size();
@@ -223,7 +242,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
             finalLines.add(endRequires, appendString.toString());
-            // TODO (aharui) addLineToMappings(finalLines.size());
+            addLineToMappings(endRequires);
+            endRequires++;
         }
     	// append info() structure if main CU
         ICompilerProject project = getMXMLWalker().getProject();
@@ -265,12 +285,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
 		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
 	                        finalLines.add(endRequires, appendString.toString());
-	                        //addLineToMappings(finalLines.size());
+	                        addLineToMappings(endRequires);
+                            endRequires++;
 		            	}
 		            	mixinInject += "]";
 		            	infoInject += mixinInject;
 		            	sep = ",\n";
-	                    //addLineToMappings(finalLines.size());	            	
 	            	}
 	            	boolean isMX = false;
 	            	List<ISWC> swcs = flexJSProject.getLibraries();
@@ -303,10 +323,153 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	            	}
 	            	infoInject += "}};";
                     finalLines.add(infoInject);
+                    int newLineIndex = 0;
+                    while((newLineIndex = infoInject.indexOf('\n', newLineIndex)) != -1)
+                    {
+                        addLineToMappings(finalLines.size());
+                        newLineIndex++;
+                    }
+                    
+                    String cssInject = "\n\n" + thisDef + ".prototype.cssData = [";
+                    JSCSSCompilationSession cssSession = (JSCSSCompilationSession) flexJSProject.getCSSCompilationSession();
+                    String s = cssSession.getEncodedCSS();
+                    if (s != null)
+                    {
+                        int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                        if (reqidx != -1)
+                        {
+                            String cssRequires = s.substring(reqidx);
+                            s = s.substring(0, reqidx - 1);
+                            String[] cssRequireLines = cssRequires.split("\n");
+                            for(String require : cssRequireLines)
+                            {
+                                finalLines.add(endRequires, require);
+                                addLineToMappings(endRequires);
+                                endRequires++;
+                            }
+                        }
+                        cssInject += s;
+                        finalLines.add(cssInject);
+                        newLineIndex = 0;
+                        while((newLineIndex = cssInject.indexOf('\n', newLineIndex)) != -1)
+                        {
+                            addLineToMappings(finalLines.size());
+                            newLineIndex++;
+                        }
+                    }
 	            }
             }
         }
+
     	return Joiner.on("\n").join(finalLines);
+    }
+
+    public void startMapping(ISourceLocation node)
+    {
+        startMapping(node, node.getLine(), node.getColumn());
+    }
+
+    public void startMapping(ISourceLocation node, int line, int column)
+    {
+        if (isBufferWrite())
+        {
+            return;
+        }
+        if (lastMapping != null)
+        {
+            FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
+            throw new IllegalStateException("Cannot start new mapping when another mapping is already started. "
+                    + "Previous mapping at Line " + sourceStartPosition.getLine()
+                    + " and Column " + sourceStartPosition.getColumn()
+                    + " in file " + lastMapping.sourcePath);
+        }
+
+        String sourcePath = node.getSourcePath();
+        if (sourcePath == null)
+        {
+            //if the source path is null, this node may have been generated by
+            //the compiler automatically. for example, an untyped variable will
+            //have a node for the * type.
+            if (node instanceof IASNode)
+            {
+                IASNode parentNode = ((IASNode) node).getParent();
+                if (parentNode != null)
+                {
+                    //try the parent node
+                    startMapping(parentNode, line, column);
+                    return;
+                }
+            }
+        }
+
+        SourceMapMapping mapping = new SourceMapMapping();
+        mapping.sourcePath = sourcePath;
+        mapping.sourceStartPosition = new FilePosition(line, column);
+        mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
+        lastMapping = mapping;
+    }
+
+    public void startMapping(ISourceLocation node, ISourceLocation afterNode)
+    {
+        startMapping(node, afterNode.getEndLine(), afterNode.getEndColumn());
+    }
+
+    public void endMapping(ISourceLocation node)
+    {
+        if (isBufferWrite())
+        {
+            return;
+        }
+        if (lastMapping == null)
+        {
+            throw new IllegalStateException("Cannot end mapping when a mapping has not been started");
+        }
+
+        lastMapping.destEndPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
+        sourceMapMappings.add(lastMapping);
+        lastMapping = null;
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * added during post processing.
+     *
+     * @param lineIndex
+     */
+    protected void addLineToMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine + 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() + 1, destEndPosition.getColumn());
+            }
+        }
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * removed during post processing.
+     *
+     * @param lineIndex
+     */
+    protected void removeLineFromMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine - 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() - 1, destEndPosition.getColumn());
+            }
+        }
     }
     
     @Override

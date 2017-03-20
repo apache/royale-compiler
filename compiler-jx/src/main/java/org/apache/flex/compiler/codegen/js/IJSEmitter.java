@@ -20,11 +20,8 @@
 package org.apache.flex.compiler.codegen.js;
 
 import java.io.Writer;
-import java.util.List;
 
-import com.google.debugging.sourcemap.FilePosition;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -37,47 +34,14 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
  * 
  * @author Michael Schmalle
  */
-public interface IJSEmitter extends IASEmitter
+public interface IJSEmitter extends IASEmitter, IMappingEmitter
 {
     JSSessionModel getModel();
-    List<SourceMapMapping> getSourceMapMappings();
     
     String formatQualifiedName(String name);
-
-    /**
-     * Adds a node to the source map.
-     */
-    void startMapping(ISourceLocation node);
-
-    /**
-     * Adds a node to the source map using custom line and column values,
-     * instead of the node's own line and column. Useful for starting a mapping
-     * in the middle of the node.
-     */
-    void startMapping(ISourceLocation node, int line, int column);
-
-    /**
-     * Adds a node to the source map after a particular node instead using the
-     * node's own line and column.
-     */
-    void startMapping(ISourceLocation node, ISourceLocation afterNode);
-
-    /**
-     * Commits a mapping to the source map.
-     */
-    void endMapping(ISourceLocation node);
     
     void emitSourceMapDirective(ITypeNode node);
     
     void emitClosureStart();
     void emitClosureEnd(IASNode node, IDefinition nodeDef);
-    
-    class SourceMapMapping
-    {
-        public String sourcePath;
-        public String name;
-        public FilePosition sourceStartPosition;
-        public FilePosition destStartPosition;
-        public FilePosition destEndPosition;
-    }
 }

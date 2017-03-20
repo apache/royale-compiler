@@ -31,6 +31,7 @@ import java.util.Stack;
 import org.apache.flex.compiler.codegen.ISourceMapEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -131,10 +132,10 @@ public class JSWriter implements IJSWriter
         }
     }
     
-    protected void convertMappingSourcePathsToRelative(IJSEmitter emitter, File relativeToFile)
+    protected void convertMappingSourcePathsToRelative(IMappingEmitter emitter, File relativeToFile)
     {
-        List<IJSEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
-        for (IJSEmitter.SourceMapMapping mapping : mappings)
+        List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
+        for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
             mapping.sourcePath = relativePath(mapping.sourcePath, relativeToFile.getAbsolutePath());
         }
