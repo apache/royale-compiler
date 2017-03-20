@@ -17,13 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.driver.js;
+package org.apache.flex.compiler.codegen;
 
-import org.apache.flex.compiler.codegen.ISourceMapEmitter;
-import org.apache.flex.compiler.codegen.js.IMappingEmitter;
-import org.apache.flex.compiler.driver.IBackend;
-
-public interface IJSBackend extends IBackend
+public interface INestingEmitter extends IEmitter
 {
-    ISourceMapEmitter createSourceMapEmitter(IMappingEmitter emitter);
+    IEmitter getParentEmitter();
+    void setParentEmitter(IEmitter emitter);
 }

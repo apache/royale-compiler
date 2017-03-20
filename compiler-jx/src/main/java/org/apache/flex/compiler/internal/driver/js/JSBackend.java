@@ -29,6 +29,7 @@ import org.apache.flex.compiler.codegen.ISourceMapEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
@@ -139,7 +140,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public ISourceMapEmitter createSourceMapEmitter(IJSEmitter emitter)
+    public ISourceMapEmitter createSourceMapEmitter(IMappingEmitter emitter)
     {
         return new JSSourceMapEmitter(emitter);
     }

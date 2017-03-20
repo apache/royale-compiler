@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -391,6 +393,13 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         {
             return;
         }
+        IEmitter parentEmitter = getParentEmitter();
+        if (parentEmitter != null && parentEmitter instanceof IMappingEmitter)
+        {
+            IMappingEmitter mappingParent = (IMappingEmitter) parentEmitter;
+            mappingParent.startMapping(node, line, column);
+            return;
+        }
         if (lastMapping != null)
         {
             FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
@@ -434,6 +443,13 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         if (isBufferWrite())
         {
+            return;
+        }
+        IEmitter parentEmitter = getParentEmitter();
+        if (parentEmitter != null && parentEmitter instanceof IMappingEmitter)
+        {
+            IMappingEmitter mappingParent = (IMappingEmitter) parentEmitter;
+            mappingParent.endMapping(node);
             return;
         }
         if (lastMapping == null)
