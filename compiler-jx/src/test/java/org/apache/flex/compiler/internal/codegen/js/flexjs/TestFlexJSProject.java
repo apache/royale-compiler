@@ -130,7 +130,7 @@ public class TestFlexJSProject extends TestGoogProject
         assertProjectOut(compiledFileNames, testDirPath);
     }
 
-    @Test
+    @Ignore
     public void test_IsItCircularProto()
     {
         String testDirPath = projectDirPath + "/circular_proto";
