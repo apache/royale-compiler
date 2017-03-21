@@ -32,6 +32,7 @@ public enum JSGoogEmitterTokens implements IEmitterTokens
     GOOG_INHERITS("goog.inherits"),
     GOOG_PROVIDE("goog.provide"),
     GOOG_REQUIRE("goog.require"),
+    FLEXJS_DEPENDENCY_LIST("/* FlexJS Dependency List: "),
     OBJECT("Object"),
     ARRAY("Array"),
     ERROR("Error"),

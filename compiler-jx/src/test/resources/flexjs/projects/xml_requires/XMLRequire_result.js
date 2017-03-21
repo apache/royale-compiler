@@ -21,8 +21,7 @@
 
 goog.provide('XMLRequire');
 
-goog.require('XML');
-
+/* FlexJS Dependency List: XML*/
 
 
 

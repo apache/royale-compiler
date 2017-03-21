@@ -22,10 +22,10 @@
 goog.provide('Test');
 
 goog.require('classes.A');
+/* FlexJS Dependency List: interfaces.IC,org.apache.flex.utils.Language*/
+
 goog.require('interfaces.IA');
-goog.require('interfaces.IC');
 goog.require('interfaces.IE');
-goog.require('org.apache.flex.utils.Language');
 
 
 

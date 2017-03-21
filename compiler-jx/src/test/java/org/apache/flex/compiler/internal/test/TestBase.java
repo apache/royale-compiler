@@ -448,6 +448,7 @@ public class TestBase implements ITestBase
             }
         }
 
+        /*
         File outputRootDir = new File(
                 FilenameNormalization.normalize(tempDir
                         + File.separator + inputDirName));
@@ -464,6 +465,7 @@ public class TestBase implements ITestBase
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
         return compiledFileNames;
     }
 

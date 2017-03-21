@@ -22,7 +22,8 @@
 
 goog.provide('mypackage.TestClass');
 
-goog.require('mypackage.Event');
+/* FlexJS Dependency List: mypackage.Event*/
+
 
 
 

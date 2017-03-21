@@ -21,7 +21,8 @@
 
 goog.provide('MainClass');
 
-goog.require('OtherClass');
+/* FlexJS Dependency List: OtherClass*/
+
 
 
 

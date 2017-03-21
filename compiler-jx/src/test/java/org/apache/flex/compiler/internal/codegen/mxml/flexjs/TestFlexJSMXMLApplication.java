@@ -316,9 +316,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
+        		"/* FlexJS Dependency List: org.apache.flex.core.View,org.apache.flex.html.Label,org.apache.flex.net.HTTPConstants*/\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -438,9 +436,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
+        		"/* FlexJS Dependency List: org.apache.flex.core.View,org.apache.flex.html.Label,org.apache.flex.net.HTTPConstants*/\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -561,9 +557,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('binding.ComplexValueObject');\n" +
+        		"/* FlexJS Dependency List: binding.ComplexValueObject,org.apache.flex.core.View,org.apache.flex.html.Label*/\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -716,10 +710,8 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('XML');\n" +
-        		"goog.require('XML');\n" +
+        		"/* FlexJS Dependency List: org.apache.flex.core.View,org.apache.flex.html.Label,org.apache.flex.core.Application,XML*/\n" +
+        		"\n" +
         		"\n" +
         		"\n" +
         		"\n" +

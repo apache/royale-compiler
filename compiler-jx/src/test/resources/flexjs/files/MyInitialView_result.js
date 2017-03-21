@@ -22,21 +22,7 @@
 goog.provide('MyInitialView');
 
 goog.require('org.apache.flex.core.View');
-goog.require('org.apache.flex.html.Label');
-goog.require('org.apache.flex.binding.SimpleBinding');
-goog.require('org.apache.flex.html.TextButton');
-goog.require('org.apache.flex.html.List');
-goog.require('org.apache.flex.binding.ConstantBinding');
-goog.require('org.apache.flex.html.TextArea');
-goog.require('org.apache.flex.html.TextInput');
-goog.require('org.apache.flex.html.CheckBox');
-goog.require('org.apache.flex.html.RadioButton');
-goog.require('org.apache.flex.html.DropDownList');
-goog.require('org.apache.flex.html.ComboBox');
-goog.require('org.apache.flex.events.CustomEvent');
-goog.require('org.apache.flex.events.Event');
-goog.require('org.apache.flex.events.MouseEvent');
-goog.require('org.apache.flex.utils.Timer');
+/* FlexJS Dependency List: org.apache.flex.binding.ConstantBinding,org.apache.flex.binding.SimpleBinding,org.apache.flex.events.CustomEvent,org.apache.flex.events.Event,org.apache.flex.events.MouseEvent,org.apache.flex.html.CheckBox,org.apache.flex.html.ComboBox,org.apache.flex.html.DropDownList,org.apache.flex.html.Label,org.apache.flex.html.List,org.apache.flex.html.RadioButton,org.apache.flex.html.TextArea,org.apache.flex.html.TextButton,org.apache.flex.html.TextInput,org.apache.flex.utils.Timer*/
 
 
 

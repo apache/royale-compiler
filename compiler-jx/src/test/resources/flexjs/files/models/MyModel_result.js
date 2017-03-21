@@ -21,8 +21,9 @@
 
 goog.provide('models.MyModel');
 
-goog.require('org.apache.flex.events.Event');
 goog.require('org.apache.flex.events.EventDispatcher');
+/* FlexJS Dependency List: org.apache.flex.events.Event*/
+
 
 
 

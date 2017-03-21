@@ -91,7 +91,7 @@ public class FlexJSProject extends FlexProject
         IDefinition def = dp.get(0);
         // IDefinition def = to.getDefinitionPromises().get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
-        boolean isInterface = actualDef instanceof InterfaceDefinition;
+        boolean isInterface = (actualDef instanceof InterfaceDefinition) && (dt == DependencyType.INHERITANCE);
         if (!isInterface)
         {
             if (from != to)

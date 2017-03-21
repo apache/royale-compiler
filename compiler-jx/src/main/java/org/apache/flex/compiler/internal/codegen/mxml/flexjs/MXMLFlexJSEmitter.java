@@ -23,6 +23,7 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -158,27 +159,31 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
     	int endRequires = -1;
+    	int provideIndex = -1;
     	boolean sawRequires = false;
+    	boolean depsAdded = false;
     	boolean stillSearching = true;
         ArrayList<String> namesToAdd = new ArrayList<String>();
         ArrayList<String> foundRequires = new ArrayList<String>();
+        int i = 0;
     	for (String line : lines)
     	{
     		if (stillSearching)
     		{
-	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+    			String token = JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken();
+	            int c = line.indexOf(token);
 	            if (c > -1)
 	            {
-	                int c2 = line.indexOf(")");
-	                String s = line.substring(c + 14, c2 - 1);
-                    if (s.equals(IASLanguageConstants.XML))
-                    {
-                        foundXML = true;
-                    }
+	                int c2 = line.indexOf("*/");
+	                String s = line.substring(c + token.length(), c2);
+	                String[] reqs = s.split(",");
+	                for (String req : reqs)
+	                {
+	                	if (usedNames.contains(req) && !foundRequires.contains(req))
+	                		foundRequires.add(req);
+	                }
 	    			sawRequires = true;
-                    foundRequires.add(s);
-	    			if (!usedNames.contains(s))
-	    				continue;
+	    			endRequires = i;
 	    		}
 	    		else if (sawRequires)
 	    		{
@@ -202,27 +207,23 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
                     for (String nameToAdd : namesToAdd) {
                         //System.out.println("adding late requires:"+nameToAdd);
-                        finalLines.add(createRequireLine(nameToAdd,false));
+                    	if (!foundRequires.contains(nameToAdd))
+                    		foundRequires.add(nameToAdd);
                     }
-
-	    			endRequires = finalLines.size();
+	    		}
+	    		else if (line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken()) != -1)
+	    		{
+	    			provideIndex = i;
 	    		}
     		}
     		finalLines.add(line);
+    		i++;
     	}
         boolean needXML = ((FlexJSProject)(((IMXMLBlockWalker) getMXMLWalker()).getProject())).needXML;
-        if (needXML && !foundXML)
+        if (needXML && !foundRequires.contains(IASLanguageConstants.XML))
         {
-            StringBuilder appendString = new StringBuilder();
-            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-            appendString.append(IASLanguageConstants.XML);
-            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-            finalLines.add(endRequires, appendString.toString());
-            // TODO (aharui) addLineToMappings(finalLines.size());
+    		foundRequires.add(IASLanguageConstants.XML);
+    		depsAdded = true;
         }
     	// append info() structure if main CU
         ICompilerProject project = getMXMLWalker().getProject();
@@ -255,15 +256,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		            			mixinInject += ", "; 
 		            		mixinInject += mixin;
 		            		firstOne = false;
-		                    StringBuilder appendString = new StringBuilder();
-		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-		                    appendString.append(mixin);
-		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-	                        finalLines.add(endRequires, appendString.toString());
+		                    foundRequires.add(mixin);
+		                    depsAdded = true;
 	                        //addLineToMappings(finalLines.size());
 		            	}
 		            	mixinInject += "]";
@@ -304,6 +298,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     finalLines.add(infoInject);
 	            }
             }
+        }
+        if (foundRequires.size() > 0)
+        {
+        	StringBuilder sb = new StringBuilder();
+        	sb.append(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
+            sb.append(Joiner.on(",").join(foundRequires));
+            sb.append("*/\n");
+            if (endRequires == -1)
+            	finalLines.add(provideIndex + 1, sb.toString());
+            else
+            	finalLines.set(endRequires, sb.toString());
+
         }
     	return Joiner.on("\n").join(finalLines);
     }
@@ -2318,20 +2324,17 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writtenInstances.add(formatQualifiedName(cname)); // make sure we don't add ourselves
         writtenInstances.add(formatQualifiedName(bcname)); // make sure we don't add the baseclass twice
         allInstances.addAll(0, instances);
-        for (MXMLDescriptorSpecifier instance : allInstances)
-        {
-            String name = instance.name;
-            if (writtenInstances.indexOf(name) == -1)
-            {
-                emitHeaderLine(name);
-                writtenInstances.add(name);
-            }
-        }
+        
         ASProjectScope projectScope = (ASProjectScope) project.getScope();
         IDefinition cdef = node.getDefinition();
         ICompilationUnit cu = projectScope
                 .getCompilationUnitForDefinition(cdef);
         ArrayList<String> deps = project.getRequires(cu);
+        for (MXMLDescriptorSpecifier instance : allInstances)
+        {
+            String name = instance.name;
+            deps.add(name);
+        }
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
@@ -2349,10 +2352,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	String[] interfaces = interfaceList.split(", ");
         	for (String iface : interfaces)
         	{
-        		deps.add(iface);
+        		while (deps.contains(iface))
+        			deps.remove(iface);
         		usedNames.add(iface);
+                if (writtenInstances.indexOf(iface) == -1)
+                {
+                    emitHeaderLine(iface);
+                    writtenInstances.add(iface);
+                }
         	}
         }
+        boolean firstDependency = true;
+        boolean depsAdded = false;
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
         if (deps != null)
         {
         	Collections.sort(deps);
@@ -2389,8 +2402,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 String formatted = formatQualifiedName(imp, false);
                 if (writtenInstances.indexOf(formatted) == -1)
                 {
-                    emitHeaderLine(imp);
+            		if (!firstDependency)
+            			sb.append(",");
+                    sb.append(formatted);
                     writtenInstances.add(formatted);
+                    firstDependency = false;
+                    depsAdded = true;
                 }
             }
         }
@@ -2405,10 +2422,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             if (project instanceof FlexJSProject)
             {
             	if (((FlexJSProject)project).needLanguage)
-            		emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+            	{
+            		if (!firstDependency)
+            			sb.append(",");
+            		sb.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+                    depsAdded = true;
+            	}
             }
         }
-
+        sb.append("*/\n");
+        if (depsAdded)
+        {
+        	write(sb.toString());
+        }
         writeNewline();
         writeNewline();
     }
@@ -2428,18 +2454,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
-    }
-
-    private String createRequireLine(String qname, boolean isProvide) {
-        StringBuilder createHeader = new StringBuilder();
-        createHeader.append(isProvide ? JSGoogEmitterTokens.GOOG_PROVIDE.getToken() : JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-        createHeader.append(ASEmitterTokens.PAREN_OPEN.getToken());
-        createHeader.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        createHeader.append(qname);
-        createHeader.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        createHeader.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        createHeader.append(ASEmitterTokens.SEMICOLON.getToken());
-        return createHeader.toString();
     }
 
     //--------------------------------------------------------------------------

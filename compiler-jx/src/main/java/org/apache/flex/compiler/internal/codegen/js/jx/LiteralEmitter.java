@@ -134,7 +134,8 @@ public class LiteralEmitter extends JSSubEmitter implements
                         s = s.replace("\"", "\\\"");
                         s = "\"" + s + "\"";
                     }
-                    s = "new XML( " + s + ")";
+                    // use formatQualifiedName to get XML in the usedNames dependencies
+                    s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
                 }
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");

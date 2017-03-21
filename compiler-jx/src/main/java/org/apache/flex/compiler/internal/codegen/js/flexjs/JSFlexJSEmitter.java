@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -163,12 +164,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
+        ArrayList<String> deps = new ArrayList<String>();
         boolean foundLanguage = false;
         boolean foundXML = false;
         boolean foundNamespace = false;
         boolean sawRequires = false;
     	boolean stillSearching = true;
-        int addIndex = -1;
+        int depsIndex = -1;
         int len = lines.length;
     	for (int i = 0; i < len; i++)
     	{
@@ -180,34 +182,42 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 {
                     // if zero requires are found, require Language after the
                     // call to goog.provide
-                    addIndex = i + 1;
+                    depsIndex = i + 1;
                 }
-	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                String token = JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken();
+	            c = line.indexOf(token);
 	            if (c != -1)
 	            {
                     // we found other requires, so we'll just add Language at
                     // the end of the list
-                    addIndex = -1;
-	                int c2 = line.indexOf(")");
-	                String s = line.substring(c + 14, c2 - 1);
-                    if (s.equals(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken()))
+                    depsIndex = i;
+	                int c2 = line.indexOf("*/");
+	                String s = line.substring(c + token.length(), c2);
+	                deps.addAll(Arrays.asList(s.split(",")));
+                    if (deps.contains(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken()))
                     {
                         foundLanguage = true;
                     }
-                    else if (s.equals(IASLanguageConstants.XML))
+                    else if (deps.contains(IASLanguageConstants.XML))
                     {
                         foundXML = true;
                     }
-                    else if (s.equals(IASLanguageConstants.Namespace))
+                    else if (deps.contains(IASLanguageConstants.Namespace))
                     {
                         foundNamespace = true;
                     }
 	    			sawRequires = true;
-	    			if (!usedNames.contains(s))
-                    {
-                        removeLineFromMappings(i);
-                        continue;
-                    }
+	    			ArrayList<String> removalList = new ArrayList<String>();
+	    			for (String dep : deps)
+	    			{
+		    			if (!usedNames.contains(dep))
+	                    {
+	                        removalList.add(dep);
+	                    }	    				
+	    			}
+	    			for (String dep : removalList)
+	    				deps.remove(dep);
+                    continue;
 	    		}
 	    		else if (sawRequires || i == len - 1)
                 {
@@ -224,80 +234,30 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         boolean needLanguage = flexJSProject.needLanguage;
                         if (needLanguage && !foundLanguage)
                         {
-                            StringBuilder appendString = new StringBuilder();
-                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
-                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-                            if(addIndex != -1)
-                            {
-                                // if we didn't find other requires, this index
-                                // points to the line after goog.provide
-                                finalLines.add(addIndex, appendString.toString());
-                                addLineToMappings(addIndex);
-                            }
-                            else
-                            {
-                                finalLines.add(appendString.toString());
-                                addLineToMappings(i);
-                            }
+                            deps.add(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
                         }
                         boolean needXML = flexJSProject.needXML;
                         if (needXML && !foundXML)
                         {
-                            StringBuilder appendString = new StringBuilder();
-                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(IASLanguageConstants.XML);
-                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-                            if(addIndex != -1)
-                            {
-                                // if we didn't find other requires, this index
-                                // points to the line after goog.provide
-                                finalLines.add(addIndex, appendString.toString());
-                                addLineToMappings(addIndex);
-                            }
-                            else
-                            {
-                                finalLines.add(appendString.toString());
-                                addLineToMappings(i);
-                            }
+                            deps.add(IASLanguageConstants.XML);
                         }
                         if (needNamespace && !foundNamespace)
                         {
-                            StringBuilder appendString = new StringBuilder();
-                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(IASLanguageConstants.Namespace);
-                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-                            if(addIndex != -1)
-                            {
-                                // if we didn't find other requires, this index
-                                // points to the line after goog.provide
-                                finalLines.add(addIndex, appendString.toString());
-                                addLineToMappings(addIndex);
-                            }
-                            else
-                            {
-                                finalLines.add(appendString.toString());
-                                addLineToMappings(i);
-                            }
+                            deps.add(IASLanguageConstants.Namespace);
                         }
                     }
                 }
     		}
     		finalLines.add(line);
     	}
-
+    	if (deps.size() > 0)
+    	{
+	        StringBuilder sb = new StringBuilder();
+	        sb.append(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
+	        sb.append(Joiner.on(",").join(deps));
+	        sb.append("*/\n");
+			finalLines.add(depsIndex, sb.toString());
+    	}
     	return Joiner.on("\n").join(finalLines);
     }
 

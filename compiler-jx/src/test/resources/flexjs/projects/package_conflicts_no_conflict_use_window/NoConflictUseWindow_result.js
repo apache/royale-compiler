@@ -21,7 +21,8 @@
 
 goog.provide('NoConflictUseWindow');
 
-goog.require('mypackage.TestClass');
+/* FlexJS Dependency List: mypackage.TestClass*/
+
 
 
 
