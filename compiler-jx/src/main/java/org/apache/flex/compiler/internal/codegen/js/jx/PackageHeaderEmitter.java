@@ -259,7 +259,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         }
 
-        if (interfacesList != null)
+        if (interfacesList != null && requiresList != null)
         {
 	        for (String r : interfacesList)
 	        {
