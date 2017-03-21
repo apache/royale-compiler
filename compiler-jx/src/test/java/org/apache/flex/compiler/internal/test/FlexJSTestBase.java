@@ -26,8 +26,10 @@ import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
@@ -47,6 +49,7 @@ public class FlexJSTestBase extends TestBase
 
         asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
+        asEmitter.setParentEmitter(mxmlEmitter);
 
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
         mxmlBlockWalker = backend.createMXMLWalker(project, errors,
@@ -105,17 +108,47 @@ public class FlexJSTestBase extends TestBase
     public static final int WRAP_LEVEL_NONE = 0;
     public static final int WRAP_LEVEL_DOCUMENT = 1;
 
+    protected IASNode getASNode(String code, Class<? extends IASNode> type)
+    {
+        code = ""
+                + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\"><fx:Script><![CDATA["
+                + code + "]]></fx:Script></basic:Application>";
+
+        IMXMLFileNode node = compileMXML(code);
+
+        return findFirstASDescendantOfType(node, type);
+    }
+
     protected IMXMLNode getNode(String code, Class<? extends IMXMLNode> type,
             int wrapLevel)
     {
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
+        {
             code = ""
                     + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
                     + code + "</basic:Application>";
+        }
 
         IMXMLFileNode node = compileMXML(code);
 
         return findFirstDescendantOfType(node, type);
+    }
+
+    protected IASNode findFirstASDescendantOfType(IMXMLNode node,
+                                                  Class<? extends IASNode> nodeType)
+    {
+        IMXMLScriptNode scriptNode = (IMXMLScriptNode) findFirstDescendantOfType(node, IMXMLScriptNode.class);
+        if (scriptNode != null)
+        {
+            for (IASNode asNode : scriptNode.getASNodes())
+            {
+                if (nodeType.isInstance(asNode))
+                {
+                    return asNode;
+                }
+            }
+        }
+        return null;
     }
 
     protected IMXMLNode findFirstDescendantOfType(IMXMLNode node,
