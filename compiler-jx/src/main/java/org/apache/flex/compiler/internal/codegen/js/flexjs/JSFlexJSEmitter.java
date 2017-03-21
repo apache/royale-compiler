@@ -38,7 +38,6 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -72,15 +71,7 @@ import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
-import org.apache.flex.compiler.internal.tree.as.BlockNode;
-import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
+import org.apache.flex.compiler.internal.tree.as.*;
 import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -789,7 +780,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 {
                     if (nameNode instanceof IdentifierNode)
                     {
-                        newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("10"));
+                        //see FLEX-35283
+                        LiteralNode appendedArgument = new NumericLiteralNode("undefined");
+                        appendedArgument.setSynthetic(true);
+                        newNode = EmitterUtils.insertArgumentsAfter(node, appendedArgument);
                     }
                 }
             }
