@@ -33,6 +33,7 @@ import java.util.Set;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
@@ -1518,8 +1519,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     + ".prototype." + event.eventHandler + " = function(event)");
             writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
-            writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken(),
-                    false);
+
+            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                    .getASEmitter();
+            
+            IMXMLEventSpecifierNode node = event.node;
+            int len = node.getChildCount();
+            for (int i = 0; i < len; i++)
+            {
+                IASNode cnode = node.getChild(i);
+                asEmitter.getWalker().walk(cnode);
+                writeToken(ASEmitterTokens.SEMICOLON);
+                writeNewline();
+            }
 
             write(ASEmitterTokens.BLOCK_CLOSE);
             writeNewline(";");
@@ -1671,27 +1683,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getTypeAsDisplayString();
 
         eventHandlerNameMap.put(node, eventSpecifier.eventHandler);
-        
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
 
-        StringBuilder sb = null;
-        int len = node.getChildCount();
-        if (len > 0)
-        {
-            sb = new StringBuilder();
-            for (int i = 0; i < len; i++)
-            {
-                sb.append(getIndent((i > 0) ? 1 : 0)
-                        + asEmitter.stringifyNode(node.getChild(i)));
-                if (i < len - 1)
-                {
-                    sb.append(ASEmitterTokens.SEMICOLON.getToken());
-                    sb.append(ASEmitterTokens.NEW_LINE.getToken());
-                }
-            }
-        }
-        eventSpecifier.value = sb.toString();
+        //save the node for emitting later in emitEvents()
+        //previously, we stringified the node and saved that instead of the
+        //node, but source maps don't work when you stringify a node too early -JT
+        eventSpecifier.node = node;
 
 	    if (currentDescriptor != null)
 	        currentDescriptor.eventSpecifiers.add(eventSpecifier);
@@ -2263,7 +2259,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         //save the script for emitting later in emitScripts()
         //previously, we stringified the node and saved that instead of the
-        //node, but source maps don't work when you stringify a node -JT
+        //node, but source maps don't work when you stringify a node too early -JT
         scripts.add(node);
     }
 
