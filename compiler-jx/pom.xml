@@ -51,6 +51,7 @@
             <exclude>**/TestFlexJSMXMLApplication.java</exclude>
             <exclude>**/TestFlexJSMXMLScript.java</exclude>
             <exclude>**/TestSourceMapMXMLScript.java</exclude>
+            <exclude>**/TestSourceMapMXMLEvents.java</exclude>
           </excludes>
         </configuration>
       </plugin>
