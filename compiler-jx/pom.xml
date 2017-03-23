@@ -50,6 +50,7 @@
             <exclude>**/TestGoogFile.java</exclude>
             <exclude>**/TestFlexJSMXMLApplication.java</exclude>
             <exclude>**/TestFlexJSMXMLScript.java</exclude>
+            <exclude>**/TestSourceMapMXMLScript.java</exclude>
           </excludes>
         </configuration>
       </plugin>
