@@ -249,10 +249,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         /////////////////////////////////////////////////////////////////////////////////
 
         final File projectIntermediateMainFile = new File(intermediateDir, outputFileName);
-        if (!googConfiguration.getSkipTranspile())
-        {
-            appendEncodedCSS(projectIntermediateMainFile, projectName);
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -379,36 +375,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         System.out.println("The project '" + projectName + "' has been successfully compiled and optimized.");
 
         return true;
-    }
-
-    private void appendEncodedCSS(File targetFile, String projectName) throws IOException
-    {
-        StringBuilder appendString = new StringBuilder();
-        appendString.append("\n\n");
-        appendString.append(projectName);
-        appendString.append(".prototype.cssData = [");
-        JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
-        String s = cssSession.getEncodedCSS();
-        if (s != null)
-        {
-	        int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	        if (reqidx != -1)
-	        {
-	            String reqs = s.substring(reqidx);
-	            s = s.substring(0, reqidx - 1);
-	            String fileData = readCode(targetFile);
-	            reqidx = fileData.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	            String after = fileData.substring(reqidx);
-	            String before = fileData.substring(0, reqidx - 1);
-	            s = before + reqs + after + appendString.toString() + s;
-	            writeFile(targetFile, s, false);
-	        }
-	        else
-	        {
-	            appendString.append(s);
-	            writeFile(targetFile, appendString.toString(), true);
-	        }
-        }
     }
 
     protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, String entryPoint)

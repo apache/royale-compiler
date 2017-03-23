@@ -108,6 +108,20 @@ public class Emitter implements IEmitter
         walker = value;
     }
 
+    private int currentLine = 0;
+
+    protected int getCurrentLine()
+    {
+        return currentLine;
+    }
+
+    private int currentColumn = 0;
+
+    protected int getCurrentColumn()
+    {
+        return currentColumn;
+    }
+
     public Emitter(FilterWriter out)
     {
         this.out = out;
@@ -127,9 +141,23 @@ public class Emitter implements IEmitter
         try
         {
             if (!bufferWrite)
+            {
+                int newLineCount = value.length() - value.replace("\n", "").length();
+                currentLine += newLineCount;
+                if (newLineCount > 0)
+                {
+                    currentColumn = value.length() - value.lastIndexOf("\n") - 1;
+                }
+                else
+                {
+                    currentColumn += value.length();
+                }
                 out.write(value);
+            }
             else
+            {
                 builder.append(value);
+            }
         }
         catch (IOException e)
         {

@@ -19,13 +19,18 @@
 
 package org.apache.flex.compiler.internal.codegen.mxml;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.apache.flex.compiler.codegen.ISourceMapEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
@@ -62,6 +67,7 @@ public class MXMLWriter extends JSWriter
         IMXMLEmitter mxmlEmitter = backend.createMXMLEmitter(writer);
         IMXMLBlockWalker mxmlBlockWalker = backend.createMXMLWalker(
                 project, problems, mxmlEmitter, asEmitter, asBlockWalker);
+        asEmitter.setParentEmitter(mxmlEmitter);
 
         mxmlBlockWalker.visitCompilationUnit(compilationUnit);
 
@@ -76,8 +82,23 @@ public class MXMLWriter extends JSWriter
 
         if (sourceMapOut != null)
         {
-            String fileName = new File(compilationUnit.getAbsoluteFilename()).getName();
-            System.out.println("Source map cannot be generated for '" + fileName + "'.");
+            convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, sourceMapOut);
+
+            File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
+            ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter((IMappingEmitter) mxmlEmitter);
+            try
+            {
+                String fileName = compilationUnitFile.getName();
+                fileName = fileName.replace(".mxml", ".js");
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapOut.getAbsolutePath(), null);
+                BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(sourceMapOut));
+                outStream.write(sourceMap.getBytes());
+                outStream.flush();
+                outStream.close();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 

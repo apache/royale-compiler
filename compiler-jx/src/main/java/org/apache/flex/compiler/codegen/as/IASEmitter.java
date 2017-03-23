@@ -23,6 +23,7 @@ import java.io.Writer;
 
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.IEmitter;
+import org.apache.flex.compiler.codegen.INestingEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -76,7 +77,7 @@ import org.apache.flex.compiler.visitor.IBlockWalker;
  * 
  * @author Michael Schmalle
  */
-public interface IASEmitter extends IEmitter
+public interface IASEmitter extends INestingEmitter
 {
     IBlockWalker getWalker();
 

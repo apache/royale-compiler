@@ -34,8 +34,10 @@ import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -58,6 +60,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
@@ -76,16 +79,18 @@ import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.flex.compiler.tree.mxml.*;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.swc.ISWC;
 
 import com.google.common.base.Joiner;
+import com.google.debugging.sourcemap.FilePosition;
 
 /**
  * @author Erik de Bruin
  */
 public class MXMLFlexJSEmitter extends MXMLEmitter implements
-        IMXMLFlexJSEmitter
+        IMXMLFlexJSEmitter, IMappingEmitter
 {
 
 	// the instances in a container
@@ -99,7 +104,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLDescriptorSpecifier> instances;
     // all instances in the document AND its subdocuments
     private ArrayList<MXMLDescriptorSpecifier> allInstances = new ArrayList<MXMLDescriptorSpecifier>();
-    private ArrayList<MXMLScriptSpecifier> scripts;
+    private ArrayList<IMXMLScriptNode> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
     private IClassDefinition documentDefinition;
@@ -129,10 +134,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
      *  deferred instance = local3[ nodeToIndexMap.get(an instance) ]
      */
     protected Map<IMXMLNode, Integer> nodeToIndexMap;
+
+    private SourceMapMapping lastMapping;
+
+    private List<SourceMapMapping> sourceMapMappings;
+
+    public List<SourceMapMapping> getSourceMapMappings()
+    {
+        return sourceMapMappings;
+    }
     
     public MXMLFlexJSEmitter(FilterWriter out)
     {
         super(out);
+        sourceMapMappings = new ArrayList<SourceMapMapping>();
     }
 
     @Override
@@ -162,8 +177,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	boolean stillSearching = true;
         ArrayList<String> namesToAdd = new ArrayList<String>();
         ArrayList<String> foundRequires = new ArrayList<String>();
-    	for (String line : lines)
-    	{
+        int len = lines.length;
+        for (int i = 0; i < len; i++)
+        {
+            String line = lines[i];
     		if (stillSearching)
     		{
 	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -178,7 +195,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	    			sawRequires = true;
                     foundRequires.add(s);
 	    			if (!usedNames.contains(s))
-	    				continue;
+                    {
+                        removeLineFromMappings(i);
+                        continue;
+                    }
 	    		}
 	    		else if (sawRequires)
 	    		{
@@ -201,8 +221,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     }
 
                     for (String nameToAdd : namesToAdd) {
-                        //System.out.println("adding late requires:"+nameToAdd);
                         finalLines.add(createRequireLine(nameToAdd,false));
+                        addLineToMappings(i);
                     }
 
 	    			endRequires = finalLines.size();
@@ -222,7 +242,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
             finalLines.add(endRequires, appendString.toString());
-            // TODO (aharui) addLineToMappings(finalLines.size());
+            addLineToMappings(endRequires);
+            endRequires++;
         }
     	// append info() structure if main CU
         ICompilerProject project = getMXMLWalker().getProject();
@@ -264,12 +285,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
 		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
 	                        finalLines.add(endRequires, appendString.toString());
-	                        //addLineToMappings(finalLines.size());
+	                        addLineToMappings(endRequires);
+                            endRequires++;
 		            	}
 		            	mixinInject += "]";
 		            	infoInject += mixinInject;
 		            	sep = ",\n";
-	                    //addLineToMappings(finalLines.size());	            	
 	            	}
 	            	boolean isMX = false;
 	            	List<ISWC> swcs = flexJSProject.getLibraries();
@@ -302,10 +323,153 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	            	}
 	            	infoInject += "}};";
                     finalLines.add(infoInject);
+                    int newLineIndex = 0;
+                    while((newLineIndex = infoInject.indexOf('\n', newLineIndex)) != -1)
+                    {
+                        addLineToMappings(finalLines.size());
+                        newLineIndex++;
+                    }
+                    
+                    String cssInject = "\n\n" + thisDef + ".prototype.cssData = [";
+                    JSCSSCompilationSession cssSession = (JSCSSCompilationSession) flexJSProject.getCSSCompilationSession();
+                    String s = cssSession.getEncodedCSS();
+                    if (s != null)
+                    {
+                        int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                        if (reqidx != -1)
+                        {
+                            String cssRequires = s.substring(reqidx);
+                            s = s.substring(0, reqidx - 1);
+                            String[] cssRequireLines = cssRequires.split("\n");
+                            for(String require : cssRequireLines)
+                            {
+                                finalLines.add(endRequires, require);
+                                addLineToMappings(endRequires);
+                                endRequires++;
+                            }
+                        }
+                        cssInject += s;
+                        finalLines.add(cssInject);
+                        newLineIndex = 0;
+                        while((newLineIndex = cssInject.indexOf('\n', newLineIndex)) != -1)
+                        {
+                            addLineToMappings(finalLines.size());
+                            newLineIndex++;
+                        }
+                    }
 	            }
             }
         }
+
     	return Joiner.on("\n").join(finalLines);
+    }
+
+    public void startMapping(ISourceLocation node)
+    {
+        startMapping(node, node.getLine(), node.getColumn());
+    }
+
+    public void startMapping(ISourceLocation node, int line, int column)
+    {
+        if (isBufferWrite())
+        {
+            return;
+        }
+        if (lastMapping != null)
+        {
+            FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
+            throw new IllegalStateException("Cannot start new mapping when another mapping is already started. "
+                    + "Previous mapping at Line " + sourceStartPosition.getLine()
+                    + " and Column " + sourceStartPosition.getColumn()
+                    + " in file " + lastMapping.sourcePath);
+        }
+
+        String sourcePath = node.getSourcePath();
+        if (sourcePath == null)
+        {
+            //if the source path is null, this node may have been generated by
+            //the compiler automatically. for example, an untyped variable will
+            //have a node for the * type.
+            if (node instanceof IASNode)
+            {
+                IASNode parentNode = ((IASNode) node).getParent();
+                if (parentNode != null)
+                {
+                    //try the parent node
+                    startMapping(parentNode, line, column);
+                    return;
+                }
+            }
+        }
+
+        SourceMapMapping mapping = new SourceMapMapping();
+        mapping.sourcePath = sourcePath;
+        mapping.sourceStartPosition = new FilePosition(line, column);
+        mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
+        lastMapping = mapping;
+    }
+
+    public void startMapping(ISourceLocation node, ISourceLocation afterNode)
+    {
+        startMapping(node, afterNode.getEndLine(), afterNode.getEndColumn());
+    }
+
+    public void endMapping(ISourceLocation node)
+    {
+        if (isBufferWrite())
+        {
+            return;
+        }
+        if (lastMapping == null)
+        {
+            throw new IllegalStateException("Cannot end mapping when a mapping has not been started");
+        }
+
+        lastMapping.destEndPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
+        sourceMapMappings.add(lastMapping);
+        lastMapping = null;
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * added during post processing.
+     *
+     * @param lineIndex
+     */
+    protected void addLineToMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine + 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() + 1, destEndPosition.getColumn());
+            }
+        }
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * removed during post processing.
+     *
+     * @param lineIndex
+     */
+    protected void removeLineFromMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine - 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() - 1, destEndPosition.getColumn());
+            }
+        }
     }
     
     @Override
@@ -344,7 +508,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         events = new ArrayList<MXMLEventSpecifier>();
         instances = new ArrayList<MXMLDescriptorSpecifier>();
-        scripts = new ArrayList<MXMLScriptSpecifier>();
+        scripts = new ArrayList<IMXMLScriptNode>();
         //styles = new ArrayList<MXMLStyleSpecifier>();
 
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
@@ -411,7 +575,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         ArrayList<MXMLDescriptorSpecifier> oldDescriptorTree;
         MXMLDescriptorSpecifier oldPropertiesTree;
         ArrayList<MXMLEventSpecifier> oldEvents;
-        ArrayList<MXMLScriptSpecifier> oldScripts;
+        ArrayList<IMXMLScriptNode> oldScripts;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentInstances;
         ArrayList<MXMLDescriptorSpecifier> oldInstances;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentPropertySpecifiers;
@@ -431,7 +595,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         oldInstances = instances;
         instances = new ArrayList<MXMLDescriptorSpecifier>();
         oldScripts = scripts;
-        scripts = new ArrayList<MXMLScriptSpecifier>();
+        scripts = new ArrayList<IMXMLScriptNode>();
         //styles = new ArrayList<MXMLStyleSpecifier>();
 
         oldCurrentInstances = currentInstances;
@@ -1293,13 +1457,49 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected void emitScripts()
     {
-        for (MXMLScriptSpecifier script : scripts)
+        for (IMXMLScriptNode node : scripts)
         {
-            String output = script.output();
+            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                    .getASEmitter();
 
-            if (!output.equals(""))
+            int len = node.getChildCount();
+            if (len > 0)
             {
-                writeNewline(output);
+                for (int i = 0; i < len; i++)
+                {
+                    IASNode cnode = node.getChild(i);
+                    if (cnode.getNodeID() == ASTNodeID.VariableID) {
+                        ((JSFlexJSEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
+                    } else {
+                        if (cnode.getNodeID() == ASTNodeID.BindableVariableID) {
+                            IVariableNode variableNode = (IVariableNode) cnode;
+                            BindableVarInfo bindableVarInfo = new BindableVarInfo();
+                            bindableVarInfo.isStatic = variableNode.hasModifier(ASModifier.STATIC);;
+                            bindableVarInfo.namespace = variableNode.getNamespace();
+                            IMetaTagsNode metaTags = variableNode.getMetaTags();
+                            if (metaTags != null) {
+                                IMetaTagNode[] tags = metaTags.getAllTags();
+                                if (tags.length > 0)
+                                    bindableVarInfo.metaTags = tags;
+                            }
+
+                            bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
+                            ((JSFlexJSEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
+                        }
+                    }
+
+                    if (!(cnode instanceof IImportNode))
+                    {
+                        asEmitter.getWalker().walk(cnode);
+                        write(ASEmitterTokens.SEMICOLON.getToken());
+
+                        if (i == len - 1)
+                            indentPop();
+
+                        writeNewline();
+                        writeNewline();
+                    }
+                }
             }
         }
     }
@@ -2061,61 +2261,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitScript(IMXMLScriptNode node)
     {
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
-
-        String nl = ASEmitterTokens.NEW_LINE.getToken();
-
-        StringBuilder sb = null;
-        MXMLScriptSpecifier scriptSpecifier = null;
-
-        int len = node.getChildCount();
-        if (len > 0)
-        {
-            for (int i = 0; i < len; i++)
-            {
-                IASNode cnode = node.getChild(i);
-                if (cnode.getNodeID() == ASTNodeID.VariableID) {
-                    ((JSFlexJSEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
-                } else {
-                    if (cnode.getNodeID() == ASTNodeID.BindableVariableID) {
-                        IVariableNode variableNode = (IVariableNode) cnode;
-                        BindableVarInfo bindableVarInfo = new BindableVarInfo();
-                        bindableVarInfo.isStatic = variableNode.hasModifier(ASModifier.STATIC);;
-                        bindableVarInfo.namespace = variableNode.getNamespace();
-                        IMetaTagsNode metaTags = variableNode.getMetaTags();
-                        if (metaTags != null) {
-                            IMetaTagNode[] tags = metaTags.getAllTags();
-                            if (tags.length > 0)
-                                bindableVarInfo.metaTags = tags;
-                        }
-
-                        bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
-                        ((JSFlexJSEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
-                    }
-                }
-
-                if (!(cnode instanceof IImportNode))
-                {
-                    sb = new StringBuilder();
-                    scriptSpecifier = new MXMLScriptSpecifier();
-
-                    sb.append(asEmitter.stringifyNode(cnode));
-
-                    sb.append(ASEmitterTokens.SEMICOLON.getToken());
-
-                    if (i == len - 1)
-                        indentPop();
-
-                    sb.append(nl);
-                    sb.append(nl);
-
-                    scriptSpecifier.fragment = sb.toString();
-
-                    scripts.add(scriptSpecifier);
-                }
-            }
-        }
+        //save the script for emitting later in emitScripts()
+        //previously, we stringified the node and saved that instead of the
+        //node, but source maps don't work when you stringify a node -JT
+        scripts.add(node);
     }
 
     @Override

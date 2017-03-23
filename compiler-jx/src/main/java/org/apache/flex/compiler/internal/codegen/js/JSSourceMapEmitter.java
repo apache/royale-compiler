@@ -23,16 +23,16 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.ISourceMapEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 
 import com.google.debugging.sourcemap.SourceMapGeneratorV3;
 
 public class JSSourceMapEmitter implements ISourceMapEmitter
 {
-    private IJSEmitter emitter;
+    private IMappingEmitter emitter;
     private SourceMapGeneratorV3 sourceMapGenerator;
 
-    public JSSourceMapEmitter(IJSEmitter emitter)
+    public JSSourceMapEmitter(IMappingEmitter emitter)
     {
         this.emitter = emitter;
         sourceMapGenerator = new SourceMapGeneratorV3();
@@ -40,8 +40,8 @@ public class JSSourceMapEmitter implements ISourceMapEmitter
     
     public String emitSourceMap(String fileName, String sourceMapPath, String sourceRoot)
     {
-        List<IJSEmitter.SourceMapMapping> mappings = this.emitter.getSourceMapMappings();
-        for (IJSEmitter.SourceMapMapping mapping : mappings)
+        List<IMappingEmitter.SourceMapMapping> mappings = this.emitter.getSourceMapMappings();
+        for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
             sourceMapGenerator.addMapping(mapping.sourcePath, mapping.name,
                     mapping.sourceStartPosition,
