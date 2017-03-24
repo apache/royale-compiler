@@ -1499,6 +1499,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
                         writeNewline();
                         writeNewline();
+                        writeNewline();
                     }
                 }
             }
@@ -1527,15 +1528,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             int len = node.getChildCount();
             for (int i = 0; i < len; i++)
             {
+                if (i > 0)
+                {
+                    writeNewline();
+                }
                 IASNode cnode = node.getChild(i);
                 asEmitter.getWalker().walk(cnode);
-                writeToken(ASEmitterTokens.SEMICOLON);
-                writeNewline();
+                write(ASEmitterTokens.SEMICOLON);
             }
 
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            writeNewline(";");
+            indentPop();
             writeNewline();
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            writeNewline(ASEmitterTokens.SEMICOLON);
             writeNewline();
         }
     }
