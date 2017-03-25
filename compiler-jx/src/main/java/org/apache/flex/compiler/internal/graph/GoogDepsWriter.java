@@ -578,42 +578,42 @@ public class GoogDepsWriter {
 						        		}
 						        		else
 						        		{
-						        			String token = JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken();
+						        			String token = JSGoogEmitterTokens.FLEXJS_STATIC_DEPENDENCY_LIST.getToken();
 						    				c = line.indexOf(token);
 						    				if (c > -1)
 						    				{
 						    					c2 = line.indexOf("*/");
 						    					line = line.substring(c + token.length(), c2);
-							        			fi.deps = new ArrayList<String>();
-						    					fi.deps.addAll(Arrays.asList(line.split(",")));
-						    					fi.depsLine = i;
+							        			fi.staticDeps = new ArrayList<String>();
+						    					fi.staticDeps.addAll(Arrays.asList(line.split(",")));
 						    				}
-						    				else if (fi.depsLine == 0)
+						    				else
 						    				{
-						    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
-						    					c = line.indexOf(token);
-						    					if (c > -1)
-						    					{
-						                            c2 = line.indexOf(")");
-						                            String s = line.substring(c + 14, c2 - 1);
-						                            if (fi.deps == null)
-						                            	fi.deps = new ArrayList<String>();
-						                            fi.deps.add(s);
-						    					}
-						    					else
-						    					{
-								        			token = JSGoogEmitterTokens.FLEXJS_STATIC_DEPENDENCY_LIST.getToken();
-								    				c = line.indexOf(token);
-								    				if (c > -1)
-								    				{
-								    					c2 = line.indexOf("*/");
-								    					line = line.substring(c + token.length(), c2);
-									        			fi.staticDeps = new ArrayList<String>();
-								    					fi.staticDeps.addAll(Arrays.asList(line.split(",")));
-								    				}						    						
-						    					}
-						    				}
-
+							        			token = JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken();
+							    				c = line.indexOf(token);
+							    				if (c > -1)
+							    				{
+							    					c2 = line.indexOf("*/");
+							    					line = line.substring(c + token.length(), c2);
+								        			fi.deps = new ArrayList<String>();
+								        			if (line.length() > 2) // don't add blank or space if no deps
+								        				fi.deps.addAll(Arrays.asList(line.split(",")));
+							    					fi.depsLine = i;
+							    				}
+							    				else if (fi.depsLine == 0)
+							    				{
+							    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
+							    					c = line.indexOf(token);
+							    					if (c > -1)
+							    					{
+							                            c2 = line.indexOf(")");
+							                            String s = line.substring(c + 14, c2 - 1);
+							                            if (fi.deps == null)
+							                            	fi.deps = new ArrayList<String>();
+							                            fi.deps.add(s);
+							    					}
+							    				}
+							        		}
 						        		}
 					        		}
 					        	}
