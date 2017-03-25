@@ -1542,6 +1542,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             write(ASEmitterTokens.BLOCK_CLOSE);
             writeNewline(ASEmitterTokens.SEMICOLON);
             writeNewline();
+            writeNewline();
         }
     }
 
