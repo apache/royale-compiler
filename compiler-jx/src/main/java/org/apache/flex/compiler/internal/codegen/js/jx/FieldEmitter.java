@@ -108,7 +108,9 @@ public class FieldEmitter extends JSSubEmitter implements
         IExpressionNode vnode = node.getAssignedValueNode();
         if (vnode != null)
         {
+        	getModel().inStaticInitializer = ndef.isStatic();
             String vnodeString = getEmitter().stringifyNode(vnode);
+        	getModel().inStaticInitializer = false;
         	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) || 
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
         			isPackageOrFileMember)

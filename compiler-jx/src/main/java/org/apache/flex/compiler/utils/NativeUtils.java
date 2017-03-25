@@ -106,6 +106,7 @@ public class NativeUtils
         parseFloat("parseFloat"),
         parseInt("parseInt"),
         String("String"),
+        undefined("undefined"),
         unescape("unescape"),
 
         // (erikdebruin) These aren't strictly 'native' to JS, but the 

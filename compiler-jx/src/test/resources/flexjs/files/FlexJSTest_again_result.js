@@ -22,7 +22,15 @@
 goog.provide('FlexJSTest_again');
 
 goog.require('org.apache.flex.core.Application');
-/* FlexJS Dependency List: MyInitialView,StockDataJSONItemConverter,controllers.MyController,models.MyModel,org.apache.flex.collections.LazyCollection,org.apache.flex.collections.parsers.JSONInputParser,org.apache.flex.core.SimpleCSSValuesImpl,org.apache.flex.events.Event,org.apache.flex.net.HTTPService*/
+goog.require('org.apache.flex.core.SimpleCSSValuesImpl');
+goog.require('MyInitialView');
+goog.require('models.MyModel');
+goog.require('controllers.MyController');
+goog.require('org.apache.flex.net.HTTPService');
+goog.require('org.apache.flex.collections.LazyCollection');
+goog.require('org.apache.flex.collections.parsers.JSONInputParser');
+goog.require('StockDataJSONItemConverter');
+goog.require('org.apache.flex.events.Event');
 
 
 

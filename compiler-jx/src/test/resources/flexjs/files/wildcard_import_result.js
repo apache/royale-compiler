@@ -22,7 +22,7 @@
 goog.provide('wildcard_import');
 
 goog.require('org.apache.flex.core.Application');
-/* FlexJS Dependency List: org.apache.flex.html.Button*/
+goog.require('org.apache.flex.html.Button');
 
 
 

@@ -468,7 +468,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         FileNode node = (FileNode)getNode("package org.apache.flex {\npublic class A {\nimport flash.display.Sprite; Sprite;\n}}", FileNode.class, 0);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * org.apache.flex.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.flex.A');\n\n/* FlexJS Dependency List: flash.display.Sprite*/\n\n\n\n/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * org.apache.flex.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.flex.A');\n\ngoog.require('flash.display.Sprite');\n\n\n\n/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
     }
     
     @Override

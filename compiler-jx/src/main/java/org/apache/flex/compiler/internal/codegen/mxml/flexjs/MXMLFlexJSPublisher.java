@@ -367,7 +367,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
         if (configuration.release()) {
             final File projectReleaseMainFile = new File(releaseDir, outputFileName);
-            compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, projectName);
+            compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
 
             compilerWrapper.compile();

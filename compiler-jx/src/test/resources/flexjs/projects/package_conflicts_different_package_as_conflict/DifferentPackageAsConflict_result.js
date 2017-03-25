@@ -21,8 +21,7 @@
 
 goog.provide('DifferentPackageAsConflict');
 
-/* FlexJS Dependency List: mypackage.TestClass*/
-
+goog.require('mypackage.TestClass');
 
 
 

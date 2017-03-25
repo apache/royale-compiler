@@ -211,15 +211,14 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
-        String baseName = "";
+
 
         if (type instanceof IClassDefinition) {
-            IClassDefinition bindableClassDef = (IClassDefinition) type;
-            baseName = bindableClassDef.resolveBaseClass(flexProject).getQualifiedName();
             //check whether we should add the requires for the implicit Bindable EventDispatcher implementations
             boolean needsBindableSupport = ((IClassDefinition) type).needsEventDispatcher(flexProject);
 
             if (needsBindableSupport) {
+                IClassDefinition bindableClassDef = (IClassDefinition) type;
                 ClassDefinition objectClassDefinition = (ClassDefinition)flexProject.getBuiltinType(
                         IASLanguageConstants.BuiltinType.OBJECT);
 
@@ -259,23 +258,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         }
 
-        if (interfacesList != null && requiresList != null)
-        {
-	        for (String r : interfacesList)
-	        {
-	        	while (requiresList.contains(r))
-	        	{
-	        		requiresList.remove(r);
-	        		System.out.println("interface " + r + "is already in requires list");
-	        	}
-	        }
-        }
-        boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname, baseName);
+        boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname);
         boolean emitsInterfaces = emitInterfaces(interfacesList, writtenRequires);
 
-        boolean isMainCU = flexProject.mainCU != null
-        	&& cu.getName().equals(flexProject.mainCU.getName());
-        /*
         // erikdebruin: Add missing language feature support, with e.g. 'is' and
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
@@ -301,8 +286,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 }
             }
         }
-		*/
-        
+
         boolean emitsExternalRequires = emitExternalRequires(externalRequiresList, writtenRequires);
 
         if (emitsRequires || emitsInterfaces || emitsExternalRequires || isMainCU)
@@ -314,13 +298,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline();
     }
 
-    private boolean emitRequires(List<String> requiresList, List<String> writtenRequires, String cname, String baseName)
+    private boolean emitRequires(List<String> requiresList, List<String> writtenRequires, String cname)
     {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
-    	
         boolean emitsRequires = false;
-        boolean firstDependency = true;
         if (requiresList != null)
         {
             Collections.sort(requiresList);
@@ -348,36 +328,21 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
                 if (writtenRequires.indexOf(imp) == -1)
                 {
-                	if (imp.equals(baseName))
-                	{
-	                    /* goog.require('x');\n */
-	                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
-	                    write(ASEmitterTokens.PAREN_OPEN);
-	                    write(ASEmitterTokens.SINGLE_QUOTE);
-	                    write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
-	                    write(ASEmitterTokens.SINGLE_QUOTE);
-	                    write(ASEmitterTokens.PAREN_CLOSE);
-	                    writeNewline(ASEmitterTokens.SEMICOLON);
-	                    emitsRequires = true;
-                	}
-                	else
-                	{
-                		if (!firstDependency)
-                			sb.append(",");
-                		sb.append(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
-                		firstDependency = false;
-                	}
+
+                    /* goog.require('x');\n */
+                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    writeNewline(ASEmitterTokens.SEMICOLON);
 
                     writtenRequires.add(imp);
+
+                    emitsRequires = true;
                 }
             }
-        }
-        
-        if (!firstDependency)
-        {
-        	sb.append("*/\n");
-        	write(sb.toString());
-        	emitsRequires = true;
         }
         return emitsRequires;
     }

@@ -21,9 +21,11 @@
 
 goog.provide('controllers.MyController');
 
-/* FlexJS Dependency List: FlexJSTest_again,MyInitialView,models.MyModel,org.apache.flex.utils.Language*/
-
+goog.require('FlexJSTest_again');
+goog.require('MyInitialView');
+goog.require('models.MyModel');
 goog.require('org.apache.flex.core.IDocument');
+goog.require('org.apache.flex.utils.Language');
 
 
 

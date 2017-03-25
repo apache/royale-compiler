@@ -21,8 +21,7 @@
 
 goog.provide('UseWindow');
 
-/* FlexJS Dependency List: mypackage.TestClass*/
-
+goog.require('mypackage.TestClass');
 
 
 
