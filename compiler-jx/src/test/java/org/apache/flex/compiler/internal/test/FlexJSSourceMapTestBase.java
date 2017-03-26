@@ -20,27 +20,17 @@ package org.apache.flex.compiler.internal.test;
 
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 
 import com.google.debugging.sourcemap.FilePosition;
 import static org.junit.Assert.assertTrue;
 
-public class SourceMapTestBase extends ASTestBase
+public class FlexJSSourceMapTestBase extends FlexJSTestBase
 {
-    protected IJSEmitter jsEmitter;
-    
-    @Override
-    public void setUp()
-    {
-        super.setUp();
-
-        jsEmitter = (IJSEmitter) asEmitter;
-    }
-
     protected void assertMapping(IASNode node, int nodeStartLine, int nodeStartColumn,
-        int outStartLine, int outStartColumn, int outEndLine, int outEndColumn)
+                                 int outStartLine, int outStartColumn, int outEndLine, int outEndColumn)
     {
         int sourceStartLine = nodeStartLine + node.getLine();
         int sourceStartColumn = nodeStartColumn;
@@ -49,7 +39,8 @@ public class SourceMapTestBase extends ASTestBase
             sourceStartColumn += node.getColumn();
         }
         boolean foundMapping = false;
-        List<IMappingEmitter.SourceMapMapping> mappings = jsEmitter.getSourceMapMappings();
+        IMappingEmitter emitter = (IMappingEmitter) mxmlEmitter;
+        List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
         for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
             FilePosition sourcePosition = mapping.sourceStartPosition;
@@ -67,8 +58,7 @@ public class SourceMapTestBase extends ASTestBase
             }
         }
         assertTrue("Mapping not found for node " + node.getNodeID() + ". Expected "
-                + "source: (" + nodeStartLine + ", " + nodeStartColumn + "), dest: (" + outStartLine + ", " + outStartColumn + ") to (" + outEndLine + ", " + outEndColumn + ")",
+                        + "source: (" + nodeStartLine + ", " + nodeStartColumn + "), dest: (" + outStartLine + ", " + outStartColumn + ") to (" + outEndLine + ", " + outEndColumn + ")",
                 foundMapping);
     }
-    
 }
