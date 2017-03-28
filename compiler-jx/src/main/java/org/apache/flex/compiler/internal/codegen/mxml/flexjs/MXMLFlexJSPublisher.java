@@ -380,57 +380,56 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, String entryPoint)
     {
     	ArrayList<String> sortedFiles = new ArrayList<String>();
+    	HashMap<String, SourceFile> fileMap = new HashMap<String, SourceFile>();
+    	SourceFile depsFile = null;
     	
     	for (SourceFile sourceFile : files)
     	{
-    		if (sourceFile.getOriginalPath().endsWith("deps.js"))
-    		{
-    			ArrayList<String> deps = new ArrayList<String>();
-    	        try
-    	        {
-    	            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(path + sourceFile.getOriginalPath()), "UTF8"));
-
-    	            while (true)
-    	            {
-	    	            String line = in.readLine();
-	    	            if (line.startsWith("//") || line.trim().length() == 0)
-	    	            	continue;
-	    	            deps.add(line);
-    	            }
-    	        }
-	            catch (Exception e)
-	            {
-	                // nothing to see, move along...
-	            }
-
-	            sortClosureFile(deps, entryPoint, sortedFiles);
-	            
-	            ArrayList<SourceFile> list = new ArrayList<SourceFile>();
-	            ArrayList<String> seen = new ArrayList<String>();
-	            sortedFiles.add("goog/deps.js");
-	            sortedFiles.add("goog/base.js");
-	            int n = sortedFiles.size();
-	            for (int i = n - 1; i >= 0; i--)
-	            {
-	            	String fileName = sortedFiles.get(i);
-	            	if (seen.contains(fileName)) continue;
-	            	seen.add(fileName);
-	            	
-	            	for (SourceFile file : files)
-	            	{
-	            		if (file.getOriginalPath().contains(fileName))
-	            		{
-	            			list.add(file);
-	            			files.remove(file);
-	            			break;
-	            		}
-	            	}
-	            }
-	            list.addAll(files);
-	            return list;
-    		}
+    		if ((sourceFile.getOriginalPath().endsWith("goog/deps.js") || sourceFile.getOriginalPath().endsWith("goog\\deps.js")) &&
+        		!(sourceFile.getOriginalPath().endsWith("third_party/goog/deps.js") || sourceFile.getOriginalPath().endsWith("third_party\\goog\\deps.js")))
+    			depsFile = sourceFile;
+    		System.out.println("originalPath: " + sourceFile.getOriginalPath());
+    		fileMap.put(sourceFile.getOriginalPath(), sourceFile);
     	}
-    	return null;
+    	
+		ArrayList<String> deps = new ArrayList<String>();
+        try
+        {
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(path + depsFile.getOriginalPath()), "UTF8"));
+
+            while (true)
+            {
+	            String line = in.readLine();
+	            if (line.startsWith("//") || line.trim().length() == 0)
+	            	continue;
+	            deps.add(line);
+            }
+        }
+        catch (Exception e)
+        {
+            // nothing to see, move along...
+        }
+
+        sortClosureFile(deps, entryPoint, sortedFiles);
+        
+        ArrayList<SourceFile> list = new ArrayList<SourceFile>();
+        ArrayList<String> seen = new ArrayList<String>();
+        sortedFiles.add("deps.js");
+        sortedFiles.add("base.js");
+        // in dual branch, add this to node publisher
+        sortedFiles.add("bootstrap/nodejs.js");
+        int n = sortedFiles.size();
+        for (int i = n - 1; i >= 0; i--)
+        {
+        	String fileName = sortedFiles.get(i);
+        	System.out.println("sorted filename: " + fileName);
+        	if (seen.contains(fileName)) 
+        		continue;
+        	seen.add(fileName);
+        	
+        	list.add(fileMap.get("goog/" + fileName));
+        }
+        return list;
     }
     
     private void sortClosureFile(List<String> deps, String entryPoint, List<String> sortedFiles)
