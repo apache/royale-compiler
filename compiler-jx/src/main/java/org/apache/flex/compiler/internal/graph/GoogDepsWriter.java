@@ -202,6 +202,8 @@ public class GoogDepsWriter {
 			{
 				String name = requireMap2.get(unit);
 				GoogDep dep = depMap.get(name);
+				if (dep == null)
+					System.out.println("No GoogDep for " + name);
 				depsInOrder.add(dep);
 			}
 			return depsInOrder;
