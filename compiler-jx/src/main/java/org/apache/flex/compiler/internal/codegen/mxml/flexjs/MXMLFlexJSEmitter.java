@@ -160,11 +160,16 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getASEmitter();
 
         String currentClassName = fjs.getModel().getCurrentClass().getQualifiedName();
+        ArrayList<String> removals = new ArrayList<String>();
         for (String usedName : asEmitterUsedNames) {
             //remove any internal component that has been registered with the other emitter's usedNames
             if (usedName.startsWith(currentClassName+".") && subDocumentNames.contains(usedName.substring(currentClassName.length()+1))) {
-                asEmitterUsedNames.remove(usedName);
+                removals.add(usedName);
             }
+        }
+        for (String usedName : removals)
+        {
+        	asEmitterUsedNames.remove(usedName);
         }
         System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
         System.out.println(currentClassName + " mxml: " + usedNames.toString());
