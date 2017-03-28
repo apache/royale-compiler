@@ -118,6 +118,7 @@ public class NativeUtils
         String("String"),
         undefined("undefined"),
         unescape("unescape"),
+        window("window"),
 
         // (erikdebruin) These aren't strictly 'native' to JS, but the 
         //               Publisher provides global functions, so, for all 
