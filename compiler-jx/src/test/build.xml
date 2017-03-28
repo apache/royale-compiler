@@ -70,6 +70,7 @@
                     <include name="**/Test*.class"/>
                     <exclude name="**/TestFlexJSFile.class"/>
                     <exclude name="**/TestFlexJSMXML*.class"/>
+                    <exclude name="**/TestSourceMapMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
                     <!-- externs tests -->
                     <exclude name="**/TestFlexJSClass.class"/>
@@ -107,6 +108,7 @@
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/TestFlexJSFile.class"/>
                     <include name="**/TestFlexJSMXML*.class"/>
+                    <include name="**/TestSourceMapMXML*.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
