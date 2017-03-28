@@ -133,10 +133,16 @@ public class GoogDepsWriter {
 			GoogDep gd = dps.get(i);
 			if (!isGoogClass(gd.className)) 
 			{
-				sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
+				if (removeCirculars)
+					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 						.append(gd.className).append("'], [")
 						.append((gd.fileInfo.impls != null) ? getDependencies(gd.fileInfo.impls) : "")
 						.append("]);\n");
+				else
+					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
+					.append(gd.className).append("'], [")
+					.append(getDependencies(gd.deps))
+					.append("]);\n");					
 			}
 		}
 		if (removeCirculars)
