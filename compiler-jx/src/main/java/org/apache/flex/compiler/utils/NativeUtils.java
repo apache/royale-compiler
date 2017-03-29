@@ -88,6 +88,7 @@ public class NativeUtils
     {
         // (erikdebruin) Ref.: https://cwiki.apache.org/confluence/display/FLEX/Full+Table
         
+        NaN("NaN"),
         Event("Event"),
         Array("Array"),
         Float32Array("Float32Array"),
