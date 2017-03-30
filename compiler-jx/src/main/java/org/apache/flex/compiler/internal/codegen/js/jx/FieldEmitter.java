@@ -122,8 +122,11 @@ public class FieldEmitter extends JSSubEmitter implements
             		// otherwise it would be a memberaccessexpression?
             		FunctionDefinition fd = (FunctionDefinition)fcn.getNameNode().resolve(getProject());
             		IASNode m = fd.getNode();
-            		// re-emit it to collect static initializer class references in usedNames
-            		getEmitter().stringifyNode(m);
+            		if (m != null)
+            		{
+	            		// re-emit it to collect static initializer class references in usedNames
+	            		getEmitter().stringifyNode(m);
+            		}
             	}
             }
         	getModel().inStaticInitializer = false;
