@@ -515,7 +515,10 @@ public class GoogDepsWriter {
 	{
 		FileInfo fi = new FileInfo();
 		
+		int numProvides = 0;
+		int constructorCount = 0;
 	    int n = lines.size();
+	    fi.constructorLine = -1;
 	    fi.suppressLine = -1;
 	    fi.fileoverviewLine = -1;
 	    fi.googProvideLine = -1;
@@ -525,7 +528,7 @@ public class GoogDepsWriter {
 	        String line = lines.get(i);
 	        int c2;
 	        int c = line.indexOf("*/");
-	        if (c > -1 && fi.constructorLine > 0)
+	        if (c > -1 && constructorCount > 0 && constructorCount == numProvides)
 	        {
                 return fi;
 	        }
@@ -551,7 +554,12 @@ public class GoogDepsWriter {
                 }
 		        c = line.indexOf("@constructor");
 		        if (c > -1)
-		        	fi.constructorLine = i;
+		        {
+		        	if (fi.constructorLine == -1)
+		        		fi.constructorLine = i;
+		        	constructorCount++;
+		        		
+		        }
 		        else
 		        {
 			        c = line.indexOf("@interface");
@@ -571,7 +579,11 @@ public class GoogDepsWriter {
 				        	{
 					        	c = line.indexOf("goog.provide");
 					        	if (c > -1)
-					        		fi.googProvideLine = i;
+					        	{
+					        		if (fi.googProvideLine == -i)
+					        			fi.googProvideLine = i;
+					        		numProvides++;
+					        	}
 					        	else
 					        	{
 					        		c = line.indexOf("@implements");
