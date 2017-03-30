@@ -156,16 +156,28 @@ public class GoogDepsWriter {
 			// get the list of all units not referenced by other units
 			for (GoogDep gd : depMap.values())
 			{
-				if (gd.className.equals(mainName)) continue;
+				if (gd.className.equals(mainName)) 
+				{
+					for (String d : gd.fileInfo.impls)
+					{
+						if (!restOfDeps.contains(d))
+							restOfDeps.add(d);
+					}
+					continue;
+				}
 				ICompilationUnit unit = requireMap.get(gd.className);
 				if (unit == null)
 				{
-					restOfDeps.add(gd.className);
+					if (!restOfDeps.contains(gd.className))
+						restOfDeps.add(gd.className);
 					continue;
 				}
 				Set<ICompilationUnit> deps = graph.getDirectReverseDependencies(unit, dependencyTypes);
 				if (deps.size() == 0)
-					restOfDeps.add(gd.className);
+				{
+					if (!restOfDeps.contains(gd.className))
+						restOfDeps.add(gd.className);
+				}
 			}
 			mainDeps.append(getDependencies(restOfDeps)).append("]);\n");
 			sb.insert(0, mainDeps);
