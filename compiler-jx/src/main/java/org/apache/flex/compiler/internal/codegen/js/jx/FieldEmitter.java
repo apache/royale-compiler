@@ -120,12 +120,16 @@ public class FieldEmitter extends JSSubEmitter implements
             	{
             		// assume this is a call to static method in the class
             		// otherwise it would be a memberaccessexpression?
-            		FunctionDefinition fd = (FunctionDefinition)fcn.getNameNode().resolve(getProject());
-            		IASNode m = fd.getNode();
-            		if (m != null)
+            		IDefinition d = (IDefinition)fcn.getNameNode().resolve(getProject());
+            		if (d instanceof FunctionDefinition)
             		{
-	            		// re-emit it to collect static initializer class references in usedNames
-	            		getEmitter().stringifyNode(m);
+            			FunctionDefinition fd = (FunctionDefinition)d;
+                		IASNode m = fd.getNode();
+                		if (m != null)
+                		{
+    	            		// re-emit it to collect static initializer class references in usedNames
+    	            		getEmitter().stringifyNode(m);
+                		}
             		}
             	}
             }
