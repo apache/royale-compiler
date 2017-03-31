@@ -219,6 +219,7 @@ public class GoogDepsWriter {
 			for (ICompilationUnit unit : order)
 			{
 				String name = requireMap2.get(unit);
+				if (isGoogClass(name)) continue;
 				GoogDep dep = depMap.get(name);
 				if (dep == null)
 					System.out.println("No GoogDep for " + name);
