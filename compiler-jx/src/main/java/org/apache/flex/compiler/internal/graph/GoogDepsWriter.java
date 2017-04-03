@@ -415,10 +415,11 @@ public class GoogDepsWriter {
                     {
                         int c2 = line.indexOf(")");
                         String s = line.substring(c + 14, c2 - 1);
-                        if (gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s))
+                        if ((gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s)) &&
+                        		(gd.fileInfo.staticDeps == null || !gd.fileInfo.staticDeps.contains(s)))
                         {
-                        	// don't add the require if some class needs it at static initialization
-                        	// time and that class is not this class
+                        	// don't remove the require if some class needs it at static initialization
+                        	// time
                         	suppressCount++;
                         	System.out.println(gd.filePath + " removing require: " + s);
                     		if (!firstDependency)
