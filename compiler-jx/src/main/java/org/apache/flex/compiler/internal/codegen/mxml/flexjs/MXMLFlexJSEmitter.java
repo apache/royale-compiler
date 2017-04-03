@@ -691,6 +691,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("/**");
         writeNewline(" * @constructor");
         writeNewline(" * @extends {" + formatQualifiedName(baseClassName) + "}");
+        if (interfaceList != null && interfaceList.length() > 0)
+        {
+        	String[] interfaces = interfaceList.split(",");
+        	for (String iface : interfaces)
+        	{
+        		writeNewline(" * @implements {" + formatQualifiedName(iface.trim()) + "}");
+        	}
+        }
         writeNewline(" */");
         writeToken(formatQualifiedName(cname));
         writeToken(ASEmitterTokens.EQUAL);
