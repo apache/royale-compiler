@@ -143,6 +143,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @implements {org.apache.flex.core.IChrome}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -234,6 +235,8 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @implements {org.apache.flex.core.IChrome}\n" +
+        		" * @implements {org.apache.flex.core.IPopUp}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
