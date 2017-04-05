@@ -146,10 +146,20 @@
             <exclude>README*</exclude>
             <exclude>RELEASE_NOTES*</exclude>
             <!-- Modules which are excluded from the build -->
-            <exclude>compiler-build-tools/**</exclude>
-            <exclude>compiler-jburg-types/**</exclude>
-            <exclude>flexjs-maven-extension/**</exclude>
-            <exclude>externs/**</exclude>
+            <!-- FlashBuilder settings. frameworks/fb.properties contains Alex' path entries and should be removed -->
+            <exclude>fb.properties</exclude>
+            <!-- FlashBuilder / Eclipse settings. If checked in, they should have apache headers -->
+            <exclude>**/.settings/**</exclude>
+            <!-- Ignore IntelliJ IDEA project files -->
+            <exclude>**/*.iml</exclude>
+            <exclude>**/.idea/**</exclude>
+            <!--
+                Exclude any eventually existing content of target directories.
+                Some times when building with a bigger maven reactor and then
+                with a smaller one, RAT will complain about stuff still in the
+                target directories. We don't want that.
+            -->
+            <exclude>**/target/**</exclude>
             <!-- Stuff an Ant build might have left behind. -->
             <exclude>lib/**</exclude>
           </excludes>
