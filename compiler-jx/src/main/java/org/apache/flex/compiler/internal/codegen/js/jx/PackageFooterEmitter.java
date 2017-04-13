@@ -367,12 +367,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			accessorData.add(staticEventDispatcher);
 		}
         
-	    HashMap<String, AccessorData> accessorMap = new HashMap<String, AccessorData>();
+	    HashMap<String, AccessorData> instanceAccessorMap = new HashMap<String, AccessorData>();
+		HashMap<String, AccessorData> staticAccessorMap = new HashMap<String, AccessorData>();
         for (IDefinitionNode dnode : dnodes)
         {
             ModifiersSet modifierSet = dnode.getDefinition().getModifiers();
             boolean isStatic = (modifierSet != null && modifierSet
                     .hasModifier(ASModifier.STATIC));
+
+			HashMap<String, AccessorData> accessorMap = isStatic ? staticAccessorMap : instanceAccessorMap;
             if ((dnode.getNodeID() == ASTNodeID.GetterID ||
             		dnode.getNodeID() == ASTNodeID.SetterID))
             {
@@ -589,6 +592,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					count++;
 					// varname: { type: typename
 					write(ASEmitterTokens.SINGLE_QUOTE);
+					//prefix static var names with |
+					if (var.isStatic) {
+					    write("|");
+                    }
 					write(var.name);
 					write(ASEmitterTokens.SINGLE_QUOTE);
 					writeToken(ASEmitterTokens.COLON);
@@ -598,9 +605,9 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					write(ASEmitterTokens.SINGLE_QUOTE);
 					write(var.type);
 					write(ASEmitterTokens.SINGLE_QUOTE);
-					if (var.isStatic) {
-						writeIsStatic();
-					}
+				//	if (var.isStatic) {
+				//		writeIsStatic();
+				//	}
 					IMetaTagNode[] tags = var.metaData;
 					if (tags != null) {
 						writeToken(ASEmitterTokens.COMMA);
@@ -650,6 +657,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				count++;
 				// accessorname: { type: typename
 				write(ASEmitterTokens.SINGLE_QUOTE);
+				//prefix static accessor names with |
+				if (accessor.isStatic) {
+					write("|");
+				}
 				write(accessor.name);
 				write(ASEmitterTokens.SINGLE_QUOTE);
 				writeToken(ASEmitterTokens.COLON);
@@ -659,9 +670,9 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				write(ASEmitterTokens.SINGLE_QUOTE);
 				write(accessor.type);
 				write(ASEmitterTokens.SINGLE_QUOTE);
-				if (accessor.isStatic) {
-					writeIsStatic();
-				}
+			//	if (accessor.isStatic) {
+			//		writeIsStatic();
+			//	}
 				writeToken(ASEmitterTokens.COMMA);
 				write("access");
 				writeToken(ASEmitterTokens.COLON);
@@ -723,6 +734,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				count++;
 				// methodname: { type: typename
 				write(ASEmitterTokens.SINGLE_QUOTE);
+				//prefix static method names with |
+				if (method.isStatic) {
+					write("|");
+				}
 				write(method.name);
 				write(ASEmitterTokens.SINGLE_QUOTE);
 				writeToken(ASEmitterTokens.COLON);
@@ -732,9 +747,9 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				write(ASEmitterTokens.SINGLE_QUOTE);
 				write(method.type);
 				write(ASEmitterTokens.SINGLE_QUOTE);
-				if (method.isStatic) {
-					writeIsStatic();
-				}
+			//	if (method.isStatic) {
+			//		writeIsStatic();
+			//	}
 				writeToken(ASEmitterTokens.COMMA);
 				write("declaredBy");
 				writeToken(ASEmitterTokens.COLON);
@@ -801,12 +816,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		writeToken(ASEmitterTokens.SQUARE_CLOSE);
 	}
 
-	private void writeIsStatic() {
+	/*private void writeIsStatic() {
 		writeToken(ASEmitterTokens.COMMA);
 		write("isStatic");
 		writeToken(ASEmitterTokens.COLON);
 		writeToken(ASEmitterTokens.TRUE);
-	}
+	}*/
 
 	private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
 		//return {};

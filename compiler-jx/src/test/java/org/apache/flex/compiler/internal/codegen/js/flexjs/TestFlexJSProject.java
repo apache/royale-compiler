@@ -130,6 +130,23 @@ public class TestFlexJSProject extends TestGoogProject
         assertProjectOut(compiledFileNames, testDirPath);
     }
 
+    @Ignore
+    public void test_IsItCircularProto()
+    {
+        String testDirPath = projectDirPath + "/circular_proto";
+
+        String fileName = "A.as";
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/circular_proto").getPath();
+
+        int exitCode = compileAndPublishProject(testDirPath, "circular_proto", fileName);
+        
+        assertThat(exitCode, is(0));
+
+        assertPublishedProjectOut(testDirPath, "circular_proto");
+    }
+    
     @Test
     public void test_XMLRequires()
     {

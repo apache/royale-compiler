@@ -38,7 +38,6 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -72,15 +71,7 @@ import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
-import org.apache.flex.compiler.internal.tree.as.BlockNode;
-import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
+import org.apache.flex.compiler.internal.tree.as.*;
 import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -154,6 +145,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private DefinePropertyFunctionEmitter definePropertyFunctionEmitter;
 
     public ArrayList<String> usedNames = new ArrayList<String>();
+    public ArrayList<String> staticUsedNames = new ArrayList<String>();
     private boolean needNamespace;
 
     @Override
@@ -169,6 +161,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         boolean sawRequires = false;
     	boolean stillSearching = true;
         int addIndex = -1;
+        int provideIndex = -1;
         int len = lines.length;
     	for (int i = 0; i < len; i++)
     	{
@@ -180,7 +173,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 {
                     // if zero requires are found, require Language after the
                     // call to goog.provide
-                    addIndex = i + 1;
+                    provideIndex = addIndex = i + 1;
                 }
 	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 	            if (c != -1)
@@ -297,6 +290,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		}
     		finalLines.add(line);
     	}
+		if (staticUsedNames.size() > 0)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append(JSGoogEmitterTokens.FLEXJS_STATIC_DEPENDENCY_LIST.getToken());
+			boolean firstDependency = true;
+			for (String staticName : staticUsedNames)
+			{
+				if (!firstDependency)
+					sb.append(",");
+				firstDependency = false;
+				sb.append(staticName);
+			}
+			sb.append("*/");
+			finalLines.add(provideIndex, sb.toString());
+		}
 
     	return Joiner.on("\n").join(finalLines);
     }
@@ -539,6 +547,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		name = name.substring(7);
     	else if (!isDoc)
     	{
+        	if (getModel().inStaticInitializer)
+        		if (!staticUsedNames.contains(name))
+        			staticUsedNames.add(name);
+    		
     		if (!usedNames.contains(name))
     			usedNames.add(name);
     	}
@@ -789,7 +801,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 {
                     if (nameNode instanceof IdentifierNode)
                     {
-                        newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("10"));
+                        //see FLEX-35283
+                        LiteralNode appendedArgument = new NumericLiteralNode("undefined");
+                        appendedArgument.setSynthetic(true);
+                        newNode = EmitterUtils.insertArgumentsAfter(node, appendedArgument);
                     }
                 }
             }
@@ -1060,9 +1075,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         else if (node.getNodeID() == ASTNodeID.Op_AtID)
         {
-        	write("attribute('");
-            getWalker().walk(node.getOperandNode());
-        	write("')");
+        	IASNode op = node.getOperandNode();
+        	if (op != null)
+        	{
+            	write("attribute('");
+        		getWalker().walk(node.getOperandNode());
+            	write("')");
+        	}
+        	else if (node.getParent().getNodeID() == ASTNodeID.ArrayIndexExpressionID)
+        	{
+        		DynamicAccessNode parentNode = (DynamicAccessNode)node.getParent();
+            	write("attribute(");
+        		getWalker().walk(parentNode.getRightOperandNode());        		
+            	write(")");
+        	}
+        		
         	return;
         }
 

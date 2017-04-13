@@ -47,11 +47,13 @@ public class DataTranscoder extends TranscoderBase
         super(data, workspace);
     }
 
+    public static String embedClassName = CORE_PACKAGE + ".ByteArrayAsset";
+    
     @Override
     public boolean analyze(ISourceLocation location, Collection<ICompilerProblem> problems)
     {
         boolean result = super.analyze(location, problems);
-        baseClassQName = CORE_PACKAGE + ".ByteArrayAsset";
+        baseClassQName = embedClassName;
         return result;
     }
 

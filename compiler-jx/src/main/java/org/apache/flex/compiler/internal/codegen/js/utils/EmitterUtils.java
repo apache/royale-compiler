@@ -371,6 +371,9 @@ public class EmitterUtils
                     {
                         isFileOrPackageMember = true;
                     }
+                    else if (!identifierIsMemberAccess && classification == FunctionClassification.CLASS_MEMBER &&
+                    		isClassMember(project, nodeDef, thisClass))
+                    	return true;
                 }
                 return parentNodeId == ASTNodeID.FunctionCallID
                         && !(nodeDef instanceof AccessorDefinition)
@@ -415,6 +418,32 @@ public class EmitterUtils
     		return false;
     	
         TypeScope cscope = (TypeScope) classNode.getDefinition()
+                .getContainedScope();
+
+        Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);
+        Collection<IDefinition> defs = new HashSet<IDefinition>();
+
+        cscope.getAllPropertiesForMemberAccess((CompilerProject) project, defs,
+                nsSet);
+
+        Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
+        while (visiblePropertiesIterator.hasNext())
+        {
+            if (nodeDef.getQualifiedName().equals(
+                    visiblePropertiesIterator.next().getQualifiedName()))
+                return true;
+        }
+
+        return false;
+    }
+    
+    public static boolean isClassMember(ICompilerProject project,
+            IDefinition nodeDef, IClassDefinition classDef)
+    {
+    	if (nodeDef.isInternal() && (!(nodeDef.getParent() instanceof ClassDefinition)))
+    		return false;
+    	
+        TypeScope cscope = (TypeScope) classDef
                 .getContainedScope();
 
         Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);

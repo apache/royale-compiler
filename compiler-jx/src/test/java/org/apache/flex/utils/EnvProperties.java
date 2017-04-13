@@ -75,7 +75,6 @@ public class EnvProperties {
      */
     public String FPVER;
 
-
     private static EnvProperties env;
 
     public static EnvProperties initiate() {

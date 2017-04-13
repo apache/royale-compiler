@@ -102,6 +102,10 @@ public class JSClosureCompilerWrapper
 
     public void compile()
     {
+    	System.out.println("list of source files");
+    	for (SourceFile file : jsSourceFiles_)
+    		System.out.println(file.getName());
+    	System.out.println("end of list of source files");
         compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
 
         try
@@ -182,7 +186,7 @@ public class JSClosureCompilerWrapper
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
-    public void setOptions(String sourceMapPath, boolean useStrictPublishing, String projectName)
+    public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
     {
         if (useStrictPublishing)
         {
@@ -228,9 +232,9 @@ public class JSClosureCompilerWrapper
             DependencyOptions dopts = new DependencyOptions();
             ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
             entryPoints.add(ModuleIdentifier.forClosure(projectName));
-            dopts.setDependencyPruning(true)
-                 .setDependencySorting(true)
-                 .setMoocherDropping(true)
+            dopts.setDependencyPruning(manageDependencies)
+                 .setDependencySorting(manageDependencies)
+                 .setMoocherDropping(manageDependencies)
                  .setEntryPoints(entryPoints);
             options_.setDependencyOptions(dopts);
             

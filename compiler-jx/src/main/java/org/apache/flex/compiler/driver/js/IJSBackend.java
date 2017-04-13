@@ -20,10 +20,10 @@
 package org.apache.flex.compiler.driver.js;
 
 import org.apache.flex.compiler.codegen.ISourceMapEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.driver.IBackend;
 
 public interface IJSBackend extends IBackend
 {
-    ISourceMapEmitter createSourceMapEmitter(IJSEmitter emitter);
+    ISourceMapEmitter createSourceMapEmitter(IMappingEmitter emitter);
 }

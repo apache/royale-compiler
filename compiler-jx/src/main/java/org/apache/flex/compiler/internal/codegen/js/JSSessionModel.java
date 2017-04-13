@@ -81,6 +81,8 @@ public class JSSessionModel
 
     public boolean inE4xFilter = false;
 
+    public boolean inStaticInitializer = false;
+    
     private LinkedHashMap<String, PropertyNodes> propertyMap = new LinkedHashMap<String, PropertyNodes>();
 
     private List<String> interfacePropertyMap = new ArrayList<String>();

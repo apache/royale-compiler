@@ -146,6 +146,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @implements {org.apache.flex.core.IChrome}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -237,6 +238,8 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @implements {org.apache.flex.core.IChrome}\n" +
+        		" * @implements {org.apache.flex.core.IPopUp}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -300,7 +303,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
                 + "    import org.apache.flex.net.HTTPConstants;"
-                + "]]></fx:Script><basic:initialView><basic:Label text=\"{HTTPConstants.GET}\"/></basic:initialView></basic:Application>";
+                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
@@ -319,6 +322,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.core.View');\n" +
         		"goog.require('org.apache.flex.html.Label');\n" +
         		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
         		"\n" +
@@ -330,6 +334,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -353,7 +363,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null],\n" +
+        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -415,7 +425,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
                 + "    import org.apache.flex.net.HTTPConstants;"
-                + "]]></fx:Script><basic:initialView><basic:Label text=\"{org.apache.flex.net.HTTPConstants.GET}\"/></basic:initialView></basic:Application>";
+                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{org.apache.flex.net.HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
@@ -434,6 +444,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.core.View');\n" +
         		"goog.require('org.apache.flex.html.Label');\n" +
         		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
         		"\n" +
@@ -445,6 +456,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -468,7 +485,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null],\n" +
+        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -531,7 +548,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		+ "<fx:Script><![CDATA["
                 + "    import binding.ComplexValueObject;\n"
         		+ "    public var firstOne:ComplexValueObject;\n"
-                + "]]></fx:Script><basic:initialView><basic:Label text=\"{firstOne.subObject.labelText}\"/></basic:initialView></basic:Application>";
+                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{firstOne.subObject.labelText}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
@@ -550,6 +567,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.core.View');\n" +
         		"goog.require('org.apache.flex.html.Label');\n" +
         		"goog.require('binding.ComplexValueObject');\n" +
         		"\n" +
@@ -561,6 +579,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -584,7 +608,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null],\n" +
+        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -679,7 +703,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
         		+ "    public var xml:XML = new XML();\n"
-                + "]]></fx:Script><basic:initialView><basic:Label text=\"Hello World\"/></basic:initialView></basic:Application>";
+                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"Hello World\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
@@ -698,6 +722,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.core.View');\n" +
         		"goog.require('org.apache.flex.html.Label');\n" +
         		"goog.require('XML');\n" +
         		"goog.require('XML');\n" +
@@ -712,6 +737,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  AppName.base(this, 'constructor');\n" +
         		"  \n" +
         		"  this.xml = new XML();\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID1_;\n" +
+        		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.flex.html.Label}\n" +
@@ -734,7 +765,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.html.Label, 2, '_id', true, '$ID0', 'text', true, 'Hello World', 0, 0, null],\n" +
+        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 2, '_id', true, '$ID0', 'text', true, 'Hello World', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +

@@ -116,9 +116,9 @@
                             <!--test>
                                 org.apache.maven.plugins:maven-surefire-plugin:test
                             </test-->
-                            <!--package>
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:package
-                            </package-->
+                            <package>
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:package-js
+                            </package>
                             <install>
                                 org.apache.maven.plugins:maven-install-plugin:install
                             </install>

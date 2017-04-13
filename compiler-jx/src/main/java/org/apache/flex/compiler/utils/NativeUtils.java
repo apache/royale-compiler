@@ -88,11 +88,22 @@ public class NativeUtils
     {
         // (erikdebruin) Ref.: https://cwiki.apache.org/confluence/display/FLEX/Full+Table
         
+        NaN("NaN"),
         Event("Event"),
         Array("Array"),
+        Float32Array("Float32Array"),
+        Float64Array("Float64Array"),
+        Int8Array("Int8Array"),
+        Int16Array("Int16Array"),
+        Int32Array("Int32Array"),
+        Uint8Array("Uint8Array"),
+        Uint8ClampedArray("Uint8ClampedArray"),
+        Uint16Array("Uint16Array"),
+        Uint32Array("Uint32Array"),
         Date("Date"),
         Math("Math"),
         Error("Error"),
+        RangeError("RangeError"),
         Boolean("Boolean"),
         decodeURI("decodeURI"),
         decodeURIComponent("decodeURIComponent"),
@@ -106,7 +117,9 @@ public class NativeUtils
         parseFloat("parseFloat"),
         parseInt("parseInt"),
         String("String"),
+        undefined("undefined"),
         unescape("unescape"),
+        window("window"),
 
         // (erikdebruin) These aren't strictly 'native' to JS, but the 
         //               Publisher provides global functions, so, for all 

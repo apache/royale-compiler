@@ -17,11 +17,9 @@ package org.apache.flex.maven.flexjs;
 import org.apache.flex.tools.FlexTool;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProjectHelper;
 import org.apache.velocity.VelocityContext;
 
 import java.io.File;
@@ -41,8 +39,8 @@ public class CompileAppMojo
     @Parameter(defaultValue = "${project.artifactId}-${project.version}.swf")
     private String flashOutputFileName;
 
-    @Parameter(defaultValue = "${project.artifactId}-${project.version}.war")
-    private String javascriptOutputFileName;
+    @Parameter(defaultValue = "javascript")
+    private String javascriptOutputDirectoryName;
 
     @Parameter(defaultValue = "namespaces")
     protected String namespaceDirectory;
@@ -58,9 +56,6 @@ public class CompileAppMojo
     
     @Parameter(defaultValue = "false")
     protected boolean removeCirculars;
-
-    @Component
-    protected MavenProjectHelper mavenProjectHelper;
 
     @Override
     protected String getToolGroupName() {
@@ -87,6 +82,12 @@ public class CompileAppMojo
 
     @Override
     protected File getOutput() throws MojoExecutionException {
+<<<<<<< HEAD
+=======
+        if(outputJavaScript) {
+            return new File(outputDirectory, javascriptOutputDirectoryName);
+        }
+>>>>>>> develop
         return new File(outputDirectory, flashOutputFileName);
     }
 

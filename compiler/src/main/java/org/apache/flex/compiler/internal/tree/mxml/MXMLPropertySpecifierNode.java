@@ -47,8 +47,7 @@ import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLUnresolvedTagProblem;
+import org.apache.flex.compiler.problems.*;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
@@ -124,6 +123,10 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
      * The sole child node, which is the value of the property.
      */
     private MXMLInstanceNode instanceNode;
+    /*
+     * Flag to track whether an instance problem has already been logged (multiple children)
+     */
+    private Boolean firstInstanceProblemAdded = false;
 
     @Override
     public ASTNodeID getNodeID()
@@ -436,6 +439,8 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                                    MXMLNodeInfo info)
     {
         MXMLFileScope fileScope = builder.getFileScope();
+        //use a local variable until we are sure that this is a valid instance node
+        MXMLInstanceNode instanceNode = null;
 
         // Check whether the tag is an <fx:Component> tag.
         if (fileScope.isComponentTag(childTag))
@@ -484,10 +489,44 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                     }
                 }
             }
-        }
 
-        // Report problem for second instance tag or for any other kind of tag.
+            ITypeDefinition assignToType = getPropertyType(builder);
+            // if the assignToType is Array it is special-cased, and handled in initializationComplete method
+            if (assignToType != project.getBuiltinType(IASLanguageConstants.BuiltinType.ARRAY)) {
+                //otherwise if the type of the instance node is incompatible with the type of the property node,
+                //or if there are multiple child tags
+                //that's a problem
+                if (instanceNode!=null && this.instanceNode==null &&
+                    !(instanceNode.getClassReference(project).isInstanceOf(assignToType,project) ||
+                      assignToType == project.getBuiltinType(IASLanguageConstants.BuiltinType.ANY_TYPE))) {
+                    //we have a single value of incompatible type
+                    ICompilerProblem problem = new MXMLBadChildTagPropertyAssignmentProblem(childTag,instanceNode.getClassReference(project).getQualifiedName(),propertyTypeName);
+                    builder.addProblem(problem);
+                    instanceNode=null;
+
+                } else {
+                    if (this.instanceNode!=null && instanceNode!=null) {
+                        //we have a multiple values when we should only have one
+                        if (!firstInstanceProblemAdded) {
+                            //if we have multiple children problem scenario, we only encounter that on the 2nd childTag
+                            //so start with a MXMLMultipleInitializersProblem instance for the first tag
+                            ICompilerProblem problem = new MXMLMultipleInitializersProblem( tag.getFirstChild(false),getPropertyTypeName(builder));
+                            builder.addProblem(problem);
+                            firstInstanceProblemAdded=true;
+                        }
+
+                        ICompilerProblem problem = new MXMLMultipleInitializersProblem(childTag,getPropertyTypeName(builder));
+                        builder.addProblem(problem);
+                        instanceNode=null;
+                    }
+                }
+            }
+        }
+        if (instanceNode!=null)
+            this.instanceNode = instanceNode;
     }
+
+
 
     /**
      * This override is called on each non-whitespace unit of text inside a

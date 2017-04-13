@@ -134,7 +134,8 @@ public class LiteralEmitter extends JSSubEmitter implements
                         s = s.replace("\"", "\\\"");
                         s = "\"" + s + "\"";
                     }
-                    s = "new XML( " + s + ")";
+                    // use formatQualifiedName to get XML in the usedNames dependencies
+                    s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
                 }
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
@@ -171,6 +172,15 @@ public class LiteralEmitter extends JSSubEmitter implements
                 s = s.replace("\u2029", "\\u2029");
             }
 
+        }
+        else
+        {
+            s = s.replaceAll("\n", "\\\\u000a");
+            s = s.replaceAll("\r", "\\\\u000d");
+            s = s.replaceAll("\t", "\\\\u0009");        	
+            s = s.replaceAll(" ", "\\\\u0020");
+            s = s.replace("\u2028", "\\u2028");
+            s = s.replace("\u2029", "\\u2029");
         }
 
         if (!isWritten)

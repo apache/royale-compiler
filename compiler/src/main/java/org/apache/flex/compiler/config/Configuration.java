@@ -1620,6 +1620,26 @@ public class Configuration
     }
 
     //
+    // 'compiler.byte-array-embed-class' option
+    //
+
+    private String byteArrayEmbedClass = "mx.core.ByteArrayAsset";
+
+    public String getByteArrayEmbedClass()
+    {
+        return byteArrayEmbedClass;
+    }
+
+    /**
+     * The class for embedded byte arrays
+     */
+    @Config(advanced = true)
+    public void setCompilerByteArrayEmbedClass(ConfigurationValue cv, String b)
+    {
+    	byteArrayEmbedClass = b;
+    }
+
+    //
     // 'compiler.states-class' option
     //
 

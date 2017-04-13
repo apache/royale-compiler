@@ -109,6 +109,18 @@ public class ASEmitter implements IASEmitter, IEmitter
 {
     private final FilterWriter out;
 
+    private IEmitter parentEmitter;
+
+    public IEmitter getParentEmitter()
+    {
+        return parentEmitter;
+    }
+
+    public void setParentEmitter(IEmitter value)
+    {
+        parentEmitter = value;
+    }
+
     private boolean bufferWrite;
 
     protected boolean isBufferWrite()
@@ -223,17 +235,24 @@ public class ASEmitter implements IASEmitter, IEmitter
         {
             if (!bufferWrite)
             {
-                int newLineCount = value.length() - value.replace("\n", "").length();
-                currentLine += newLineCount;
-                if (newLineCount > 0)
+                if (parentEmitter != null)
                 {
-                    currentColumn = value.length() - value.lastIndexOf("\n") - 1;
+                    parentEmitter.write(value);
                 }
                 else
                 {
-                    currentColumn += value.length();
+                    int newLineCount = value.length() - value.replace("\n", "").length();
+                    currentLine += newLineCount;
+                    if (newLineCount > 0)
+                    {
+                        currentColumn = value.length() - value.lastIndexOf("\n") - 1;
+                    }
+                    else
+                    {
+                        currentColumn += value.length();
+                    }
+                    out.write(value);
                 }
-                out.write(value);
             }
             else
             {

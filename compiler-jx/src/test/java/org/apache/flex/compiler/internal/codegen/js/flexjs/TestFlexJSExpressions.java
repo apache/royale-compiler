@@ -102,6 +102,51 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         assertOut("/**\n */\nFalconTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n  if (a)\n    FalconTest_A.superClass_['http://www.adobe.com/2006/actionscript/flash/proxy::setProperty'].apply(this, [ a, b] );\n}");
     }
 
+    @Test
+    public void testVisitLanguageIdentifierNode_SuperMethodAsFunctionReference()
+    {
+        IFileNode node = (IFileNode)getNode("package { public class FalconTest_A extends Base { override public function foo() {var f:Function = super.foo;} } }\n" +
+        		"class Base { public function foo(){} }", IFileNode.class, 0, false);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IClassDefinition def = classnode.getDefinition();
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        asBlockWalker.visitFunction(fnode);
+        assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = org.apache.flex.utils.Language.closure(FalconTest_A.superClass_.foo, this, 'foo');\n}");
+    }
+    
+    @Test
+    public void testVisitLanguageIdentifierNode_SuperMethodAsVarFunctionReference()
+    {
+    	IFileNode node = (IFileNode)getNode("package { public class FalconTest_A extends Base { override public function foo() {var f:Function; f = super.foo;} } }\n" +
+        		"class Base { public function foo(){} }", IFileNode.class, 0, false);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IClassDefinition def = classnode.getDefinition();
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        asBlockWalker.visitFunction(fnode);
+        assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f;\n  f = org.apache.flex.utils.Language.closure(FalconTest_A.superClass_.foo, this, 'foo');\n}");
+    }
+    
+    @Test
+    public void testVisitLanguageIdentifierNode_SuperMethodInApply()
+    {
+    	IFileNode node = (IFileNode)getNode("package { public class FalconTest_A extends Base { override public function foo() {super.foo.apply(this, [a, b, c]);} } }\n" +
+        		"class Base { public function foo(){} }", IFileNode.class, 0, false);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IClassDefinition def = classnode.getDefinition();
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        asBlockWalker.visitFunction(fnode);
+        assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  FalconTest_A.superClass_.foo.apply(this, [a, b, c]);\n}");
+    }
+    
     //----------------------------------
     // Primary expression keywords
     //----------------------------------

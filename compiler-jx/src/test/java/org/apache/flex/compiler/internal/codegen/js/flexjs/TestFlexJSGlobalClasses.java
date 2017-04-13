@@ -625,6 +625,16 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLAttributeBracket()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a.@[\"attr1\"];");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.attribute(\"attr1\")");
+    }
+    
+    @Test
     public void testXMLAttributeToString()
     {
         IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String = a.@attr1;");
@@ -904,5 +914,46 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitForLoop(node);
         assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = p.length;}\n");
     }
+    
+    @Test
+    public void testRegExp_LiteralUnicode()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /[\\u0065\\u0066\\u0067]/g;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /[efg]/g");
+    }
+
+    @Test
+    public void testRegExp_LiteralComplex1()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /[\\u0009\\u000a\\u000d]/g;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /[\\u0009\\u000a\\u000d]/g");
+    }
+
+    @Test
+    public void testRegExp_LiteralComplex2()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /\\u2028/;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /\\u2028/");
+    }
+
+    @Test
+    public void testRegExp_LiteralComplex3()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /\\u000A|\\u000D\\u000A?/g;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /\\u000a|\\u000d\\u000a?/g");
+    }
+
+    @Test
+    public void testRegExp_LiteralComplex4()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /[^\\u0009\\u000a\\u000d\\u0020]/g;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /[^\\u0009\\u000a\\u000d\\u0020]/g");
+    }
+
     
 }

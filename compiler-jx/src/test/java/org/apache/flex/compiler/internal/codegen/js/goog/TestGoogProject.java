@@ -19,6 +19,10 @@
 
 package org.apache.flex.compiler.internal.codegen.js.goog;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.test.ASTestBase;
@@ -26,6 +30,7 @@ import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -98,4 +103,34 @@ public class TestGoogProject extends ASTestBase
         }
     }
 
+    protected void assertPublishedProjectOut(String projectFolderPath,
+            String projectName)
+    {
+    	String outputFolderName = tempDir + "/" + projectName + "/bin/js-debug";
+        IOFileFilter jsFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter("js"));
+        IOFileFilter htmlFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter("html"));
+        IOFileFilter resultsFilter = FileFilterUtils.or(jsFilter, htmlFilter);
+        File outputFolder = new File(outputFolderName);
+        File projectFolder = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), projectFolderPath);
+        projectFolderPath = projectFolder.getAbsolutePath();
+        Collection<File> files = FileUtils.listFiles(projectFolder, resultsFilter, null);
+        for (File resultFile : files)
+        {
+            String compiledFilePath = resultFile.getAbsolutePath();
+            if (compiledFilePath.startsWith(projectFolderPath))
+            	compiledFilePath = compiledFilePath.substring(projectFolderPath.length());
+            compiledFilePath = compiledFilePath.replace("_result", "");
+            File compiledFile = new File(outputFolder, compiledFilePath);
+            String compiledResult = readCodeFile(compiledFile);
+
+            String expectedResult = readCodeFile(resultFile);
+            /*if (!compiledResult.equals(expectedResult)) {
+                System.out.println("expected\n"+expectedResult);
+                System.out.println("got\n"+compiledResult);
+            }*/
+            assertThat(compiledResult, is(expectedResult));
+        }
+    }
 }

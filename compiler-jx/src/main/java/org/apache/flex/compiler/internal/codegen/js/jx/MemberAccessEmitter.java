@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
@@ -85,7 +86,9 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		boolean descendant = (node.getOperator() == OperatorType.DESCENDANT_ACCESS);
         		boolean child = (node.getOperator() == OperatorType.MEMBER_ACCESS) && 
         							(!(parentNode instanceof FunctionCallNode)) &&
-        							rightNode.getNodeID() != ASTNodeID.Op_AtID;
+        							rightNode.getNodeID() != ASTNodeID.Op_AtID &&
+        							!((rightNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID) && 
+        									(((DynamicAccessNode)rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID));
         		if (descendant || child)
 	        	{
 	        		writeLeftSide(node, leftNode, rightNode);
@@ -269,7 +272,10 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         {
         	write(ASEmitterTokens.COMMA);
         	write(ASEmitterTokens.SPACE);
-        	writeLeftSide(node, leftNode, rightNode);
+        	if (leftNode.getNodeID() == ASTNodeID.SuperID)
+        		write(ASEmitterTokens.THIS);
+        	else
+        		writeLeftSide(node, leftNode, rightNode);
         	getEmitter().emitClosureEnd(node, def);
         }
         
@@ -309,6 +315,17 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.THIS);
                 write(ASEmitterTokens.PAREN_CLOSE);
+                return false;
+            }
+            else if (leftNode.getNodeID() == ASTNodeID.SuperID
+                    && (rightDef != null && rightDef instanceof FunctionDefinition))
+            {
+                write(getEmitter().formatQualifiedName(
+                        getEmitter().getModel().getCurrentClass().getQualifiedName()));
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSGoogEmitterTokens.SUPERCLASS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(rightDef.getBaseName());
                 return false;
             }
         }
