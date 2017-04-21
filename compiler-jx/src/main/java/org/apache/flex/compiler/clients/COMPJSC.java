@@ -52,7 +52,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -128,6 +128,7 @@ public class COMPJSC extends MXMLJSC
         long startTime = System.nanoTime();
 
         final COMPJSC mxmlc = new COMPJSC();
+        mxmlc.configurationClass = JSGoogCompcConfiguration.class;
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
@@ -201,7 +202,7 @@ public class COMPJSC extends MXMLJSC
 	                case SWF:
 	                	System.out.println("COMPC");
 	                    COMPC compc = new COMPC();
-	                    compc.configurationClass = JSGoogConfiguration.class;
+	                    compc.configurationClass = JSGoogCompcConfiguration.class;
 	                    result = compc.mainNoExit(removeJSArgs(args));
 	                    if (result != 0)
 	                    {

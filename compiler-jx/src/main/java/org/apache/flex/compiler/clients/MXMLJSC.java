@@ -264,6 +264,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     private JSCompilerEntryPoint lastCompiler;
     public boolean noLink;
     public OutputStream err;
+	public Class<? extends Configuration> configurationClass = JSGoogConfiguration.class;
     
     public MXMLJSC()
     {
@@ -329,7 +330,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                {
 	                case SWF:
 	                    mxmlc = new MXMLC();
-	                    mxmlc.configurationClass = JSGoogConfiguration.class;
+	                    mxmlc.configurationClass = configurationClass;
 	                    if (noLink)
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
@@ -805,7 +806,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     public boolean configure(final String[] args)
     {
-    	projectConfigurator = new Configurator(JSGoogConfiguration.class);
+    	projectConfigurator = new Configurator(configurationClass);
     	
         try
         {
