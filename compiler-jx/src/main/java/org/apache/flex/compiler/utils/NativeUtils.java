@@ -91,6 +91,7 @@ public class NativeUtils
         NaN("NaN"),
         Event("Event"),
         Array("Array"),
+        RegExp("RegExp"),
         Float32Array("Float32Array"),
         Float64Array("Float64Array"),
         Int8Array("Int8Array"),
