@@ -1000,8 +1000,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +
-        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
         		  "goog.provide('foo.bar.baz.A.ITestInterface');\n" +
+        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
         		  "\n" +
         		  "\n" +
         		  "\n" +

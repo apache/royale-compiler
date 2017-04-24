@@ -154,7 +154,13 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         HashMap<String, String> internalClasses = getEmitter().getModel().getInternalClasses();
         if (internalClasses.size() > 0)
         {
+        	ArrayList<String> classesInOrder = new ArrayList<String>();
         	for (String internalClass : internalClasses.keySet())
+        	{
+        		classesInOrder.add(internalClass);
+        	}
+        	Collections.sort(classesInOrder);
+        	for (String internalClass : classesInOrder)
         	{
         	       /* goog.provide('x');\n\n */
                 write(JSGoogEmitterTokens.GOOG_PROVIDE);
