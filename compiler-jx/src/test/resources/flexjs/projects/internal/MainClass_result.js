@@ -20,6 +20,7 @@
  */
 
 goog.provide('MainClass');
+goog.provide('MainClass.InternalClass');
 
 goog.require('OtherClass');
 

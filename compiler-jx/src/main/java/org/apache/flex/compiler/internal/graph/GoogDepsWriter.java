@@ -379,6 +379,8 @@ public class GoogDepsWriter {
 		{
 	        for (String dep : gd.fileInfo.impls)
 	        {
+	        	if (gd.fileInfo.provides != null &&
+	        			gd.fileInfo.provides.contains(dep)) continue;
 	            addDeps(dep);
 	        }
 		}
@@ -388,6 +390,8 @@ public class GoogDepsWriter {
 	        for (String dep : gd.fileInfo.deps)
 	        {
 	        	gd.deps.add(dep);
+	        	if (gd.fileInfo.provides != null &&
+	        			gd.fileInfo.provides.contains(dep)) continue;
 	            addDeps(dep);
 	        }
 		}
@@ -590,8 +594,16 @@ public class GoogDepsWriter {
 					        	c = line.indexOf("goog.provide");
 					        	if (c > -1)
 					        	{
-					        		if (fi.googProvideLine == -i)
+					        		if (fi.googProvideLine == -1)
 					        			fi.googProvideLine = i;
+					        		if (numProvides > 0)
+					        		{
+					        			if (fi.provides == null)
+					        				fi.provides = new ArrayList<String>();
+					        			c2 = line.indexOf(")", c);
+					        			String provide = line.substring(c + 14, c2 - 1);
+					        			fi.provides.add(provide);
+					        		}
 					        		numProvides++;
 					        	}
 					        	else
@@ -865,6 +877,7 @@ public class GoogDepsWriter {
 		public ArrayList<String> impls;
 		public ArrayList<String> deps;
 		public ArrayList<String> staticDeps;
+		public ArrayList<String> provides;
 		public int constructorLine;
 		public int depsLine;
 		public int suppressLine;
