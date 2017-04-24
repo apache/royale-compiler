@@ -82,12 +82,6 @@ public class CompileAppMojo
 
     @Override
     protected File getOutput() throws MojoExecutionException {
-<<<<<<< HEAD
-=======
-        if(outputJavaScript) {
-            return new File(outputDirectory, javascriptOutputDirectoryName);
-        }
->>>>>>> develop
         return new File(outputDirectory, flashOutputFileName);
     }
 
