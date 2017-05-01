@@ -434,6 +434,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
         		  "\n" +
         		  "\n" +
         		  "\n" +
@@ -538,6 +539,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" */\n" +
 				"\n" +
 				"goog.provide('foo.bar.baz.A');\n" +
+				"goog.provide('foo.bar.baz.A.internalFunction');\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -606,6 +608,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" */\n" +
 				"\n" +
 				"goog.provide('foo.bar.baz.A');\n" +
+				"goog.provide('foo.bar.baz.A.internalVar');\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -686,6 +689,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
         		  "\n" +
         		  "\n" +
         		  "\n" +
@@ -838,6 +842,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
         		  "\n" +
         		  "\n" +
         		  "\n" +
@@ -995,6 +1000,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "goog.provide('foo.bar.baz.A.ITestInterface');\n" +
+        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
         		  "\n" +
         		  "\n" +
         		  "\n" +
@@ -1153,6 +1160,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" */\n" +
 				"\n" +
 				"goog.provide('foo.bar.A');\n" +
+				"goog.provide('foo.bar.A.Internal');\n" +
 				"\n" +
 				"\n" +
 				"\n" +

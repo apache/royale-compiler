@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
@@ -149,7 +150,30 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
+        
+        HashMap<String, String> internalClasses = getEmitter().getModel().getInternalClasses();
+        if (internalClasses.size() > 0)
+        {
+        	ArrayList<String> classesInOrder = new ArrayList<String>();
+        	for (String internalClass : internalClasses.keySet())
+        	{
+        		classesInOrder.add(internalClass);
+        	}
+        	Collections.sort(classesInOrder);
+        	for (String internalClass : classesInOrder)
+        	{
+        	       /* goog.provide('x');\n\n */
+                write(JSGoogEmitterTokens.GOOG_PROVIDE);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(internalClass, true));
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                writeNewline(ASEmitterTokens.SEMICOLON);
+        	}
+        }
         writeNewline();
+
     }
 
     public void emitContents(IPackageDefinition definition)

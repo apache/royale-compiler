@@ -548,7 +548,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	else if (!isDoc)
     	{
         	if (getModel().inStaticInitializer)
-        		if (!staticUsedNames.contains(name))
+        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name))
         			staticUsedNames.add(name);
     		
     		if (!usedNames.contains(name))

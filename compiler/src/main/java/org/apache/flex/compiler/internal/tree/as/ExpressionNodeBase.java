@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.tree.as;
 
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
@@ -149,6 +150,11 @@ public abstract class ExpressionNodeBase extends FixedChildrenNode implements IE
         if (type != null)
             isDynamic = type.isDynamic();
 
+        if (!isDynamic)
+        {
+        	String qName = type.getQualifiedName();
+        	isDynamic = qName.equals(IASLanguageConstants.XML) || qName.equals(IASLanguageConstants.XMLList);
+        }
         return isDynamic;
     }
     

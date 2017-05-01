@@ -828,11 +828,12 @@ public class MethodBodySemanticChecker
         {
             if ( utils.isInaccessible(iNode, method_binding) )
             {
-                addProblem(new InaccessibleMethodReferenceProblem( 
-                    roundUpUsualSuspects(method_binding, iNode), 
-                    method_binding.getName().getBaseName(),
-                    utils.getTypeOfStem(iNode)
-                ));
+            	if (!method_binding.getName().getBaseName().equals("toString"))
+	                addProblem(new InaccessibleMethodReferenceProblem( 
+	                    roundUpUsualSuspects(method_binding, iNode), 
+	                    method_binding.getName().getBaseName(),
+	                    utils.getTypeOfStem(iNode)
+	                ));
             }
             else if ( SemanticUtils.hasExplicitStem(iNode) && utils.hasUnderlyingType(iNode) )
             {
