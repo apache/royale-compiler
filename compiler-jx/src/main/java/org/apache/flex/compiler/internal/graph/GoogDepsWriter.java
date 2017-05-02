@@ -47,6 +47,7 @@ import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.DependencyGraph;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.swc.ISWC;
@@ -354,7 +355,7 @@ public class GoogDepsWriter {
 	
 	private void addDeps(String className)
 	{
-		if (depMap.containsKey(className) || isGoogClass(className))
+		if (depMap.containsKey(className) || isGoogClass(className) || isExternal(className))
 			return;
 		
 		// build goog dependency list
@@ -919,6 +920,15 @@ public class GoogDepsWriter {
 		path = path.replace('\\', '/');
 		return path;
 	}
+	
+	boolean isExternal(String className)
+	{
+		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
+		if (cu == null) return false; // unit testing
+		
+		return ((FlexJSProject)project).isExternalLinkage(cu);
+	}
+	
 	private class GoogDep
 	{
 		public String filePath;
