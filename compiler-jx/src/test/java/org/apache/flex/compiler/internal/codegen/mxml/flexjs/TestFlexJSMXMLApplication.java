@@ -825,18 +825,20 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     public void testFlexJSMainFileDual()
     {
         MXMLJSC mxmlc = new MXMLJSC();
-        String[] args = new String[8];
+        String[] args = new String[10];
         args[0] = "-compiler.targets=SWF,JSFlex";
         args[1] = "-compiler.allow-subclass-overrides";
         args[2] = "-remove-circulars";
         args[3] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs")).getPath();
-        args[4] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
-        args[5] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again.swf").getPath();
+        args[4] = "-js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs")).getPath();
+        args[5] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
+        args[6] = "-js-external-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
+        args[7] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again.swf").getPath();
         if (env.GOOG != null)
-        	args[6] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
+        	args[8] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
         else
-        	args[6] = "-define=COMPILE::temp,false";
-        args[7] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again.mxml").getPath();
+        	args[8] = "-define=COMPILE::temp,false";
+        args[9] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again.mxml").getPath();
 
         ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         int result = mxmlc.mainNoExit(args, problems, true);
