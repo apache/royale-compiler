@@ -101,6 +101,7 @@ import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 
 import com.google.common.base.Joiner;
@@ -551,7 +552,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name))
         			staticUsedNames.add(name);
     		
-    		if (!usedNames.contains(name))
+    		if (!usedNames.contains(name) && !isExternal(name))
     			usedNames.add(name);
     	}
         return name;
@@ -1286,4 +1287,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         write(JSFlexJSEmitterTokens.VECTOR);
     }
+    
+	boolean isExternal(String className)
+	{
+        ICompilerProject project = getWalker().getProject();
+		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
+		if (cu == null) return false; // unit testing
+		
+		return ((FlexJSProject)project).isExternalLinkage(cu);
+	}
+
 }

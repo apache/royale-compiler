@@ -278,6 +278,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		            	boolean firstOne = true;
 		            	for (String mixin : mixins)
 		            	{
+		            		if (isExternal(mixin))
+		            			continue;
 		            		if (!firstOne)
 		            			mixinInject += ", "; 
 		            		mixinInject += mixin;
@@ -2695,7 +2697,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
-		if (useName && !usedNames.contains(name))
+		if (useName && !usedNames.contains(name) && !isExternal(name))
 			usedNames.add(name);
      	return name;
     }
@@ -2791,4 +2793,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         interfaceList = list.toString();
     }
     
+	boolean isExternal(String className)
+	{
+        ICompilerProject project = getMXMLWalker().getProject();
+		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
+		if (cu == null) return false; // unit testing
+		
+		return ((FlexJSProject)project).isExternalLinkage(cu);
+	}
+
 }
