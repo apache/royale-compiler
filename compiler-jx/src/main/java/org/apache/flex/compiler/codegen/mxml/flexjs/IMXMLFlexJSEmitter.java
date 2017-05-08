@@ -35,5 +35,4 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 public interface IMXMLFlexJSEmitter extends IMXMLEmitter
 {
     void emitDocument(IMXMLDocumentNode node);
-    void emitSourceMapDirective(ITypeNode node);
 }

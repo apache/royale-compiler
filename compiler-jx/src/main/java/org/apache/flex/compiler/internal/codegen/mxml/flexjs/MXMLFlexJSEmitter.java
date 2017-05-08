@@ -687,7 +687,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         metadataNodes.add(node);
     }
 
-    @Override
     public void emitSourceMapDirective(ITypeNode node)
     {
         IMXMLBlockWalker walker = (IMXMLBlockWalker) getMXMLWalker();
