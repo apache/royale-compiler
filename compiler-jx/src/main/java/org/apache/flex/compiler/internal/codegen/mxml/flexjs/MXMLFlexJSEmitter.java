@@ -35,6 +35,7 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -576,6 +577,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitBindingData(cname, cdef);
 
         emitMetaData(cdef);
+
+        emitSourceMapDirective(node);
     }
 
     public void emitSubDocument(IMXMLComponentNode node)
@@ -682,6 +685,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitMetadata(IMXMLMetadataNode node)
     {
         metadataNodes.add(node);
+    }
+
+    @Override
+    public void emitSourceMapDirective(ITypeNode node)
+    {
+        IMXMLBlockWalker walker = (IMXMLBlockWalker) getMXMLWalker();
+        IJSEmitter jsEmitter = (IJSEmitter) walker.getASEmitter();
+        jsEmitter.emitSourceMapDirective(node);
     }
 
     //--------------------------------------------------------------------------

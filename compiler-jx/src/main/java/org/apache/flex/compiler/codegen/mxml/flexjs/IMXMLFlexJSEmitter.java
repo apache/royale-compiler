@@ -22,6 +22,7 @@ package org.apache.flex.compiler.codegen.mxml.flexjs;
 import java.io.Writer;
 
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
@@ -33,7 +34,6 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
  */
 public interface IMXMLFlexJSEmitter extends IMXMLEmitter
 {
-
     void emitDocument(IMXMLDocumentNode node);
-
+    void emitSourceMapDirective(ITypeNode node);
 }
