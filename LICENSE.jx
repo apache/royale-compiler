@@ -216,3 +216,7 @@ under Apache License 2.0.  For details see the flex-typedefs folder.
 The .as files in flex-typedefs/GCL/src are derived from the .js files in the 
 Google Closure Library which are available under Apache License 2.0.
 
+The createjs.js file in flex-typedefs/createjs/src/main/javascript is
+a non-copyrightable subset of EaselJS and TweenJS from 
+https://github.com/CreateJS 
+
