@@ -121,18 +121,24 @@ public class CompileJSMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        return "typedefs".equalsIgnoreCase(library.getClassifier()) ||
-                "js".equalsIgnoreCase(library.getClassifier());
+        String classifier = library.getClassifier();
+        return (classifier == null) && !("provided".equalsIgnoreCase(library.getScope()));
     }
 
-    /* return false since we will already list the libraries we want on the
-       regular library-path and external-library-path
-     */
     @Override
     protected boolean includeLibraryJS(Artifact library) {
-        return false;
+        String classifier = library.getClassifier();
+        return "typedefs".equalsIgnoreCase(classifier) ||
+        "js".equalsIgnoreCase(classifier);
     }
 
+    @Override
+    protected boolean includeLibrarySWF(Artifact library) {
+        String classifier = library.getClassifier();
+        return "typedefs".equalsIgnoreCase(classifier) ||
+        "js".equalsIgnoreCase(classifier);
+    }
+    
     private void createEmptySwc(File outputFile) throws MojoExecutionException {
         if(!outputFile.getParentFile().exists()) {
             if(!outputFile.getParentFile().mkdirs()) {

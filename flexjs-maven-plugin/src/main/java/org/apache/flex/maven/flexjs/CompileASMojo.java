@@ -17,9 +17,11 @@ package org.apache.flex.maven.flexjs;
 import org.apache.flex.tools.FlexTool;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -33,7 +35,7 @@ public class CompileASMojo
     extends BaseMojo
 {
 
-    @Parameter(defaultValue = "${project.artifactId}-${project.version}.swc")
+    @Parameter(defaultValue = "${project.artifactId}-${project.version}-swf.swc")
     private String outputFileName;
 
     @Parameter(defaultValue = "false")
@@ -42,6 +44,9 @@ public class CompileASMojo
     @Parameter(defaultValue = "false")
     private boolean skipAS;
 
+    @Component
+    private MavenProjectHelper projectHelper;
+    
     @Override
     protected String getToolGroupName() {
         return "FlexJS";
@@ -74,6 +79,7 @@ public class CompileASMojo
         if(getOutput().exists()) {
             // Attach the file created by the compiler as artifact file to maven.
             project.getArtifact().setFile(getOutput());
+            projectHelper.attachArtifact(project, getOutput(), "swf");
         }
     }
 
@@ -117,15 +123,22 @@ public class CompileASMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        return !("typedefs".equalsIgnoreCase(library.getClassifier()) ||
-                 "js".equalsIgnoreCase(library.getClassifier()));
+        String classifier = library.getClassifier();
+        return (classifier == null) && !("provided".equalsIgnoreCase(library.getScope()));
     }
     
     @Override
     protected boolean includeLibraryJS(Artifact library) {
-        return "typedefs".equalsIgnoreCase(library.getClassifier()) ||
-                "js".equalsIgnoreCase(library.getClassifier());
+        String classifier = library.getClassifier();
+        return "typedefs".equalsIgnoreCase(classifier) ||
+                "js".equalsIgnoreCase(classifier);
     }
 
+    @Override
+    protected boolean includeLibrarySWF(Artifact library) {
+        String classifier = library.getClassifier();
+        return "swf".equalsIgnoreCase(classifier) ||
+        ((classifier == null) && "provided".equalsIgnoreCase(library.getScope()));
+    }
 
 }

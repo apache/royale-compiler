@@ -33,6 +33,11 @@
             #end
         </js-library-path>
 
+        <swf-library-path>
+            #foreach($artifact in $swfLibraries)            <path-element>$artifact.file</path-element>
+            #end
+        </swf-library-path>
+
         <external-library-path>
 #foreach($artifact in $externalLibraries)            <path-element>$artifact.file</path-element>
 #end
@@ -42,6 +47,11 @@
             #foreach($artifact in $jsExternalLibraries)            <path-element>$artifact.file</path-element>
             #end
         </js-external-library-path>
+
+        <swf-external-library-path>
+            #foreach($artifact in $swfExternalLibraries)            <path-element>$artifact.file</path-element>
+            #end
+        </swf-external-library-path>
 
         <theme>
 #foreach($artifact in $themeLibraries)           <filename>$artifact.file</filename>
