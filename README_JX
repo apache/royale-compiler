@@ -73,7 +73,6 @@ Software Dependencies
 	args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
         Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4.tar.gz
-	org.json = http://search.maven.org/remotecontent?filepath=org/codeartisans/org.json/20131017/org.json-20131017.jar
 
 
 Using the Binary Distribution

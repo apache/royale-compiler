@@ -119,21 +119,6 @@
       <param name="dest.filename" value="${guava.name}.jar"/>
     </antcall>
 
-    <!--  org.json -->
-    <property name="org.json.name" value="org.json"/>
-    <property name="org.json.version" value="20131017"/>
-    <!-- property name="org.json.version" value="20130213"/ -->
-    <antcall target="download-dependency">
-      <param name="name" value="${org.json.name}"/>
-      <param name="src.server" value="${maven.search.url}"/>
-      <param name="src.folder" value="org/codeartisans/org.json/${org.json.version}"/>
-      <param name="src.filename" value="org.json-${org.json.version}.jar"/>
-      <param name="src.checksum" value="f1aa9ffeda57b9117e79407acc860e74"/>
-      <!-- param name="src.checksum" value="e0593b60af743a63f9678399d275272a"/ --><!-- version 20130213 -->
-      <param name="dest.folder" value=""/>
-      <param name="dest.filename" value="${org.json.name}.jar"/>
-    </antcall>
-
     <!--  flex-tool-api -->
     <property name="flexToolApi.name" value="flex-tool-api"/>
     <property name="flexToolApi.version" value="1.0.0"/>
