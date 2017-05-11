@@ -77,6 +77,8 @@ public class JSSessionModel
     }
     private Stack<Context> stack = new Stack<Context>();
 
+    public boolean needLanguage = false;
+    
     public boolean isExterns = false;
 
     public boolean inE4xFilter = false;
