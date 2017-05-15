@@ -392,8 +392,9 @@ public class FlexJSProject extends FlexProject
     public List<String> getCompilerExternalLibraryPath(Configuration config)
     {
     	List<String> list = ((JSConfiguration)config).getCompilerJsExternalLibraryPath();
-        list.addAll(config.getCompilerExternalLibraryPath());
-    	return list;
+        if (list != null && list.size() > 0)
+        	return list;
+        return config.getCompilerExternalLibraryPath();
     }
 
     /**
@@ -402,8 +403,9 @@ public class FlexJSProject extends FlexProject
     public List<String> getCompilerLibraryPath(Configuration config)
     {
     	List<String> list = ((JSConfiguration)config).getCompilerJsLibraryPath();
-        list.addAll(config.getCompilerLibraryPath());
-    	return list;
+        if (list != null && list.size() > 0)
+        	return list;
+        return config.getCompilerLibraryPath();
     }
     
     /**

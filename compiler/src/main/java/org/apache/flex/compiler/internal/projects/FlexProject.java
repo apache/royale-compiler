@@ -2340,8 +2340,9 @@ public class FlexProject extends ASProject implements IFlexProject
     public List<String> getCompilerExternalLibraryPath(Configuration config)
     {
     	List<String> list = config.getCompilerSwfExternalLibraryPath();
-        list.addAll(config.getCompilerExternalLibraryPath());
-    	return list;
+        if (list != null && list.size() > 0)
+        	return list;
+        return config.getCompilerExternalLibraryPath();
     }
 
     /**
@@ -2350,8 +2351,9 @@ public class FlexProject extends ASProject implements IFlexProject
     public List<String> getCompilerLibraryPath(Configuration config)
     {
     	List<String> list = config.getCompilerSwfLibraryPath();
-        list.addAll(config.getCompilerLibraryPath());
-    	return list;
+        if (list != null && list.size() > 0)
+        	return list;
+        return config.getCompilerLibraryPath();
     }
 
     /**
