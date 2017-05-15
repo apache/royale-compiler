@@ -43,6 +43,7 @@ import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.types.RGB;
 
 import flash.swf.tags.SetBackgroundColor;
+import flex2.compiler.CompilerException;
 import flex2.compiler.Source;
 import flex2.compiler.SourceList;
 import flex2.compiler.io.FileUtil;
@@ -635,7 +636,7 @@ public class Application implements Builder
             mxmljsc.noLink = true;
             //int returnValue = mxmlc.mainCompileOnly(constructCommandLine2(tempOEMConfiguration.configuration), null);
             int returnValue = mxmljsc.mainNoExit(constructCommandLine(oemConfiguration), null, true);
-            if (returnValue == 0)
+            if (returnValue == 0 || returnValue == 2)
                 returnValue = OK;
             else
                 returnValue = FAIL;
@@ -673,8 +674,10 @@ public class Application implements Builder
         ApplicationCompilerConfiguration acc = ((ApplicationCompilerConfiguration)config.configuration);
         sources = new ArrayList<Source>();
         VirtualFile[] sourcePaths = acc.getCompilerConfiguration().getSourcePath();
+
         List<String> sourceFiles = mxmljsc.getSourceList();
         String mainFile = mxmljsc.getMainSource();
+        VirtualFile mainVirtualFile = null;
         for (String sourceFile : sourceFiles)
         {
             for (VirtualFile sourcePath : sourcePaths)
@@ -689,10 +692,17 @@ public class Application implements Builder
                     boolean isRoot = sourceFile.equals(mainFile);
                     Source source = new Source(sourcePath, relPath, shortName, null, false, isRoot);
                     sources.add(source);
-                    break;
+                    if (pathName.equals(mainFile))
+                    	mainVirtualFile = sourcePath;
                 }
             }
         }
+        try {
+			sourceList = new SourceList(new ArrayList<VirtualFile>(), sourcePaths, mainVirtualFile, new String[0]);
+		} catch (CompilerException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
         ProblemQuery pq = mxmljsc.getProblemQuery();
         List<ICompilerProblem> probs = pq.getProblems();
         for (ICompilerProblem prob : probs)
