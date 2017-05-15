@@ -36,6 +36,7 @@ import org.apache.flex.compiler.css.ICSSProperty;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
 import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.css.ICSSSelector;
+import org.apache.flex.compiler.css.ICSSSelectorCondition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
@@ -385,7 +386,11 @@ public class CSSSemanticAnalyzer
             for (final ICSSSelector selector : rule.getSelectorGroup())
             {
                 if (isWildcardSelector(selector))
-                    return true;
+                {
+                	String selName = getOptionalSelectorName(selector);
+                	if (selName == null) return true;
+                    return qnames.contains(selName);
+                }
                 final String qname = resolvedSelectors.get(selector);
                 if (qnames.contains(qname))
                     return true;
@@ -513,6 +518,35 @@ public class CSSSemanticAnalyzer
                GLOBAL_SELECTOR.equals(elementName);
     }
 
+    /**
+     * Check if the selector is a optional class selector.
+     * An optional class selector is a class selector
+     * with the name opt_qname_otherstuff.
+     * 
+     * The output will not contain the selector if the
+     * class identified by qname is not in the output.
+     * 
+     * @param selector CSS selector
+     * @return True if the selector is a "optional" selector.
+     */
+    public static String getOptionalSelectorName(ICSSSelector selector)
+    {
+    	ImmutableList<ICSSSelectorCondition> conditions = selector.getConditions();
+    	if (conditions.size() == 0)
+    		return null;
+        final String elementName = conditions.get(0).getValue();
+        if (elementName == null) return null;
+        if (elementName.startsWith("opt_"))
+        {
+        	int c = elementName.indexOf("_", 4);
+        	if (c >= 0)
+        	{
+        		return elementName.substring(4, c).replace("-", ".");
+        		
+        	}
+        }
+        return null;
+    }
     /**
      * Build a map from QNames to class definitions.
      * 
