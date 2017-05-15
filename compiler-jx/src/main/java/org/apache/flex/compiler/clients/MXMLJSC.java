@@ -335,7 +335,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
 	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	problems.addAll(mxmlc.problems.getProblems());
 	                    	break targetloop;
@@ -345,7 +345,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCFlex flex = new MXMLJSCFlex();
 	                	lastCompiler = flex;
 	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
@@ -354,7 +354,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCFlexCordova flexCordova = new MXMLJSCFlexCordova();
 	                	lastCompiler = flexCordova;
 	                    result = flexCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
@@ -363,7 +363,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCNode node = new MXMLJSCNode();
 	                	lastCompiler = node;
 	                    result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
@@ -372,7 +372,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
