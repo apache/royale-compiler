@@ -202,6 +202,7 @@ public class COMPJSC extends MXMLJSC
 	                case SWF:
 	                	System.out.println("COMPC");
 	                    COMPC compc = new COMPC();
+	                    mxmlc = compc;
 	                    compc.configurationClass = JSGoogCompcConfiguration.class;
 	                    result = compc.mainNoExit(removeJSArgs(args));
 	                    if (result != 0)
@@ -213,6 +214,7 @@ public class COMPJSC extends MXMLJSC
 	                case JS_FLEX:
 	                	System.out.println("COMPCJSCFlex");
 	                	COMPJSCFlex flex = new COMPJSCFlex();
+	                	lastCompiler = flex;
 	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
@@ -221,6 +223,7 @@ public class COMPJSC extends MXMLJSC
 	                    break;
 	                case JS_NATIVE:
 	                	COMPJSCNative jsc = new COMPJSCNative();
+	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {

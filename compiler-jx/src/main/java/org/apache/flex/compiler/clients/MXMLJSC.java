@@ -261,8 +261,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
-    private MXMLC mxmlc;
-    private JSCompilerEntryPoint lastCompiler;
+    protected MXMLC mxmlc;
+    protected JSCompilerEntryPoint lastCompiler;
     public boolean noLink;
     public OutputStream err;
 	public Class<? extends Configuration> configurationClass = JSGoogConfiguration.class;

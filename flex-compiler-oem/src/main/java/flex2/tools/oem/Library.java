@@ -37,13 +37,16 @@ import java.util.TreeSet;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
-import org.apache.flex.compiler.clients.COMPC;
+import org.apache.flex.compiler.clients.COMPJSC;
 import org.apache.flex.compiler.clients.problems.ProblemFormatter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
 
+import flex2.compiler.CompilerException;
+import flex2.compiler.Source;
+import flex2.compiler.SourceList;
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.io.FileUtil;
@@ -55,6 +58,9 @@ import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.MimeMappings;
 import flex2.compiler.util.PerformanceData;
 import flex2.compiler.util.ThreadLocalToolkit;
+import flex2.linker.SimpleMovie;
+import flex2.tools.oem.internal.ApplicationCompilerConfiguration;
+import flex2.tools.oem.internal.LibraryCompilerConfiguration;
 import flex2.tools.oem.internal.OEMConfiguration;
 import flex2.tools.oem.internal.OEMReport;
 import flex2.tools.oem.internal.OEMUtil;
@@ -249,6 +255,10 @@ public class Library implements Builder, Cloneable
     private CompilerControl cc;
     private ApplicationCache applicationCache;
     private LibraryCache libraryCache;
+    
+    private List<Source> compiledSources;
+    private SourceList sourceList;
+
 
     // clean() would null out the following variables
     //LibraryData data;
@@ -746,10 +756,10 @@ public class Library implements Builder, Cloneable
     public Report getReport()
     {
         //OEMUtil.setupLocalizationManager();
-        return new OEMReport(null,
+        return new OEMReport(compiledSources,
                              null,
                              null,
-                             null,
+                             sourceList,
                              configurationReport,
                              messages, files);
     }
@@ -904,14 +914,47 @@ public class Library implements Builder, Cloneable
               true /* cleanConfig */,
               false /* cleanMessages */,
               false /* cleanThreadLocals */);
-        COMPC compc = new COMPC();
-        int returnValue = compc.mainNoExit(constructCommandLine(oemConfiguration));
-        if (returnValue == 0)
+        COMPJSC compc = new COMPJSC();
+        int returnValue = compc.mainNoExit(constructCommandLine(oemConfiguration), null, true);
+        if (returnValue == 0 || returnValue == 2)
             returnValue = OK;
         else
             returnValue = FAIL;
 
-        convertMessages(compc.getProblems());
+        LibraryCompilerConfiguration acc = ((LibraryCompilerConfiguration)tempOEMConfiguration.configuration);
+        VirtualFile[] sourcePaths = acc.getCompilerConfiguration().getSourcePath();
+
+        compiledSources = new ArrayList<Source>();
+        List<String> sourceFiles = compc.getSourceList();
+        String mainFile = compc.getMainSource();
+        VirtualFile mainVirtualFile = null;
+        for (String sourceFile : sourceFiles)
+        {
+            for (VirtualFile sourcePath : sourcePaths)
+            {
+                String pathName = sourcePath.getName();
+                if (sourceFile.indexOf(pathName) == 0)
+                {
+                    String relPath = sourceFile.substring(pathName.length());
+                    int lastSep = relPath.lastIndexOf(File.separator);
+                    String shortName = relPath.substring(lastSep + 1);
+                    relPath = relPath.substring(0, lastSep);
+                    boolean isRoot = sourceFile.equals(mainFile);
+                    Source source = new Source(sourcePath, relPath, shortName, null, false, isRoot);
+                    compiledSources.add(source);
+                    if (mainFile != null && pathName.equals(mainFile))
+                    	mainVirtualFile = sourcePath;
+                }
+            }
+        }
+        try {
+			sourceList = new SourceList(new ArrayList<VirtualFile>(), sourcePaths, mainVirtualFile, new String[0]);
+		} catch (CompilerException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+        convertMessages(compc.getProblemQuery());
         
         clean(returnValue != OK, false, false);
         return returnValue;
