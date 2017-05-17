@@ -41,6 +41,7 @@ import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
@@ -830,7 +831,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             configBuffer = projectConfigurator.getConfigurationBuffer();
 
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
+            {
+                System.out.println(VersionInfo.buildMessage());
                 return false;
+            }
 
             if (problems.hasErrors())
                 return false;
