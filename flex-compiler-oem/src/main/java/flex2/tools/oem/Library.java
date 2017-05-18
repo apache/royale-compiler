@@ -928,32 +928,34 @@ public class Library implements Builder, Cloneable
         List<String> sourceFiles = compc.getSourceList();
         String mainFile = compc.getMainSource();
         VirtualFile mainVirtualFile = null;
-        for (String sourceFile : sourceFiles)
+        if (sourceFiles != null)
         {
-            for (VirtualFile sourcePath : sourcePaths)
-            {
-                String pathName = sourcePath.getName();
-                if (sourceFile.indexOf(pathName) == 0)
-                {
-                    String relPath = sourceFile.substring(pathName.length());
-                    int lastSep = relPath.lastIndexOf(File.separator);
-                    String shortName = relPath.substring(lastSep + 1);
-                    relPath = relPath.substring(0, lastSep);
-                    boolean isRoot = sourceFile.equals(mainFile);
-                    Source source = new Source(sourcePath, relPath, shortName, null, false, isRoot);
-                    compiledSources.add(source);
-                    if (mainFile != null && pathName.equals(mainFile))
-                    	mainVirtualFile = sourcePath;
-                }
-            }
+	        for (String sourceFile : sourceFiles)
+	        {
+	            for (VirtualFile sourcePath : sourcePaths)
+	            {
+	                String pathName = sourcePath.getName();
+	                if (sourceFile.indexOf(pathName) == 0)
+	                {
+	                    String relPath = sourceFile.substring(pathName.length());
+	                    int lastSep = relPath.lastIndexOf(File.separator);
+	                    String shortName = relPath.substring(lastSep + 1);
+	                    relPath = relPath.substring(0, lastSep);
+	                    boolean isRoot = sourceFile.equals(mainFile);
+	                    Source source = new Source(sourcePath, relPath, shortName, null, false, isRoot);
+	                    compiledSources.add(source);
+	                    if (mainFile != null && pathName.equals(mainFile))
+	                    	mainVirtualFile = sourcePath;
+	                }
+	            }
+	        }
+	        try {
+				sourceList = new SourceList(new ArrayList<VirtualFile>(), sourcePaths, mainVirtualFile, new String[0]);
+			} catch (CompilerException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
         }
-        try {
-			sourceList = new SourceList(new ArrayList<VirtualFile>(), sourcePaths, mainVirtualFile, new String[0]);
-		} catch (CompilerException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-
         convertMessages(compc.getProblemQuery());
         
         clean(returnValue != OK, false, false);
