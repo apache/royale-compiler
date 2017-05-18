@@ -24,33 +24,33 @@
     <debug>$debug</debug>
 
     <library-path>
-      #foreach($artifact in $libraries)           <path-element>$artifact.file</path-element>
-      #end
+#foreach($artifact in $libraries)           <path-element>$artifact.file</path-element>
+#end
     </library-path>
 
     <external-library-path>
-      #foreach($artifact in $externalLibraries)           <path-element>$artifact.file</path-element>
-      #end
+#foreach($artifact in $externalLibraries)           <path-element>$artifact.file</path-element>
+#end
     </external-library-path>
 
     <source-path>
-      #foreach($sourcePath in $sourcePaths)           <path-element>$sourcePath</path-element>
-      #end
+#foreach($sourcePath in $sourcePaths)           <path-element>$sourcePath</path-element>
+#end
     </source-path>
 
     <namespaces>
-      #foreach($namespace in $namespaces)            <namespace>
+#foreach($namespace in $namespaces)            <namespace>
       <uri>$namespace.uri</uri>
       <manifest>$namespace.manifest</manifest>
     </namespace>
-      #end
+#end
     </namespaces>
 
     <warn-no-constructor>false</warn-no-constructor>
 
     <keep-as3-metadata>
-      #foreach($metadata in $keepAs3Metadata)            <name>$metadata</name>
-      #end
+#foreach($metadata in $keepAs3Metadata)            <name>$metadata</name>
+#end
     </keep-as3-metadata>
 
     <allow-subclass-overrides>$allowSubclassOverrides</allow-subclass-overrides>
@@ -65,33 +65,33 @@
 
     <show-deprecation-warnings>false</show-deprecation-warnings>
 
-    #foreach($define in $defines)        <define>
+#foreach($define in $defines)        <define>
     <name>$define.name</name>
     <value>$define.value</value>
   </define>
-    #end
+#end
   </compiler>
 
-  #if($includeSources)
+#if($includeSources)
   <include-sources>
-    #foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
-    #end
+#foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
+#end
   </include-sources>
-  #end
+#end
 
-  #if($includeClasses)
+#if($includeClasses)
   <include-classes>
-    #foreach($includeClass in $includeClasses)        <class>$includeClass</class>
-    #end
+#foreach($includeClass in $includeClasses)        <class>$includeClass</class>
+#end
   </include-classes>
-  #end
+#end
 
-  #if($namespaceUris)
+#if($namespaceUris)
   <include-namespaces>
-    #foreach($namespaceUri in $namespaceUris)        <uri>$namespaceUri</uri>
-    #end
+#foreach($namespaceUri in $namespaceUris)        <uri>$namespaceUri</uri>
+#end
   </include-namespaces>
-  #end
+#end
 
   <js-output-type>FLEXJS</js-output-type>
 
