@@ -9,8 +9,13 @@ This release includes Maven artifacts.
 
 In addition, lots of bug fixes and small improvements are included in this release. 
 
+New Features
+=================
+-FLEX-35186 Generate source maps for MXML files
+
 Bug Fixes
 ---------
+-FLEX-35300 Could not find file for class: Error
 -FLEX-35239 Runtime error when setting a property to a constant value
 -FLEX-35236 Binding is not working when [Bindable] is set for the class
 -FLEX-35231 [FalconJX] Context Lost on Event Listeners
