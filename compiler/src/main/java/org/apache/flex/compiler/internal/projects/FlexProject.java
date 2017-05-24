@@ -2301,6 +2301,7 @@ public class FlexProject extends ASProject implements IFlexProject
                 }
             }
         }
+        if (func == null) return false;
 		IMetaTag[] metas = func.getAllMetaTags();
 		for (IMetaTag meta : metas)
 		{
