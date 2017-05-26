@@ -174,10 +174,14 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
-    
+
     public MXMLJSCNode()
     {
-        IBackend backend = new NodeBackend();
+        this(new NodeBackend());
+    }
+    
+    protected MXMLJSCNode(IBackend backend)
+    {
         workspace = new Workspace();
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
         project = new FlexJSProject(workspace, backend);

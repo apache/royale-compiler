@@ -149,8 +149,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         SWF("SWF"),
         JS_FLEX("JSFlex"),
         JS_FLEX_CORDOVA("JSFlexCordova"),
+        //JS without the FlexJS framework
         JS_NATIVE("JS"),
-        JS_NODE("JSNode");
+        //Node.js application
+        JS_NODE("JSNode"),
+        //Node.js module
+        JS_NODE_MODULE("JSNodeModule");
 
         private String text;
 
@@ -361,14 +365,23 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    }
 	                    break;
 	                case JS_NODE:
-	                	MXMLJSCNode node = new MXMLJSCNode();
-	                	lastCompiler = node;
-	                    result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0 && result != 2)
-	                    {
-	                    	break targetloop;
-	                    }
-	                    break;
+                        MXMLJSCNode node = new MXMLJSCNode();
+                        lastCompiler = node;
+                        result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+                        if (result != 0 && result != 2)
+                        {
+                            break targetloop;
+                        }
+                        break;
+                    case JS_NODE_MODULE:
+                        MXMLJSCNodeModule nodeModule = new MXMLJSCNodeModule();
+                        lastCompiler = nodeModule;
+                        result = nodeModule.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+                        if (result != 0 && result != 2)
+                        {
+                            break targetloop;
+                        }
+                        break;
 	                case JS_NATIVE:
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
 	                	lastCompiler = jsc;
