@@ -222,6 +222,7 @@ public class COMPJSC extends MXMLJSC
 	                    }
 	                    break;
 	                case JS_NATIVE:
+                    case JS_NODE:
 	                	COMPJSCNative jsc = new COMPJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
