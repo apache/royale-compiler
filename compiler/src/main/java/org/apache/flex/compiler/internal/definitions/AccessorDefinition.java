@@ -31,6 +31,7 @@ import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
+import org.apache.flex.compiler.problems.UnresolvedNamespaceProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IDefinitionSet;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -163,6 +164,11 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
                     {
                         INamespaceReference testDefRef = definition.getNamespaceReference();
                         INamespaceDefinition testNamespaceDef = testDefRef.resolveNamespaceReference(project);
+                        if (testNamespaceDef == null)
+                        {
+                        	project.getProblems().add(new UnresolvedNamespaceProblem(definition.getNode()));
+                        	return null;
+                        }
                         final boolean testBindable = ((NamespaceDefinition)testNamespaceDef).getAETNamespace().getName().equals(
                                 BindableHelper.bindableNamespaceDefinition.getAETNamespace().getName());
                         /* aharui: namespaces shouldn't have to match.  A subclass may only override
