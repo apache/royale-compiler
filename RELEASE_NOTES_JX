@@ -15,6 +15,8 @@ New Features
 
 Bug Fixes
 ---------
+-FLEX-35317 Generated require() call for Node.js modules does not produce valid code if module name includes dashes
+-FLEX-35316 -version compiler option does not show version
 -FLEX-35300 Could not find file for class: Error
 -FLEX-35239 Runtime error when setting a property to a constant value
 -FLEX-35236 Binding is not working when [Bindable] is set for the class
