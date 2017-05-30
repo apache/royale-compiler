@@ -443,6 +443,9 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                                        {
 	                                        	String methodName = method.getMethodName();
 	                                        	if (methodName == null) continue;
+	                                        	// match getter with getter methodInfo
+	                                        	if (trait.isGetter() && method.getReturnType().getBaseName().equals(IASLanguageConstants.void_)) continue;
+	                                        	if (trait.isSetter() && (!method.getReturnType().getBaseName().equals(IASLanguageConstants.void_))) continue;
 	                                        	if (methodName.equals(trait.getName().getBaseName()))
 	                                        	{
 	                                        		String[] keys = meta.getKeys();
@@ -479,7 +482,6 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                                                				method.setReturnType(name);
 	                                                				foundName = true;
 	                                                				changedABC = true;
-	                                                				break metas;
 	                                        					}
 	                                        				}
 	                                        				if (!foundName)
@@ -494,7 +496,6 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                                        					namePool.add(name);
 	                                        					method.setReturnType(name);
 	                                        					changedABC = true;
-	                                            				break metas;
 	                                        				}
 	                                        			}
 	                                        			else if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_PARAMS))
@@ -556,9 +557,9 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 		                                        				}
 		                                        			}
 	                                    					method.setParamTypes(newList);
-	                                    					break metas;
 	                                        			}
 	                                        		}
+	                                        		break metas;
 	                                        	}
 	                                        }
 	                        			}
