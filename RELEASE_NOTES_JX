@@ -15,6 +15,7 @@ New Features
 
 Bug Fixes
 ---------
+-FLEX-35323 NullPointerException when setting property of <fx:Object/> with binding
 -FLEX-35317 Generated require() call for Node.js modules does not produce valid code if module name includes dashes
 -FLEX-35316 -version compiler option does not show version
 -FLEX-35300 Could not find file for class: Error
