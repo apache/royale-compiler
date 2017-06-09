@@ -283,6 +283,7 @@
     <target name="stage-source"
         description="Package source files required to build in zip file" >
         <antcall target="clean-temp"/>
+        <mkdir dir="${basedir}/temp"/>
 
         <copy todir="${basedir}/temp" includeEmptyDirs="false">
             <fileset dir="${basedir}">
