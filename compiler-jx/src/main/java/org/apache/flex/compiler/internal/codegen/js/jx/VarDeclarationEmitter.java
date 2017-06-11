@@ -194,6 +194,28 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
 			            write("0");
 		        	}
 		        }
+                else if (defName.equals("Boolean"))
+                {
+                    if (node.getParent() != null &&
+                            node.getParent().getParent() != null &&
+                            node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
+                    {
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.FALSE);
+                    }
+                }
+                else if (defName.equals("Number"))
+                {
+                    if (node.getParent() != null &&
+                            node.getParent().getParent() != null &&
+                            node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
+                    {
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write("NaN");
+                    }
+                }
             }
         }
 
