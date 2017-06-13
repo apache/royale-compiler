@@ -182,7 +182,7 @@ public class JSClosureCompilerWrapper
         String[] asdocTags = new String[] {"productversion", 
         		"playerversion", "langversion", "copy", 
         		"asparam", "asreturn", "asprivate",
-        		"flexjsignoreimport", "flexjsignorecoercion", "flexjsnoimplicitstringconversion"};
+        		"flexjsignoreimport", "flexjsignorecoercion", "flexjsnoimplicitstringconversion", "flexjscordovaplugin"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     

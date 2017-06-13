@@ -70,6 +70,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 .getAllLocalDefinitions());
         String qname = null;
         boolean isExterns = false;
+        String cordovaPlugin = null;
         if (type != null)
         {
             qname = type.getQualifiedName();
@@ -83,6 +84,12 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     String asDocString = asDoc.commentNoEnd();
                     isExterns = asDocString.contains(JSFlexJSEmitterTokens.EXTERNS.getToken());
                     getEmitter().getModel().isExterns = isExterns;
+                    int c = asDocString.indexOf(JSFlexJSEmitterTokens.CORDOVA_PLUGIN.getToken());
+                    if (c != -1)
+                    {
+                    	int c2 = asDocString.indexOf("\n", c); 
+                    	cordovaPlugin = asDocString.substring(c + JSFlexJSEmitterTokens.CORDOVA_PLUGIN.getToken().length(), c2).trim();
+                    }
                 }
             }
         }
@@ -136,6 +143,8 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline(" * @fileoverview");
         if (isExterns)
         	writeNewline(" * @externs");
+        if (cordovaPlugin != null)
+        	writeNewline(" * " + JSFlexJSEmitterTokens.CORDOVA_PLUGIN.getToken() + " " + cordovaPlugin);
         writeNewline(" *");
         // need to suppress access controls so access to protected/private from defineProperties
         // doesn't generate warnings.

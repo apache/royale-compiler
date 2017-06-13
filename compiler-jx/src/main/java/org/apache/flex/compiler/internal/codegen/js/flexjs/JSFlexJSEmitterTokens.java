@@ -59,6 +59,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     JSX("JSX"),
     VECTOR("org.apache.flex.utils.Language.Vector"),
+    CORDOVA_PLUGIN("@flexjscordovaplugin"),
     ;
 
     private String token;
