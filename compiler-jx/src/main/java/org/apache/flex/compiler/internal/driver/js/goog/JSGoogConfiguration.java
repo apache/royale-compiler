@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.clients.MXMLJSC;
+import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.config.annotations.Arguments;
@@ -401,6 +402,54 @@ public class JSGoogConfiguration extends JSConfiguration
         	keepCodeWithMetadata = new HashSet<String>();
         keepCodeWithMetadata.addAll(values);
     }
+
+    //
+    // 'cordova-platforms' option
+    //
+
+    protected final List<String> cordovaPlatforms = new ArrayList<String>();
+
+    public List<String> getCordovaPlatforms()
+    {
+    	if (cordovaPlatforms.size() == 0)
+    		cordovaPlatforms.add("android");
+        return cordovaPlatforms;
+    }
+
+    /**
+     * The list of cordova platforms outputs to generate
+     */
+    @Config(allowMultiple = true, isPath = false)
+    @Mapping({ "cordova-platforms" })
+    @Arguments("platform")
+    @InfiniteArguments
+    public void setCordovaPlatforms(ConfigurationValue cv, String[] platformlist)
+    {
+    	cordovaPlatforms.clear();
+    	for (String platform : platformlist)
+    		cordovaPlatforms.add(platform);
+    }
+
+    // 'cordova-id' option
+    //
+
+    private String cordovaid = "org.apache.flexjs";
+
+    public String getCordovaId()
+    {
+        return cordovaid;
+    }
+
+    /**
+     * Specify the id of the cordova app.  The project name is appended.
+     */
+    @Config(advanced = true)
+    @Mapping({ "cordova-id" })
+    public void setCordovaId(ConfigurationValue cv, String id)
+    {
+        this.cordovaid = id;
+    }
+
 
 
 }

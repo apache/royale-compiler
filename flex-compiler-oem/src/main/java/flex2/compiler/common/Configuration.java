@@ -2315,6 +2315,37 @@ public class Configuration implements LinkerConfiguration, Cloneable
         }
     }
 
+    //
+    // 'cordova.platforms' option
+    //
+    
+    private List<String> cordovaPlatforms = new LinkedList<String>();
+
+    public List<String> getCordovaPlatforms()
+    {
+        return cordovaPlatforms;
+    }
+    
+    public void cfgCordovaPlatforms( ConfigurationValue cv, List<String> platforms )
+    {
+       	this.cordovaPlatforms = platforms;
+    }
+ 	
+    //
+    // 'cordova.id' option
+    //
+    
+    private String cordovaId = null;
+
+    public String getCordovaId()
+    {
+        return cordovaId;
+    }
+    
+    public void cfgCordovaId( ConfigurationValue cv, String id )
+    {
+       	this.cordovaId = id;
+    }
 
  	@Override
  	public Configuration clone()
