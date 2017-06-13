@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
@@ -46,22 +47,22 @@ import com.google.common.io.Files;
 
 public class GoogDepsWriterCordova extends GoogDepsWriter {
 
-    public GoogDepsWriterCordova(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
+    public GoogDepsWriterCordova(File outputFolder, String mainClassName, JSGoogConfiguration config, 
+    							List<ISWC> swcs, List<String> cordovaPlugins)
 	{
 		super(outputFolder, mainClassName, config, swcs);
+		this.cordovaPlugins = cordovaPlugins;
 	}
 	
-    private final String FLEXJS_CORDOVA_PLUGIN = "@flexjscordovaplugin";
-    
-    public ArrayList<String> cordovaPlugins = new ArrayList<String>();
+    private List<String> cordovaPlugins;
 
     @Override
 	protected void otherScanning(String s)
 	{	
-    	int c = s.indexOf(FLEXJS_CORDOVA_PLUGIN);
+    	int c = s.indexOf(JSFlexJSEmitterTokens.CORDOVA_PLUGIN.getToken());
     	if (c > -1)
     	{
-    		cordovaPlugins.add(s.substring(c + FLEXJS_CORDOVA_PLUGIN.length()).trim());
+    		cordovaPlugins.add(s.substring(c + JSFlexJSEmitterTokens.CORDOVA_PLUGIN.getToken().length()).trim());
     	}
 	}
 }

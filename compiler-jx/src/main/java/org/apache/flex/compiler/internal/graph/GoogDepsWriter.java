@@ -667,6 +667,8 @@ public class GoogDepsWriter {
 							                            	fi.deps = new ArrayList<String>();
 							                            fi.deps.add(s);
 							    					}
+								                    else
+								                    	otherScanning(line);
 							    				}
 							        		}
 						        		}
@@ -859,8 +861,6 @@ public class GoogDepsWriter {
 				    additionalHTML.add(s);
 				    continue;
                 }
-                else
-                	otherScanning(s);
 				int c = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 				if (c > -1)
 				{

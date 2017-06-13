@@ -92,7 +92,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     private String outputPathParameter;
     private boolean useStrictPublishing;
 
-    private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
+    protected GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
     										String projectName, 
     										JSGoogConfiguration googConfiguration, 
     										List<ISWC> swcs)
