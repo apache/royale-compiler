@@ -162,6 +162,12 @@
             <exclude>**/target/**</exclude>
             <!-- Stuff an Ant build might have left behind. -->
             <exclude>lib/**</exclude>
+            <!--
+                In case of an ANT based release the typedefs are included as a
+                subdirectory. We need to exclude this directory from the compiler checks
+                as the typedefs build will handle all content in that directory
+            -->
+            <exclude>flex-typedefs/**</exclude>
           </excludes>
         </configuration>
         <dependencies>
