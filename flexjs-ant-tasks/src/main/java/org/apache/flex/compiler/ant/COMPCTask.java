@@ -118,6 +118,7 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
         new ConfigBoolean(new OptionSpec("compiler.es")),
         new ConfigBoolean(new OptionSpec("compiler.generate-abstract-syntax-tree")),
         new ConfigBoolean(new OptionSpec("compiler.headless-server")),
+            new ConfigBoolean(new OptionSpec("compiler.ignore-default-initilization")),
         new ConfigBoolean(new OptionSpec("compiler.isolate-styles")),
         new ConfigBoolean(new OptionSpec("compiler.keep-all-type-selectors")),
         new ConfigBoolean(new OptionSpec("compiler.keep-generated-actionscript", "keep")),

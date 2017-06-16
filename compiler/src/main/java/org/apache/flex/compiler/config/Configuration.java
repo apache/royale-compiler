@@ -3961,6 +3961,29 @@ public class Configuration
     }
 
     //
+    // 'compiler.ignore-default-initilization' option
+    //
+
+    /**
+     * Allow the user to set Boolean and Number type to be undefined and ignore them being initialised
+     * to false and NaN respectively. Note that use this option breaks compatability with ActionScript.
+     */
+    private boolean ignoreDefaultInitilization = true;
+
+    public boolean getIgnoreDefaultInitilization()
+    {
+        return ignoreDefaultInitilization;
+    }
+
+    @Config(advanced = true)
+    @Mapping({ "compiler", "ignore-default-initilization" })
+    @FlexOnly
+    public void setIgnoreDefaultInitilization(ConfigurationValue cv, boolean ignoreDefaultInitilization)
+    {
+        this.ignoreDefaultInitilization = ignoreDefaultInitilization;
+    }
+
+    //
     // 'compiler.compress' option (default is true)
     //
 

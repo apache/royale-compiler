@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
@@ -28,6 +29,7 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -42,10 +44,14 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 public class VarDeclarationEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>
 {
+    boolean ignoreInitilization;
 
     public VarDeclarationEmitter(IJSEmitter emitter)
     {
         super(emitter);
+
+        JSConfiguration configuration = ((FlexJSProject) getProject()).config;
+        ignoreInitilization = configuration.getIgnoreDefaultInitilization();
     }
 
     @Override
@@ -180,40 +186,33 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
             if (enode != null)
                 typedef = enode.resolveType(getWalker().getProject());
-            if (typedef != null)
-            {
-		        String defName = typedef.getQualifiedName();
-		        if (defName.equals("int") || defName.equals("uint"))
-		        {
-		        	if (node.getParent() != null &&
-		        			node.getParent().getParent() != null &&
-		        			node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
-		        	{
-			            write(ASEmitterTokens.SPACE);
-			            writeToken(ASEmitterTokens.EQUAL);
-			            write("0");
-		        	}
-		        }
-                else if (defName.equals("Boolean"))
-                {
+            if (typedef != null) {
+                String defName = typedef.getQualifiedName();
+                if (defName.equals("int") || defName.equals("uint")) {
                     if (node.getParent() != null &&
                             node.getParent().getParent() != null &&
-                            node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
-                    {
+                            node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID) {
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
-                        write(ASEmitterTokens.FALSE);
+                        write("0");
                     }
-                }
-                else if (defName.equals("Number"))
-                {
-                    if (node.getParent() != null &&
-                            node.getParent().getParent() != null &&
-                            node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
-                    {
-                        write(ASEmitterTokens.SPACE);
-                        writeToken(ASEmitterTokens.EQUAL);
-                        write("NaN");
+                } else if (!ignoreInitilization) {
+                    if (ignoreInitilization && defName.equals("Boolean")) {
+                        if (node.getParent() != null &&
+                                node.getParent().getParent() != null &&
+                                node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID) {
+                            write(ASEmitterTokens.SPACE);
+                            writeToken(ASEmitterTokens.EQUAL);
+                            write(ASEmitterTokens.FALSE);
+                        }
+                    } else if (ignoreInitilization && defName.equals("Number")) {
+                        if (node.getParent() != null &&
+                                node.getParent().getParent() != null &&
+                                node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID) {
+                            write(ASEmitterTokens.SPACE);
+                            writeToken(ASEmitterTokens.EQUAL);
+                            write("NaN");
+                        }
                     }
                 }
             }
