@@ -41,6 +41,7 @@ import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
@@ -148,8 +149,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         SWF("SWF"),
         JS_FLEX("JSFlex"),
         JS_FLEX_CORDOVA("JSFlexCordova"),
+        //JS without the FlexJS framework
         JS_NATIVE("JS"),
-        JS_NODE("JSNode");
+        //Node.js application
+        JS_NODE("JSNode"),
+        //Node.js module
+        JS_NODE_MODULE("JSNodeModule");
 
         private String text;
 
@@ -260,8 +265,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
-    private MXMLC mxmlc;
-    private JSCompilerEntryPoint lastCompiler;
+    protected MXMLC mxmlc;
+    protected JSCompilerEntryPoint lastCompiler;
     public boolean noLink;
     public OutputStream err;
 	public Class<? extends Configuration> configurationClass = JSGoogConfiguration.class;
@@ -335,7 +340,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
 	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	problems.addAll(mxmlc.problems.getProblems());
 	                    	break targetloop;
@@ -345,7 +350,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCFlex flex = new MXMLJSCFlex();
 	                	lastCompiler = flex;
 	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
@@ -354,25 +359,34 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCFlexCordova flexCordova = new MXMLJSCFlexCordova();
 	                	lastCompiler = flexCordova;
 	                    result = flexCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
 	                    break;
 	                case JS_NODE:
-	                	MXMLJSCNode node = new MXMLJSCNode();
-	                	lastCompiler = node;
-	                    result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
-	                    {
-	                    	break targetloop;
-	                    }
-	                    break;
+                        MXMLJSCNode node = new MXMLJSCNode();
+                        lastCompiler = node;
+                        result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+                        if (result != 0 && result != 2)
+                        {
+                            break targetloop;
+                        }
+                        break;
+                    case JS_NODE_MODULE:
+                        MXMLJSCNodeModule nodeModule = new MXMLJSCNodeModule();
+                        lastCompiler = nodeModule;
+                        result = nodeModule.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+                        if (result != 0 && result != 2)
+                        {
+                            break targetloop;
+                        }
+                        break;
 	                case JS_NATIVE:
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
@@ -830,7 +844,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             configBuffer = projectConfigurator.getConfigurationBuffer();
 
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
+            {
+                System.out.println(VersionInfo.buildMessage());
                 return false;
+            }
 
             if (problems.hasErrors())
                 return false;

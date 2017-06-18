@@ -1163,6 +1163,21 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 * 
 	 * @param paths an array of <code>java.io.File</code> (<code>File.isDirectory()</code> must return <code>true</code>).
 	 */
+	public File[] getSourcePath()
+	{
+		if (args.containsKey(COMPILER_SOURCE_PATH))
+			return (File[]) args.get(COMPILER_SOURCE_PATH);
+		if (more.containsKey(COMPILER_SOURCE_PATH))
+			return (File[]) more.get(COMPILER_SOURCE_PATH);
+		return null;
+	}
+
+	/**
+	 * Sets a list of path elements that form the roots of ActionScript class hierarchies.
+	 * This is equivalent to using <code>mxmlc/compc --compiler.source-path</code>.
+	 * 
+	 * @param paths an array of <code>java.io.File</code> (<code>File.isDirectory()</code> must return <code>true</code>).
+	 */
 	public void setSourcePath(File[] paths)
 	{
 		args.put(COMPILER_SOURCE_PATH, paths);

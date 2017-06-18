@@ -29,8 +29,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -64,6 +66,7 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
 import org.apache.flex.swc.io.SWCReader;
 
 /**
@@ -525,4 +528,39 @@ public class COMPJSCFlex extends MXMLJSCFlex
     {
         return TargetType.SWC;
     }
+
+    @Override
+    public List<String> getSourceList()
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        LinkedList<ICompilerProblem> problemList = new LinkedList<ICompilerProblem>();
+        try
+        {
+            Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
+            Collection<ICompilationUnit> roots = ((FlexJSSWCTarget)target).getReachableCompilationUnits(errors);
+            Collection<ICompilationUnit> units = project.getReachableCompilationUnitsInSWFOrder(roots);
+            for (ICompilationUnit unit : units)
+            {
+                UnitType ut = unit.getCompilationUnitType();
+                if (ut == UnitType.AS_UNIT || ut == UnitType.MXML_UNIT)
+                {
+                    list.add(unit.getAbsoluteFilename());
+                }
+            }
+        }
+        catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
+
+    @Override
+    public String getMainSource()
+    {
+        return null;
+    }
+
 }

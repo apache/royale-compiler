@@ -2018,7 +2018,304 @@ public class Configuration implements LinkerConfiguration, Cloneable
 		return compilerConfiguration.getAdvancedTelemetry();
 	}
 
+    //
+    // 'closure-lib' option
+    //
+    
+    private String closureLibDirName = null;
+
+    public String getClosureLibDirName()
+    {
+        return closureLibDirName;
+    }
+    
+    public void cfgClosureLib( ConfigurationValue cv, String filename )
+    {
+       	this.closureLibDirName = getOutputPath(cv, filename);
+    }
  	
+    //
+    // 'sdk-js-lib' option
+    //
+    
+    private List<String> sdkJsLibraries = new LinkedList<String>();
+    
+    public List<String> getSDKJSLib()
+    {
+        return sdkJsLibraries;
+    }
+    
+    public void cfgSDKJSLib( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+            VirtualFile f = ConfigurationPathResolver.getVirtualFile( urls[i], configResolver, cfgval );
+            if (f != null)
+            	sdkJsLibraries.add( urls[i] );
+        }
+    }
+
+    //
+    // 'external-js-lib' option
+    //
+    
+    private List<String> externalJsLibraries = new LinkedList<String>();
+    
+    public List<String> getExternalJSLib()
+    {
+        return externalJsLibraries;
+    }
+    
+    public void cfgExternalJSLib( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+            VirtualFile f = ConfigurationPathResolver.getVirtualFile( urls[i], configResolver, cfgval );
+            if (f != null)
+            	externalJsLibraries.add( urls[i] );
+        }
+    }
+
+	//
+	// 'remove-circulars' option
+	//
+	
+	private boolean removeCirculars = false;
+	
+	public boolean getRemoveCirculars()
+	{
+		return removeCirculars;
+	}
+	
+	public void setRemoveCirculars(boolean value)
+	{
+		removeCirculars = value;
+	}
+	
+	public void cfgRemoveCirculars(ConfigurationValue cv, boolean value)
+	{
+		setRemoveCirculars(value);
+	}
+	
+	//
+	// 'skip-transpile' option
+	//
+	
+	private boolean skipTranspile = false;
+	
+	public boolean getSkipTranspile()
+	{
+		return skipTranspile;
+	}
+	
+	public void setSkipTranspile(boolean value)
+	{
+		skipTranspile = value;
+	}
+	
+	public void cfgSkipTranspile(ConfigurationValue cv, boolean value)
+	{
+		setSkipTranspile(value);
+	}
+	
+    //
+    // 'js-compiler-option' option
+    //
+    
+    private List<String> jsCompilerOption = new LinkedList<String>();
+    
+    public List<String> getJsCompilerOption()
+    {
+        return jsCompilerOption;
+    }
+    
+    public void cfgJsCompilerOption( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+        	jsCompilerOption.add( urls[i] );
+        }
+    }
+
+    //
+    // 'js-output-optimization' option
+    //
+    
+    private List<String> jsOutputOptimization = new LinkedList<String>();
+    
+    public List<String> getJsOutputOptimization()
+    {
+        return jsOutputOptimization;
+    }
+    
+    public void cfgJsOutputOptimization( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+        	jsOutputOptimization.add( urls[i] );
+        }
+    }
+    
+    //
+    // 'html-template' option
+    //
+    
+    private String htmlTemplateFileName = null;
+
+    public String getHtmlTemplateFileName()
+    {
+        return htmlTemplateFileName;
+    }
+    
+    public void cfgHtmlTemplate( ConfigurationValue cv, String filename )
+    {
+       	this.htmlTemplateFileName = getOutputPath(cv, filename);
+    }
+ 	
+
+    //
+    // 'html-output-filename' option
+    //
+    
+    private String htmlOutputFileName = null;
+
+    public String getHtmlOutputFilename()
+    {
+        return htmlOutputFileName;
+    }
+    
+    public void cfgHtmlOutputFilename( ConfigurationValue cv, String filename )
+    {
+       	this.htmlOutputFileName = getOutputPath(cv, filename);
+    }
+ 	
+    //
+    // 'compiler-targets' option
+    //
+    
+    private List<String> compilerTargets = new LinkedList<String>();
+    
+    public List<String> getCompilerTargets()
+    {
+        return compilerTargets;
+    }
+    
+    public void cfgCompilerTargets( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+        	compilerTargets.add( urls[i] );
+        }
+    }
+    
+	//
+	// 'source-map' option
+	//
+	
+	private boolean sourceMap = false;
+	
+	public boolean getSourceMap()
+	{
+		return sourceMap;
+	}
+	
+	public void setSourceMap(boolean value)
+	{
+		sourceMap = value;
+	}
+	
+	public void cfgSourceMap(ConfigurationValue cv, boolean value)
+	{
+		setSkipTranspile(value);
+	}
+	
+    //
+    // 'compiler.js-external-library-path' option
+    //
+    
+    private List<String> jsExternalLibrariesPath = new LinkedList<String>();
+    
+    public List<String> getJsExternalLibraryPath()
+    {
+        return jsExternalLibrariesPath;
+    }
+    
+    public void cfgJsExternalLibraryPath( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+            VirtualFile f = ConfigurationPathResolver.getVirtualFile( urls[i], configResolver, cfgval );
+            if (f != null)
+            	jsExternalLibrariesPath.add( urls[i] );
+        }
+    }
+
+
+    //
+    // 'compiler.swf-external-library-path' option
+    //
+    
+    private List<String> swfExternalLibrariesPath = new LinkedList<String>();
+    
+    public List<String> getSwfExternalLibraryPath()
+    {
+        return swfExternalLibrariesPath;
+    }
+    
+    public void cfgSwfExternalLibraryPath( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+            VirtualFile f = ConfigurationPathResolver.getVirtualFile( urls[i], configResolver, cfgval );
+            if (f != null)
+            	swfExternalLibrariesPath.add( urls[i] );
+        }
+    }
+
+    //
+    // 'compiler.js-library-path' option
+    //
+    
+    private List<String> jsLibrariesPath = new LinkedList<String>();
+    
+    public List<String> getJsLibraryPath()
+    {
+        return jsLibrariesPath;
+    }
+    
+    public void cfgJsLibraryPath( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+            VirtualFile f = ConfigurationPathResolver.getVirtualFile( urls[i], configResolver, cfgval );
+            if (f != null)
+            	jsLibrariesPath.add( urls[i] );
+        }
+    }
+
+
+    //
+    // 'compiler.swf-library-path' option
+    //
+    
+    private List<String> swfLibrariesPath = new LinkedList<String>();
+    
+    public List<String> getSwfLibraryPath()
+    {
+        return swfLibrariesPath;
+    }
+    
+    public void cfgSwfLibraryPath( ConfigurationValue cfgval, String[] urls ) throws ConfigurationException
+    {
+        for (int i = 0; i < urls.length; ++i)
+        {
+            VirtualFile f = ConfigurationPathResolver.getVirtualFile( urls[i], configResolver, cfgval );
+            if (f != null)
+            	swfLibrariesPath.add( urls[i] );
+        }
+    }
+
+
  	@Override
  	public Configuration clone()
  	    throws CloneNotSupportedException

@@ -131,7 +131,7 @@ public class AsIsEmitter extends JSSubEmitter
         ICompilerProject project = this.getProject();
         if (project instanceof FlexJSProject)
         	((FlexJSProject)project).needLanguage = true;
-        
+        getEmitter().getModel().needLanguage = true;
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node; 

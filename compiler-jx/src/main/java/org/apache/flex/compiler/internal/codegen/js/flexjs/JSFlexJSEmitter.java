@@ -215,7 +215,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     if (project instanceof FlexJSProject)
                     {
                         FlexJSProject flexJSProject = (FlexJSProject) project;
-                        boolean needLanguage = flexJSProject.needLanguage;
+                        boolean needLanguage = getModel().needLanguage;
                         if (needLanguage && !foundLanguage)
                         {
                             StringBuilder appendString = new StringBuilder();
@@ -941,6 +941,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         ICompilerProject project = getWalker().getProject();;
         if (project instanceof FlexJSProject)
         	((FlexJSProject)project).needLanguage = true;
+        getModel().needLanguage = true;
         write(JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME);
         write(ASEmitterTokens.PAREN_OPEN);
     }
