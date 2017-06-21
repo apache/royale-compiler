@@ -530,7 +530,7 @@ public class OEMReport implements Report
 		// use this version for now
 		for (Source s : sources)
 		{
-			sourceNames.add(s.getName());
+			sourceNames.add(s.getSourceFileName());
 		}
 		/*
 		// AJH not sure why all this is needed

@@ -31,8 +31,8 @@ import org.apache.flex.utils.Trace;
  */
 public class VersionInfo
 {
-    public static final String FLEX_MAJOR_VERSION = "4";
-    public static final String FLEX_MINOR_VERSION = "7";
+    public static final String FLEX_MAJOR_VERSION = "0";
+    public static final String FLEX_MINOR_VERSION = "8";
     public static final String FLEX_NANO_VERSION  = "0";
     
 	/**

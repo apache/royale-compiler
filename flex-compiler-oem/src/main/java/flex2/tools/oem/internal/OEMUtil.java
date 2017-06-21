@@ -243,6 +243,8 @@ public class OEMUtil
     private static LibraryCompilerConfiguration processCOMPCCConfiguration(org.apache.flex.compiler.config.Configuration config)
     {
         LibraryCompilerConfiguration acc = new LibraryCompilerConfiguration();
+        ConfigurationPathResolver resolver = new ConfigurationPathResolver(); 
+	    acc.setConfigPathResolver(resolver);
         acc.setBackgroundColor(config.getDefaultBackgroundColor());
         acc.setDebug(config.debug());
         acc.setFrameRate(config.getDefaultFrameRate());
@@ -251,7 +253,45 @@ public class OEMUtil
         acc.setSwfVersion(config.getSwfVersion());
         acc.setScriptRecursionLimit(config.getScriptRecursionLimit());
         acc.setScriptTimeLimit(config.getScriptTimeLimit());
+        CompilerConfiguration cc = acc.getCompilerConfiguration();
         
+        List<String> externalLibraries = config.getCompilerExternalLibraryPath();
+        String[] extlibs = new String[externalLibraries.size()];
+        externalLibraries.toArray(extlibs);
+        try
+        {
+            cc.cfgExternalLibraryPath(null, extlibs);
+        }
+        catch (ConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        List<String> libraries = config.getCompilerLibraryPath();
+        String[] libs = new String[libraries.size()];
+        libraries.toArray(libs);
+        try
+        {
+            cc.cfgLibraryPath(null, libs);
+        }
+        catch (ConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        List<String> sources = config.getCompilerSourcePath();
+        String[] srcs = new String[sources.size()];
+        sources.toArray(srcs);
+        try
+        {
+            cc.cfgSourcePath(null, srcs);
+        }
+        catch (ConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	    
         return acc;
     }
 	

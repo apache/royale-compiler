@@ -1141,6 +1141,7 @@ public class MXMLC implements FlexTool
     
     public String getMainSource()
     {
+    	if (mainCU == null) return "";
         return mainCU.getAbsoluteFilename();
     }
     

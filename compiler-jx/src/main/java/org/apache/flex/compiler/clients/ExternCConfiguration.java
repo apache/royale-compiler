@@ -38,6 +38,7 @@ import org.apache.flex.compiler.internal.config.annotations.Arguments;
 import org.apache.flex.compiler.internal.config.annotations.Config;
 import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
+import org.apache.flex.compiler.utils.NodeJSUtils;
 import org.apache.flex.utils.FilenameNormalization;
 
 public class ExternCConfiguration extends Configuration
@@ -324,15 +325,7 @@ public class ExternCConfiguration extends Configuration
         for (String module : namedModules)
         {
             //convert to camel case
-            String camelCaseModule = module;
-            int moduleIndex = camelCaseModule.indexOf("-");
-            while (moduleIndex != -1 && moduleIndex < camelCaseModule.length() - 1)
-            {
-                camelCaseModule = camelCaseModule.substring(0, moduleIndex)
-                        + camelCaseModule.substring(moduleIndex + 1, moduleIndex + 2).toUpperCase()
-                        + camelCaseModule.substring(moduleIndex + 2);
-                moduleIndex = camelCaseModule.indexOf("-");
-            }
+            String camelCaseModule = NodeJSUtils.convertFromDashesToCamelCase(module);
             if(basePackageName.length() == 0)
             {
                 if (classReference.getBaseName().equals(camelCaseModule))

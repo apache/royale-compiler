@@ -128,6 +128,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         ICompilerProject project = this.getProject();
                         if (project instanceof FlexJSProject)
                             ((FlexJSProject) project).needLanguage = true;
+                        getEmitter().getModel().needLanguage = true;
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
@@ -190,6 +191,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         ICompilerProject project = this.getProject();
                         if (project instanceof FlexJSProject)
                             ((FlexJSProject) project).needLanguage = true;
+                        getEmitter().getModel().needLanguage = true;
                         startMapping(node.getNameNode());
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -205,6 +207,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             ICompilerProject project = this.getProject();
                             if (project instanceof FlexJSProject)
                                 ((FlexJSProject) project).needLanguage = true;
+                            getEmitter().getModel().needLanguage = true;
                             write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write("sortOn");
@@ -228,6 +231,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
 	                			{
 		                            if (project instanceof FlexJSProject)
 		                                ((FlexJSProject) project).needLanguage = true;
+		                            getEmitter().getModel().needLanguage = true;
 		                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
 		                            write(ASEmitterTokens.MEMBER_ACCESS);
 		                            write("sort");
