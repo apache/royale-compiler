@@ -3966,9 +3966,9 @@ public class Configuration
 
     /**
      * Allow the user to set Boolean and Number type to be undefined and ignore them being initialised
-     * to false and NaN respectively. Note that use this option breaks compatability with ActionScript.
+     * to false and NaN respectively. Note that using this option breaks compatability with ActionScript.
      */
-    private boolean ignoreDefaultInitilization = true;
+    private boolean ignoreDefaultInitilization = false;
 
     public boolean getIgnoreDefaultInitilization()
     {
@@ -3977,7 +3977,6 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping({ "compiler", "ignore-default-initilization" })
-    @FlexOnly
     public void setIgnoreDefaultInitilization(ConfigurationValue cv, boolean ignoreDefaultInitilization)
     {
         this.ignoreDefaultInitilization = ignoreDefaultInitilization;

@@ -42,16 +42,15 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 public class VarDeclarationEmitter extends JSSubEmitter implements
-        ISubEmitter<IVariableNode>
-{
-    boolean ignoreInitilization;
+        ISubEmitter<IVariableNode> {
 
-    public VarDeclarationEmitter(IJSEmitter emitter)
-    {
+    public VarDeclarationEmitter(IJSEmitter emitter) {
         super(emitter);
+    }
 
+    protected boolean defaultInitialisation() {
         JSConfiguration configuration = ((FlexJSProject) getProject()).config;
-        ignoreInitilization = configuration.getIgnoreDefaultInitilization();
+        return configuration == null || !configuration.getIgnoreDefaultInitilization();
     }
 
     @Override
@@ -196,8 +195,8 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                         writeToken(ASEmitterTokens.EQUAL);
                         write("0");
                     }
-                } else if (!ignoreInitilization) {
-                    if (ignoreInitilization && defName.equals("Boolean")) {
+                } else if (defaultInitialisation()) {
+                    if (defName.equals("Boolean")) {
                         if (node.getParent() != null &&
                                 node.getParent().getParent() != null &&
                                 node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID) {
@@ -205,7 +204,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                             writeToken(ASEmitterTokens.EQUAL);
                             write(ASEmitterTokens.FALSE);
                         }
-                    } else if (ignoreInitilization && defName.equals("Number")) {
+                    } else if (defName.equals("Number")) {
                         if (node.getParent() != null &&
                                 node.getParent().getParent() != null &&
                                 node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID) {
