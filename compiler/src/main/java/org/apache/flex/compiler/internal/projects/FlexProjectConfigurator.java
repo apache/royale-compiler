@@ -29,9 +29,11 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.fxg.flex.FlexFXG2SWFTranscoder;
 import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.embedding.transcoders.DataTranscoder;
+import org.apache.flex.compiler.internal.units.FXGCompilationUnit;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 
 /**
@@ -221,6 +223,10 @@ public class FlexProjectConfigurator
             configValue = configuration.getBindingValueChangeEventType();
             BindableHelper.PROPERTY_CHANGE = configValue;
 
+            configValue = configuration.getFxgBaseClass();
+            FlexFXG2SWFTranscoder.packageSpriteVisualElement = configValue;
+            FXGCompilationUnit.fxgBaseClassName = configValue;
+        
             configValue = configuration.getStatesClass();
             project.setStateClass(configValue);
             

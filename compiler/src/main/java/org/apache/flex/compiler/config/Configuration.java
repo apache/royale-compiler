@@ -1799,6 +1799,26 @@ public class Configuration
         componentFactoryInterface = b;
     }
 
+    //
+    // 'compiler.fxg-base-class' option
+    //
+
+    private String fxgBaseClass = "spark.core.SpriteVisualElement";
+
+    public String getFxgBaseClass()
+    {
+        return fxgBaseClass;
+    }
+
+    /**
+     * The base class for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerFxgBaseClass(ConfigurationValue cv, String b)
+    {
+    	fxgBaseClass = b;
+    }
+
     /**
      * Syntax:<br/>
      * <code>-define=&lt;name&gt;,&lt;value&gt;</code> where name is <code>NAMESPACE::name</code> and value is a legal

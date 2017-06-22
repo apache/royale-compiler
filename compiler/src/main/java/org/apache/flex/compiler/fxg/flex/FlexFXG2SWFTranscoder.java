@@ -91,7 +91,7 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
     private final HashMap<String, Integer> nameCounter;
     private Map<String, ITypeDefinition> dependencies;
     
-    private static final String packageSpriteVisualElement = "spark.core.SpriteVisualElement";
+    public static String packageSpriteVisualElement = "spark.core.SpriteVisualElement";
     private static final String packageShaderFilter = "spark.filters.ShaderFilter";
     private static final String packageLuminosityMaskShader = "mx.graphics.shaderClasses.LuminosityMaskShader";
     private static final String packageIFlexModuleFactory = "mx.core.IFlexModuleFactory";
@@ -137,7 +137,7 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
         buf.append("package ").append(packageName).append("\n");
         buf.append("{\n\n");
         buf.append("import ").append(packageSpriteVisualElement).append(";\n\n");
-        buf.append("public class ").append(className).append(" extends SpriteVisualElement\n");
+        buf.append("public class ").append(className).append(" extends " + packageSpriteVisualElement + "\n");
         buf.append("{\n");
         buf.append("    public function ").append(className).append("()\n");
         buf.append("    {\n");
@@ -584,7 +584,7 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
                 buf.append("import ").append(blendModeClass).append(";\n\n");
             }
 
-            buf.append("public class ").append(className).append(" extends SpriteVisualElement\n");
+            buf.append("public class ").append(className).append(" extends " + packageSpriteVisualElement + "\n");
             buf.append("{\n");
             buf.append("    public function ").append(className).append("()\n");
             buf.append("    {\n");

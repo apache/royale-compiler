@@ -81,7 +81,7 @@ import com.google.common.collect.Iterables;
  */
 public class FXGCompilationUnit extends CompilationUnitBase
 {
-    private static final String fxgBaseClassName =  "spark.core.SpriteVisualElement";
+    public static String fxgBaseClassName =  "spark.core.SpriteVisualElement";
 
     private String qname;
     
