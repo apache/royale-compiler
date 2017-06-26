@@ -100,10 +100,12 @@ public class ExternalsTestUtils
     {
         config.addFieldExclude("Window", "focus");
         config.addClassExclude("controlRange");
+        config.addClassExclude("ITemplateArray");
 
         config.addExclude("Array", "toSource");
         config.addExclude("Date", "valueOf");
         config.addExclude("String", "valueOf");
+        config.addExclude("String", "raw");
 
         // SVG
         config.addExclude("SVGStylable", "className");

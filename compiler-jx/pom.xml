@@ -23,11 +23,11 @@
   <parent>
     <groupId>org.apache.flex.flexjs.compiler</groupId>
     <artifactId>flexjs-compiler-parent</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>compiler-jx</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.8.0</version>
 
   <name>Apache Flex - FlexJS: Compiler: Compiler-JX</name>
 
@@ -50,6 +50,8 @@
             <exclude>**/TestGoogFile.java</exclude>
             <exclude>**/TestFlexJSMXMLApplication.java</exclude>
             <exclude>**/TestFlexJSMXMLScript.java</exclude>
+            <exclude>**/TestSourceMapMXMLScript.java</exclude>
+            <exclude>**/TestSourceMapMXMLEvents.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -78,7 +80,7 @@
     <dependency>
       <groupId>org.apache.flex.flexjs.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -110,7 +112,7 @@
     <dependency>
       <groupId>org.apache.flex.flexjs.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.8.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

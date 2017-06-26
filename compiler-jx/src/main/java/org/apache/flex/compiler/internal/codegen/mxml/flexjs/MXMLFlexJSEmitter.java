@@ -33,7 +33,9 @@ import java.util.Set;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -159,11 +161,16 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getASEmitter();
 
         String currentClassName = fjs.getModel().getCurrentClass().getQualifiedName();
+        ArrayList<String> removals = new ArrayList<String>();
         for (String usedName : asEmitterUsedNames) {
             //remove any internal component that has been registered with the other emitter's usedNames
             if (usedName.startsWith(currentClassName+".") && subDocumentNames.contains(usedName.substring(currentClassName.length()+1))) {
-                asEmitterUsedNames.remove(usedName);
+                removals.add(usedName);
             }
+        }
+        for (String usedName : removals)
+        {
+        	asEmitterUsedNames.remove(usedName);
         }
         System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
         System.out.println(currentClassName + " mxml: " + usedNames.toString());
@@ -272,6 +279,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		            	boolean firstOne = true;
 		            	for (String mixin : mixins)
 		            	{
+		            		if (isExternal(mixin))
+		            			continue;
 		            		if (!firstOne)
 		            			mixinInject += ", "; 
 		            		mixinInject += mixin;
@@ -568,6 +577,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitBindingData(cname, cdef);
 
         emitMetaData(cdef);
+
+        emitSourceMapDirective(node);
     }
 
     public void emitSubDocument(IMXMLComponentNode node)
@@ -676,6 +687,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         metadataNodes.add(node);
     }
 
+    public void emitSourceMapDirective(ITypeNode node)
+    {
+        IMXMLBlockWalker walker = (IMXMLBlockWalker) getMXMLWalker();
+        IJSEmitter jsEmitter = (IJSEmitter) walker.getASEmitter();
+        jsEmitter.emitSourceMapDirective(node);
+    }
+
     //--------------------------------------------------------------------------
 
     protected void emitClassDeclStart(String cname, String baseClassName,
@@ -685,6 +703,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("/**");
         writeNewline(" * @constructor");
         writeNewline(" * @extends {" + formatQualifiedName(baseClassName) + "}");
+        if (interfaceList != null && interfaceList.length() > 0)
+        {
+        	String[] interfaces = interfaceList.split(",");
+        	for (String iface : interfaces)
+        	{
+        		writeNewline(" * @implements {" + formatQualifiedName(iface.trim()) + "}");
+        	}
+        }
         writeNewline(" */");
         writeToken(formatQualifiedName(cname));
         writeToken(ASEmitterTokens.EQUAL);
@@ -1498,6 +1524,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
                         writeNewline();
                         writeNewline();
+                        writeNewline();
                     }
                 }
             }
@@ -1518,11 +1545,27 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     + ".prototype." + event.eventHandler + " = function(event)");
             writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
-            writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken(),
-                    false);
 
+            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                    .getASEmitter();
+            
+            IMXMLEventSpecifierNode node = event.node;
+            int len = node.getChildCount();
+            for (int i = 0; i < len; i++)
+            {
+                if (i > 0)
+                {
+                    writeNewline();
+                }
+                IASNode cnode = node.getChild(i);
+                asEmitter.getWalker().walk(cnode);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+
+            indentPop();
+            writeNewline();
             write(ASEmitterTokens.BLOCK_CLOSE);
-            writeNewline(";");
+            writeNewline(ASEmitterTokens.SEMICOLON);
             writeNewline();
             writeNewline();
         }
@@ -1671,27 +1714,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getTypeAsDisplayString();
 
         eventHandlerNameMap.put(node, eventSpecifier.eventHandler);
-        
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
 
-        StringBuilder sb = null;
-        int len = node.getChildCount();
-        if (len > 0)
-        {
-            sb = new StringBuilder();
-            for (int i = 0; i < len; i++)
-            {
-                sb.append(getIndent((i > 0) ? 1 : 0)
-                        + asEmitter.stringifyNode(node.getChild(i)));
-                if (i < len - 1)
-                {
-                    sb.append(ASEmitterTokens.SEMICOLON.getToken());
-                    sb.append(ASEmitterTokens.NEW_LINE.getToken());
-                }
-            }
-        }
-        eventSpecifier.value = sb.toString();
+        //save the node for emitting later in emitEvents()
+        //previously, we stringified the node and saved that instead of the
+        //node, but source maps don't work when you stringify a node too early -JT
+        eventSpecifier.node = node;
 
 	    if (currentDescriptor != null)
 	        currentDescriptor.eventSpecifiers.add(eventSpecifier);
@@ -2263,7 +2290,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         //save the script for emitting later in emitScripts()
         //previously, we stringified the node and saved that instead of the
-        //node, but source maps don't work when you stringify a node -JT
+        //node, but source maps don't work when you stringify a node too early -JT
         scripts.add(node);
     }
 
@@ -2680,7 +2707,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
-		if (useName && !usedNames.contains(name))
+		if (useName && !usedNames.contains(name) && !isExternal(name))
 			usedNames.add(name);
      	return name;
     }
@@ -2776,4 +2803,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         interfaceList = list.toString();
     }
     
+	boolean isExternal(String className)
+	{
+        ICompilerProject project = getMXMLWalker().getProject();
+		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
+		if (cu == null) return false; // unit testing
+		
+		return ((FlexJSProject)project).isExternalLinkage(cu);
+	}
+
 }

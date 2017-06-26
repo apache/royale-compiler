@@ -48,7 +48,7 @@ limitations under the License.
 				return String(comboBox.selectedItem);
 			}
 			
-			public function startTimer(event:org.apache.flex.events.Event):void
+			public function startTimer():void
 			{
 				timer = new org.apache.flex.utils.Timer(1000);
 				timer.addEventListener('timer', timerHandler);
@@ -69,7 +69,7 @@ limitations under the License.
 								 destinationPropertyName="text" />
 		</basic:beads>
 	</basic:Label>
-	<basic:TextButton text="Let's Start Timer" x="100" y="75" click="startTimer(event)" />
+	<basic:TextButton text="Let's Start Timer" x="100" y="75" click="startTimer()" />
 	<basic:TextButton text="Stop Timer" x="100" y="100" click="timer.removeEventListener('timer', timerHandler);timer.stop()" />
 	<basic:Label id="timerLabel" x="100" y="125" />
 	

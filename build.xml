@@ -1,5 +1,4 @@
 <?xml version="1.0" ?>
-
 <!--
 
   Licensed to the Apache Software Foundation (ASF) under one or more
@@ -284,6 +283,8 @@
     <target name="stage-source"
         description="Package source files required to build in zip file" >
         <antcall target="clean-temp"/>
+        <sleep seconds="3" />
+        <mkdir dir="${basedir}/temp"/>
 
         <copy todir="${basedir}/temp" includeEmptyDirs="false">
             <fileset dir="${basedir}">

@@ -21,13 +21,16 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
@@ -143,6 +146,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @implements {org.apache.flex.core.IChrome}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -234,6 +238,8 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @implements {org.apache.flex.core.IChrome}\n" +
+        		" * @implements {org.apache.flex.core.IPopUp}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -813,6 +819,63 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"};";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+
+    @Test
+    public void testFlexJSMainFileDual()
+    {
+        MXMLJSC mxmlc = new MXMLJSC();
+        String[] args = new String[10];
+        args[0] = "-compiler.targets=SWF,JSFlex";
+        args[1] = "-compiler.allow-subclass-overrides";
+        args[2] = "-remove-circulars";
+        args[3] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs")).getPath();
+        args[4] = "-js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs")).getPath();
+        args[5] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
+        args[6] = "-js-external-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
+        args[7] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again.swf").getPath();
+        if (env.GOOG != null)
+        	args[8] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
+        else
+        	args[8] = "-define=COMPILE::temp,false";
+        args[9] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again.mxml").getPath();
+
+        ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+        int result = mxmlc.mainNoExit(args, problems, true);
+        assertThat(result, is(0));
+    }
+
+    @Test
+    public void testFlexJSMainFileDualFlash()
+    {
+    	/* this should error because a Flash APi is used */
+        MXMLJSC mxmlc = new MXMLJSC();
+        String[] args = new String[18];
+        args[0] = "-compiler.targets=SWF,JSFlex";
+        args[1] = "-remove-circulars";
+        args[2] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Core.swc")).getPath();
+        args[3] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Binding.swc")).getPath();
+        args[4] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Network.swc")).getPath();
+        args[5] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Collections.swc")).getPath();
+        args[6] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Basic.swc")).getPath();
+        args[7] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
+        args[8] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again_Flash.swf").getPath();
+        if (env.GOOG != null)
+        	args[9] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
+        else
+        	args[9] = "-define=COMPILE::temp,false";
+        args[10] = "-compiler.allow-subclass-overrides";
+        args[11] = "-compiler.js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/CoreJS.swc")).getPath();
+        args[12] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/BindingJS.swc")).getPath();
+        args[13] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/NetworkJS.swc")).getPath();
+        args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/CollectionsJS.swc")).getPath();
+        args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/BasicJS.swc")).getPath();
+        args[16] = "-compiler.js-external-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
+        args[17] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again_Flash.mxml").getPath();
+
+        int result = mxmlc.mainNoExit(args, errors, true);
+        assertThat(result, is(3));
+        assertErrors("Access of possibly undefined property scrollRect.");
     }
 
     @Override

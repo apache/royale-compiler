@@ -38,6 +38,10 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.flex.compiler.clients.MXMLJSC.ExitCode;
+import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
+import org.apache.flex.compiler.clients.problems.ProblemPrinter;
+import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.js.IJSApplication;
@@ -48,6 +52,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -57,10 +62,12 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
 import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
+import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.swc.io.SWCReader;
+import org.apache.flex.utils.ArgumentUtil;
 
 /**
  * @author Erik de Bruin
@@ -120,39 +127,8 @@ public class COMPJSC extends MXMLJSC
     {
         long startTime = System.nanoTime();
 
-        IBackend backend = new ASBackend();
-        for (String s : args)
-        {
-            if (s.contains("-js-output-type"))
-            {
-                jsOutputType = JSOutputType.fromString(s.split("=")[1]);
-
-                switch (jsOutputType)
-                {
-                case AMD:
-                    backend = new AMDBackend();
-                    break;
-
-                case JSC:
-                    backend = new MXMLJSCJSSWCBackend();
-                    break;
-
-                case FLEXJS:
-                case FLEXJS_DUAL:
-                    backend = new MXMLFlexJSSWCBackend();
-                    break;
-
-                case GOOG:
-                    backend = new GoogBackend();
-                    break;
-
-                default:
-                    throw new UnsupportedOperationException();
-                }
-            }
-        }
-
-        final COMPJSC mxmlc = new COMPJSC(backend);
+        final COMPJSC mxmlc = new COMPJSC();
+        mxmlc.configurationClass = JSGoogCompcConfiguration.class;
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
@@ -162,9 +138,150 @@ public class COMPJSC extends MXMLJSC
         return exitCode;
     }
 
-    public COMPJSC(IBackend backend)
+    @Override
+    public int mainNoExit(final String[] args, List<ICompilerProblem> problems,
+            Boolean printProblems)
     {
-        super(backend);
+        int exitCode = -1;
+        try
+        {
+            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+        finally
+        {
+            if (problems != null && !problems.isEmpty())
+            {
+                if (printProblems)
+                {
+                    final WorkspaceProblemFormatter formatter = new WorkspaceProblemFormatter(
+                            workspace);
+                    final ProblemPrinter printer = new ProblemPrinter(formatter);
+                    printer.printProblems(problems);
+                }
+            }
+        }
+        return exitCode;
+    }
+
+    /**
+     * Entry point that doesn't call <code>System.exit()</code>. This is for
+     * unit testing.
+     * 
+     * @param args command line arguments
+     * @return exit code
+     */
+    private int _mainNoExit(final String[] args,
+            List<ICompilerProblem> outProblems)
+    {
+    	System.out.println("args:");
+    	for (String arg : args)
+    		System.out.println(arg);
+        ExitCode exitCode = ExitCode.SUCCESS;
+        try
+        {
+            final boolean continueCompilation = configure(args);
+
+/*            if (outProblems != null && !config.isVerbose())
+                JSSharedData.STDOUT = JSSharedData.STDERR = null;*/
+
+            if (continueCompilation)
+            {
+            	List<String> targets = config.getCompilerTargets();
+            	for (String target : targets)
+            		System.out.println("target:" + target);
+            	targetloop:
+            	for (String target : config.getCompilerTargets())
+            	{
+            		int result = 0;
+            		switch (JSTargetType.fromString(target))
+	                {
+	                case SWF:
+	                	System.out.println("COMPC");
+	                    COMPC compc = new COMPC();
+	                    mxmlc = compc;
+	                    compc.configurationClass = JSGoogCompcConfiguration.class;
+	                    result = compc.mainNoExit(removeJSArgs(args));
+	                    if (result != 0)
+	                    {
+	                    	problems.addAll(compc.problems.getProblems());
+	                    	break targetloop;
+	                    }
+	                    break;
+	                case JS_FLEX:
+	                	System.out.println("COMPCJSCFlex");
+	                	COMPJSCFlex flex = new COMPJSCFlex();
+	                	lastCompiler = flex;
+	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                    if (result != 0)
+	                    {
+	                    	break targetloop;
+	                    }
+	                    break;
+	                case JS_NATIVE:
+                    case JS_NODE:
+	                	COMPJSCNative jsc = new COMPJSCNative();
+	                	lastCompiler = jsc;
+	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                    if (result != 0)
+	                    {
+	                    	break targetloop;
+	                    }
+	                    break;
+	                // if you add a new js-output-type here, don't forget to also add it
+	                // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
+	                }
+            	}
+                if (problems.hasFilteredProblems())
+                {
+                    if (problems.hasErrors())
+                        exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+                    else
+                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                }
+            }
+            else if (problems.hasFilteredProblems())
+            {
+                exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
+            }
+            else
+            {
+                exitCode = ExitCode.PRINT_HELP;
+            }
+        }
+        catch (Exception e)
+        {
+            if (outProblems == null) {
+                System.err.println(e.getMessage());
+            } else
+            {
+                final ICompilerProblem unexpectedExceptionProblem = new UnexpectedExceptionProblem(
+                        e);
+                problems.add(unexpectedExceptionProblem);
+            }
+            exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+        }
+        finally
+        {
+            waitAndClose();
+
+            if (outProblems != null && problems.hasFilteredProblems())
+            {
+                for (ICompilerProblem problem : problems.getFilteredProblems())
+                {
+                    outProblems.add(problem);
+                }
+            }
+        }
+        return exitCode.code;
+    }
+
+    public COMPJSC()
+    {
+        super();
     }
 
     /**

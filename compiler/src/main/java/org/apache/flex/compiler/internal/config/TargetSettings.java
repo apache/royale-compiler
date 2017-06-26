@@ -34,6 +34,7 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.internal.projects.LibraryPathManager;
+import org.apache.flex.compiler.projects.IFlexProject;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
@@ -46,9 +47,10 @@ import com.google.common.collect.ImmutableList;
  */
 public class TargetSettings implements ITargetSettings
 {
-    public TargetSettings(Configuration configuration)
+    public TargetSettings(Configuration configuration, IFlexProject project)
     {
         this.configuration = configuration;
+        this.project = project;
     }
 
     private File output;
@@ -62,6 +64,7 @@ public class TargetSettings implements ITargetSettings
     private Map<String, File> includeFiles;
     
     private final Configuration configuration;
+    private final IFlexProject project;
     
     private Set<String> externalLinkageLibraries;
     
@@ -374,7 +377,8 @@ public class TargetSettings implements ITargetSettings
     {
         if (externalLibraryPath == null)
         {
-            List<File> files = Configurator.toFileList(configuration.getCompilerExternalLibraryPath());
+            List<File> files = Configurator.toFileList(project != null ? project.getCompilerExternalLibraryPath(configuration) : 
+            												configuration.getCompilerExternalLibraryPath());
             Set<File> expandedFiles = LibraryPathManager.discoverSWCFilePathsAsFiles(files.toArray(new File[files.size()]));
 
             externalLibraryPath = new ArrayList<File>(expandedFiles.size());

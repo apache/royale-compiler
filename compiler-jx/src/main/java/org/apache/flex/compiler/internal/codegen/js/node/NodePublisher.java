@@ -29,6 +29,8 @@ import java.util.List;
 
 public class NodePublisher extends JSCPublisher
 {
+    public boolean exportModule = false;
+
     public NodePublisher(Configuration config, FlexJSProject project)
     {
         super(project, config);
@@ -63,9 +65,18 @@ public class NodePublisher extends JSCPublisher
     protected String getTemplateBody(String projectName)
     {
         StringBuilder bodyJS = new StringBuilder();
-        bodyJS.append("new ");
-        bodyJS.append(projectName);
-        bodyJS.append("();");
+        if (exportModule)
+        {
+            bodyJS.append("module.exports = ");
+            bodyJS.append(projectName);
+            bodyJS.append(";");
+        }
+        else
+        {
+            bodyJS.append("new ");
+            bodyJS.append(projectName);
+            bodyJS.append("();");
+        }
         return bodyJS.toString();
     }
 

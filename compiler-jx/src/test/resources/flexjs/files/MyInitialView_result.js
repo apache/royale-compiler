@@ -222,9 +222,8 @@ MyInitialView.prototype.timer;
 
 /**
  * @export
- * @param {org.apache.flex.events.Event} event
  */
-MyInitialView.prototype.startTimer = function(event) {
+MyInitialView.prototype.startTimer = function() {
   this.timer = new org.apache.flex.utils.Timer(1000);
   this.timer.addEventListener('timer', org.apache.flex.utils.Language.closure(this.timerHandler, this, 'timerHandler'));
   this.timer.start();
@@ -282,7 +281,7 @@ get: MyInitialView.prototype.get__comboBoxValue}}
  */
 MyInitialView.prototype.$EH0 = function(event)
 {
-  this.startTimer(event);
+  this.startTimer();
 };
 
 
@@ -880,7 +879,7 @@ MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
     },
     methods: function () {
       return {
-        'startTimer': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.flex.events.Event', optional: false } ]; }},
+        'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
         'timerHandler': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.flex.events.Event', optional: false } ]; }},
         'MyInitialView': { type: '', declaredBy: 'MyInitialView'},
         '$EH0': { type: 'void', declaredBy: 'MyInitialView'},

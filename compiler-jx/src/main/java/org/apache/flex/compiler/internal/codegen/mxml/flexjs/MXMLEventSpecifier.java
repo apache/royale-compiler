@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
  * @author Erik de Bruin
@@ -68,6 +69,8 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     //---------------------------------
 
     public String type;
+    
+    public IMXMLEventSpecifierNode node;
 
     //--------------------------------------------------------------------------
     //

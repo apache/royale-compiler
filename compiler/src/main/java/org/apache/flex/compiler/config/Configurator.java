@@ -287,6 +287,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     private Collection<ICompilerProblem> configurationProblems;
     private boolean extrasRequireDefaultVariable;
     private IPathResolver configurationPathResolver;
+    private IFlexProject project;
 
     // 
     // IConfigurator related methods
@@ -309,6 +310,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     @Override
     public boolean applyToProject(IFlexProject project)
     {
+    	this.project = project;
         final IWorkspace workspace = project.getWorkspace();
         boolean success = processConfiguration();
         workspace.startIdleState();
@@ -426,7 +428,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             return null;
         }
         
-        return new TargetSettings(configuration);
+        return new TargetSettings(configuration, project);
     }
 
     @Override    
@@ -595,7 +597,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         LinkedHashSet<File> libraries = new LinkedHashSet<File>();
         
         // add External Library Path
-        List<File> externalLibraryFiles = toFileList(configuration.getCompilerExternalLibraryPath()); 
+        List<File> externalLibraryFiles = toFileList(project.getCompilerExternalLibraryPath(configuration)); 
         libraries.addAll(externalLibraryFiles);
         
         // add RSLs
@@ -605,7 +607,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         libraries.addAll(toFileList(configuration.getCompilerIncludeLibraries()));
         
         // add Library Path
-        libraries.addAll(toFileList(configuration.getCompilerLibraryPath()));
+        libraries.addAll(toFileList(project.getCompilerLibraryPath(configuration)));
         
         project.setLibraries(new ArrayList<File>(libraries));
         
@@ -801,7 +803,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     protected void setupNamespaces(IFlexProject project)
     {
         final List<? extends IMXMLNamespaceMapping> configManifestMappings =
-                configuration.getCompilerNamespacesManifestMappings();
+                project.getCompilerNamespacesManifestMappings(configuration);
         if (configManifestMappings != null)
         {
             project.setNamespaceMappings(configManifestMappings);

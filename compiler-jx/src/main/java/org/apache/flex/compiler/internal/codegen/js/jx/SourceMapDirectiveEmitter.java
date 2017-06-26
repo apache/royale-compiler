@@ -25,11 +25,17 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
 public class SourceMapDirectiveEmitter extends JSSubEmitter implements
         ISubEmitter<ITypeNode>
 {
+    private static final String SOURCE_MAP_PREFIX = "//# sourceMappingURL=./";
+    private static final String EXTENSION_JS = ".js";
+    private static final String EXTENSION_MXML = ".mxml";
+    private static final String EXTENSION_MAP = ".map";
+    
     public SourceMapDirectiveEmitter(IJSEmitter emitter)
     {
         super(emitter);
@@ -53,8 +59,14 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
 
         if (sourceMap)
         {
+            String name = node.getName() + EXTENSION_JS;
+            if (node instanceof IMXMLDocumentNode)
+            {
+                IMXMLDocumentNode mxmlNode = (IMXMLDocumentNode) node;
+                name = mxmlNode.getFileNode().getName() + EXTENSION_MXML;
+            }
             writeNewline();
-            write("//# sourceMappingURL=./" + node.getName() + ".js.map");
+            write(SOURCE_MAP_PREFIX + name + EXTENSION_MAP);
         }
     }
 }

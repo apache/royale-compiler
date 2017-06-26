@@ -39,10 +39,12 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.compiler.asdoc.IASDocBundleDelegate;
 import org.apache.flex.compiler.common.DependencyTypeSet;
 import org.apache.flex.compiler.common.XMLName;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.css.ICSSManager;
+import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
@@ -1774,12 +1776,27 @@ public class FlexProject extends ASProject implements IFlexProject
     @Override
     public void setDefineDirectives(Map<String, String> defines)
     {
+    	overrideDefines(defines);
         // TODO: This seems strange. Each call to the setter
         // adds new defines. How do you get rid of the old ones?
         addConfigVariables(defines);
         clean();
     }
 
+    protected void overrideDefines(Map<String, String> defines)
+    {
+    	if (defines.containsKey("COMPILE::SWF"))
+    	{
+    		if (defines.get("COMPILE::SWF").equals("AUTO"))
+    			defines.put("COMPILE::SWF", "true");
+    	}
+    	if (defines.containsKey("COMPILE::JS"))
+    	{
+    		if (defines.get("COMPILE::JS").equals("AUTO"))
+    			defines.put("COMPILE::JS", "false");
+    	}
+    }
+    
     @Override
     public void setExtensionLibraries(Map<File, List<String>> extensions)
     {
@@ -2129,12 +2146,13 @@ public class FlexProject extends ASProject implements IFlexProject
             thisPackage = scopeDef.getPackageName();
         else
         {
-            if (scope instanceof PackageScope)
-                thisPackage = ((PackageScope)scope).getDefinition().getBaseName();
-            else
+            while (!(scope instanceof PackageScope))
             {
-                return null;
+            	scope = scope.getContainingScope();
             }
+            if (!(scope instanceof PackageScope))
+            	return null;
+            thisPackage = ((PackageScope)scope).getDefinition().getBaseName();
         }
         String package1 = def1.getPackageName();
         String package2 = def2.getPackageName();
@@ -2283,7 +2301,73 @@ public class FlexProject extends ASProject implements IFlexProject
                 }
             }
         }
+        if (func == null) return false;
+		IMetaTag[] metas = func.getAllMetaTags();
+		for (IMetaTag meta : metas)
+		{
+			if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
+			{
+				IMetaTagAttribute attr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_ALTPARAMS);
+				if (attr != null)
+				{
+					// format is expectedQName:allowedQName,expectedQName:allowedQName.
+					// we don't know which parameter it is so we're assuming for now that any mapping
+					// applies to all occurences of that type in the parameter list
+					String paramList = attr.getValue();
+					String[] paramMap;
+					if (paramList.contains(","))
+						paramMap = paramList.split(",");
+					else
+					{
+						paramMap = new String[1];
+						paramMap[0] = paramList;
+					}
+					for (String item : paramMap)
+					{
+						String[] parts = item.split(":");
+						if (expectedDefinition.getQualifiedName().equals(parts[0]))
+							if (((ITypeDefinition)actualDefinition).isInstanceOf(parts[1], this))
+								return true;
+					}
+				}
+			}
+    	}
         return false;
     }
+
+    /**
+     * List of external libraries so it can be overridden
+     */
+    public List<String> getCompilerExternalLibraryPath(Configuration config)
+    {
+    	List<String> list = config.getCompilerSwfExternalLibraryPath();
+        if (list != null && list.size() > 0)
+        	return list;
+        return config.getCompilerExternalLibraryPath();
+    }
+
+    /**
+     * List of libraries so it can be overridden
+     */
+    public List<String> getCompilerLibraryPath(Configuration config)
+    {
+    	List<String> list = config.getCompilerSwfLibraryPath();
+        if (list != null && list.size() > 0)
+        	return list;
+        return config.getCompilerLibraryPath();
+    }
+
+    /**
+     * List of libraries so it can be overridden
+     */
+    public List<MXMLNamespaceMapping> getCompilerNamespacesManifestMappings(Configuration config)
+    {
+    	return config.getCompilerNamespacesManifestMappings();
+    }
+
+	@Override
+	public boolean isPlatformRule(ICSSRule rule) {
+		return true;
+	}
 
 }

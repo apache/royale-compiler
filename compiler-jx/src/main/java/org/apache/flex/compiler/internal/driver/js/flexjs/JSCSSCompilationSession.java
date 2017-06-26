@@ -370,6 +370,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 {
                     // TODO: implement me
                 }
+                else if ("calc".equals(functionCall.name))
+                {
+                    // TODO: implement me
+                }
                 else if ("Embed".equals(functionCall.name))
                 {
                     // TODO: implement me

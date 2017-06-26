@@ -33,7 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.problems.ProblemFormatter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
@@ -43,6 +43,7 @@ import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.types.RGB;
 
 import flash.swf.tags.SetBackgroundColor;
+import flex2.compiler.CompilerException;
 import flex2.compiler.Source;
 import flex2.compiler.SourceList;
 import flex2.compiler.io.FileUtil;
@@ -56,6 +57,7 @@ import flex2.compiler.util.PerformanceData;
 import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.linker.SimpleMovie;
 import flex2.tools.ToolsConfiguration;
+import flex2.tools.oem.internal.ApplicationCompilerConfiguration;
 import flex2.tools.oem.internal.OEMConfiguration;
 import flex2.tools.oem.internal.OEMReport;
 import flex2.tools.oem.internal.OEMUtil;
@@ -300,6 +302,8 @@ public class Application implements Builder
     // clean() would null out the following variables.
     private String cacheName, configurationReport;
     private List<Message> messages;
+    private boolean setOutputCalled;
+    private int loaded = 0;
 
     /**
      * @inheritDoc
@@ -378,6 +382,7 @@ public class Application implements Builder
      */
     public void setOutput(File output)
     {
+    	setOutputCalled = true;
         this.output = output;
     }
 
@@ -533,6 +538,9 @@ public class Application implements Builder
      */
     public void clean()
     {
+    	// assuming FB takes care of deleting bin-release and bin-debug, we want to delete bin.
+    	// but this also gets called when quitting FB.
+    	setOutputCalled = false;
     }
 
     /**
@@ -540,6 +548,7 @@ public class Application implements Builder
      */
     public void load(InputStream in) throws IOException
     {
+    	loaded++;
     }
 
     /**
@@ -547,6 +556,7 @@ public class Application implements Builder
      */
     public long save(OutputStream out) throws IOException
     {
+    	loaded--;
         return 1;
     }
 
@@ -622,15 +632,16 @@ public class Application implements Builder
     
             //Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
     
-            mxmlc = new MXMLC();
+            mxmljsc = new MXMLJSC();
+            mxmljsc.noLink = true;
             //int returnValue = mxmlc.mainCompileOnly(constructCommandLine2(tempOEMConfiguration.configuration), null);
-            int returnValue = mxmlc.mainCompileOnly(constructCommandLine(oemConfiguration), null);
-            if (returnValue == 0)
+            int returnValue = mxmljsc.mainNoExit(constructCommandLine(oemConfiguration), null, true);
+            if (returnValue == 0 || returnValue == 2)
                 returnValue = OK;
             else
                 returnValue = FAIL;
             
-            processMXMLCReport(mxmlc, tempOEMConfiguration);
+            processMXMLCReport(mxmljsc, tempOEMConfiguration);
             
             clean(returnValue == FAIL /* cleanData */,
                   false /* cleanCache */,
@@ -650,22 +661,23 @@ public class Application implements Builder
 
     public long link(OutputStream output)
     {
-        return mxmlc.writeSWF(output);
+        return mxmljsc.writeSWF(output);
     }
     
-    private MXMLC mxmlc = new MXMLC();
+    private MXMLJSC mxmljsc = new MXMLJSC();
     private List<Source> sources;
     private SimpleMovie movie;
     private SourceList sourceList;
     
-    void processMXMLCReport(MXMLC mxmlc, OEMConfiguration config)
+    void processMXMLCReport(MXMLJSC mxmljsc, OEMConfiguration config)
     {
-        /* not sure we need this
         ApplicationCompilerConfiguration acc = ((ApplicationCompilerConfiguration)config.configuration);
         sources = new ArrayList<Source>();
         VirtualFile[] sourcePaths = acc.getCompilerConfiguration().getSourcePath();
-        List<String> sourceFiles = mxmlc.getSourceList();
-        String mainFile = mxmlc.getMainSource();
+
+        List<String> sourceFiles = mxmljsc.getSourceList();
+        String mainFile = mxmljsc.getMainSource();
+        VirtualFile mainVirtualFile = null;
         for (String sourceFile : sourceFiles)
         {
             for (VirtualFile sourcePath : sourcePaths)
@@ -680,12 +692,18 @@ public class Application implements Builder
                     boolean isRoot = sourceFile.equals(mainFile);
                     Source source = new Source(sourcePath, relPath, shortName, null, false, isRoot);
                     sources.add(source);
-                    break;
+                    if (pathName.equals(mainFile))
+                    	mainVirtualFile = sourcePath;
                 }
             }
         }
-        */
-        ProblemQuery pq = mxmlc.getProblems();
+        try {
+			sourceList = new SourceList(new ArrayList<VirtualFile>(), sourcePaths, mainVirtualFile, new String[0]);
+		} catch (CompilerException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+        ProblemQuery pq = mxmljsc.getProblemQuery();
         List<ICompilerProblem> probs = pq.getProblems();
         for (ICompilerProblem prob : probs)
         {
@@ -774,7 +792,7 @@ public class Application implements Builder
             }
             
         }
-        ISWF swf = mxmlc.getSWFTarget();
+        ISWF swf = mxmljsc.getSWFTarget();
         movie = new SimpleMovie(null);
         org.apache.flex.swf.types.Rect r = swf.getFrameSize();
         flash.swf.types.Rect fr = new flash.swf.types.Rect();

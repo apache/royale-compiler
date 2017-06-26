@@ -68,6 +68,7 @@ import org.apache.flex.compiler.internal.units.requests.RequestMaker;
 import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
 import org.apache.flex.compiler.mxml.IXMLNameResolver;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem2;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.projects.IFlexProject;
@@ -168,7 +169,7 @@ public abstract class CompilationUnitBase implements ICompilationUnit
         {
             final boolean isFlex3CSS = ((IFlexProject)project).getCSSManager().isFlex3CSS();
             final ImmutableMap<ICSSSelector, String> resolvedSelectors =
-                    CSSSemanticAnalyzer.resolveSelectors(xmlNameResolver, cssDocument, problems, isFlex3CSS);
+                    CSSSemanticAnalyzer.resolveSelectors(xmlNameResolver, cssDocument, problems, (IFlexProject) project, isFlex3CSS);
             
             // Store resolved type selectors required by CSS code generation.
             cssCompilationSession.resolvedSelectors.putAll(resolvedSelectors);
@@ -176,6 +177,8 @@ public abstract class CompilationUnitBase implements ICompilationUnit
             // Store resolved embed compilation units required by CSS code generation.
             for (final ICSSRule cssRule : cssDocument.getRules())
             {
+            	if (project instanceof IFlexProject && !((IFlexProject)project).isPlatformRule(cssRule))
+            		continue;
                 final Map<CSSFunctionCallPropertyValue, EmbedCompilationUnit> resolvedEmbedProperties =
                         new HashMap<CSSFunctionCallPropertyValue, EmbedCompilationUnit>();
                 CSSSemanticAnalyzer.resolveDependencies(
@@ -1052,8 +1055,22 @@ public abstract class CompilationUnitBase implements ICompilationUnit
         Collections.addAll(problems, getSyntaxTreeRequest().get().getProblems());
         Collections.addAll(problems, getFileScopeRequest().get().getProblems());
         Collections.addAll(problems, getOutgoingDependenciesRequest().get().getProblems());
-        Collections.addAll(problems, getABCBytesRequest().get().getProblems());
-        Collections.addAll(problems, getSWFTagsRequest().get().getProblems());
+        if (targetType == null)
+        {
+        	ICompilerProblem[] probs = getABCBytesRequest().get().getProblems();
+        	for (ICompilerProblem prob : probs)
+        	{
+        		if (!(prob instanceof InternalCompilerProblem2))
+        		{
+        			problems.add(prob);
+        		}
+        	}
+        }
+        else
+        {
+        	Collections.addAll(problems, getABCBytesRequest().get().getProblems());
+        	Collections.addAll(problems, getSWFTagsRequest().get().getProblems());
+        }
     }
 
     @Override

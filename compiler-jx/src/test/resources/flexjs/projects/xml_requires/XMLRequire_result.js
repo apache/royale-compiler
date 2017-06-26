@@ -25,8 +25,6 @@ goog.require('XML');
 
 
 
-
-
 /**
  * @constructor
  */

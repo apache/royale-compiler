@@ -1,3 +1,16 @@
+Apache Flex 'Falcon' Compiler 0.8.0
+=================
+Apache Flex 'Falcon' Compiler 0.8.0 is the sixth release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.
+
+The compiler is now biased towards building Apache FlexJS projects.  The Ant
+tasks now point to the cross-compiler, which can now build both SWFs and
+cross-compiler (transpile) MXML and AS to JS.
+
+Lots of bug fixes and other small improvements are included in this release.
+See the RELEASE_NOTES_JX file for a list of resolved issues.
+
 Apache Flex 'Falcon' Compiler 0.7.0
 =================
 Apache Flex 'Falcon' Compiler 0.7.0 is the fifth release of a next-generation

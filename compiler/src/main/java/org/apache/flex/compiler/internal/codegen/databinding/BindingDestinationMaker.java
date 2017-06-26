@@ -128,15 +128,20 @@ public class BindingDestinationMaker
         {
             IMXMLPropertySpecifierNode psn = (IMXMLPropertySpecifierNode)parent;
             IDefinition d = psn.getDefinition();
-            Binding b = host.getInstanceScope().getBinding(d);
-            INamespaceReference ns = psn.getDefinition().getNamespaceReference();
-            if (ns != NamespaceDefinition.getPublicNamespaceDefinition())
+            //it's possible for the definition to be null if we're dealing with
+            //a dynamic property on a class like Object -JT
+            if (d != null)
             {
-                InstructionList insns = new InstructionList();
-                insns.addInstruction(OP_getlocal0);
-                insns.addInstruction(OP_getlocal1);
-                insns.addInstruction(OP_setproperty, b.getName());
-                ret = new InstructionListNode(insns);    // Wrap the IL in a node and return it
+                Binding b = host.getInstanceScope().getBinding(d);
+                INamespaceReference ns = d.getNamespaceReference();
+                if (ns != NamespaceDefinition.getPublicNamespaceDefinition())
+                {
+                    InstructionList insns = new InstructionList();
+                    insns.addInstruction(OP_getlocal0);
+                    insns.addInstruction(OP_getlocal1);
+                    insns.addInstruction(OP_setproperty, b.getName());
+                    ret = new InstructionListNode(insns);    // Wrap the IL in a node and return it
+                }
             }
         }
         return ret;   

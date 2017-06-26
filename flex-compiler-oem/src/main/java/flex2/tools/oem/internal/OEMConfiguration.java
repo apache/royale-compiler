@@ -978,6 +978,11 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 		addFiles(COMPILER_LIBRARY_PATH, paths);
 	}
 	
+	public void setTargets(String[] targets)
+	{
+		args.put(COMPILER_TARGETS, targets);
+	}
+	
 	/**
 	 * Sets the locales that the compiler would use to replace <code>{locale}</code> tokens that appear in some configuration values.
 	 * This is equivalent to using <code>mxmlc/compc --compiler.locale</code>.
@@ -1150,6 +1155,21 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	public void showUnusedTypeSelectorWarnings(boolean b)
 	{
 		args.put(COMPILER_SHOW_UNUSED_TYPE_SELECTOR_WARNINGS, b ? Boolean.TRUE : Boolean.FALSE);
+	}
+
+	/**
+	 * Sets a list of path elements that form the roots of ActionScript class hierarchies.
+	 * This is equivalent to using <code>mxmlc/compc --compiler.source-path</code>.
+	 * 
+	 * @param paths an array of <code>java.io.File</code> (<code>File.isDirectory()</code> must return <code>true</code>).
+	 */
+	public File[] getSourcePath()
+	{
+		if (args.containsKey(COMPILER_SOURCE_PATH))
+			return (File[]) args.get(COMPILER_SOURCE_PATH);
+		if (more.containsKey(COMPILER_SOURCE_PATH))
+			return (File[]) more.get(COMPILER_SOURCE_PATH);
+		return null;
 	}
 
 	/**

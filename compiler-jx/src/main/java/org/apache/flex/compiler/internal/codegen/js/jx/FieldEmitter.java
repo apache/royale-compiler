@@ -31,7 +31,10 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -108,7 +111,29 @@ public class FieldEmitter extends JSSubEmitter implements
         IExpressionNode vnode = node.getAssignedValueNode();
         if (vnode != null)
         {
+        	getModel().inStaticInitializer = ndef.isStatic();
             String vnodeString = getEmitter().stringifyNode(vnode);
+            if (ndef.isStatic() && vnode instanceof FunctionCallNode)
+            {
+            	FunctionCallNode fcn = (FunctionCallNode)vnode;
+            	if (fcn.getNameNode() instanceof IdentifierNode)
+            	{
+            		// assume this is a call to static method in the class
+            		// otherwise it would be a memberaccessexpression?
+            		IDefinition d = (IDefinition)fcn.getNameNode().resolve(getProject());
+            		if (d instanceof FunctionDefinition)
+            		{
+            			FunctionDefinition fd = (FunctionDefinition)d;
+                		IASNode m = fd.getNode();
+                		if (m != null)
+                		{
+    	            		// re-emit it to collect static initializer class references in usedNames
+    	            		getEmitter().stringifyNode(m);
+                		}
+            		}
+            	}
+            }
+        	getModel().inStaticInitializer = false;
         	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) || 
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
         			isPackageOrFileMember)

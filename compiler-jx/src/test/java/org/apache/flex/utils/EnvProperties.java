@@ -66,15 +66,14 @@ public class EnvProperties {
     public String ASJS;
 
     /**
-     * PLAYERGLOBAL_VERSION
-     */
-    public String FPVER;
-
-    /**
      * GOOG_HOME
      */
     public String GOOG;
 
+    /**
+     * PLAYERGLOBAL_VERSION
+     */
+    public String FPVER;
 
     private static EnvProperties env;
 
@@ -151,7 +150,7 @@ public class EnvProperties {
         System.out.println("environment property - ASJS_HOME = " + ASJS);
         
         GOOG = p.getProperty(prefix + "GOOG_HOME", System.getenv("GOOG_HOME"));
-
+        System.out.println("environment property - GOOG_HOME = " + GOOG);
     }
 
 }

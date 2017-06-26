@@ -186,7 +186,7 @@ public class JSClosureCompilerWrapper
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
-    public void setOptions(String sourceMapPath, boolean useStrictPublishing, String projectName)
+    public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
     {
         if (useStrictPublishing)
         {
@@ -232,9 +232,9 @@ public class JSClosureCompilerWrapper
             DependencyOptions dopts = new DependencyOptions();
             ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
             entryPoints.add(ModuleIdentifier.forClosure(projectName));
-            dopts.setDependencyPruning(false)
-                 .setDependencySorting(false)
-                 .setMoocherDropping(false)
+            dopts.setDependencyPruning(manageDependencies)
+                 .setDependencySorting(manageDependencies)
+                 .setMoocherDropping(manageDependencies)
                  .setEntryPoints(entryPoints);
             options_.setDependencyOptions(dopts);
             

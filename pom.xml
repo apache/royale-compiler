@@ -28,7 +28,7 @@
 
   <groupId>org.apache.flex.flexjs.compiler</groupId>
   <artifactId>flexjs-compiler-parent</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.8.0</version>
   <packaging>pom</packaging>
 
   <name>Apache Flex - FlexJS: Compiler: Parent</name>
@@ -146,12 +146,28 @@
             <exclude>README*</exclude>
             <exclude>RELEASE_NOTES*</exclude>
             <!-- Modules which are excluded from the build -->
-            <exclude>compiler-build-tools/**</exclude>
-            <exclude>compiler-jburg-types/**</exclude>
-            <exclude>flexjs-maven-extension/**</exclude>
-            <exclude>externs/**</exclude>
+            <!-- FlashBuilder settings. frameworks/fb.properties contains Alex' path entries and should be removed -->
+            <exclude>fb.properties</exclude>
+            <!-- FlashBuilder / Eclipse settings. If checked in, they should have apache headers -->
+            <exclude>**/.settings/**</exclude>
+            <!-- Ignore IntelliJ IDEA project files -->
+            <exclude>**/*.iml</exclude>
+            <exclude>**/.idea/**</exclude>
+            <!--
+                Exclude any eventually existing content of target directories.
+                Some times when building with a bigger maven reactor and then
+                with a smaller one, RAT will complain about stuff still in the
+                target directories. We don't want that.
+            -->
+            <exclude>**/target/**</exclude>
             <!-- Stuff an Ant build might have left behind. -->
             <exclude>lib/**</exclude>
+            <!--
+                In case of an ANT based release the typedefs are included as a
+                subdirectory. We need to exclude this directory from the compiler checks
+                as the typedefs build will handle all content in that directory
+            -->
+            <exclude>flex-typedefs/**</exclude>
           </excludes>
         </configuration>
         <dependencies>

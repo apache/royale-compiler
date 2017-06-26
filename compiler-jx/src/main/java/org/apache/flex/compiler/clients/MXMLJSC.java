@@ -24,20 +24,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.flex.compiler.clients.MXMLC.ExitCode;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
@@ -75,11 +79,17 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
+import org.apache.flex.swf.ISWF;
+import org.apache.flex.swf.SWF;
+import org.apache.flex.swf.types.RGB;
+import org.apache.flex.swf.types.Rect;
 import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 /**
@@ -96,8 +106,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     /*
-    	 * JS output type enumerations.
-    	 */
+     * JS output type enumerations.
+     */
     public enum JSOutputType
     {
         AMD("amd"),
@@ -132,6 +142,44 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     /*
+     * JS output type enumerations.
+     */
+    public enum JSTargetType
+    {
+        SWF("SWF"),
+        JS_FLEX("JSFlex"),
+        JS_FLEX_CORDOVA("JSFlexCordova"),
+        //JS without the FlexJS framework
+        JS_NATIVE("JS"),
+        //Node.js application
+        JS_NODE("JSNode"),
+        //Node.js module
+        JS_NODE_MODULE("JSNodeModule");
+
+        private String text;
+
+        JSTargetType(String text)
+        {
+            this.text = text;
+        }
+
+        public String getText()
+        {
+            return this.text;
+        }
+
+        public static JSTargetType fromString(String text)
+        {
+            for (JSTargetType jsTargetType : JSTargetType.values())
+            {
+                if (text.equalsIgnoreCase(jsTargetType.text))
+                    return jsTargetType;
+            }
+            return JS_FLEX;
+        }
+    }
+
+    /*
      * Exit code enumerations.
      */
     static enum ExitCode
@@ -149,6 +197,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
 
         final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
     }
 
     public static JSOutputType jsOutputType;
@@ -186,48 +239,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public static int staticMainNoExit(final String[] args)
     {
         long startTime = System.nanoTime();
-
-        IBackend backend = new ASBackend();
-        String jsOutputTypeString = "";
-        for (String s : args)
-        {
-            String[] kvp = s.split("=");
-
-            if (s.contains("-js-output-type"))
-            {
-                jsOutputTypeString = kvp[1];
-            }
-        }
-
-        if (jsOutputTypeString.equals(""))
-        {
-            jsOutputTypeString = JSOutputType.FLEXJS.getText();
-        }
-
-        jsOutputType = JSOutputType.fromString(jsOutputTypeString);
-        switch (jsOutputType)
-        {
-        case AMD:
-            backend = new AMDBackend();
-            break;
-        case JSC:
-            backend = new JSCBackend();
-            break;
-        case NODE:
-            backend = new NodeBackend();
-            break;
-        case FLEXJS:
-        case FLEXJS_DUAL:
-            backend = new MXMLFlexJSBackend();
-            break;
-        case GOOG:
-            backend = new GoogBackend();
-            break;
-        // if you add a new js-output-type here, don't forget to also add it
-        // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
-        }
-
-        final MXMLJSC mxmlc = new MXMLJSC(backend);
+        System.out.println("MXMLJSC");
+        for (String arg : args)
+        	System.out.println(arg);
+        final MXMLJSC mxmlc = new MXMLJSC();
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
@@ -242,7 +257,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
-    protected Configuration config;
+    public JSConfiguration config;
     protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
@@ -250,14 +265,16 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
+    protected MXMLC mxmlc;
+    protected JSCompilerEntryPoint lastCompiler;
+    public boolean noLink;
+    public OutputStream err;
+	public Class<? extends Configuration> configurationClass = JSGoogConfiguration.class;
     
-    public MXMLJSC(IBackend backend)
+    public MXMLJSC()
     {
         workspace = new Workspace();
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
-        project = new FlexJSProject(workspace, backend);
-        problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
-        asFileHandler = backend.getSourceFileHandlerInstance();
     }
 
     @Override
@@ -309,8 +326,75 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
             if (continueCompilation)
             {
-                project.setProblems(problems.getProblems());
-               	compile();
+
+            	targetloop:
+            	for (String target : config.getCompilerTargets())
+            	{
+            		int result = 0;
+            		switch (JSTargetType.fromString(target))
+	                {
+	                case SWF:
+	                    mxmlc = new MXMLC();
+	                    mxmlc.configurationClass = configurationClass;
+	                    if (noLink)
+	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
+	                    else
+	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
+	                    if (result != 0 && result != 2)
+	                    {
+	                    	problems.addAll(mxmlc.problems.getProblems());
+	                    	break targetloop;
+	                    }
+	                    break;
+	                case JS_FLEX:
+	                	MXMLJSCFlex flex = new MXMLJSCFlex();
+	                	lastCompiler = flex;
+	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                    if (result != 0 && result != 2)
+	                    {
+	                    	break targetloop;
+	                    }
+	                    break;
+	                case JS_FLEX_CORDOVA:
+	                	MXMLJSCFlexCordova flexCordova = new MXMLJSCFlexCordova();
+	                	lastCompiler = flexCordova;
+	                    result = flexCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                    if (result != 0 && result != 2)
+	                    {
+	                    	break targetloop;
+	                    }
+	                    break;
+	                case JS_NODE:
+                        MXMLJSCNode node = new MXMLJSCNode();
+                        lastCompiler = node;
+                        result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+                        if (result != 0 && result != 2)
+                        {
+                            break targetloop;
+                        }
+                        break;
+                    case JS_NODE_MODULE:
+                        MXMLJSCNodeModule nodeModule = new MXMLJSCNodeModule();
+                        lastCompiler = nodeModule;
+                        result = nodeModule.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+                        if (result != 0 && result != 2)
+                        {
+                            break targetloop;
+                        }
+                        break;
+	                case JS_NATIVE:
+	                	MXMLJSCNative jsc = new MXMLJSCNative();
+	                	lastCompiler = jsc;
+	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                    if (result != 0 && result != 2)
+	                    {
+	                    	break targetloop;
+	                    }
+	                    break;
+	                // if you add a new js-output-type here, don't forget to also add it
+	                // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
+	                }
+            	}
                 if (problems.hasFilteredProblems())
                 {
                     if (problems.hasErrors())
@@ -354,7 +438,49 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
         return exitCode.code;
     }
+    
+    protected String[] removeJSArgs(String[] args)
+    {
+    	ArrayList<String> list = new ArrayList<String>();
+    	for (String arg : args)
+    	{
+    		if (!(arg.startsWith("-compiler.targets") ||
+    			  arg.startsWith("-closure-lib") ||
+    			  arg.startsWith("-remove-circulars") ||
+    			  arg.startsWith("-compiler.js-external-library-path") ||
+    			  arg.startsWith("-compiler.js-library-path") ||
+    			  arg.startsWith("-compiler.js-define") ||
+    			  arg.startsWith("-js-output") ||
+    			  arg.startsWith("-js-load-config") ||
+    			  arg.startsWith("-source-map")))
+    			list.add(arg);						
+    	}
+    	return list.toArray(new String[0]);
+    }
 
+    protected String[] removeASArgs(String[] args)
+    {
+    	ArrayList<String> list = new ArrayList<String>();
+    	boolean hasJSLoadConfig = false;
+    	for (String arg : args)
+    	{
+    		if (arg.startsWith("-js-load-config"))
+    			hasJSLoadConfig = true;
+    	}
+    	if (!hasJSLoadConfig)
+    		return args;
+    	for (String arg : args)
+    	{
+    		if (!arg.startsWith("-load-config"))
+    		{
+    			if (arg.startsWith("-js-load-config"))
+    				arg = arg.substring(3);
+    			list.add(arg);	
+    		}
+    	}
+    	return list.toArray(new String[0]);
+    }
+    
     /**
      * Main body of this program. This method is called from the public static
      * method's for this program.
@@ -692,11 +818,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      * @param args command line arguments
      * @return True if mxmlc should continue with compilation.
      */
-    protected boolean configure(final String[] args)
+    public boolean configure(final String[] args)
     {
-        project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-        project.configurator = projectConfigurator = createConfigurator();
-
+    	projectConfigurator = new Configurator(configurationClass);
+    	
         try
         {
             if (useFlashBuilderProjectFiles(args))
@@ -712,29 +837,22 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         ICompilerSettingsConstants.FILE_SPECS_VAR);
             }
 
-            projectConfigurator.applyToProject(project);
-            project.config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
-
-            config = projectConfigurator.getConfiguration();
-            configBuffer = projectConfigurator.getConfigurationBuffer();
-
+            // getCompilerProblemSettings initializes the configuration
             problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
             problems.addAll(projectConfigurator.getConfigurationProblems());
+            config = (JSConfiguration) projectConfigurator.getConfiguration();
+            configBuffer = projectConfigurator.getConfigurationBuffer();
 
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
+            {
+                System.out.println(VersionInfo.buildMessage());
                 return false;
+            }
 
             if (problems.hasErrors())
                 return false;
-
-            validateTargetFile();
+            
             return true;
-        }
-        catch (ConfigurationException e)
-        {
-            final ICompilerProblem problem = new ConfigurationProblem(e);
-            problems.add(problem);
-            return false;
         }
         catch (Exception e)
         {
@@ -747,7 +865,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         {
             if (config == null)
             {
-                config = new Configuration();
+                config = new JSConfiguration();
                 configBuffer = new ConfigurationBuffer(Configuration.class,
                         Configuration.getAliases());
             }
@@ -813,4 +931,63 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         workspace.close();
     }
+    
+    public List<String> getSourceList()
+    {
+        if (lastCompiler != null)
+        	return lastCompiler.getSourceList();
+        if (mxmlc != null)
+        	return mxmlc.getSourceList();
+        return null;
+    }
+    
+    public String getMainSource()
+    {
+        if (lastCompiler != null)
+        	return lastCompiler.getMainSource();
+        if (mxmlc != null)
+        	return mxmlc.getMainSource();
+        return null;
+    }
+    
+
+    /**
+     * return a data structure for FB integration
+     * @return
+     */
+    public ISWF getSWFTarget()
+    {
+    	SWF swf = new SWF();
+    	Rect rect = new Rect(getTargetSettings().getDefaultWidth(),
+    						getTargetSettings().getDefaultHeight());
+    	swf.setFrameSize(rect);
+    	// we might need to report actual color some day
+    	swf.setBackgroundColor(new RGB(255, 255, 255));
+    	swf.setTopLevelClass(config.getTargetFile());
+    	return swf;
+    }
+    
+    public long writeSWF(OutputStream output)
+    {
+    	if (mxmlc != null)
+    		return mxmlc.writeSWF(output);
+    	return 0;
+    }
+    
+    /**
+     * Determines whether an exit code should be considered
+     * a fatal failure, such as for an Ant task.
+     * 
+     * @param code A numeric exit code.
+     * @return <code>true</code> if the Ant task failed.
+     */
+    public static boolean isFatalFailure(final int code)
+    {
+        // This method really belongs in ExitCode
+        // but that would complicate FlexTask.
+        return code == ExitCode.FAILED_WITH_ERRORS.getCode() ||
+               code == ExitCode.FAILED_WITH_EXCEPTIONS.getCode() ||
+               code == ExitCode.FAILED_WITH_CONFIG_PROBLEMS.getCode();
+    }
+
 }

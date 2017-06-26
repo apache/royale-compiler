@@ -32,10 +32,15 @@ public class InternalCompilerProblem extends CompilerProblem {
 
     public InternalCompilerProblem(Exception exception)
     {
-        this(exception.getStackTrace());
+        this(exception.toString(), exception.getStackTrace());
     }
 
     public InternalCompilerProblem(StackTraceElement[] stackTraceElements)
+    {
+    	this("", stackTraceElements);
+    }
+    
+    public InternalCompilerProblem(String message, StackTraceElement[] stackTraceElements)
     {
         super();
         // Save off the stack trace from the exception/throwable
@@ -44,7 +49,7 @@ public class InternalCompilerProblem extends CompilerProblem {
             for (StackTraceElement stackTraceElement : stackTraceElements) {
                 stacktraceBuilder.append(stackTraceElement.toString());
             }
-            this.stackTrace = stacktraceBuilder.toString();
+            this.stackTrace = message + " " + stacktraceBuilder.toString();
         } else {
             this.stackTrace = null;
         }

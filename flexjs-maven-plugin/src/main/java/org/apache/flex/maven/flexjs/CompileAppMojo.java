@@ -47,23 +47,19 @@ public class CompileAppMojo
 
     /**
      * Allows providing of a custom htmlTemplate which overrides the built-in one.
-     * This option is only effective if outputJavaScript is true.
      */
     @Parameter
     protected String htmlTemplate;
 
-    @Parameter(defaultValue = "false")
-    protected boolean outputJavaScript;
-
+    @Parameter
+    protected String targets = "SWF,JSFlex";
+    
     @Parameter(defaultValue = "false")
     protected boolean removeCirculars;
 
     @Override
     protected String getToolGroupName() {
-        if(outputJavaScript) {
-            return "FlexJS";
-        }
-        return "Falcon";
+        return "FlexJS";
     }
 
     @Override
@@ -73,10 +69,7 @@ public class CompileAppMojo
 
     @Override
     protected String getConfigFileName() throws MojoExecutionException {
-        if(outputJavaScript) {
-            return "compile-app-javascript-config.xml";
-        }
-        return "compile-app-flash-config.xml";
+        return "compile-app-config.xml";
     }
 
     @Override
@@ -89,9 +82,6 @@ public class CompileAppMojo
 
     @Override
     protected File getOutput() throws MojoExecutionException {
-        if(outputJavaScript) {
-            return new File(outputDirectory, javascriptOutputDirectoryName);
-        }
         return new File(outputDirectory, flashOutputFileName);
     }
 
@@ -105,6 +95,9 @@ public class CompileAppMojo
             throw new MojoExecutionException("Could not find main class");
         }
         List<String> args = super.getCompilerArgs(configFile);
+        File jsOutput = new File(outputDirectory, "javascript");
+        args.add("-js-output=" + jsOutput.getAbsolutePath());
+        args.add("-compiler.targets=" + targets);
         args.add(mainClassPath);
         return args;
     }
@@ -114,11 +107,8 @@ public class CompileAppMojo
         super.execute();
 
         if(getOutput().exists()) {
-            // If we are building JavaScript output, the war plugin will attach the war
-            if(!outputJavaScript) {
-                // Attach the file created by the compiler as artifact file to maven.
-                project.getArtifact().setFile(getOutput());
-            }
+            // Attach the file created by the compiler as artifact file to maven.
+            project.getArtifact().setFile(getOutput());
         }
     }
 
@@ -172,22 +162,32 @@ public class CompileAppMojo
     @Override
     protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
-        defines.add(new Define("COMPILE::JS", outputJavaScript ? "true" : "false"));
-        defines.add(new Define("COMPILE::SWF", outputJavaScript ? "false" : "true"));
+        defines.add(new Define("COMPILE::JS", "AUTO"));
+        defines.add(new Define("COMPILE::SWF", "AUTO"));
         return defines;
     }
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        // Strip out all externs except if the dependency was declared inside the pom itself.
-        return !"typedefs".equalsIgnoreCase(library.getClassifier()) ||
-                (outputJavaScript && library.getDependencyTrail().size() == 2);
+        String classifier = library.getClassifier();
+        return (classifier == null) && !("provided".equalsIgnoreCase(library.getScope()));
     }
 
     @Override
-    protected boolean isForceSwcExternalLibraryPath() {
-        // The forceSwcExternalLibraryPath should only apply to Flash compilations.
-        return !outputJavaScript && super.isForceSwcExternalLibraryPath();
+    protected boolean includeLibraryJS(Artifact library) {
+        String classifier = library.getClassifier();
+        // Strip out all externs except if the dependency was declared inside the pom itself.
+        return "typedefs".equalsIgnoreCase(classifier) ||
+                "js".equalsIgnoreCase(classifier);
+        // || library.getDependencyTrail().size() == 2;
+    }
+
+    @Override
+    protected boolean includeLibrarySWF(Artifact library) {
+        String classifier = library.getClassifier();
+        return "swf".equalsIgnoreCase(classifier) ||
+            ((classifier == null) && "provided".equalsIgnoreCase(library.getScope()));
+        // || library.getDependencyTrail().size() == 2;
     }
 
     /*private void zipDirectory(File source, File target) {

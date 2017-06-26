@@ -86,7 +86,7 @@ public abstract class BaseMojo
     protected boolean failOnCompilerWarnings = false;
 
     @Parameter
-    protected boolean allowSubclassOverrides = false;
+    protected boolean allowSubclassOverrides = true;
     
     @Parameter
     private Boolean includeLookupOnly = null;
@@ -115,14 +115,23 @@ public abstract class BaseMojo
                 project, repositorySystemSession, projectDependenciesResolver);
         List<Artifact> filteredLibraries = getFilteredLibraries(allLibraries);
         List<Artifact> libraries = getLibraries(filteredLibraries);
+        List<Artifact> jsLibraries = getJSLibraries(filteredLibraries);
+        List<Artifact> swfLibraries = getSWFLibraries(filteredLibraries);
         List<Artifact> externalLibraries = getExternalLibraries(filteredLibraries);
+        List<Artifact> jsExternalLibraries = getJSExternalLibraries(filteredLibraries);
+        List<Artifact> swfExternalLibraries = getSWFExternalLibraries(filteredLibraries);
         List<Artifact> themeLibraries = getThemeLibraries(filteredLibraries);
         List<String> sourcePaths = getSourcePaths();
         context.put("libraries", libraries);
         context.put("externalLibraries", externalLibraries);
+        context.put("jsLibraries", jsLibraries);
+        context.put("jsExternalLibraries", jsExternalLibraries);
+        context.put("swfLibraries", swfLibraries);
+        context.put("swfExternalLibraries", swfExternalLibraries);
         context.put("themeLibraries", themeLibraries);
         context.put("sourcePaths", sourcePaths);
         context.put("namespaces", getNamespaces());
+        context.put("jsNamespaces", getNamespacesJS());
         context.put("namespaceUris", getNamespaceUris());
         context.put("includeClasses", includeClasses);
         context.put("includeFiles", includeFiles);
@@ -154,6 +163,16 @@ public abstract class BaseMojo
         return namespaces;
     }
 
+    protected List<Namespace> getNamespacesJS() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        if(this.namespaces != null) {
+            for (Namespace namespace : this.namespaces) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
+    }
+    
     protected Set<String> getNamespaceUris() {
         Set<String> namespaceUris = new HashSet<String>();
         for(Namespace namespace : getNamespaces()) {
@@ -302,6 +321,14 @@ public abstract class BaseMojo
         return Collections.emptyList();
     }
 
+    protected List<Artifact> getJSLibraries(List<Artifact> artifacts) {
+        return internalGetLibrariesJS(artifacts);
+    }
+    
+    protected List<Artifact> getSWFLibraries(List<Artifact> artifacts) {
+        return internalGetLibrariesSWF(artifacts);
+    }
+    
     protected List<Artifact> getThemeLibraries(List<Artifact> artifacts) {
         List<Artifact> themeLibraries = new LinkedList<Artifact>();
         for(Artifact artifact : artifacts) {
@@ -328,6 +355,32 @@ public abstract class BaseMojo
         return externalLibraries;
     }
 
+    protected List<Artifact> getJSExternalLibraries(List<Artifact> artifacts) {
+        List<Artifact> externalLibraries = new LinkedList<Artifact>();
+        for(Artifact artifact : artifacts) {
+            if(("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+               && includeLibraryJS(artifact)) {
+                if(!"pom".equals(artifact.getType())) {
+                    externalLibraries.add(artifact);
+                }
+            }
+        }
+        return externalLibraries;
+    }
+    
+    protected List<Artifact> getSWFExternalLibraries(List<Artifact> artifacts) {
+        List<Artifact> externalLibraries = new LinkedList<Artifact>();
+        for(Artifact artifact : artifacts) {
+            if(("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+               && includeLibrarySWF(artifact)) {
+                if(!"pom".equals(artifact.getType())) {
+                    externalLibraries.add(artifact);
+                }
+            }
+        }
+        return externalLibraries;
+    }
+    
     protected boolean isForceSwcExternalLibraryPath() {
         return forceSwcExternalLibraryPath;
     }
@@ -345,6 +398,32 @@ public abstract class BaseMojo
         return libraries;
     }
 
+    private List<Artifact> internalGetLibrariesJS(List<Artifact> artifacts) {
+        List<Artifact> libraries = new LinkedList<Artifact>();
+        for (Artifact artifact : artifacts) {
+            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+                && includeLibraryJS(artifact)) {
+                if(!"pom".equals(artifact.getType())) {
+                    libraries.add(artifact);
+                }
+            }
+        }
+        return libraries;
+    }
+
+    private List<Artifact> internalGetLibrariesSWF(List<Artifact> artifacts) {
+        List<Artifact> libraries = new LinkedList<Artifact>();
+        for (Artifact artifact : artifacts) {
+            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+                && includeLibrarySWF(artifact)) {
+                if(!"pom".equals(artifact.getType())) {
+                    libraries.add(artifact);
+                }
+            }
+        }
+        return libraries;
+    }
+    
     protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = new LinkedList<Define>();
         if(this.defines != null) {
@@ -356,6 +435,14 @@ public abstract class BaseMojo
     }
 
     protected boolean includeLibrary(Artifact library) {
+        return true;
+    }
+
+    protected boolean includeLibraryJS(Artifact library) {
+        return true;
+    }
+    
+    protected boolean includeLibrarySWF(Artifact library) {
         return true;
     }
 

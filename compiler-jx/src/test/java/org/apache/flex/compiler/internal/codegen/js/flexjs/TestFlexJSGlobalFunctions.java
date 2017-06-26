@@ -107,7 +107,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:int = parseInt('1.8');");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = parseInt('1.8', 10)");
+        assertOut("var /** @type {number} */ a = parseInt('1.8', undefined)");
     }
 
     @Test

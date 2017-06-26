@@ -19,6 +19,8 @@
 
 package flex2.compiler;
 
+import java.io.File;
+
 import flex2.compiler.io.VirtualFile;
 
 /**
@@ -116,6 +118,16 @@ public final class Source implements Comparable<Source>
     public String getNameForReporting()
     {
         return file.getNameForReporting();
+    }
+    
+    public String getSourceFileName()
+    {
+    	String s = getName();
+    	if (relativePath.length() > 0)
+    		s += relativePath;
+    	s += File.separator;
+    	s += shortName;
+        return s;
     }
     
     public boolean exists()
