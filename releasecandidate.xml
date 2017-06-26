@@ -475,7 +475,7 @@ ${my.name}
 			<arg value="${dist.dev}/flex/falcon/${release.version}/rc${rc}" />
             <arg value="${dist.release}/flex/falcon/${release.version}" />
 		</exec>
-		<exec executable="${svn}" dir="${dist.release}/flex/falcon" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.release}/.." failonerror="true" >
 			<arg value="commit" />
 			<arg value="--username" />
 			<arg value="${apache.username}" />
