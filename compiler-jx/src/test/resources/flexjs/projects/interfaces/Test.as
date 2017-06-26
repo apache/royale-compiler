@@ -29,12 +29,12 @@ package
     {
       super();
       
-      var ia:IA = doSomething(IC) as IA
+      var ia:IA = doSomething(IC) as IA;
     }
     
     public function doSomething(ic:IC):IC
     {
-      for (var i:int = 0; i < 3; i++ {
+      for (var i:int = 0; i < 3; i++) {
         var a:A = null;
       }
       

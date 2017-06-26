@@ -749,7 +749,7 @@ public class ABCGeneratingReducer
                 // java treats -0 and 0 as equal, but divide by -0 results in NEG INFINITY, whereas pos
                 // 0 results in POS INFINITY
                 // positive 0 can be encoded with a pushbyte, but neg zero requires a pushdouble
-                if( dval == 0 && 1/dval == Double.NEGATIVE_INFINITY )
+                if( dval == 0.0 && 1.0/dval == Double.NEGATIVE_INFINITY )
                     result_list.addInstruction(OP_pushdouble, dval);
                 else
                     // Integer

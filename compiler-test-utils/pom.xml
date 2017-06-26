@@ -23,11 +23,11 @@
   <parent>
     <groupId>org.apache.flex.flexjs.compiler</groupId>
     <artifactId>flexjs-compiler-parent</artifactId>
-    <version>0.8.0</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>compiler-test-utils</artifactId>
-  <version>0.8.0</version>
+  <version>0.9.0-SNAPSHOT</version>
 
   <name>Apache Flex - FlexJS: Compiler: Test Utils</name>
   <description>
