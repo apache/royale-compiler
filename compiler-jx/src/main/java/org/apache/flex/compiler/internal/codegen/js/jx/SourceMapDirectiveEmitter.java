@@ -33,7 +33,6 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
 {
     private static final String SOURCE_MAP_PREFIX = "//# sourceMappingURL=./";
     private static final String EXTENSION_JS = ".js";
-    private static final String EXTENSION_MXML = ".mxml";
     private static final String EXTENSION_MAP = ".map";
     
     public SourceMapDirectiveEmitter(IJSEmitter emitter)
@@ -63,7 +62,7 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
             if (node instanceof IMXMLDocumentNode)
             {
                 IMXMLDocumentNode mxmlNode = (IMXMLDocumentNode) node;
-                name = mxmlNode.getFileNode().getName() + EXTENSION_MXML;
+                name = mxmlNode.getFileNode().getName() + EXTENSION_JS;
             }
             writeNewline();
             write(SOURCE_MAP_PREFIX + name + EXTENSION_MAP);
