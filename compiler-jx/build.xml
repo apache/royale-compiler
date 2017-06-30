@@ -67,6 +67,7 @@
     <path id="classpath">
         <filelist dir="${falcon.lib.dir}/external">
             <file name="antlr.jar" />
+            <file name="commons-lang-2.6.jar" />
         </filelist>
 		<filelist dir="${lib}">
 			<file name="commons-io.jar" />
