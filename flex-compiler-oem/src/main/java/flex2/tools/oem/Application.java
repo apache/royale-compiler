@@ -678,6 +678,21 @@ public class Application implements Builder
         List<String> sourceFiles = mxmljsc.getSourceList();
         String mainFile = mxmljsc.getMainSource();
         VirtualFile mainVirtualFile = null;
+        if (sourceFiles == null)
+        {
+        	// maybe a config error
+        	sourceFiles = new ArrayList<String>();
+        	for (VirtualFile f : files)
+        	{            	
+            	sourceFiles.add(f.getName());
+            	if (mainFile == null)
+            	{
+            		mainFile = f.getName();
+                    int lastSep = mainFile.lastIndexOf(File.separator);
+                    mainFile = mainFile.substring(0, lastSep);
+            	}
+        	}
+        }
         for (String sourceFile : sourceFiles)
         {
             for (VirtualFile sourcePath : sourcePaths)

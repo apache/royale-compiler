@@ -340,10 +340,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
 	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
-	                    if (result != 0 && result != 2)
+	                    if (result != 0)
 	                    {
 	                    	problems.addAll(mxmlc.problems.getProblems());
-	                    	break targetloop;
+	                    	if (problems.hasErrors())
+	                    		break targetloop;
 	                    }
 	                    break;
 	                case JS_FLEX:
