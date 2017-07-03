@@ -176,7 +176,14 @@ public class LiteralEmitter extends JSSubEmitter implements
         }
         else
         {
+            s = s.replaceAll("\\\\s", "__S_PLACEHOLDER__");
+            s = s.replaceAll("\\\\w", "__W_PLACEHOLDER__");
+            s = s.replaceAll("\\\\\\.", "__DOT_PLACEHOLDER__");
             s = StringEscapeUtils.escapeJava(s);
+            s = s.replaceAll("__S_PLACEHOLDER__", "\\\\s");
+            s = s.replaceAll("__W_PLACEHOLDER__", "\\\\w");
+            s = s.replaceAll("__DOT_PLACEHOLDER__", "\\\\.");
+            s = s.replaceAll("\\\\\"", "\\\"");
             s = s.replaceAll("\\\\n", "\\\\u000a");
             s = s.replaceAll("\\\\r", "\\\\u000d");
             s = s.replaceAll("\\\\t", "\\\\u0009");        	
