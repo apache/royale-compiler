@@ -64,6 +64,7 @@
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
@@ -103,6 +104,7 @@
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
@@ -130,6 +132,7 @@
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
@@ -155,6 +158,7 @@
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
