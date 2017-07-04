@@ -102,7 +102,7 @@
 	
 	<target name="main" depends="prebuild,compile">
         
-        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.jx" tofile="${classes.dir}/META-INF/NOTICE"/>
