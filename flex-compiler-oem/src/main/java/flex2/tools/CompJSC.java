@@ -28,9 +28,8 @@ import java.lang.reflect.InvocationTargetException;
 public class CompJSC extends MxmlJSC {
 
     protected JSCompilerEntryPoint getCompilerInstance(IBackend backend) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        COMPILER = COMPJSC.class;
         if (compiler == null) {
-            compiler = COMPILER.getDeclaredConstructor(IBackend.class).newInstance(backend);
+            compiler = new COMPJSC();
         }
         return compiler;
     }

@@ -23,13 +23,6 @@ import org.apache.flex.compiler.clients.JSCompilerEntryPoint;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.as.ASBackend;
-import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
-import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,56 +30,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MxmlJSC implements ProblemQueryProvider {
-
-    protected static Class<? extends MXMLJSC> COMPILER;
-
     protected JSCompilerEntryPoint compiler;
 
-    protected JSCompilerEntryPoint getCompilerInstance(IBackend backend) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        COMPILER = MXMLJSC.class;
+    protected JSCompilerEntryPoint getCompilerInstance() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (compiler == null) {
-            compiler = COMPILER.getDeclaredConstructor(IBackend.class).newInstance(backend);
+            compiler = new MXMLJSC();
         }
         return compiler;
     }
 
     public int execute(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        IBackend backend = new ASBackend();
-        String jsOutputTypeString = "";
-        for (String s : args) {
-            String[] kvp = s.split("=");
-
-            if (s.contains("-js-output-type")) {
-                jsOutputTypeString = kvp[1];
-            }
-        }
-
-        if (jsOutputTypeString.equals("")) {
-            jsOutputTypeString = MXMLJSC.JSOutputType.FLEXJS.getText();
-        }
-
-        MXMLJSC.JSOutputType jsOutputType = MXMLJSC.JSOutputType.fromString(jsOutputTypeString);
-        switch (jsOutputType) {
-            case AMD:
-                backend = new AMDBackend();
-                break;
-            case FLEXJS:
-            case FLEXJS_DUAL:
-                backend = new MXMLFlexJSBackend();
-                break;
-            case GOOG:
-                backend = new GoogBackend();
-                break;
-            case JSC:
-                backend = new JSCBackend();
-                break;
-            case NODE:
-                backend = new NodeBackend();
-                break;
-        }
-
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
-        return getCompilerInstance(backend).mainNoExit(args, problems, false);
+        return getCompilerInstance().mainNoExit(args, problems, false);
     }
 
     @Override
