@@ -47,6 +47,9 @@ public class CompileJSMojo
     @Parameter(defaultValue = "false")
     private boolean skipJS;
 
+    @Parameter
+    protected String targets = "SWF,JSFlex";
+    
     @Component
     private MavenProjectHelper projectHelper;
     
@@ -84,7 +87,7 @@ public class CompileJSMojo
     @Override
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
-        args.add("-compiler.targets=SWF,JSFlex");
+        args.add("-compiler.targets=" + targets);
         args.add("-compiler.strict-xml=true");
         return args;
     }
