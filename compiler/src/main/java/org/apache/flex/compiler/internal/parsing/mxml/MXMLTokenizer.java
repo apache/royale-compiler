@@ -39,6 +39,8 @@ import org.apache.flex.compiler.parsing.IMXMLTokenizer;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem2;
+import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
+import org.apache.flex.compiler.problems.UnexpectedTokenProblem;
 import org.apache.flex.utils.NonLockingStringReader;
 
 /**
@@ -201,26 +203,18 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
      * @return an {@link MXMLToken} or null when no more tokens can be produced
      */
 	private final MXMLToken nextTokenInternal() {
-	    MXMLToken retVal = null;
-        boolean cont = true;
-        while(cont) {
-            try
-            {
-                MXMLToken token = tokenizer.hasBufferToken() ? (MXMLToken)tokenizer.getBufferToken() : (MXMLToken)tokenizer.nextToken();
-                if(token == null)
-                    return null;
-                MXMLToken mxmlToken = processToken(token);
-                if(mxmlToken != null) {
-                    retVal = mxmlToken;
-                    return retVal;
-                }
-            }
-            catch (Exception e)
-            {
-                ICompilerProblem problem = new InternalCompilerProblem2(path, e, SUB_SYSTEM); 
-                problems.add(problem);
+        try
+        {
+            MXMLToken token = tokenizer.hasBufferToken() ? (MXMLToken)tokenizer.getBufferToken() : (MXMLToken)tokenizer.nextToken();
+            if(token == null)
                 return null;
-            }
+            MXMLToken mxmlToken = processToken(token);
+            return mxmlToken;
+        }
+        catch (Exception e)
+        {
+            ICompilerProblem problem = new InternalCompilerProblem2(path, e, SUB_SYSTEM); 
+            problems.add(problem);
         }
         return null;
 	}
@@ -339,6 +333,20 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 	 * @return an {@link MXMLToken} or null if it was not accepted
 	 */
 	private MXMLToken processToken(final MXMLToken token) {
+		
+		if (lastToken != null && lastToken.getType() == MXMLTokenTypes.TOKEN_CLOSE_TAG_START &&
+			token.getType() != MXMLTokenTypes.TOKEN_TAG_END)
+		{
+			// once we hit this condition, we currently stop parsing.  
+			// There is a condition where the last closing tag of the file in unclosed
+			// as in "<js:Application" (no closing ">") and the lexer
+			// can't seem to detect that and stop lexing.  Yes, this means that
+			// if a bad closing tag occurs higher up in the file we'll bail
+			// and not report errors later in the file, but that's better than
+			// hanging, IMO.
+			problems.add(new MXMLUnclosedTagProblem(token, lastToken.getText()));
+			return null;
+		}
 	    //TODO find xmlns uri values in the lexer instead of here
 	    switch (token.getType())
         {
