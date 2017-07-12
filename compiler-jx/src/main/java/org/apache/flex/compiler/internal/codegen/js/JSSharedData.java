@@ -19,15 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.js;
 
-import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-
 // TODO (mschmalle) This class sucks, figure out some other way instead of using
 // a static singleton class like this, change when implementing Configuration
 public class JSSharedData

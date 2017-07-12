@@ -38,7 +38,6 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.NoCompilationUnitForDefinitionProblem;
 import org.apache.flex.compiler.problems.NoSourceForClassInNamespaceProblem;
 import org.apache.flex.compiler.problems.NoSourceForClassProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.IJSTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;

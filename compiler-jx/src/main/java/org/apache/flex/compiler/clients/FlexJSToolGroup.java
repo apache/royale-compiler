@@ -20,8 +20,6 @@
 package org.apache.flex.compiler.clients;
 
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocDITABackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**

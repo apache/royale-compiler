@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 
 import org.apache.flex.compiler.internal.config.annotations.DefaultArgumentValue;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * Meta information for each configuration options. It is created by
@@ -433,7 +433,7 @@ public class ConfigurationInfo
     @Override
     public String toString()
     {
-        return Objects.toStringHelper("")
+        return MoreObjects.toStringHelper("")
                 .add("alias", arrayAsString(getAliases()))
                 .add("argcount", getArgCount())
                 .add("argnames", arrayAsString(argnames))

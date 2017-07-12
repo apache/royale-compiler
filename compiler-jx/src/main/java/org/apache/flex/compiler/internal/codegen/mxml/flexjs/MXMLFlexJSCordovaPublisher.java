@@ -22,12 +22,10 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.codegen.js.jsc.JSCPublisher;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
 {

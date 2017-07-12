@@ -19,7 +19,6 @@
 package org.apache.flex.compiler.internal.graph;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,18 +28,15 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.driver.js.JSCompilationUnit;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
@@ -828,6 +824,7 @@ public class GoogDepsWriter {
 		return "";
 	}
 	
+	/*
 	private ArrayList<String> getDirectDependencies(String fn)
 	{
 		ArrayList<String> deps = new ArrayList<String>();
@@ -880,6 +877,7 @@ public class GoogDepsWriter {
 		}
 		return deps;
 	}
+	*/
 	
 	protected void otherScanning(String s)
 	{		
@@ -938,7 +936,6 @@ public class GoogDepsWriter {
 		
 	}
 	
-	@SuppressWarnings( "unused" )
 	private class FileInfo
 	{
 		public ArrayList<String> impls;

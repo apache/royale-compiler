@@ -19,7 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmitter;

@@ -25,10 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
@@ -37,7 +35,6 @@ import org.apache.flex.compiler.internal.config.annotations.Config;
 import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
 import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
-import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 
 import com.google.common.collect.ImmutableList;

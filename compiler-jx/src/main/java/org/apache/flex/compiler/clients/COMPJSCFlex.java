@@ -29,10 +29,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -48,11 +46,7 @@ import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
-import org.apache.flex.compiler.internal.driver.as.ASBackend;
-import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
-import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -533,7 +527,6 @@ public class COMPJSCFlex extends MXMLJSCFlex
     public List<String> getSourceList()
     {
         ArrayList<String> list = new ArrayList<String>();
-        LinkedList<ICompilerProblem> problemList = new LinkedList<ICompilerProblem>();
         try
         {
             Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();

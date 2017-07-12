@@ -19,8 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;

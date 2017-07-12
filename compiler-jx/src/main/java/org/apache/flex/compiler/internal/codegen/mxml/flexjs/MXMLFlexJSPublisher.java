@@ -30,7 +30,6 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.codegen.js.goog.JarSourceFile;
 import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
@@ -250,13 +249,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                     closureSourceFile.getName()), closureSourceFile.getCode());
         }
         closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
-
-
-        /////////////////////////////////////////////////////////////////////////////////
-        // FIXME: Don't quite know what this does.
-        /////////////////////////////////////////////////////////////////////////////////
-
-        final File projectIntermediateMainFile = new File(intermediateDir, outputFileName);
 
 
         /////////////////////////////////////////////////////////////////////////////////

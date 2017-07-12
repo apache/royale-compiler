@@ -35,7 +35,6 @@ import org.junit.Test;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.NamedType;
 
 public class TestTypeExternals extends ExternalsTestBase
 {
@@ -52,7 +51,6 @@ public class TestTypeExternals extends ExternalsTestBase
         assertTrue(model.hasConstant("bar"));
     }
 
-    @SuppressWarnings("unused")
     @Test
     public void test_types() throws IOException
     {

@@ -38,7 +38,6 @@ import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
-import org.apache.flex.compiler.problems.AssignToReadOnlyPropertyProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -544,6 +543,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	{
     		return functionName;
     	}
+    	
+    	public String getValue()
+    	{
+    		return value;
+    	}
     }
     
     public static enum DatePropertiesSetters
@@ -576,6 +580,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	public String getFunctionName()
     	{
     		return functionName;
+    	}
+    	
+    	public String getValue()
+    	{
+    		return value;
     	}
     }
     

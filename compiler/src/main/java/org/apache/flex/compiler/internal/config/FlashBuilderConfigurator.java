@@ -148,7 +148,6 @@ public class FlashBuilderConfigurator
     private static class ActionScriptPropertiesReader
     {
         public String applicationPath;
-        public String additionalCompilerArguments;
         
         public void read(ArrayList<String> fbArgs, String fbFolder, boolean isDebug, String suffix, String sdkdir) throws ConfigurationException
         {

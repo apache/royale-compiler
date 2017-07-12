@@ -54,7 +54,6 @@ import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.projects.IFlexProject;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 /**

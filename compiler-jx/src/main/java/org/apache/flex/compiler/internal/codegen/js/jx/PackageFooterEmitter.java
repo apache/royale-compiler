@@ -798,6 +798,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		emitReflectionDataEnd(typeName);
     }
 
+    /*
     private void writeStringArray(ArrayList<String> sequence) {
     	int l = sequence.size();
 		int count = 0;
@@ -815,7 +816,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		if (l>0) write(ASEmitterTokens.SPACE);
 		writeToken(ASEmitterTokens.SQUARE_CLOSE);
 	}
-
+	*/
+    
 	/*private void writeIsStatic() {
 		writeToken(ASEmitterTokens.COMMA);
 		write("isStatic");

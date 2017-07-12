@@ -32,7 +32,6 @@ import com.google.javascript.jscomp.Result;
 
 public class TestExternNode extends ExternalsTestBase
 {
-    @SuppressWarnings("unused")
     @Test
     public void test_classes() throws IOException
     {

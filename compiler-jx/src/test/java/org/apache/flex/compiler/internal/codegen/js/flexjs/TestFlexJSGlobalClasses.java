@@ -963,4 +963,44 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         assertOut("var /** @type {RegExp} */ a = /[^\\s+(\\w+)(?:\\s*=\\s*(\".*?\"|'.*?'|[\\w\\.]+))?/sg");
     }
     
+    @Test
+    public void testRegExp_LiteralComplex6()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /\\/$/g");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /\\/$/g");
+    }
+    
+    @Test
+    public void testRegExp_LiteralComplex7()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /.+\\//g");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /.+\\//g");
+    }
+    
+    @Test
+    public void testRegExp_LiteralComplex8()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /.+\\\\/g");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /.+\\\\/g");
+    }
+    
+    @Test
+    public void testRegExp_LiteralComplex9()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /^\\s*counter\\s*\\(\\s*ordered\\s*,\\s*/g");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /^\\s*counter\\s*\\(\\s*ordered\\s*,\\s*/g");
+    }
+
+    @Test
+    public void testRegExp_LiteralComplex10()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /^(?:(?:https?|ftp):\\/\\/)?(?:[-\\w]+\\.)(?:[a-zA-Z\\.]{2,6})(?:[?\\/\\w\\.&=-]*)\\/?$/i");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /^(?:(?:https?|ftp):\\/\\/)?(?:[-\\w]+\\.)(?:[a-zA-Z\\.]{2,6})(?:[?\\/\\w\\.&=-]*)\\/?$/i");
+    }
+
 }

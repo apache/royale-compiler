@@ -19,10 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilterWriter;
 import java.io.IOException;
@@ -44,9 +41,7 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSASDocEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -82,8 +77,6 @@ import org.apache.flex.compiler.utils.NativeUtils;
 public class JSFlexJSASDocDITAEmitter extends JSGoogEmitter implements IJSFlexJSEmitter, IJSFlexJSASDocEmitter
 {
 
-	private boolean wroteSomething = false;
-	
     @Override
     public String postProcess(String output)
     {
@@ -895,13 +888,6 @@ public class JSFlexJSASDocDITAEmitter extends JSGoogEmitter implements IJSFlexJS
     	else
     		write("<prolog/>");
     	return linkText.toString();
-    }
-    
-    @Override
-    public void write(String value)
-    {
-    	super.write(value);
-    	wroteSomething = true;
     }
     
     public void writeEventTagNode(IMetaTagNode node, IClassDefinition classDef)

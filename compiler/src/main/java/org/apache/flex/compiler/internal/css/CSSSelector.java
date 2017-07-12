@@ -30,7 +30,6 @@ import org.apache.flex.compiler.css.ConditionType;
 import org.apache.flex.compiler.css.ICSSCombinator;
 import org.apache.flex.compiler.css.ICSSSelector;
 import org.apache.flex.compiler.css.ICSSSelectorCondition;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 /**

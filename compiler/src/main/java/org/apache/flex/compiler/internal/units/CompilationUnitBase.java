@@ -68,7 +68,6 @@ import org.apache.flex.compiler.internal.units.requests.RequestMaker;
 import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
 import org.apache.flex.compiler.mxml.IXMLNameResolver;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem2;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.projects.IFlexProject;

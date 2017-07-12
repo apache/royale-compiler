@@ -22,8 +22,6 @@ package org.apache.flex.compiler.clients;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.clients.problems.ProblemFormatter;

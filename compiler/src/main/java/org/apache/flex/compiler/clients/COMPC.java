@@ -31,7 +31,6 @@ import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.config.ICompilerSettingsConstants;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.COMPCConfiguration;
 import org.apache.flex.compiler.internal.targets.SWFTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MissingRequirementConfigurationProblem;

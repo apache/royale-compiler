@@ -36,11 +36,6 @@ import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 public abstract class UnaryOperatorNodeBase extends OperatorNodeBase implements IUnaryOperatorNode
 {
     /**
-     * Length of post-fix operators: {@code ++} and {@code --}.
-     */
-    private static final int POSTFIX_OPERATOR_LENGTH = 2;
-
-    /**
      * Factory method for various kinds of unary prefix operator nodes.
      */
     public static UnaryOperatorNodeBase createPrefix(IASToken operatorToken, ExpressionNodeBase operand)

@@ -33,7 +33,6 @@ import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 
 import com.google.common.collect.MapMaker;
-import com.google.common.collect.Sets;
 
 import java.lang.ref.SoftReference;
 import java.util.Collections;
@@ -466,7 +465,7 @@ public class ASScopeCache
                 set = builtinTypeDependencyCache != null ? builtinTypeDependencyCache.get() : null;
                 if (set == null)
                 {
-                    set = Sets.newSetFromMap(mapMaker.<IASLanguageConstants.BuiltinType, Boolean> makeMap());
+                    set = Collections.newSetFromMap(mapMaker.<IASLanguageConstants.BuiltinType, Boolean> makeMap());
                     builtinTypeDependencyCache = new SoftReference<Set<IASLanguageConstants.BuiltinType>>(set);
                 }
             }

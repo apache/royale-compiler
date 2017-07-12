@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.parsing.as;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * <h3>Background</h3> Imagine an ActionScript source as a character stream
@@ -116,7 +116,7 @@ public class OffsetCue
     @Override
     public String toString()
     {
-        return Objects
+        return MoreObjects
                 .toStringHelper(this)
                 .add("absolute", absolute)
                 .add("adjustment", adjustment)

@@ -22,7 +22,6 @@ package org.apache.flex.compiler.codegen.as;
 import java.io.Writer;
 
 import org.apache.flex.compiler.codegen.IDocEmitter;
-import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.codegen.INestingEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;

@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.codegen.js.goog;
 import com.google.common.io.CharSource;
 import com.google.javascript.jscomp.Region;
 import com.google.javascript.jscomp.SourceFile;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.Reader;

@@ -30,7 +30,6 @@ import org.apache.flex.compiler.codegen.ISourceMapEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;

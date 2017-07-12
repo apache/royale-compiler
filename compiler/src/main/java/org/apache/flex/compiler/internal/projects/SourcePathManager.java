@@ -48,7 +48,7 @@ import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
@@ -212,7 +212,7 @@ public final class SourcePathManager
                     // if the source path already exists, no need to re-add files which
                     // already exist
                     Set<QNameFile> existingEntriesForSourcePath =
-                            Objects.<Set<QNameFile>> firstNonNull(sourcePaths.get(directoryId), Collections.<QNameFile> emptySet());
+                            MoreObjects.<Set<QNameFile>> firstNonNull(sourcePaths.get(directoryId), Collections.<QNameFile> emptySet());
 
                     // Any qname file that is in filesInPath, but not in existingEntriesForSourcePath
                     // is a new qname file that we need to create a compilation unit for.
@@ -229,7 +229,7 @@ public final class SourcePathManager
         for (Map.Entry<DirectoryID, HashSet<QNameFile>> e : sourcePaths.entrySet())
         {
             Set<QNameFile> newSourcePathFiles =
-                Objects.<Set<QNameFile>>firstNonNull(newSourcePaths.get(e.getKey()), Collections.<QNameFile>emptySet());
+                MoreObjects.<Set<QNameFile>>firstNonNull(newSourcePaths.get(e.getKey()), Collections.<QNameFile>emptySet());
             
             Set<QNameFile> filesToRemove = Sets.difference(e.getValue(), newSourcePathFiles);
             

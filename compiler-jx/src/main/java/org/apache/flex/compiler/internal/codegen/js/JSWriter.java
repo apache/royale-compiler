@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.codegen.js;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,7 +34,6 @@ import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 
 /**

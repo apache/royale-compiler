@@ -19,10 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilterWriter;
 import java.io.IOException;
@@ -66,7 +63,6 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -316,7 +312,6 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         write(formatQualifiedName(node.getQualifiedName()));
         write("\"");
         IExpressionNode bases[] = node.getExtendedInterfaceNodes();
-        String baseNames[] = node.getExtendedInterfaces();
         if (bases.length > 0)
         {
             writeNewline(",");

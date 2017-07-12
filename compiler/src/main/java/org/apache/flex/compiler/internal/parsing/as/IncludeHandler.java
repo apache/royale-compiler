@@ -36,7 +36,7 @@ import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FilenameNormalization;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -82,7 +82,7 @@ public class IncludeHandler
         @Override
         public String toString()
         {
-            return Objects
+            return MoreObjects
                     .toStringHelper(this)
                     .add("end", tokenEnd)
                     .add("file", new File(filename).getName())

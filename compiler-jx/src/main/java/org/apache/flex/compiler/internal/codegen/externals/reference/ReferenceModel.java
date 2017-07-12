@@ -23,13 +23,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
-import org.apache.flex.compiler.problems.ICompilerProblem;
 
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.NodeUtil;

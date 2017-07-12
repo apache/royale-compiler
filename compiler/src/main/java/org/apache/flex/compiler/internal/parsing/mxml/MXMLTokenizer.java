@@ -40,7 +40,6 @@ import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem2;
 import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
-import org.apache.flex.compiler.problems.UnexpectedTokenProblem;
 import org.apache.flex.utils.NonLockingStringReader;
 
 /**

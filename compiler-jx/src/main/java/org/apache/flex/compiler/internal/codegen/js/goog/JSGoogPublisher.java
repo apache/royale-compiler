@@ -32,7 +32,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
@@ -304,7 +303,6 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
     protected void dumpJar(File jarFile, File outputDir) throws IOException
     {
         // TODO (mschmalle) for some reason ide thinks this has not been closed
-        @SuppressWarnings("resource")
         JarFile jar = new JarFile(jarFile);
 
         for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();)

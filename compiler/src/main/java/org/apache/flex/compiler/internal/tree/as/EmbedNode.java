@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.embedding.EmbedAttribute;

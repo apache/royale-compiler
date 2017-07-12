@@ -27,7 +27,6 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -46,14 +45,9 @@ import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -482,6 +476,7 @@ public class TestBase implements ITestBase
 		fw.close();
 	}
     
+    /*
     private void appendLanguageAndXML(String path, String projectName) throws IOException
     {
         StringBuilder appendString = new StringBuilder();
@@ -550,7 +545,7 @@ public class TestBase implements ITestBase
 	        }
         }
     }
-
+*/
 	protected String readCode(File file)
 	{
 	    String code = "";

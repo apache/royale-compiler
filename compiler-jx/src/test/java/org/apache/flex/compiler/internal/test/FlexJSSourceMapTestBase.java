@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 
 import com.google.debugging.sourcemap.FilePosition;
 import static org.junit.Assert.assertTrue;

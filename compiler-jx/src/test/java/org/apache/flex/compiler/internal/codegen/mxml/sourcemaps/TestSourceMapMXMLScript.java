@@ -19,15 +19,11 @@
 package org.apache.flex.compiler.internal.codegen.mxml.sourcemaps;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.test.FlexJSSourceMapTestBase;
-import org.apache.flex.compiler.internal.test.TestBase;
-import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

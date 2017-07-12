@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,12 +49,7 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
-import org.apache.flex.compiler.internal.driver.as.ASBackend;
-import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
-import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSCordovaBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -749,7 +743,6 @@ public class MXMLJSCFlexCordova implements JSCompilerEntryPoint, ProblemQueryPro
     public List<String> getSourceList()
     {
         ArrayList<String> list = new ArrayList<String>();
-        LinkedList<ICompilerProblem> problemList = new LinkedList<ICompilerProblem>();
         try
         {
             ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
