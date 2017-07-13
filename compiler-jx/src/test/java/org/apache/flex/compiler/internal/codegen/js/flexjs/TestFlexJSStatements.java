@@ -515,7 +515,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              " * @constructor\n" +
         		              " */\n" +
         		              "FalconTest_A = function() {\n" +
-        		              "};\n\n\n" +
+        		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
         		              "FalconTest_A.prototype.falconTest_a = function() {\n" +
         		              "  var self = this;\n" +
         		              "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
@@ -585,12 +585,6 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              " * @type {Object.<string, Array.<Object>>}\n" +
         		              " */\n" +
         		              "FalconTest_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A', kind: 'class' }] };\n" +
-        		          		"\n" +
-        		        		"\n" +
-        		        		"/**\n" +
-        		        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		        		" */\n" +
-        		        		"goog.exportSymbol('FalconTest_A', FalconTest_A);\n" +
         		          		"\n" +
         		        		"\n" +
         		        		"\n" +

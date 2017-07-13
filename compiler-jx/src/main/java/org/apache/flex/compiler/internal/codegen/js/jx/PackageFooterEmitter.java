@@ -172,29 +172,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    write(ASEmitterTokens.SPACE);
 	    write(ASEmitterTokens.BLOCK_CLOSE);
 	    write(ASEmitterTokens.SEMICOLON);
-	  // Removed this exclusion to support interface reflection (GD)
-      //  if (!(tnode instanceof IInterfaceNode))
-      //  {
-	    if (!getEmitter().getModel().isExterns)
-	    {
-		    writeNewline();
-		    writeNewline();
-		    writeNewline();
-		    doc.begin();
-		    writeNewline(" * Prevent renaming of class. Needed for reflection.");
-		    doc.end();
-		    write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
-		    write(ASEmitterTokens.PAREN_OPEN);
-		    write(ASEmitterTokens.SINGLE_QUOTE);
-		    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
-		    write(ASEmitterTokens.SINGLE_QUOTE);
-		    write(ASEmitterTokens.COMMA);
-		    write(ASEmitterTokens.SPACE);
-		    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
-		    write(ASEmitterTokens.PAREN_CLOSE);
-		    write(ASEmitterTokens.SEMICOLON);
-	    }
-       // }
 
 	    collectReflectionData(tnode);
 	    IMetaTagNode[] metadata = null;

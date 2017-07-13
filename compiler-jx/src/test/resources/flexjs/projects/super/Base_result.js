@@ -35,6 +35,12 @@ Base = function() {
 goog.inherits(Base, Super);
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Base', Base);
+
+
 Base.prototype.get__text = function() {
   return "A" + Base.superClass_.get__text.apply(this);
 };
@@ -61,12 +67,6 @@ set: Base.prototype.set__text}}
  * @type {Object.<string, Array.<Object>>}
  */
 Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Base', Base);
 
 
 

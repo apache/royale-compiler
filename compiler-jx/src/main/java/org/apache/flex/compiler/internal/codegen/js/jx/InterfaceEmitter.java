@@ -26,7 +26,9 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -70,6 +72,28 @@ public class InterfaceEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SEMICOLON);
         }
 
+  	    if (!getEmitter().getModel().isExterns)
+  	    {
+  	        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+  	        .getDocEmitter();
+  		    writeNewline();
+  		    writeNewline();
+  		    writeNewline();
+  		    doc.begin();
+  		    writeNewline(" * Prevent renaming of class. Needed for reflection.");
+  		    doc.end();
+  		    write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
+  		    write(ASEmitterTokens.PAREN_OPEN);
+  		    write(ASEmitterTokens.SINGLE_QUOTE);
+  		    write(getEmitter().formatQualifiedName(node.getQualifiedName()));
+  		    write(ASEmitterTokens.SINGLE_QUOTE);
+  		    write(ASEmitterTokens.COMMA);
+  		    write(ASEmitterTokens.SPACE);
+  		    write(getEmitter().formatQualifiedName(node.getQualifiedName()));
+  		    write(ASEmitterTokens.PAREN_CLOSE);
+  		    write(ASEmitterTokens.SEMICOLON);
+  	    }
+  	    
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         for (IDefinitionNode mnode : members)
         {

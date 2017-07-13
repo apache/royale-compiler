@@ -200,6 +200,12 @@ MyInitialView = function() {
 goog.inherits(MyInitialView, org.apache.flex.core.View);
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('MyInitialView', MyInitialView);
+
+
 
 /**
  * @private
@@ -845,12 +851,6 @@ null
    * @type {Object.<string, Array.<Object>>}
    */
   MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView', kind: 'class'  }] };
-  
-  
-  /**
-   * Prevent renaming of class. Needed for reflection.
-   */
-  goog.exportSymbol('MyInitialView', MyInitialView);
 
 
 

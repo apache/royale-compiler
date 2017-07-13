@@ -127,6 +127,12 @@ this.$EH0
 goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
+
+
 
 /**
  * @export
@@ -174,12 +180,6 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
  * @type {Object.<string, Array.<Object>>}
  */
 FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class'  }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
 
 
 

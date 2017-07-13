@@ -31,6 +31,12 @@ goog.require('interfaces.IB');
  */
 interfaces.IA = function() {
 };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.ID', interfaces.IA);
 interfaces.IA.prototype.someFunction = function() {
 };
 interfaces.IA.prototype.someOtherFunction = function() {
@@ -43,12 +49,6 @@ interfaces.IA.prototype.someOtherFunction = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA', kind: 'interface' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.ID', interfaces.IA);
 
 
 

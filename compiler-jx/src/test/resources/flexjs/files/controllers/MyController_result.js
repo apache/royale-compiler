@@ -44,6 +44,12 @@ controllers.MyController = function(app) {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('controllers.MyController', controllers.MyController);
+
+
+/**
  * @private
  * @type {string}
  */
@@ -152,12 +158,6 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  * @type {Object.<string, Array.<Object>>}
  */
 controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.flex.core.IDocument] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('controllers.MyController', controllers.MyController);
 
 
 

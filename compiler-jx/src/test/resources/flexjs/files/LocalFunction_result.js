@@ -31,6 +31,12 @@ LocalFunction = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('LocalFunction', LocalFunction);
+
+
+/**
  * @private
  * @type {string}
  */
@@ -64,12 +70,6 @@ LocalFunction.prototype.doIt = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('LocalFunction', LocalFunction);
 
 
 

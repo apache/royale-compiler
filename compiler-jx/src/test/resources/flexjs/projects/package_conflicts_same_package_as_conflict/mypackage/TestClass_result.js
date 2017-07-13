@@ -36,6 +36,12 @@ this.event = new mypackage.Event();
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
+
+
+/**
  * @private
  * @type {mypackage.Event}
  */
@@ -48,12 +54,6 @@ mypackage.TestClass.prototype.event;
  * @type {Object.<string, Array.<Object>>}
  */
 mypackage.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'mypackage.TestClass', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
 
 
 

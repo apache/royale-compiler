@@ -40,6 +40,12 @@ goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('models.MyModel', models.MyModel);
+
+
+/**
  * @private
  * @type {string}
  */
@@ -103,12 +109,6 @@ get: models.MyModel.prototype.get__cities}}
  * @type {Object.<string, Array.<Object>>}
  */
 models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('models.MyModel', models.MyModel);
 
 
 

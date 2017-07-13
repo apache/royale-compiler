@@ -32,6 +32,12 @@ Super = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Super', Super);
+
+
+/**
  * @private
  * @type {Base}
  */
@@ -44,12 +50,6 @@ Super.isItCircular;
  * @type {Object.<string, Array.<Object>>}
  */
 Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Super', Super);
 
 
 

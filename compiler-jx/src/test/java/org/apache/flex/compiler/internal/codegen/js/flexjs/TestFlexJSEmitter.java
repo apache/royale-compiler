@@ -83,6 +83,12 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		"  }\n" +
         		"};\n" +
         		"goog.inherits(com.example.components.MyEventTarget, flash.events.EventDispatcher);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('com.example.components.MyEventTarget', com.example.components.MyEventTarget);\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -115,12 +121,6 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"com.example.components.MyEventTarget.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('com.example.components.MyEventTarget', com.example.components.MyEventTarget);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -171,6 +171,12 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		" * @interface\n" +
         		" */\ncom.example.components.TestInterface = function() {\n" +
         		"};\n" +
+          		"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestInterface', com.example.components.TestInterface);\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -179,12 +185,6 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"com.example.components.TestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface', kind: 'interface' }] };\n" +
-          		"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('com.example.components.TestInterface', com.example.components.TestInterface);\n" +
 				"\n" +
         		"\n" +
         		"\n" +
@@ -229,17 +229,17 @@ public class TestFlexJSEmitter extends TestGoogEmitter
 				"\n" +
 				"\n" +
 				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
 				"com.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -293,17 +293,17 @@ public class TestFlexJSEmitter extends TestGoogEmitter
 				"\n" +
 				"\n" +
 				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
 				"com.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
 				"\n" +
 				"\n" +
 				"\n" +

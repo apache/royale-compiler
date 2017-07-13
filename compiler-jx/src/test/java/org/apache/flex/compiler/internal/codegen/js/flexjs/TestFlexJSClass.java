@@ -48,7 +48,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A {public function A() { super(); }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n  ;\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n  ;\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher {public function A(arg:String) { super(arg);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg\n */\norg.apache.flex.A = function(arg) {\n  org.apache.flex.A.base(this, 'constructor', arg);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg\n */\norg.apache.flex.A = function(arg) {\n  org.apache.flex.A.base(this, 'constructor', arg);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher {public function A(arg:String) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg\n */\norg.apache.flex.A = function(arg) {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg\n */\norg.apache.flex.A = function(arg) {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -91,7 +91,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -100,7 +100,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public final class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher implements flash.events.IEventDispatcher, flash.display.IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -118,7 +118,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher { public function A() { super('foo', 42);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B(arg1:String) {this.arg1 = arg1}; public var arg1:String;}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n * @param {string} arg1\n */\norg.apache.flex.B = function(arg1) {\n  this.arg1 = arg1;\n};\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.B.prototype.arg1;";
+        String expected = "/**\n * @constructor\n * @param {string} arg1\n */\norg.apache.flex.B = function(arg1) {\n  this.arg1 = arg1;\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.B.prototype.arg1;";
         assertOut(expected);
     }
 
@@ -135,7 +135,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var event:Event = new Event(); public function foo():String {return event.type;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n\nthis.event = new flash.events.Event();\n};\n\n\n/**\n * @export\n * @type {flash.events.Event}\n */\norg.apache.flex.B.prototype.event;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.event.type;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n\nthis.event = new flash.events.Event();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @type {flash.events.Event}\n */\norg.apache.flex.B.prototype.event;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.event.type;\n};";
         assertOut(expected);
     }
 
@@ -144,7 +144,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -153,7 +153,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -162,7 +162,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo(value:Object):void {baz = ''};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n  baz = '';\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n  baz = '';\n};";
         assertOut(expected);
     }
 
@@ -171,7 +171,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {super.foo();};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n  org.apache.flex.B.superClass_.foo.apply(this);\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n  org.apache.flex.B.superClass_.foo.apply(this);\n};";
         assertOut(expected);
     }
 
@@ -180,7 +180,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\norg.apache.flex.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nbaz: {\nset: org.apache.flex.B.prototype.set__baz},\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\norg.apache.flex.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nbaz: {\nset: org.apache.flex.B.prototype.set__baz},\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -189,7 +189,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  org.apache.flex.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  org.apache.flex.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -198,7 +198,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("import flash.utils.flash_proxy; use namespace flash_proxy; public class B {public function B() {}; flash_proxy function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n */\norg.apache.flex.B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n */\norg.apache.flex.B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n};";
         assertOut(expected);
     }
 
@@ -208,7 +208,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -218,7 +218,7 @@ public class TestFlexJSClass extends TestGoogClass
         IClassNode node = getClassNode("public class A {public var a:Object;protected var b:String; "
                 + "private var c:int; internal var d:uint; var e:Number}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\norg.apache.flex.A.prototype.a;\n\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.flex.A.prototype.b;\n\n\n/**\n * @private\n * @type {number}\n */\norg.apache.flex.A.prototype.c = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.d = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.e;");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @type {Object}\n */\norg.apache.flex.A.prototype.a;\n\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.flex.A.prototype.b;\n\n\n/**\n * @private\n * @type {number}\n */\norg.apache.flex.A.prototype.c = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.d = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.e;");
     }
 
     @Test
@@ -229,7 +229,7 @@ public class TestFlexJSClass extends TestGoogClass
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n" +
         		  " */\norg.apache.flex.A = function() {\n" +
-        		  "};\n\n\n" +
+        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n" +
         		  "/**\n" +
         		  " * @export\n" +
         		  " * @type {Object}\n" +
@@ -319,7 +319,7 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut("/**\n * @constructor\n" +
         		  " */\norg.apache.flex.A = function() {\n\n" +
         		  "this.a_ = {foo:1};\n" +
-        		  "};\n\n\n" +
+        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n" +
         		  "/**\n" +
         		  " * @export\n" +
         		  " * @type {Object}\n" +
@@ -408,7 +408,7 @@ public class TestFlexJSClass extends TestGoogClass
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n" +
         		  " */\norg.apache.flex.A = function() {\n" +
-        		  "};\n\n\n" +
+        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n" +
         		  "/**\n" +
         		  " * @export\n" +
         		  " * @type {Object}\n" +
@@ -460,7 +460,7 @@ public class TestFlexJSClass extends TestGoogClass
         IClassNode node = getClassNode("public class A {public static var a:int = 10;public static var b:String = initStatic(); "
                 + "private static function initStatic():String { return \"foo\"; }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.flex.A.initStatic = function() {\n  return \"foo\";\n};\n\norg.apache.flex.A.b = org.apache.flex.A.initStatic();\n\n");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.flex.A.initStatic = function() {\n  return \"foo\";\n};\n\norg.apache.flex.A.b = org.apache.flex.A.initStatic();\n\n");
     }
     
     @Test
@@ -468,7 +468,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         FileNode node = (FileNode)getNode("package org.apache.flex {\npublic class A {\nimport flash.display.Sprite; Sprite;\n}}", FileNode.class, 0);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * org.apache.flex.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.flex.A');\n\ngoog.require('flash.display.Sprite');\n\n\n\n/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * org.apache.flex.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.flex.A');\n\ngoog.require('flash.display.Sprite');\n\n\n\n/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
     
     @Override
@@ -481,7 +481,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "private static const C:Number = 42;"
                 + "foo_bar static const C:String = 'me' + 'you';}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
     }
 
     @Override
@@ -500,7 +500,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "flash_proxy function get foo6():Object{return null;}"
                 + "flash_proxy function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n" +
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n" +
         		"org.apache.flex.A.prototype.get__foo1 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.flex.A.prototype.set__foo1 = function(value) {\n};\n\n\n" +
         		"org.apache.flex.A.prototype.get__foo2 = function() {\n  return null;\n};\n\n\n" +
@@ -535,7 +535,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "flash_proxy static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
     }
 
     @Test
@@ -546,7 +546,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public function foo2():Object{function bar2(param1:Object):Object {return null;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return null;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return null;\n  };\n  return bar2('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return null;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return null;\n  };\n  return bar2('foo');\n};");
     }
 
     @Test
@@ -558,7 +558,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public function foo2():String{function bar2(param1:String):String {return param1 + baz1;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return self.baz1;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return param1 + self.baz1;\n  };\n  return bar2('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return self.baz1;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return param1 + self.baz1;\n  };\n  return bar2('foo');\n};");
     }
 
     @Test
@@ -578,7 +578,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public function clone():B { return new B() }"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @return {org.apache.flex.B}\n */\norg.apache.flex.B.prototype.clone = function() {\n  return new org.apache.flex.B();\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\n/**\n * @export\n * @return {org.apache.flex.B}\n */\norg.apache.flex.B.prototype.clone = function() {\n  return new org.apache.flex.B();\n};");
     }
 
     @Override
@@ -587,7 +587,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -598,7 +598,7 @@ public class TestFlexJSClass extends TestGoogClass
         //               in JS we ignore it
         IClassNode node = getClassNode("internal class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -609,7 +609,7 @@ public class TestFlexJSClass extends TestGoogClass
         //               in JS we ignore it
         IClassNode node = getClassNode("public final class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -619,7 +619,7 @@ public class TestFlexJSClass extends TestGoogClass
         // (erikdebruin) all JS objects are 'dynamic' by design
         IClassNode node = getClassNode("public dynamic class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -628,7 +628,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A implements IEventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Override
@@ -637,7 +637,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
 
@@ -647,7 +647,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A {public function A() { }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
 
@@ -657,7 +657,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n};");
+        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);");
     }
 
     @Test
@@ -665,7 +665,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
+        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
     }
 
     @Test
@@ -673,7 +673,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
     }
 
     @Test
@@ -681,7 +681,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A {public static const NAME:String = 'Dummy'; public function A(arg1:String = NAME) {_name = arg1;} private var _name:String;}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @param {string=} arg1\n */\norg.apache.flex.A = function(arg1) {\n  arg1 = typeof arg1 !== 'undefined' ? arg1 : org.apache.flex.A.NAME;\n  this._name = arg1;\n};\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.flex.A.NAME = 'Dummy';\n\n\n/**\n * @private\n * @type {string}\n */\norg.apache.flex.A.prototype._name;");
+        assertOut("/**\n * @constructor\n * @param {string=} arg1\n */\norg.apache.flex.A = function(arg1) {\n  arg1 = typeof arg1 !== 'undefined' ? arg1 : org.apache.flex.A.NAME;\n  this._name = arg1;\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.A', org.apache.flex.A);\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.flex.A.NAME = 'Dummy';\n\n\n/**\n * @private\n * @type {string}\n */\norg.apache.flex.A.prototype._name;");
     }
     
     protected IBackend createBackend()

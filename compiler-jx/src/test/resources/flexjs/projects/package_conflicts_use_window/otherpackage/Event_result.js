@@ -32,17 +32,17 @@ otherpackage.Event = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('otherpackage.Event', otherpackage.Event);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 otherpackage.Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'otherpackage.Event', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('otherpackage.Event', otherpackage.Event);
 
 
 

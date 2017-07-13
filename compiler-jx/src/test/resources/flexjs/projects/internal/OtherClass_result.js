@@ -31,17 +31,17 @@ OtherClass = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('OtherClass', OtherClass);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 OtherClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'OtherClass', qName: 'OtherClass', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('OtherClass', OtherClass);
 
 
 

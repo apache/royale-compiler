@@ -34,17 +34,17 @@ XMLRequire = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('XMLRequire', XMLRequire);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 XMLRequire.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'XMLRequire', qName: 'XMLRequire', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('XMLRequire', XMLRequire);
 
 
 

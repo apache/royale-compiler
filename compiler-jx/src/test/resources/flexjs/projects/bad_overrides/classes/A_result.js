@@ -36,6 +36,12 @@ classes.A = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('classes.A', classes.A);
+
+
+/**
  * @export
  * @return {classes.B}
  */
@@ -59,12 +65,6 @@ classes.A.prototype.someOtherFunction = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 classes.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'classes.A', kind: 'class' }], interfaces: [interfaces.IA] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('classes.A', classes.A);
 
 
 

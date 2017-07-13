@@ -134,7 +134,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Foo = new Foo('bar', 42);",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo;");
     }
 
     @Test
@@ -167,7 +167,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -176,7 +176,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * @protected\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -185,7 +185,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("import flash.utils.flash_proxy;use namespace flash_proxy;public static var foo:Object = initFoo(); flash_proxy static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nFalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};\n\nFalconTest_A.foo = FalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nFalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};\n\nFalconTest_A.foo = FalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n");
     }
     
     @Test
@@ -194,7 +194,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("static public var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo = {'foo':'bar'};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo = {'foo':'bar'};");
     }
     
     @Test
@@ -203,7 +203,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Number = parseFloat('1E2')",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -212,7 +212,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("private static var empty:Function = function():void {}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @private\n * @type {Function}\n */\nFalconTest_A.empty = function() {\n};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @type {Function}\n */\nFalconTest_A.empty = function() {\n};");
     }
     
     @Override
@@ -293,7 +293,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Number = parseFloat('1E2');",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -302,7 +302,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * @protected\n * @const\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -311,7 +311,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * @protected\n * @const\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
     }
 
     @Override

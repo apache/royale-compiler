@@ -36,6 +36,12 @@ goog.inherits(Test, classes.A);
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Test', Test);
+
+
+/**
  * @export
  * @override
  */
@@ -59,12 +65,6 @@ Test.prototype.someOtherFunction = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Test', Test);
 
 
 

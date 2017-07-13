@@ -31,17 +31,17 @@ classes.B = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('classes.B', classes.B);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 classes.B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('classes.B', classes.B);
 
 
 

@@ -33,6 +33,12 @@ B = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('B', B);
+
+
+/**
  * @export
  * @param {boolean} b
  * @return {number}
@@ -50,12 +56,6 @@ B.a = function(b) {
  * @type {Object.<string, Array.<Object>>}
  */
 B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'B', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('B', B);
 
 
 

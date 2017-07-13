@@ -34,6 +34,12 @@ SamePackageAsConflict = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('SamePackageAsConflict', SamePackageAsConflict);
+
+
+/**
  * @private
  * @type {mypackage.TestClass}
  */
@@ -46,12 +52,6 @@ SamePackageAsConflict.prototype.testClass;
  * @type {Object.<string, Array.<Object>>}
  */
 SamePackageAsConflict.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SamePackageAsConflict', qName: 'SamePackageAsConflict', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('SamePackageAsConflict', SamePackageAsConflict);
 
 
 

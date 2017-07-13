@@ -28,6 +28,12 @@ goog.provide('interfaces.IE');
  */
 interfaces.IE = function() {
 };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IE', interfaces.IE);
 interfaces.IE.prototype.myMethod = function() {
 };
 /**  * @type {string}
@@ -40,12 +46,6 @@ interfaces.IE.prototype.myMethod = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE', kind: 'interface' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.IE', interfaces.IE);
 
 
 

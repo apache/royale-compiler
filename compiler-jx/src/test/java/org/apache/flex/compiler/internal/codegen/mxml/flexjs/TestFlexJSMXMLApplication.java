@@ -164,6 +164,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  this.mxmldp;\n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -173,12 +179,6 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.flex.core.IChrome] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -257,6 +257,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  this.mxmldp;\n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -266,12 +272,6 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -370,6 +370,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  \n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -388,12 +394,6 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -492,6 +492,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  \n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -510,12 +516,6 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -615,6 +615,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  \n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -662,12 +668,6 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -772,6 +772,12 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  \n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -788,12 +794,6 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +

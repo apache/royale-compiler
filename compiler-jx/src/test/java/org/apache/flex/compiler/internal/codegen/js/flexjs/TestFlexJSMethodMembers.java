@@ -113,7 +113,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function FalconTest_A(){this.foo();}; private function foo():String{return '';};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n  this.foo();\n};\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return '';\n};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n  this.foo();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return '';\n};");
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function FalconTest_A(){foo();}; private function foo():String{return '';};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n  this.foo();\n};\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return '';\n};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n  this.foo();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return '';\n};");
     }
 
     @Override
@@ -130,7 +130,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private var baz:String; private function foo():String{return this.baz;};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype.baz;\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return this.baz;\n};");
+         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype.baz;\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return this.baz;\n};");
     }
 
     @Test
@@ -138,7 +138,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private var baz:String; private function foo():String{return baz;};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype.baz;\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return this.baz;\n};");
+         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype.baz;\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  return this.baz;\n};");
     }
 
     @Override
@@ -147,7 +147,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private function foo(value:int):String{return value;}; private function bar():String{if(true){while(i){return this.foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nFalconTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      return this.foo(42);\n    }\n  }\n};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nFalconTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      return this.foo(42);\n    }\n  }\n};");
     }
 
     @Test
@@ -155,7 +155,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private function foo(value:int):String{return value;}; private function bar():void{if(true){while(i){foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nFalconTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n */\nFalconTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      this.foo(42);\n    }\n  }\n};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nFalconTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n */\nFalconTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      this.foo(42);\n    }\n  }\n};");
     }
 
     @Override

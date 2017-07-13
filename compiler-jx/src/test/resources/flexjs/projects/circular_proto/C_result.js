@@ -37,6 +37,12 @@ goog.inherits(C, B);
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('C', C);
+
+
+/**
  * @export
  * @param {boolean} b
  * @return {number}
@@ -52,12 +58,6 @@ C.a = function(b) {
  * @type {Object.<string, Array.<Object>>}
  */
 C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'C', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('C', C);
 
 
 

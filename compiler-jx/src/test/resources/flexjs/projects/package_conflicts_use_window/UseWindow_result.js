@@ -34,6 +34,12 @@ UseWindow = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('UseWindow', UseWindow);
+
+
+/**
  * @private
  * @type {mypackage.TestClass}
  */
@@ -46,12 +52,6 @@ UseWindow.prototype.testClass;
  * @type {Object.<string, Array.<Object>>}
  */
 UseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'UseWindow', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('UseWindow', UseWindow);
 
 
 

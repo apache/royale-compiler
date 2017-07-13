@@ -34,6 +34,12 @@ NoConflictUseWindow = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('NoConflictUseWindow', NoConflictUseWindow);
+
+
+/**
  * @private
  * @type {mypackage.TestClass}
  */
@@ -46,12 +52,6 @@ NoConflictUseWindow.prototype.testClass;
  * @type {Object.<string, Array.<Object>>}
  */
 NoConflictUseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictUseWindow', qName: 'NoConflictUseWindow', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('NoConflictUseWindow', NoConflictUseWindow);
 
 
 

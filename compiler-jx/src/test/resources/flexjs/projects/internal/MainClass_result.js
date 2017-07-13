@@ -34,17 +34,17 @@ MainClass = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('MainClass', MainClass);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 MainClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'MainClass', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MainClass', MainClass);
 
 
 
@@ -76,6 +76,12 @@ MainClass.InternalClass = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
+
+
+/**
  * @export
  * @type {OtherClass}
  */
@@ -88,12 +94,6 @@ MainClass.InternalClass.prototype.foo;
  * @type {Object.<string, Array.<Object>>}
  */
 MainClass.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass', kind: 'class' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
 
 
 

@@ -967,7 +967,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import flash.display.IBitmapDrawable; public class B implements IBitmapDrawable { public function B() { IBitmapDrawable(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.display.IBitmapDrawable}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, flash.display.IBitmapDrawable, true).type = '';\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.display.IBitmapDrawable}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, flash.display.IBitmapDrawable, true).type = '';\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);");
     }
 
     @Test

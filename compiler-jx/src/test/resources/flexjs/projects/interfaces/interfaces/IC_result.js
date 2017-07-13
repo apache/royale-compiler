@@ -34,17 +34,17 @@ interfaces.IC = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IC', interfaces.IC);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 interfaces.IC.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IC', qName: 'interfaces.IC', kind: 'interface' }], interfaces: [interfaces.ID] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.IC', interfaces.IC);
 
 
 

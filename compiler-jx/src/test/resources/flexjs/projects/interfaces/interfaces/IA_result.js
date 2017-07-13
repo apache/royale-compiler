@@ -34,17 +34,17 @@ interfaces.IA = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IA', interfaces.IA);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
 interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA', kind: 'interface' }], interfaces: [interfaces.IC] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.IA', interfaces.IA);
 
 
 
