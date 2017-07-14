@@ -368,10 +368,18 @@ declaration returns [CSSProperty property]
 value returns [CSSPropertyValue propertyValue]
     :   ^( I_ARRAY 
                               { final List<CSSPropertyValue> array = new ArrayList<CSSPropertyValue>(); }
-           ( s1=singleValue   { array.add($s1.propertyValue); } )+
+           ( s1=multiValue    { array.add($s1.propertyValue); } )+
         )                     { $propertyValue = new CSSArrayPropertyValue(array, $start, tokenStream); }
-    |   s2=singleValue        { $propertyValue = $s2.propertyValue; }
+    |   s2=multiValue         { $propertyValue = $s2.propertyValue; }
     ;    
+
+multiValue returns [CSSPropertyValue propertyValue]
+    :   ^( I_MULTIVALUE 
+                              { final List<CSSPropertyValue> array = new ArrayList<CSSPropertyValue>(); }
+           ( s1=singleValue   { array.add($s1.propertyValue); } )+
+        )                     { $propertyValue = new CSSMultiValuePropertyValue(array, $start, tokenStream); }
+    |   s2=singleValue        { $propertyValue = $s2.propertyValue; }
+    ;
   
 singleValue returns [CSSPropertyValue propertyValue]
     :   NUMBER_WITH_PERCENT         
@@ -406,6 +414,8 @@ singleValue returns [CSSPropertyValue propertyValue]
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
     |   ^(CALC l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($CALC.text, $l.text, $start, tokenStream); }
+    |   ^(FUNCTIONS l=ARGUMENTS)
+        { $propertyValue = new CSSFunctionCallPropertyValue($FUNCTIONS.text, $l.text, $start, tokenStream); }
     |   s=STRING   
         { $propertyValue = new CSSStringPropertyValue($s.text, $start, tokenStream); }                   
     |   ID

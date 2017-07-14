@@ -84,13 +84,6 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         {
             return String.format("%s: %s;", cssName, ((CSSFunctionCallPropertyValue)value).toString());
         }
-        if (value instanceof CSSArrayPropertyValue) {
-            if (!cssName.equalsIgnoreCase("font-family"))
-            {
-                CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
-                return String.format("%s: %s;", cssName, Joiner.on(" ").join(borderValues.getElements()));
-            }
-        }
         return String.format("%s: %s;", cssName, value.toString());
     }
 

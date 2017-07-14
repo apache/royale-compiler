@@ -33,7 +33,7 @@ options
 tokens
 { 
     I_RULES; I_MEDIUM_CONDITIONS; I_DECL; I_RULE; I_SELECTOR_GROUP; I_SELECTOR; 
-    I_SIMPLE_SELECTOR; I_CHILD_SELECTOR; I_PRECEDED_SELECTOR; I_SIBLING_SELECTOR; I_ARRAY; 
+    I_SIMPLE_SELECTOR; I_CHILD_SELECTOR; I_PRECEDED_SELECTOR; I_SIBLING_SELECTOR; I_ARRAY; I_MULTIVALUE; 
 }
 
 @header 
@@ -408,7 +408,7 @@ declaration
     ;
     
 /**
- * This rule matches an array of property values or a single value.
+ * This rule matches an comma-separated array of property values or a single value.
  * If it matches an array, the output is an I_ARRAY tree of element values.
  * If it matches an single value, the output is a "singleValue" tree.
  * 
@@ -417,16 +417,32 @@ declaration
  *     "tl", "tr", "bl", "br"
  *     #FFFFFF, #FFFFFF, #FFFFFF, #FFFFFF
  *     Verdana, Times, Sans-Serif
- *     solid 1px #666666
+ *     20px 20px, 40px 40px
  *
  */    
 value  
 @init { int count = 1; }
-    :   singleValue ( COMMA? singleValue { count++; } )*
-        -> {count > 1}? ^(I_ARRAY singleValue+)
-        ->              singleValue
+    :   multiValue ( COMMA multiValue { count++; } )*
+        -> {count > 1}? ^(I_ARRAY multiValue+)
+        ->              multiValue
     ;  
-  
+
+/**
+ * This rule matches an space-separated array of property values or a single value.
+ * If it matches an array, the output is an I_MULTIVALUE tree of element values.
+ * If it matches an single value, the output is a "singleValue" tree.
+ * 
+ * multiValue example:
+ *     solid 1px #666666
+ *
+ */    
+multiValue
+@init { int count = 1; }
+    :   singleValue ( singleValue { count++; } )*
+        -> {count > 1}? ^(I_MULTIVALUE singleValue+)
+        ->              singleValue
+    ;
+
 /**
  * This rule matches one property value.
  *
@@ -455,6 +471,7 @@ singleValue
     |   URL ARGUMENTS formatOption*   -> ^(URL ARGUMENTS formatOption*)
     |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
     |   CALC ARGUMENTS		        -> ^(CALC ARGUMENTS)
+    |   FUNCTIONS ARGUMENTS		        -> ^(FUNCTIONS ARGUMENTS)
     |   ALPHA_VALUE
     |   SCALE_VALUE
     |   RECT_VALUE
@@ -531,6 +548,13 @@ NULL : 'null' ;
 ONLY : 'only' ;
 CHILD : '>' ;
 PRECEDED : '+' ;
+FUNCTIONS : '-moz-linear-gradient'
+          | '-webkit-linear-gradient'
+          | 'linear-gradient'
+          | 'progid:DXImageTransform.Microsoft.gradient'
+          | 'translateX'
+          | 'translateY'
+          ;
 NOT
     :  'not'
     ;
