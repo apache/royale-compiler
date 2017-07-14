@@ -29,14 +29,14 @@
 */
 .glass {
     borderColor:		    #767473;
-    fillAlphas: 		    .60, .60, .60, .60;
+    fillAlphas: 		    .60, .70, .80, .90;
     fillColors: 		    #888888, #F3F3F3, #9E9E9E, #FCFCFC;
     highlightAlphas:	    .07, .45;
 }
 
 .glassSlider
 {
-    fillAlphas: 		    .80, .80, .80, .80;
+    fillAlphas: 		    .80, .70, .60, .50;
     fillColors: 		    #F3F3F3, #BBBBBB, #FCFCFC, #CCCCCC;
 }
 
@@ -85,4 +85,23 @@
 .usescalc {
   color: #fff;
   width: calc((100% - 50px)/3);
+}
+
+.FLEX35340A {
+    background: -moz-linear-gradient(top,  #ffffff 0%, #e1e1e1 100%); /* FF3.6-15 */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e1e1e1',GradientType=0 ); /* IE6-9 */
+	transform: translateY(-50%);
+}
+
+.FLEX35340B {
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#e1e1e1 100%); /* Chrome10-25,Safari5.1-6 */
+}
+
+.FLEX35340C {
+    background: linear-gradient(to bottom,  #ffffff 0%,#e1e1e1 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+.FLEX35340D {
+	font-family: Georgia, Times New Roman, Times, serif;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }

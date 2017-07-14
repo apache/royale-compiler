@@ -66,6 +66,10 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String result = getCodeFromFile("CSSTestSource_result.css", "flexjs/files");
         String output = jscss.emitCSS();       
         assertThat(output, is(result));
+        String encoding = jscss.getEncodedCSS();
+        result = getCodeFromFile("CSSTestSource_encoded_result.txt", "flexjs/files");
+        assertThat(encoding, is(result));
+        
 
     }
 

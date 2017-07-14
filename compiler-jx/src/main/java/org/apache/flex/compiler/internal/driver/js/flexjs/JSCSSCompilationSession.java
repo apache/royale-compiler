@@ -39,7 +39,15 @@ import com.google.common.collect.ImmutableList;
 
 public class JSCSSCompilationSession extends CSSCompilationSession
 {
-
+	private List<String> otherCSSFunctions = Arrays.asList(
+			 "-moz-linear-gradient",
+	         "-webkit-linear-gradient",
+	         "linear-gradient",
+	         "progid:DXImageTransform.Microsoft.gradient",
+	         "translateX",
+	         "translateY"	
+	);
+	
     private ArrayList<String> requires;
     
     public String getEncodedCSS()
@@ -305,6 +313,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     {
                         result.append("\"" + ((CSSURLAndFormatPropertyValue)val).toString() + "\"");
                     }
+                    else if (val instanceof CSSMultiValuePropertyValue)
+                    {
+                        result.append("\"" + ((CSSMultiValuePropertyValue)val).toString() + "\"");
+                    }
                     else
                     {
                         result.append("unexpected value type: " + val.toString());
@@ -382,6 +394,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                             new IllegalStateException("Unable to find compilation unit for " + functionCall));
                     problems.add(e);
                     */
+                }
+                else if (otherCSSFunctions.contains(functionCall.name))
+                {
+                	// ignore for now?
                 }
                 else
                 {

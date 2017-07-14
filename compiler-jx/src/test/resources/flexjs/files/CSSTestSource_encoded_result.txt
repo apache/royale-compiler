@@ -1,0 +1,22 @@
+/*******************************************************************************
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+////////////////////////////////////////////////////////////////////////////////
+*/
+0,1,".glass",function() {this["borderColor"] = 7763059;this["highlightAlphas"] = [0.07000000029802322, 0.44999998807907104];this["fillColors"] = [8947848, 15987699, 10395294, 16579836];this["fillAlphas"] = [0.6000000238418579, 0.699999988079071, 0.800000011920929, 0.8999999761581421]},0,1,".glassSlider",function() {this["fillColors"] = [15987699, 12303291, 16579836, 13421772];this["fillAlphas"] = [0.800000011920929, 0.699999988079071, 0.6000000238418579, 0.5]},0,1,".listItem",function() {this["borderStyle"] = "outset";this["backgroundColor"] = 16777215;this["verticalAlign"] = "middle";this["horizontalGap"] = 5.0;this["backgroundAlpha"] = 0.5;this["paddingLeft"] = 4.0;this["paddingRight"] = 4.0},0,1,".outer.inner",function() {this["width"] = 512.0},0,1,".outer .inner",function() {this["width"] = 512.0},0,1,".outer>.innerTitle",function() {this["height"] = 176.0;this["color"] = 16777215;this["background"] = },0,1,".outer>.innerMenu",function() {this["color"] = 16777215},0,1,"h4",function() {this["color"] = 16777215},0,1,".outerother.inner",function() {this["height"] = 320.0;this["width"] = 320.0},0,1,".outerother-square>.innerTitle",function() {this["color"] = 16777215;this["background"] = },0,1,".usescalc",function() {this["color"] = 16777215;this["width"] = },0,1,".FLEX35340A",function() {this["transform"] = ;this["background"] = ;this["filter"] = },0,1,".FLEX35340B",function() {this["background"] = },0,1,".FLEX35340C",function() {this["background"] = },0,1,".FLEX35340D",function() {this["boxShadow"] = ["0 2px 2px 0 rgba(0,0,0,.14)", "0 3px 1px -2px rgba(0,0,0,.2)", "0 1px 5px 0 rgba(0,0,0,.12)"];this["fontFamily"] = ["Georgia", "Times New Roman", "Times", "serif"]}];
+
