@@ -62,7 +62,7 @@ public final class CSSParserProblem extends CompilerProblem
     {
         final String messageHeader = baseRecognizer.getErrorHeader(e);
         final String messageBody = baseRecognizer.getErrorMessage(e, tokenNames);
-        final String reason = String.format("%s %s", messageHeader, messageBody);
+        final String reason = String.format("%s %s", messageHeader, makeNice(messageBody));
 
         final ISourceLocation location = new SourceLocation(
             e.input.getSourceName(),
@@ -70,5 +70,26 @@ public final class CSSParserProblem extends CompilerProblem
             e.line, e.charPositionInLine);
 
         return new CSSParserProblem(location, reason, baseRecognizer.getClass());
+    }
+    
+    private static String makeNice(String s)
+    {
+    	if (s.contains("mismatched tree node: <mismatched token"))
+    	{
+    		int c = s.indexOf("expecting");
+    		if (c != -1)
+    		{
+    			String expecting = s.substring(c);
+    			expecting = expecting.replace("I_DECL", "CSS property name");
+        		c = s.indexOf("resync");
+        		if (c != -1)
+        		{
+        			s = s.substring(0, c);
+        		}
+        		String token = s.replaceFirst("mismatched tree node: <mismatched token: \\[\\@([^=]+)=([^,]+),<([^>]+)>.*$", "unexpected token $2");
+        		s = token + " " + expecting;
+    		}
+    	}
+    	return s;
     }
 }
