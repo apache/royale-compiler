@@ -1003,4 +1003,21 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         assertOut("var /** @type {RegExp} */ a = /^(?:(?:https?|ftp):\\/\\/)?(?:[-\\w]+\\.)(?:[a-zA-Z\\.]{2,6})(?:[?\\/\\w\\.&=-]*)\\/?$/i");
     }
 
+    @Test
+    public void testRegExp_LiteralComplex11()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /\\\\/g");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /\\\\/g");
+    }
+    
+    @Test
+    public void testRegExp_LiteralComplex12()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /\\\\\\\\/g");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /\\\\\\\\/g");
+    }
+    
+
 }

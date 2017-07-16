@@ -176,6 +176,7 @@ public class LiteralEmitter extends JSSubEmitter implements
         }
         else
         {
+            s = s.replaceAll("\\\\\\\\", "__ESCAPE__ESCAPE__PLACEHOLDER__");
             s = s.replaceAll("\\\\/", "__SLASH_PLACEHOLDER__");
             s = s.replaceAll("\\\\([^u])", "__ESCAPE_PLACEHOLDER__$1");
             s = s.replaceAll("\"", "__DOUBLE_QUOTE_PLACEHOLDER__");
@@ -189,6 +190,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             s = s.replaceAll("__DOUBLE_QUOTE_PLACEHOLDER__", "\"");
             s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\");
             s = s.replaceAll("__SLASH_PLACEHOLDER__", "\\\\/");
+            s = s.replaceAll("__ESCAPE__ESCAPE__PLACEHOLDER__", "\\\\\\\\");
             s = s.replaceAll("\\\\n", "\\\\u000a");
             s = s.replaceAll("\\\\r", "\\\\u000d");
             s = s.replaceAll("\\\\t", "\\\\u0009");        	
