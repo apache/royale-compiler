@@ -787,7 +787,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");for each (var p:XMLList in a) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target.child(foreachiter0);\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
     }
     
     @Test
@@ -795,7 +795,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:*;for each (var p:XML in (a as XMLList)) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = org.apache.flex.utils.Language.as(a, XMLList);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target.child(foreachiter0);\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = org.apache.flex.utils.Language.as(a, XMLList);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
     }
     
     @Test
@@ -803,7 +803,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:*;for each (var p:XML in XMLList(a)) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = XMLList(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target.child(foreachiter0);\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = XMLList(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
     }
     
     @Test

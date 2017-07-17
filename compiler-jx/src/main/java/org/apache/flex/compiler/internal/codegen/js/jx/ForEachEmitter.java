@@ -181,9 +181,9 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(targetName);
         if (isXML)
         {
-        	write(".child(");
+        	write("[");
         	write(iterName);
-        	write(")");
+        	write("]");
         }
         else if (isProxy)
         {
