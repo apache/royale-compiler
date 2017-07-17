@@ -773,7 +773,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; function d():void {}; c(d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  function d() {\n  };\n  c(org.apache.flex.utils.Language.closure(d, this, 'd'));\n}");
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  function d() {\n  };\n  c(d);\n}");
     }
 
     @Test
@@ -783,7 +783,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(s:String, f:Function):void {}; function d():void {}; c('foo', d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', org.apache.flex.utils.Language.closure(d, this, 'd'));\n}");
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', d);\n}");
     }
 
     @Test
@@ -793,7 +793,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() {  c('foo', d); function c(s:String, f:Function):void {}; function d():void {};}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', org.apache.flex.utils.Language.closure(d, this, 'd'));\n  \n}");
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', d);\n  \n}");
     }
 
     @Test
@@ -803,7 +803,27 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function d():void {}; c('foo', d); } public function c(s:String, f:Function):void {};}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function d() {\n  };\n  this.c('foo', org.apache.flex.utils.Language.closure(d, this, 'd'));\n}");
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function d() {\n  };\n  this.c('foo', d);\n}");
+    }
+
+    @Test
+    public void testArgumentAsArgument()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b(ff:Function) { function c(f:Function):void {}; c(ff); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n * @param {Function} ff\n */\nB.prototype.b = function(ff) {\n  var self = this;\n  function c(f) {\n  };\n  c(ff);\n}");
+    }
+
+    @Test
+    public void testArgumentAsArgumentInStatic()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public static function b(ff:Function) { function c(f:Function):void {}; c(ff); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n * @param {Function} ff\n */\nB.b = function(ff) {\n  function c(f) {\n  };\n  c(ff);\n}");
     }
 
     @Test

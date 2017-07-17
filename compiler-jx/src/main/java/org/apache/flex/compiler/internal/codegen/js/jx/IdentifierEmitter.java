@@ -184,23 +184,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
         }
         else if (!NativeUtils.isNative(node.getName()))
         {
-            boolean identifierIsLocalOrInstanceFunctionAsValue = false;
-            if (identifierIsPlainFunction)
-            {
-                FunctionClassification fc = ((FunctionDefinition)nodeDef).getFunctionClassification();
-                identifierIsLocalOrInstanceFunctionAsValue =
-                        (fc == FunctionClassification.LOCAL || fc == FunctionClassification.CLASS_MEMBER) &&
-                                // not a value if parent is a function call or member access expression
-                                (!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.FunctionCallID));
-
-            }
-            // an instance method as a parameter or
-            // a local function
-            boolean generateClosure = (parentNodeId == ASTNodeID.ContainerID
-                    && identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
-                    .getFunctionClassification() == FunctionClassification.CLASS_MEMBER)
-                    || identifierIsLocalOrInstanceFunctionAsValue;
-
+            // an instance method not in a function call or member access
+            boolean generateClosure = identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
+                    .getFunctionClassification() == FunctionClassification.CLASS_MEMBER &&
+                    (!(parentNodeId == ASTNodeID.FunctionCallID || parentNodeId == ASTNodeID.MemberAccessExpressionID));
             if (generateClosure)
             {
                 getEmitter().emitClosureStart();
