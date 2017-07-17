@@ -324,6 +324,64 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 }
                 result.append("]");
             }
+            else if (value instanceof CSSMultiValuePropertyValue)
+            {
+                ImmutableList<? extends ICSSPropertyValue> values = ((CSSMultiValuePropertyValue)value).getElements();
+                result.append("[");
+                boolean firstone = true;
+                for (ICSSPropertyValue val : values)
+                {
+                    if (firstone)
+                        firstone = false;
+                    else
+                        result.append(", ");
+                    if (val instanceof CSSStringPropertyValue)
+                    {
+                        result.append("\"" + ((CSSStringPropertyValue)val).getValue() + "\"");
+                    }
+                    else if (val instanceof CSSColorPropertyValue)
+                    {
+                        result.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
+                    }
+                    else if (val instanceof CSSRgbColorPropertyValue)
+                    {
+                        result.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
+                    }
+                    else if (value instanceof CSSRgbaColorPropertyValue)
+                    {
+                        //todo: handle alpha in the RGBA ?
+                        result.append(new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+                    }
+                    else if (val instanceof CSSKeywordPropertyValue)
+                    {
+                        CSSKeywordPropertyValue keywordValue = (CSSKeywordPropertyValue)val;
+                        String keywordString = keywordValue.getKeyword();
+                        if (IASLanguageConstants.TRUE.equals(keywordString))
+                            result.append("true");
+                        else if (IASLanguageConstants.FALSE.equals(keywordString))
+                            result.append("false");
+                        else
+                            result.append("\"" + ((CSSKeywordPropertyValue)val).getKeyword() + "\"");
+                    }
+                    else if (val instanceof CSSNumberPropertyValue)
+                    {
+                        result.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
+                    }
+                    else if (val instanceof CSSURLAndFormatPropertyValue)
+                    {
+                        result.append("\"" + ((CSSURLAndFormatPropertyValue)val).toString() + "\"");
+                    }
+                    else if (val instanceof CSSMultiValuePropertyValue)
+                    {
+                        result.append("\"" + ((CSSMultiValuePropertyValue)val).toString() + "\"");
+                    }
+                    else
+                    {
+                        result.append("unexpected value type: " + val.toString());
+                    }
+                }
+                result.append("]");
+            }
             else if (value instanceof CSSStringPropertyValue)
             {
                 result.append("\"" + ((CSSStringPropertyValue)value).getValue() + "\"");
