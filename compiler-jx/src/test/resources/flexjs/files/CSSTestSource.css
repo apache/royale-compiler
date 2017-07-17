@@ -22,10 +22,6 @@
 @namespace basic "library://ns.apache.org/flexjs/basic";
 @namespace "http://www.w3.org/1999/xhtml";
 
-.foo{
-	8px 24px 0px;
-}
-
 /*
 //----------------------------
 // Named styles
