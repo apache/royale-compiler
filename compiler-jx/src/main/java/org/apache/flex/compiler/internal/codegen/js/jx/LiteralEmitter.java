@@ -132,7 +132,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                     if (c == '"')
                     {
                         s = s.substring(1, s.length() - 1);
-                        s = s.replace("\"", "\\\"");
+                        s = s.replace("\"", "__QUOTE_PLACEHOLDER__");
                         s = "\"" + s + "\"";
                     }
                     // use formatQualifiedName to get XML in the usedNames dependencies

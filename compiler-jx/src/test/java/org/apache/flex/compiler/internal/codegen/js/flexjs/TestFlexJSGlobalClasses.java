@@ -400,7 +400,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:XML = <root title=\"That's Entertainment\"/>");
         asBlockWalker.visitVariable(node);
-        //assertOut("var /** @type {XML} */ a = new XML( \"<root title=\\\"That's Entertainment\\\"/>\")");
+        String s = "var /** @type {XML} */ a = new XML( \"<root title=\\\"That's Entertainment\\\"/>\")";
+        assertOut(s);
     }
     
     @Test
