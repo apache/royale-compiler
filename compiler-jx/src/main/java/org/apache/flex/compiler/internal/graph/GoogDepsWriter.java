@@ -412,9 +412,12 @@ public class GoogDepsWriter {
             FileInfo fi = gd.fileInfo;
             int suppressCount = 0;
             int i = 0;
+            int stopLine = fi.constructorLine;
+            if (fi.constructorLine == -1) // standalone functions
+            	stopLine = fi.googProvideLine + 4; // search a few more lines after goog.provide
             for (String line : fileLines)
             {
-            	if (i < fi.constructorLine)
+            	if (i < stopLine)
             	{
                     int c = line.indexOf(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
                     if (c > -1)
