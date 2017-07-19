@@ -68,7 +68,29 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
     	
         String osName = System.getProperty("os.name");
         if (osName.contains("Windows"))
+        {
+        	pathEnv = new String[7];
         	cordova = "cordova.cmd";
+    		String home = System.getenv("HOME");
+    		if (home == null)
+    			home = System.getenv("USERPROFILE");
+			pathEnv[0] = "USERPROFILE=" + home;
+    		String path = System.getenv("PATH");
+    		String java = System.getenv("JAVA_HOME");
+    		String android = System.getenv("ANDROID_HOME");
+    		String appdata = System.getenv("APPDATA");
+    		String programFiles = System.getenv("ProgramFiles");
+        	if (!path.contains("\\Program Files\\nodejs\\node_modules\\npm\\bin"))
+        	{
+        		path += ";" + programFiles + "\\nodejs\\node_modules\\npm\\bin";
+        	}
+			pathEnv[1] = "PATH=" + path;
+			pathEnv[2] = "JAVA_HOME=" + java;
+			pathEnv[3] = "ANDROID_HOME=" + android;
+			pathEnv[4] = "HOME=" + home;
+			pathEnv[5] = "APPDATA=" + appdata;
+			pathEnv[6] = "ProgramFiles=" + programFiles;
+        }
         else
         {
         	File c = new File("/usr/local/bin/cordova");
@@ -128,6 +150,30 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
         
         if (needNewProject)
         {
+        	/* useful for diagnosing path/environment issues
+        	String[] npmParts = new String[2];
+        	npmParts[0] = "npm.cmd";
+        	npmParts[1] = "-v";
+	        try {
+				Process p = Runtime.getRuntime().exec(npmParts, pathEnv, newOutputFolder);
+            	String line;
+            	BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            	while ((line = input.readLine()) != null) {
+            	    System.out.println(line);
+            	}
+            	input.close();
+            	BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            	while ((line = error.readLine()) != null) {
+            	    System.out.println(line);
+            	}
+				int ret = p.exitValue();
+				System.out.println("npm -v returned " + ret);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+        	*/
+        	
         	String[] execParts = new String[5];
         	execParts[0] = cordova;
         	execParts[1] = "create";
