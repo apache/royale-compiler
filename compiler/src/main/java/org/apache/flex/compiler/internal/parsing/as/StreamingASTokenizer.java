@@ -145,6 +145,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
             .put(IASKeywordConstants.THIS, TOKEN_KEYWORD_THIS)
             .put(IASKeywordConstants.VOID, TOKEN_KEYWORD_VOID)
             .put(IASKeywordConstants.RETURN, TOKEN_KEYWORD_RETURN)
+            .put(IASKeywordConstants.DEBUGGER, TOKEN_KEYWORD_DEBUGGER)
             .build();
 
     /**
@@ -1183,6 +1184,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_BLOCK_OPEN:
                 case TOKEN_BLOCK_CLOSE:
                 case TOKEN_KEYWORD_FUNCTION:
+                case TOKEN_KEYWORD_DEBUGGER:
                     return retVal;
                 case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
                 case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:

@@ -34,6 +34,7 @@ import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.flex.compiler.tree.as.IDebuggerNode;
 import org.apache.flex.compiler.tree.as.IDefaultXMLNamespaceNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -334,6 +335,13 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         {
             emitter.emitStatement(node.getChild(i));
         }
+    }
+
+    @Override
+    public void visitDebugger(IDebuggerNode node)
+    {
+        debug("visitDebugger()");
+        emitter.emitDebugger(node);
     }
 
     @Override

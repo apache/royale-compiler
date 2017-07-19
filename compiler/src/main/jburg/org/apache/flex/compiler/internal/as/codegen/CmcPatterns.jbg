@@ -127,6 +127,10 @@ BlockID(statement stmts*);
 Pattern configBlockStmt
 ConfigBlockID(statement stmts*);
 
+//  debugger;
+Pattern debuggerStmt  
+DebuggerID(void);
+
 //  break;
 Pattern breakStmt  
 BreakID(void);

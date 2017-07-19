@@ -287,6 +287,11 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	return buildToken(TOKEN_KEYWORD_NEW, IASKeywordConstants.NEW);
 }
 
+<YYINITIAL> "debugger"
+{
+	return buildToken(TOKEN_KEYWORD_DEBUGGER, IASKeywordConstants.DEBUGGER);
+}
+
 // Identifier
 <YYINITIAL> {ID_FIRST}({ID_FOLLOW})*
 {

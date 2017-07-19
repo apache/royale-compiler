@@ -186,6 +186,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_E4X_BINDING_CLOSE = 151;
     NEW("new"),
     ATSIGN("@"),
+    DEBUGGER("debugger"),
     //    int TOKEN_OPERATOR_DESCENDANT_ACCESS = 154;
     ;
 

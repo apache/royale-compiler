@@ -52,6 +52,7 @@ import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IConditionalNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
+import org.apache.flex.compiler.tree.as.IDebuggerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -1562,6 +1563,12 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void emitBlockClose(IContainerNode node)
     {
         write(ASEmitterTokens.BLOCK_CLOSE);
+    }
+    
+    @Override
+    public void emitDebugger(IDebuggerNode node)
+    {
+        
     }
 
     @Override

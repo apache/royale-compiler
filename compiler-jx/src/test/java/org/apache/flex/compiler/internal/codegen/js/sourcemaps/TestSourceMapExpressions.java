@@ -24,6 +24,7 @@ import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IDebuggerNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
@@ -870,6 +871,14 @@ public class TestSourceMapExpressions extends SourceMapTestBase
         assertMapping(node, 0, 3, 0, 3, 0, 5); // ,
         assertMapping(node, 0, 5, 0, 5, 0, 6); // c
         assertMapping(node, 0, 6, 0, 6, 0, 7); // )
+    }
+
+    @Test
+    public void testVisitDebugger()
+    {
+        IDebuggerNode node = (IDebuggerNode) getNode("debugger", IDebuggerNode.class);
+        asBlockWalker.visitDebugger(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 8); // debugger
     }
 
     protected IBackend createBackend()

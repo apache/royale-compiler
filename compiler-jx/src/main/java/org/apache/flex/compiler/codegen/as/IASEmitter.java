@@ -31,6 +31,7 @@ import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.flex.compiler.tree.as.IDebuggerNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
@@ -372,5 +373,7 @@ public interface IASEmitter extends INestingEmitter
     void emitBlockOpen(IContainerNode node);
 
     void emitBlockClose(IContainerNode node);
+
+    void emitDebugger(IDebuggerNode node);
 
 }

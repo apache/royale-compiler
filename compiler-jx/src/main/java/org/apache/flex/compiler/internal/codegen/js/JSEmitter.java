@@ -34,6 +34,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BlockCloseEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.BlockOpenEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.CatchEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.DebuggerEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.DoWhileLoopEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.DynamicAccessEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ForLoopEmitter;
@@ -61,6 +62,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.flex.compiler.tree.as.IDebuggerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
@@ -120,6 +122,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public ISubEmitter<IASNode> statementEmitter;
     public ISubEmitter<ILanguageIdentifierNode> languageIdentifierEmitter;
     public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
+    public ISubEmitter<IDebuggerNode> debuggerEmitter;
     
     @Override
     public JSSessionModel getModel()
@@ -169,6 +172,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         statementEmitter = new StatementEmitter(this);
         languageIdentifierEmitter = new LanguageIdentifierEmitter(this);
         sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
+        debuggerEmitter = new DebuggerEmitter(this);
     }
 
     @Override
@@ -375,6 +379,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitBlockClose(IContainerNode node)
     {
         blockCloseEmitter.emit(node);
+    }
+
+    @Override
+    public void emitDebugger(IDebuggerNode node)
+    {
+        debuggerEmitter.emit(node);
     }
 
     public void startMapping(ISourceLocation node)

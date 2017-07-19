@@ -549,6 +549,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_KEYWORD_DEFAULT:
             case TOKEN_KEYWORD_DELETE:
             case TOKEN_KEYWORD_DO:
+            case TOKEN_KEYWORD_DEBUGGER:
             case TOKEN_KEYWORD_ELSE:
             case TOKEN_KEYWORD_FALSE:
             case TOKEN_KEYWORD_FINALLY:

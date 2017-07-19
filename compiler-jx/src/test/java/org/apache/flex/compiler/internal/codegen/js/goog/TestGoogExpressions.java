@@ -23,6 +23,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.TestExpressions;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IDebuggerNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
@@ -35,6 +36,14 @@ import org.junit.Test;
  */
 public class TestGoogExpressions extends TestExpressions
 {
+    @Test
+    public void testVisitDebugger()
+    {
+        IDebuggerNode node = (IDebuggerNode) getNode("debugger", IDebuggerNode.class);
+        asBlockWalker.visitDebugger(node);
+        assertOut("debugger");
+    }
+
     @Override
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethod_1()

@@ -332,6 +332,7 @@ statement[ContainerNode c, int exitCondition]
     final int la2 = LA(2);
 }
     :   breakOrContinueStatement[c]
+    |   debuggerStatement[c]
     |   defaultXMLNamespaceStatement[c]
     |   gotoStatement[c]                 
     |   emptyStatement
@@ -1605,6 +1606,28 @@ breakOrContinueStatement[ContainerNode c]
     	   { n.setLabel(id); }	
 	    )?
     	{ matchOptionalSemicolon(); }
+    ;
+    exception catch [RecognitionException ex] {handleParsingError(ex); }
+ 	
+ 	
+/**
+ * Matches a "debugger statement" or a "continue statement". For example:
+ *
+ *    debugger;
+ *
+ */
+debuggerStatement[ContainerNode c]
+{ 
+    IdentifierNode id = null; 
+    DebuggerNode n = null; 
+    final ASToken t = LT(1);
+}
+    :   ( TOKEN_KEYWORD_DEBUGGER ) 
+    	{ 
+    		n = new DebuggerNode(t);
+    		c.addItem(n);
+    		matchOptionalSemicolon();
+    	}
     ;
     exception catch [RecognitionException ex] {handleParsingError(ex); }
  	

@@ -198,6 +198,9 @@ JBurg.Reduction reducer.reduce_returnVoid(__p);
 statement = Pattern returnNil: 1
 JBurg.Reduction reducer.reduce_returnVoid(__p);
 
+statement = Pattern debuggerStmt: 1
+JBurg.Reduction reducer.reduce_debuggerStmt(__p);
+
 statement = Pattern breakStmt: 1
 JBurg.Reduction reducer.reduce_breakStmt(__p);
 

@@ -34,6 +34,7 @@ public interface IASKeywordConstants
     static final String CONFIG = "config";
     static final String CONST = "const";
     static final String CONTINUE = "continue";
+    static final String DEBUGGER = "debugger";
     static final String DELETE = "delete";
     static final String DEFAULT = "default";
     static final String DEFAULT_XML_NAMESPACE = "default xml namespace";

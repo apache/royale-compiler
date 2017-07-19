@@ -3222,6 +3222,12 @@ public class ABCGeneratingReducer
         return SemanticUtils.getBooleanContent(iNode);
     }
 
+    public InstructionList reduce_debuggerStmt(IASNode iNode)
+    {
+        //TODO: make runtime pause in debugger -JT
+        return createInstructionList(iNode);
+    }
+
     public InstructionList reduce_breakStmt(IASNode iNode)
     {
         try

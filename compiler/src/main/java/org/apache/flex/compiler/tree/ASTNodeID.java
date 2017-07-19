@@ -52,6 +52,7 @@ public enum ASTNodeID
     ConfigBlockID("CONFIG"),
     ContainerID(null),
     ContinueID("continue"),
+    DebuggerID("debugger"),
     DefaultID("default"),
     DefaultXMLStatementID(null),
     DoWhileLoopID("do"),
