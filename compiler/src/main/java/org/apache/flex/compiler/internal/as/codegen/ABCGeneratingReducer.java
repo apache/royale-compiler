@@ -3224,8 +3224,14 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_debuggerStmt(IASNode iNode)
     {
-        //TODO: make runtime pause in debugger -JT
-        return createInstructionList(iNode);
+        InstructionList result = createInstructionList(iNode);
+
+        Namespace ns = new Namespace(CONSTANT_PackageNs, "flash.debugger");
+        Name enterDebuggerName = new Name(ns, "enterDebugger");
+        result.addInstruction(OP_finddef, enterDebuggerName);
+        result.addInstruction(OP_callproperty, new Object[] {enterDebuggerName, 0});
+
+        return result;
     }
 
     public InstructionList reduce_breakStmt(IASNode iNode)
