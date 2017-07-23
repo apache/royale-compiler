@@ -88,6 +88,10 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler;
         if (nameMap.contains(name))
         	name = name.toLowerCase();
+		else if (name.equals("doubleClick"))
+			name = "dblclick";
+		else if (name.equals("mouseWheel"))
+			name = "wheel";
         writeSimpleDescriptor(name, null, handler, writeNewline);
 
         return sb.toString();
@@ -97,6 +101,10 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     {
     	if (nameMap.contains(name))
     		return name.toLowerCase();
+		else if (name.equals("doubleClick"))
+			name = "dblclick";
+		else if (name.equals("mouseWheel"))
+			name = "wheel";
     	return name;
     }
 }
