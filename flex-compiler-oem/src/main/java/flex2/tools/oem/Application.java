@@ -807,24 +807,30 @@ public class Application implements Builder
             }
             
         }
-        ISWF swf = mxmljsc.getSWFTarget();
         movie = new SimpleMovie(null);
-        org.apache.flex.swf.types.Rect r = swf.getFrameSize();
-        flash.swf.types.Rect fr = new flash.swf.types.Rect();
-        fr.xMin = r.xMin();
-        fr.yMin = r.yMin();
-        fr.xMax = r.xMax();
-        fr.yMax = r.yMax();
-        movie.size = fr;
-        RGB bg = swf.getBackgroundColor();
-        int red = bg.getRed();
-        red = red << 16;
-        int green = bg.getGreen();
-        green = green << 8;
-        int blue = bg.getBlue();
-        movie.bgcolor = new SetBackgroundColor(red + green + blue);
-        movie.topLevelClass = swf.getTopLevelClass();
-        
+        try {
+	        ISWF swf = mxmljsc.getSWFTarget();
+	        org.apache.flex.swf.types.Rect r = swf.getFrameSize();
+	        flash.swf.types.Rect fr = new flash.swf.types.Rect();
+	        fr.xMin = r.xMin();
+	        fr.yMin = r.yMin();
+	        fr.xMax = r.xMax();
+	        fr.yMax = r.yMax();
+	        movie.size = fr;
+	        RGB bg = swf.getBackgroundColor();
+	        int red = bg.getRed();
+	        red = red << 16;
+	        int green = bg.getGreen();
+	        green = green << 8;
+	        int blue = bg.getBlue();
+	        movie.bgcolor = new SetBackgroundColor(red + green + blue);
+	        movie.topLevelClass = swf.getTopLevelClass();
+        }
+        catch (NullPointerException e)
+        {
+        	// can throw errors if getTargetSettings() can't return a target
+        	// because of config issues
+        }
     }
     
     /**
