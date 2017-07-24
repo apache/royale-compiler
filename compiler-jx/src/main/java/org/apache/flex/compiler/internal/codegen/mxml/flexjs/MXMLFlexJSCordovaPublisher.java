@@ -51,6 +51,9 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
     private String cordova = "cordova";
     private String[] pathEnv = new String[3];
     
+    private StringBuilder log = new StringBuilder();
+    private String newline = "\n";
+    
     private boolean needNewProject;
 
     @Override
@@ -69,6 +72,7 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
         String osName = System.getProperty("os.name");
         if (osName.contains("Windows"))
         {
+        	newline = "\r\n";
         	pathEnv = new String[7];
         	cordova = "cordova.cmd";
     		String home = System.getenv("HOME");
@@ -90,6 +94,13 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
 			pathEnv[4] = "HOME=" + home;
 			pathEnv[5] = "APPDATA=" + appdata;
 			pathEnv[6] = "ProgramFiles=" + programFiles;
+			log.append(pathEnv[0]).append(newline);
+			log.append(pathEnv[1]).append(newline);
+			log.append(pathEnv[2]).append(newline);
+			log.append(pathEnv[3]).append(newline);
+			log.append(pathEnv[4]).append(newline);
+			log.append(pathEnv[5]).append(newline);
+			log.append(pathEnv[6]).append(newline);
         }
         else
         {
@@ -143,6 +154,9 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
         		}
     			pathEnv[1] = "PATH=" + path;
     			pathEnv[2] = "JAVA_HOME=" + java;
+    			log.append(pathEnv[0]).append(newline);
+    			log.append(pathEnv[1]).append(newline);
+    			log.append(pathEnv[2]).append(newline);
         	}
         }
         
@@ -180,17 +194,22 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
         	execParts[2] = "app";
         	execParts[3] = googConfiguration.getCordovaId();
         	execParts[4] = projectName;
+			log.append(execParts[0]).append(newline);
+			log.append(execParts[1]).append(newline);
+			log.append(execParts[2]).append(newline);
+			log.append(execParts[3]).append(newline);
+			log.append(execParts[4]).append(newline);
 	        try {
 				Process p = Runtime.getRuntime().exec(execParts, pathEnv, newOutputFolder);
             	String line;
             	BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             	while ((line = input.readLine()) != null) {
-            	    System.out.println(line);
+            	    log.append(line).append(newline);
             	}
             	input.close();
             	BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             	while ((line = error.readLine()) != null) {
-            	    System.out.println(line);
+            	    log.append(line).append(newline);
             	}
 				int ret = p.exitValue();
 				System.out.println("cordova create returned " + ret);
@@ -211,6 +230,8 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
     	if (super.publish(problems))
     	{
     		cordovaPublish();
+    		File logFile = new File(outputFolder.getParentFile().getParentFile(), "cordova.log");
+    		writeFile(logFile, log.toString(), false);
     	}
     	
     	return true;
@@ -237,20 +258,24 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
             	execParts[1] = "platform";
             	execParts[2] = "add";
             	execParts[3] = platform;
+    			log.append(execParts[0]).append(newline);
+    			log.append(execParts[1]).append(newline);
+    			log.append(execParts[2]).append(newline);
+    			log.append(execParts[3]).append(newline);
                 try {
                 	Process p = Runtime.getRuntime().exec(execParts, pathEnv, outputFolder.getParentFile());
                 	String line;
                 	BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 	while ((line = input.readLine()) != null) {
-                	    System.out.println(line);
+                	    log.append(line).append(newline);
                 	}
                 	input.close();
                 	BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                 	while ((line = error.readLine()) != null) {
-                	    System.out.println(line);
+                	    log.append(line).append(newline);
                 	}
     				int ret = p.exitValue();
-    				System.out.println("cordova platform returned " + ret);
+    				log.append("cordova platform add returned " + ret).append(newline);
         		} catch (IOException e) {
         			// TODO Auto-generated catch block
         			e.printStackTrace();
@@ -267,19 +292,23 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
             	execParts[1] = "plugin";
             	execParts[2] = "add";
             	execParts[3] = plugin;
+    			log.append(execParts[0]).append(newline);
+    			log.append(execParts[1]).append(newline);
+    			log.append(execParts[2]).append(newline);
+    			log.append(execParts[3]).append(newline);
             	Process p = Runtime.getRuntime().exec(execParts, pathEnv, outputFolder.getParentFile());
             	String line;
             	BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             	while ((line = input.readLine()) != null) {
-            	    System.out.println(line);
+            	    log.append(line).append(newline);
             	}
             	input.close();
             	BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             	while ((line = error.readLine()) != null) {
-            	    System.out.println(line);
+            	    log.append(line).append(newline);
             	}
 				int ret = p.exitValue();
-				System.out.println("cordova plugin returned " + ret);
+				log.append("cordova plugin returned " + ret).append(newline);
     		} catch (IOException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
@@ -290,19 +319,21 @@ public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
         	String[] execParts = new String[2];
         	execParts[0] = cordova;
         	execParts[1] = "build";
+			log.append(execParts[0]).append(newline);
+			log.append(execParts[1]).append(newline);
         	Process p = Runtime.getRuntime().exec(execParts, pathEnv, outputFolder.getParentFile());
         	String line;
         	BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
         	while ((line = input.readLine()) != null) {
-        	    System.out.println(line);
+        	    log.append(line).append(newline);
         	}
         	input.close();
         	BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         	while ((line = error.readLine()) != null) {
-        	    System.out.println(line);
+        	    log.append(line).append(newline);
         	}
 			int ret = p.exitValue();
-			System.out.println("cordova build returned " + ret);
+			log.append("cordova build returned " + ret).append(newline);;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
