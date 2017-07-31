@@ -118,6 +118,25 @@ public class JSConfiguration extends Configuration
     }
 
     //
+    // 'js-default-initializers'
+    //
+
+    private boolean jsDefaultInitializers = false;
+
+    public boolean getJsDefaultInitializers()
+    {
+        return jsDefaultInitializers;
+    }
+
+    @Config
+    @Mapping("js-default-initializers")
+    public void setJsDefaultInitializers(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsDefaultInitializers = value;
+    }
+
+    //
     // 'compiler.js-external-library-path' option
     //
 
