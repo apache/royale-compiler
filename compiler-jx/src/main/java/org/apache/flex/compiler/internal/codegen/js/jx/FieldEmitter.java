@@ -24,6 +24,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -32,9 +33,11 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarIn
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -165,6 +168,40 @@ public class FieldEmitter extends JSSubEmitter implements
                 writeToken(ASEmitterTokens.EQUAL);
                 write("0");
         	}
+            boolean defaultInitializers = false;
+            ICompilerProject project = getProject();
+            if(project instanceof FlexJSProject)
+            {
+                FlexJSProject fjsProject = (FlexJSProject) project;
+                if(fjsProject.config != null)
+                {
+                    defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+                }
+            }
+            if (defaultInitializers)
+            {
+                if (defName.equals("Number"))
+                {
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(IASKeywordConstants.NA_N);
+                }
+                else if (defName.equals("Boolean"))
+                {
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(IASKeywordConstants.FALSE);
+                }
+                else if (!defName.equals("*"))
+                {
+                    //type * is meant to default to undefined, so it
+                    //doesn't need to be initialized, but everything
+                    //else should default to null
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(IASKeywordConstants.NULL);
+                }
+            }
         }
 
         if (!(node instanceof ChainedVariableNode))
