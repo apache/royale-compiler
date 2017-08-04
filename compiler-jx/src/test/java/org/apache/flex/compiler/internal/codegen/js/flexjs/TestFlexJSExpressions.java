@@ -35,6 +35,7 @@ import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
@@ -72,6 +73,37 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "if (a) super.foo;", IMemberAccessExpressionNode.class);
         asBlockWalker.visitMemberAccessExpression(node);
         assertOut("super.foo");
+    }
+
+    @Test
+    public void testVisitLanguageIdentifierNode_SuperGetter()
+    {
+        IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Boolean " +
+        		                       "{ return super.isDefaultPrevented(); }" + 
+        		                       "override public function isDefaultPrevented():Boolean" +
+                                       "{ return defaultPrevented; }", IClassNode.class);
+        // getters and setters don't get output until the class is output so you can't just visit the accessorNode
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\n" + 
+        		  "FalconTest_A = function() {\n" +
+        		  "};\n\n\n" +
+        		  "/**\n" +
+        		  " * Prevent renaming of class. Needed for reflection.\n" +
+        		  " */\n" +
+        		  "goog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
+        		  "FalconTest_A.prototype.falconTest_a = function() {\n" +
+        		  "  var self = this;\n" +
+        		  "  ;\n" +
+        		  "  function isDefaultPrevented() {\n" +
+        		  "    return defaultPrevented;\n  };\n" +
+        		  "  ;\n  \n" +
+        		  "};\n\n\n" +
+        		  "FalconTest_A.prototype.get__defaultPrevented = function() {\n" +
+        		  "  return FalconTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
+        		  "};\n\n\n" +
+        		  "Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n" +
+        		  "/** @export */\n" +
+        		  "defaultPrevented: {\nget: FalconTest_A.prototype.get__defaultPrevented}}\n);");
     }
 
     @Override

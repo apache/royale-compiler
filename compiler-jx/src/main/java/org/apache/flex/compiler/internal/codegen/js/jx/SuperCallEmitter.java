@@ -73,8 +73,13 @@ public class SuperCallEmitter extends JSSubEmitter
             IClassNode cnode = (IClassNode) node
                     .getAncestorOfType(IClassNode.class);
 
-            if (fnode != null
-                    && (fnode.getNodeID() == ASTNodeID.GetterID || fnode
+            IExpressionNode fcNameNode = fcnode.getNameNode();
+            // assume it is memberaccess of the form super.somefunction
+            MemberAccessExpressionNode mae = null;
+            if (fcNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            	mae = (MemberAccessExpressionNode)fcNameNode;
+            if (mae != null
+                    && (mae.getRightOperandNode().getNodeID() == ASTNodeID.GetterID || mae.getRightOperandNode()
                             .getNodeID() == ASTNodeID.SetterID))
             {
                 if (cnode == null && thisClass != null)
