@@ -112,4 +112,19 @@
 }
 
 
+.FLEX35346 {
+        position: absolute;
+        transform: translate(0,-1px);
+        height: 2px;
+        overflow: hidden;
+        width: calc(100% - 22px);
+        margin: 0 26px;
+        left: 0;
+        padding: 0;
+        border: 0;
+        -webkit-transform: translate(0,-1px);
+        top: 50%;
+}
+
+
 

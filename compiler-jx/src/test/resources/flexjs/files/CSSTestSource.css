@@ -105,3 +105,17 @@
 	font-family: Georgia, Times New Roman, Times, serif;
 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
+
+.FLEX35346 {
+			position: absolute;
+			height: 2px;
+			width: calc(100% - 22px);
+			top: 50%;
+			left: 0;
+			margin: 0 26px;
+			overflow: hidden;
+			border: 0;
+			padding: 0;
+			-webkit-transform: translate(0,-1px);
+			transform: translate(0,-1px)
+}
