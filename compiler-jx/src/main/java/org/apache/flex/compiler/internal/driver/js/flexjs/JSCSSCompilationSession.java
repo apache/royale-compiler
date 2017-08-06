@@ -45,7 +45,8 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	         "linear-gradient",
 	         "progid:DXImageTransform.Microsoft.gradient",
 	         "translateX",
-	         "translateY"	
+	         "translateY",
+	         "translate"	
 	);
 	
     private ArrayList<String> requires;
@@ -443,6 +444,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 else if ("calc".equals(functionCall.name))
                 {
                     // TODO: implement me
+                	result.append("null");
                 }
                 else if ("Embed".equals(functionCall.name))
                 {
@@ -456,6 +458,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 else if (otherCSSFunctions.contains(functionCall.name))
                 {
                 	// ignore for now?
+                	result.append("null");
                 }
                 else
                 {

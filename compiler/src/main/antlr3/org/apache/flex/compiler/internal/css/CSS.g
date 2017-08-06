@@ -554,6 +554,7 @@ FUNCTIONS : '-moz-linear-gradient'
           | 'progid:DXImageTransform.Microsoft.gradient'
           | 'translateX'
           | 'translateY'
+          | 'translate'
           ;
 NOT
     :  'not'
