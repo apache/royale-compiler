@@ -422,6 +422,13 @@ public class MXMLScopeBuilder
         String id = tag.getRawAttributeValue("id");
         if (id != null)
             processID(tag, idAttribute);
+        else
+        {
+            idAttribute = tag.getTagAttributeData("localId");
+            id = tag.getRawAttributeValue("localId");
+            if (id != null)
+                processID(tag, idAttribute);        	
+        }
 
         if (recurse)
         {

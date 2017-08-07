@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_EXCLUDE_FROM;
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ID;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_LOCAL_ID;
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_INCLUDE_IN;
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_CREATION_POLICY;
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_DESTRUCTION_POLICY;
@@ -141,6 +142,14 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
     private String id;
 
     /**
+     * The compile-time identifier for this instance. This is <code>null</code>
+     * if there is no compile-time <code>id</code> attribute on the tag that
+     * produced this instance.  A localId does not set the id property used
+     * by CSS.
+     */
+    private String localId;
+
+    /**
      * The states (or state groups) that include this instance. This is
      * <code>null</code> if there was no <code>includeIn</code> attribute on the
      * tag that produced this instance node.
@@ -179,6 +188,9 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_ID))
             id = processIDAttribute(builder, attribute);
+
+        else if (attribute.isSpecialAttribute(ATTRIBUTE_LOCAL_ID))
+            localId = processIDAttribute(builder, attribute);
 
         else if (attribute.isSpecialAttribute(ATTRIBUTE_INCLUDE_IN))
             includeIn = processIncludeInOrExcludeFromAttribute(builder, attribute);
@@ -329,9 +341,16 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
     }
 
     @Override
+    public String getLocalID()
+    {
+        return localId;
+    }
+
+    @Override
     public String getEffectiveID()
     {
-        return id != null ? id : getClassDefinitionNode().getGeneratedID(this);
+        return id != null ? id : 
+        	localId != null ? localId : getClassDefinitionNode().getGeneratedID(this);
     }
 
     @Override

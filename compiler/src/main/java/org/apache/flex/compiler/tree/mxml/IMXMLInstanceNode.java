@@ -36,6 +36,14 @@ public interface IMXMLInstanceNode extends IMXMLClassReferenceNode
     String getID();
 
     /**
+     * The compile-time identifier specified for this instance.
+     * 
+     * @return The localId as a String, or <code>null</code> if no compile-time
+     * identifier was specified.
+     */
+	String getLocalID();
+	
+    /**
      * The compile-time identifier used by the compiler for this instance. If no
      * <code>id</code> is specified, then the compiler generates an identifier
      * if one is needed.
@@ -91,4 +99,5 @@ public interface IMXMLInstanceNode extends IMXMLClassReferenceNode
      * @return <code>true</code> if node has same line number.
      */
     boolean isEqual(IMXMLInstanceNode node);
+
 }

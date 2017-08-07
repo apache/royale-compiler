@@ -245,6 +245,11 @@ public interface IMXMLLanguageConstants
     static final String ATTRIBUTE_ID = "id";
 
     /**
+     * The short name of the special <code>localId</code> attribute.
+     */
+    static final String ATTRIBUTE_LOCAL_ID = "localId";
+
+    /**
      * The short name of the special <code>implements</code> attribute.
      */
     static final String ATTRIBUTE_IMPLEMENTS = "implements";
