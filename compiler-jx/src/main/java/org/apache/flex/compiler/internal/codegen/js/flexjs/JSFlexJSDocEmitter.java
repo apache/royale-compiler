@@ -37,10 +37,12 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -53,6 +55,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     private List<String> ignoreList;
     private List<String> coercionList;
     public boolean emitStringConversions = true;
+    private boolean emitExports = true;
 
     public JSFlexJSDocEmitter(IJSEmitter emitter)
     {
@@ -107,6 +110,8 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     {
     	FlexJSProject fjp = (FlexJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
+        if (fjp.config != null)
+        	emitExports = fjp.config.getExportPublicSymbols();
         
         coercionList = null;
         ignoreList = null;
@@ -430,6 +435,13 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         emitType(node, project.getActualPackageName(packageName));
 
         end();
+    }
+
+    @Override
+    public void emitPublic(IASNode node)
+    {
+    	if (emitExports)
+    		super.emitPublic(node);
     }
 
 }

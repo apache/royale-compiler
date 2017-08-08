@@ -402,5 +402,26 @@ public class JSGoogConfiguration extends JSConfiguration
         keepCodeWithMetadata.addAll(values);
     }
 
+    //
+    // 'export-public-symbols'
+    //
+
+    private boolean exportPublicSymbols = true;
+
+    public boolean getExportPublicSymbols()
+    {
+        return exportPublicSymbols;
+    }
+
+    @Config
+    @Mapping("export-public-symbols")
+    public void setExportPublicSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	exportPublicSymbols = value;
+    }
+
+    
+    
 
 }

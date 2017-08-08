@@ -122,6 +122,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
     private String interfaceList;
+    private boolean emitExports = true;
     
     /**
      * This keeps track of the entries in our temporary array of 
@@ -510,6 +511,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitDocument(IMXMLDocumentNode node)
     {
+        FlexJSProject fjp = (FlexJSProject) getMXMLWalker().getProject();
+    	if (fjp.config != null)
+    		emitExports = fjp.config.getExportPublicSymbols();
+    	
         descriptorTree = new ArrayList<MXMLDescriptorSpecifier>();
         propertiesTree = new MXMLDescriptorSpecifier();
 
@@ -749,7 +754,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             root.isTopNode = true;
     
 	        writeNewline("/**");
-	        writeNewline(" * @export");
+	        if (emitExports)
+	        	writeNewline(" * @export");
 	        writeNewline(" * @type {Array}");
 	        writeNewline(" */");
 	        writeNewline("this.mxmlsd = " + ASEmitterTokens.SQUARE_OPEN.getToken());
@@ -1135,7 +1141,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         .getASEmitter();
 
         writeNewline("/**");
-        writeNewline(" * @export");
+        writeNewline(" * @export"); // must export or else GCC will remove it
         writeNewline(" */");
         writeNewline(formatQualifiedName(cname)
                 + ".prototype._bindings = [");
@@ -1536,7 +1542,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         for (MXMLEventSpecifier event : events)
         {
             writeNewline("/**");
-            writeNewline(" * @export");
+	        if (emitExports)
+	        	writeNewline(" * @export");
             writeNewline(" * @param {" + formatQualifiedName(event.type) + "} event");
             writeNewline(" */");
             writeNewline(formatQualifiedName(cname)
@@ -1598,7 +1605,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     .getToken()))
             {
                 indentPush();
-                writeNewline("/** @export */");
+    	        if (emitExports)
+    	        	writeNewline("/** @export */");
                 writeNewline(instance.id + ": {");
                 writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();
