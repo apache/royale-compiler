@@ -1605,8 +1605,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     .getToken()))
             {
                 indentPush();
-    	        if (emitExports)
-    	        	writeNewline("/** @export */");
+    	        writeNewline("/** @export */");
                 writeNewline(instance.id + ": {");
                 writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();
