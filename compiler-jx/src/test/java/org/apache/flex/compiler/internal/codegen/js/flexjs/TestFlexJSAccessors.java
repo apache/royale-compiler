@@ -49,7 +49,7 @@ public class TestFlexJSAccessors extends ASTestBase
         String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
         		"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
         		"FalconTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\n" +
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
         		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";
         assertOut(expected);
     }
@@ -64,7 +64,7 @@ public class TestFlexJSAccessors extends ASTestBase
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n" +
 				"B.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nlabel: {\n" +
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nlabel: {\n" +
         		"get: B.prototype.get__label,\nset: B.prototype.set__label}}\n);"; 
         assertOut(expected);
     }
@@ -79,7 +79,7 @@ public class TestFlexJSAccessors extends ASTestBase
         String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
 				"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"FalconTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-				"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nlabel: {\n" +
+				"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nlabel: {\n" +
 				"get: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);"; 
         assertOut(expected);
     }
@@ -94,7 +94,7 @@ public class TestFlexJSAccessors extends ASTestBase
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  this.label = this.label;\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n" +
 				"B.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-				"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nlabel: {\n" +
+				"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nlabel: {\n" +
 				"get: B.prototype.get__label,\nset: B.prototype.set__label}}\n);"; 
         assertOut(expected);
     }
@@ -109,7 +109,7 @@ public class TestFlexJSAccessors extends ASTestBase
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this[\"http://www.adobe.com/2006/actionscript/flash/proxy::label\"];\n  this[\"http://www.adobe.com/2006/actionscript/flash/proxy::label\"] = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n" +
 				"B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__label\"] = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__label\"] = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\n\"http://www.adobe.com/2006/actionscript/flash/proxy::label\": {\nget: B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__label\"],\nset: B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__label\"]}}\n);";
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n\"http://www.adobe.com/2006/actionscript/flash/proxy::label\": {\nget: B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__label\"],\nset: B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__label\"]}}\n);";
         assertOut(expected);
     }
 
@@ -126,7 +126,7 @@ public class TestFlexJSAccessors extends ASTestBase
         		"FalconTest_A.prototype.set__label = function(value) {\nvar oldValue = this.get__label();\nif (oldValue != value) {\nthis.bindable__set__label(value);\n" +
         		"    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
         		"         this, \"label\", oldValue, value));\n}\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\n" +
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
         		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";
         assertOut(expected);
     }
@@ -141,7 +141,7 @@ public class TestFlexJSAccessors extends ASTestBase
         String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
 				"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"FalconTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\n" +
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
         		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";
         assertOut(expected);
     }

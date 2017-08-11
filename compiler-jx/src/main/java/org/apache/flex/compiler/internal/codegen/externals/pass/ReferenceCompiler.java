@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceMo
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
+import com.google.javascript.jscomp.parsing.Config;
 
 public class ReferenceCompiler
 {
@@ -67,10 +68,10 @@ public class ReferenceCompiler
         options.setLineLengthThreshold(80);
         options.setPreferSingleQuotes(true);
         options.setIdeMode(true);
-        options.setParseJsDocDocumentation(true);
+        options.setParseJsDocDocumentation(Config.JsDocParsing.INCLUDE_DESCRIPTIONS_NO_WHITESPACE);
         options.setExternExports(false);
         options.setExtraAnnotationNames(Arrays.asList(asdocTags));
-        options.setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT);
+        options.setLanguageIn(LanguageMode.ECMASCRIPT_2015);
         options.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT);
 
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new NamespaceResolutionPass(model,

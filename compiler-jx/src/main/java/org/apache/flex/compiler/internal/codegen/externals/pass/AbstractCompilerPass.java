@@ -52,7 +52,7 @@ public abstract class AbstractCompilerPass implements CompilerPass, Callback
     public void process(Node externs, Node root)
     {
         //NodeTraversal.traverse(compiler, root, this);
-        NodeTraversal.traverseRoots(compiler, this, externs, root);
+        NodeTraversal.traverseRootsEs6(compiler, this, externs, root);
     }
 
     protected void log(Node n)

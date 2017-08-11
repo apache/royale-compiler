@@ -469,6 +469,11 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
     protected String convertASTypeToJS(String name, String pname)
     {
+    	return convertASTypeToJSType(name, pname);
+    }
+    
+    public static String convertASTypeToJSType(String name, String pname)
+    {
         String result = "";
 
         if (name.equals(""))
@@ -488,7 +493,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         {
         	// is a vector so convert the element type
         	String elementType = name.substring(8, name.length() - 1);
-        	elementType = convertASTypeToJS(elementType, pname);
+        	elementType = convertASTypeToJSType(elementType, pname);
         	name = "Vector.<" + elementType + ">";
         }
         IASGlobalFunctionConstants.BuiltinType[] builtinTypes = IASGlobalFunctionConstants.BuiltinType

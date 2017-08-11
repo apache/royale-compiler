@@ -39,7 +39,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.prototype.get__foo = function() {\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nget: FalconTest_A.prototype.get__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: FalconTest_A.prototype.get__foo}}\n);");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.prototype.get__foo = function() {\n  return -1;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nget: FalconTest_A.prototype.get__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: FalconTest_A.prototype.get__foo}}\n);");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.prototype.get__foo = function() {\n  return -1;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nget: FalconTest_A.prototype.get__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: FalconTest_A.prototype.get__foo}}\n);");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n" +
 				"B.prototype.get__foo = function() {\n  return B.superClass_.get__foo.apply(this);\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: B.prototype.get__foo}}\n);");
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: B.prototype.get__foo}}\n);");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n" +
 				"B.prototype.get__foo = function() {\n  return B.superClass_.get__foo.apply(this);\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: B.prototype.get__foo,\nset: A.prototype.set__foo}}\n);");
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: B.prototype.get__foo,\nset: A.prototype.set__foo}}\n);");
     }
     
     @Override
@@ -98,7 +98,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.get__foo = function() {\n  return -1;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nget: FalconTest_A.get__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: FalconTest_A.get__foo}}\n);");
     }
 
     @Override
@@ -110,7 +110,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.prototype.set__foo = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nset: FalconTest_A.prototype.set__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: FalconTest_A.prototype.set__foo}}\n);");
     }
 
     @Override
@@ -122,7 +122,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.prototype.set__foo = function(value) {\n  fetch('haai');\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nset: FalconTest_A.prototype.set__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: FalconTest_A.prototype.set__foo}}\n);");
     }
 
     @Override
@@ -134,7 +134,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.prototype.set__foo = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nset: FalconTest_A.prototype.set__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: FalconTest_A.prototype.set__foo}}\n);");
     }
 
     @Override
@@ -146,7 +146,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n" +
 				"B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nset: B.prototype.set__foo}}\n);");
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: B.prototype.set__foo}}\n);");
     }
 
     @Override
@@ -158,7 +158,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
 				"FalconTest_A.set__foo = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nset: FalconTest_A.set__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: FalconTest_A.set__foo}}\n);");
     }
 
     @Test
@@ -169,7 +169,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n" +
 				"B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
     }
     
     @Override

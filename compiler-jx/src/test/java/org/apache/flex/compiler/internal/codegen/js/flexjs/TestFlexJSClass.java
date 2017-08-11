@@ -180,7 +180,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\norg.apache.flex.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nbaz: {\nset: org.apache.flex.B.prototype.set__baz},\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\norg.apache.flex.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\nbaz: {\nset: org.apache.flex.B.prototype.set__baz},\n/**\n  * @export\n  * @type {Object} */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -189,7 +189,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  org.apache.flex.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.flex.B', org.apache.flex.B);\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  org.apache.flex.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -511,11 +511,11 @@ public class TestFlexJSClass extends TestGoogClass
         		"org.apache.flex.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
         		"org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__foo6\"] = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__foo6\"] = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n/** @export */\n" +
-        		    "foo1: {\nget: org.apache.flex.A.prototype.get__foo1,\nset: org.apache.flex.A.prototype.set__foo1},\n/** @export */\n" +
-        		    "foo2: {\nget: org.apache.flex.A.prototype.get__foo2,\nset: org.apache.flex.A.prototype.set__foo2},\n/** @export */\n" +
-        		    "foo3: {\nget: org.apache.flex.A.prototype.get__foo3,\nset: org.apache.flex.A.prototype.set__foo3},\n/** @export */\n" +
-        		    "foo5: {\nget: org.apache.flex.A.prototype.get__foo5,\nset: org.apache.flex.A.prototype.set__foo5},\n/** @export */\n" +
+        		"Object.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\n" +
+        		    "foo1: {\nget: org.apache.flex.A.prototype.get__foo1,\nset: org.apache.flex.A.prototype.set__foo1},\n/**\n  * @export\n  * @type {Object} */\n" +
+        		    "foo2: {\nget: org.apache.flex.A.prototype.get__foo2,\nset: org.apache.flex.A.prototype.set__foo2},\n/**\n  * @export\n  * @type {Object} */\n" +
+        		    "foo3: {\nget: org.apache.flex.A.prototype.get__foo3,\nset: org.apache.flex.A.prototype.set__foo3},\n/**\n  * @export\n  * @type {Object} */\n" +
+        		    "foo5: {\nget: org.apache.flex.A.prototype.get__foo5,\nset: org.apache.flex.A.prototype.set__foo5},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\": {\nget: org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__foo6\"],\n" +
         		    																"set: org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__foo6\"]}}\n);");
     }

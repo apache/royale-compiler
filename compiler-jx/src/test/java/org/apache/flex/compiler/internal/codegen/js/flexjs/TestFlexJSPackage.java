@@ -794,7 +794,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "\n" +
         		  "\n" +
         		  "Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
-                  "/** @export */\n" +
+                  "/**\n  * @export\n  * @type {string} */\n" +
                   "myString: {\n" +
                   "get: foo.bar.baz.A.prototype.get__myString,\n" +
                   "set: foo.bar.baz.A.prototype.set__myString}}\n" +
@@ -850,7 +850,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "\n" +
         		  "\n" +
         		  "Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
-                  "/** @export */\n" +
+                  "/**\n  * @export\n  * @type {string} */\n" +
                   "someString: {\n" +
                   "get: foo.bar.baz.A.InternalClass.prototype.get__someString,\n" +
                   "set: foo.bar.baz.A.InternalClass.prototype.set__someString}}\n" +

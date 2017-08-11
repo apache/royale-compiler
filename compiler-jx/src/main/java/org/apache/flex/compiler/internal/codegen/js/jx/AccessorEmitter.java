@@ -31,6 +31,7 @@ import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
+import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -40,7 +41,9 @@ import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
@@ -77,6 +80,10 @@ public class AccessorEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        FlexJSProject project = (FlexJSProject)getWalker().getProject();
+        boolean emitExports = true;
+        if (project != null && project.config != null)
+        	emitExports = project.config.getExportPublicSymbols();
 
         if (!getModel().getPropertyMap().isEmpty())
         {
@@ -98,7 +105,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)getterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -161,7 +167,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)setterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -276,12 +281,17 @@ public class AccessorEmitter extends JSSubEmitter implements
                 PropertyNodes p = getModel().getPropertyMap().get(propName);
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
-                writeNewline("/** @export */");
+            	writeNewline("/**");
+                if (emitExports)
+                	writeNewline("  * @export");
+                if (p.type != null)
+                	writeNewline("  * @type {"+JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+                else
+                	writeNewline("  */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
                 if (fjs.isCustomNamespace(fnNode))
                 {
         			INamespaceDecorationNode ns = fnNode.getActualNamespaceNode();
-                    ICompilerProject project = getWalker().getProject();
         			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
         			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
         			String s = nsDef.getURI();
@@ -304,7 +314,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)getterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -338,7 +347,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                         if (fjs.isCustomNamespace((FunctionNode)setterNode))
                         {
                 			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
-                            ICompilerProject project = getWalker().getProject();
                 			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
                 			String s = nsDef.getURI();
@@ -367,7 +375,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)setterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -402,7 +409,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                         if (fjs.isCustomNamespace((FunctionNode)getterNode))
                         {
                 			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
-                            ICompilerProject project = getWalker().getProject();
                 			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
                 			String s = nsDef.getURI();
@@ -440,7 +446,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)getterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -471,7 +476,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)setterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -526,7 +530,13 @@ public class AccessorEmitter extends JSSubEmitter implements
                         propName);
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
-                writeNewline("/** @export */");
+            	writeNewline("/**");
+                if (emitExports)
+                	writeNewline("  * @export");
+                if (p.type != null)
+                	writeNewline("  * @type {"+JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+                else
+                	writeNewline("  */");
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
@@ -541,7 +551,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)getterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -566,7 +575,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (fjs.isCustomNamespace((FunctionNode)setterNode))
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
-                        ICompilerProject project = getWalker().getProject();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
@@ -605,6 +613,9 @@ public class AccessorEmitter extends JSSubEmitter implements
             map.put(name, p);
         }
         p.getter = node;
+        ICompilerProject project = (ICompilerProject)getWalker().getProject();
+        if (project != null)
+        	p.type = node.getDefinition().resolveReturnType(project);
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(fjs.getProblems());
     }
@@ -628,6 +639,13 @@ public class AccessorEmitter extends JSSubEmitter implements
             map.put(name, p);
         }
         p.setter = node;
+        ICompilerProject project = (ICompilerProject)getWalker().getProject();
+        if (project != null)
+        {
+        	IFunctionDefinition def = node.getDefinition();
+        	IParameterDefinition[] params = def.getParameters();
+        	p.type = params[0].resolveType(project);
+        }
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(fjs.getProblems());
 

@@ -42,7 +42,7 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
     public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n,
             Node parent)
     {
-        return n.isBlock() || n.isScript();
+        return n.isRoot() || n.isNormalBlock() || n.isScript();
     }
 
     @Override

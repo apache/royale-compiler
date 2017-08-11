@@ -54,11 +54,6 @@ public class JarSourceFile extends SourceFile {
     }
 
     @Override
-    public CharSource getCodeCharSource() {
-        return CharSource.wrap(code);
-    }
-
-    @Override
     public Reader getCodeReader() throws IOException {
         return new StringReader(code);
     }

@@ -80,7 +80,7 @@
     </antcall>
 
     <!--  closure -->
-    <property name="closure.version" value="20161201"/>
+    <property name="closure.version" value="20170626"/>
     <property name="closure.name" value="closure-compiler-v${closure.version}"/>
     <property name="closure.dest.name" value="compiler"/>
     <property name="closure.dest.folder" value="google/closure-compiler"/>
@@ -90,7 +90,7 @@
       <param name="src.server" value="http://dl.google.com"/>
       <param name="src.folder" value="closure-compiler"/>
       <param name="src.filename" value="compiler-${closure.version}.zip"/>
-      <param name="src.checksum" value="bcd640e9c9f756df4117af2066621f89"/>
+      <param name="src.checksum" value="c565b5a1e12aefa5968b42ea83ea6c28"/>
     </antcall>
     
     <!--  commons-io -->

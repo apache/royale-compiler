@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -47,6 +48,7 @@ public class JSSessionModel
     {
         public IGetterNode getter;
         public ISetterNode setter;
+        public ITypeDefinition type;
     }
 
     public static class BindableVarInfo

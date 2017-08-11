@@ -102,7 +102,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         		  "  return FalconTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +
         		  "Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n" +
-        		  "/** @export */\n" +
+        		  "/**\n  * @export\n  * @type {boolean} */\n" +
         		  "defaultPrevented: {\nget: FalconTest_A.prototype.get__defaultPrevented}}\n);");
     }
 
