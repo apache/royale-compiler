@@ -1163,8 +1163,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             	IMXMLSingleDataBindingNode sbdn = (IMXMLSingleDataBindingNode)node;
             	FlexJSProject project = (FlexJSProject)getMXMLWalker().getProject();
             	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
-            	IDefinition cdef = bdef.getParent();
-            	project.addExportedName(/*cdef.getQualifiedName() + "." + */bdef.getBaseName());            	
+            	if (bdef != null)
+            	{
+	            	IDefinition cdef = bdef.getParent();
+	            	project.addExportedName(/*cdef.getQualifiedName() + "." + */bdef.getBaseName());
+            	}
             }
             s = bi.getSourceString();
             if (s == null && bi.isSourceSimplePublicProperty())
