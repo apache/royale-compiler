@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.projects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -431,4 +432,15 @@ public class FlexJSProject extends FlexProject
 		return true;
 	}
 
+	private HashSet<String> exportedNames = new HashSet<String>();
+	
+	public void addExportedName(String name)
+	{
+		exportedNames.add(name);
+	}
+	
+	public Set<String> getExportedNames()
+	{
+		return exportedNames;
+	}
 }

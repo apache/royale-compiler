@@ -43,6 +43,7 @@ import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
@@ -753,6 +754,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             MXMLDescriptorSpecifier root = currentStateOverrides;
             root.isTopNode = true;
     
+            collectExportedNames(root);
+            
 	        writeNewline("/**");
 	        if (emitExports)
 	        	writeNewline(" * @export");
@@ -788,6 +791,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             MXMLDescriptorSpecifier root = propertiesTree;
             root.isTopNode = true;
             writeNewline(root.output(true));
+            
+            collectExportedNames(root);
     
             write(ASEmitterTokens.SQUARE_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);
@@ -1152,6 +1157,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         for (BindingInfo bi : bindingInfo)
         {
             String s;
+            IMXMLNode node = bi.node;
+            if (node instanceof IMXMLSingleDataBindingNode)
+            {
+            	IMXMLSingleDataBindingNode sbdn = (IMXMLSingleDataBindingNode)node;
+            	FlexJSProject project = (FlexJSProject)getMXMLWalker().getProject();
+            	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
+            	IDefinition cdef = bdef.getParent();
+            	project.addExportedName(/*cdef.getQualifiedName() + "." + */bdef.getBaseName());            	
+            }
             s = bi.getSourceString();
             if (s == null && bi.isSourceSimplePublicProperty())
                 s = getSourceStringFromGetter(bi.getExpressionNodesForGetter());
@@ -1652,6 +1666,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
     
+            collectExportedNames(root);
+            
             indentPush();
             writeNewline("'MXMLDescriptor': {");
             writeNewline("/** @this {" + formatQualifiedName(cname) + "} */");
@@ -1697,6 +1713,35 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
    
     }
 
+    private void collectExportedNames(MXMLDescriptorSpecifier descriptor)
+    {
+        ICompilerProject project = getMXMLWalker().getProject();
+        FlexJSProject flexJSProject = null;
+        if (project instanceof FlexJSProject)
+        {
+            flexJSProject = (FlexJSProject) project;
+            String name = descriptor.name;
+            if (name == null)
+            	name = this.classDefinition.getQualifiedName();
+            for (MXMLDescriptorSpecifier prop : descriptor.propertySpecifiers)
+            {
+            	String propName = prop.name;
+            	flexJSProject.addExportedName(/*name + "." + */propName);
+            	if (prop.propertySpecifiers.size() > 0)
+            	{
+                    collectExportedNames(prop.propertySpecifiers.get(0));            		
+            	}
+            }
+            if (descriptor.childrenSpecifier != null)
+            {
+                for (MXMLDescriptorSpecifier prop : descriptor.childrenSpecifier.propertySpecifiers)
+                {
+                	collectExportedNames(prop);
+                }
+            }
+        }
+    }
+    
     //--------------------------------------------------------------------------    
 
     private HashMap<IMXMLEventSpecifierNode, String> eventHandlerNameMap = new HashMap<IMXMLEventSpecifierNode, String>();
