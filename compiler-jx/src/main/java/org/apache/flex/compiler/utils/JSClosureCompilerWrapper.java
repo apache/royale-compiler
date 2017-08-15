@@ -19,18 +19,26 @@
 
 package org.apache.flex.compiler.utils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilerMapFetcher;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DependencyOptions;
@@ -39,6 +47,7 @@ import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
 import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
+import com.google.javascript.jscomp.VariableMap;
 import com.google.javascript.jscomp.WarningLevel;
 
 public class JSClosureCompilerWrapper
@@ -49,7 +58,8 @@ public class JSClosureCompilerWrapper
         Compiler.setLoggingLevel(Level.INFO);
 
         compiler_ = new Compiler();
-
+        filterOptions(args);
+        
         ArrayList<String> splitArgs = new ArrayList<String>();
         for (String s : args)
         {
@@ -77,6 +87,11 @@ public class JSClosureCompilerWrapper
     private CompilerOptions options_;
     private List<SourceFile> jsExternsFiles_;
     private List<SourceFile> jsSourceFiles_;
+    private String variableMapOutputPath;
+    private String propertyMapOutputPath;
+    private String variableMapInputPath;
+    private String propertyMapInputPath;
+    private Set<String> provideds;
     
     public String targetFilePath;
     
@@ -100,12 +115,45 @@ public class JSClosureCompilerWrapper
         jsSourceFiles_.add(file);
     }
 
+    public void setProvideds(Set<String> set)
+    {
+    	provideds = set;
+    }
+    
     public void compile()
     {
     	System.out.println("list of source files");
     	for (SourceFile file : jsSourceFiles_)
     		System.out.println(file.getName());
     	System.out.println("end of list of source files");
+    	File outputFolder = new File(targetFilePath).getParentFile();
+        if (variableMapInputPath != null)
+        {
+        	File inputFile = new File(outputFolder, variableMapInputPath);
+        	try {
+            	VariableMap map = VariableMap.load(inputFile.getAbsolutePath());
+				CompilerMapFetcher.setVariableMap(options_, map);
+				Set<String> usedVars = getUsedVars(inputFile);
+				compiler_.addExportedNames(usedVars);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        if (propertyMapInputPath != null)
+        {
+        	File inputFile = new File(outputFolder, propertyMapInputPath);
+        	try {
+            	VariableMap map = VariableMap.load(inputFile.getAbsolutePath());
+				CompilerMapFetcher.setPropertyMap(options_, map);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+
+
         compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
 
         try
@@ -123,6 +171,30 @@ public class JSClosureCompilerWrapper
             System.out.println(error);
         }
         
+        if (variableMapOutputPath != null)
+        {
+        	File outputFile = new File(outputFolder, variableMapOutputPath);
+        	VariableMap map = CompilerMapFetcher.getVariableMap(compiler_);
+        	try {
+				map.save(outputFile.getAbsolutePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        if (propertyMapOutputPath != null)
+        {
+        	File outputFile = new File(outputFolder, propertyMapOutputPath);
+        	VariableMap map = CompilerMapFetcher.getPropertyMap(compiler_);
+        	try {
+				map.save(outputFile.getAbsolutePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
         /*
         for (JSError message : compiler_.getWarnings())
         {
@@ -134,6 +206,64 @@ public class JSClosureCompilerWrapper
             System.err.println("Error message: " + message.toString());
         }
         */
+    }
+    
+    private Set<String> getUsedVars(File file)
+    {
+    	HashMap<String, String> vars = new HashMap<String, String>();
+    	
+        try
+        {
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+
+            String line = in.readLine();
+
+            while (line != null)
+            {
+                int c = line.indexOf(":");
+                if (c != -1)
+                {
+                	String name = line.substring(0, c);
+                	
+                	String var = line.substring(c + 1).trim();
+                	vars.put(name, var);
+                }
+                line = in.readLine();
+            }
+            
+            // remove all vars that are used by this module
+            // that way they will re-use the names in the
+            // loader
+            for (String name : provideds)
+            {
+            	name = name.replace('.', '$');
+            	Set<String> keys = vars.keySet();
+            	ArrayList<String> remKeys = new ArrayList<String>();
+            	for (String key : keys)
+            	{
+            		if (key.contains(name))
+            		{
+            			remKeys.add(key);
+            		}
+            	}
+            	for (String key : remKeys)
+            	{
+            		vars.remove(key);
+            	}
+            }
+            in.close();
+        }
+        catch (Exception e)
+        {
+            // nothing to see, move along...
+        }
+        HashSet<String> usedVars = new HashSet<String>();
+    	Set<String> keys = vars.keySet();
+    	for (String key : keys)
+    	{
+    		usedVars.add(vars.get(key));
+    	}
+        return usedVars;
     }
     
     @SuppressWarnings( "deprecation" )
@@ -153,10 +283,62 @@ public class JSClosureCompilerWrapper
         }
     }
     
+    private void filterOptions(List<String> args)
+    {
+		final String PROPERTY_MAP = "--property_map_output_file ";
+		final String VARIABLE_MAP = "--variable_map_output_file ";
+		final String PROPERTY_INPUT_MAP = "--property_map_input_file ";
+		final String VARIABLE_INPUT_MAP = "--variable_map_input_file ";
+		String propEntry = null;
+		String varEntry = null;
+		String propInputEntry = null;
+		String varInputEntry = null;
+
+    	for (String s : args)
+    	{
+    		if (s.startsWith(PROPERTY_MAP))
+    		{
+    			propEntry = s;
+    			propertyMapOutputPath = s.substring(PROPERTY_MAP.length());
+    		}
+    		
+    		if (s.startsWith(PROPERTY_INPUT_MAP))
+    		{
+    			propInputEntry = s;
+    			propertyMapInputPath = s.substring(PROPERTY_INPUT_MAP.length());
+    		}
+    		
+    		if (s.startsWith(VARIABLE_MAP))
+    		{
+    			varEntry = s;
+    			variableMapOutputPath = s.substring(VARIABLE_MAP.length());
+    		}
+    			
+    		if (s.startsWith(VARIABLE_INPUT_MAP))
+    		{
+    			varInputEntry = s;
+    			variableMapInputPath = s.substring(VARIABLE_INPUT_MAP.length());
+    		}
+    	}
+    	if (varEntry != null)
+    		args.remove(varEntry);
+    	if (propEntry != null)
+    		args.remove(propEntry);
+    	if (varInputEntry != null)
+    		args.remove(varInputEntry);
+    	if (propInputEntry != null)
+    		args.remove(propInputEntry);
+    		
+    }
+    
     private void initOptions(List<String> args)
     {
     	final String JS_FLAG = "--js ";
-    	
+		final String PROPERTY_MAP = "--property_map_output_file ";
+		final String VARIABLE_MAP = "--variable_map_output_file ";
+		String propEntry = null;
+		String varEntry = null;
+
     	boolean hasCompilationLevel = false;
     	boolean hasWarningLevel = false;
     	for (String s : args)
@@ -171,7 +353,25 @@ public class JSClosureCompilerWrapper
     		if (s.startsWith("--warning_level ") ||
     			s.startsWith("-W "))
     			hasWarningLevel = true;
+    		
+    		if (s.startsWith(PROPERTY_MAP))
+    		{
+    			propEntry = s;
+    			propertyMapOutputPath = s.substring(PROPERTY_MAP.length());
+    		}
+    		
+    		if (s.startsWith(VARIABLE_MAP))
+    		{
+    			varEntry = s;
+    			variableMapOutputPath = s.substring(VARIABLE_MAP.length());
+    		}
+    			
     	}
+    	if (varEntry != null)
+    		args.remove(varEntry);
+    	if (propEntry != null)
+    		args.remove(propEntry);
+    		
     	if (!hasCompilationLevel)
     		CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(
                 options_);
