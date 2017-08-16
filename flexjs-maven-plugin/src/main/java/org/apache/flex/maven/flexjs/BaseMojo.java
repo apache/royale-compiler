@@ -236,7 +236,16 @@ public abstract class BaseMojo
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
         if(additionalCompilerOptions != null) {
-            args.add(additionalCompilerOptions);
+            if (additionalCompilerOptions.contains(";"))
+            {
+                String[] options = additionalCompilerOptions.split(";");
+                for (String option : options)
+                {
+                    args.add(option);
+                }
+            }
+            else
+                args.add(additionalCompilerOptions);
         }
         return args;
     }
