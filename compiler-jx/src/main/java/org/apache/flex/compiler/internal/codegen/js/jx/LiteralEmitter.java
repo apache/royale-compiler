@@ -169,8 +169,10 @@ public class LiteralEmitter extends JSSubEmitter implements
                     s = s.replace("'", "\\'");
                     s = "'" + s + "'";
                 }
+                s = s.replace("\u00A0", "\\u00A0");
                 s = s.replace("\u2028", "\\u2028");
                 s = s.replace("\u2029", "\\u2029");
+                s = s.replace("\u3000", "\\u3000");
             }
 
         }
