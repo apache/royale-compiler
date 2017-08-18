@@ -88,6 +88,12 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     public String id;
 
     //---------------------------------
+    //    effectiveId
+    //---------------------------------
+
+    public String effectiveId;
+
+    //---------------------------------
     //    isTopNode
     //---------------------------------
 
@@ -177,17 +183,15 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                 }
             }
 
-            if (id != null)
+            if (id != null || effectiveId != null)
             {
                 write(propertySpecifiers.size() + 1 + "");
                 writeDelimiter(writeNewline);
-                boolean isEffectiveID = id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX.getToken()) ||
-                						id.startsWith(MXMLFlexJSEmitterTokens.BINDING_PREFIX.getToken());
-                String idPropName = (isEffectiveID) ? "_id"
+                String idPropName = (effectiveId != null) ? "_id"
                         : "id";
                 writeSimpleDescriptor(idPropName, ASEmitterTokens.TRUE.getToken(),
                         ASEmitterTokens.SINGLE_QUOTE.getToken()
-                                + id + ASEmitterTokens.SINGLE_QUOTE.getToken(),
+                                + ((id != null) ? id : effectiveId) + ASEmitterTokens.SINGLE_QUOTE.getToken(),
                         writeNewline);
     
                 writeDelimiter(writeNewline);
