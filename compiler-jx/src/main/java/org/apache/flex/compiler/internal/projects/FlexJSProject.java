@@ -35,8 +35,11 @@ import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.css.ICSSMediaQueryCondition;
 import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
@@ -51,6 +54,7 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
@@ -442,5 +446,21 @@ public class FlexJSProject extends FlexProject
 	public Set<String> getExportedNames()
 	{
 		return exportedNames;
+	}
+	
+	public boolean isModule(String mainClass)
+	{
+        IResolvedQualifiersReference iModuleRef = ReferenceFactory.packageQualifiedReference(
+                getWorkspace(), "org.apache.flex.core.IModule");
+        ITypeDefinition moddef = (ITypeDefinition)iModuleRef.resolve(this);
+        IResolvedQualifiersReference mainRef = ReferenceFactory.packageQualifiedReference(
+                getWorkspace(), mainClass);
+        IDefinition maindef = mainRef.resolve(this);
+        if (maindef instanceof ITypeDefinition)
+        {
+        	ITypeDefinition type = (ITypeDefinition)maindef;
+        	return type.isInstanceOf(moddef, this);
+        }
+        return false;
 	}
 }
