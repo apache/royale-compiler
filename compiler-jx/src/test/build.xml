@@ -40,7 +40,9 @@
     <target name="compile.unit.tests">
     	<delete dir="${compiler}/target/test-classes"/>
         <mkdir dir="${compiler}/target/test-classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/test-classes" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
+			   encoding="UTF-8"
+			   destdir="${compiler}/target/test-classes" includeAntRuntime="true">
         	<src path="${compiler.tests}/java"/>
             <compilerarg value="-Xlint:all,-path"/>
             <classpath>
@@ -60,6 +62,7 @@
                printsummary="true" showoutput="true"
                haltonerror="true" haltonfailure="true"
                failureproperty="tests.unit.failed">
+			<jvmarg value="-Dfile.encoding=UTF-8"/>   
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
@@ -100,6 +103,7 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+			<jvmarg value="-Dfile.encoding=UTF-8"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
