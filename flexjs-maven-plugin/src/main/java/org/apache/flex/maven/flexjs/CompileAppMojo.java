@@ -95,7 +95,7 @@ public class CompileAppMojo
             throw new MojoExecutionException("Could not find main class");
         }
         List<String> args = super.getCompilerArgs(configFile);
-        File jsOutput = new File(outputDirectory, "javascript");
+        File jsOutput = new File(outputDirectory, javascriptOutputDirectoryName);
         args.add("-js-output=" + jsOutput.getAbsolutePath());
         args.add("-compiler.targets=" + targets);
         args.add(mainClassPath);
