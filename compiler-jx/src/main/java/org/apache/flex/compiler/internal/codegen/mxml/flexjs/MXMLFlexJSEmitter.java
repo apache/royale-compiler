@@ -948,8 +948,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
-                    .getToken()))
+            if (instance.id != null)
             {
 	        	PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
 	        	accessorData.add(data);
@@ -1122,7 +1121,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline(" */");
             write(ASEmitterTokens.THIS);
             write(ASEmitterTokens.MEMBER_ACCESS);
-            write(instance.id + "_");
+            write((instance.id != null ? instance.id : instance.effectiveId) + "_");
             writeNewline(ASEmitterTokens.SEMICOLON);
         }
     }
@@ -1600,8 +1599,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	int n = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
-                    .getToken()))
+            if (instance.id != null)
             {
             	n++;
             }
@@ -1618,8 +1616,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         int i = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
-                    .getToken()))
+            if (instance.id != null)
             {
                 indentPush();
     	        writeNewline("/** @export */");
@@ -1792,15 +1789,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
 
+        String effectiveId = null;
         String id = node.getID();
         if (id == null)
-            id = node.getEffectiveID();
-        if (id == null)
-            id = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken() + idCounter++;
+        {
+        	effectiveId = node.getEffectiveID();
+        	if (effectiveId == null)
+        		effectiveId = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken() + idCounter++;
+        }
 
         MXMLDescriptorSpecifier currentInstance = new MXMLDescriptorSpecifier();
         currentInstance.isProperty = false;
         currentInstance.id = id;
+        currentInstance.effectiveId = effectiveId;
         currentInstance.name = formatQualifiedName(cdef.getQualifiedName());
         currentInstance.parent = currentPropertySpecifier;
 
