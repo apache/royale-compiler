@@ -310,7 +310,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         else
         {
             String typeName = node.getVariableType();
-            if (typeName.indexOf(packageName) > -1)
+            if (packageName.length() > 0 && typeName.indexOf(packageName) > -1)
             {
                 String[] parts = typeName.split("\\.");
                 if (parts.length > 0)
