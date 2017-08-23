@@ -46,6 +46,7 @@ import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
 import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
 import org.apache.flex.compiler.internal.config.FrameInfo;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.targets.Target.DirectDependencies;
@@ -256,6 +257,7 @@ public abstract class FlexTarget
      * @param rsls legacy RSLs. May be null for library swfs.
      * @param problemCollection problems found when generating the info method
      * are added to the collection.
+     * @param remoteClassAliasMap 
      * @throws InterruptedException 
      */
     
@@ -276,7 +278,8 @@ public abstract class FlexTarget
             FlexRSLInfo rslInfo,
             Collection<ICompilerProblem> problemCollection,
             boolean isAppFlexInfo,
-            boolean isFlexSDKInfo) 
+            boolean isFlexSDKInfo, 
+            Map<ClassDefinition, String> remoteClassAliasMap) 
             throws InterruptedException
     {
         IResolvedQualifiersReference applicationDomainRef = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
@@ -422,6 +425,20 @@ public abstract class FlexTarget
             infoEntries++;            
         }
 
+        if (remoteClassAliasMap != null && !remoteClassAliasMap.isEmpty())
+        {
+            info.addInstruction(ABCConstants.OP_pushstring, "remoteClassAliases");
+            for (Map.Entry<ClassDefinition, String> classAliasEntry : remoteClassAliasMap.entrySet())
+            {
+                info.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getKey().getQualifiedName());
+                info.addInstruction(ABCConstants.OP_convert_s);
+                String value = classAliasEntry.getValue();
+                info.addInstruction(ABCConstants.OP_pushstring, value);
+            }
+            info.addInstruction(ABCConstants.OP_newobject, remoteClassAliasMap.size());
+            infoEntries++;
+        }
+        
         // fonts:
         if (!frame1Info.embeddedFonts.isEmpty())
         {

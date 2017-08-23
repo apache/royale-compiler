@@ -462,7 +462,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
                     null, // rsls
                     null, // rslinof
                     problemCollection,
-                    false, false);
+                    false, false, null);
             
         }
         

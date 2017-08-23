@@ -1370,7 +1370,74 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 return false;
             ClassDefinition objectClassDef = (ClassDefinition)objectDef;
             
-            
+            Map<String, String> effectNameToTriggerMap = new TreeMap<String, String>();
+            Map<String, Boolean> inheritingStyleMap = new TreeMap<String, Boolean>();            
+            Map<ClassDefinition, String> remoteClassAliasMap =
+                new TreeMap<ClassDefinition, String>(new Comparator<ClassDefinition>()
+                {
+                    @Override
+                    public int compare(ClassDefinition o1, ClassDefinition o2)
+                    {
+                        return o1.getQualifiedName().compareTo(o2.getQualifiedName());
+                    } 
+                })
+                {
+                    private static final long serialVersionUID = 1L;
+
+                    /**
+                     *  Override so warning messages can be logged. 
+                     */
+                    @Override
+                    public String put(ClassDefinition key, String value)
+                    {
+                        // check for duplicate values and log a warning if any remote 
+                        // classes try to use the same alias.
+                        if (containsValue(value))
+                        {
+                           for (Map.Entry<ClassDefinition,String> entry  : entrySet())
+                           {
+                               if (value != null && value.equals(entry.getValue()))
+                               {
+                                   problems.add(new ClassesMappedToSameRemoteAliasProblem(key.getQualifiedName(),
+                                           entry.getKey().getQualifiedName(), value));
+                                   break;
+                               }
+                           }
+                        }
+                        return super.put(key, value);
+                    }
+                };
+                
+            for (ICompilationUnit cu : emittedCompilationUnits)
+            {
+                Collection<IDefinition> visibleDefs = cu.getFileScopeRequest().get().getExternallyVisibleDefinitions();
+                for (IDefinition visibleDef : visibleDefs)
+                {
+                    if (visibleDef instanceof ClassDefinition)
+                    {
+                        ClassDefinition visibleClass = (ClassDefinition) visibleDef;
+                        IEffectDefinition[] effectDefinitions = visibleClass.getEffectDefinitions(flexProject.getWorkspace());
+                        for (IEffectDefinition effectDefinition : effectDefinitions)
+                        {
+                            // TODO create compiler problem if effect already has a trigger.
+                            effectNameToTriggerMap.put(effectDefinition.getBaseName(), effectDefinition.getEvent());
+                        }
+                        
+                        IStyleDefinition[] styleDefinitions = visibleClass.getStyleDefinitions(flexProject.getWorkspace());
+                        for (IStyleDefinition styleDefinition : styleDefinitions)
+                        {
+                            boolean isInheriting = styleDefinition.isInheriting();
+                            // TODO create compiler problem if style definitions conflict
+                            inheritingStyleMap.put(styleDefinition.getBaseName(), isInheriting);
+                        }
+                        
+                        String remoteClassAlias = visibleClass.getRemoteClassAlias();
+                        if (remoteClassAlias != null)
+                            remoteClassAliasMap.put(visibleClass, remoteClassAlias);
+                    }
+                }
+            }
+
             // Generate code for the constructor:
             // public function ClassName()
             // {
@@ -1458,7 +1525,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                         rslInfo,
                         problems,
                         isAppFlexInfo,
-                        isFlexSDKInfo);
+                        isFlexSDKInfo,
+                        remoteClassAliasMap);
                 
             }
             else
@@ -1490,74 +1558,6 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 initMethod.addInstruction(ABCConstants.OP_getlocal1);
                 initMethod.addInstruction(ABCConstants.OP_constructprop, new Object[] { styleManagerImplReference.getMName(), 1 });
                 initMethod.addInstruction(ABCConstants.OP_setlocal2);
-                
-                Map<String, String> effectNameToTriggerMap = new TreeMap<String, String>();
-                Map<String, Boolean> inheritingStyleMap = new TreeMap<String, Boolean>();
-                Map<ClassDefinition, String> remoteClassAliasMap =
-                    new TreeMap<ClassDefinition, String>(new Comparator<ClassDefinition>()
-                    {
-                        @Override
-                        public int compare(ClassDefinition o1, ClassDefinition o2)
-                        {
-                            return o1.getQualifiedName().compareTo(o2.getQualifiedName());
-                        } 
-                    })
-                    {
-                        private static final long serialVersionUID = 1L;
-    
-                        /**
-                         *  Override so warning messages can be logged. 
-                         */
-                        @Override
-                        public String put(ClassDefinition key, String value)
-                        {
-                            // check for duplicate values and log a warning if any remote 
-                            // classes try to use the same alias.
-                            if (containsValue(value))
-                            {
-                               for (Map.Entry<ClassDefinition,String> entry  : entrySet())
-                               {
-                                   if (value != null && value.equals(entry.getValue()))
-                                   {
-                                       problems.add(new ClassesMappedToSameRemoteAliasProblem(key.getQualifiedName(),
-                                               entry.getKey().getQualifiedName(), value));
-                                       break;
-                                   }
-                               }
-                            }
-                            return super.put(key, value);
-                        }
-                    };
-                    
-                for (ICompilationUnit cu : emittedCompilationUnits)
-                {
-                    Collection<IDefinition> visibleDefs = cu.getFileScopeRequest().get().getExternallyVisibleDefinitions();
-                    for (IDefinition visibleDef : visibleDefs)
-                    {
-                        if (visibleDef instanceof ClassDefinition)
-                        {
-                            ClassDefinition visibleClass = (ClassDefinition) visibleDef;
-                            IEffectDefinition[] effectDefinitions = visibleClass.getEffectDefinitions(flexProject.getWorkspace());
-                            for (IEffectDefinition effectDefinition : effectDefinitions)
-                            {
-                                // TODO create compiler problem if effect already has a trigger.
-                                effectNameToTriggerMap.put(effectDefinition.getBaseName(), effectDefinition.getEvent());
-                            }
-                            
-                            IStyleDefinition[] styleDefinitions = visibleClass.getStyleDefinitions(flexProject.getWorkspace());
-                            for (IStyleDefinition styleDefinition : styleDefinitions)
-                            {
-                                boolean isInheriting = styleDefinition.isInheriting();
-                                // TODO create compiler problem if style definitions conflict
-                                inheritingStyleMap.put(styleDefinition.getBaseName(), isInheriting);
-                            }
-                            
-                            String remoteClassAlias = visibleClass.getRemoteClassAlias();
-                            if (remoteClassAlias != null)
-                                remoteClassAliasMap.put(visibleClass, remoteClassAlias);
-                        }
-                    }
-                }
                 
                 // register effects
                 if (!effectNameToTriggerMap.isEmpty())
@@ -1833,7 +1833,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     rslInfo,
                     problemCollection,
                     false,
-                    isFlexSDKInfo);
+                    isFlexSDKInfo,
+                    null);
             
             classGen.finishScript();
 
