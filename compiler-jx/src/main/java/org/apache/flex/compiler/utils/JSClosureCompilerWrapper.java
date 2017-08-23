@@ -45,6 +45,7 @@ import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
 import com.google.javascript.jscomp.ModuleIdentifier;
+import com.google.javascript.jscomp.ShowByPathWarningsGuard;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.VariableMap;
@@ -428,6 +429,9 @@ public class JSClosureCompilerWrapper
             options_.setOptimizeArgumentsArray(true);
             options_.setGenerateExports(true);
             options_.setExportLocalPropertyDefinitions(true);
+            options_.addWarningsGuard(new ShowByPathWarningsGuard(
+                    new String[] { "goog/", "externs/svg.js" },
+                    ShowByPathWarningsGuard.ShowType.EXCLUDE));
             
             DependencyOptions dopts = new DependencyOptions();
             ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
