@@ -92,6 +92,7 @@ public class JSClosureCompilerWrapper
     private String propertyMapOutputPath;
     private String variableMapInputPath;
     private String propertyMapInputPath;
+    private boolean skipTypeInference;
     private Set<String> provideds;
     
     public String targetFilePath;
@@ -286,12 +287,14 @@ public class JSClosureCompilerWrapper
     
     private void filterOptions(List<String> args)
     {
+		final String SKIP_TYPE_INFERENCE = "--skip_type_inference";
 		final String PROPERTY_MAP = "--property_map_output_file ";
 		final String VARIABLE_MAP = "--variable_map_output_file ";
 		final String PROPERTY_INPUT_MAP = "--property_map_input_file ";
 		final String VARIABLE_INPUT_MAP = "--variable_map_input_file ";
 		String propEntry = null;
 		String varEntry = null;
+		String skipEntry = null;
 		String propInputEntry = null;
 		String varInputEntry = null;
 
@@ -320,6 +323,12 @@ public class JSClosureCompilerWrapper
     			varInputEntry = s;
     			variableMapInputPath = s.substring(VARIABLE_INPUT_MAP.length());
     		}
+    		
+    		if (s.equals(SKIP_TYPE_INFERENCE))
+    		{
+    			skipEntry = s;
+    			skipTypeInference = true;
+    		}
     	}
     	if (varEntry != null)
     		args.remove(varEntry);
@@ -329,6 +338,8 @@ public class JSClosureCompilerWrapper
     		args.remove(varInputEntry);
     	if (propInputEntry != null)
     		args.remove(propInputEntry);
+    	if (skipEntry != null)
+    		args.remove(skipEntry);
     		
     }
     
@@ -455,29 +466,29 @@ public class JSClosureCompilerWrapper
             options_.setWarningLevel(DiagnosticGroups.CHECK_EVENTFUL_OBJECT_DISPOSAL, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.MISSING_PROVIDE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_REGEXP, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.CHECK_TYPES, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.CHECK_TYPES, skipTypeInference ? CheckLevel.OFF : CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_USELESS_CODE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_VARIABLES, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.DEBUGGER_STATEMENT_PRESENT, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.DUPLICATE_MESSAGE, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.DUPLICATE_VARS, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.DUPLICATE_VARS, skipTypeInference ? CheckLevel.OFF : CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.ES3, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.ES5_STRICT, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.EXTERNS_VALIDATION, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.GLOBAL_THIS, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.FILEOVERVIEW_JSDOC, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.INTERNET_EXPLORER_CHECKS, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.INVALID_CASTS, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.INVALID_CASTS, skipTypeInference ? CheckLevel.OFF : CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.LINT_CHECKS, CheckLevel.OFF); // OFF
             options_.setWarningLevel(DiagnosticGroups.MISPLACED_TYPE_ANNOTATION, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.MISSING_PROPERTIES, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.MISSING_PROPERTIES, skipTypeInference ? CheckLevel.OFF : CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.MISSING_PROVIDE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.MISSING_REQUIRE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.MISSING_RETURN, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.NEW_CHECK_TYPES, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.NEW_CHECK_TYPES, skipTypeInference ? CheckLevel.OFF : CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.NON_STANDARD_JSDOC, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.REPORT_UNKNOWN_TYPES, CheckLevel.OFF); // OFF
-            options_.setWarningLevel(DiagnosticGroups.SUSPICIOUS_CODE, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.SUSPICIOUS_CODE, skipTypeInference ? CheckLevel.OFF : CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.TWEAKS, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.TYPE_INVALIDATION, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.UNDEFINED_NAMES, CheckLevel.WARNING);
@@ -499,6 +510,13 @@ public class JSClosureCompilerWrapper
         
         options_.sourceMapFormat = SourceMap.Format.V3;
         options_.sourceMapOutputPath = sourceMapPath + ".map";
+        if (skipTypeInference)
+        {
+        	options_.setCheckTypes(false);
+        	options_.setInferTypes(false);
+        	options_.setNewTypeInference(false);
+        }
+        
     }
 
     private static class CompilerOptionsParser extends CommandLineRunner
