@@ -67,7 +67,7 @@ public class TestExternChrome extends ExternalsTestBase
                 "ChromeLoadTimes",
                 "ChromeCsiInfo" };
 
-        assertEquals(323, model.getClasses().size());
+        assertEquals(322, model.getClasses().size());
         for (String className : classes)
         {
             assertTrue(model.hasClass(className));
