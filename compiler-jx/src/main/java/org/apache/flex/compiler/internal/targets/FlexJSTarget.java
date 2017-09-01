@@ -306,4 +306,18 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
 			}
     	}
     }
+    
+    public void collectRemoteClassMetaData(Map<String, String> remoteClassAliasMap, List<ICompilationUnit> units)
+    {
+    	for (ICompilationUnit unit : units)
+    	{
+        	try {
+				FlexApplicationFrame1Info.collectRemoteClassMetaData(remoteClassAliasMap, unit);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    }
+
 }

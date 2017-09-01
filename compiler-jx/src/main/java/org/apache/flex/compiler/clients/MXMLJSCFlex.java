@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -330,8 +331,10 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
 	                roots.addAll(incs);
 	                project.mixinClassNames = new TreeSet<String>();
+	                project.remoteClassAliasMap = new HashMap<String, String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
 	                ((FlexJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
+	                ((FlexJSTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();

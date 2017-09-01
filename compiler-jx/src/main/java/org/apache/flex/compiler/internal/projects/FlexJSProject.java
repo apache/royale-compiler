@@ -84,7 +84,7 @@ public class FlexJSProject extends FlexProject
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> jsModules = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
     public TreeSet<String> mixinClassNames;
-
+    public HashMap<String, String> remoteClassAliasMap;
     public JSGoogConfiguration config;
     public Configurator configurator;
 

@@ -301,6 +301,26 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		            	infoInject += mixinInject;
 		            	sep = ",\n";
 	            	}
+	            	Map<String, String> aliases = flexJSProject.remoteClassAliasMap;
+	            	if (aliases != null && aliases.size() > 0)
+	            	{
+		            	String aliasInject = "remoteClassAliases: {";
+		            	boolean firstOne = true;
+		            	for (String className : aliases.keySet())
+		            	{
+		            		if (isExternal(className))
+		            			continue;
+		            		if (!firstOne)
+		            			aliasInject += ", "; 
+		            		aliasInject += "\"" + className + "\": ";
+		            		String alias = aliases.get(className);
+		            		aliasInject += "\"" + alias + "\"";
+		            		firstOne = false;
+		            	}
+		            	aliasInject += "}";
+		            	infoInject += aliasInject;
+		            	sep = ",\n";
+	            	}
 	            	boolean isMX = false;
 	            	List<ISWC> swcs = flexJSProject.getLibraries();
 	            	for (ISWC swc : swcs)

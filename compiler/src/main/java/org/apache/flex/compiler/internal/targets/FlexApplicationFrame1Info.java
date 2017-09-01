@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.targets;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -134,6 +135,25 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
         }
     }
     
+    /**
+     * Collects names of classes that are mix-ins.
+     * 
+     * @param compilationUnit
+     * @throws InterruptedException
+     */
+    public static void collectRemoteClassMetaData(Map<String, String> remoteClassNames, ICompilationUnit compilationUnit) throws InterruptedException
+    {
+        IFileScopeRequestResult result = compilationUnit.getFileScopeRequest().get();
+
+        for(IDefinition def : result.getExternallyVisibleDefinitions()) 
+        {
+            IMetaTag md = def.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_REMOTECLASS);
+            if (md != null)
+                remoteClassNames.put(def.getQualifiedName(), md.getAttributeValue("alias"));
+        }
+    }
+    
+
     /**
      * Collect the swcs that are contributing compilation units to this swf.
      * 
