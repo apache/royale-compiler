@@ -155,10 +155,13 @@ public class GoogDepsWriter {
 			{
 				if (gd.className.equals(mainName)) 
 				{
-					for (String d : gd.fileInfo.impls)
+					if (gd.fileInfo.impls != null)
 					{
-						if (!restOfDeps.contains(d))
-							restOfDeps.add(d);
+						for (String d : gd.fileInfo.impls)
+						{
+							if (!restOfDeps.contains(d))
+								restOfDeps.add(d);
+						}
 					}
 					continue;
 				}
