@@ -4129,9 +4129,7 @@ public class Configuration
     {
         // Look at property file first, if it exists, and see if the particular property
         // is defined.  If not found, then look for the environment variable.
-        // If there is neither leave the token in place since it is easier to
-        // diagnose the problem with a token in the error message path then it is with
-        // a "" in the path.
+        // If there is neither use libs/player
         Properties envProperties = loadEnvPropertyFile();
 
         String playerglobalHome = envProperties != null
@@ -4141,7 +4139,7 @@ public class Configuration
         if (playerglobalHome == null)
             playerglobalHome = buffer.getToken("env.PLAYERGLOBAL_HOME");
         if (playerglobalHome == null)
-            playerglobalHome = PLAYERGLOBAL_HOME_TOKEN;
+            playerglobalHome = "libs/player";
 
         String airHome = envProperties != null ? envProperties.getProperty("env.AIR_HOME", System.getenv("AIR_HOME"))
                 : System.getenv("AIR_HOME");
@@ -4149,7 +4147,7 @@ public class Configuration
         if (airHome == null)
             airHome = buffer.getToken("env.AIR_HOME");
         if (airHome == null)
-            airHome = AIR_HOME_TOKEN;
+            airHome = "libs/air";
 
         pathElement = pathElement.replace(PLAYERGLOBAL_HOME_TOKEN, playerglobalHome);
         pathElement = pathElement.replace(AIR_HOME_TOKEN, airHome);
