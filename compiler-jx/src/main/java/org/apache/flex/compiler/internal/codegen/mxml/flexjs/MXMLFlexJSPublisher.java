@@ -456,7 +456,10 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         		continue;
         	seen.add(fileName);
         	
-        	list.add(fileMap.get("goog/" + fileName));
+        	SourceFile sf = fileMap.get("goog/" + fileName);
+        	if (sf == null)
+        		System.out.println("got null for " + fileName);
+        	list.add(sf);
         }
         return list;
     }
