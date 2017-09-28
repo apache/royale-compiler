@@ -143,6 +143,11 @@ public class JSWriter implements IJSWriter
     //should be able to replace this method
     private String relativePath(String filePath, String relativeToFilePath)
     {
+        boolean caseInsensitive = System.getProperty("os.name").toLowerCase().startsWith("windows");
+        if(caseInsensitive)
+        {
+            relativeToFilePath = relativeToFilePath.toLowerCase();
+        }
         File currentFile = new File(filePath);
         Stack<String> stack = new Stack<String>();
         stack.push(currentFile.getName());
@@ -150,6 +155,10 @@ public class JSWriter implements IJSWriter
         while (currentFile != null)
         {
             String absoluteCurrentFile = currentFile.getAbsolutePath() + File.separator;
+            if(caseInsensitive)
+            {
+                absoluteCurrentFile = absoluteCurrentFile.toLowerCase();
+            }
             if (relativeToFilePath.startsWith(absoluteCurrentFile))
             {
                 String relativeRelativeToFile = relativeToFilePath.substring(absoluteCurrentFile.length());
