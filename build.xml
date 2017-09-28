@@ -42,15 +42,15 @@
         property="FLEXJS_TYPEDEFS_HOME"
         value="${env.FLEXJS_TYPEDEFS_HOME}" />
         
-        <available file="${basedir}/../flex-typedefs"
+        <available file="${basedir}/../royale-typedefs"
         type="dir"
         property="FLEXJS_TYPEDEFS_HOME"
-        value="${basedir}/../flex-typedefs" />
+        value="${basedir}/../royale-typedefs" />
         
-        <available file="${basedir}/flex-typedefs"
+        <available file="${basedir}/royale-typedefs"
         type="dir"
         property="FLEXJS_TYPEDEFS_HOME"
-        value="${basedir}/flex-typedefs" />
+        value="${basedir}/royale-typedefs" />
         
         <fail message="The environment variable FLEXJS_TYPEDEFS_HOME is not set to a directory"
         unless="FLEXJS_TYPEDEFS_HOME"/>
@@ -478,7 +478,7 @@
     </target>
 
     <target name="stage-typedefs" depends="check-typedefs-home">
-        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
             <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="**"/>
                 <exclude name="**/target/**" />
@@ -594,7 +594,7 @@
         
         <antcall target="stage-source-jx" />
 
-        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
             <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="createjs/target/downloads/EaselJS-0.8.0/LICENSE.txt" />
                 <include name="createjs/target/downloads/TweenJS-0.6.2/LICENSE.txt" />
@@ -634,8 +634,8 @@
         <copy tofile="${basedir}/temp/js/libs/node.swc" file="${FLEXJS_TYPEDEFS_HOME}/node/target/node.swc" />
         
         <!-- generated -->
-        <mkdir dir="${basedir}/temp/flex-typedefs"/>
-        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+        <mkdir dir="${basedir}/temp/royale-typedefs"/>
+        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
             <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="**/**"/>
                 <exclude name="**/externs.zip" />
@@ -647,7 +647,7 @@
             </fileset>
         </copy>
         <echo>copy easel and tween</echo>
-        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
             <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="createjs/target/downloads/Easel*/src/**"/>
                 <include name="createjs/target/downloads/Tween*/src/**"/>
@@ -754,7 +754,7 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
-                <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="README_JX"/>

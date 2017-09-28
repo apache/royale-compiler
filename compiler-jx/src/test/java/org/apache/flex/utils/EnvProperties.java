@@ -146,7 +146,7 @@ public class EnvProperties {
 
         ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
         if (ASJS == null)
-            ASJS = FilenameNormalization.normalize("../../../../flex-asjs");
+            ASJS = FilenameNormalization.normalize("../../../../royale-asjs");
         System.out.println("environment property - ASJS_HOME = " + ASJS);
         
         GOOG = p.getProperty(prefix + "GOOG_HOME", System.getenv("GOOG_HOME"));
