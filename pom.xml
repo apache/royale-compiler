@@ -35,9 +35,9 @@
   <description>The Apache Flex FlexJS Project</description>
 
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</developerConnection>
-    <url>https://github.com/apache/flex-falcon</url>
+    <connection>scm:git:https://github.com/apache/royale-compiler.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/royale-compiler.git</developerConnection>
+    <url>https://github.com/apache/royale-compiler</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -69,13 +69,13 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</url>
+      <url>scm:git:https://github.com/apache/royale-compiler.git</url>
     </site>
   </distributionManagement>
 
   <issueManagement>
-    <system>Jira</system>
-    <url>https://issues.apache.org/jira/browse/FLEX</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/royale-compiler/issues</url>
   </issueManagement>
 
   <mailingLists>
