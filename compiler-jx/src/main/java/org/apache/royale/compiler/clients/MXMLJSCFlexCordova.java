@@ -50,7 +50,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyT
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.driver.mxml.flexjs.MXMLRoyaleCordovaBackend;
+import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleCordovaBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;

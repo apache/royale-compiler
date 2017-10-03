@@ -32,7 +32,7 @@ import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSManager;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.css.semantics.ActivatedStyleSheets;
-import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;

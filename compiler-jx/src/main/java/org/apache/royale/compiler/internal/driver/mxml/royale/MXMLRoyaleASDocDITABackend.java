@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.driver.mxml.flexjs;
+package org.apache.royale.compiler.internal.driver.mxml.royale;
 
 import java.io.FilterWriter;
 import java.util.List;
@@ -29,12 +29,12 @@ import org.apache.royale.compiler.codegen.js.IJSWriter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleASDocDITAEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleASDocDITAEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLWriter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleASDocEmitter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleASDocEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWalker;
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.ASDocASSourceFileHandler;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;

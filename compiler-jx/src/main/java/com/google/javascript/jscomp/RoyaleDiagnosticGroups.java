@@ -31,7 +31,7 @@ public class RoyaleDiagnosticGroups {
 	 * resulting in this warning.
 	 */
 	public static final DiagnosticGroup FLEXJS_NOT_A_CONSTRUCTOR =
-		DiagnosticGroups.registerGroup("flexjsNotAConstructor",
+		DiagnosticGroups.registerGroup("royaleNotAConstructor",
                 TypeCheck.NOT_A_CONSTRUCTOR);
 
 	/**
@@ -39,11 +39,11 @@ public class RoyaleDiagnosticGroups {
 	 * overrides of the methodName.
 	 */
 	public static final DiagnosticGroup FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME =
-		DiagnosticGroups.registerGroup("flexjsSuperCallToDifferentName",
+		DiagnosticGroups.registerGroup("royaleSuperCallToDifferentName",
                 ProcessClosurePrimitives.BASE_CLASS_ERROR);
 	/*
 	public static final DiagnosticGroup FLEXJS_REFERENCE_BEFORE_DECLARE =
-		DiagnosticGroups.registerGroup("flexjsReferenceBeforeDeclare",
+		DiagnosticGroups.registerGroup("royaleReferenceBeforeDeclare",
                 VariableReferenceCheck.UNDECLARED_REFERENCE);
     */
 	
@@ -52,7 +52,7 @@ public class RoyaleDiagnosticGroups {
 	 * in JSDoc annotations, but the compiler complains.
 	 */
 	public static final DiagnosticGroup FLEXJS_UNKNOWN_JSDOC_TYPE_NAME =
-		DiagnosticGroups.registerGroup("flexjsUnknownJSDocTypeName",
+		DiagnosticGroups.registerGroup("royaleUnknownJSDocTypeName",
                 RhinoErrorReporter.TYPE_PARSE_ERROR);
 
 }

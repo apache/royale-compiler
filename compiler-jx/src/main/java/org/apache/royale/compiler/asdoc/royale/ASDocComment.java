@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.asdoc.flexjs;
+package org.apache.royale.compiler.asdoc.royale;
 
 import java.util.ArrayList;
 import java.util.Collection;

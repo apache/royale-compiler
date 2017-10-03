@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.driver.mxml.flexjs;
+package org.apache.royale.compiler.internal.driver.mxml.royale;
 
 import java.io.FilterWriter;
 import java.util.List;
@@ -30,13 +30,13 @@ import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLWriter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.MXMLBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;

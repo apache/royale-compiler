@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.codegen.mxml.flexjs;
+package org.apache.royale.compiler.codegen.mxml.royale;
 
 import java.io.Writer;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.codegen.js.flexjs;
+package org.apache.royale.compiler.codegen.js.royale;
 
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogEmitter;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,9 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.royale.compiler.asdoc.IASDocTag;
-import org.apache.royale.compiler.asdoc.flexjs.ASDocComment;
-import org.apache.royale.compiler.codegen.js.flexjs.IJSRoyaleASDocEmitter;
-import org.apache.royale.compiler.codegen.js.flexjs.IJSRoyaleEmitter;
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleASDocEmitter;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -41,7 +41,7 @@ import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleASDocEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleASDocEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.DefinitionBase;

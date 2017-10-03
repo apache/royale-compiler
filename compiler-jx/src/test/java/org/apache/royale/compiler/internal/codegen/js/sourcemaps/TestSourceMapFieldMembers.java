@@ -19,7 +19,7 @@
 package org.apache.royale.compiler.internal.codegen.js.sourcemaps;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.test.SourceMapTestBase;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 

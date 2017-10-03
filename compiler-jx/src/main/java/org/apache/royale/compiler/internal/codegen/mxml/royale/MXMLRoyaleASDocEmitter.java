@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 
 import java.io.FilterWriter;
@@ -31,14 +31,14 @@ import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
+import org.apache.royale.compiler.codegen.mxml.royale.IMXMLRoyaleEmitter;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingInfo;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleASDocEmitter;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleASDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.royale.compiler.internal.projects.FlexProject;

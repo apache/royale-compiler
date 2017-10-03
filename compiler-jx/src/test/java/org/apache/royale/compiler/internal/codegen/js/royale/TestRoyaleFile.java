@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import java.io.File;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.test.RoyaleTestBase;
@@ -52,7 +52,7 @@ public class TestRoyaleFile extends RoyaleTestBase
 
         IFileNode node = compileAS(fileName, true,
                 new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
-                        "flexjs/files").getPath(),
+                        "royale/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -60,7 +60,7 @@ public class TestRoyaleFile extends RoyaleTestBase
         //writeResultToFile(writer.toString(), fileName);
         
         assertOutWithMetadata(getCodeFromFile(fileName + "_result", true,
-                "flexjs" + File.separator + "files"));
+                "royale" + File.separator + "files"));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TestRoyaleFile extends RoyaleTestBase
 
         IFileNode node = compileAS(fileName, true,
                 new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
-                        "flexjs/files").getPath(),
+                        "royale/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -78,7 +78,7 @@ public class TestRoyaleFile extends RoyaleTestBase
         //writeResultToFile(writer.toString(), fileName);
         
         assertOutPostProcess(getCodeFromFile(fileName + "_result", true,
-                "flexjs" + File.separator + "files"), true);
+                "royale" + File.separator + "files"), true);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TestRoyaleFile extends RoyaleTestBase
 
         IFileNode node = compileAS(fileName, true,
                 new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
-                        "flexjs/files").getPath(),
+                        "royale/files").getPath(),
                 false);
 
         asBlockWalker.visitFile(node);
@@ -96,7 +96,7 @@ public class TestRoyaleFile extends RoyaleTestBase
         //writeResultToFile(writer.toString(), fileName);
         
         assertOutPostProcess(getCodeFromFile(fileName + "_result", true,
-                "flexjs" + File.separator + "files"), true);
+                "royale" + File.separator + "files"), true);
     }
 
     @Override

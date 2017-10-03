@@ -101,10 +101,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public enum JSOutputType
     {
         AMD("amd"),
-        FLEXJS("flexjs"),
+        FLEXJS("royale"),
         GOOG("goog"),
-        FLEXJS_DUAL("flexjs_dual"),
-        FLEXJS_DITA("flexjs_dita"),
+        FLEXJS_DUAL("royale_dual"),
+        FLEXJS_DITA("royale_dita"),
         JSC("jsc"),
         NODE("node");
 

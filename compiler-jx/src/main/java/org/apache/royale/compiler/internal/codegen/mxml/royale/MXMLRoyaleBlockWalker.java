@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import java.util.List;
 
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.royale.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
+import org.apache.royale.compiler.codegen.mxml.royale.IMXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.problems.ICompilerProblem;

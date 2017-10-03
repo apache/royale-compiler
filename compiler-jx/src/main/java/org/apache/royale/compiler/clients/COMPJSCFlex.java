@@ -46,7 +46,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.internal.codegen.js.JSWriter;
-import org.apache.royale.compiler.internal.driver.mxml.flexjs.MXMLRoyaleSWCBackend;
+import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleSWCBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;

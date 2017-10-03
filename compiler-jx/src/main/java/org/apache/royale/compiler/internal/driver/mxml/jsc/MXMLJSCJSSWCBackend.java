@@ -33,7 +33,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jsc.JSCJSEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLWriter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.MXMLBackend;

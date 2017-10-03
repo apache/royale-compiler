@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogExpressions;
-import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
@@ -716,16 +716,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_StringVarAssignmentFromObjectSupressed()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; /**\n * @flexjsnoimplicitstringconversion\n */\npublic function d() { b = c; }}",
+                "public class B {public var b:String; public var c:Object; /**\n * @royalenoimplicitstringconversion\n */\npublic function d() { b = c; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
         IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
         
-        // this adds '/**\n * @flexjsnoimplicitstringconversion\n * @export\n */' to the output but parses
+        // this adds '/**\n * @royalenoimplicitstringconversion\n * @export\n */' to the output but parses
         // the asdoc so the emitter will suppress the output
         docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("/**\n * @flexjsnoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
+        assertOut("/**\n * @royalenoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
     }
 
     @Test

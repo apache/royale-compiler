@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.royale.compiler.internal.driver.js.flexjs;
+package org.apache.royale.compiler.internal.driver.js.royale;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;

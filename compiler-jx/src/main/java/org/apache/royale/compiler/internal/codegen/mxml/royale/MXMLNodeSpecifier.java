@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import org.apache.royale.compiler.codegen.IEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;

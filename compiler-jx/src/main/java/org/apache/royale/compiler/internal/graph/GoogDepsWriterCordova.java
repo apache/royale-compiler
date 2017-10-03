@@ -32,7 +32,7 @@ public class GoogDepsWriterCordova extends GoogDepsWriter {
 		super(outputFolder, mainClassName, config, swcs);
 	}
 	
-    private final String FLEXJS_CORDOVA_PLUGIN = "@flexjscordovaplugin";
+    private final String FLEXJS_CORDOVA_PLUGIN = "@royalecordovaplugin";
     
     public ArrayList<String> cordovaPlugins = new ArrayList<String>();
 

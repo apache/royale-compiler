@@ -22,8 +22,8 @@ package org.apache.royale.compiler.internal.codegen.mxml.jsc;
 
 import java.io.FilterWriter;
 
-import org.apache.royale.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
+import org.apache.royale.compiler.codegen.mxml.royale.IMXMLRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 
 /**
  * @author Erik de Bruin

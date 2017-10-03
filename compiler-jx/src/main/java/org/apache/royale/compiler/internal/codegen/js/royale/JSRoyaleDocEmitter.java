@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.royale.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;

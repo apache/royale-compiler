@@ -19,7 +19,7 @@
 package org.apache.royale.compiler.internal.codegen.mxml.sourcemaps;
 
 import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.test.RoyaleSourceMapTestBase;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;

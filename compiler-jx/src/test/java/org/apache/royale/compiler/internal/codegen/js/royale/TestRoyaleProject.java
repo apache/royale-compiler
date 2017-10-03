@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -32,7 +32,7 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogProject;
 import org.apache.royale.compiler.internal.config.TargetSettings;
-import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.utils.FilenameNormalization;
@@ -42,7 +42,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This class tests the production of valid 'flexjs' JS code from an external
+ * This class tests the production of valid 'royale' JS code from an external
  * project.
  * 
  * @author Erik de Bruin
@@ -51,7 +51,7 @@ public class TestRoyaleProject extends TestGoogProject
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
-    private static String projectDirPath = "flexjs/projects";
+    private static String projectDirPath = "royale/projects";
     private String sourcePath;
     private Collection<String> externs = new ArrayList<String>();
 
@@ -208,13 +208,13 @@ public class TestRoyaleProject extends TestGoogProject
         String out = sb.toString();
         out = out.replace("\\", "/");
 
-        String expected = testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+        String expected = testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(31:29)\n" +
                 "interface method someFunction in interface IA is implemented with an incompatible signature in class Test\n" +
-                testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+                testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(36:26)\n" +
                 "interface method someOtherFunction in interface IA is implemented with an incompatible signature in class Test\n" +
-                testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+                testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(31:29)\n" +
                 "Incompatible override.\n" +
-                testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+                testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(36:26)\n" +
                 "Incompatible override.\n";
         assertThat(out, is(expected));
     }
@@ -240,9 +240,9 @@ public class TestRoyaleProject extends TestGoogProject
         out = out.replace("\\", "/");
 
         assertThat(out, is(testAdapter.getUnitTestBaseDir().getPath() +
-                "/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\n" +
+                "/royale/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\n" +
                 testAdapter.getUnitTestBaseDir().getPath() +
-                "/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
+                "/royale/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
     }
 
     @Test

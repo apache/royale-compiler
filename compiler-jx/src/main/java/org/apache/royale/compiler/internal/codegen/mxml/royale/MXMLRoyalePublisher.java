@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import com.google.javascript.jscomp.SourceFile;
 import org.apache.commons.io.FileUtils;
@@ -35,7 +35,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
 import org.apache.royale.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.royale.compiler.internal.css.CSSFontFace;
 import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
-import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
@@ -214,7 +214,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                 // resources contained in 'closure-whitelist.properites' to the output.
                 Properties whiteList = new Properties();
                 whiteList.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "flexjs/closure-whitelist.properites"));
+                        "royale/closure-whitelist.properites"));
 
                 // Add the closure files from classpath.
                 closureSourceFiles = getClasspathResources(closureLibraryJar, whiteList);

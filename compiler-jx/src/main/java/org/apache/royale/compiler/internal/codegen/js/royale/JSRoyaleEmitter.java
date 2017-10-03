@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import java.io.File;
 import java.io.FilterWriter;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.royale.compiler.codegen.js.flexjs.IJSRoyaleEmitter;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -62,7 +62,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedAttribute;

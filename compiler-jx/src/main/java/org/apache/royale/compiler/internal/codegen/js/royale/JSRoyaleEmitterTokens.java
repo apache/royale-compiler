@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.codegen.IEmitterTokens;
 
@@ -40,11 +40,11 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     NAMES("names"),
     QNAME("qName"),
     UNDERSCORE("_"),
-    EMIT_COERCION("@flexjsemitcoercion"),
+    EMIT_COERCION("@royaleemitcoercion"),
     EXTERNS("@externs"),
-    IGNORE_COERCION("@flexjsignorecoercion"),
-    IGNORE_IMPORT("@flexjsignoreimport"),
-    IGNORE_STRING_COERCION("@flexjsnoimplicitstringconversion"),
+    IGNORE_COERCION("@royaleignorecoercion"),
+    IGNORE_IMPORT("@royaleignoreimport"),
+    IGNORE_STRING_COERCION("@royalenoimplicitstringconversion"),
     PREINCREMENT("preincrement"),
     PREDECREMENT("predecrement"),
     POSTINCREMENT("postincrement"),

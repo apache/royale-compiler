@@ -21,9 +21,9 @@ package org.apache.royale.compiler.internal.codegen.js.utils;
 
 import java.util.ArrayList;
 
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 
 public class DocEmitterUtils
 {

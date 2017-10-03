@@ -36,7 +36,7 @@ import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.JSTarget;

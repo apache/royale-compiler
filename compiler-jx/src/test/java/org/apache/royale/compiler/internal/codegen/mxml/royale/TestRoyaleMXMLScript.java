@@ -16,9 +16,9 @@
  *  limitations under the License.
  *
  */
-package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.test.RoyaleTestBase;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;

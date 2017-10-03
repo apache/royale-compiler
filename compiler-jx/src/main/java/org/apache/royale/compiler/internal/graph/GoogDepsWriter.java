@@ -59,7 +59,7 @@ public class GoogDepsWriter {
 		this.mainName = mainClassName;
 		removeCirculars = config.getRemoveCirculars();
 		otherPaths = config.getSDKJSLib();
-		otherPaths.add(new File(outputFolder.getParent(), "flexjs/Royale/src").getPath());
+		otherPaths.add(new File(outputFolder.getParent(), "royale/Royale/src").getPath());
 		this.swcs = swcs;
 		for (ISWC swc : swcs)
 		{

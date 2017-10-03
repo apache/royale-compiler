@@ -21,7 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jsc;
 
 import java.io.FilterWriter;
 
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 
 /**
  * Concrete implementation of the 'Royale' JavaScript production.

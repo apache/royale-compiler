@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.royale.compiler.internal.driver.js.flexjs;
+package org.apache.royale.compiler.internal.driver.js.royale;
 
 import java.io.FilterWriter;
 
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.targets.RoyaleTarget;

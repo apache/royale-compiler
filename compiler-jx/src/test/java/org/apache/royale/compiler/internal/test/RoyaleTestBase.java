@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.driver.mxml.flexjs.MXMLRoyaleBackend;
+import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
@@ -80,7 +80,7 @@ public class RoyaleTestBase extends TestBase
     {
         namespaceMappings
                 .add(new MXMLNamespaceMapping(
-                        "library://ns.apache.org/flexjs/basic", new File(
+                        "library://ns.apache.org/royale/basic", new File(
                                 env.ASJS + "/frameworks/as/basic-manifest.xml")
                                 .getAbsolutePath()));
 
@@ -91,7 +91,7 @@ public class RoyaleTestBase extends TestBase
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(env.ASJS + "/examples/RoyaleTest_basic/src"));
-        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "flexjs/files"));
+        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "royale/files"));
 
         super.addSourcePaths(sourcePaths);
     }
@@ -112,7 +112,7 @@ public class RoyaleTestBase extends TestBase
     protected IASNode getASNode(String code, Class<? extends IASNode> type)
     {
         code = ""
-                + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\"><fx:Script><![CDATA["
+                + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\"><fx:Script><![CDATA["
                 + code + "]]></fx:Script></basic:Application>";
 
         IMXMLFileNode node = compileMXML(code);
@@ -126,7 +126,7 @@ public class RoyaleTestBase extends TestBase
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
         {
             code = ""
-                    + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+                    + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
                     + code + "</basic:Application>";
         }
 

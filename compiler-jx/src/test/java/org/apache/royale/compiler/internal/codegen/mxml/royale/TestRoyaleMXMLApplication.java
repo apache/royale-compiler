@@ -16,14 +16,14 @@
  *  limitations under the License.
  *
  */
-package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.royale.compiler.clients.MXMLJSC;
-import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.test.RoyaleTestBase;
@@ -56,18 +56,18 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         String fileName = "CSSTest";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
+                new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
         
         JSCSSCompilationSession jscss = (JSCSSCompilationSession)project.getCSSCompilationSession();
         jscss.setExcludeDefaultsCSSFiles(new ArrayList<String>());
 
-        String result = getCodeFromFile("CSSTestSource_result.css", "flexjs/files");
+        String result = getCodeFromFile("CSSTestSource_result.css", "royale/files");
         String output = jscss.emitCSS();       
         assertThat(output, is(result));
         String encoding = jscss.getEncodedCSS();
-        result = getCodeFromFile("CSSTestSource_encoded_result.txt", "flexjs/files");
+        result = getCodeFromFile("CSSTestSource_encoded_result.txt", "royale/files");
         assertThat(encoding, is(result));
         
 
@@ -79,13 +79,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         String fileName = "wildcard_import";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
+                new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
         
         //writeResultToFile(writer.toString(), fileName);
 
-        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "royale/files"));
     }
 
     @Test
@@ -94,13 +94,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         String fileName = "RoyaleTest_again";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
+                new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
 
         //writeResultToFile(writer.toString(), fileName);
 
-        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "royale/files"));
     }
 
     @Test
@@ -109,19 +109,19 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         String fileName = "MyInitialView";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
+                new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
 
         //writeResultToFile(writer.toString(), fileName);
 
-        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "royale/files"));
     }
 
     @Test
     public void testInterfaceAttribute()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.royale.core.IChrome\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\" implements=\"org.apache.royale.core.IChrome\">"
         		+ "<fx:Script><![CDATA["
                 + "    import org.apache.royale.core.IChrome;"
                 + "]]></fx:Script></basic:Application>";
@@ -211,7 +211,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testTwoInterfaceAttribute()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.royale.core.IChrome, org.apache.royale.core.IPopUp\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\" implements=\"org.apache.royale.core.IChrome, org.apache.royale.core.IPopUp\">"
         		+ "<fx:Script><![CDATA["
                 + "    import org.apache.royale.core.IPopUp;"
                 + "    import org.apache.royale.core.IChrome;"
@@ -304,7 +304,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testConstantBinding()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
         		+ "<fx:Script><![CDATA["
                 + "    import org.apache.royale.net.HTTPConstants;"
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
@@ -426,7 +426,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testConstantBindingQname()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
         		+ "<fx:Script><![CDATA["
                 + "    import org.apache.royale.net.HTTPConstants;"
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{org.apache.royale.net.HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
@@ -548,7 +548,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testChainBinding()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
         		+ "<fx:Script><![CDATA["
                 + "    import binding.ComplexValueObject;\n"
         		+ "    public var firstOne:ComplexValueObject;\n"
@@ -704,7 +704,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testXMLUsage()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
         		+ "<fx:Script><![CDATA["
         		+ "    public var xml:XML = new XML();\n"
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"Hello World\"/></basic:View></basic:initialView></basic:Application>";
@@ -842,7 +842,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         	args[8] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
         else
         	args[8] = "-define=COMPILE::temp,false";
-        args[9] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/RoyaleTest_again.mxml").getPath();
+        args[9] = new File(testAdapter.getUnitTestBaseDir(), "royale/files/RoyaleTest_again.mxml").getPath();
 
         ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         int result = mxmlc.mainNoExit(args, problems, true);
@@ -875,7 +875,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/CollectionsJS.swc")).getPath();
         args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/BasicJS.swc")).getPath();
         args[16] = "-compiler.js-external-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
-        args[17] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/RoyaleTest_again_Flash.mxml").getPath();
+        args[17] = new File(testAdapter.getUnitTestBaseDir(), "royale/files/RoyaleTest_again_Flash.mxml").getPath();
 
         int result = mxmlc.mainNoExit(args, errors, true);
         assertThat(result, is(3));
@@ -885,7 +885,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "flexjs/files"));
+        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "royale/files"));
         super.addSourcePaths(sourcePaths);
     }
 

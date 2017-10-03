@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.driver.mxml.flexjs;
+package org.apache.royale.compiler.internal.driver.mxml.royale;
 
 import java.util.List;
 
@@ -25,8 +25,8 @@ import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleCordovaPublisher;
-import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleCordovaPublisher;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;

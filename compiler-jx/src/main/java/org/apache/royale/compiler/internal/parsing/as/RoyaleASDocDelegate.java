@@ -28,7 +28,7 @@ import org.apache.royale.compiler.asdoc.IASDocDelegate;
 import org.apache.royale.compiler.asdoc.IASParserASDocDelegate;
 import org.apache.royale.compiler.asdoc.IMetadataParserASDocDelegate;
 import org.apache.royale.compiler.asdoc.IPackageDITAParser;
-import org.apache.royale.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.definitions.IDocumentableDefinition;
 import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
