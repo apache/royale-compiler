@@ -112,7 +112,7 @@
     </target>
 
     <target name="anttasks" description="Builds ant tasks JAR">
-        <ant dir="flexjs-ant-tasks" target="jar"/>
+        <ant dir="royale-ant-tasks" target="jar"/>
     </target>
 
     <target name="debugger" description="Builds FDB JAR">
@@ -128,7 +128,7 @@
     </target>
 
     <target name="ant.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
-        <ant dir="flexjs-ant-tasks" target="test"/>
+        <ant dir="royale-ant-tasks" target="test"/>
     </target>
 
     <target name="copyLastSuccessfulBuild" description="Copies last flex-asjs build.">
@@ -161,7 +161,7 @@
         <ant dir="compiler-jx" target="clean"/>
         <ant dir="compiler-jx/src/test" target="clean"/>
         <ant dir="flex-compiler-oem" target="clean"/>
-        <ant dir="flexjs-ant-tasks" target="clean"/>
+        <ant dir="royale-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
     </target>
 
@@ -182,7 +182,7 @@
 		<ant dir="compiler-jx" target="super-clean"/>
         <ant dir="compiler-jx/src/test" target="wipe"/>
         <ant dir="flex-compiler-oem" target="wipe"/>
-        <ant dir="flexjs-ant-tasks" target="wipe"/>
+        <ant dir="royale-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
@@ -462,8 +462,8 @@
     </target>
 
     <target name="stage-ant-tasks">
-        <copy todir="${basedir}/temp/flexjs-ant-tasks" includeEmptyDirs="false">
-            <fileset dir="${basedir}/flexjs-ant-tasks">
+        <copy todir="${basedir}/temp/royale-ant-tasks" includeEmptyDirs="false">
+            <fileset dir="${basedir}/royale-ant-tasks">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
@@ -892,7 +892,7 @@
         <ant dir="compiler/src/test" target="sdk.dependent.tests" />
         <ant dir="compiler-jx/src/test" target="integration.tests.sdk" />
     </target>
-    <target name="flexjs.dependent.tests" >
+    <target name="royale.dependent.tests" >
         <ant dir="compiler-jx/src/test" target="integration.tests.asjs" />
     </target>
 

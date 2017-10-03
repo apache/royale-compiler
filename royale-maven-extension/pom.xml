@@ -29,7 +29,7 @@
   </parent>
 
   <groupId>org.apache.royale.compiler</groupId>
-  <artifactId>flexjs-maven-extension</artifactId>
+  <artifactId>royale-maven-extension</artifactId>
   <version>0.9.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 

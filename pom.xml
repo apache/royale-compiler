@@ -27,7 +27,7 @@
   </parent>
 
   <groupId>org.apache.royale.compiler</groupId>
-  <artifactId>flexjs-compiler-parent</artifactId>
+  <artifactId>royale-compiler-parent</artifactId>
   <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -101,9 +101,9 @@
     <module>compiler-test-utils</module>
     <module>debugger</module>
     <module>flex-compiler-oem</module>
-    <module>flexjs-ant-tasks</module>
+    <module>royale-ant-tasks</module>
     <!-- Commented out for now -->
-    <!--module>flexjs-maven-extension</module-->
+    <!--module>royale-maven-extension</module-->
     <module>royale-maven-plugin</module>
   </modules>
 

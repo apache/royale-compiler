@@ -18,7 +18,7 @@
 
 -->
 
-<project name="flexjs_compiler_install" default="overlay" basedir=".">
+<project name="royale_compiler_install" default="overlay" basedir=".">
 
 	<!-- this script supports the usingDownloadCache property and
 	     downloadCacheFolder property to cache downloads in the
@@ -109,7 +109,7 @@
         <mkdir dir="${FLEX_HOME}/js/lib/google/closure-compiler" />
     </target>
     
-    <target name="movefiles" description="move SDK files into -legacy folders" unless="flexjs">
+    <target name="movefiles" description="move SDK files into -legacy folders" unless="royale">
         <mkdir dir="${FLEX_HOME}/lib-legacy" />
         <move todir="${FLEX_HOME}/lib-legacy" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FLEX_HOME}/lib">
@@ -145,7 +145,7 @@
         <copy tofile="${FLEX_HOME}/lib/mxmlc.jar" file="${FLEX_HOME}/lib/falcon-mxmlc.jar" overwrite="true"/>
     </target>
 
-    <target name="bin-legacy" unless="flexjs">
+    <target name="bin-legacy" unless="royale">
         <mkdir dir="${FLEX_HOME}/bin-legacy" />
         <move todir="${FLEX_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FLEX_HOME}/bin">

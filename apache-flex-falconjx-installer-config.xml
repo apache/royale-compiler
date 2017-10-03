@@ -86,7 +86,7 @@
             <en_US>Copy FalconJX SDK files</en_US>
         </step>
     </steps>
-    <component id="STEP_REQUIRED_INSTALL_APACHE_FLEX_FALCON" required="true" property="do.flexjs.install">
+    <component id="STEP_REQUIRED_INSTALL_APACHE_FLEX_FALCON" required="true" property="do.royale.install">
         <el_GR>
             <label>Apache Flex Falcon (Απαιτούμενο)</label>
             <message>Για το Apache Flex FalconJX ισχύει η συμφωνία χρήσης του Apache License V2. Θέλετε να εγκαταστήσετε το Apache Flex FalconJX;</message>

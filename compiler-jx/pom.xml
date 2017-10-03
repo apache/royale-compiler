@@ -22,7 +22,7 @@
 
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
-    <artifactId>flexjs-compiler-parent</artifactId>
+    <artifactId>royale-compiler-parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
 
@@ -44,7 +44,7 @@
           </includes>
           <excludes>
             <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
-            <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**</exclude>
+            <exclude>org/apache/flex/compiler/internal/codegen/js/royale/**</exclude>
             <exclude>**/TestGoogClass.java</exclude>
             <exclude>**/TestGoogEmitter.java</exclude>
             <exclude>**/TestGoogFile.java</exclude>
@@ -62,7 +62,7 @@
         <version>2.18.1</version>
         <configuration>
           <includes>
-            <include>org/apache/flex/compiler/internal/codegen/js/flexjs/Test*.java</include>
+            <include>org/apache/flex/compiler/internal/codegen/js/royale/Test*.java</include>
             <!-- Disabled for now as these tests require the flex-typedefs repo to be located in a pre-defined location -->
             <!--include>org/apache/flex/compiler/internal/codegen/externals/Test*.java</include-->
           </includes>
