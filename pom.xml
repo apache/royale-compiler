@@ -104,7 +104,7 @@
     <module>flexjs-ant-tasks</module>
     <!-- Commented out for now -->
     <!--module>flexjs-maven-extension</module-->
-    <module>flexjs-maven-plugin</module>
+    <module>royale-maven-plugin</module>
   </modules>
 
   <!--

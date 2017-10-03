@@ -32,7 +32,7 @@
                         <phases>
                             <!-- Generate ActionScript from JavaScript -->
                             <generate-sources>
-                                org.apache.royale.compiler:flexjs-maven-plugin:generate-extern
+                                org.apache.royale.compiler:royale-maven-plugin:generate-extern
                             </generate-sources>
                             <!--
                                 Generate JavaScript sources from the ActionScript sources.
@@ -44,9 +44,9 @@
                             </process-resources>
                             <!-- Compile the ActionScript to Flash (SWC) -->
                             <compile>
-                                org.apache.royale.compiler:flexjs-maven-plugin:compile-as,
-                                org.apache.royale.compiler:flexjs-maven-plugin:compile-js,
-                                org.apache.royale.compiler:flexjs-maven-plugin:compile-extern,
+                                org.apache.royale.compiler:royale-maven-plugin:compile-as,
+                                org.apache.royale.compiler:royale-maven-plugin:compile-js,
+                                org.apache.royale.compiler:royale-maven-plugin:compile-extern,
                             </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources
@@ -58,16 +58,16 @@
 
                             </generate-test-resources-->
                             <!--test-compile>
-                                org.apache.royale.compiler:flexjs-maven-plugin:testCompile
+                                org.apache.royale.compiler:royale-maven-plugin:testCompile
                             </test-compile-->
                             <process-test-classes>
-                                org.apache.royale.compiler:flexjs-maven-plugin:trust
+                                org.apache.royale.compiler:royale-maven-plugin:trust
                             </process-test-classes>
                             <!--test>
                                 org.apache.maven.plugins:maven-surefire-plugin:test
                             </test-->
                             <!--package>
-                                org.apache.royale.compiler:flexjs-maven-plugin:package
+                                org.apache.royale.compiler:royale-maven-plugin:package
                             </package-->
                             <install>
                                 org.apache.maven.plugins:maven-install-plugin:install
@@ -96,7 +96,7 @@
                             </process-resources>
                             <!-- Compile the ActionScript to Flash (SWF) -->
                             <compile>
-                                org.apache.royale.compiler:flexjs-maven-plugin:compile-app
+                                org.apache.royale.compiler:royale-maven-plugin:compile-app
                             </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources
@@ -108,16 +108,16 @@
 
                             </generate-test-resources-->
                             <!--test-compile>
-                                org.apache.royale.compiler:flexjs-maven-plugin:testCompile
+                                org.apache.royale.compiler:royale-maven-plugin:testCompile
                             </test-compile-->
                             <process-test-classes>
-                                org.apache.royale.compiler:flexjs-maven-plugin:trust
+                                org.apache.royale.compiler:royale-maven-plugin:trust
                             </process-test-classes>
                             <!--test>
                                 org.apache.maven.plugins:maven-surefire-plugin:test
                             </test-->
                             <package>
-                                org.apache.royale.compiler:flexjs-maven-plugin:package-js
+                                org.apache.royale.compiler:royale-maven-plugin:package-js
                             </package>
                             <install>
                                 org.apache.maven.plugins:maven-install-plugin:install
