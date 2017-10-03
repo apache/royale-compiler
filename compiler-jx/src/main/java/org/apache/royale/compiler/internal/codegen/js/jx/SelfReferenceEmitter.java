@@ -38,7 +38,7 @@ public class SelfReferenceEmitter extends JSSubEmitter implements
     @Override
     public void emit(IFunctionNode node)
     {
-        // we don't want 'var self = this;' in FlexJS
+        // we don't want 'var self = this;' in Royale
         // unless there are anonymous functions
         if (node.containsLocalFunctions())
         {

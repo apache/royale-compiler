@@ -37,7 +37,7 @@ import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -57,7 +57,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
     protected JSGoogConfiguration googConfiguration;
 
-    public JSGoogPublisher(FlexJSProject project, Configuration config)
+    public JSGoogPublisher(RoyaleProject project, Configuration config)
     {
         super(project, config);
         googConfiguration = (JSGoogConfiguration) config;

@@ -37,9 +37,9 @@ import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
  * Default implementation of {@link IASDocDelegate} that does not have any code
  * model or eclipse dependencies.
  */
-public final class FlexJSASDocDelegate implements IASDocDelegate
+public final class RoyaleASDocDelegate implements IASDocDelegate
 {
-    private static final FlexJSASDocDelegate INSTANCE = new FlexJSASDocDelegate();
+    private static final RoyaleASDocDelegate INSTANCE = new RoyaleASDocDelegate();
 
     /**
      * Gets the single instance of this delegate.
@@ -51,7 +51,7 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
         return INSTANCE;
     }
 
-    public FlexJSASDocDelegate()
+    public RoyaleASDocDelegate()
     {
     }
 

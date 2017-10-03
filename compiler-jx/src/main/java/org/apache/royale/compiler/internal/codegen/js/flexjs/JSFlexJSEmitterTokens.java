@@ -24,7 +24,7 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
 /**
  * @author Erik de Bruin
  */
-public enum JSFlexJSEmitterTokens implements IEmitterTokens
+public enum JSRoyaleEmitterTokens implements IEmitterTokens
 {
     FLEXJS_CLASS_INFO("FLEXJS_CLASS_INFO"),
     FLEXJS_REFLECTION_INFO("FLEXJS_REFLECTION_INFO"),
@@ -63,7 +63,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
 
     private String token;
 
-    private JSFlexJSEmitterTokens(String value)
+    private JSRoyaleEmitterTokens(String value)
     {
         token = value;
     }

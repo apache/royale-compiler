@@ -18,21 +18,21 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.sourcemaps;
 
-import org.apache.flex.compiler.internal.test.FlexJSSourceMapTestBase;
-import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.internal.test.RoyaleSourceMapTestBase;
+import org.apache.flex.compiler.internal.test.RoyaleTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 import org.junit.Test;
 
-public class TestSourceMapMXMLEvents extends FlexJSSourceMapTestBase
+public class TestSourceMapMXMLEvents extends RoyaleSourceMapTestBase
 {
     @Test
     public void testEvent()
     {
         String code = "<basic:Button click=\"event;\"/>";
 
-        IMXMLEventSpecifierNode node = (IMXMLEventSpecifierNode) getNode(code, IMXMLEventSpecifierNode.class, FlexJSTestBase.WRAP_LEVEL_DOCUMENT);
+        IMXMLEventSpecifierNode node = (IMXMLEventSpecifierNode) getNode(code, IMXMLEventSpecifierNode.class, RoyaleTestBase.WRAP_LEVEL_DOCUMENT);
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
                 .getAncestorOfType(IMXMLDocumentNode.class);
         mxmlBlockWalker.walk(dnode);

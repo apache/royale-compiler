@@ -29,7 +29,7 @@
   <artifactId>compiler</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - FlexJS: Compiler: Compiler</name>
+  <name>Apache Flex - Royale: Compiler: Compiler</name>
   <description>The Apache Flex Falcon Compiler</description>
 
   <build>

@@ -43,7 +43,7 @@ import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.DependencyGraph;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.swc.ISWC;
@@ -59,7 +59,7 @@ public class GoogDepsWriter {
 		this.mainName = mainClassName;
 		removeCirculars = config.getRemoveCirculars();
 		otherPaths = config.getSDKJSLib();
-		otherPaths.add(new File(outputFolder.getParent(), "flexjs/FlexJS/src").getPath());
+		otherPaths.add(new File(outputFolder.getParent(), "flexjs/Royale/src").getPath());
 		this.swcs = swcs;
 		for (ISWC swc : swcs)
 		{
@@ -930,7 +930,7 @@ public class GoogDepsWriter {
 		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
 		if (cu == null) return false; // unit testing
 		
-		return ((FlexJSProject)project).isExternalLinkage(cu);
+		return ((RoyaleProject)project).isExternalLinkage(cu);
 	}
 	
 	private class GoogDep

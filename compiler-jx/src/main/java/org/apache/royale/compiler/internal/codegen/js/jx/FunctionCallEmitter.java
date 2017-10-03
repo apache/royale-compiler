@@ -27,13 +27,13 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.flex.compiler.problems.TooFewFunctionParametersProblem;
@@ -58,7 +58,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
     public void emit(IFunctionCallNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         IASNode cnode = node.getChild(0);
 
@@ -126,13 +126,13 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
-                        if (project instanceof FlexJSProject)
-                            ((FlexJSProject) project).needLanguage = true;
+                        if (project instanceof RoyaleProject)
+                            ((RoyaleProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
-                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
-                            write(JSFlexJSEmitterTokens.UNDERSCORE);
+                            write(JSRoyaleEmitterTokens.UNDERSCORE);
                         write(def.getQualifiedName());
                         endMapping(nameNode);
                     }
@@ -189,14 +189,14 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
-                        if (project instanceof FlexJSProject)
-                            ((FlexJSProject) project).needLanguage = true;
+                        if (project instanceof RoyaleProject)
+                            ((RoyaleProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
                         startMapping(node.getNameNode());
-                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
-                            write(JSFlexJSEmitterTokens.UNDERSCORE);
+                            write(JSRoyaleEmitterTokens.UNDERSCORE);
                         endMapping(node.getNameNode());
                     }
                     else if (def.getBaseName().equals("sortOn"))
@@ -205,10 +205,10 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     		def.getParent().getQualifiedName().equals("Array"))
                 		{
                             ICompilerProject project = this.getProject();
-                            if (project instanceof FlexJSProject)
-                                ((FlexJSProject) project).needLanguage = true;
+                            if (project instanceof RoyaleProject)
+                                ((RoyaleProject) project).needLanguage = true;
                             getEmitter().getModel().needLanguage = true;
-                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write("sortOn");
                             IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
@@ -229,10 +229,10 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
 	                			IDefinition paramDef1 = param1.resolveType(project);
 	                			if (paramDef1.getBaseName().equals(IASLanguageConstants._int))
 	                			{
-		                            if (project instanceof FlexJSProject)
-		                                ((FlexJSProject) project).needLanguage = true;
+		                            if (project instanceof RoyaleProject)
+		                                ((RoyaleProject) project).needLanguage = true;
 		                            getEmitter().getModel().needLanguage = true;
-		                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+		                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
 		                            write(ASEmitterTokens.MEMBER_ACCESS);
 		                            write("sort");
 		                            IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);

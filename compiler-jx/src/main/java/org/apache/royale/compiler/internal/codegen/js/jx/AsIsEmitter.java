@@ -25,9 +25,9 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -53,8 +53,8 @@ public class AsIsEmitter extends JSSubEmitter
         if (id != ASTNodeID.Op_IsID && dnode != null)
         {
             boolean emit = coercion ? 
-            		!((FlexJSProject)getProject()).config.getJSOutputOptimizations().contains(JSFlexJSEmitterTokens.SKIP_FUNCTION_COERCIONS.getToken()) :
-                	!((FlexJSProject)getProject()).config.getJSOutputOptimizations().contains(JSFlexJSEmitterTokens.SKIP_AS_COERCIONS.getToken());
+            		!((RoyaleProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_FUNCTION_COERCIONS.getToken()) :
+                	!((RoyaleProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_AS_COERCIONS.getToken());
             			
             // find the function node
             IFunctionNode functionNode = (IFunctionNode) left
@@ -81,7 +81,7 @@ public class AsIsEmitter extends JSSubEmitter
                 if (asDoc != null)
                 {
                     String asDocString = asDoc.commentNoEnd();
-                    String coercionToken = JSFlexJSEmitterTokens.EMIT_COERCION
+                    String coercionToken = JSRoyaleEmitterTokens.EMIT_COERCION
                             .getToken();
                     int emitIndex = asDocString.indexOf(coercionToken);
                     while (emitIndex != -1)
@@ -100,7 +100,7 @@ public class AsIsEmitter extends JSSubEmitter
                         emitIndex = asDocString.indexOf(coercionToken,
                         		emitIndex + coercionToken.length());
                     }
-                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                    String ignoreToken = JSRoyaleEmitterTokens.IGNORE_COERCION
                     .getToken();
 		            int ignoreIndex = asDocString.indexOf(ignoreToken);
 		            while (ignoreIndex != -1)
@@ -129,8 +129,8 @@ public class AsIsEmitter extends JSSubEmitter
         }
 
         ICompilerProject project = this.getProject();
-        if (project instanceof FlexJSProject)
-        	((FlexJSProject)project).needLanguage = true;
+        if (project instanceof RoyaleProject)
+        	((RoyaleProject)project).needLanguage = true;
         getEmitter().getModel().needLanguage = true;
         if (node instanceof IBinaryOperatorNode)
         {
@@ -141,7 +141,7 @@ public class AsIsEmitter extends JSSubEmitter
         {
             startMapping(node);
         }
-        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
         write(ASEmitterTokens.MEMBER_ACCESS);
 
         if (id == ASTNodeID.Op_IsID)
@@ -168,7 +168,7 @@ public class AsIsEmitter extends JSSubEmitter
         if (dnode instanceof IClassDefinition)
         {
             startMapping(right);
-            write(getEmitter().formatQualifiedName(((JSFlexJSEmitter)getEmitter()).convertASTypeToJS(dnode.getQualifiedName())));
+            write(getEmitter().formatQualifiedName(((JSRoyaleEmitter)getEmitter()).convertASTypeToJS(dnode.getQualifiedName())));
             endMapping(right);
         }
         else

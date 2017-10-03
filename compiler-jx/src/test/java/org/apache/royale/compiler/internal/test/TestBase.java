@@ -47,7 +47,7 @@ import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -85,7 +85,7 @@ public class TestBase implements ITestBase
     protected static EnvProperties env = EnvProperties.initiate();
 
     protected static Workspace workspace = new Workspace();
-    protected FlexJSProject project;
+    protected RoyaleProject project;
 
     protected IBackend backend;
     protected ASFilterWriter writer;
@@ -118,7 +118,7 @@ public class TestBase implements ITestBase
         if (project == null)
         {
             backend = createBackend();
-        	project = new FlexJSProject(workspace, backend);
+        	project = new RoyaleProject(workspace, backend);
         	project.setProxyBaseClass("flash.utils.Proxy");
         }
         project.setProblems(errors);
@@ -209,7 +209,7 @@ public class TestBase implements ITestBase
     			continue;
     		if (problem.toString().equals("An externally-visible definition with the name 'FalconTest_A' was unexpectedly found."))
     			continue;
-    		if (problem.toString().startsWith("No externally-visible definition with the name 'TestFlexJSGlobalFunctions"))
+    		if (problem.toString().startsWith("No externally-visible definition with the name 'TestRoyaleGlobalFunctions"))
     			continue;
     		actualErrors.append(problem.toString());
     	}
@@ -483,7 +483,7 @@ public class TestBase implements ITestBase
         appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
         appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
         appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+        appendString.append(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
         appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
         appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
         appendString.append(ASEmitterTokens.SEMICOLON.getToken());
@@ -491,7 +491,7 @@ public class TestBase implements ITestBase
 
         String fileData = readCode(new File(path));
         int reqidx = fileData.indexOf(appendString.toString());
-	    if (reqidx == -1 && project instanceof FlexJSProject && ((FlexJSProject)project).needLanguage)
+	    if (reqidx == -1 && project instanceof RoyaleProject && ((RoyaleProject)project).needLanguage)
         {
 	    	boolean afterProvide = false;
             reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -519,7 +519,7 @@ public class TestBase implements ITestBase
         appendStringXML.append(ASEmitterTokens.SEMICOLON.getToken());
         appendStringXML.append("\n");
 
-        if (project instanceof FlexJSProject && ((FlexJSProject)project).needXML)
+        if (project instanceof RoyaleProject && ((RoyaleProject)project).needXML)
         {
 	        fileData = readCode(new File(path));
 	        reqidx = fileData.indexOf(appendStringXML.toString());

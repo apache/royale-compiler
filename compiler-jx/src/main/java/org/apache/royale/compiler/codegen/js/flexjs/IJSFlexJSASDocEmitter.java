@@ -22,26 +22,26 @@ package org.apache.flex.compiler.codegen.js.flexjs;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.internal.projects.FlexJSASDocProject;
+import org.apache.flex.compiler.internal.projects.RoyaleASDocProject;
 
 /**
  * @author Erik de Bruin
  */
-public interface IJSFlexJSASDocEmitter
+public interface IJSRoyaleASDocEmitter
 {
     /**
      * Outputs the index.
      */
-    void outputIndex(File outputFolder, FlexJSASDocProject project) throws IOException;
+    void outputIndex(File outputFolder, RoyaleASDocProject project) throws IOException;
 
     /**
      * Outputs the class list.
      */
-    void outputClasses(File outputFolder, FlexJSASDocProject project) throws IOException;
+    void outputClasses(File outputFolder, RoyaleASDocProject project) throws IOException;
 
     /**
      * Outputs the set of asdoc tags.
      */
-    void outputTags(File outputFolder, FlexJSASDocProject project) throws IOException;
+    void outputTags(File outputFolder, RoyaleASDocProject project) throws IOException;
 
 }

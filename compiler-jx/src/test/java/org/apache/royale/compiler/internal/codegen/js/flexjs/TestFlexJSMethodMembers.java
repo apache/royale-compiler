@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogMethodMembers;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSMethodMembers extends TestGoogMethodMembers
+public class TestRoyaleMethodMembers extends TestGoogMethodMembers
 {
 
     @Override
@@ -209,7 +209,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
     
 }

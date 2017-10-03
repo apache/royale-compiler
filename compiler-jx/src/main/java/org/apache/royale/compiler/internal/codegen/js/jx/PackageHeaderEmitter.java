@@ -34,14 +34,14 @@ import org.apache.flex.compiler.definitions.*;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
@@ -81,7 +81,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 if (asDoc != null)
                 {
                     String asDocString = asDoc.commentNoEnd();
-                    isExterns = asDocString.contains(JSFlexJSEmitterTokens.EXTERNS.getToken());
+                    isExterns = asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken());
                     getEmitter().getModel().isExterns = isExterns;
                 }
             }
@@ -118,7 +118,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             return;
         }
 
-        FlexJSProject project = (FlexJSProject) getProject();
+        RoyaleProject project = (RoyaleProject) getProject();
         List<File> sourcePaths = project.getSourcePath();
         String sourceName = definition.getSourcePath();
         for (File sourcePath : sourcePaths)
@@ -147,7 +147,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         write(JSGoogEmitterTokens.GOOG_PROVIDE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(qname, true));
+        write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(qname, true));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -167,7 +167,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 write(JSGoogEmitterTokens.GOOG_PROVIDE);
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.SINGLE_QUOTE);
-                write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(internalClass, true));
+                write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(internalClass, true));
                 write(ASEmitterTokens.SINGLE_QUOTE);
                 write(ASEmitterTokens.PAREN_CLOSE);
                 writeNewline(ASEmitterTokens.SEMICOLON);
@@ -180,7 +180,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
     public void emitContents(IPackageDefinition definition)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         PackageScope containedScope = (PackageScope) definition
                 .getContainedScope();
@@ -207,7 +207,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 if (asDoc != null)
                 {
                     String asDocString = asDoc.commentNoEnd();
-                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
+                    String ignoreToken = JSRoyaleEmitterTokens.IGNORE_IMPORT
                             .getToken();
                     int ignoreIndex = asDocString.indexOf(ignoreToken);
                     while (ignoreIndex != -1)
@@ -226,7 +226,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             }
         }
 
-        FlexJSProject flexProject = (FlexJSProject) getProject();
+        RoyaleProject flexProject = (RoyaleProject) getProject();
         ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
         ICompilationUnit cu = projectScope
                 .getCompilationUnitForDefinition(type != null ? type : otherMainDefinition);
@@ -297,14 +297,14 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         if (isMainCU || makingSWC)
         {
             ICompilerProject project = this.getProject();
-            if (project instanceof FlexJSProject)
+            if (project instanceof RoyaleProject)
             {
-                if (((FlexJSProject)project).needLanguage)
+                if (((RoyaleProject)project).needLanguage)
                 {
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                    write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
@@ -358,7 +358,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
+                    write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(imp, true));
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
@@ -385,7 +385,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
+                    write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(imp, true));
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);

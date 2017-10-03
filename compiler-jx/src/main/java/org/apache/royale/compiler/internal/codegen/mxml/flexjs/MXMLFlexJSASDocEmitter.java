@@ -31,14 +31,14 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
+import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSASDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleASDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -52,8 +52,8 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 /**
  * @author Erik de Bruin
  */
-public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
-        IMXMLFlexJSEmitter
+public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
+        IMXMLRoyaleEmitter
 {
 
 	// the instances in a container
@@ -95,7 +95,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
      */
     protected Map<IMXMLNode, Integer> nodeToIndexMap;
     
-    public MXMLFlexJSASDocEmitter(FilterWriter out)
+    public MXMLRoyaleASDocEmitter(FilterWriter out)
     {
         super(out);
     }
@@ -111,7 +111,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numIndent; i++)
-            sb.append(JSFlexJSEmitterTokens.INDENT.getToken());
+            sb.append(JSRoyaleEmitterTokens.INDENT.getToken());
         return sb.toString();
     }
 
@@ -179,7 +179,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSFlexJSASDocEmitter) asEmitter).getModel().pushClass(cdef);
+        ((JSRoyaleASDocEmitter) asEmitter).getModel().pushClass(cdef);
         
         IASNode classNode = node.getContainedClassDefinitionNode();
         String cname = cdef.getQualifiedName();
@@ -193,7 +193,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
             getMXMLWalker().walk(classNode.getChild(i));
         }
 
-        ((JSFlexJSASDocEmitter) asEmitter).mxmlEmitter = this;
+        ((JSRoyaleASDocEmitter) asEmitter).mxmlEmitter = this;
 
         emitClassDeclStart(cname, baseClassName, false);
 
@@ -282,7 +282,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     	int n = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
+            if (!instance.id.startsWith(MXMLRoyaleEmitterTokens.ID_PREFIX
                     .getToken()))
             {
             	n++;
@@ -300,7 +300,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         int i = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
+            if (!instance.id.startsWith(MXMLRoyaleEmitterTokens.ID_PREFIX
                     .getToken()))
             {
                 indentPush();
@@ -354,7 +354,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("i");
 
         MXMLEventSpecifier eventSpecifier = new MXMLEventSpecifier();
-        eventSpecifier.eventHandler = MXMLFlexJSEmitterTokens.EVENT_PREFIX
+        eventSpecifier.eventHandler = MXMLRoyaleEmitterTokens.EVENT_PREFIX
                 .getToken() + eventCounter++;
         eventSpecifier.name = cdef.getBaseName();
         eventSpecifier.type = node.getEventParameterDefinition()
@@ -406,7 +406,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         if (id == null)
             id = node.getEffectiveID();
         if (id == null)
-            id = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken() + idCounter++;
+            id = MXMLRoyaleEmitterTokens.ID_PREFIX.getToken() + idCounter++;
 
         MXMLDescriptorSpecifier currentInstance = new MXMLDescriptorSpecifier();
         currentInstance.isProperty = false;
@@ -592,7 +592,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         }
         else
         {
-            String overrideID = MXMLFlexJSEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
+            String overrideID = MXMLRoyaleEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
 	        setProp.id = overrideID;
 	        instances.add(setProp);
 	        BindingDatabase bd = BindingDatabase.bindingMap.get(classDefinition);
@@ -664,7 +664,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         handler.isProperty = true;
         handler.name = "handlerFunction";
         handler.parent = setEvent;
-        handler.value = JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
+        handler.value = JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
         		ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler +
         		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
         		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
@@ -1110,7 +1110,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     {
     	super.setBufferWrite(value);
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        ((JSFlexJSASDocEmitter)asEmitter).setBufferWrite(value);
+        ((JSRoyaleASDocEmitter)asEmitter).setBufferWrite(value);
     }
     
     //--------------------------------------------------------------------------
@@ -1239,7 +1239,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
-    	                    JSFlexJSASDocEmitter fjs = (JSFlexJSASDocEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+    	                    JSRoyaleASDocEmitter fjs = (JSRoyaleASDocEmitter) ((IMXMLBlockWalker) getMXMLWalker())
     	                    .getASEmitter();
     	                    fjs.getWalker().walk(vnode);
     	                    write(ASEmitterTokens.SEMICOLON);

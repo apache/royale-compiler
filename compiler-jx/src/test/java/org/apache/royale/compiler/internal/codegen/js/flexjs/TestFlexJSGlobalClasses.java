@@ -21,9 +21,9 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -39,13 +39,13 @@ import org.junit.Ignore;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
+public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
 {
     @Override
     public void setUp()
     {
         backend = createBackend();
-    	project = new FlexJSProject(workspace, backend);
+    	project = new RoyaleProject(workspace, backend);
     	project.config = new JSGoogConfiguration();
     	project.setProxyBaseClass("flash.utils.Proxy");
         super.setUp();
@@ -54,7 +54,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
     @Override

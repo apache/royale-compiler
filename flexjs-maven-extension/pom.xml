@@ -33,8 +33,8 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Apache Flex - FlexJS: FlexJS Maven Extension</name>
-  <description>Implementation of a Maven extension which adds resolution of FlexJS scopes to Maven.</description>
+  <name>Apache Flex - Royale: Royale Maven Extension</name>
+  <description>Implementation of a Maven extension which adds resolution of Royale scopes to Maven.</description>
 
   <!--
       !!!WARNING!!!

@@ -23,22 +23,22 @@ import java.util.ArrayList;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogPackage;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSPackage extends TestGoogPackage
+public class TestRoyalePackage extends TestGoogPackage
 {
     @Override
     public void setUp()
     {
 		backend = createBackend();
-		project = new FlexJSProject(workspace, backend);
+		project = new RoyaleProject(workspace, backend);
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	ArrayList<String> values = new ArrayList<String>();
     	values.add("Event");
@@ -47,7 +47,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     	ArrayList<String> values2 = new ArrayList<String>();
     	values2.add("Before");
     	config.setCompilerKeepCodeWithMetadata(null, values2);
-    	((FlexJSProject)project).config = config;
+    	((RoyaleProject)project).config = config;
         super.setUp();
     }
     
@@ -1144,7 +1144,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
 }

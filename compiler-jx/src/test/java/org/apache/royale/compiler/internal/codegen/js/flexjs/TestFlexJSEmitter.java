@@ -22,10 +22,10 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmitter;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
@@ -33,13 +33,13 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSEmitter extends TestGoogEmitter
+public class TestRoyaleEmitter extends TestGoogEmitter
 {
     @Override
     public void setUp()
     {
 		backend = createBackend();
-		project = new FlexJSProject(workspace, backend);
+		project = new RoyaleProject(workspace, backend);
 
         super.setUp();
     }
@@ -406,14 +406,14 @@ public class TestFlexJSEmitter extends TestGoogEmitter
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
     
     @Override
     protected void addDependencies()
     {
         super.addDependencies();
-        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        workspace.setASDocDelegate(new RoyaleASDocDelegate());
         if (project.config == null)
         	project.config = new JSGoogConfiguration();
         try {

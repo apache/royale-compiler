@@ -29,7 +29,7 @@
   <artifactId>flex-compiler-oem</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - FlexJS: Compiler: OEM Layer</name>
+  <name>Apache Flex - Royale: Compiler: OEM Layer</name>
 
   <dependencies>
     <dependency>

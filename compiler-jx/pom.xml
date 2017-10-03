@@ -29,7 +29,7 @@
   <artifactId>compiler-jx</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - FlexJS: Compiler: Compiler-JX</name>
+  <name>Apache Flex - Royale: Compiler: Compiler-JX</name>
 
   <build>
     <plugins>
@@ -48,8 +48,8 @@
             <exclude>**/TestGoogClass.java</exclude>
             <exclude>**/TestGoogEmitter.java</exclude>
             <exclude>**/TestGoogFile.java</exclude>
-            <exclude>**/TestFlexJSMXMLApplication.java</exclude>
-            <exclude>**/TestFlexJSMXMLScript.java</exclude>
+            <exclude>**/TestRoyaleMXMLApplication.java</exclude>
+            <exclude>**/TestRoyaleMXMLScript.java</exclude>
             <exclude>**/TestSourceMapMXMLScript.java</exclude>
             <exclude>**/TestSourceMapMXMLEvents.java</exclude>
           </excludes>
@@ -68,8 +68,8 @@
           </includes>
           <excludes>
             <!-- This test seems to have issues. -->
-            <exclude>**/TestFlexJSFile.java</exclude>
-            <exclude>**/TestFlexJSProject.java</exclude>
+            <exclude>**/TestRoyaleFile.java</exclude>
+            <exclude>**/TestRoyaleProject.java</exclude>
           </excludes>
         </configuration>
       </plugin>

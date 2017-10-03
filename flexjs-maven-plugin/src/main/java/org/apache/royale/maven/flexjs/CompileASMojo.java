@@ -49,7 +49,7 @@ public class CompileASMojo
     
     @Override
     protected String getToolGroupName() {
-        return "FlexJS";
+        return "Royale";
     }
 
     @Override

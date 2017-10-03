@@ -24,9 +24,9 @@ import java.util.List;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.jsc.JSCPublisher;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 /**
@@ -38,7 +38,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 public class JSCBackend extends MXMLJSCJSBackend
 {
     @Override
-    public MXMLFlexJSPublisher createPublisher(FlexJSProject project,
+    public MXMLRoyalePublisher createPublisher(RoyaleProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new JSCPublisher(project, config);

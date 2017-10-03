@@ -21,15 +21,15 @@ package org.apache.flex.compiler.internal.codegen.js.jsc;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 
 /**
- * Concrete implementation of the 'FlexJS' JavaScript production.
+ * Concrete implementation of the 'Royale' JavaScript production.
  * 
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSCJSEmitter extends JSFlexJSEmitter
+public class JSCJSEmitter extends JSRoyaleEmitter
 {
 
     public JSCJSEmitter(FilterWriter out)

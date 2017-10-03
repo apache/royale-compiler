@@ -36,8 +36,8 @@ import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
@@ -67,10 +67,10 @@ public class TestExternalsJSCompile
     private static File jsSWCFile = new File(testAdapter.getTempDir(), "externals/bin/JS.swc");
 
     protected static Workspace workspace = new Workspace();
-    protected FlexJSProject project;
+    protected RoyaleProject project;
     private ArrayList<ICompilerProblem> errors;
 
-    private FlexJSBackend backend;
+    private RoyaleBackend backend;
     //private IJSEmitter emitter;
     //private IASBlockWalker walker;
     //private JSFilterWriter writer;
@@ -85,7 +85,7 @@ public class TestExternalsJSCompile
     @Before
     public void setUp() throws IOException
     {
-        backend = new FlexJSBackend();
+        backend = new RoyaleBackend();
 
         config = new ExternCConfiguration();
         ExternalsTestUtils.init();
@@ -97,9 +97,9 @@ public class TestExternalsJSCompile
 
         client = new EXTERNC(config);
 
-        backend = new FlexJSBackend();
+        backend = new RoyaleBackend();
         if (project == null)
-            project = new FlexJSProject(workspace, backend);
+            project = new RoyaleProject(workspace, backend);
         FlexProjectConfigurator.configure(project);
 
         //writer = backend.createWriterBuffer(project);
@@ -174,7 +174,7 @@ public class TestExternalsJSCompile
         ICompilationUnit mainCU = Iterables.getOnlyElement(workspace.getCompilationUnits(
                 FilenameNormalization.normalize(mainFileName), project));
 
-        if (project instanceof FlexJSProject)
+        if (project instanceof RoyaleProject)
             project.mainCU = mainCU;
 
         Configurator projectConfigurator = backend.createConfigurator();

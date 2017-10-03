@@ -36,7 +36,7 @@ import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
+import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
@@ -55,15 +55,15 @@ import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.Wat
 import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.targets.ITargetAttributes;
@@ -90,8 +90,8 @@ import com.google.debugging.sourcemap.FilePosition;
 /**
  * @author Erik de Bruin
  */
-public class MXMLFlexJSEmitter extends MXMLEmitter implements
-        IMXMLFlexJSEmitter, IMappingEmitter
+public class MXMLRoyaleEmitter extends MXMLEmitter implements
+        IMXMLRoyaleEmitter, IMappingEmitter
 {
 
 	// the instances in a container
@@ -146,7 +146,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         return sourceMapMappings;
     }
     
-    public MXMLFlexJSEmitter(FilterWriter out)
+    public MXMLRoyaleEmitter(FilterWriter out)
     {
         super(out);
         sourceMapMappings = new ArrayList<SourceMapMapping>();
@@ -156,8 +156,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public String postProcess(String output)
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        ArrayList<String> asEmitterUsedNames = ((JSFlexJSEmitter)asEmitter).usedNames;
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+        ArrayList<String> asEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).usedNames;
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
         String currentClassName = fjs.getModel().getCurrentClass().getQualifiedName();
@@ -211,15 +211,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	    		{
 	    	    	// append info() structure if main CU
 	    	        ICompilerProject project = getMXMLWalker().getProject();
-    	            FlexJSProject flexJSProject = null;
-	    	        if (project instanceof FlexJSProject)
-	    	            flexJSProject = (FlexJSProject) project;
+    	            RoyaleProject flexJSProject = null;
+	    	        if (project instanceof RoyaleProject)
+	    	            flexJSProject = (RoyaleProject) project;
 	    	        
 	    			stillSearching = false;
                     for (String usedName :usedNames) {
                         if (!foundRequires.contains(usedName)) {
                             if (usedName.equals(classDefinition.getQualifiedName())) continue;
-                            if (((JSFlexJSEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
+                            if (((JSRoyaleEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
                             if (subDocumentNames.contains(usedName)) continue;
                             if (flexJSProject != null && flexJSProject.isExternalLinkage(flexJSProject.resolveQNameToCompilationUnit(usedName)))
                             	continue;
@@ -237,7 +237,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     		}
     		finalLines.add(line);
     	}
-        boolean needXML = ((FlexJSProject)(((IMXMLBlockWalker) getMXMLWalker()).getProject())).needXML;
+        boolean needXML = ((RoyaleProject)(((IMXMLBlockWalker) getMXMLWalker()).getProject())).needXML;
         if (needXML && !foundXML)
         {
             StringBuilder appendString = new StringBuilder();
@@ -254,9 +254,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
     	// append info() structure if main CU
         ICompilerProject project = getMXMLWalker().getProject();
-        if (project instanceof FlexJSProject)
+        if (project instanceof RoyaleProject)
         {
-            FlexJSProject flexJSProject = (FlexJSProject) project;
+            RoyaleProject flexJSProject = (RoyaleProject) project;
         	if (flexJSProject.mainCU != null)
         	{
 	            String mainDef = null;
@@ -506,7 +506,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numIndent; i++)
-            sb.append(JSFlexJSEmitterTokens.INDENT.getToken());
+            sb.append(JSRoyaleEmitterTokens.INDENT.getToken());
         return sb.toString();
     }
 
@@ -532,7 +532,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitDocument(IMXMLDocumentNode node)
     {
-        FlexJSProject fjp = (FlexJSProject) getMXMLWalker().getProject();
+        RoyaleProject fjp = (RoyaleProject) getMXMLWalker().getProject();
     	if (fjp.config != null)
     		emitExports = fjp.config.getExportPublicSymbols();
     	
@@ -558,7 +558,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         documentDefinition = cdef;
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
         fjs.getModel().setCurrentClass(cdef);
@@ -649,7 +649,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSFlexJSEmitter) asEmitter).getModel().pushClass(cdef);
+        ((JSRoyaleEmitter) asEmitter).getModel().pushClass(cdef);
         
         IASNode classNode = node.getContainedClassDefinitionNode();
         String cname = cdef.getQualifiedName();
@@ -663,7 +663,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             getMXMLWalker().walk(classNode.getChild(i));
         }
 
-        ((JSFlexJSEmitter) asEmitter).mxmlEmitter = this;
+        ((JSRoyaleEmitter) asEmitter).mxmlEmitter = this;
 
         emitClassDeclStart(cname, baseClassName, false);
 
@@ -685,7 +685,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitBindingData(cname, cdef);
 
-        write(((JSFlexJSEmitter) asEmitter).stringifyDefineProperties(cdef));
+        write(((JSRoyaleEmitter) asEmitter).stringifyDefineProperties(cdef));
 
 
         descriptorTree = oldDescriptorTree;
@@ -700,8 +700,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         idCounter = oldIdCounter;
         inMXMLContent = oldInMXMLContent;
         classDefinition = oldClassDef;
-        ((JSFlexJSEmitter) asEmitter).getModel().popClass();
-        ((JSFlexJSEmitter) asEmitter).mxmlEmitter = null;
+        ((JSRoyaleEmitter) asEmitter).getModel().popClass();
+        ((JSRoyaleEmitter) asEmitter).mxmlEmitter = null;
 
     }
 
@@ -836,7 +836,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("/**");
 	    writeNewline(" * Prevent renaming of class. Needed for reflection.");
         writeNewline(" */");
-	    write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
+	    write(JSRoyaleEmitterTokens.GOOG_EXPORT_SYMBOL);
 	    write(ASEmitterTokens.PAREN_OPEN);
 	    write(ASEmitterTokens.SINGLE_QUOTE);
 	    write(formatQualifiedName(cname));
@@ -868,10 +868,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(formatQualifiedName(cname));
         write("'");
         writeToken(ASEmitterTokens.COMMA);
-        write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_KIND);
+        write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_KIND);
         writeToken(ASEmitterTokens.COLON);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
+        write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
         writeToken(ASEmitterTokens.SINGLE_QUOTE);
         write(" }]");
         if (interfaceList != null)
@@ -890,8 +890,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     
     private void emitReflectionData(IClassDefinition cdef)
     {
-        JSFlexJSEmitter asEmitter = (JSFlexJSEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        FlexJSProject fjs = (FlexJSProject) getMXMLWalker().getProject();
+        JSRoyaleEmitter asEmitter = (JSRoyaleEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        RoyaleProject fjs = (RoyaleProject) getMXMLWalker().getProject();
     	ArrayList<String> exportProperties = new ArrayList<String>();
     	ArrayList<String> exportSymbols = new ArrayList<String>();
     	Set<String> exportMetadata = Collections.<String> emptySet();
@@ -1070,8 +1070,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     }
 
     private void collectAccessors(HashMap<String, PropertyNodes> accessors, ArrayList<PackageFooterEmitter.AccessorData> accessorData,IClassDefinition cdef ) {
-        JSFlexJSEmitter asEmitter = (JSFlexJSEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        FlexJSProject fjs = (FlexJSProject) getMXMLWalker().getProject();
+        JSRoyaleEmitter asEmitter = (JSRoyaleEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        RoyaleProject fjs = (RoyaleProject) getMXMLWalker().getProject();
 
         for (String propName : accessors.keySet())
         {
@@ -1180,7 +1180,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             if (node instanceof IMXMLSingleDataBindingNode)
             {
             	IMXMLSingleDataBindingNode sbdn = (IMXMLSingleDataBindingNode)node;
-            	FlexJSProject project = (FlexJSProject)getMXMLWalker().getProject();
+            	RoyaleProject project = (RoyaleProject)getMXMLWalker().getProject();
             	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
             	if (bdef != null)
             	{
@@ -1535,7 +1535,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 {
                     IASNode cnode = node.getChild(i);
                     if (cnode.getNodeID() == ASTNodeID.VariableID) {
-                        ((JSFlexJSEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
+                        ((JSRoyaleEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
                     } else {
                         if (cnode.getNodeID() == ASTNodeID.BindableVariableID) {
                             IVariableNode variableNode = (IVariableNode) cnode;
@@ -1550,7 +1550,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                             }
 
                             bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
-                            ((JSFlexJSEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
+                            ((JSRoyaleEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
                         }
                     }
 
@@ -1681,7 +1681,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         // top level is 'mxmlContent', skip it...
         if (descriptorTree.size() > 0)
         {
-            FlexJSProject project = (FlexJSProject) getMXMLWalker().getProject();
+            RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
             project.needLanguage = true;
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
@@ -1736,10 +1736,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private void collectExportedNames(MXMLDescriptorSpecifier descriptor)
     {
         ICompilerProject project = getMXMLWalker().getProject();
-        FlexJSProject flexJSProject = null;
-        if (project instanceof FlexJSProject)
+        RoyaleProject flexJSProject = null;
+        if (project instanceof RoyaleProject)
         {
-            flexJSProject = (FlexJSProject) project;
+            flexJSProject = (RoyaleProject) project;
             String name = descriptor.name;
             if (name == null)
             	name = this.classDefinition.getQualifiedName();
@@ -1777,7 +1777,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("i");
 
         MXMLEventSpecifier eventSpecifier = new MXMLEventSpecifier();
-        eventSpecifier.eventHandler = MXMLFlexJSEmitterTokens.EVENT_PREFIX
+        eventSpecifier.eventHandler = MXMLRoyaleEmitterTokens.EVENT_PREFIX
                 .getToken() + eventCounter++;
         eventSpecifier.name = cdef.getBaseName();
         eventSpecifier.type = node.getEventParameterDefinition()
@@ -1815,7 +1815,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         {
         	effectiveId = node.getEffectiveID();
         	if (effectiveId == null)
-        		effectiveId = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken() + idCounter++;
+        		effectiveId = MXMLRoyaleEmitterTokens.ID_PREFIX.getToken() + idCounter++;
         }
 
         MXMLDescriptorSpecifier currentInstance = new MXMLDescriptorSpecifier();
@@ -2003,7 +2003,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
         else
         {
-            String overrideID = MXMLFlexJSEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
+            String overrideID = MXMLRoyaleEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
 	        setProp.id = overrideID;
 	        instances.add(setProp);
 	        BindingDatabase bd = BindingDatabase.bindingMap.get(classDefinition);
@@ -2075,7 +2075,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         handler.isProperty = true;
         handler.name = "handlerFunction";
         handler.parent = setEvent;
-        handler.value = JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
+        handler.value = JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
         		ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler +
         		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
         		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
@@ -2524,7 +2524,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
     	super.setBufferWrite(value);
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        ((JSFlexJSEmitter)asEmitter).setBufferWrite(value);
+        ((JSRoyaleEmitter)asEmitter).setBufferWrite(value);
     }
     
     //--------------------------------------------------------------------------
@@ -2536,7 +2536,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         String cname = node.getFileNode().getName();
         String bcname = node.getBaseClassName();
 
-        FlexJSProject project = (FlexJSProject) getMXMLWalker().getProject();
+        RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         List<File> sourcePaths = project.getSourcePath();
         String sourceName = node.getSourcePath();
         for (File sourcePath : sourcePaths)
@@ -2584,7 +2584,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         ArrayList<String> deps = project.getRequires(cu);
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
         if (fjs.getModel().hasStaticBindableVars()) {
             //we need to add EventDispatcher
@@ -2652,10 +2652,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (project.mainCU != null &&
                 cu.getName().equals(project.mainCU.getName()))
         {
-            if (project instanceof FlexJSProject)
+            if (project instanceof RoyaleProject)
             {
-            	if (((FlexJSProject)project).needLanguage)
-            		emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+            	if (((RoyaleProject)project).needLanguage)
+            		emitHeaderLine(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
             }
         }
 
@@ -2816,7 +2816,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
-    	                    JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+    	                    JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
     	                    .getASEmitter();
     	                    fjs.getWalker().walk(vnode);
     	                    write(ASEmitterTokens.SEMICOLON);
@@ -2829,7 +2829,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     }
 
     public void emitComplexStaticInitializers(IASNode node){
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
         if (!fjs.getFieldEmitter().hasComplexStaticInitializers) return;
@@ -2883,7 +2883,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
 		if (cu == null) return false; // unit testing
 		
-		return ((FlexJSProject)project).isExternalLinkage(cu);
+		return ((RoyaleProject)project).isExternalLinkage(cu);
 	}
 
 }

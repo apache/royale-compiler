@@ -21,16 +21,16 @@ package org.apache.flex.compiler.internal.codegen.js.utils;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 
 public class DocEmitterUtils
 {
-    public static void loadImportIgnores(JSFlexJSEmitter emitter, String doc)
+    public static void loadImportIgnores(JSRoyaleEmitter emitter, String doc)
     {
         ArrayList<String> ignoreList = new ArrayList<String>();
-        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT.getToken();
+        String ignoreToken = JSRoyaleEmitterTokens.IGNORE_IMPORT.getToken();
         int index = doc.indexOf(ignoreToken);
         while (index != -1)
         {
@@ -44,6 +44,6 @@ public class DocEmitterUtils
         }
         
         // TODO (mschmalle)
-        ((JSFlexJSDocEmitter)emitter.getDocEmitter()).setClassIgnoreList(ignoreList);
+        ((JSRoyaleDocEmitter)emitter.getDocEmitter()).setClassIgnoreList(ignoreList);
     }
 }

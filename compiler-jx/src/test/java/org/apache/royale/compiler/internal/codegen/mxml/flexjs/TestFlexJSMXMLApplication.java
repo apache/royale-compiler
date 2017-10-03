@@ -22,11 +22,11 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.test.RoyaleTestBase;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -39,7 +39,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestFlexJSMXMLApplication extends FlexJSTestBase
+public class TestRoyaleMXMLApplication extends RoyaleTestBase
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
@@ -47,7 +47,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     public void setUp()
     {
         super.setUp();
-    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	((RoyaleProject)project).config = new JSGoogConfiguration();
     }
 
     @Test
@@ -89,9 +89,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     }
 
     @Test
-    public void testFlexJSMainFile()
+    public void testRoyaleMainFile()
     {
-        String fileName = "FlexJSTest_again";
+        String fileName = "RoyaleTest_again";
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
@@ -104,7 +104,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     }
 
     @Test
-    public void testFlexJSInitialViewFile()
+    public void testRoyaleInitialViewFile()
     {
         String fileName = "MyInitialView";
 
@@ -127,9 +127,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "]]></fx:Script></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
-        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
 
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -218,9 +218,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "]]></fx:Script></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
-        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
 
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -310,9 +310,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
-        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
 
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -432,9 +432,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{org.apache.flex.net.HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
-        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
 
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -555,9 +555,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{firstOne.subObject.labelText}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
-        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
 
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -710,9 +710,9 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"Hello World\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
-        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
 
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -826,7 +826,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     }
 
     @Test
-    public void testFlexJSMainFileDual()
+    public void testRoyaleMainFileDual()
     {
         MXMLJSC mxmlc = new MXMLJSC();
         String[] args = new String[10];
@@ -834,15 +834,15 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         args[1] = "-compiler.allow-subclass-overrides";
         args[2] = "-remove-circulars";
         args[3] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs")).getPath();
-        args[4] = "-js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs")).getPath();
+        args[4] = "-js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs")).getPath();
         args[5] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
         args[6] = "-js-external-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
-        args[7] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again.swf").getPath();
+        args[7] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/RoyaleTest_again.swf").getPath();
         if (env.GOOG != null)
         	args[8] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
         else
         	args[8] = "-define=COMPILE::temp,false";
-        args[9] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again.mxml").getPath();
+        args[9] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/RoyaleTest_again.mxml").getPath();
 
         ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         int result = mxmlc.mainNoExit(args, problems, true);
@@ -850,7 +850,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     }
 
     @Test
-    public void testFlexJSMainFileDualFlash()
+    public void testRoyaleMainFileDualFlash()
     {
     	/* this should error because a Flash APi is used */
         MXMLJSC mxmlc = new MXMLJSC();
@@ -863,19 +863,19 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         args[5] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Collections.swc")).getPath();
         args[6] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Basic.swc")).getPath();
         args[7] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
-        args[8] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/FlexJSTest_again_Flash.swf").getPath();
+        args[8] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/RoyaleTest_again_Flash.swf").getPath();
         if (env.GOOG != null)
         	args[9] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
         else
         	args[9] = "-define=COMPILE::temp,false";
         args[10] = "-compiler.allow-subclass-overrides";
-        args[11] = "-compiler.js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/CoreJS.swc")).getPath();
-        args[12] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/BindingJS.swc")).getPath();
-        args[13] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/NetworkJS.swc")).getPath();
-        args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/CollectionsJS.swc")).getPath();
-        args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/FlexJS/libs/BasicJS.swc")).getPath();
+        args[11] = "-compiler.js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/CoreJS.swc")).getPath();
+        args[12] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/BindingJS.swc")).getPath();
+        args[13] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/NetworkJS.swc")).getPath();
+        args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/CollectionsJS.swc")).getPath();
+        args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/BasicJS.swc")).getPath();
         args[16] = "-compiler.js-external-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
-        args[17] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/FlexJSTest_again_Flash.mxml").getPath();
+        args[17] = new File(testAdapter.getUnitTestBaseDir(), "flexjs/files/RoyaleTest_again_Flash.mxml").getPath();
 
         int result = mxmlc.mainNoExit(args, errors, true);
         assertThat(result, is(3));

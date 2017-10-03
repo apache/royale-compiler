@@ -23,7 +23,7 @@ import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
@@ -46,7 +46,7 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
         boolean sourceMap = false;
 
         IBlockWalker walker = getWalker();
-        FlexJSProject project = (FlexJSProject) walker.getProject();
+        RoyaleProject project = (RoyaleProject) walker.getProject();
         if (project != null)
         {
             JSConfiguration config = project.config;

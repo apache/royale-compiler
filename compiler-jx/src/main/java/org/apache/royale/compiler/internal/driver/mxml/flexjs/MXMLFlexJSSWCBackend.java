@@ -29,16 +29,16 @@ import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
@@ -57,7 +57,7 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
  * 
  * @author Erik de Bruin
  */
-public class MXMLFlexJSSWCBackend extends MXMLBackend
+public class MXMLRoyaleSWCBackend extends MXMLBackend
 {
 
     @Override
@@ -69,15 +69,15 @@ public class MXMLFlexJSSWCBackend extends MXMLBackend
     @Override
     public IMXMLEmitter createMXMLEmitter(FilterWriter out)
     {
-        return new MXMLFlexJSEmitter(out);
+        return new MXMLRoyaleEmitter(out);
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
-        MXMLBlockWalker walker = new MXMLFlexJSBlockWalker(errors, project,
+        MXMLBlockWalker walker = new MXMLRoyaleBlockWalker(errors, project,
                 mxmlEmitter, asEmitter, asBlockWalker);
 
         ASNodeSwitch asStrategy = new ASNodeSwitch(
@@ -99,13 +99,13 @@ public class MXMLFlexJSSWCBackend extends MXMLBackend
     @Override
     public IJSEmitter createEmitter(FilterWriter out)
     {
-        IJSEmitter emitter = new JSFlexJSEmitter(out);
+        IJSEmitter emitter = new JSRoyaleEmitter(out);
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
     }
     
     @Override
-    public IJSWriter createMXMLWriter(FlexJSProject project,
+    public IJSWriter createMXMLWriter(RoyaleProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -113,9 +113,9 @@ public class MXMLFlexJSSWCBackend extends MXMLBackend
     }
 
     @Override
-    public JSTarget createTarget(FlexJSProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
-        return new FlexJSSWCTarget(project, settings, monitor);
+        return new RoyaleSWCTarget(project, settings, monitor);
     }
 }

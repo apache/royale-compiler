@@ -31,8 +31,8 @@ import java.util.Set;
 
 import org.apache.flex.compiler.asdoc.IASDocTag;
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
-import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSASDocEmitter;
-import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
+import org.apache.flex.compiler.codegen.js.flexjs.IJSRoyaleASDocEmitter;
+import org.apache.flex.compiler.codegen.js.flexjs.IJSRoyaleEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -41,7 +41,7 @@ import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSASDocEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleASDocEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
@@ -49,7 +49,7 @@ import org.apache.flex.compiler.internal.definitions.EventDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.internal.projects.FlexJSASDocProject;
+import org.apache.flex.compiler.internal.projects.RoyaleASDocProject;
 import org.apache.flex.compiler.internal.tree.as.metadata.EventTagNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -68,12 +68,12 @@ import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
- * Concrete implementation of the 'FlexJS' JavaScript production.
+ * Concrete implementation of the 'Royale' JavaScript production.
  *
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmitter, IJSFlexJSASDocEmitter
+public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmitter, IJSRoyaleASDocEmitter
 {
 
 	private boolean firstMember = true;
@@ -84,7 +84,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	return output;
     }
 
-    public JSFlexJSASDocEmitter(FilterWriter out)
+    public JSRoyaleASDocEmitter(FilterWriter out)
     {
         super(out);
     }
@@ -92,7 +92,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     @Override
     protected void writeIndent()
     {
-        write(JSFlexJSEmitterTokens.INDENT);
+        write(JSRoyaleEmitterTokens.INDENT);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numIndent; i++)
-            sb.append(JSFlexJSEmitterTokens.INDENT.getToken());
+            sb.append(JSRoyaleEmitterTokens.INDENT.getToken());
         return sb.toString();
     }
     
@@ -118,7 +118,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         writeNewline("}");
@@ -131,7 +131,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         return formatQualifiedName(name, false);
     }
 
-    public MXMLFlexJSASDocEmitter mxmlEmitter = null;
+    public MXMLRoyaleASDocEmitter mxmlEmitter = null;
 
     public String formatQualifiedName(String name, boolean isDoc)
     {
@@ -249,7 +249,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         final IDefinitionNode[] members = node.getAllMemberNodes();
         if (members.length > 0)
@@ -293,14 +293,14 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         indentPop();
         writeNewline("}");
         addToIndex(node.getDefinition(), asDoc);
-    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
-    	FlexJSASDocProject.ASDocRecord record = project.new ASDocRecord();
+    	RoyaleASDocProject project = (RoyaleASDocProject)getWalker().getProject();
+    	RoyaleASDocProject.ASDocRecord record = project.new ASDocRecord();
     	record.definition = node.getDefinition();
     	if (asDoc != null)
     		record.description = makeShortDescription(asDoc.getDescription());
     	else
     		record.description = "";
-        ((FlexJSASDocProject)getWalker().getProject()).classes.put(formatQualifiedName(node.getQualifiedName()), record);
+        ((RoyaleASDocProject)getWalker().getProject()).classes.put(formatQualifiedName(node.getQualifiedName()), record);
     }
 
     @Override
@@ -332,7 +332,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
         	writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         if (members.length > 0)
@@ -352,14 +352,14 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         indentPop();
         writeNewline("}");
         addToIndex(node.getDefinition(), asDoc);
-    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
-    	FlexJSASDocProject.ASDocRecord record = project.new ASDocRecord();
+    	RoyaleASDocProject project = (RoyaleASDocProject)getWalker().getProject();
+    	RoyaleASDocProject.ASDocRecord record = project.new ASDocRecord();
     	record.definition = node.getDefinition();
     	if (asDoc != null)
     		record.description = makeShortDescription(asDoc.getDescription());
     	else
     		record.description = "";
-        ((FlexJSASDocProject)getWalker().getProject()).classes.put(formatQualifiedName(node.getQualifiedName()), record);
+        ((RoyaleASDocProject)getWalker().getProject()).classes.put(formatQualifiedName(node.getQualifiedName()), record);
     }
 
     private ArrayList<String> accessors = new ArrayList<String>();
@@ -403,7 +403,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -449,7 +449,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -476,7 +476,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -503,7 +503,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -550,7 +550,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -578,7 +578,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeNewline(",");
         if (asDoc != null)
         {
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
             writeNewline(",");
         }
         write("  \"return\": \"");
@@ -604,7 +604,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         addToIndex(node.getDefinition(), asDoc);
     }
     
-    public void writeASDoc(ASDocComment asDoc, FlexJSASDocProject project)
+    public void writeASDoc(ASDocComment asDoc, RoyaleASDocProject project)
     {
     	List<String> tagList = project.tags;
     	asDoc.compile();
@@ -743,7 +743,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (asDoc != null)
         {
             writeNewline(",");
-        	writeASDoc(asDoc, (FlexJSASDocProject)getWalker().getProject());
+        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         }
         indentPop();
         write("}");
@@ -752,14 +752,14 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     
     private void addToIndex(IDefinition def, ASDocComment asDoc)
     {
-    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
-    	List<FlexJSASDocProject.ASDocRecord> list = project.index.get(def.getBaseName());
+    	RoyaleASDocProject project = (RoyaleASDocProject)getWalker().getProject();
+    	List<RoyaleASDocProject.ASDocRecord> list = project.index.get(def.getBaseName());
     	if (list == null)
     	{
-    		list = new ArrayList<FlexJSASDocProject.ASDocRecord>();
+    		list = new ArrayList<RoyaleASDocProject.ASDocRecord>();
     		project.index.put(def.getBaseName(), list);
     	}
-    	FlexJSASDocProject.ASDocRecord record = project.new ASDocRecord();
+    	RoyaleASDocProject.ASDocRecord record = project.new ASDocRecord();
     	record.definition = def;
     	if (asDoc != null)
     		record.description = makeShortDescription(asDoc.getDescription());
@@ -776,7 +776,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	return description;
     }
 
-    public void outputIndex(File outputFolder, FlexJSASDocProject project) throws IOException
+    public void outputIndex(File outputFolder, RoyaleASDocProject project) throws IOException
     {
 	    final File indexFile = new File(outputFolder, "index.json");
 	    FileWriter out = new FileWriter(indexFile);
@@ -788,8 +788,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	boolean firstLine = true;
     	for (String key : keyList)
     	{
-        	List<FlexJSASDocProject.ASDocRecord> list = project.index.get(key);
-        	for (FlexJSASDocProject.ASDocRecord record : list)
+        	List<RoyaleASDocProject.ASDocRecord> list = project.index.get(key);
+        	for (RoyaleASDocProject.ASDocRecord record : list)
         	{
         		if (!firstLine)
         			out.write(",\n");
@@ -845,7 +845,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
 		}
     }
 
-    public void outputClasses(File outputFolder, FlexJSASDocProject project) throws IOException
+    public void outputClasses(File outputFolder, RoyaleASDocProject project) throws IOException
     {
 	    final File indexFile = new File(outputFolder, "classes.json");
 	    FileWriter out = new FileWriter(indexFile);
@@ -860,7 +860,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     		if (!firstLine)
     			out.write(",\n");
     		firstLine = false;
-        	FlexJSASDocProject.ASDocRecord record = project.classes.get(key);
+        	RoyaleASDocProject.ASDocRecord record = project.classes.get(key);
         	out.write("{ \"name\": \"");
         	out.write(key);
         	out.write("\",\n");
@@ -898,7 +898,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
 		}
     }
     
-    public void outputTags(File outputFolder, FlexJSASDocProject project) throws IOException
+    public void outputTags(File outputFolder, RoyaleASDocProject project) throws IOException
     {
 	    final File indexFile = new File(outputFolder, "tags.json");
 	    FileWriter out = new FileWriter(indexFile);

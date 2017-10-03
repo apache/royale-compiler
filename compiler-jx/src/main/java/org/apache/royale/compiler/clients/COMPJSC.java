@@ -48,7 +48,7 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTar
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
+import org.apache.flex.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
@@ -374,7 +374,7 @@ public class COMPJSC extends MXMLJSC
                 	outputFolder = new File(outputFolderName);
 
                 Set<String> externs = config.getExterns();
-                Collection<ICompilationUnit> roots = ((FlexJSSWCTarget)target).getReachableCompilationUnits(errors);
+                Collection<ICompilationUnit> roots = ((RoyaleSWCTarget)target).getReachableCompilationUnits(errors);
                 Collection<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {

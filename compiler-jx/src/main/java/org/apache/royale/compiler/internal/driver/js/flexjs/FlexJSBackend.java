@@ -22,10 +22,10 @@ package org.apache.flex.compiler.internal.driver.js.flexjs;
 import java.io.FilterWriter;
 
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.targets.FlexJSTarget;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.targets.RoyaleTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
@@ -33,21 +33,21 @@ import org.apache.flex.compiler.targets.ITargetSettings;
 /**
  * @author Erik de Bruin
  */
-public class FlexJSBackend extends GoogBackend
+public class RoyaleBackend extends GoogBackend
 {
 
     @Override
     public IJSEmitter createEmitter(FilterWriter out)
     {
-        IJSEmitter emitter = new JSFlexJSEmitter(out);
+        IJSEmitter emitter = new JSRoyaleEmitter(out);
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
     }
 
     @Override
-    public JSTarget createTarget(FlexJSProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
                                  ITargetProgressMonitor monitor)
     {
-        return new FlexJSTarget(project, settings, monitor);
+        return new RoyaleTarget(project, settings, monitor);
     }
 }

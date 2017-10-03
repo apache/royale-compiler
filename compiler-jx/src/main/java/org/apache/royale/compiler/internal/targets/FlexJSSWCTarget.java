@@ -32,7 +32,7 @@ import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.SourcePathManager;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.NoCompilationUnitForDefinitionProblem;
@@ -48,7 +48,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
-public class FlexJSSWCTarget extends JSTarget implements IJSTarget
+public class RoyaleSWCTarget extends JSTarget implements IJSTarget
 {
     protected ICompilationUnit mainCU;
     protected RootedCompilationUnits rootedCompilationUnits;
@@ -58,14 +58,14 @@ public class FlexJSSWCTarget extends JSTarget implements IJSTarget
      * 
      * @param project the owner project
      */
-    public FlexJSSWCTarget(FlexJSProject project, ITargetSettings targetSettings,
+    public RoyaleSWCTarget(RoyaleProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
-        flexProject = (FlexJSProject)project;
+        flexProject = (RoyaleProject)project;
     }
 
-    private FlexJSProject flexProject;
+    private RoyaleProject flexProject;
     
     @Override
     protected Target.RootedCompilationUnits computeRootedCompilationUnits() throws InterruptedException

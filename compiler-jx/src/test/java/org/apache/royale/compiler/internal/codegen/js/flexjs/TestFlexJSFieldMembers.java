@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogFieldMembers;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -29,13 +29,13 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSFieldMembers extends TestGoogFieldMembers
+public class TestRoyaleFieldMembers extends TestGoogFieldMembers
 {
 
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
     @Override

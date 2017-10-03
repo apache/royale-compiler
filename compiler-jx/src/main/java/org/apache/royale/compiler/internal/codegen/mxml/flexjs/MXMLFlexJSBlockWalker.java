@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
+import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -37,12 +37,12 @@ import org.apache.flex.compiler.visitor.IBlockWalker;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
+public class MXMLRoyaleBlockWalker extends MXMLBlockWalker
 {
 
     private IMXMLEmitter mxmlEmitter;
 
-    public MXMLFlexJSBlockWalker(List<ICompilerProblem> errors,
+    public MXMLRoyaleBlockWalker(List<ICompilerProblem> errors,
             IASProject project, IMXMLEmitter mxmlEmitter, IASEmitter asEmitter,
             IBlockWalker asBlockWalker)
     {
@@ -66,7 +66,7 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
     {
         debug("visitDocument()");
 
-        ((IMXMLFlexJSEmitter) mxmlEmitter).emitDocument(node);
+        ((IMXMLRoyaleEmitter) mxmlEmitter).emitDocument(node);
     }
 
     @Override

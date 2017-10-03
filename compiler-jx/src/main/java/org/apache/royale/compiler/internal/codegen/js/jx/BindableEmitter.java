@@ -28,7 +28,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 
 
@@ -367,7 +367,7 @@ public class BindableEmitter extends JSSubEmitter implements
                                                      IClassDefinition cdef)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         String qname = fjs.formatQualifiedName(cdef.getQualifiedName());
         // 'PropName': {
 
@@ -446,7 +446,7 @@ public class BindableEmitter extends JSSubEmitter implements
                                                        IClassDefinition cdef)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         if (info.namespace != "public") {
             writeNewline("/** @export");
             writeNewline("  * @private");

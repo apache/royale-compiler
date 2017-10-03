@@ -33,7 +33,7 @@ import org.apache.flex.compiler.css.ICSSManager;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.css.semantics.ActivatedStyleSheets;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -45,21 +45,21 @@ import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
 
 import com.google.common.collect.ImmutableList;
 
-public class FlexJSTarget extends JSTarget implements IJSTarget
+public class RoyaleTarget extends JSTarget implements IJSTarget
 {
     /**
      * Initialize a JS target with the owner project and root compilation units.
      * 
      * @param project the owner project
      */
-    public FlexJSTarget(FlexJSProject project, ITargetSettings targetSettings,
+    public RoyaleTarget(RoyaleProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
         flexProject = project;
     }
     
-    private final FlexJSProject flexProject;
+    private final RoyaleProject flexProject;
 
     ///////////
     //

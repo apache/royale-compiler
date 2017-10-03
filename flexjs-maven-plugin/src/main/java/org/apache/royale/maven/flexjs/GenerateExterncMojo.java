@@ -47,7 +47,7 @@ public class GenerateExterncMojo
 
     @Override
     protected String getToolGroupName() {
-        return "FlexJS";
+        return "Royale";
     }
 
     @Override

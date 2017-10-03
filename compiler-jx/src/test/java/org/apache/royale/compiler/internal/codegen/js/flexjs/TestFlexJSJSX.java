@@ -20,13 +20,13 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 
 import org.junit.Test;
 
-public class TestFlexJSJSX extends ASTestBase
+public class TestRoyaleJSX extends ASTestBase
 {
     @Test
     public void testJSXMetadataWithoutXMLLiterals()
@@ -373,6 +373,6 @@ public class TestFlexJSJSX extends ASTestBase
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 }

@@ -26,8 +26,8 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -65,7 +65,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         IASNode leftNode = node.getLeftOperandNode();
         IASNode rightNode = node.getRightOperandNode();
 
-    	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
+    	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
         IDefinition def = node.resolve(getProject());
         if (def == null)
         {
@@ -305,7 +305,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.SUPERCLASS);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                write(JSRoyaleEmitterTokens.GETTER_PREFIX);
                 if (rightDef != null)
                     write(rightDef.getBaseName());
                 else

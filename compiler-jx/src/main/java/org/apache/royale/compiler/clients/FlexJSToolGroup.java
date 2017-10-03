@@ -19,19 +19,19 @@
 
 package org.apache.flex.compiler.clients;
 
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocDITABackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleASDocDITABackend;
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
  * Created by christoferdutz on 10.11.14.
  */
-public class FlexJSToolGroup extends AbstractFlexToolGroup {
+public class RoyaleToolGroup extends AbstractFlexToolGroup {
 
-    public FlexJSToolGroup() {
-        super("FlexJS");
+    public RoyaleToolGroup() {
+        super("Royale");
         addFlexTool(new COMPJSC());
         addFlexTool(new MXMLJSC());
-        addFlexTool(new ASDOCJSC(new MXMLFlexJSASDocDITABackend()));
+        addFlexTool(new ASDOCJSC(new MXMLRoyaleASDocDITABackend()));
         addFlexTool(new EXTERNC());
     }
 

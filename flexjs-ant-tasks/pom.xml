@@ -29,7 +29,7 @@
   <artifactId>flexjs-ant-tasks</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - FlexJS: FlexJS Ant Tasks</name>
+  <name>Apache Flex - Royale: Royale Ant Tasks</name>
 
   <dependencies>
     <dependency>

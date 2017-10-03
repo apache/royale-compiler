@@ -32,9 +32,9 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
 import org.apache.flex.compiler.internal.config.TargetSettings;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
@@ -47,7 +47,7 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestFlexJSProject extends TestGoogProject
+public class TestRoyaleProject extends TestGoogProject
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
@@ -59,7 +59,7 @@ public class TestFlexJSProject extends TestGoogProject
     public void setUp()
     {
         backend = createBackend();
-        project = new FlexJSProject(workspace, backend);
+        project = new RoyaleProject(workspace, backend);
         project.config = new JSGoogConfiguration();
         super.setUp();
     }
@@ -170,11 +170,11 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "Test";
 
         try {
-			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			((RoyaleProject)project).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config, (FlexJSProject)project));
+        project.setTargetSettings(new TargetSettings(((RoyaleProject)project).config, (RoyaleProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/overrides").getPath();
@@ -193,11 +193,11 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "Test";
 
         try {
-			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			((RoyaleProject)project).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config, (FlexJSProject)project));
+        project.setTargetSettings(new TargetSettings(((RoyaleProject)project).config, (RoyaleProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/bad_overrides").getPath();
@@ -344,13 +344,13 @@ public class TestFlexJSProject extends TestGoogProject
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(FilenameNormalization.normalize(sourcePath)));
-        ((FlexJSProject)project).unitTestExterns = externs;
+        ((RoyaleProject)project).unitTestExterns = externs;
     }
 
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
 }

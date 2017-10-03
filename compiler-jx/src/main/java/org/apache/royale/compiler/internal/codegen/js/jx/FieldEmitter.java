@@ -33,7 +33,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarIn
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
@@ -170,9 +170,9 @@ public class FieldEmitter extends JSSubEmitter implements
         	}
             boolean defaultInitializers = false;
             ICompilerProject project = getProject();
-            if(project instanceof FlexJSProject)
+            if(project instanceof RoyaleProject)
             {
-                FlexJSProject fjsProject = (FlexJSProject) project;
+                RoyaleProject fjsProject = (RoyaleProject) project;
                 if(fjsProject.config != null)
                 {
                     defaultInitializers = fjsProject.config.getJsDefaultInitializers();

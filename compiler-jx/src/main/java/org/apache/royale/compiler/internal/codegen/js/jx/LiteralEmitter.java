@@ -29,7 +29,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
@@ -68,7 +68,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                     IMetaInfo[] metaInfos = functionNode.getMetaInfos();
                     for (IMetaInfo metaInfo : metaInfos)
                     {
-                        if (metaInfo.getTagName().equals(JSFlexJSEmitterTokens.JSX.getToken()))
+                        if (metaInfo.getTagName().equals(JSRoyaleEmitterTokens.JSX.getToken()))
                         {
                             jsx = true;
                             break;

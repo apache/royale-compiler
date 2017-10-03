@@ -32,14 +32,14 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.js.IMappingEmitter;
 import org.apache.flex.compiler.driver.js.IJSBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 
 public class JSWriter implements IJSWriter
 {
-    protected FlexJSProject project;
+    protected RoyaleProject project;
 
     protected List<ICompilerProblem> problems;
 
@@ -61,7 +61,7 @@ public class JSWriter implements IJSWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public JSWriter(FlexJSProject project, List<ICompilerProblem> problems,
+    public JSWriter(RoyaleProject project, List<ICompilerProblem> problems,
             ICompilationUnit compilationUnit, boolean enableDebug)
     {
         this.project = project;

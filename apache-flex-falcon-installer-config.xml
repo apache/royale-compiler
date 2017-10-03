@@ -34,7 +34,7 @@
         </string>
         <string id="INFO_ENTER_VALID_FLEX_SDK_PATH">
             <el_GR>Παρακαλώ εισάγετε μια έγκυρη διαδρομή καταλόγου για το Flex SDK</el_GR>
-            <en_US>Please enter valid directory path for a Flex or FlexJS SDK</en_US>
+            <en_US>Please enter valid directory path for a Flex or Royale SDK</en_US>
         </string>
         <string id="INFO_SELECT_DIRECTORY">
             <el_GR>Επιλέξτε τον κατάλογο στον οποίο θέλετε να εγκαταστήσετε το Flex Falcon</el_GR>

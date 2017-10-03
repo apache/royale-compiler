@@ -21,8 +21,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogStatements;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
@@ -39,13 +39,13 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSStatements extends TestGoogStatements
+public class TestRoyaleStatements extends TestGoogStatements
 {
     @Override
     public void setUp()
     {
         backend = createBackend();
-        project = new FlexJSProject(workspace, backend);
+        project = new RoyaleProject(workspace, backend);
         super.setUp();
     }
     
@@ -605,7 +605,7 @@ public class TestFlexJSStatements extends TestGoogStatements
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
 }

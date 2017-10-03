@@ -22,14 +22,14 @@ package org.apache.flex.compiler.internal.codegen.mxml.jsc;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
+import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
 
 /**
  * @author Erik de Bruin
  */
-public class MXMLJSCJSEmitter extends MXMLFlexJSEmitter implements
-        IMXMLFlexJSEmitter
+public class MXMLJSCJSEmitter extends MXMLRoyaleEmitter implements
+        IMXMLRoyaleEmitter
 {
 
 	public MXMLJSCJSEmitter(FilterWriter out) {

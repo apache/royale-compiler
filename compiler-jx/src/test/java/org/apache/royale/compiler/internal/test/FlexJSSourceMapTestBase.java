@@ -26,7 +26,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import com.google.debugging.sourcemap.FilePosition;
 import static org.junit.Assert.assertTrue;
 
-public class FlexJSSourceMapTestBase extends FlexJSTestBase
+public class RoyaleSourceMapTestBase extends RoyaleTestBase
 {
     protected void assertMapping(IASNode node, int nodeStartLine, int nodeStartColumn,
                                  int outStartLine, int outStartColumn, int outEndLine, int outEndColumn)

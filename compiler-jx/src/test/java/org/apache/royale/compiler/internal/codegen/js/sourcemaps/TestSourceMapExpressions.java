@@ -19,7 +19,7 @@
 package org.apache.flex.compiler.internal.codegen.js.sourcemaps;
 
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
@@ -874,6 +874,6 @@ public class TestSourceMapExpressions extends SourceMapTestBase
 
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 }

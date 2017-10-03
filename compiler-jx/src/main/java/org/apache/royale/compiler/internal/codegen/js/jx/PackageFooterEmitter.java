@@ -33,12 +33,12 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -70,7 +70,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
     public void emitClassInfo(ITypeNode tnode)
     {
-        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
         .getDocEmitter();
 
 		boolean isInterface = tnode instanceof IInterfaceNode;
@@ -94,32 +94,32 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    write(ASEmitterTokens.MEMBER_ACCESS);
 	    write(JSEmitterTokens.PROTOTYPE);
 	    write(ASEmitterTokens.MEMBER_ACCESS);
-	    writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
+	    writeToken(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO);
 	    writeToken(ASEmitterTokens.EQUAL);
 	    writeToken(ASEmitterTokens.BLOCK_OPEN);
 	
 	    // names: [{ name: '', qName: '', kind:'interface|class' }]
-	    write(JSFlexJSEmitterTokens.NAMES);
+	    write(JSRoyaleEmitterTokens.NAMES);
 	    writeToken(ASEmitterTokens.COLON);
 	    write(ASEmitterTokens.SQUARE_OPEN);
 	    writeToken(ASEmitterTokens.BLOCK_OPEN);
-	    write(JSFlexJSEmitterTokens.NAME);
+	    write(JSRoyaleEmitterTokens.NAME);
 	    writeToken(ASEmitterTokens.COLON);
 	    write(ASEmitterTokens.SINGLE_QUOTE);
 	    write(tnode.getName());
 	    write(ASEmitterTokens.SINGLE_QUOTE);
 	    writeToken(ASEmitterTokens.COMMA);
-	    write(JSFlexJSEmitterTokens.QNAME);
+	    write(JSRoyaleEmitterTokens.QNAME);
 	    writeToken(ASEmitterTokens.COLON);
 	    write(ASEmitterTokens.SINGLE_QUOTE);
 	    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
 	    write(ASEmitterTokens.SINGLE_QUOTE);
 		writeToken(ASEmitterTokens.COMMA);
-		write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_KIND);
+		write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_KIND);
 		writeToken(ASEmitterTokens.COLON);
 		write(ASEmitterTokens.SINGLE_QUOTE);
-		if (isInterface) write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_INTERFACE_KIND);
-		else write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
+		if (isInterface) write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_INTERFACE_KIND);
+		else write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
 		writeToken(ASEmitterTokens.SINGLE_QUOTE);
 	    write(ASEmitterTokens.BLOCK_CLOSE);
 	    write(ASEmitterTokens.SQUARE_CLOSE);
@@ -146,7 +146,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	        writeToken(ASEmitterTokens.COMMA);
 	
 	        // interfaces: [a.IC, a.ID]
-	        write(JSFlexJSEmitterTokens.INTERFACES);
+	        write(JSRoyaleEmitterTokens.INTERFACES);
 	        writeToken(ASEmitterTokens.COLON);
 	        write(ASEmitterTokens.SQUARE_OPEN);
 			if (needsIEventDispatcher) {
@@ -229,14 +229,14 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     
     public void collectReflectionData(ITypeNode tnode)
     {
-    	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
+    	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
     	exportProperties = new ArrayList<String>();
     	exportSymbols = new ArrayList<String>();
 		ICompilerProject project = getWalker().getProject();
     	Set<String> exportMetadata = Collections.<String> emptySet();
-    	if (project instanceof FlexJSProject)
+    	if (project instanceof RoyaleProject)
     	{
-    		FlexJSProject fjsp = ((FlexJSProject)project);
+    		RoyaleProject fjsp = ((RoyaleProject)project);
     		if (fjsp.config != null)
     			exportMetadata = fjsp.config.getCompilerKeepCodeWithMetadata();
     	}
@@ -475,7 +475,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 
     private void emitReflectionDataStart(String typeName) {
-		JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+		JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
 				.getDocEmitter();
 	    /*
 	     * Reflection
@@ -498,7 +498,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		write(ASEmitterTokens.MEMBER_ACCESS);
 		write(JSEmitterTokens.PROTOTYPE);
 		write(ASEmitterTokens.MEMBER_ACCESS);
-		writeToken(JSFlexJSEmitterTokens.FLEXJS_REFLECTION_INFO);
+		writeToken(JSRoyaleEmitterTokens.FLEXJS_REFLECTION_INFO);
 		writeToken(ASEmitterTokens.EQUAL);
 		writeToken(ASEmitterTokens.FUNCTION);
 		write(ASEmitterTokens.PAREN_OPEN);
@@ -863,7 +863,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     
     private void writeMetaData(IMetaTagNode[] tags)
     {
-    	JSGoogConfiguration config = ((FlexJSProject)getWalker().getProject()).config;
+    	JSGoogConfiguration config = ((RoyaleProject)getWalker().getProject()).config;
     	Set<String> allowedNames = config.getCompilerKeepAs3Metadata();
     	
 	    // metadata: function() {
@@ -962,7 +962,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     {
     	for (String prop : exportSymbols)
     	{
-    		write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
+    		write(JSRoyaleEmitterTokens.GOOG_EXPORT_SYMBOL);
     		write(ASEmitterTokens.PAREN_OPEN);
     		write(ASEmitterTokens.SINGLE_QUOTE);
     		write(typeName);
@@ -979,7 +979,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     	}
     	for (String prop : exportProperties)
     	{
-    		write(JSFlexJSEmitterTokens.GOOG_EXPORT_PROPERTY);
+    		write(JSRoyaleEmitterTokens.GOOG_EXPORT_PROPERTY);
     		write(ASEmitterTokens.PAREN_OPEN);
     		write(typeName);
     		write(ASEmitterTokens.MEMBER_ACCESS);

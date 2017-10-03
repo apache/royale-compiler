@@ -479,7 +479,7 @@ public interface ITargetSettings
     boolean getMxmlChildrenAsData();
     
     /**
-     * @return true if the info() structure should contain fields needed by FlexSDK only (and not FlexJS).
+     * @return true if the info() structure should contain fields needed by FlexSDK only (and not Royale).
      */
     boolean getInfoFlex();
     

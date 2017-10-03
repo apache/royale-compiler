@@ -18,13 +18,13 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.test.RoyaleTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.junit.Test;
 
-public class TestFlexJSMXMLScript extends FlexJSTestBase
+public class TestRoyaleMXMLScript extends RoyaleTestBase
 {
 
     @Test
@@ -36,11 +36,11 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
                 + "]]></fx:Script>";
 
         IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
-                IMXMLScriptNode.class, FlexJSTestBase.WRAP_LEVEL_DOCUMENT);
+                IMXMLScriptNode.class, RoyaleTestBase.WRAP_LEVEL_DOCUMENT);
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
         	.getAncestorOfType(IMXMLDocumentNode.class);
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -137,11 +137,11 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
                 + "]]></fx:Script>";
 
         IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
-                IMXMLScriptNode.class, FlexJSTestBase.WRAP_LEVEL_DOCUMENT);
+                IMXMLScriptNode.class, RoyaleTestBase.WRAP_LEVEL_DOCUMENT);
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
         	.getAncestorOfType(IMXMLDocumentNode.class);
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
@@ -243,11 +243,11 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
                 + "]]></fx:Script>";
 
         IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
-                IMXMLScriptNode.class, FlexJSTestBase.WRAP_LEVEL_DOCUMENT);
+                IMXMLScriptNode.class, RoyaleTestBase.WRAP_LEVEL_DOCUMENT);
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
         	.getAncestorOfType(IMXMLDocumentNode.class);
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +

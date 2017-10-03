@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.node;
 
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.jsc.JSCPublisher;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class NodePublisher extends JSCPublisher
 {
     public boolean exportModule = false;
 
-    public NodePublisher(Configuration config, FlexJSProject project)
+    public NodePublisher(Configuration config, RoyaleProject project)
     {
         super(project, config);
     }

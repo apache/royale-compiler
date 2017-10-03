@@ -47,10 +47,10 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
-import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
+import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -135,8 +135,8 @@ public class COMPJSCNative extends MXMLJSCNative
         IBackend backend = new MXMLJSCJSSWCBackend();
 
         workspace = new Workspace();
-        workspace.setASDocDelegate(new FlexJSASDocDelegate());
-        project = new FlexJSProject(workspace, backend);
+        workspace.setASDocDelegate(new RoyaleASDocDelegate());
+        project = new RoyaleProject(workspace, backend);
         problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         asFileHandler = backend.getSourceFileHandlerInstance();
     }
@@ -239,7 +239,7 @@ public class COMPJSCNative extends MXMLJSCNative
                 	outputFolder = new File(outputFolderName);
 
                 Set<String> externs = config.getExterns();
-                Collection<ICompilationUnit> roots = ((FlexJSSWCTarget)target).getReachableCompilationUnits(errors);
+                Collection<ICompilationUnit> roots = ((RoyaleSWCTarget)target).getReachableCompilationUnits(errors);
                 Collection<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {

@@ -24,13 +24,13 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
 /**
  * @author Erik de Bruin
  */
-public enum MXMLFlexJSEmitterTokens implements IEmitterTokens
+public enum MXMLRoyaleEmitterTokens implements IEmitterTokens
 {
     EVENT_PREFIX("$EH"), ID_PREFIX("$ID"), BINDING_PREFIX("$BID");
 
     private String token;
 
-    private MXMLFlexJSEmitterTokens(String value)
+    private MXMLRoyaleEmitterTokens(String value)
     {
         token = value;
     }

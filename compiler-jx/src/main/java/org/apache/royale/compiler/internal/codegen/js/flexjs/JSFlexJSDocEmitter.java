@@ -39,7 +39,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -49,7 +49,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
-public class JSFlexJSDocEmitter extends JSGoogDocEmitter
+public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 {
     private List<String> classIgnoreList;
     private List<String> ignoreList;
@@ -57,7 +57,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     public boolean emitStringConversions = true;
     private boolean emitExports = true;
 
-    public JSFlexJSDocEmitter(IJSEmitter emitter)
+    public JSRoyaleDocEmitter(IJSEmitter emitter)
     {
         super(emitter);
     }
@@ -102,13 +102,13 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     protected String formatQualifiedName(String name)
     {
-    	return ((JSFlexJSEmitter)emitter).formatQualifiedName(name, !usedNames);
+    	return ((JSRoyaleEmitter)emitter).formatQualifiedName(name, !usedNames);
     }
 
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
-    	FlexJSProject fjp = (FlexJSProject)project;
+    	RoyaleProject fjp = (RoyaleProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         if (fjp.config != null)
         	emitExports = fjp.config.getExportPublicSymbols();
@@ -143,7 +143,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 
                 //support implicit bindable implementation for 'Extends' EventDispatcher:
                 if (superClass == null || qname.equals(IASLanguageConstants.Object)) {
-                    if (((JSFlexJSEmitter)emitter).getModel().getImplicitBindableImplementation()
+                    if (((JSRoyaleEmitter)emitter).getModel().getImplicitBindableImplementation()
                             == JSSessionModel.ImplicitBindableImplementation.EXTENDS) {
                         superClass = (IClassDefinition) project.resolveQNameToDefinition(BindableEmitter.DISPATCHER_CLASS_QNAME);
                         if (superClass == null) {
@@ -162,7 +162,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                         .getImplementedInterfaceReferences();
 
                 Boolean sawIEventDispatcher = false;
-                Boolean needsIEventDispatcher = ((JSFlexJSEmitter)emitter).getModel().getImplicitBindableImplementation()
+                Boolean needsIEventDispatcher = ((JSRoyaleEmitter)emitter).getModel().getImplicitBindableImplementation()
                                                 == JSSessionModel.ImplicitBindableImplementation.IMPLEMENTS;
 
                 for (IReference iReference : references)
@@ -203,15 +203,15 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                     if (asDoc != null && keepASDoc)
                     {
                         String docText = asDoc.commentNoEnd();
-                        String keepToken = JSFlexJSEmitterTokens.EMIT_COERCION
+                        String keepToken = JSRoyaleEmitterTokens.EMIT_COERCION
                                 .getToken();
                         if (docText.contains(keepToken))
                             loadKeepers(docText);
-                        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                        String ignoreToken = JSRoyaleEmitterTokens.IGNORE_COERCION
                         		.getToken();
 		                if (docText.contains(ignoreToken))
 		                    loadIgnores(docText);
-                        String noStringToken = JSFlexJSEmitterTokens.IGNORE_STRING_COERCION
+                        String noStringToken = JSRoyaleEmitterTokens.IGNORE_STRING_COERCION
                         		.getToken();
 		                if (docText.contains(noStringToken))
 		                    emitStringConversions = false;
@@ -303,7 +303,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     private void loadIgnores(String doc)
     {
     	ignoreList = new ArrayList<String>();
-        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
+        String ignoreToken = JSRoyaleEmitterTokens.IGNORE_COERCION.getToken();
         int index = doc.indexOf(ignoreToken);
         while (index != -1)
         {
@@ -319,7 +319,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     private void loadKeepers(String doc)
     {
     	coercionList = new ArrayList<String>();
-        String keepToken = JSFlexJSEmitterTokens.EMIT_COERCION.getToken();
+        String keepToken = JSRoyaleEmitterTokens.EMIT_COERCION.getToken();
         int index = doc.indexOf(keepToken);
         while (index != -1)
         {
@@ -345,7 +345,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     public void emitInterfaceMemberDoc(IDefinitionNode node,
             ICompilerProject project)
     {
-    	FlexJSProject fjp =  (FlexJSProject)project;
+    	RoyaleProject fjp =  (RoyaleProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         boolean hasDoc = false;
 

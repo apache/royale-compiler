@@ -19,8 +19,8 @@
 package org.apache.flex.compiler.internal.codegen.mxml.sourcemaps;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.test.FlexJSSourceMapTestBase;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.test.RoyaleSourceMapTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
@@ -28,7 +28,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
-public class TestSourceMapMXMLScript extends FlexJSSourceMapTestBase
+public class TestSourceMapMXMLScript extends RoyaleSourceMapTestBase
 {
     @Test
     public void testField()
@@ -39,7 +39,7 @@ public class TestSourceMapMXMLScript extends FlexJSSourceMapTestBase
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
                 .getAncestorOfType(IMXMLDocumentNode.class);
         IClassDefinition definition = dnode.getClassDefinition();
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(definition);
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(definition);
         mxmlBlockWalker.visitDocument(dnode);
         String definitionName = definition.getQualifiedName();
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));
@@ -57,7 +57,7 @@ public class TestSourceMapMXMLScript extends FlexJSSourceMapTestBase
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
                 .getAncestorOfType(IMXMLDocumentNode.class);
         IClassDefinition definition = dnode.getClassDefinition();
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(definition);
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(definition);
         mxmlBlockWalker.visitDocument(dnode);
         String definitionName = definition.getQualifiedName();
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));

@@ -28,7 +28,7 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
@@ -48,7 +48,7 @@ public class ObjectDefinePropertyEmitter extends JSSubEmitter implements
     public void emit(IAccessorNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         //TODO: ajh  is this method needed anymore?
 
@@ -103,7 +103,7 @@ public class ObjectDefinePropertyEmitter extends JSSubEmitter implements
     protected void super_emitObjectDefineProperty(IAccessorNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         /*
         Object.defineProperty(

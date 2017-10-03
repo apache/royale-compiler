@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.driver.mxml;
 import org.apache.flex.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.units.ASCompilationUnit;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
@@ -73,7 +73,7 @@ public final class ASDocMXMLSourceFileHandler implements ISourceFileHandler
     public boolean needCompilationUnit(CompilerProject project, String path,
             String qname, String locale)
     {
-    	FlexJSProject fproject = (FlexJSProject)project;
+    	RoyaleProject fproject = (RoyaleProject)project;
     	ASDocConfiguration config = (ASDocConfiguration)(fproject.config);
     	return !(config.getExcludeSources().contains(path));
     }

@@ -33,7 +33,7 @@ public class FlexJsLanguageSupport implements LanguageSupport {
     private static final FlexJsScopeDeriver SCOPE_DERIVER = new FlexJsScopeDeriver();
 
     public FlexJsLanguageSupport() {
-        System.out.println("FlexJS Support");
+        System.out.println("Royale Support");
     }
 
     @Override

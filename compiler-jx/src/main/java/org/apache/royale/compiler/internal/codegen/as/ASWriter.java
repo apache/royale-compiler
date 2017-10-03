@@ -27,14 +27,14 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 
 public class ASWriter implements IASWriter
 {
-    private FlexJSProject project;
+    private RoyaleProject project;
 
     private List<ICompilerProblem> problems;
 
@@ -49,7 +49,7 @@ public class ASWriter implements IASWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public ASWriter(FlexJSProject project, List<ICompilerProblem> problems,
+    public ASWriter(RoyaleProject project, List<ICompilerProblem> problems,
                     ICompilationUnit compilationUnit, boolean enableDebug)
     {
         this.project = project;

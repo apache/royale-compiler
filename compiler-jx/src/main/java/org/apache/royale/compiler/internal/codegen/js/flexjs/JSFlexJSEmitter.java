@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
+import org.apache.flex.compiler.codegen.js.flexjs.IJSRoyaleEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
@@ -62,14 +62,14 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
 import org.apache.flex.compiler.internal.embedding.EmbedData;
 import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.*;
 import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
@@ -109,15 +109,15 @@ import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.utils.FilenameNormalization;
 
 /**
- * Concrete implementation of the 'FlexJS' JavaScript production.
+ * Concrete implementation of the 'Royale' JavaScript production.
  *
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
+public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 {
 
-    private JSFlexJSDocEmitter docEmitter = null;
+    private JSRoyaleDocEmitter docEmitter = null;
 
     private PackageHeaderEmitter packageHeaderEmitter;
     public PackageFooterEmitter packageFooterEmitter;
@@ -184,7 +184,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     addIndex = -1;
 	                int c2 = line.indexOf(")");
 	                String s = line.substring(c + 14, c2 - 1);
-                    if (s.equals(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken()))
+                    if (s.equals(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()))
                     {
                         foundLanguage = true;
                     }
@@ -212,9 +212,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     //imports are at the beginning of the file. other code,
                     //later in the file, may require Language.
                     ICompilerProject project = getWalker().getProject();
-                    if (project instanceof FlexJSProject)
+                    if (project instanceof RoyaleProject)
                     {
-                        FlexJSProject flexJSProject = (FlexJSProject) project;
+                        RoyaleProject flexJSProject = (RoyaleProject) project;
                         boolean needLanguage = getModel().needLanguage;
                         if (needLanguage && !foundLanguage)
                         {
@@ -222,7 +222,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                             appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
                             appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
                             appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                            appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+                            appendString.append(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
                             appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
                             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
                             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
@@ -340,11 +340,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public IJSGoogDocEmitter getDocEmitter()
     {
         if (docEmitter == null)
-            docEmitter = new JSFlexJSDocEmitter(this);
+            docEmitter = new JSRoyaleDocEmitter(this);
         return docEmitter;
     }
 
-    public JSFlexJSEmitter(FilterWriter out)
+    public JSRoyaleEmitter(FilterWriter out)
     {
         super(out);
 
@@ -379,7 +379,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     protected void writeIndent()
     {
-        write(JSFlexJSEmitterTokens.INDENT);
+        write(JSRoyaleEmitterTokens.INDENT);
     }
 
     @Override
@@ -387,7 +387,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numIndent; i++)
-            sb.append(JSFlexJSEmitterTokens.INDENT.getToken());
+            sb.append(JSRoyaleEmitterTokens.INDENT.getToken());
         return sb.toString();
     }
 
@@ -530,7 +530,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         return formatQualifiedName(name, false);
     }
 
-    public MXMLFlexJSEmitter mxmlEmitter = null;
+    public MXMLRoyaleEmitter mxmlEmitter = null;
 
     public String formatQualifiedName(String name, boolean isDoc)
     {
@@ -939,10 +939,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	public void emitClosureStart()
     {
         ICompilerProject project = getWalker().getProject();;
-        if (project instanceof FlexJSProject)
-        	((FlexJSProject)project).needLanguage = true;
+        if (project instanceof RoyaleProject)
+        	((RoyaleProject)project).needLanguage = true;
         getModel().needLanguage = true;
-        write(JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME);
+        write(JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME);
         write(ASEmitterTokens.PAREN_OPEN);
     }
 
@@ -1286,7 +1286,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitTypedExpression(ITypedExpressionNode node)
     {
-        write(JSFlexJSEmitterTokens.VECTOR);
+        write(JSRoyaleEmitterTokens.VECTOR);
     }
     
 	boolean isExternal(String className)
@@ -1295,7 +1295,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
 		if (cu == null) return false; // unit testing
 		
-		return ((FlexJSProject)project).isExternalLinkage(cu);
+		return ((RoyaleProject)project).isExternalLinkage(cu);
 	}
 
 }

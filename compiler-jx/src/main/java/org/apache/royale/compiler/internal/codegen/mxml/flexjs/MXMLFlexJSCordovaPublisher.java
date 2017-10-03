@@ -22,14 +22,14 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 
 import java.io.File;
 import java.io.IOException;
 
-public class MXMLFlexJSCordovaPublisher extends MXMLFlexJSPublisher
+public class MXMLRoyaleCordovaPublisher extends MXMLRoyalePublisher
 {
-    public MXMLFlexJSCordovaPublisher(Configuration config, FlexJSProject project)
+    public MXMLRoyaleCordovaPublisher(Configuration config, RoyaleProject project)
     {
         super(project, config);
     }

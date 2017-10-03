@@ -30,7 +30,7 @@ import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -75,7 +75,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
         boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
                 && !identifierIsAccessorFunction;
         boolean emitName = true;
-    	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
+    	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
     	boolean isCustomNamespace = false;
     	boolean isStatic = nodeDef != null && nodeDef.isStatic();
         if (nodeDef instanceof FunctionDefinition &&

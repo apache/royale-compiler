@@ -45,7 +45,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSourceMapEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
@@ -86,14 +86,14 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public JSTarget createTarget(FlexJSProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
                                  ITargetProgressMonitor monitor)
     {
         return new JSTarget(project, settings, monitor);
     }
 
     @Override
-    public IASBlockWalker createWalker(FlexJSProject project,
+    public IASBlockWalker createWalker(RoyaleProject project,
             List<ICompilerProblem> errors, IASEmitter emitter)
     {
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
@@ -108,7 +108,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -116,7 +116,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public JSFilterWriter createWriterBuffer(FlexJSProject project)
+    public JSFilterWriter createWriterBuffer(RoyaleProject project)
     {
         StringWriter out = new StringWriter();
         JSFilterWriter writer = new JSFilterWriter(out);
@@ -124,7 +124,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IJSWriter createWriter(FlexJSProject project,
+    public IJSWriter createWriter(RoyaleProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -132,7 +132,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IJSWriter createMXMLWriter(FlexJSProject project,
+    public IJSWriter createMXMLWriter(RoyaleProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -164,7 +164,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IPublisher createPublisher(FlexJSProject project,
+    public IPublisher createPublisher(RoyaleProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new JSPublisher(project, config);

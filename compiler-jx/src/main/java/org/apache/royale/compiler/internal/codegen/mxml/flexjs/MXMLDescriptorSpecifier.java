@@ -214,7 +214,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
 
     private void outputStyleSpecifier(boolean writeNewline)
     {
-        // TODO (erikdebruin) not yet implemented in FlexJS
+        // TODO (erikdebruin) not yet implemented in Royale
 
         write("0");
         writeDelimiter(writeNewline);
@@ -274,7 +274,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
         {
             outputStyleSpecifier(writeNewline);
 
-            // TODO (erikdebruin) not yet implemented in FlexJS
+            // TODO (erikdebruin) not yet implemented in Royale
             //outputEffectSpecifier(writeNewline);
 
             outputEventSpecifier(writeNewline);

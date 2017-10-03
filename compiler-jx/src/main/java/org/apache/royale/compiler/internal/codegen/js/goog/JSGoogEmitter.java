@@ -86,7 +86,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 {
     protected List<String> propertyNames = new ArrayList<String>();
 
-    // TODO (mschmalle) Remove this (not used in JSFlexJSEmitter and JSGoogEmitter anymore)
+    // TODO (mschmalle) Remove this (not used in JSRoyaleEmitter and JSGoogEmitter anymore)
     public ICompilerProject project;
 
     private JSGoogDocEmitter docEmitter;

@@ -22,9 +22,9 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleBackend;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -36,7 +36,7 @@ import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 @Ignore
-public class FlexJSTestBase extends TestBase
+public class RoyaleTestBase extends TestBase
 {
     protected static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
@@ -44,7 +44,7 @@ public class FlexJSTestBase extends TestBase
     public void setUp()
     {
         backend = createBackend();
-    	project = new FlexJSProject(workspace, backend);
+    	project = new RoyaleProject(workspace, backend);
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
@@ -90,7 +90,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(env.ASJS + "/examples/FlexJSTest_basic/src"));
+        sourcePaths.add(new File(env.ASJS + "/examples/RoyaleTest_basic/src"));
         sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "flexjs/files"));
 
         super.addSourcePaths(sourcePaths);
@@ -99,7 +99,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     protected IBackend createBackend()
     {
-        return new MXMLFlexJSBackend();
+        return new MXMLRoyaleBackend();
     }
 
     //--------------------------------------------------------------------------

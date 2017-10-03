@@ -43,7 +43,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
-import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
+import com.google.javascript.jscomp.RoyaleDiagnosticGroups;
 import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.ShowByPathWarningsGuard;
 import com.google.javascript.jscomp.SourceFile;
@@ -502,10 +502,10 @@ public class JSClosureCompilerWrapper
 
             // create custom DiagnosticGroups to shut off some individual warnings when we
             // still want warnings for others in the group.
-            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
-            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME, CheckLevel.OFF);
-            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_UNKNOWN_JSDOC_TYPE_NAME, CheckLevel.OFF);
-//            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
+            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
+            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME, CheckLevel.OFF);
+            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_UNKNOWN_JSDOC_TYPE_NAME, CheckLevel.OFF);
+//            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
         }
         
         options_.sourceMapFormat = SourceMap.Format.V3;

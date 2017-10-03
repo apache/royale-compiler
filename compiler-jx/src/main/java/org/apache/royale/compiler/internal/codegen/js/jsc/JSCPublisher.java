@@ -25,20 +25,20 @@ import java.util.List;
 
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 
-public class JSCPublisher extends MXMLFlexJSPublisher
+public class JSCPublisher extends MXMLRoyalePublisher
 {
-    public JSCPublisher(FlexJSProject project, Configuration config)
+    public JSCPublisher(RoyaleProject project, Configuration config)
     {
         super(project, config);
         this.project = project;
     }
 
-    private FlexJSProject project;
+    private RoyaleProject project;
 
     @Override
     protected String getTemplateBody(String projectName)

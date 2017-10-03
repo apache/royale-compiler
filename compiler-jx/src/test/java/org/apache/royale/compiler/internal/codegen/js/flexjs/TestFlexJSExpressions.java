@@ -23,10 +23,10 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
@@ -44,14 +44,14 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSExpressions extends TestGoogExpressions
+public class TestRoyaleExpressions extends TestGoogExpressions
  {
     @Override
     public void setUp()
     {
         backend = createBackend();
-        project = new FlexJSProject(workspace, backend);
-        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        project = new RoyaleProject(workspace, backend);
+        workspace.setASDocDelegate(new RoyaleASDocDelegate());
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	try {
 			config.setKeepASDoc(null, true);
@@ -59,7 +59,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	((FlexJSProject)project).config = config;
+    	((RoyaleProject)project).config = config;
         super.setUp();
     }
 
@@ -68,7 +68,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     @Test
     public void testVisitLanguageIdentifierNode_SuperMember()
     {
-        // (erikdebruin) this test doesn't make sense in FlexJS context
+        // (erikdebruin) this test doesn't make sense in Royale context
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
                 "if (a) super.foo;", IMemberAccessExpressionNode.class);
         asBlockWalker.visitMemberAccessExpression(node);
@@ -143,7 +143,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IClassNode classnode = (IClassNode) findFirstDescendantOfType(
                 node, IClassNode.class);
         IClassDefinition def = classnode.getDefinition();
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
         assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = org.apache.flex.utils.Language.closure(FalconTest_A.superClass_.foo, this, 'foo');\n}");
     }
@@ -158,7 +158,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IClassNode classnode = (IClassNode) findFirstDescendantOfType(
                 node, IClassNode.class);
         IClassDefinition def = classnode.getDefinition();
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
         assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f;\n  f = org.apache.flex.utils.Language.closure(FalconTest_A.superClass_.foo, this, 'foo');\n}");
     }
@@ -173,7 +173,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IClassNode classnode = (IClassNode) findFirstDescendantOfType(
                 node, IClassNode.class);
         IClassDefinition def = classnode.getDefinition();
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
         assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  FalconTest_A.superClass_.foo.apply(this, [a, b, c]);\n}");
     }
@@ -293,7 +293,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         ((NodeBase)fnode).setParent(null);
         IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("this.b = 1");
     }
@@ -317,7 +317,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         ((NodeBase)fnode).setParent(null);
         IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("this.b = 1");
     }
@@ -627,7 +627,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         ((NodeBase)fnode).setParent(null);
         IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("foo.bar.B[\"d\"].b = 1");
     }
@@ -687,7 +687,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         ((NodeBase)fnode).setParent(null);
         IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
+        ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("org.apache.flex.utils.Language.as(this.model, foo.bar.E, true).labelText = null");
     }
@@ -718,7 +718,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
                 "public class B {public var b:String; public var c:Object; /**\n * @flexjsnoimplicitstringconversion\n */\npublic function d() { b = c; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        JSFlexJSDocEmitter docEmitter = (JSFlexJSDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
+        JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
         IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
         
         // this adds '/**\n * @flexjsnoimplicitstringconversion\n * @export\n */' to the output but parses
@@ -1374,7 +1374,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
 
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
     

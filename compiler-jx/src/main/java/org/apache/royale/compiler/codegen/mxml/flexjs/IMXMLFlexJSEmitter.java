@@ -26,12 +26,12 @@ import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
 /**
- * The {@link IMXMLFlexJSEmitter} interface allows abstraction between the
+ * The {@link IMXMLRoyaleEmitter} interface allows abstraction between the
  * {@link IASNodeStrategy} and the current output buffer {@link Writer}.
  * 
  * @author Erik de Bruin
  */
-public interface IMXMLFlexJSEmitter extends IMXMLEmitter
+public interface IMXMLRoyaleEmitter extends IMXMLEmitter
 {
     void emitDocument(IMXMLDocumentNode node);
 }

@@ -95,7 +95,7 @@ public class AntTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public File getFlexJSArtifact(String artifactName) {
+    public File getRoyaleArtifact(String artifactName) {
         return null;
     }
 

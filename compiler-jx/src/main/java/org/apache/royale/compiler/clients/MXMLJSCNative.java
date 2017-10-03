@@ -51,11 +51,11 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
-import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
+import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.targets.FlexJSTarget;
+import org.apache.flex.compiler.internal.targets.RoyaleTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
@@ -157,7 +157,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
     }
 
     protected Workspace workspace;
-    protected FlexJSProject project;
+    protected RoyaleProject project;
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
@@ -175,8 +175,8 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
         IBackend backend = new JSCBackend();
 
         workspace = new Workspace();
-        workspace.setASDocDelegate(new FlexJSASDocDelegate());
-        project = new FlexJSProject(workspace, backend);
+        workspace.setASDocDelegate(new RoyaleASDocDelegate());
+        project = new RoyaleProject(workspace, backend);
         problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         asFileHandler = backend.getSourceFileHandlerInstance();
     }
@@ -326,7 +326,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
 	                roots.addAll(incs);
 	                project.mixinClassNames = new TreeSet<String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
-	                ((FlexJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
+	                ((RoyaleTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();

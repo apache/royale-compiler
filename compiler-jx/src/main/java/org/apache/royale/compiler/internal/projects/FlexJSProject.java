@@ -41,7 +41,7 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
@@ -66,7 +66,7 @@ import com.google.common.collect.ImmutableList;
  * @author aharui
  *
  */
-public class FlexJSProject extends FlexProject
+public class RoyaleProject extends FlexProject
 {
 
     /**
@@ -74,7 +74,7 @@ public class FlexJSProject extends FlexProject
      *
      * @param workspace The {@code Workspace} containing this project.
      */
-    public FlexJSProject(Workspace workspace, IBackend backend)
+    public RoyaleProject(Workspace workspace, IBackend backend)
     {
         super(workspace);
         this.backend = backend;
@@ -318,7 +318,7 @@ public class FlexJSProject extends FlexProject
         // than its codegen'd representation, and the browser can probably
         // load a .CSS file faster than us trying to run code to update the
         // styles.
-        // So, for FlexJS, all style blocks from all MXML files are gathered into
+        // So, for Royale, all style blocks from all MXML files are gathered into
         // one .css file and a corresponding codegen block that is output as
         // part of the main .JS file.
         return cssSession;
@@ -349,7 +349,7 @@ public class FlexJSProject extends FlexProject
     @Override
     public String getGeneratedIDBase()
     {
-        return MXMLFlexJSEmitterTokens.ID_PREFIX.getToken();
+        return MXMLRoyaleEmitterTokens.ID_PREFIX.getToken();
     }
 
     public ITargetAttributes computeTargetAttributes()

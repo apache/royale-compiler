@@ -22,10 +22,10 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import java.io.File;
 
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.test.RoyaleTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
@@ -36,13 +36,13 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestFlexJSFile extends FlexJSTestBase
+public class TestRoyaleFile extends RoyaleTestBase
 {
     @Override
     public void setUp()
     {
         super.setUp();
-    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	((RoyaleProject)project).config = new JSGoogConfiguration();
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TestFlexJSFile extends FlexJSTestBase
     }
 
     @Test
-    public void testFlexJSMyController()
+    public void testRoyaleMyController()
     {
         String fileName = "controllers/MyController";
 
@@ -82,7 +82,7 @@ public class TestFlexJSFile extends FlexJSTestBase
     }
 
     @Test
-    public void testFlexJSMyModel()
+    public void testRoyaleMyModel()
     {
         String fileName = "models/MyModel";
 
@@ -102,6 +102,6 @@ public class TestFlexJSFile extends FlexJSTestBase
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 }

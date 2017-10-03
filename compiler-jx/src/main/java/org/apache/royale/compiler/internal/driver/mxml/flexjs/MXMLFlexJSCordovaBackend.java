@@ -25,10 +25,10 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSCordovaPublisher;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleCordovaPublisher;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 
@@ -38,7 +38,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
  * 
  * @author Erik de Bruin
  */
-public class MXMLFlexJSCordovaBackend extends MXMLFlexJSBackend
+public class MXMLRoyaleCordovaBackend extends MXMLRoyaleBackend
 {
 
     @Override
@@ -48,9 +48,9 @@ public class MXMLFlexJSCordovaBackend extends MXMLFlexJSBackend
     }
 
     @Override
-    public MXMLFlexJSPublisher createPublisher(FlexJSProject project,
+    public MXMLRoyalePublisher createPublisher(RoyaleProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
-        return new MXMLFlexJSCordovaPublisher(config, project);
+        return new MXMLRoyaleCordovaPublisher(config, project);
     }
 }

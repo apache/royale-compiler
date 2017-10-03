@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.BuildCanceledException;
 import org.apache.flex.compiler.internal.driver.js.JSApplication;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.targets.IJSTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
@@ -49,7 +49,7 @@ public class JSTarget extends Target implements IJSTarget
      * 
      * @param project the owner project
      */
-    public JSTarget(FlexJSProject project, ITargetSettings targetSettings,
+    public JSTarget(RoyaleProject project, ITargetSettings targetSettings,
                     ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);

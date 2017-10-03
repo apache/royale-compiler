@@ -33,12 +33,12 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jsc.JSCJSEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
@@ -73,11 +73,11 @@ public class MXMLJSCJSSWCBackend extends MXMLBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(FlexJSProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
-        MXMLBlockWalker walker = new MXMLFlexJSBlockWalker(errors, project,
+        MXMLBlockWalker walker = new MXMLRoyaleBlockWalker(errors, project,
                 mxmlEmitter, asEmitter, asBlockWalker);
 
         ASNodeSwitch asStrategy = new ASNodeSwitch(
@@ -105,7 +105,7 @@ public class MXMLJSCJSSWCBackend extends MXMLBackend
     }
     
     @Override
-    public IJSWriter createMXMLWriter(FlexJSProject project,
+    public IJSWriter createMXMLWriter(RoyaleProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -113,9 +113,9 @@ public class MXMLJSCJSSWCBackend extends MXMLBackend
     }
 
     @Override
-    public JSTarget createTarget(FlexJSProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
-        return new FlexJSSWCTarget(project, settings, monitor);
+        return new RoyaleSWCTarget(project, settings, monitor);
     }
 }

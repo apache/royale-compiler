@@ -72,12 +72,12 @@
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/Test*.class"/>
-                    <exclude name="**/TestFlexJSFile.class"/>
-                    <exclude name="**/TestFlexJSMXML*.class"/>
+                    <exclude name="**/TestRoyaleFile.class"/>
+                    <exclude name="**/TestRoyaleMXML*.class"/>
                     <exclude name="**/TestSourceMapMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
                     <!-- externs tests -->
-                    <exclude name="**/TestFlexJSClass.class"/>
+                    <exclude name="**/TestRoyaleClass.class"/>
                     <exclude name="**/TestExtern*.class"/>
                     <exclude name="**/TestAnnotationEnum.class"/>
                     <exclude name="**/TestCollectImports.class"/>
@@ -112,8 +112,8 @@
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
-                    <include name="**/TestFlexJSFile.class"/>
-                    <include name="**/TestFlexJSMXML*.class"/>
+                    <include name="**/TestRoyaleFile.class"/>
+                    <include name="**/TestRoyaleMXML*.class"/>
                     <include name="**/TestSourceMapMXML*.class"/>
                 </fileset>
             </batchtest>
@@ -167,7 +167,7 @@
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
                     <!-- externs tests -->
-                    <exclude name="**/TestFlexJSClass.class"/>
+                    <exclude name="**/TestRoyaleClass.class"/>
                     <include name="**/TestExtern*.class"/>
                     <include name="**/TestAnnotationEnum.class"/>
                     <include name="**/TestCollectImports.class"/>

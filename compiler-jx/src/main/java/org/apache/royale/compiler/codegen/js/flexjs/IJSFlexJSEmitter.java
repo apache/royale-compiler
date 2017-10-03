@@ -24,7 +24,7 @@ import org.apache.flex.compiler.codegen.js.goog.IJSGoogEmitter;
 /**
  * @author Erik de Bruin
  */
-public interface IJSFlexJSEmitter extends IJSGoogEmitter
+public interface IJSRoyaleEmitter extends IJSGoogEmitter
 {
 
 }

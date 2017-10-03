@@ -27,12 +27,12 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -56,13 +56,13 @@ public class ClassEmitter extends JSSubEmitter implements
     public void emit(IClassNode node)
     {
     	boolean keepASDoc = false;
-        FlexJSProject project = (FlexJSProject)getEmitter().getWalker().getProject();
+        RoyaleProject project = (RoyaleProject)getEmitter().getWalker().getProject();
         keepASDoc = project.config != null && project.config.getKeepASDoc();
     	
         getModel().pushClass(node.getDefinition());
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && keepASDoc)
@@ -133,7 +133,7 @@ public class ClassEmitter extends JSSubEmitter implements
 
   	    if (!getEmitter().getModel().isExterns)
   	    {
-  	        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+  	        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
   	        .getDocEmitter();
   		    writeNewline();
   		    writeNewline();
@@ -141,7 +141,7 @@ public class ClassEmitter extends JSSubEmitter implements
   		    doc.begin();
   		    writeNewline(" * Prevent renaming of class. Needed for reflection.");
   		    doc.end();
-  		    write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
+  		    write(JSRoyaleEmitterTokens.GOOG_EXPORT_SYMBOL);
   		    write(ASEmitterTokens.PAREN_OPEN);
   		    write(ASEmitterTokens.SINGLE_QUOTE);
   		    write(getEmitter().formatQualifiedName(node.getQualifiedName()));

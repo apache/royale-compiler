@@ -20,9 +20,9 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.junit.Test;
@@ -30,13 +30,13 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSAccessors extends ASTestBase
+public class TestRoyaleAccessors extends ASTestBase
 {
     @Override
     public void setUp()
     {
         super.setUp();
-    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	((RoyaleProject)project).config = new JSGoogConfiguration();
     }
     
     @Test
@@ -149,7 +149,7 @@ public class TestFlexJSAccessors extends ASTestBase
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
 }

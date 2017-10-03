@@ -31,7 +31,7 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSASDocEmitter;
+import org.apache.flex.compiler.codegen.js.flexjs.IJSRoyaleASDocEmitter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
@@ -41,15 +41,15 @@ import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocDITABackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleASDocBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleASDocDITABackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
-import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
+import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexJSASDocProject;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
+import org.apache.flex.compiler.internal.projects.RoyaleASDocProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.flex.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -136,11 +136,11 @@ public class ASDOCJSC extends MXMLJSCFlex
 
                 case FLEXJS:
                 case FLEXJS_DUAL:
-                    backend = new MXMLFlexJSASDocBackend();
+                    backend = new MXMLRoyaleASDocBackend();
                     break;
 
                 case FLEXJS_DITA:
-                    backend = new MXMLFlexJSASDocDITABackend();
+                    backend = new MXMLRoyaleASDocDITABackend();
                     break;
                     
                 case GOOG:
@@ -166,15 +166,15 @@ public class ASDOCJSC extends MXMLJSCFlex
     public ASDOCJSC(IBackend backend)
     {
     	super(backend);
-        project = new FlexJSASDocProject(workspace, backend);
+        project = new RoyaleASDocProject(workspace, backend);
     }
     
     protected void init()
     {
-        IBackend backend = new MXMLFlexJSBackend();
+        IBackend backend = new MXMLRoyaleBackend();
         workspace = new Workspace();
-        workspace.setASDocDelegate(new FlexJSASDocDelegate());
-        project = new FlexJSProject(workspace, backend);
+        workspace.setASDocDelegate(new RoyaleASDocDelegate());
+        project = new RoyaleProject(workspace, backend);
         problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         asFileHandler = backend.getSourceFileHandlerInstance();    	
     }
@@ -220,7 +220,7 @@ public class ASDOCJSC extends MXMLJSCFlex
                 Set<String> externs = config.getExterns();
                 List<String> excludeClasses = ((ASDocConfiguration)config).getExcludeClasses();
                 List<String> excludeSources = ((ASDocConfiguration)config).getExcludeSources();
-                Collection<ICompilationUnit> roots = ((FlexJSSWCTarget)target).getReachableCompilationUnits(errors);
+                Collection<ICompilationUnit> roots = ((RoyaleSWCTarget)target).getReachableCompilationUnits(errors);
                 Collection<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
@@ -266,10 +266,10 @@ public class ASDOCJSC extends MXMLJSCFlex
                     }
                 }
                 compilationSuccess = true;
-                IJSFlexJSASDocEmitter emitter = (IJSFlexJSASDocEmitter) project.getBackend().createEmitter(null);
-                emitter.outputIndex(outputFolder, (FlexJSASDocProject)project);
-                emitter.outputClasses(outputFolder, (FlexJSASDocProject)project);
-                emitter.outputTags(outputFolder, (FlexJSASDocProject)project);
+                IJSRoyaleASDocEmitter emitter = (IJSRoyaleASDocEmitter) project.getBackend().createEmitter(null);
+                emitter.outputIndex(outputFolder, (RoyaleASDocProject)project);
+                emitter.outputClasses(outputFolder, (RoyaleASDocProject)project);
+                emitter.outputTags(outputFolder, (RoyaleASDocProject)project);
             }
         }
         catch (Exception e)

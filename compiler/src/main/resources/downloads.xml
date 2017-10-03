@@ -449,8 +449,8 @@
   </target>
 
   <target name="copy-if-cached" if="found-in-cache">
-    <!-- this string comes from the FlexJS en_US.properties because for now, this
-         target won't get called unless this script is called from the FlexJS install -->
+    <!-- this string comes from the Royale en_US.properties because for now, this
+         target won't get called unless this script is called from the Royale install -->
     <echo>${INFO_USING_CACHED_FILE} ${downloadCacheFolder}/${srcFolder}/${srcFile}</echo>
     <copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${destDir}/${destFile}" overwrite="true"/>
   </target>

@@ -26,18 +26,18 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 
 public class JSPublisher implements IJSPublisher
 {
 
-    public JSPublisher(FlexJSProject project, Configuration config)
+    public JSPublisher(RoyaleProject project, Configuration config)
     {
         this.project = project;
         this.configuration = config;
     }
 
-    protected FlexJSProject project;
+    protected RoyaleProject project;
     protected File outputFolder;
     protected File outputParentFolder;
 

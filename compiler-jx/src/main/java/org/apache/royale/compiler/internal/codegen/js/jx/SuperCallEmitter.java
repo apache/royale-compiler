@@ -27,8 +27,8 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -92,9 +92,9 @@ public class SuperCallEmitter extends JSSubEmitter
                 write(JSGoogEmitterTokens.SUPERCLASS);
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 if (fnode.getNodeID() == ASTNodeID.GetterID)
-                    write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                    write(JSRoyaleEmitterTokens.GETTER_PREFIX);
                 else
-                    write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    write(JSRoyaleEmitterTokens.SETTER_PREFIX);
                 write(fnode.getName());
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.APPLY);
@@ -156,7 +156,7 @@ public class SuperCallEmitter extends JSSubEmitter
     protected void super_emitSuperCall(IASNode node, String type)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
                 : null;

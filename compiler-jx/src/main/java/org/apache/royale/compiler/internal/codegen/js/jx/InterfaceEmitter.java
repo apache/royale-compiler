@@ -26,9 +26,9 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -50,7 +50,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
     public void emit(IInterfaceNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         ICompilerProject project = getWalker().getProject();
 
@@ -74,7 +74,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
 
   	    if (!getEmitter().getModel().isExterns)
   	    {
-  	        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+  	        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
   	        .getDocEmitter();
   		    writeNewline();
   		    writeNewline();
@@ -82,7 +82,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
   		    doc.begin();
   		    writeNewline(" * Prevent renaming of class. Needed for reflection.");
   		    doc.end();
-  		    write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
+  		    write(JSRoyaleEmitterTokens.GOOG_EXPORT_SYMBOL);
   		    write(ASEmitterTokens.PAREN_OPEN);
   		    write(ASEmitterTokens.SINGLE_QUOTE);
   		    write(getEmitter().formatQualifiedName(node.getQualifiedName()));

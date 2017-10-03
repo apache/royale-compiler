@@ -24,7 +24,7 @@ package com.google.javascript.jscomp;
  * certain warnings while letting other warnings in the group
  * show.
  */
-public class FlexJSDiagnosticGroups {
+public class RoyaleDiagnosticGroups {
 
 	/**
 	 * Flex ItemRenderer Factories store the constructor in a variable

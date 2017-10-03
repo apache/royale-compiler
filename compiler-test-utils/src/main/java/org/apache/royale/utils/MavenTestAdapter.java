@@ -126,7 +126,7 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public File getFlexJSArtifact(String artifactName) {
+    public File getRoyaleArtifact(String artifactName) {
         String flexJsVersion = System.getProperty("flexJsVersion");
         return getDependency("org.apache.flex.framework.flexjs", artifactName, flexJsVersion, "swc", null);
     }

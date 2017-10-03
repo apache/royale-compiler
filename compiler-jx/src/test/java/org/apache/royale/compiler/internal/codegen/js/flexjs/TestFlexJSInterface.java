@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogInterface;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ import org.junit.Test;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class TestFlexJSInterface extends TestGoogInterface
+public class TestRoyaleInterface extends TestGoogInterface
 {
     @Override
     @Test
@@ -108,7 +108,7 @@ public class TestFlexJSInterface extends TestGoogInterface
 
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 
 }

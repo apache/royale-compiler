@@ -24,7 +24,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
@@ -106,12 +106,12 @@ public class ForEachEmitter extends JSSubEmitter implements
         boolean isProxy = false;
         if (obj.getNodeID() == ASTNodeID.IdentifierID)
         {
-        	if (((JSFlexJSEmitter)getEmitter()).isXML((IdentifierNode)obj))
+        	if (((JSRoyaleEmitter)getEmitter()).isXML((IdentifierNode)obj))
         	{
         		write(".elementNames()");
         		isXML = true;
         	}
-            if (((JSFlexJSEmitter)getEmitter()).isProxy((IdentifierNode)obj))
+            if (((JSRoyaleEmitter)getEmitter()).isProxy((IdentifierNode)obj))
             {
                 write(".propertyNames()");
                 isProxy = true;
@@ -119,12 +119,12 @@ public class ForEachEmitter extends JSSubEmitter implements
         }
         else if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
         {
-            if (((JSFlexJSEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
+            if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
             {
                 write(".elementNames()");
                 isXML = true;
             }
-            if (((JSFlexJSEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)obj))
+            if (((JSRoyaleEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)obj))
             {
                 write(".propertyNames()");
                 isXML = true;

@@ -21,14 +21,14 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogAccessorMembers;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
+public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
 {
     @Override
     @Test
@@ -175,6 +175,6 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new RoyaleBackend();
     }
 }

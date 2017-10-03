@@ -28,9 +28,9 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
@@ -59,7 +59,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     public void emit(IBinaryOperatorNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         String op = node.getOperator().getOperatorText();
         boolean isAssignment = op.contains("=")
@@ -124,7 +124,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSGoogEmitterTokens.SUPERCLASS);
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
                         write(rnodeDef.getBaseName());
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSEmitterTokens.APPLY);
@@ -139,7 +139,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSGoogEmitterTokens.SUPERCLASS);
                             write(ASEmitterTokens.MEMBER_ACCESS);
-                            write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                            write(JSRoyaleEmitterTokens.GETTER_PREFIX);
                             write(rnodeDef.getBaseName());
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSEmitterTokens.APPLY);
@@ -155,7 +155,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         return;
                     }
                 }
-                else if (((JSFlexJSEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)leftSide))
+                else if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)leftSide))
                 {
                 	MemberAccessExpressionNode xmlNode = (MemberAccessExpressionNode)leftSide;
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)
@@ -208,7 +208,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
-                else if (((JSFlexJSEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)leftSide))
+                else if (((JSRoyaleEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)leftSide))
                 {
                 	MemberAccessExpressionNode proxyNode = (MemberAccessExpressionNode)leftSide;
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)
@@ -241,7 +241,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
-                else if (((JSFlexJSEmitter)getEmitter()).isDateProperty((MemberAccessExpressionNode)leftSide))
+                else if (((JSRoyaleEmitter)getEmitter()).isDateProperty((MemberAccessExpressionNode)leftSide))
                 {
                 	specialCaseDate(node, (MemberAccessExpressionNode)leftSide);
                     return;
@@ -327,7 +327,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 		        			  (!isAssignment && rightIsNumber) ||
 		        			   rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
 		        	{
-		        		JSFlexJSDocEmitter docEmitter = (JSFlexJSDocEmitter)(getEmitter().getDocEmitter());
+		        		JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(getEmitter().getDocEmitter());
 		        		if (docEmitter.emitStringConversions)
 		        		{
 		        			coercion = "org.apache.flex.utils.Language.string(";
@@ -497,12 +497,12 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         	else */
         		getWalker().walk(node.getRightOperandNode());
                 if (node.getNodeID() == ASTNodeID.Op_InID &&
-                        ((JSFlexJSEmitter)getEmitter()).isXML(node.getRightOperandNode()))
+                        ((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
                 {
                 	write(".elementNames()");
                 }   
                 else if (node.getNodeID() == ASTNodeID.Op_InID &&
-                        ((JSFlexJSEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
+                        ((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
                 {
                 	write(".propertyNames()");
                 }

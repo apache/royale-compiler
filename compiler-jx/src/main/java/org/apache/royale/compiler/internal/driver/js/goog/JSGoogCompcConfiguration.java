@@ -162,7 +162,7 @@ public class JSGoogCompcConfiguration extends JSConfiguration
             try
             {
                 String path = getAbsolutePathFromPathRelativeToMXMLC(
-                            "../../frameworks/js/FlexJS/src");
+                            "../../frameworks/js/Royale/src");
 
                 sdkJSLib.add(path);
             }

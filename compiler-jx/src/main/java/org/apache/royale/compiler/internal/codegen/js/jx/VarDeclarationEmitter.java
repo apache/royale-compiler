@@ -28,8 +28,8 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -55,7 +55,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
     public void emit(IVariableNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
         getModel().getVars().add(node);
         
@@ -187,9 +187,9 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             {
                 boolean defaultInitializers = false;
                 ICompilerProject project = getProject();
-                if(project instanceof FlexJSProject)
+                if(project instanceof RoyaleProject)
                 {
-                    FlexJSProject fjsProject = (FlexJSProject) project; 
+                    RoyaleProject fjsProject = (RoyaleProject) project; 
                     if(fjsProject.config != null)
                     {
                         defaultInitializers = fjsProject.config.getJsDefaultInitializers();

@@ -43,7 +43,7 @@ public interface ITestAdapter {
 
     String getFlexJsManifestPath(String type);
 
-    File getFlexJSArtifact(String artifactName);
+    File getRoyaleArtifact(String artifactName);
 
     File getUnitTestBaseDir();
 

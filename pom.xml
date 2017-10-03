@@ -31,8 +31,8 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Apache Flex - FlexJS: Compiler: Parent</name>
-  <description>The Apache Flex FlexJS Project</description>
+  <name>Apache Flex - Royale: Compiler: Parent</name>
+  <description>The Apache Flex Royale Project</description>
 
   <scm>
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</connection>

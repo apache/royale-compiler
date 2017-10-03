@@ -30,7 +30,7 @@ import org.apache.flex.compiler.internal.workspaces.Workspace;
  * @author aharui
  *
  */
-public class FlexJSASDocProject extends FlexJSProject
+public class RoyaleASDocProject extends RoyaleProject
 {
 
     /**
@@ -38,7 +38,7 @@ public class FlexJSASDocProject extends FlexJSProject
      *
      * @param workspace The {@code Workspace} containing this project.
      */
-    public FlexJSASDocProject(Workspace workspace, IBackend backend)
+    public RoyaleASDocProject(Workspace workspace, IBackend backend)
     {
         super(workspace, backend);
     }

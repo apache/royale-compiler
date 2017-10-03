@@ -32,7 +32,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.JSBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 /**
@@ -65,7 +65,7 @@ public class GoogBackend extends JSBackend
     }
 
     @Override
-    public JSGoogPublisher createPublisher(FlexJSProject project,
+    public JSGoogPublisher createPublisher(RoyaleProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new JSGoogPublisher(project, config);

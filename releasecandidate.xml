@@ -378,7 +378,7 @@ ${my.name}
 This is vote for the ${release.version} release of the FalconJX (and Falcon)\n\
 compilers.  There is no separate Falcon-only release package at\n\
 this time.  The only purpose of the FalconJX packages are to serve as\n\
-upstream packages for the FlexJS release.\n\
+upstream packages for the Royale release.\n\
 \n\
 The release candidate can be found here;\n\
 https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}/\n\
@@ -395,14 +395,14 @@ At a minimum you would be expected to check that:\n\
 \n\
 The source package is set up the same way as the repo.  This means that\n\
 the results of the build are not the same as the binary package.  The\n\
-compiled source package can be used to build FlexJS apps via the command\n\
+compiled source package can be used to build Royale apps via the command\n\
 line and Ant, but not in Flash Builder or other IDEs.  You can test the source\n\
 package by building it, then pointing to it from the source package of the\n\
-FlexJS release candidate and building the examples in the FlexJS package.\n\
+Royale release candidate and building the examples in the Royale package.\n\
 \n\
-The binary package is set up as an upstream package for the FlexJS\n\
+The binary package is set up as an upstream package for the Royale\n\
 release.  The most convenient way to use the binary package is to install\n\
-a FlexJS SDK via Ant or the Installer.\n\
+a Royale SDK via Ant or the Installer.\n\
 \n\
 Please vote to approve this release:\n\
 +1 Approve the release\n\

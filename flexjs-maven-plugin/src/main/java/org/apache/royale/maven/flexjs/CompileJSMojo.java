@@ -52,7 +52,7 @@ public class CompileJSMojo
     
     @Override
     protected String getToolGroupName() {
-        return "FlexJS";
+        return "Royale";
     }
 
     @Override
@@ -158,7 +158,7 @@ public class CompileJSMojo
                     "<swc xmlns=\"http://www.adobe.com/flash/swccatalog/9\">\n" +
                     "    <versions>\n" +
                     "        <swc version=\"1.2\"/>\n" +
-                    "        <compiler name=\"Apache Flex - FlexJS: Compiler: Compiler\" version=\"0.8\" build=\"0-SNAPSHOT\"/>\n" +
+                    "        <compiler name=\"Apache Flex - Royale: Compiler: Compiler\" version=\"0.8\" build=\"0-SNAPSHOT\"/>\n" +
                     "    </versions>\n" +
                     "    <features>\n" +
                     "    </features>\n" +

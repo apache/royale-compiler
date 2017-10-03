@@ -52,11 +52,11 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTar
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
+import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.RoyaleProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.targets.FlexJSTarget;
+import org.apache.flex.compiler.internal.targets.RoyaleTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
@@ -139,7 +139,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         SWF("SWF"),
         JS_FLEX("JSFlex"),
         JS_FLEX_CORDOVA("JSFlexCordova"),
-        //JS without the FlexJS framework
+        //JS without the Royale framework
         JS_NATIVE("JS"),
         //Node.js application
         JS_NODE("JSNode"),
@@ -243,7 +243,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     protected Workspace workspace;
-    protected FlexJSProject project;
+    protected RoyaleProject project;
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
@@ -264,7 +264,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public MXMLJSC()
     {
         workspace = new Workspace();
-        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        workspace.setASDocDelegate(new RoyaleASDocDelegate());
     }
 
     @Override
@@ -522,8 +522,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                project.mixinClassNames = new TreeSet<String>();
 	                project.remoteClassAliasMap = new HashMap<String, String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
-	                ((FlexJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
-	                ((FlexJSTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
+	                ((RoyaleTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
+	                ((RoyaleTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
