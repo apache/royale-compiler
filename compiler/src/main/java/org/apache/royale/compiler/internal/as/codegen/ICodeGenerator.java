@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,7 +68,7 @@ public interface ICodeGenerator
      * resolve references to definitions.
      * @param inInvisibleCompilationUnit Indicates whether or not we are
      * generating code for an
-     * {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}.
+     * {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}.
      * @param encodedDebugFiles - a mapping between the absolute path of a file, and the
      *        encoded path that is used by OP_debugfile
      * @throws InterruptedException
@@ -155,7 +155,7 @@ public interface ICodeGenerator
      * Helper method used by databinding codegen to emit an anonymous function
      * based on a list of {@link IExpressionNode}'s. This method emits a
      * function that contains code that evaluates each expression in the list
-     * and adds the expressions together with {@link org.apache.flex.abc.ABCConstants#OP_add}.
+     * and adds the expressions together with {@link org.apache.royale.abc.ABCConstants#OP_add}.
      *
      * @param mi - the MethodInfo describing the signature
      * @param nodes - a {@link List} of {@link IExpressionNode}'s to be
@@ -205,7 +205,7 @@ public interface ICodeGenerator
 
     /**
      * Helper method to expose the constant folding code to clients outside of the burm, such
-     * as org.apache.flex.compiler.internal.as.definitions.ConstantDefinition.
+     * as org.apache.royale.compiler.internal.as.definitions.ConstantDefinition.
      * @param subtree   the tree to generate a constant value for
      * @param project   the project to use to evaluate the tree
      * @return          the constant value for the subtree, or null if a constant value can't be determined

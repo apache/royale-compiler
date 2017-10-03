@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+package org.apache.royale.compiler.internal.css.codegen;
 
 import java.util.Collections;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
-import org.apache.flex.compiler.internal.css.codegen.CSSEmitter;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
+import org.apache.royale.compiler.internal.css.codegen.CSSEmitter;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * This class generates the "main" class and "style data" class for a CSS module

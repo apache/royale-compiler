@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.io;
+package org.apache.royale.swc.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,15 +30,15 @@ import java.util.List;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCDigest;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swc.ISWCLibrary;
-import org.apache.flex.swc.SWCDigest;
-import org.apache.flex.swc.catalog.StAXCatalogWriter;
-import org.apache.flex.swf.Header;
-import org.apache.flex.swf.Header.Compression;
-import org.apache.flex.swf.io.ISWFWriterFactory;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCDigest;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.ISWCLibrary;
+import org.apache.royale.swc.SWCDigest;
+import org.apache.royale.swc.catalog.StAXCatalogWriter;
+import org.apache.royale.swf.Header;
+import org.apache.royale.swf.Header.Compression;
+import org.apache.royale.swf.io.ISWFWriterFactory;
 
 /**
  * Base class for serializing a SWC model.

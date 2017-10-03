@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * Problem generated when an attribute uses a private namespace.

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.asdoc.IASDocComment;
 
 /**
  * The base class for definitions which can have ASDoc comments.

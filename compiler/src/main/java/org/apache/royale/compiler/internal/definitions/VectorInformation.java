@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.internal.tree.as.GetterNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceIdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.ParameterNode;
-import org.apache.flex.compiler.internal.tree.as.SetterNode;
-import org.apache.flex.compiler.internal.tree.as.VariableNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.internal.tree.as.GetterNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.ParameterNode;
+import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 /**
  * Class keeps information about the vector node, used to construct it

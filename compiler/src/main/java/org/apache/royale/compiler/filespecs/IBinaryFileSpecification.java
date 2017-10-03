@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.filespecs;
+package org.apache.royale.compiler.filespecs;
 
 import java.io.IOException;
 import java.io.InputStream;

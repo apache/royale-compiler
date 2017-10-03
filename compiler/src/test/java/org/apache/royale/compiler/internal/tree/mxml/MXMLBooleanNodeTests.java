@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
 
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.junit.Ignore;
 import org.junit.Test;
 

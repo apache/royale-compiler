@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 
 

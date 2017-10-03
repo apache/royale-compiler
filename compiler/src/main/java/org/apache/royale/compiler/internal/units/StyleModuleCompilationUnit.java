@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,38 +28,38 @@ import java.util.List;
 import org.antlr.runtime.ANTLRFileStream;
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.css.CSSDocument;
-import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.internal.css.codegen.CSSModuleGenerator;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.internal.units.requests.FileScopeRequestResultBase;
-import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
-import org.apache.flex.compiler.problems.CSSCodeGenProblem;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.swf.tags.DoABCTag;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.css.CSSDocument;
+import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
+import org.apache.royale.compiler.internal.css.codegen.CSSModuleGenerator;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.internal.units.requests.FileScopeRequestResultBase;
+import org.apache.royale.compiler.internal.units.requests.SWFTagsRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.royale.compiler.problems.CSSCodeGenProblem;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.swf.tags.DoABCTag;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -89,7 +89,7 @@ public class StyleModuleCompilationUnit extends CompilationUnitBase
     }
 
     /**
-     * This implementation of {@link org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult} carries a CSS
+     * This implementation of {@link org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult} carries a CSS
      * model and a {@link CSSCompilationSession} objects that has all the
      * resolved symbols in the CSS.
      */

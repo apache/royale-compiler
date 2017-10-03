@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.internal.units.FXGCompilationUnit;
+import org.apache.royale.compiler.internal.units.FXGCompilationUnit;
 
 /**
  * Sub-class of {@link ASFileScope} for FXG file scope's.

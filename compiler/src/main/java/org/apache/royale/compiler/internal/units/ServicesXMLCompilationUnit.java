@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 //import flex.messaging.config.ServicesDependencies;
 
@@ -46,7 +46,7 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 public class ServicesXMLCompilationUnit extends ASCompilationUnit
 {
 
-    private static final String PACKAGE_NAME = "org.apache.flex.compiler.generated";
+    private static final String PACKAGE_NAME = "org.apache.royale.compiler.generated";
     private static final String CLASS_NAME_PREFIX = "_ServicesInit";
 
     /**

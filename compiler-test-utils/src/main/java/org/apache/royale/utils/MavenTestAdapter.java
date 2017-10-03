@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -56,9 +56,9 @@ public class MavenTestAdapter implements ITestAdapter {
         libs.add(getPlayerglobal());
         if(withFlex) {
             String flexVersion = System.getProperty("flexVersion");
-            libs.add(getDependency("org.apache.flex.framework", "framework", flexVersion, "swc", null));
-            libs.add(getDependency("org.apache.flex.framework", "rpc", flexVersion, "swc", null));
-            libs.add(getDependency("org.apache.flex.framework", "spark", flexVersion, "swc", null));
+            libs.add(getDependency("org.apache.royale.framework", "framework", flexVersion, "swc", null));
+            libs.add(getDependency("org.apache.royale.framework", "rpc", flexVersion, "swc", null));
+            libs.add(getDependency("org.apache.royale.framework", "spark", flexVersion, "swc", null));
         }
         return libs;
     }
@@ -87,7 +87,7 @@ public class MavenTestAdapter implements ITestAdapter {
 
     @Override
     public String getFlexManifestPath(String type) {
-        File configsZip = getDependency("org.apache.flex.framework", "framework",
+        File configsZip = getDependency("org.apache.royale.framework", "framework",
                 System.getProperty("flexVersion"), "zip", "configs");
         File frameworkDir = configsZip.getParentFile();
         File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
@@ -102,18 +102,18 @@ public class MavenTestAdapter implements ITestAdapter {
     @Override
     public File getFlexArtifact(String artifactName) {
         String flexVersion = System.getProperty("flexVersion");
-        return getDependency("org.apache.flex.framework", artifactName, flexVersion, "swc", null);
+        return getDependency("org.apache.royale.framework", artifactName, flexVersion, "swc", null);
     }
 
     @Override
     public File getFlexArtifactResourceBundle(String artifactName) {
         String flexVersion = System.getProperty("flexVersion");
-        return getDependency("org.apache.flex.framework", artifactName, flexVersion, "rb.swc", "en_US");
+        return getDependency("org.apache.royale.framework", artifactName, flexVersion, "rb.swc", "en_US");
     }
 
     @Override
     public String getFlexJsManifestPath(String type) {
-        File configsZip = getDependency("org.apache.flex.framework.flexjs", "framework",
+        File configsZip = getDependency("org.apache.royale.framework.flexjs", "framework",
                 System.getProperty("flexJsVersion"), "zip", "configs");
         File frameworkDir = configsZip.getParentFile();
         File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
@@ -128,7 +128,7 @@ public class MavenTestAdapter implements ITestAdapter {
     @Override
     public File getRoyaleArtifact(String artifactName) {
         String flexJsVersion = System.getProperty("flexJsVersion");
-        return getDependency("org.apache.flex.framework.flexjs", artifactName, flexJsVersion, "swc", null);
+        return getDependency("org.apache.royale.framework.flexjs", artifactName, flexJsVersion, "swc", null);
     }
 
     @Override

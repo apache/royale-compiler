@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.lang.reflect.Field;
 
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.ICMToken;
 
 import com.google.common.collect.ImmutableMap;
 

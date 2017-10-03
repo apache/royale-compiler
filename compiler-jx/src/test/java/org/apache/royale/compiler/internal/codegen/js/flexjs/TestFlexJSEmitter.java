@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmitter;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogEmitter;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
 
 /**

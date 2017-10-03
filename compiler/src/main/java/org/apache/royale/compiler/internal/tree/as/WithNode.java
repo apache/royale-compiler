@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.WithScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.as.IWithNode;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.WithScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.IWithNode;
 
 /**
  * ActionScript parse tree node representing a with block (with (x) {...})

@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import com.google.common.base.Predicate;
 
 import java.util.Set;

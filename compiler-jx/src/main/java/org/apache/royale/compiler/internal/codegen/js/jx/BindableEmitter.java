@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class BindableEmitter extends JSSubEmitter implements
 
     public static String BINDABLE_DISPATCHER_NAME = "_bindingEventDispatcher";
     public static String STATIC_DISPATCHER_GETTER = "staticEventDispatcher";
-    public static String EVENTS_PACKAGE ="org.apache.flex.events";
+    public static String EVENTS_PACKAGE ="org.apache.royale.events";
     public static String EVENTDISPATCHER = "EventDispatcher";
     public static String EVENTDISPATCHER_INTERFACE = "IEventDispatcher";
     public static String EVENT = "Event";

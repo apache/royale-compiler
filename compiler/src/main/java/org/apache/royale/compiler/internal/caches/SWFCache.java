@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -29,16 +29,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import org.apache.flex.compiler.problems.FileInLibraryNotFoundProblem;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.SWC;
-import org.apache.flex.swc.SWCManager;
-import org.apache.flex.swc.io.SWCReader;
-import org.apache.flex.swf.ITagContainer;
-import org.apache.flex.swf.io.SWFReader;
-import org.apache.flex.swf.tags.DoABCTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.SymbolClassTag;
+import org.apache.royale.compiler.problems.FileInLibraryNotFoundProblem;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.SWC;
+import org.apache.royale.swc.SWCManager;
+import org.apache.royale.swc.io.SWCReader;
+import org.apache.royale.swf.ITagContainer;
+import org.apache.royale.swf.io.SWFReader;
+import org.apache.royale.swf.tags.DoABCTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.tags.SymbolClassTag;
 
 /**
  * Cache for parsed SWF models. The cache is a list of key-value pairs. The key

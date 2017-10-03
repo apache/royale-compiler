@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Traits;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Traits;
 
 /**
  * ClassInfo represents a class' <a href="http://learn.adobe.com/wiki/display/AVM2/4.9+Class">class info</a> structure.

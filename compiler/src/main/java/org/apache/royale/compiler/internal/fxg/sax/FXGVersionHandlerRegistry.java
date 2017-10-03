@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.sax;
+package org.apache.royale.compiler.internal.fxg.sax;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.FXGVersion;
 
 /**
  * Maintains a registry of FXGVersionHandlers

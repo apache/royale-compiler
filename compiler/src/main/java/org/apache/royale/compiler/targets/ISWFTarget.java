@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.ISWF;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.ISWF;
 
 /**
  * An {@link ITarget} than can build a SWF.

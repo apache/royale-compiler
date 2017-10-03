@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -39,23 +39,23 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
-import org.apache.flex.compiler.internal.caches.CacheStoreKeyBase;
-import org.apache.flex.compiler.internal.caches.SWFCache;
-import org.apache.flex.compiler.internal.units.ResourceBundleCompilationUnit;
-import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
-import org.apache.flex.compiler.problems.DuplicateSourceFileProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IFlexProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swc.ISWCLibrary;
-import org.apache.flex.swc.ISWCManager;
-import org.apache.flex.swc.ISWCScript;
-import org.apache.flex.swc.SWCManager;
-import org.apache.flex.swf.ITagContainer;
-import org.apache.flex.utils.FileID;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.internal.caches.CacheStoreKeyBase;
+import org.apache.royale.compiler.internal.caches.SWFCache;
+import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
+import org.apache.royale.compiler.problems.DuplicateSourceFileProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.ISWCLibrary;
+import org.apache.royale.swc.ISWCManager;
+import org.apache.royale.swc.ISWCScript;
+import org.apache.royale.swc.SWCManager;
+import org.apache.royale.swf.ITagContainer;
+import org.apache.royale.utils.FileID;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;

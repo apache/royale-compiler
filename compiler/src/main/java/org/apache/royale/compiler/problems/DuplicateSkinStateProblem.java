@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * Each skin state name must be unique.

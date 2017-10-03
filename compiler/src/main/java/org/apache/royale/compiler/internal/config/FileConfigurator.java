@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -40,12 +40,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.config.ConfigurationInfo;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.config.ConfigurationInfo;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import com.google.common.collect.ImmutableSet;
 
 /**

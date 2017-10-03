@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * The SOUNDINFO record modifies how an event sound is played. An event sound is

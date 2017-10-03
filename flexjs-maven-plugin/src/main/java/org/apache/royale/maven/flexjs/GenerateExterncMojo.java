@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs;
+package org.apache.royale.maven.flexjs;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

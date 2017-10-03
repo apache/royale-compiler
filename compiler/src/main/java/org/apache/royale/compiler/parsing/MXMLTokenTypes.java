@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
 /**
  * MXML token type constants.

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.visitor;
+package org.apache.royale.compiler.visitor;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * A simple strategy to allow composition of {@link IASNode} handling when

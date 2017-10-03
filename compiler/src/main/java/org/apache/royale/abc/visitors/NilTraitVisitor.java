@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
 /**
  * An ITraitVisitor that ignores its input as far as possible.

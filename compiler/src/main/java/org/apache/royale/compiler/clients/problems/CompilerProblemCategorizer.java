@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.flex.compiler.config.ICompilerProblemSettings;
-import org.apache.flex.compiler.problems.CompilerProblemClassification;
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.compiler.config.ICompilerProblemSettings;
+import org.apache.royale.compiler.problems.CompilerProblemClassification;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
 
 /**
  * Class used to determine if an {@link ICompilerProblem} should be reported

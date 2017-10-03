@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * Problem reading the a tag's body. The most likely problem is reading the tag body

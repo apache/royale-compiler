@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.flex.compiler.mxml.IMXMLInstructionData;
-import org.apache.flex.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.mxml.IMXMLInstructionData;
+import org.apache.royale.compiler.parsing.IMXMLToken;
 
 public class MXMLInstructionData extends MXMLUnitData implements
         IMXMLInstructionData

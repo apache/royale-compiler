@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.mxml.IStateDefinitionBase;
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.mxml.IStateDefinitionBase;
+import org.apache.royale.compiler.scopes.IASScope;
 
 /**
  * {@code StateDefinitionBase} is an abstract base class for

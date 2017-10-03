@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,21 +26,21 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.embedding.transcoders.MovieTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.TranscoderBase;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.internal.units.ResourceBundleCompilationUnit;
-import org.apache.flex.compiler.problems.DependencyNotCompatibleProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.embedding.transcoders.MovieTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
+import org.apache.royale.compiler.problems.DependencyNotCompatibleProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.swc.ISWC;
 
 /**
  * Abstract base class that contains information about code that uses the flex

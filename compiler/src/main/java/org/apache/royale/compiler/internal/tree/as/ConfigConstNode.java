@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.internal.definitions.ConstantDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * A ConfigConstNode is a conditional compilation const that only exists at

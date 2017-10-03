@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.targets.ITarget;
-import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.targets.ITarget;
+import org.apache.royale.compiler.targets.ITargetSettings;
 
 /**
  * {@link ICompilerProblem} emitted when a {@link ITargetSettings}

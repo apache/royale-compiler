@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.abc.optimize;
+package org.apache.royale.abc.optimize;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.ECMASupport;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.InstructionFactory;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.visitors.DelegatingMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.ECMASupport;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.InstructionFactory;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.visitors.DelegatingMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

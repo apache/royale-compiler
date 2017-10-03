@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * The Drop Shadow filter is based on the same median filter as the blur filter,

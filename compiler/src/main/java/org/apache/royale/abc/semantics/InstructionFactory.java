@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 /**
  * The InstructionFactory creates implementation Instruction subclasses for

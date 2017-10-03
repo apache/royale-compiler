@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -32,14 +32,14 @@ import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.internal.projects.DependencyGraph;
-import org.apache.flex.compiler.internal.targets.LinkageChecker;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.UnableToBuildReportProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.internal.targets.LinkageChecker;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.UnableToBuildReportProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 
 /**
  * Class to write a {@link DependencyGraph} as a yed-format graphml file.

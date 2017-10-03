@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
 
 
 /**

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * {@link CompilerProblem} that represents an error writing a report.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,31 +26,31 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCLinker;
-import org.apache.flex.abc.ABCLinker.ABCLinkerSettings;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.config.FrameInfo;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ImproperlyConfiguredTargetProblem;
-import org.apache.flex.compiler.problems.UnableToFindRootClassDefinitionProblem;
-import org.apache.flex.compiler.targets.ITarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IRequest;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.SWFFrame;
-import org.apache.flex.swf.tags.DoABCTag;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCLinker;
+import org.apache.royale.abc.ABCLinker.ABCLinkerSettings;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.config.FrameInfo;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ImproperlyConfiguredTargetProblem;
+import org.apache.royale.compiler.problems.UnableToFindRootClassDefinitionProblem;
+import org.apache.royale.compiler.targets.ITarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IRequest;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.SWFFrame;
+import org.apache.royale.swf.tags.DoABCTag;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;

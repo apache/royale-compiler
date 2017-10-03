@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,51 +27,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition.ClassClassification;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
-import org.apache.flex.compiler.internal.mxml.StateDefinition;
-import org.apache.flex.compiler.internal.mxml.StateGroupDefinition;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.tree.as.ImportNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IStateDefinition;
-import org.apache.flex.compiler.mxml.IStateGroupDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLReparentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition.ClassClassification;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.internal.mxml.StateDefinition;
+import org.apache.royale.compiler.internal.mxml.StateGroupDefinition;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.tree.as.ImportNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IStateDefinition;
+import org.apache.royale.compiler.mxml.IStateGroupDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLReparentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLSpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStateNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import com.google.common.collect.ArrayListMultimap;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * {@code MXMLClassDefinitionNode} represents an MXML tag which defines a new

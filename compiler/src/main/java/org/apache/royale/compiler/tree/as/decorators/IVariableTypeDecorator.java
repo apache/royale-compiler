@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as.decorators;
+package org.apache.royale.compiler.tree.as.decorators;
 
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * Decorates a variable's type based on context about the variable

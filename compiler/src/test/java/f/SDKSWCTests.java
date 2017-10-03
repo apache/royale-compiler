@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.clients.COMPC;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.utils.EnvProperties;
+import org.apache.royale.compiler.clients.COMPC;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.utils.EnvProperties;
 import org.junit.Test;
 
 import com.google.common.collect.ObjectArrays;
@@ -161,7 +161,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("automation_agent");
@@ -184,7 +184,7 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
         compileSWC("automation_air");
@@ -195,7 +195,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("automation_dmv");
@@ -251,7 +251,7 @@ public class SDKSWCTests
     {
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateSkinStateProblem"
         };
         
         compileSWC("experimental");
@@ -296,7 +296,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-             "-ignore-problems=org.apache.flex.compiler.problems.NoDefinitionForSWCDependencyProblem"
+             "-ignore-problems=org.apache.royale.compiler.problems.NoDefinitionForSWCDependencyProblem"
         };
         
 		compileSWC("mobiletheme");
@@ -336,7 +336,7 @@ public class SDKSWCTests
     {
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateSkinStateProblem"
         };
 
         compileSWC("spark");
@@ -361,7 +361,7 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
         compileSWC("tool_air");
@@ -372,7 +372,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("tool");
@@ -383,7 +383,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateSkinStateProblem"
         };
         
 		compileSWC("wireframe");

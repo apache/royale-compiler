@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.tree.as.ConfigExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.ConfigExpressionNode;
 
 /**
  * Error to indicate a config namespace cannot be resolved

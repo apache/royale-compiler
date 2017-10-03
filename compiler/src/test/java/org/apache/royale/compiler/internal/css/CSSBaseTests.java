@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertNotNull;
@@ -26,14 +26,14 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSProperty;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.css.ICSSSelector;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBaseTests;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSProperty;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLNodeBaseTests;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
 import org.junit.Ignore;
 
 import com.google.common.collect.ImmutableList;

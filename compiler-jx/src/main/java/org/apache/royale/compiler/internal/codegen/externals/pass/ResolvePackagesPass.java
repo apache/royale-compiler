@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.externals.pass;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.FieldReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.FieldReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.NodeTraversal;

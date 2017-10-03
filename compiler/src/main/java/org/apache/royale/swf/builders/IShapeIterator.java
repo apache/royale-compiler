@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.builders;
+package org.apache.royale.swf.builders;
 
 /**
  * Defines the API for iterating over a Shape.

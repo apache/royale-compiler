@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,18 +26,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.flex.compiler.config.ICompilerProblemSettings;
-import org.apache.flex.compiler.problems.AbstractSemanticProblem;
-import org.apache.flex.compiler.problems.CodegenInternalProblem;
-import org.apache.flex.compiler.problems.CodegenProblem;
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ParserProblem;
-import org.apache.flex.compiler.problems.SemanticWarningProblem;
-import org.apache.flex.compiler.problems.StrictSemanticsProblem;
-import org.apache.flex.compiler.problems.UnfoundPropertyProblem;
-import org.apache.flex.compiler.problems.collections.CompositeProblemFilter;
-import org.apache.flex.compiler.problems.collections.FilteredIterator;
+import org.apache.royale.compiler.config.ICompilerProblemSettings;
+import org.apache.royale.compiler.problems.AbstractSemanticProblem;
+import org.apache.royale.compiler.problems.CodegenInternalProblem;
+import org.apache.royale.compiler.problems.CodegenProblem;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ParserProblem;
+import org.apache.royale.compiler.problems.SemanticWarningProblem;
+import org.apache.royale.compiler.problems.StrictSemanticsProblem;
+import org.apache.royale.compiler.problems.UnfoundPropertyProblem;
+import org.apache.royale.compiler.problems.collections.CompositeProblemFilter;
+import org.apache.royale.compiler.problems.collections.FilteredIterator;
 import com.google.common.collect.Iterables;
 
 /**

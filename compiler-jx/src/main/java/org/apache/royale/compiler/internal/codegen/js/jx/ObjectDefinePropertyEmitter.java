@@ -17,23 +17,23 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.SetterNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IAccessorNode;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
 
 public class ObjectDefinePropertyEmitter extends JSSubEmitter implements
         ISubEmitter<IAccessorNode>

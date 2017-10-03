@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
 import java.io.Reader;
 
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public interface IMetadataParser
 {

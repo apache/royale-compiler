@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * Warning reported after reading a SWF if the number of ShowFrame tags in the 

@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.flex;
+package org.apache.royale.compiler.fxg.flex;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ICharacterTag;
 
 /**
  * Used to map a SWF symbol generated for a particular FXG node to

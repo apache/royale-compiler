@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.definitions.IDocumentableDefinition;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.definitions.IDocumentableDefinition;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
 /**
  * Opaque interface used by {@link IDocumentableDefinitionNode}s and

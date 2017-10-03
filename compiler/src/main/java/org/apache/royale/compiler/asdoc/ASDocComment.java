@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.flex.compiler.internal.parsing.as.ASDocToken;
-import org.apache.flex.compiler.internal.parsing.as.ASDocTokenizer;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.internal.parsing.as.ASDocToken;
+import org.apache.royale.compiler.internal.parsing.as.ASDocTokenizer;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
 import antlr.Token;
 

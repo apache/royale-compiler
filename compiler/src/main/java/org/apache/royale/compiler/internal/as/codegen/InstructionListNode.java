@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 
 /**
  * A node to use to inject an InstructionList in places that an Expression is expected.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 /**
  * Problem generated when the supplied Private element is not the child of Graphic element.

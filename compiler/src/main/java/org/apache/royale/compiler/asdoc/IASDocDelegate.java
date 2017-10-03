@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.IDocumentableDefinition;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.swc.io.SWCReader;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.IDocumentableDefinition;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.swc.io.SWCReader;
 
 
 /**
@@ -50,7 +50,7 @@ public interface IASDocDelegate
      * Called by MXML tree building code to create an {@link IASDocComment} for
      * classes defined by MXML files.
      * @param location The location of the ASDoc text in an MXML file.
-     * @param definition The {@link org.apache.flex.compiler.definitions.IDefinition} the ASDoc documents
+     * @param definition The {@link org.apache.royale.compiler.definitions.IDefinition} the ASDoc documents
      * @return A new {@link IASDocComment} or null.
      */
     IASDocComment createASDocComment(ISourceLocation location, IDocumentableDefinition definition);

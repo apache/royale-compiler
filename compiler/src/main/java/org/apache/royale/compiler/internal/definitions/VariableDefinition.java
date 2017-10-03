@@ -17,32 +17,32 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
-import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator;
-import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.CatchScope;
-import org.apache.flex.compiler.internal.scopes.FunctionScope;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
+import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator;
+import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.CatchScope;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 import java.util.Collection;
 

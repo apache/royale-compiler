@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions.references;
+package org.apache.royale.compiler.internal.definitions.references;
 
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import com.google.common.collect.MapMaker;
 
 import java.lang.ref.WeakReference;

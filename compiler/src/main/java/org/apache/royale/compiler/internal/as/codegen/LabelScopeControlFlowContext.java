@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.compiler.internal.tree.as.ConditionalNode;
-import org.apache.flex.compiler.internal.tree.as.IfNode;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.SwitchNode;
-import org.apache.flex.compiler.internal.tree.as.TerminalNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.compiler.internal.tree.as.ConditionalNode;
+import org.apache.royale.compiler.internal.tree.as.IfNode;
+import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.royale.compiler.internal.tree.as.SwitchNode;
+import org.apache.royale.compiler.internal.tree.as.TerminalNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 

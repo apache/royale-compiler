@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 /**
  * A "combinator" represents a CSS selector that combines with a selector. It

@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.flex;
+package org.apache.royale.compiler.fxg.flex;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_FONTFAMILY_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_MARGINBOTTOM_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_MARGINLEFT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_MARGINRIGHT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_MARGINTOP_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_TRACKING_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_FONTFAMILY_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_MARGINBOTTOM_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_MARGINLEFT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_MARGINRIGHT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_MARGINTOP_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_TRACKING_ATTRIBUTE;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicContext;
-import org.apache.flex.compiler.internal.fxg.dom.TextGraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.text.AbstractTextNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicContext;
+import org.apache.royale.compiler.internal.fxg.dom.TextGraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.text.AbstractTextNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A Flex specific override for TextGraphicNode used to capture the 

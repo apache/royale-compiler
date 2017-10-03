@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.projects;
+package org.apache.royale.compiler.projects;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,21 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.css.ICSSManager;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
-import org.apache.flex.compiler.internal.config.IWriteOnlyProjectSettings;
-import org.apache.flex.compiler.internal.css.CSSManager;
-import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.IXMLNameResolver;
-import org.apache.flex.compiler.targets.ISWCTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.css.ICSSManager;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.exceptions.LibraryCircularDependencyException;
+import org.apache.royale.compiler.internal.config.IWriteOnlyProjectSettings;
+import org.apache.royale.compiler.internal.css.CSSManager;
+import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.mxml.IXMLNameResolver;
+import org.apache.royale.compiler.targets.ISWCTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
 
 /**
  * Base interface for all project types that support all flex source file types

@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 
 /**
  * Access specifiers are not allowed with namespace attributes.

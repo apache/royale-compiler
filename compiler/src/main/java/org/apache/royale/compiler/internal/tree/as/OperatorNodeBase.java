@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.as.IOperatorNode;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.as.IOperatorNode;
 
 /**
  * ActionScript parse tree node representing a binary operator expression (e.g.

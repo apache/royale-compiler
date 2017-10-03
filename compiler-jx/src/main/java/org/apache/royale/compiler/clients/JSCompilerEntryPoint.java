@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 import java.util.List;
 

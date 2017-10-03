@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.io.IOException;
 import java.io.Reader;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.parsing.IASBalancingScanner;
-import org.apache.flex.utils.NonLockingStringReader;
+import org.apache.royale.compiler.parsing.IASBalancingScanner;
+import org.apache.royale.utils.NonLockingStringReader;
 
 /**
  * Scanner that uses the ActionScript partitioner to determine whether {} braces

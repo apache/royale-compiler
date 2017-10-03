@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.exceptions.CircularDependencyException;
+import org.apache.royale.compiler.exceptions.CircularDependencyException;
 
 /**
  * Class with static methods for topologically sorting nodes in an

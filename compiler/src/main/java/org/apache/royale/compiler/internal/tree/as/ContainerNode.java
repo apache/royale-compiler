@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IContainerNode;
 
 /**
  * ActionScript parse tree node representing a container. This is used to hold

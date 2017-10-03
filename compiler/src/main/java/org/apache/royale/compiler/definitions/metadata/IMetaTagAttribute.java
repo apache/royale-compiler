@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.definitions.metadata;
+package org.apache.royale.compiler.definitions.metadata;
 
 /**
  * An IMetaTagAttribute represents one attribute inside a metadata annotation,

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.node;
+package org.apache.royale.compiler.internal.codegen.js.node;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.codegen.js.jsc.JSCPublisher;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.internal.codegen.js.jsc.JSCPublisher;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;

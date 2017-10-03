@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.scopes.IFileScopeProvider;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.scopes.IFileScopeProvider;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * Constructs {@link ASFileScope} objects for byte code in an ABC file.

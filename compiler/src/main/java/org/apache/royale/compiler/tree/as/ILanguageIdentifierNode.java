@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.internal.tree.as.LanguageIdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.LanguageIdentifierNode;
 
 /**
  * An AST node representing an identifier that is part of the ActionScript language.

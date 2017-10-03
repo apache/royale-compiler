@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
-import org.apache.flex.swf.tags.ICharacterReferrer;
-import org.apache.flex.swf.tags.ICharacterTag;
-import static org.apache.flex.swf.io.SWFWriter.requireUBCount;
+import org.apache.royale.swf.tags.ICharacterReferrer;
+import org.apache.royale.swf.tags.ICharacterTag;
+import static org.apache.royale.swf.io.SWFWriter.requireUBCount;
 
 /**
  * {@code Styles} is a composition of {@link LineStyleArray} and

@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.parsing.as.MetadataParser;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.parsing.as.MetadataParser;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
 /**
  * Interface used by the {@link ASParser} to record ASDoc information.

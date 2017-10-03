@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.internal.parsing.as.IProblemReporter;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.SyntaxProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IRegExpLiteralNode;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.internal.parsing.as.IProblemReporter;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IRegExpLiteralNode;
 
 public class RegExpLiteralNode extends LiteralNode implements IRegExpLiteralNode
 {

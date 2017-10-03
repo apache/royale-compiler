@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 
 /**
  * A definition representing a <code>function</code> declaration.

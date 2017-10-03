@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.as;
+package org.apache.royale.compiler.internal.codegen.as;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 
 public class ASWriter implements IASWriter
 {

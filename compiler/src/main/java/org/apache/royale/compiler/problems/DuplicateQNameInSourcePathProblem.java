@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
- * {@link org.apache.flex.compiler.problems.CompilerProblem} subclass for source path entries that are not
+ * {@link org.apache.royale.compiler.problems.CompilerProblem} subclass for source path entries that are not
  * directories.
  */
 @DefaultSeverity(CompilerProblemSeverity.WARNING)

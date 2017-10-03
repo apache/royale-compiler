@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.parsing.IASToken.ASTokenKind;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IASToken.ASTokenKind;
 
 /**
  * Buffer used that supports streaming of tokens, instead of a pre-computed

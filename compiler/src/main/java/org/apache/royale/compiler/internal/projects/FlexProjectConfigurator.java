@@ -17,24 +17,24 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Qname;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PackageNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Qname;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.fxg.flex.FlexFXG2SWFTranscoder;
-import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.embedding.transcoders.DataTranscoder;
-import org.apache.flex.compiler.internal.units.FXGCompilationUnit;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.fxg.flex.FlexFXG2SWFTranscoder;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.embedding.transcoders.DataTranscoder;
+import org.apache.royale.compiler.internal.units.FXGCompilationUnit;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 
 /**
  * This class applies configuration settings to a FlexProject.

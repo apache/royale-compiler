@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 import java.util.ArrayList;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.types.SoundInfo;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.types.SoundInfo;
 
 /**
  * Represents a <code>DefineButtonSound</code> tag in a SWF file.

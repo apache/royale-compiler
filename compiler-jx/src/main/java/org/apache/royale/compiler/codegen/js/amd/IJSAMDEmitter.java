@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js.amd;
+package org.apache.royale.compiler.codegen.js.amd;
 
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
 
 /**
  * The {@link IJSAMDEmitter} interface allows abstraction between the base

@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
 
 /**
  * Represents a literal node array that contains nodes within an array literal

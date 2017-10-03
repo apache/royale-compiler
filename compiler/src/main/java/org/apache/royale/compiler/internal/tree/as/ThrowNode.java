@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IThrowNode;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IThrowNode;
 
 public class ThrowNode extends BaseStatementExpressionNode implements IThrowNode
 {

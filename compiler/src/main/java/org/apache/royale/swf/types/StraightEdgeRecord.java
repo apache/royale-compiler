@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
-import org.apache.flex.swf.io.SWFWriter;
+import org.apache.royale.swf.io.SWFWriter;
 
 /**
  * The {@code StraightEdgeRecord} stores the edge as an X-Y delta. The delta is

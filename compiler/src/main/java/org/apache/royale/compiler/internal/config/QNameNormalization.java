@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.util.Collection;
 import java.util.Collections;

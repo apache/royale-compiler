@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,39 +28,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
 import com.google.common.base.Predicate;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.SetMultimap;
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.PackageScope;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
-import org.apache.flex.compiler.internal.tree.as.QualifiedNamespaceExpressionNode;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.flex.compiler.tree.as.INamespaceNode;
-import org.apache.flex.utils.StringEncoder;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.PackageScope;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionObjectNode;
+import org.apache.royale.compiler.internal.tree.as.QualifiedNamespaceExpressionNode;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.INamespaceNode;
+import org.apache.royale.utils.StringEncoder;
 
 /**
  * Instances of this class represent definitions of ActionScript namespaces in

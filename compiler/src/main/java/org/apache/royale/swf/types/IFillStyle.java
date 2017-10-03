@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
-import org.apache.flex.swf.tags.ICharacterReferrer;
+import org.apache.royale.swf.tags.ICharacterReferrer;
 
 /**
  * Root interface for all the the different FillStyle classes for SWF tags

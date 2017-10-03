@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
-import static org.apache.flex.compiler.common.ISourceLocation.UNKNOWN;
+import static org.apache.royale.compiler.common.ISourceLocation.UNKNOWN;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import com.google.common.collect.ImmutableMap;
 
 /**

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when the <code>format</code> of an {@code <XML>} tag is not a valid value.

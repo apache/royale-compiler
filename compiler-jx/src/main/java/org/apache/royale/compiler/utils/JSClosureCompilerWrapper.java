@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.utils;
+package org.apache.royale.compiler.utils;
 
 import java.io.BufferedReader;
 import java.io.File;

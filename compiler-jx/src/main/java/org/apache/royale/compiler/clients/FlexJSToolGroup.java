@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleASDocDITABackend;
-import org.apache.flex.tools.AbstractFlexToolGroup;
+import org.apache.royale.compiler.internal.driver.mxml.flexjs.MXMLRoyaleASDocDITABackend;
+import org.apache.royale.tools.AbstractFlexToolGroup;
 
 /**
  * Created by christoferdutz on 10.11.14.

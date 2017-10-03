@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.ABCParser;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.ABCParser;
 
 /**
  * The {@code Metadata} entry provides a mean of embedding arbitrary key/value

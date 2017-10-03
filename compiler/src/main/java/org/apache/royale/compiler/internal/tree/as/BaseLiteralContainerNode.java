@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
-import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.ILiteralContainerNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.IContainerNode.ContainerType;
 
 /**
  * Base container node for a literal that is made up of other literals, like XML

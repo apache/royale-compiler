@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.tree.as.ICatchNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.tree.as.ICatchNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
 
 public class CatchEmitter extends JSSubEmitter implements
         ISubEmitter<ICatchNode>

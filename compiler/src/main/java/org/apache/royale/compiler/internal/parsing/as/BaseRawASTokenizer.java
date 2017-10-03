@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.problems.ASDocNotClosedProblem;
-import org.apache.flex.compiler.problems.CDataNotClosedProblem;
-import org.apache.flex.compiler.problems.CommentNotClosedProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.StringLiteralMustBeTerminatedBeforeLineBreakProblem;
-import org.apache.flex.compiler.problems.StringLiteralNotClosedProblem;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.problems.ASDocNotClosedProblem;
+import org.apache.royale.compiler.problems.CDataNotClosedProblem;
+import org.apache.royale.compiler.problems.CommentNotClosedProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.StringLiteralMustBeTerminatedBeforeLineBreakProblem;
+import org.apache.royale.compiler.problems.StringLiteralNotClosedProblem;
 
 /**
  * Base class for RawActionScriptTokenizer. Pulling out code into Java backing

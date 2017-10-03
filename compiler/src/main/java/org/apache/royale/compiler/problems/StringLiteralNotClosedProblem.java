@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
 
 /**
  * Syntax error: input ended before reaching the closing quotation mark for a

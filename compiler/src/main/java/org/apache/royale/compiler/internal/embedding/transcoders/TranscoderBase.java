@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding.transcoders;
+package org.apache.royale.compiler.internal.embedding.transcoders;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,29 +27,29 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.filespecs.IBinaryFileSpecification;
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.ClassNode;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.ImportNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceIdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.PackageNode;
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
-import org.apache.flex.compiler.problems.EmbedUnsupportedAttributeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swf.tags.DefineBinaryDataTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.filespecs.IBinaryFileSpecification;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.ClassNode;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.ImportNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.PackageNode;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
+import org.apache.royale.compiler.problems.EmbedUnsupportedAttributeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swf.tags.DefineBinaryDataTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
 
 /**
  * Base class for all embed transcoders

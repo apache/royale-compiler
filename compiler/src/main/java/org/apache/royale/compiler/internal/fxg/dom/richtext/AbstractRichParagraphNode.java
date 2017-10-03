@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.text.AbstractTextNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.Direction;
-import org.apache.flex.compiler.internal.fxg.dom.types.JustificationRule;
-import org.apache.flex.compiler.internal.fxg.dom.types.JustificationStyle;
-import org.apache.flex.compiler.internal.fxg.dom.types.LeadingModel;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextAlign;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextJustify;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.text.AbstractTextNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.Direction;
+import org.apache.royale.compiler.internal.fxg.dom.types.JustificationRule;
+import org.apache.royale.compiler.internal.fxg.dom.types.JustificationStyle;
+import org.apache.royale.compiler.internal.fxg.dom.types.LeadingModel;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextAlign;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextJustify;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 
 /**

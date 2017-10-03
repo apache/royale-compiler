@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.internal.config.FrameInfo;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.internal.config.FrameInfo;
 
 /**
  * The settings used to compile a target.
@@ -284,7 +284,7 @@ public interface ITargetSettings
      * This is equivalent to using the <code>verify-digests</code>
      * option in the mxmlc compiler.
      * 
-     * @see org.apache.flex.compiler.config.RSLSettings
+     * @see org.apache.royale.compiler.config.RSLSettings
      */
     boolean verifyDigests();
     

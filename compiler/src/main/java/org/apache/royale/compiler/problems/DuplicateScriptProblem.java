@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 /**
  * This problem indicates that somehow two separate files are trying to generates scripts

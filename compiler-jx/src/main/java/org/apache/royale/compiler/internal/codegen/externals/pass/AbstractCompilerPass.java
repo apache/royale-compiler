@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.externals.pass;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
+import org.apache.royale.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.externals.utils.DebugLogUtils;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;

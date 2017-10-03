@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 
 /**
  * Represents the target of an import statement (e.g. import mx.controls.Button or import mx.controls.*)

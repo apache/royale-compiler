@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+package org.apache.royale.compiler.internal.css.codegen;
 
 import static com.google.common.collect.Collections2.transform;
 
@@ -33,26 +33,26 @@ import java.util.Set;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSFontFace;
-import org.apache.flex.compiler.css.ICSSProperty;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.css.ICSSSelector;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.css.CSSDocument;
-import org.apache.flex.compiler.internal.css.CSSFontFace;
-import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSMediaQueryCondition;
-import org.apache.flex.compiler.internal.css.CSSNamespaceDefinition;
-import org.apache.flex.compiler.internal.css.CSSProperty;
-import org.apache.flex.compiler.internal.css.CSSRule;
-import org.apache.flex.compiler.internal.css.CSSSelector;
-import org.apache.flex.compiler.internal.css.semantics.CSSSemanticAnalyzer;
-import org.apache.flex.compiler.internal.css.codegen.CSSEmitter;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.projects.IFlexProject;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSProperty;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.css.CSSDocument;
+import org.apache.royale.compiler.internal.css.CSSFontFace;
+import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
+import org.apache.royale.compiler.internal.css.CSSMediaQueryCondition;
+import org.apache.royale.compiler.internal.css.CSSNamespaceDefinition;
+import org.apache.royale.compiler.internal.css.CSSProperty;
+import org.apache.royale.compiler.internal.css.CSSRule;
+import org.apache.royale.compiler.internal.css.CSSSelector;
+import org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer;
+import org.apache.royale.compiler.internal.css.codegen.CSSEmitter;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IFlexProject;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
@@ -387,7 +387,7 @@ public class CSSCompilationSession
     /**
      * Disables CSS code generation and dependency analysis for this
      * {@link CSSCompilationSession}. This method is called from
-     * {@link org.apache.flex.compiler.internal.targets.SWFTarget} when compiling
+     * {@link org.apache.royale.compiler.internal.targets.SWFTarget} when compiling
      * a SWF that will not have a system manager.
      */
     public void disable()

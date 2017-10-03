@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 
 /**
  * An AST node representing a <code>var</code> or <code>const</code> declaration.

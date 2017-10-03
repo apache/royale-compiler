@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 /**
  * Problem generated when an error is occurred while embedding 

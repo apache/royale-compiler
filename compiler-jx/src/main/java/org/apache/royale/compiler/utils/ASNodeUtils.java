@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.utils;
+package org.apache.royale.compiler.utils;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IBlockNode;
-import org.apache.flex.compiler.tree.as.IConditionalNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IOperatorNode;
-import org.apache.flex.compiler.tree.as.ISwitchNode;
-import org.apache.flex.compiler.tree.as.ITerminalNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBlockNode;
+import org.apache.royale.compiler.tree.as.IConditionalNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IOperatorNode;
+import org.apache.royale.compiler.tree.as.ISwitchNode;
+import org.apache.royale.compiler.tree.as.ITerminalNode;
 
 /**
  * @author Michael Schmalle

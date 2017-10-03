@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.constants;
+package org.apache.royale.compiler.constants;
 
 /**
  * Core constants found within the MXML language syntax

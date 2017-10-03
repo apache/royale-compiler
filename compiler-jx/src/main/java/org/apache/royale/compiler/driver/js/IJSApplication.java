@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.driver.js;
+package org.apache.royale.compiler.driver.js;
 
-import org.apache.flex.compiler.driver.IApplication;
+import org.apache.royale.compiler.driver.IApplication;
 
 /**
  * The JavaScript model interface used when implementing build targets that

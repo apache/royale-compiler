@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.semantics;
+package org.apache.royale.compiler.internal.semantics;
 
 public enum PostProcessStep
 {

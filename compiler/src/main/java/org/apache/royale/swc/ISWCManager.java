@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.io.File;
 
-import org.apache.flex.compiler.internal.caches.AssetTagCache;
-import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
-import org.apache.flex.compiler.internal.caches.FileScopeCache;
-import org.apache.flex.compiler.internal.caches.SWFCache;
+import org.apache.royale.compiler.internal.caches.AssetTagCache;
+import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
+import org.apache.royale.compiler.internal.caches.FileScopeCache;
+import org.apache.royale.compiler.internal.caches.SWFCache;
 
 /**
  * {@code ISWCManager} is a repository of SWC library models. It has all the SWC

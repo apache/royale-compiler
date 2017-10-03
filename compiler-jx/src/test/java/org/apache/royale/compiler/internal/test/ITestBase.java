@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.test;
+package org.apache.royale.compiler.internal.test;
 
 public interface ITestBase
 {

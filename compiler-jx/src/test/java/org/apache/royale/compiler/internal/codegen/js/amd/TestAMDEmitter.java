@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
-import org.apache.flex.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.amd.AMDBackend;
+import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.junit.Test;
 
 /**
@@ -40,7 +40,7 @@ public class TestAMDEmitter extends ASTestBase
     public void testSimple()
     {
 //        String code = "package com.example.components {"
-//                + "import org.apache.flex.html.staticControls.TextButton;"
+//                + "import org.apache.royale.html.staticControls.TextButton;"
 //                + "public class MyTextButton extends TextButton {"
 //                + "public function MyTextButton() {if (foo() != 42) { bar(); } }"
 //                + "private var _privateVar:String = \"do \";"

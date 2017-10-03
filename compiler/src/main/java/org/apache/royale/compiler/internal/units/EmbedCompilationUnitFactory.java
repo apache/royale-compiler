@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
 
 /**
  * Factory class to create EmbedCompilationUnits from EmbedData.  This factory

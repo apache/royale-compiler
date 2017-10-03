@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 import com.google.javascript.jscomp.SourceFile;
 import org.apache.commons.io.FileUtils;
@@ -26,23 +26,23 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.codegen.js.IJSPublisher;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.css.ICSSPropertyValue;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
-import org.apache.flex.compiler.internal.codegen.js.goog.JarSourceFile;
-import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSFontFace;
-import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
-import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.targets.ITargetAttributes;
-import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCFileEntry;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.codegen.js.IJSPublisher;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
+import org.apache.royale.compiler.internal.css.CSSArrayPropertyValue;
+import org.apache.royale.compiler.internal.css.CSSFontFace;
+import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
+import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
 
 import java.io.*;
 import java.net.URL;

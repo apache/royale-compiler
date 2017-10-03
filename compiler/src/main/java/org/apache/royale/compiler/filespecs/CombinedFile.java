@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.filespecs;
+package org.apache.royale.compiler.filespecs;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * This is an {@link IFileSpecification} that include multiple source files into

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.builders;
+package org.apache.royale.swf.builders;
 
-import org.apache.flex.swf.tags.Tag;
+import org.apache.royale.swf.tags.Tag;
 
 /**
  * Defines the API for building a SWF tag.

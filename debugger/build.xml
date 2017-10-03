@@ -17,7 +17,7 @@
   limitations under the License.
 
 -->
-<project basedir="." default="jar" name="org.apache.flex.fdb" >
+<project basedir="." default="jar" name="org.apache.royale.fdb" >
 	<property file="build.properties" />
     <property file="../build.properties" />
 	<!-- label is set by CruiseControl script based on P4 label incrementer -->

@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 
 /**
  * @author Erik de Bruin

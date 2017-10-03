@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.codegen;
+package org.apache.royale.compiler.codegen;
 
 public interface IEmitterTokens
 {

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.driver;
+package org.apache.royale.compiler.driver;
 
 public interface IPublisher
 {

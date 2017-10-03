@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.sax;
+package org.apache.royale.compiler.internal.fxg.sax;
 
 import java.util.Collection;
 import java.util.Map;
@@ -29,26 +29,26 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.flex.compiler.fxg.FXGConstants;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.FXGConstants;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
 
-import org.apache.flex.compiler.internal.fxg.dom.CDATANode;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.DefinitionNode;
-import org.apache.flex.compiler.internal.fxg.dom.DelegateNode;
-import org.apache.flex.compiler.internal.fxg.dom.IPreserveWhiteSpaceNode;
-import org.apache.flex.compiler.problems.FXGInvalidRootNodeProblem;
-import org.apache.flex.compiler.problems.FXGInvalidVersionProblem;
-import org.apache.flex.compiler.problems.FXGMissingAttributeProblem;
-import org.apache.flex.compiler.problems.FXGMultipleElementProblem;
-import org.apache.flex.compiler.problems.FXGPrivateElementNotChildOfGraphicProblem;
-import org.apache.flex.compiler.problems.FXGPrivateElementNotLastProblem;
-import org.apache.flex.compiler.problems.FXGScanningProblem;
-import org.apache.flex.compiler.problems.FXGUnknownElementInVersionProblem;
-import org.apache.flex.compiler.problems.FXGVersionHandlerNotRegisteredProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.fxg.dom.CDATANode;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.DefinitionNode;
+import org.apache.royale.compiler.internal.fxg.dom.DelegateNode;
+import org.apache.royale.compiler.internal.fxg.dom.IPreserveWhiteSpaceNode;
+import org.apache.royale.compiler.problems.FXGInvalidRootNodeProblem;
+import org.apache.royale.compiler.problems.FXGInvalidVersionProblem;
+import org.apache.royale.compiler.problems.FXGMissingAttributeProblem;
+import org.apache.royale.compiler.problems.FXGMultipleElementProblem;
+import org.apache.royale.compiler.problems.FXGPrivateElementNotChildOfGraphicProblem;
+import org.apache.royale.compiler.problems.FXGPrivateElementNotLastProblem;
+import org.apache.royale.compiler.problems.FXGScanningProblem;
+import org.apache.royale.compiler.problems.FXGUnknownElementInVersionProblem;
+import org.apache.royale.compiler.problems.FXGVersionHandlerNotRegisteredProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 /**
  * This SAX2 based scanner converts an FXG document (an XML based description of

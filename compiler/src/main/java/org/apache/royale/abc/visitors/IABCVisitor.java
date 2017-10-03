@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.semantics.ClassInfo;
-import org.apache.flex.abc.semantics.InstanceInfo;
-import org.apache.flex.abc.semantics.Metadata;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
+import org.apache.royale.abc.semantics.ClassInfo;
+import org.apache.royale.abc.semantics.InstanceInfo;
+import org.apache.royale.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
 
 /**
  * The IABCVisitor is the ABC program-level data sink and visitor generator. A
  * program using the AET to construct an ABC program first instantiates an
  * IABCVisitor implementation instance, usually
- * org.apache.flex.abc.util.ABCEmitter, and get visitors for the classes,
+ * org.apache.royale.abc.util.ABCEmitter, and get visitors for the classes,
  * scripts, and other data elements in the ABC by calling the factory methods
  * declared here.
  */

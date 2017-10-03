@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_ID_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_ID_ATTRIBUTE;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A class to determine whether a node constitutes an CData in 

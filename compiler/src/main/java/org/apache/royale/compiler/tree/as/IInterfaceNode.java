@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 
 /**
  * An AST node representing a <code>interface</code> declaration.

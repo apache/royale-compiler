@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
-import org.apache.flex.compiler.tree.metadata.IMultiValueMetaTagNode;
-import org.apache.flex.utils.CheapArray;
+import org.apache.royale.compiler.tree.metadata.IMultiValueMetaTagNode;
+import org.apache.royale.utils.CheapArray;
 
 public class MultiValueMetaTagNode extends MetaTagNode implements IMultiValueMetaTagNode
 {

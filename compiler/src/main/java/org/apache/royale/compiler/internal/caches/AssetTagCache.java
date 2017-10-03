@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCScript;
-import org.apache.flex.swc.SWCManager;
-import org.apache.flex.swf.ITagContainer;
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.tags.ICharacterReferrer;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.SymbolClassTag;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCScript;
+import org.apache.royale.swc.SWCManager;
+import org.apache.royale.swf.ITagContainer;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.tags.ICharacterReferrer;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.tags.SymbolClassTag;
 
 /**
  * A class definition might have associated assets embedded in the library as a

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.utils;
+package org.apache.royale.compiler.internal.codegen.externals.utils;
 
 import com.google.javascript.rhino.Node;
 

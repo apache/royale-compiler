@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,26 +25,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ResourceBundleNotFoundForLocaleProblem;
-import org.apache.flex.compiler.problems.ResourceBundleNotFoundProblem;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.SWFFrame;
-import org.apache.flex.swf.tags.DoABCTag;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ResourceBundleNotFoundForLocaleProblem;
+import org.apache.royale.compiler.problems.ResourceBundleNotFoundProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.SWFFrame;
+import org.apache.royale.swf.tags.DoABCTag;
 import com.google.common.collect.ForwardingCollection;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;

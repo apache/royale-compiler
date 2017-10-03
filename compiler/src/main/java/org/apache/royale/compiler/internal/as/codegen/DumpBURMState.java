@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.io.File;
 import java.util.Date;
 
-import org.apache.flex.compiler.internal.testing.NodesToXMLStringFormatter;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.testing.NodesToXMLStringFormatter;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Class containing debug code that dumps BURM state to an XML file.

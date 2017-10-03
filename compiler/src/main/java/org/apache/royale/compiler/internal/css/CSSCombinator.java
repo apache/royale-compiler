@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.flex.compiler.css.CombinatorType;
-import org.apache.flex.compiler.css.ICSSCombinator;
-import org.apache.flex.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.CombinatorType;
+import org.apache.royale.compiler.css.ICSSCombinator;
+import org.apache.royale.compiler.css.ICSSSelector;
 
 /**
  * Implementation of {@link ICSSCombinator}.

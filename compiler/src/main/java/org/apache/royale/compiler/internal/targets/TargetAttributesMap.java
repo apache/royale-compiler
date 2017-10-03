@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * An implementation of {@link ITargetAttributes} based on a Java {@link Map}.

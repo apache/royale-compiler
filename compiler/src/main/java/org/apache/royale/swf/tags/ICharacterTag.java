@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 /**
  * A character tag has Character ID. SWF tags can refer to other tags by their

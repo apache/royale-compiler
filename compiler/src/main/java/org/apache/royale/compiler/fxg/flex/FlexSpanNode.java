@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.flex;
+package org.apache.royale.compiler.fxg.flex;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.fxg.dom.text.AbstractTextNode;
-import org.apache.flex.compiler.internal.fxg.dom.text.SpanNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.fxg.dom.text.AbstractTextNode;
+import org.apache.royale.compiler.internal.fxg.dom.text.SpanNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A Flex specific override for SpanNode used to capture the 

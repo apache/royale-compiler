@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.utils;
+package org.apache.royale.compiler.internal.codegen.externals.utils;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.MemberReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.externals.reference.BaseReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.MemberReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.common.base.Strings;
 import com.google.javascript.rhino.JSDocInfo;

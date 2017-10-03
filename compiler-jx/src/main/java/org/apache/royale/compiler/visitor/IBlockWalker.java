@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.visitor;
+package org.apache.royale.compiler.visitor;
 
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * @author Michael Schmalle

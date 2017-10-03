@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
-import org.apache.flex.swf.ISWF;
+import org.apache.royale.swf.ISWF;
 
 import java.io.Closeable;
 import java.io.File;

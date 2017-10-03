@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;

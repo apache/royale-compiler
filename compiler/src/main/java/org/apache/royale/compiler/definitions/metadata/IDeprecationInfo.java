@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.definitions.metadata;
+package org.apache.royale.compiler.definitions.metadata;
 
 /**
  * Represents the information represented in <code>[Deprecated]</code> metadata.

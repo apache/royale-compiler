@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant.config;
+package org.apache.royale.compiler.ant.config;
 
 /**
  * Represents the name of a configuration option.

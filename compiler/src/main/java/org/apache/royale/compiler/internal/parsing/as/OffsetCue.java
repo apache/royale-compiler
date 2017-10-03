@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import com.google.common.base.MoreObjects;
 

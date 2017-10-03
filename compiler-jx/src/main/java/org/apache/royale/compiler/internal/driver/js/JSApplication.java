@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js;
+package org.apache.royale.compiler.internal.driver.js;
 
-import org.apache.flex.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.driver.js.IJSApplication;
 
 /**
  * @author Michael Schmalle

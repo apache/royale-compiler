@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 /**
  * Model for {@code <digest>} tag in a SWC catalog.xml file.

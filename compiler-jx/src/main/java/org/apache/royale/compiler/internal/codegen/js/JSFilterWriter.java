@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.royale.compiler.internal.codegen.js;
 
 import java.io.Writer;
 
-import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
 
 /**
  * @author Michael Schmalle

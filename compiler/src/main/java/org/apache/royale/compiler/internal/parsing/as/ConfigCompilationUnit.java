@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.internal.tree.as.NilNode;
-import org.apache.flex.compiler.internal.tree.as.PackageNode;
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
-import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.internal.tree.as.NilNode;
+import org.apache.royale.compiler.internal.tree.as.PackageNode;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.units.ASCompilationUnit;
+import org.apache.royale.compiler.internal.units.requests.ASFileScopeRequestResult;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * CU for handling tree we build for config processing.

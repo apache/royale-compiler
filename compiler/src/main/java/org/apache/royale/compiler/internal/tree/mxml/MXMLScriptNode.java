@@ -17,39 +17,39 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLDualContentProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.parsing.as.IncludeHandler;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLDualContentProblem;
+import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
 {

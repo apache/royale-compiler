@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.scopes;
+package org.apache.royale.compiler.scopes;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 
 /**
  * {@link IASScope} represents a scope found within ActionScript.

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when a qname from MXML doesn't specify a class or interface.

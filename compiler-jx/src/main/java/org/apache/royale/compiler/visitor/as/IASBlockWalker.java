@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.visitor.as;
+package org.apache.royale.compiler.visitor.as;
 
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.visitor.IBlockWalker;
 
 /**
  * @author Michael Schmalle

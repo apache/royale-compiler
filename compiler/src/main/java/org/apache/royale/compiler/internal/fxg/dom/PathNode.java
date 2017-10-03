@@ -17,25 +17,25 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_DATA_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_PATH_ELEMENT;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_WINDING_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_WINDING_EVENODD_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_WINDING_NONZERO_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_DATA_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_PATH_ELEMENT;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_WINDING_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_WINDING_EVENODD_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_WINDING_NONZERO_VALUE;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.fxg.dom.strokes.AbstractStrokeNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.Winding;
-import org.apache.flex.compiler.internal.fxg.swf.ShapeHelper;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.types.LineStyle;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.ShapeRecord;
+import org.apache.royale.compiler.internal.fxg.dom.strokes.AbstractStrokeNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.Winding;
+import org.apache.royale.compiler.internal.fxg.swf.ShapeHelper;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.types.LineStyle;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.ShapeRecord;
 
 public class PathNode extends AbstractShapeNode
 {

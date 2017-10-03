@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DelegateNode;
-import org.apache.flex.compiler.internal.fxg.dom.ITextNode;
-import org.apache.flex.compiler.problems.FXGInvalidChildNodeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DelegateNode;
+import org.apache.royale.compiler.internal.fxg.dom.ITextNode;
+import org.apache.royale.compiler.problems.FXGInvalidChildNodeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 public class TextPropertyNode extends DelegateNode
 {

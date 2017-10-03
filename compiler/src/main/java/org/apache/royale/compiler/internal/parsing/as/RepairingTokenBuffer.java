@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.apache.flex.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IASToken;
 
 /**
  * The token buffer used by IDE features such as code hinting and syntax

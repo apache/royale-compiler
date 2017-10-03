@@ -17,24 +17,24 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_GROUP_ELEMENT;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_ID_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDBOTTOM_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDLEFT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDRIGHT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDTOP_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_GROUP_ELEMENT;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_ID_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDBOTTOM_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDLEFT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDRIGHT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDTOP_ATTRIBUTE;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.ScalingGrid;
-import org.apache.flex.compiler.problems.FXGInvalidGroupIDAttributeProblem;
-import org.apache.flex.compiler.problems.FXGInvalidScaleGridGroupChildProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.ScalingGrid;
+import org.apache.royale.compiler.problems.FXGInvalidGroupIDAttributeProblem;
+import org.apache.royale.compiler.problems.FXGInvalidScaleGridGroupChildProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A GroupDefinition represents the special use of Group as the basis for an

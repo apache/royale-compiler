@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 
 /**
  * This interface represents the information content of one metadata annotation
- * and is shared by {@link IMetaTagNode} and {@link org.apache.flex.compiler.definitions.metadata.IMetaTag}.
+ * and is shared by {@link IMetaTagNode} and {@link org.apache.royale.compiler.definitions.metadata.IMetaTag}.
  */
 public interface IMetaInfo
 {

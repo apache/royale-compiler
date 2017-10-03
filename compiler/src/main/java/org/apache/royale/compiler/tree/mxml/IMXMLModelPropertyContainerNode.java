@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 /**
  * This type of AST node represents tags inside an MXML

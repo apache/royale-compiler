@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import java.util.List;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.css.ICSSMediaQueryCondition;
-import org.apache.flex.compiler.css.ICSSProperty;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
+import org.apache.royale.compiler.css.ICSSProperty;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.css.ICSSSelector;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 /**
  * @author Erik de Bruin
@@ -35,7 +35,7 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     GOOG_EXPORT_SYMBOL("goog.exportSymbol"),
     INDENT("  "),
     INTERFACES("interfaces"),
-    LANGUAGE_QNAME("org.apache.flex.utils.Language"),
+    LANGUAGE_QNAME("org.apache.royale.utils.Language"),
     NAME("name"),
     NAMES("names"),
     QNAME("qName"),
@@ -54,11 +54,11 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     GETTER_PREFIX("get__"),
     SETTER_PREFIX("set__"),
     BINDABLE_PREFIX("bindable__"),
-    CLOSURE_FUNCTION_NAME("org.apache.flex.utils.Language.closure"),
+    CLOSURE_FUNCTION_NAME("org.apache.royale.utils.Language.closure"),
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     JSX("JSX"),
-    VECTOR("org.apache.flex.utils.Language.Vector"),
+    VECTOR("org.apache.royale.utils.Language.Vector"),
     ;
 
     private String token;

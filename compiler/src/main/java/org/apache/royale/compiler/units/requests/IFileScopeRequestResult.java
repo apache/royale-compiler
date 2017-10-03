@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.units.requests;
+package org.apache.royale.compiler.units.requests;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
 
 public interface IFileScopeRequestResult extends IRequestResult
 {

@@ -17,31 +17,31 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
-import org.apache.flex.compiler.internal.tree.as.BlockNode;
-import org.apache.flex.compiler.internal.tree.as.ClassNode;
-import org.apache.flex.compiler.internal.tree.as.ContainerNode;
-import org.apache.flex.compiler.internal.tree.as.MemberedNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
+import org.apache.royale.compiler.internal.tree.as.BlockNode;
+import org.apache.royale.compiler.internal.tree.as.ClassNode;
+import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.MemberedNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public class MetaTagsNode extends ContainerNode implements IMetaTagsNode
 {

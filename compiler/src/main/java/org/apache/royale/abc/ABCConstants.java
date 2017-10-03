@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc;
+package org.apache.royale.abc;
 
 /**
  *  ABCConstants contains manifest constants for the various codes and flags in an ABC file.

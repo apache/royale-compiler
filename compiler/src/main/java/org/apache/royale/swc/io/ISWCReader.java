@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swc.io;
+package org.apache.royale.swc.io;
 
 import java.io.File;
 
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.swc.ISWC;
 
 /**
  * API for reading a SWC file. The {@code SWCReader} owns the result

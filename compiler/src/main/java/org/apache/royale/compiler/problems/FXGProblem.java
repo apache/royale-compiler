@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
 
 /**
  * Represents an FXG problem. This abstract class is the super class of all FXG related problems.

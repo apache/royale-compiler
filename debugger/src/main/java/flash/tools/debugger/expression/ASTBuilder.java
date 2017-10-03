@@ -23,8 +23,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 import flash.localization.LocalizationManager;
 import flash.tools.debugger.DebuggerLocalizer;

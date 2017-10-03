@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_DEFINITION_ELEMENT;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_NAME_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_DEFINITION_ELEMENT;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_NAME_ATTRIBUTE;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.problems.FXGInvalidDefinitionNameProblem;
-import org.apache.flex.compiler.problems.FXGMissingGroupChildNodeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.problems.FXGInvalidDefinitionNameProblem;
+import org.apache.royale.compiler.problems.FXGMissingGroupChildNodeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A &lt;Definition&gt; is a special template node that is not itself rendered

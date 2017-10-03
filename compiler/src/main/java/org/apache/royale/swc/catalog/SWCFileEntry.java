@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.swc.catalog;
+package org.apache.royale.swc.catalog;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipFile;
 
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swc.io.SWCReader;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.io.SWCReader;
 
 /**
  * A file in a SWC archive.

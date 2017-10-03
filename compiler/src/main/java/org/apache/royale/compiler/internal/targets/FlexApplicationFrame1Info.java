@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,23 +25,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.problems.CompiledAsAComponentProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.units.ASCompilationUnit;
+import org.apache.royale.compiler.internal.units.MXMLCompilationUnit;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.problems.CompiledAsAComponentProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
 import com.google.common.collect.ImmutableSet;
 
 /**

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,14 +29,14 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.exceptions.CircularDependencyException;
-import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
-import org.apache.flex.compiler.internal.graph.Graph;
-import org.apache.flex.compiler.internal.graph.GraphEdge;
-import org.apache.flex.compiler.internal.graph.TopologicalSort;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.exceptions.CircularDependencyException;
+import org.apache.royale.compiler.exceptions.LibraryCircularDependencyException;
+import org.apache.royale.compiler.internal.graph.Graph;
+import org.apache.royale.compiler.internal.graph.GraphEdge;
+import org.apache.royale.compiler.internal.graph.TopologicalSort;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * A dependency graph of libraries. Each vertex on the graph represents a 

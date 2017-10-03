@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.Vector;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Label;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Label;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 
 /**

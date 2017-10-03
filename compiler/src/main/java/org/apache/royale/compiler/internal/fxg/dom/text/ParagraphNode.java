@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.text;
+package org.apache.royale.compiler.internal.fxg.dom.text;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.CDATANode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.ITextNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.CDATANode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.ITextNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents a &lt;p /&gt; child tag of FXG &lt;TextGraphic&gt; content. A

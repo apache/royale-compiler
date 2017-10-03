@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant;
+package org.apache.royale.compiler.ant;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -35,10 +35,10 @@ import org.apache.tools.ant.types.Environment.Variable;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.taskdefs.Java;
 
-import org.apache.flex.compiler.ant.config.ConfigVariable;
-import org.apache.flex.compiler.ant.config.NestedAttributeElement;
-import org.apache.flex.compiler.ant.config.IOptionSource;
-import org.apache.flex.compiler.ant.config.OptionSpec;
+import org.apache.royale.compiler.ant.config.ConfigVariable;
+import org.apache.royale.compiler.ant.config.NestedAttributeElement;
+import org.apache.royale.compiler.ant.config.IOptionSource;
+import org.apache.royale.compiler.ant.config.OptionSpec;
 
 /**
  * This class contains common data and logic used by all the Flex Ant tasks.

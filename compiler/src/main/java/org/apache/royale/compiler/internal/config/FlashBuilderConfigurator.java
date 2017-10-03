@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.io.File;
 import java.io.Reader;
@@ -35,8 +35,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.filespecs.FileSpecification;
 
 /**
  * A utility class, which is used to parse an XML file of configuration options

@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.targets.ITargetReport;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swf.types.RGB;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.targets.ITargetReport;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swf.types.RGB;
 import com.google.common.collect.ImmutableSet;
 
 /**

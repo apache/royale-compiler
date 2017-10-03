@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.swf.tags.ICharacterReferrer;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.CharacterIterableFactory;
+import org.apache.royale.swf.tags.ICharacterReferrer;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.CharacterIterableFactory;
 
 /**
  * Shape is used by the {@code DefineFont} tag, to define character glyphs.

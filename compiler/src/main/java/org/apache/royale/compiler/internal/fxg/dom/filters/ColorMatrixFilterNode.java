@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.filters;
+package org.apache.royale.compiler.internal.fxg.dom.filters;
 
 import java.util.Collection;
 import java.util.StringTokenizer;
 
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.problems.FXGInvalidColorMatrixValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.problems.FXGInvalidColorMatrixValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 public class ColorMatrixFilterNode extends AbstractFilterNode
 {

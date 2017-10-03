@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.properties;
+package org.apache.royale.compiler.internal.tree.properties;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.properties.IResourceBundleFileNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.properties.IResourceBundleFileNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 public class ResourceBundleFileNode extends FileNode implements IResourceBundleFileNode
 {

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.driver;
+package org.apache.royale.compiler.driver;
 
 /**
  * The ActionScript model interface used when implementing build targets that

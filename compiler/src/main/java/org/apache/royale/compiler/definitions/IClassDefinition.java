@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.utils.Version;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.utils.Version;
 
 /**
  * A definition representing a <code>class</code> declaration.

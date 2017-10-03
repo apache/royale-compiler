@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 
 /**
  * Any nodes/information which are to be collected during parsing and stored on

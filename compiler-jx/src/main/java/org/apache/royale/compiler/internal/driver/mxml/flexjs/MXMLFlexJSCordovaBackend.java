@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.mxml.flexjs;
+package org.apache.royale.compiler.internal.driver.mxml.flexjs;
 
 import java.util.List;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleCordovaPublisher;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleCordovaPublisher;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the

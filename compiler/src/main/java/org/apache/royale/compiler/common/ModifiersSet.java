@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.internal.tree.as.ModifierNode;
+import org.apache.royale.compiler.internal.tree.as.ModifierNode;
 
 /**
  * Map for holding a set of modifiers

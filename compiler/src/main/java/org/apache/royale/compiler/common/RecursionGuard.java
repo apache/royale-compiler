@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 import java.util.HashSet;
 
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * Recursion guard that can be used throughout code model to make sure we don't infinitely recurse when

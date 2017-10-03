@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.exceptions.CircularDependencyException;
-import org.apache.flex.compiler.internal.graph.Graph;
-import org.apache.flex.compiler.internal.graph.GraphEdge;
-import org.apache.flex.compiler.internal.graph.TopologicalSort;
-import org.apache.flex.compiler.internal.graph.TopologicalSort.IVisitor;
-import org.apache.flex.swf.io.SWFReader;
-import org.apache.flex.swf.tags.ICharacterReferrer;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
+import org.apache.royale.compiler.exceptions.CircularDependencyException;
+import org.apache.royale.compiler.internal.graph.Graph;
+import org.apache.royale.compiler.internal.graph.GraphEdge;
+import org.apache.royale.compiler.internal.graph.TopologicalSort;
+import org.apache.royale.compiler.internal.graph.TopologicalSort.IVisitor;
+import org.apache.royale.swf.io.SWFReader;
+import org.apache.royale.swf.tags.ICharacterReferrer;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
 
 /**
  * This is an utility class that can sort tags in topological order. This is especially useful

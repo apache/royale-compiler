@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units.requests;
+package org.apache.royale.compiler.internal.units.requests;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 import com.google.common.collect.ImmutableSet;
 
 

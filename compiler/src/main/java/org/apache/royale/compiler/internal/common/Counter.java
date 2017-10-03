@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.common;
+package org.apache.royale.compiler.internal.common;
 
 import java.util.Arrays;
 import java.util.HashMap;

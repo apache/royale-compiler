@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,35 +25,35 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.flex.compiler.common.ASImportTarget;
-import org.apache.flex.compiler.common.IImportTarget;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.common.RecursionGuard;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition.ClassClassification;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.common.ASImportTarget;
+import org.apache.royale.compiler.common.IImportTarget;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.common.RecursionGuard;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition.ClassClassification;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 /**
  * ActionScript parse tree node representing a class definition

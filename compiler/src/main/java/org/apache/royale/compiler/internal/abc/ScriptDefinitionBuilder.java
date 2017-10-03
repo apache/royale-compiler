@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.abc;
+package org.apache.royale.compiler.internal.abc;
 
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.visitors.IScriptVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.visitors.IScriptVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.compiler.scopes.IASScope;
 
 /**
  * Implementation of the {@linkplain IScriptVisitor}. It builds the script-level

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 /**
  * Marker Interface for things that contain or are IMXMLDataBindingNode

@@ -17,41 +17,41 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.mxml.flexjs;
+package org.apache.royale.compiler.internal.driver.mxml.flexjs;
 
 import java.io.FilterWriter;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.js.IJSWriter;
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.targets.RoyaleTarget;
-import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
-import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.IBlockVisitor;
-import org.apache.flex.compiler.visitor.IBlockWalker;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLWriter;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.targets.RoyaleTarget;
+import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
+import org.apache.royale.compiler.internal.visitor.mxml.MXMLNodeSwitch;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.IBlockVisitor;
+import org.apache.royale.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the

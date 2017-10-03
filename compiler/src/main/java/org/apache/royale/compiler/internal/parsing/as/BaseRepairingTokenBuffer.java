@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
-import static org.apache.flex.compiler.common.ISourceLocation.UNKNOWN;
+import static org.apache.royale.compiler.common.ISourceLocation.UNKNOWN;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.SyntaxProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 
 import antlr.Token;
 

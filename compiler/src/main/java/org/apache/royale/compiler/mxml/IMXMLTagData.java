@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.common.XMLName;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.common.XMLName;
 
 /**
  * Represents an open tag, a close tag, or an empty tag in MXML.

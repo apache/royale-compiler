@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,44 +29,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.asdoc.IASDocTag;
-import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
-import org.apache.flex.compiler.codegen.js.flexjs.IJSRoyaleASDocEmitter;
-import org.apache.flex.compiler.codegen.js.flexjs.IJSRoyaleEmitter;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IAccessorDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleASDocEmitter;
-import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.EventDefinition;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.internal.projects.RoyaleASDocProject;
-import org.apache.flex.compiler.internal.tree.as.metadata.EventTagNode;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IAccessorNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IGetterNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.INamespaceNode;
-import org.apache.flex.compiler.tree.as.IPackageNode;
-import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.utils.NativeUtils;
+import org.apache.royale.compiler.asdoc.IASDocTag;
+import org.apache.royale.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.royale.compiler.codegen.js.flexjs.IJSRoyaleASDocEmitter;
+import org.apache.royale.compiler.codegen.js.flexjs.IJSRoyaleEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleASDocEmitter;
+import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.EventDefinition;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleASDocProject;
+import org.apache.royale.compiler.internal.tree.as.metadata.EventTagNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.INamespaceNode;
+import org.apache.royale.compiler.tree.as.IPackageNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.utils.NativeUtils;
 
 /**
  * Concrete implementation of the 'Royale' JavaScript production.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,23 +26,23 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.diagnostics.AbstractDiagnosticVisitor;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.ScriptInfo;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.semantics.MethodBodySemanticChecker;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.OperandStackUnderflowProblem;
-import org.apache.flex.compiler.problems.ScopeStackUnderflowProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.diagnostics.AbstractDiagnosticVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.ScriptInfo;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.semantics.MethodBodySemanticChecker;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.OperandStackUnderflowProblem;
+import org.apache.royale.compiler.problems.ScopeStackUnderflowProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * The global lexical scope for codegen.  This class can't have a containing
@@ -69,7 +69,7 @@ public class GlobalLexicalScope extends LexicalScope
 
     /**
      *  Prefix string for all synthetic names.  Usually the base name of
-     *  the root source file of a {@link org.apache.flex.compiler.units.ICompilationUnit}.
+     *  the root source file of a {@link org.apache.royale.compiler.units.ICompilationUnit}.
      */
     private final String syntheticNamePrefix;
 
@@ -84,7 +84,7 @@ public class GlobalLexicalScope extends LexicalScope
      * If so, {@link IDefinition}s need to be normalized before
      * doing certain semantic checks.
      * <p>
-     * {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}s create the
+     * {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}s create the
      * possibility that we will be processing a file whose definitions are not
      * in the {@link ASProjectScope} in the {@link ICompilerProject}. This in
      * turn creates the possibility there are two or more {@link IDefinition}s
@@ -92,12 +92,12 @@ public class GlobalLexicalScope extends LexicalScope
      * {@link IDefinition}, the "normalized" one, should be registered with the
      * {@link ASProjectScope} in the {@link ICompilerProject}. The other
      * {@link IDefinition}s are from
-     * {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}s. When doing
+     * {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}s. When doing
      * semantic analysis if we don't "normalize" {@link IDefinition}s in some
      * cases, we'll get spurious errors because the semantic analysis code
      * compares {@link IDefinition}s by identity ( which is faster ) rather
      * than by name. This method should only be called when doing semantic
-     * analysis of an {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}.
+     * analysis of an {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}.
      * <p>
      * Also, if we are in an invisible compilation unit, we cannot determine
      * the validity of an import simply by looking at whether it matches

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.databinding;
+package org.apache.royale.compiler.internal.codegen.databinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,14 +29,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
-import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
+import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 
 /**
  * After all the bindings in an MXML document (class) are analyzed, this

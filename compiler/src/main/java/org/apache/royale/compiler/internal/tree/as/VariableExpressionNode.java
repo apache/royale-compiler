@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IVariableExpressionNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * Expression that represents a variable contained within an iterative loop.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.externals;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,12 +25,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.clients.EXTERNC;
-import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.clients.EXTERNC;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.internal.codegen.externals.reference.MethodReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

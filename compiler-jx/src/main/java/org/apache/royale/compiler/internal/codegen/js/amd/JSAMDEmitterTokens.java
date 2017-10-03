@@ -16,9 +16,9 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 public enum JSAMDEmitterTokens implements IEmitterTokens
 {

@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js.flexjs;
+package org.apache.royale.compiler.internal.driver.js.flexjs;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.targets.RoyaleTarget;
-import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.targets.RoyaleTarget;
+import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
 
 /**
  * @author Erik de Bruin

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition.ClassClassification;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition.ClassClassification;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 
 /**
  * This interface contains the APIs that are available for both ActionScript and

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.driver.js;
+package org.apache.royale.compiler.driver.js;
 
-import org.apache.flex.compiler.codegen.ISourceMapEmitter;
-import org.apache.flex.compiler.codegen.js.IMappingEmitter;
-import org.apache.flex.compiler.driver.IBackend;
+import org.apache.royale.compiler.codegen.ISourceMapEmitter;
+import org.apache.royale.compiler.codegen.js.IMappingEmitter;
+import org.apache.royale.compiler.driver.IBackend;
 
 public interface IJSBackend extends IBackend
 {

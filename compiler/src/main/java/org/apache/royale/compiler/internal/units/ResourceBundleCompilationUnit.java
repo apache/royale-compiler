@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,59 +31,59 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.problems.UnresolvedClassReferenceProblem;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.problems.UnresolvedClassReferenceProblem;
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.PackageDefinition;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.resourcebundles.PropertiesFileParser;
-import org.apache.flex.compiler.internal.resourcebundles.ResourceBundleUtils;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.PackageScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.tree.as.ClassReferenceNode;
-import org.apache.flex.compiler.internal.tree.as.EmbedNode;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.internal.tree.properties.ResourceBundleEntryNode;
-import org.apache.flex.compiler.internal.tree.properties.ResourceBundleFileNode;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.internal.units.requests.FileScopeRequestResultBase;
-import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
-import org.apache.flex.compiler.problems.CodegenInternalProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.PackageDefinition;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.resourcebundles.PropertiesFileParser;
+import org.apache.royale.compiler.internal.resourcebundles.ResourceBundleUtils;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.PackageScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.tree.as.ClassReferenceNode;
+import org.apache.royale.compiler.internal.tree.as.EmbedNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.properties.ResourceBundleEntryNode;
+import org.apache.royale.compiler.internal.tree.properties.ResourceBundleFileNode;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.internal.units.requests.FileScopeRequestResultBase;
+import org.apache.royale.compiler.internal.units.requests.SWFTagsRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.royale.compiler.problems.CodegenInternalProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -575,7 +575,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
      *                      "name": "Falcon",
      *                      "version": "1.0", 
      *                      "motto": "Awesome '{0}' ever.", 
-     *                      "classref": org.apache.flex.foo 
+     *                      "classref": org.apache.royale.foo 
      *                      "embededAsset" : embed_properties_awesome_jpg_1808423157
      *              }; 
      *          }

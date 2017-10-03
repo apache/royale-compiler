@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.Collection;
 
 
 
-import org.apache.flex.compiler.internal.tree.as.ClassNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.ImportNode;
-import org.apache.flex.compiler.internal.tree.as.InterfaceNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceIdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.PackageNode;
-import org.apache.flex.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.internal.tree.as.ClassNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.ImportNode;
+import org.apache.royale.compiler.internal.tree.as.InterfaceNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.PackageNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 
-import static org.apache.flex.abc.ABCConstants.TRAIT_Getter;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Setter;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Getter;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Setter;
 
-import org.apache.flex.compiler.problems.BURMDiagnosticNotAllowedHereProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.BURMDiagnosticNotAllowedHereProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 
 
 /**

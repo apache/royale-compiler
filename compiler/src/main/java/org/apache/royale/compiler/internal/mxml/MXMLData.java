@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,23 +32,23 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.common.MutablePrefixMap;
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.mxml.BalancingMXMLProcessor;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLTokenizer;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLUnitDataIterator;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.SyntaxProblem;
-import org.apache.flex.utils.FastStack;
-import org.apache.flex.utils.FastStack.IFastStackDecorator;
+import org.apache.royale.compiler.common.MutablePrefixMap;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.mxml.BalancingMXMLProcessor;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLTokenizer;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLUnitDataIterator;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
+import org.apache.royale.utils.FastStack;
+import org.apache.royale.utils.FastStack.IFastStackDecorator;
 
 /**
  * Encapsulation of an MXML file, with individual units for each open tag, close

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.scopes;
+package org.apache.royale.compiler.scopes;
 
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * This interface represents an immutable collection of definitions with the

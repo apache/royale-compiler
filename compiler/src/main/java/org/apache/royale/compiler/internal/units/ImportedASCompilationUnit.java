@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
 
 /**
  * A compilation unit for AS files that are imported into ASC using the

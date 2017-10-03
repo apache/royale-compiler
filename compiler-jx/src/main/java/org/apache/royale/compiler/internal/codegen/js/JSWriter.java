@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.royale.compiler.internal.codegen.js;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,15 +27,15 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.flex.compiler.codegen.ISourceMapEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.js.IJSWriter;
-import org.apache.flex.compiler.codegen.js.IMappingEmitter;
-import org.apache.flex.compiler.driver.js.IJSBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.codegen.ISourceMapEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.codegen.js.IMappingEmitter;
+import org.apache.royale.compiler.driver.js.IJSBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 
 public class JSWriter implements IJSWriter
 {

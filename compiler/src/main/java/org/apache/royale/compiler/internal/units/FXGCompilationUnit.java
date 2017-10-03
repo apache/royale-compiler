@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.io.FileNotFoundException;
 import java.io.Reader;
@@ -30,50 +30,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
+import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.flex.FXGSymbolClass;
-import org.apache.flex.compiler.fxg.flex.FlexFXG2SWFTranscoder;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.PackageDefinition;
-import org.apache.flex.compiler.internal.fxg.resources.FXGFileResolver;
-import org.apache.flex.compiler.internal.fxg.sax.FXGSAXParser;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.scopes.FXGFileScope;
-import org.apache.flex.compiler.internal.scopes.PackageScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.targets.TagSorter;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem2;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.swf.SWFFrame;
-import org.apache.flex.swf.tags.DoABCTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.flex.FXGSymbolClass;
+import org.apache.royale.compiler.fxg.flex.FlexFXG2SWFTranscoder;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.PackageDefinition;
+import org.apache.royale.compiler.internal.fxg.resources.FXGFileResolver;
+import org.apache.royale.compiler.internal.fxg.sax.FXGSAXParser;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.scopes.FXGFileScope;
+import org.apache.royale.compiler.internal.scopes.PackageScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.targets.TagSorter;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.internal.units.requests.ASFileScopeRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.swf.SWFFrame;
+import org.apache.royale.swf.tags.DoABCTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.Iterables;
 
 /**

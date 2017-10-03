@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,24 +26,24 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.flex.compiler.Messages;
-import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.config.ICompilerSettingsConstants;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.targets.SWFTarget;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MissingRequirementConfigurationProblem;
-import org.apache.flex.compiler.targets.ISWCTarget;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.io.ISWCWriter;
-import org.apache.flex.swc.io.SWCDirectoryWriter;
-import org.apache.flex.swc.io.SWCWriter;
-import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
-import org.apache.flex.tools.FlexTool;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.Messages;
+import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.config.ICompilerSettingsConstants;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.targets.SWFTarget;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MissingRequirementConfigurationProblem;
+import org.apache.royale.compiler.targets.ISWCTarget;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.io.ISWCWriter;
+import org.apache.royale.swc.io.SWCDirectoryWriter;
+import org.apache.royale.swc.io.SWCWriter;
+import org.apache.royale.swf.io.SizeReportWritingSWFWriter;
+import org.apache.royale.tools.FlexTool;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * Component compiler entry point.

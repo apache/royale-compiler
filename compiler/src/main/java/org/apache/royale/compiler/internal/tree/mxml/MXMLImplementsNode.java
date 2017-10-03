@@ -17,33 +17,33 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.parsing.as.IRepairingTokenBuffer;
-import org.apache.flex.compiler.internal.parsing.as.StreamingASTokenizer;
-import org.apache.flex.compiler.internal.parsing.as.StreamingTokenBuffer;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.parsing.as.IRepairingTokenBuffer;
+import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
+import org.apache.royale.compiler.internal.parsing.as.StreamingTokenBuffer;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLImplementsNode;
 
 /**
  * Implementation of the {@code IMXMLImplementsNode} interface.

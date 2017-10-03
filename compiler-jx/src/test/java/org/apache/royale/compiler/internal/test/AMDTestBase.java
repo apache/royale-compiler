@@ -17,24 +17,24 @@
  *
  */
 
-package org.apache.flex.compiler.internal.test;
+package org.apache.royale.compiler.internal.test;
 
 import java.io.File;
 import java.util.List;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IGetterNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.ITypeNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.amd.AMDBackend;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.utils.FilenameNormalization;
+import org.apache.royale.utils.TestAdapterFactory;
 
 /**
  * This class tests the production of AMD JavaScript for AS package.

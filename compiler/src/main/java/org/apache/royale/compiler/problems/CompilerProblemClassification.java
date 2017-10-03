@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
 
 /**
  * The type of a compiler problem.

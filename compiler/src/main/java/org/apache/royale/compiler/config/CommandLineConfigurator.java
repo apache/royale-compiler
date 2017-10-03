@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,9 +32,9 @@ import java.io.File;
 
 import com.google.common.base.Joiner;
 
-import org.apache.flex.compiler.Messages;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.Messages;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 
 /**
  * A utility class, which is used to parse an array of command line args and

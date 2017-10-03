@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.testing;
+package org.apache.royale.compiler.internal.testing;
 
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Formats a tree of IASNodes into an XML string.

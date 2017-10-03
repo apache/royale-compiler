@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
-import org.apache.flex.compiler.common.IDefinitionPriority;
+import org.apache.royale.compiler.common.IDefinitionPriority;
 
 /**
  * This class encapsulates information about the priority of definitions defined in a compilation unit.

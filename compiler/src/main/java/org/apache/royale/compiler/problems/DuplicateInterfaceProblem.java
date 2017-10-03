@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Problem generated when a class implements the same interface multiple times.

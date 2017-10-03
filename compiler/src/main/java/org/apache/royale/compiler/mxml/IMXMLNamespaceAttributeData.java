@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 /**
  * Represents a namespace attribute in MXML.

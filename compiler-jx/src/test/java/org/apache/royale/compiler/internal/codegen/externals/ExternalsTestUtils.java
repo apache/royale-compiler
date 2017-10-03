@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.externals;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
+import org.apache.royale.utils.FilenameNormalization;
 
 public class ExternalsTestUtils
 {

@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * MORPHLINESTYLE2 builds upon the capabilities of the MORPHLINESTYLE record by
  * allowing the use of new types of joins and caps as well as scaling options
  * and the ability to fill morph strokes. In order to use MORPHLINESTYLE2, the
- * shape must be defined with {@link org.apache.flex.swf.tags.DefineMorphShape2Tag}
- * not {@link org.apache.flex.swf.tags.DefineMorphShapeTag}.
+ * shape must be defined with {@link org.apache.royale.swf.tags.DefineMorphShape2Tag}
+ * not {@link org.apache.royale.swf.tags.DefineMorphShapeTag}.
  * <p>
  * While the MORPHLINESTYLE record permits only rounded joins and round caps,
  * MORPHLINESTYLE2 also supports miter and bevel joins, and square caps and no

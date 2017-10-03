@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IBlockNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBlockNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * This AST node represents an MXML <code>&lt;Script&gt;</code> tag.

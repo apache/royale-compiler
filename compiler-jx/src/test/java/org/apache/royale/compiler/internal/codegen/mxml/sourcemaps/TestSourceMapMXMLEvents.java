@@ -16,12 +16,12 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml.sourcemaps;
+package org.apache.royale.compiler.internal.codegen.mxml.sourcemaps;
 
-import org.apache.flex.compiler.internal.test.RoyaleSourceMapTestBase;
-import org.apache.flex.compiler.internal.test.RoyaleTestBase;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.compiler.internal.test.RoyaleSourceMapTestBase;
+import org.apache.royale.compiler.internal.test.RoyaleTestBase;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 import org.junit.Test;
 

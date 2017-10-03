@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
 import java.util.List;
 
-import org.apache.flex.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
 
 import antlr.Token;
 import antlr.TokenStream;

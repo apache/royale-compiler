@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Problem for an unresolved namespace reference.
  */
-public final class UnresolvedNamespaceProblem extends org.apache.flex.compiler.problems.SemanticProblem
+public final class UnresolvedNamespaceProblem extends org.apache.royale.compiler.problems.SemanticProblem
 {
     public static final String DESCRIPTION =
         "Namespace was not found or is not a compile-time constant.";

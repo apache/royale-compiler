@@ -17,44 +17,44 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.internal.units.requests.FileScopeRequestResultBase;
-import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.internal.units.requests.FileScopeRequestResultBase;
+import org.apache.royale.compiler.internal.units.requests.SWFTagsRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * A rectangle value represents a rectangular region defined by a minimum x- and

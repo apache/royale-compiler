@@ -17,25 +17,25 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ImplicitCoercionToUnrelatedTypeProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLExpressionNode;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ImplicitCoercionToUnrelatedTypeProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLExpressionNode;
 
 abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLExpressionNode
 {

@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.definitions.references;
+package org.apache.royale.compiler.definitions.references;
 
 import java.util.Set;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.references.BuiltinReference;
-import org.apache.flex.compiler.internal.definitions.references.LexicalReference;
-import org.apache.flex.compiler.internal.definitions.references.NotATypeReference;
-import org.apache.flex.compiler.internal.definitions.references.ParameterizedReference;
-import org.apache.flex.compiler.internal.definitions.references.ResolvedQualifiersReference;
-import org.apache.flex.compiler.internal.definitions.references.ResolvedReference;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.references.BuiltinReference;
+import org.apache.royale.compiler.internal.definitions.references.LexicalReference;
+import org.apache.royale.compiler.internal.definitions.references.NotATypeReference;
+import org.apache.royale.compiler.internal.definitions.references.ParameterizedReference;
+import org.apache.royale.compiler.internal.definitions.references.ResolvedQualifiersReference;
+import org.apache.royale.compiler.internal.definitions.references.ResolvedReference;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 import com.google.common.collect.ImmutableSet;
 
 /**

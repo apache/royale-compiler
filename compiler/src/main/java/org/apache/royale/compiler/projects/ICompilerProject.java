@@ -17,27 +17,27 @@
  *
  */
 
-package org.apache.flex.compiler.projects;
+package org.apache.royale.compiler.projects;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.targets.ISWFTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.targets.ISWFTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * All IProject implementations aggregate a project scope containing global

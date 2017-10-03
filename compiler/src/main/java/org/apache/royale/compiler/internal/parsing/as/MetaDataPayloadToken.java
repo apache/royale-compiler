@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.parsing.ICMToken;
 
 /**
  * This token represents a valid set of metadata, and includes all of the

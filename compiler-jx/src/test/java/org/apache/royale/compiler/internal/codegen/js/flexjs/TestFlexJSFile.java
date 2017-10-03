@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
 import java.io.File;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.test.RoyaleTestBase;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.test.RoyaleTestBase;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Test;
 
 /**

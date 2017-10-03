@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.visitors.IVisitor;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.visitors.IVisitor;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
 
 /**
  * Object that is returned by
- * {@link org.apache.flex.compiler.internal.as.codegen.ICodeGenerator#generateFunctionInParallel(java.util.concurrent.ExecutorService, org.apache.flex.compiler.internal.tree.as.FunctionNode, LexicalScope)}
+ * {@link org.apache.royale.compiler.internal.as.codegen.ICodeGenerator#generateFunctionInParallel(java.util.concurrent.ExecutorService, org.apache.royale.compiler.internal.tree.as.FunctionNode, LexicalScope)}
  * .
  * <p>
  * A wad containing the future for the code generation work happening in
@@ -63,11 +63,11 @@ public class GenerateFunctionInParallelResult
     }
 
     /**
-     * Gets the {@link org.apache.flex.abc.semantics.MethodInfo} for the function for which code is being
+     * Gets the {@link org.apache.royale.abc.semantics.MethodInfo} for the function for which code is being
      * generated. Thie method may be called immediately after this object is
      * constructed.
      *
-     * @return The {@link org.apache.flex.abc.semantics.MethodInfo} for the function for which code is
+     * @return The {@link org.apache.royale.abc.semantics.MethodInfo} for the function for which code is
      * being generated.
      */
     public MethodInfo getMethodInfo()

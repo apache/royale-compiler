@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.constants.IASWarningConstants;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.constants.IASWarningConstants;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 
 /**
  * An interface that allows any of the compiler settings to be modified.

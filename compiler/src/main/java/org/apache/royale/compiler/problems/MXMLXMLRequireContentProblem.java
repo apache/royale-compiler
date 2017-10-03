@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
 
 /**
  * Problem generated when an {@code <XML>} tag has no content.

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js.goog;
+package org.apache.royale.compiler.codegen.js.goog;
 
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
 
 /**
  * The {@link IJSGoogEmitter} interface allows abstraction between the base

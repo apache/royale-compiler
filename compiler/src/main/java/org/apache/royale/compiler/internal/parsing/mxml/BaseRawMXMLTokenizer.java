@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.parsing.ICMToken;
-import org.apache.flex.compiler.problems.ASDocNotClosedProblem;
-import org.apache.flex.compiler.problems.CommentNotClosedProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.problems.ASDocNotClosedProblem;
+import org.apache.royale.compiler.problems.CommentNotClosedProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLUnclosedTagProblem;
 
 import antlr.CommonToken;
 import antlr.Token;

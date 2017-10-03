@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.properties;
+package org.apache.royale.compiler.tree.properties;
 
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Node that represents a key-value pair in a properties file

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 /**
  * Key object for {@link ConcurrentCacheStoreBase}.  

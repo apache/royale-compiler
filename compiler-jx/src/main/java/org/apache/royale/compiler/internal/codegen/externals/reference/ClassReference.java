@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.internal.codegen.externals.pass.AbstractCompilerPass;
-import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.problems.UnresolvedClassReferenceProblem;
+import org.apache.royale.compiler.internal.codegen.externals.pass.AbstractCompilerPass;
+import org.apache.royale.compiler.internal.codegen.externals.utils.DebugLogUtils;
+import org.apache.royale.compiler.internal.codegen.externals.utils.JSTypeUtils;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.problems.UnresolvedClassReferenceProblem;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;

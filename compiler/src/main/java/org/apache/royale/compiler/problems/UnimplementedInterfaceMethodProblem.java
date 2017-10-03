@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * Problem generated when a class does not implement a method from one of it's interfaces.

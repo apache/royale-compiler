@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.semantics;
+package org.apache.royale.compiler.internal.semantics;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,110 +25,110 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.definitions.IAccessorDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IConstantDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.metadata.IDeprecationInfo;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.exceptions.MissingBuiltinException;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.as.codegen.Binding;
-import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
-import org.apache.flex.compiler.internal.definitions.AmbiguousDefinition;
-import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.ConstantDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.GetterDefinition;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.PackageDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.definitions.SetterDefinition;
-import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.ASScopeBase;
-import org.apache.flex.compiler.internal.scopes.FunctionScope;
-import org.apache.flex.compiler.internal.scopes.ScopeView;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
-import org.apache.flex.compiler.internal.tree.as.BaseTypedDefinitionNode;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
-import org.apache.flex.compiler.internal.tree.as.BlockNode;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.ImportNode;
-import org.apache.flex.compiler.internal.tree.as.IterationFlowNode;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.tree.as.TypedExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
-import org.apache.flex.compiler.internal.tree.as.UnaryOperatorNodeBase;
-import org.apache.flex.compiler.internal.tree.as.VariableExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.VariableNode;
-import org.apache.flex.compiler.internal.tree.as.WithNode;
-import org.apache.flex.compiler.problems.AmbiguousReferenceProblem;
-import org.apache.flex.compiler.problems.BaseClassIsFinalProblem;
-import org.apache.flex.compiler.problems.CannotExtendInterfaceProblem;
-import org.apache.flex.compiler.problems.CircularTypeReferenceProblem;
-import org.apache.flex.compiler.problems.DeprecatedAPIProblem;
-import org.apache.flex.compiler.problems.DeprecatedAPIWithMessageProblem;
-import org.apache.flex.compiler.problems.DeprecatedAPIWithReplacementProblem;
-import org.apache.flex.compiler.problems.DeprecatedAPIWithSinceAndReplacementProblem;
-import org.apache.flex.compiler.problems.DeprecatedAPIWithSinceProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ReturnValueHasNoTypeDeclarationProblem;
-import org.apache.flex.compiler.problems.ScopedToDefaultNamespaceProblem;
-import org.apache.flex.compiler.problems.UnknownSuperclassProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.ICommonClassNode;
-import org.apache.flex.compiler.tree.as.IContainerNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.flex.compiler.tree.as.INumericLiteralNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.ITryNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IConstantDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.exceptions.MissingBuiltinException;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.as.codegen.Binding;
+import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
+import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.GetterDefinition;
+import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.PackageDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.definitions.SetterDefinition;
+import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.ASScopeBase;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.internal.scopes.ScopeView;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
+import org.apache.royale.compiler.internal.tree.as.BaseTypedDefinitionNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
+import org.apache.royale.compiler.internal.tree.as.BlockNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.ImportNode;
+import org.apache.royale.compiler.internal.tree.as.IterationFlowNode;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.TypedExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
+import org.apache.royale.compiler.internal.tree.as.UnaryOperatorNodeBase;
+import org.apache.royale.compiler.internal.tree.as.VariableExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.internal.tree.as.WithNode;
+import org.apache.royale.compiler.problems.AmbiguousReferenceProblem;
+import org.apache.royale.compiler.problems.BaseClassIsFinalProblem;
+import org.apache.royale.compiler.problems.CannotExtendInterfaceProblem;
+import org.apache.royale.compiler.problems.CircularTypeReferenceProblem;
+import org.apache.royale.compiler.problems.DeprecatedAPIProblem;
+import org.apache.royale.compiler.problems.DeprecatedAPIWithMessageProblem;
+import org.apache.royale.compiler.problems.DeprecatedAPIWithReplacementProblem;
+import org.apache.royale.compiler.problems.DeprecatedAPIWithSinceAndReplacementProblem;
+import org.apache.royale.compiler.problems.DeprecatedAPIWithSinceProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ReturnValueHasNoTypeDeclarationProblem;
+import org.apache.royale.compiler.problems.ScopedToDefaultNamespaceProblem;
+import org.apache.royale.compiler.problems.UnknownSuperclassProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.INumericLiteralNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.ITryNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
  *  SemanticUtils is a set of utility routines to provide information
@@ -283,7 +283,7 @@ public class SemanticUtils
      * local variables, parameters, or class members.
      * <p>
      * This method is necessary because
-     * {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}s create the
+     * {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}s create the
      * possibility that we will be processing a file whose definitions are not
      * in the {@link ASProjectScope} in the {@link ICompilerProject}. This in
      * turn creates the possibility there are two or more {@link IDefinition}s
@@ -291,13 +291,13 @@ public class SemanticUtils
      * {@link IDefinition}, the "normalized" one, should be registered with the
      * {@link ASProjectScope} in the {@link ICompilerProject}. The other
      * {@link IDefinition}s are from
-     * {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}s. When doing
+     * {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}s. When doing
      * semantic analysis if we don't "normalize" {@link IDefinition}s in some
      * cases, we'll get spurious errors because the semantic analysis code
      * generally compares {@link IDefinition}s by identity ( which is faster )
      * rather than by name. This method should only be called when doing
      * semantic analysis of an
-     * {@link org.apache.flex.compiler.units.IInvisibleCompilationUnit}.
+     * {@link org.apache.royale.compiler.units.IInvisibleCompilationUnit}.
      * 
      * @param def The {@link IDefinition} whose corresponding normalized
      * definition should be returned.

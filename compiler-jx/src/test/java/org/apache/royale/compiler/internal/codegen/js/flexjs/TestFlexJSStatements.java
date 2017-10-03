@@ -17,23 +17,23 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogStatements;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IForLoopNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
-import org.apache.flex.compiler.tree.as.ISwitchNode;
-import org.apache.flex.compiler.tree.as.ITryNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.as.IWhileLoopNode;
-import org.apache.flex.compiler.tree.as.IWithNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogStatements;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IIfNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.ISwitchNode;
+import org.apache.royale.compiler.tree.as.ITryNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.IWhileLoopNode;
+import org.apache.royale.compiler.tree.as.IWithNode;
 import org.junit.Test;
 
 /**

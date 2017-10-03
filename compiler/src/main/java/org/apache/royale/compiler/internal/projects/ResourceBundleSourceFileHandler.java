@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
-import org.apache.flex.compiler.internal.units.ResourceBundleCompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Implementation of ISourceFileHandler that constructs {@link ResourceBundleCompilationUnit}'s

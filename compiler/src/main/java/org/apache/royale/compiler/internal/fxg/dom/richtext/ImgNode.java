@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberPercentAuto;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberPercentAuto.NumberPercentAutoAsEnum;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberPercentAuto;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberPercentAuto.NumberPercentAutoAsEnum;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents a &lt;p /&gt; FXG image node.

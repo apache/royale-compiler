@@ -16,23 +16,23 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.test.RoyaleTestBase;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.clients.MXMLJSC;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.test.RoyaleTestBase;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.utils.FilenameNormalization;
+import org.apache.royale.utils.ITestAdapter;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Test;
 
 import java.io.File;
@@ -121,9 +121,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testInterfaceAttribute()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.flex.core.IChrome\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.royale.core.IChrome\">"
         		+ "<fx:Script><![CDATA["
-                + "    import org.apache.flex.core.IChrome;"
+                + "    import org.apache.royale.core.IChrome;"
                 + "]]></fx:Script></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
@@ -142,15 +142,15 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.IChrome');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.IChrome');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
-        		" * @implements {org.apache.flex.core.IChrome}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" * @implements {org.apache.royale.core.IChrome}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -167,7 +167,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   */\n" +
         		"  this.mxmldp;\n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -182,7 +182,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.flex.core.IChrome] };\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.royale.core.IChrome] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -211,10 +211,10 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     @Test
     public void testTwoInterfaceAttribute()
     {
-        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp\">"
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.royale.core.IChrome, org.apache.royale.core.IPopUp\">"
         		+ "<fx:Script><![CDATA["
-                + "    import org.apache.flex.core.IPopUp;"
-                + "    import org.apache.flex.core.IChrome;"
+                + "    import org.apache.royale.core.IPopUp;"
+                + "    import org.apache.royale.core.IChrome;"
                 + "]]></fx:Script></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
@@ -233,17 +233,17 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.IChrome');\n" +
-        		"goog.require('org.apache.flex.core.IPopUp');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.IChrome');\n" +
+        		"goog.require('org.apache.royale.core.IPopUp');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
-        		" * @implements {org.apache.flex.core.IChrome}\n" +
-        		" * @implements {org.apache.flex.core.IPopUp}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" * @implements {org.apache.royale.core.IChrome}\n" +
+        		" * @implements {org.apache.royale.core.IPopUp}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -260,7 +260,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   */\n" +
         		"  this.mxmldp;\n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -275,7 +275,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp] };\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.royale.core.IChrome, org.apache.royale.core.IPopUp] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -306,7 +306,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
-                + "    import org.apache.flex.net.HTTPConstants;"
+                + "    import org.apache.royale.net.HTTPConstants;"
                 + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
@@ -325,29 +325,29 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.Label');\n" +
+        		"goog.require('org.apache.royale.net.HTTPConstants');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
         		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.html.Label}\n" +
+        		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
         		"  this.$ID0_;\n" +
         		"  \n" +
@@ -367,13 +367,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -388,7 +388,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" */\n" +
         		"AppName.prototype._bindings = [\n" +
         		"1,\n" +
-        		"[\"org.apache.flex.net.HTTPConstants\", \"GET\"],\n" +
+        		"[\"org.apache.royale.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
         		"[\"$ID0\", \"text\"],\n" +
         		"];\n" +
@@ -428,8 +428,8 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
         		+ "<fx:Script><![CDATA["
-                + "    import org.apache.flex.net.HTTPConstants;"
-                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{org.apache.flex.net.HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
+                + "    import org.apache.royale.net.HTTPConstants;"
+                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{org.apache.royale.net.HTTPConstants.GET}\"/></basic:View></basic:initialView></basic:Application>";
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
         		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
@@ -447,29 +447,29 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
-        		"goog.require('org.apache.flex.net.HTTPConstants');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.Label');\n" +
+        		"goog.require('org.apache.royale.net.HTTPConstants');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
         		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.html.Label}\n" +
+        		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
         		"  this.$ID0_;\n" +
         		"  \n" +
@@ -489,13 +489,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -510,7 +510,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" */\n" +
         		"AppName.prototype._bindings = [\n" +
         		"1,\n" +
-        		"[\"org.apache.flex.net.HTTPConstants\", \"GET\"],\n" +
+        		"[\"org.apache.royale.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
         		"[\"$ID0\", \"text\"],\n" +
         		"];\n" +
@@ -570,29 +570,29 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.Label');\n" +
         		"goog.require('binding.ComplexValueObject');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
         		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.html.Label}\n" +
+        		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
         		"  this.$ID0_;\n" +
         		"  \n" +
@@ -612,13 +612,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -725,9 +725,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
-        		"goog.require('org.apache.flex.core.View');\n" +
-        		"goog.require('org.apache.flex.html.Label');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.Label');\n" +
         		"goog.require('XML');\n" +
         		"goog.require('XML');\n" +
         		"\n" +
@@ -735,7 +735,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -743,13 +743,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  this.xml = new XML();\n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.core.View}\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
         		"  this.$ID1_;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
-        		"   * @type {org.apache.flex.html.Label}\n" +
+        		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
         		"  this.$ID0_;\n" +
         		"  \n" +
@@ -769,13 +769,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  ([1,\n" +
         		"'initialView',\n" +
         		"false,\n" +
-        		"[org.apache.flex.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.flex.html.Label, 2, '_id', true, '$ID0', 'text', true, 'Hello World', 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 2, '_id', true, '$ID0', 'text', true, 'Hello World', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * The ARGB record behaves exactly like the {@link RGBA} record, but the alpha

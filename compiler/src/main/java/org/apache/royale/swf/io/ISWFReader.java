@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.flex.swf.ISWF;
+import org.apache.royale.swf.ISWF;
 
 /**
  * Read a SWF file and construct in-memory model.

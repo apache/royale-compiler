@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.swf.io.SWFWriter;
-import org.apache.flex.swf.tags.*;
-import org.apache.flex.swf.types.RGB;
-import org.apache.flex.swf.types.Rect;
+import org.apache.royale.swf.io.SWFWriter;
+import org.apache.royale.swf.tags.*;
+import org.apache.royale.swf.types.RGB;
+import org.apache.royale.swf.types.Rect;
 
 /**
  * The implementation of a {@code ISWF} object. Most of the ISWF properties are

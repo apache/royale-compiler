@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.as;
+package org.apache.royale.compiler.internal.codegen.as;
 
-import org.apache.flex.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.junit.Test;
 
 /**

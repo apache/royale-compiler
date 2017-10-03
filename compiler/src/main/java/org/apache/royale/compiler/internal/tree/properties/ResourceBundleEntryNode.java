@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.properties;
+package org.apache.royale.compiler.internal.tree.properties;
 
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.FixedChildrenNode;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.FixedChildrenNode;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
 
 /**
  * Node that represents a key-value pair in a properties file

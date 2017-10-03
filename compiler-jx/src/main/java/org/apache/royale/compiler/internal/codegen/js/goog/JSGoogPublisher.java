@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.js.goog;
+package org.apache.royale.compiler.internal.codegen.js.goog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,13 +32,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.codegen.js.IJSPublisher;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.codegen.js.IJSPublisher;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.internal.codegen.js.JSPublisher;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.utils.JSClosureCompilerUtil;
 
 import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.ErrorManager;

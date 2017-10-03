@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js.amd;
+package org.apache.royale.compiler.internal.driver.js.amd;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.amd.JSAMDDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.amd.JSAMDEmitter;
-import org.apache.flex.compiler.internal.driver.js.JSBackend;
+import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.amd.JSAMDDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.amd.JSAMDEmitter;
+import org.apache.royale.compiler.internal.driver.js.JSBackend;
 
 /**
  * A concrete implementation of the {@link IBackend} API for 'AMD' code

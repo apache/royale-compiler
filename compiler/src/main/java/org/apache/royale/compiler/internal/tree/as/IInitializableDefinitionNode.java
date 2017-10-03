@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 /**
  * AST node for a definition that can have a initializer. Such as variable

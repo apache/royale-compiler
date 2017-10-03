@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.MaskType;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
 
 /**
  * This interface implies that a node may also have a mask.

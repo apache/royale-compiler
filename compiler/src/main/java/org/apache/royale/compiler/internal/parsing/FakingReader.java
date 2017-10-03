@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing;
+package org.apache.royale.compiler.internal.parsing;
 
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.flex.utils.NonLockingStringReader;
+import org.apache.royale.utils.NonLockingStringReader;
 
 /**
  * Reader that spoofs adding several characters to the end of the existing Reader.   Reading from the

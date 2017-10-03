@@ -17,29 +17,29 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
-import org.apache.flex.compiler.internal.projects.ASProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnitFactory;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
+import org.apache.royale.compiler.internal.projects.ASProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnitFactory;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLEmbedNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * Node to represent the MXML @Embed compiler directive

@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 
 import java.io.StringWriter;
 import java.util.ArrayList;

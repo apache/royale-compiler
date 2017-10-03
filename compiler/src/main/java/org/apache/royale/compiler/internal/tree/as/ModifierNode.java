@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IModifierNode;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IModifierNode;
 
 public class ModifierNode extends FixedChildrenNode implements IModifierNode
 {

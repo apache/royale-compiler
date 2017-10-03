@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.types;
+package org.apache.royale.compiler.internal.fxg.dom.types;
 
 /**
  * The SpreadMethod enumeration determines how linear gradients control the

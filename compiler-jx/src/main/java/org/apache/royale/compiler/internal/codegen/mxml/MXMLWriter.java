@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml;
+package org.apache.royale.compiler.internal.codegen.mxml;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -26,18 +26,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.ISourceMapEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.js.IMappingEmitter;
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.driver.js.IJSBackend;
-import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
-import org.apache.flex.compiler.internal.codegen.js.JSWriter;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.compiler.codegen.ISourceMapEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.IMappingEmitter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.driver.js.IJSBackend;
+import org.apache.royale.compiler.internal.codegen.js.JSFilterWriter;
+import org.apache.royale.compiler.internal.codegen.js.JSWriter;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 public class MXMLWriter extends JSWriter
 {

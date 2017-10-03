@@ -17,34 +17,34 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.tree.as.ContainerNode;
-import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
-import org.apache.flex.compiler.problems.TooFewFunctionParametersProblem;
-import org.apache.flex.compiler.problems.TooManyFunctionParametersProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IContainerNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.utils.NativeUtils;
+import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
+import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
+import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.utils.NativeUtils;
 
 public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFunctionCallNode>
 {

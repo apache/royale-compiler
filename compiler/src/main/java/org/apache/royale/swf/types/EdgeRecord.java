@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * Edge records have a TypeFlag of 1. There are two types of edge records:

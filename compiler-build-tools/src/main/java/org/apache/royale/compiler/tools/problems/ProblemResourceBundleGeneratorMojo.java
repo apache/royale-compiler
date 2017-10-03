@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.compiler.tools.problems;
+package org.apache.royale.compiler.tools.problems;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

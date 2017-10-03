@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.abc.optimize;
+package org.apache.royale.abc.optimize;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.semantics.ExceptionInfo;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.InstructionFactory;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.visitors.DelegatingMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.semantics.ExceptionInfo;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.InstructionFactory;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.visitors.DelegatingMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
 
 /**
  * DeadCodeFilter rebuilds the method's result InstructionList by walking the

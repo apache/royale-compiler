@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 
 public class SelfReferenceEmitter extends JSSubEmitter implements
         ISubEmitter<IFunctionNode>

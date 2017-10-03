@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
-import static org.apache.flex.compiler.internal.css.semantics.CSSSemanticAnalyzer.*;
+import static org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,24 +29,24 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSManager;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
-import org.apache.flex.compiler.internal.caches.CacheStoreKeyBase;
-import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.problems.CSSUnresolvedClassReferenceProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCManager;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSManager;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
+import org.apache.royale.compiler.internal.caches.CacheStoreKeyBase;
+import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.problems.CSSUnresolvedClassReferenceProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 

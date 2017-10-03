@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 
 /**
  * An AST node representing a literal value.

@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.ModifiersSet;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public final class ChainedVariableNode extends VariableNode
 {

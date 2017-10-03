@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.units.requests;
+package org.apache.royale.compiler.units.requests;
 
 /**
  * Interface to all request objects obtained from methods on ICompilationUnit.
  * 
  * @param <T> The type of the result of the request.
  * @param <U> The type of the object on which the request is being made.
- * @see org.apache.flex.compiler.units.ICompilationUnit
+ * @see org.apache.royale.compiler.units.ICompilationUnit
  */
 public interface IRequest<T extends IRequestResult, U>
 {

@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
- * A {@code FocalGradient} must be declared in {@link org.apache.flex.swf.tags.DefineShape4Tag}.
+ * A {@code FocalGradient} must be declared in {@link org.apache.royale.swf.tags.DefineShape4Tag}.
  * <p>
  * The value range is from -1.0 to 1.0, where -1.0 means the focal point is
  * close to the left border of the radial gradient circle, 0.0 means that the

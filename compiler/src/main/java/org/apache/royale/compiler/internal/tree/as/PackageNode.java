@@ -17,24 +17,24 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.internal.definitions.PackageDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.PackageScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.parts.IDecorationPart;
-import org.apache.flex.compiler.internal.tree.as.parts.SparseDecorationPart;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.IPackageNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.internal.definitions.PackageDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.PackageScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.parts.IDecorationPart;
+import org.apache.royale.compiler.internal.tree.as.parts.SparseDecorationPart;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IPackageNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 /**
  * ActionScript parse tree node representing a package definition

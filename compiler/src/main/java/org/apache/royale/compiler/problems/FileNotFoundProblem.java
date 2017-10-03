@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
 
 /**
  * Compiler problem that indicates a file was not found.

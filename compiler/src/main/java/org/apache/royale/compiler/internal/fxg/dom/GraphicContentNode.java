@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.logging.FXGLog;
-import org.apache.flex.compiler.fxg.logging.IFXGLogger;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.ColorTransformNode;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.BlendMode;
-import org.apache.flex.compiler.internal.fxg.dom.types.MaskType;
-import org.apache.flex.compiler.internal.fxg.types.FXGMatrix;
-import org.apache.flex.compiler.problems.FXGInvalidChildColorTransformNodeProblem;
-import org.apache.flex.compiler.problems.FXGInvalidChildMatrixNodeProblem;
-import org.apache.flex.compiler.problems.FXGInvalidNodeAttributeProblem;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.logging.FXGLog;
+import org.apache.royale.compiler.fxg.logging.IFXGLogger;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.ColorTransformNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.BlendMode;
+import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
+import org.apache.royale.compiler.internal.fxg.types.FXGMatrix;
+import org.apache.royale.compiler.problems.FXGInvalidChildColorTransformNodeProblem;
+import org.apache.royale.compiler.problems.FXGInvalidChildMatrixNodeProblem;
+import org.apache.royale.compiler.problems.FXGInvalidNodeAttributeProblem;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Base class for all nodes that present graphic content or represent groups

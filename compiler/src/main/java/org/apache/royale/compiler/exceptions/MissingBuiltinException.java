@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.exceptions;
+package org.apache.royale.compiler.exceptions;
 
 /**
  *  MissingBuiltinException signals name resolution clients that

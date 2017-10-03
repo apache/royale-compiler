@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 /**
  * Created by christoferdutz on 10.03.16.

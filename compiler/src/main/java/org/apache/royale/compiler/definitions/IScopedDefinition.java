@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IASScope;
 
 public interface IScopedDefinition extends IDocumentableDefinition
 {

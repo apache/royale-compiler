@@ -17,35 +17,35 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.apache.flex.abc.ABCConstants.OP_finddef;
-import static org.apache.flex.abc.ABCConstants.OP_getproperty;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal0;
+import static org.apache.royale.abc.ABCConstants.OP_finddef;
+import static org.apache.royale.abc.ABCConstants.OP_getproperty;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal0;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.InstructionFactory;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.scopes.ScopeView;
-import org.apache.flex.compiler.internal.semantics.MethodBodySemanticChecker;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.InstructionFactory;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.scopes.ScopeView;
+import org.apache.royale.compiler.internal.semantics.MethodBodySemanticChecker;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 
 /**
  * Lexical scope which is constructed when inlining a function.  This

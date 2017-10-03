@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 
 /**

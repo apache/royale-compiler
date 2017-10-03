@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.as;
+package org.apache.royale.compiler.internal.codegen.as;
 
-import org.apache.flex.compiler.internal.test.ASTestBase;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IForLoopNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
-import org.apache.flex.compiler.tree.as.ISwitchNode;
-import org.apache.flex.compiler.tree.as.IThrowNode;
-import org.apache.flex.compiler.tree.as.ITryNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.as.IWhileLoopNode;
-import org.apache.flex.compiler.tree.as.IWithNode;
+import org.apache.royale.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IIfNode;
+import org.apache.royale.compiler.tree.as.ISwitchNode;
+import org.apache.royale.compiler.tree.as.IThrowNode;
+import org.apache.royale.compiler.tree.as.ITryNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.IWhileLoopNode;
+import org.apache.royale.compiler.tree.as.IWithNode;
 import org.junit.Test;
 
 /**

@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
-import org.apache.flex.compiler.internal.test.AMDTestBase;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IGetterNode;
-import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.internal.test.AMDTestBase;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
 import org.junit.Test;
 

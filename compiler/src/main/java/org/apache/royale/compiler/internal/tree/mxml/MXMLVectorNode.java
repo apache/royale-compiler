@@ -17,37 +17,37 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLIncompatibleVectorElementProblem;
-import org.apache.flex.compiler.problems.MXMLInvalidVectorFixedAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLInvalidVectorTypeAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLMissingVectorTypeAttributeProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.AppliedVectorDefinitionFactory;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLIncompatibleVectorElementProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidVectorFixedAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidVectorTypeAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLMissingVectorTypeAttributeProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.AppliedVectorDefinitionFactory;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
 {

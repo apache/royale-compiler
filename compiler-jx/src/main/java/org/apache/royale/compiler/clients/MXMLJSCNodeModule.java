@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
-import org.apache.flex.compiler.internal.driver.js.node.NodeModuleBackend;
+import org.apache.royale.compiler.internal.driver.js.node.NodeModuleBackend;
 
 public class MXMLJSCNodeModule extends MXMLJSCNode
 {

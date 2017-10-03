@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.swf;
+package org.apache.royale.compiler.internal.fxg.swf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,21 +25,21 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.fxg.dom.AbstractFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.PathNode;
-import org.apache.flex.compiler.internal.fxg.dom.strokes.AbstractStrokeNode;
-import org.apache.flex.compiler.problems.FXGInvalidPathDataProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.fxg.dom.AbstractFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.PathNode;
+import org.apache.royale.compiler.internal.fxg.dom.strokes.AbstractStrokeNode;
+import org.apache.royale.compiler.problems.FXGInvalidPathDataProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.types.CurvedEdgeRecord;
-import org.apache.flex.swf.types.LineStyle;
-import org.apache.flex.swf.types.LineStyle2;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.ShapeRecord;
-import org.apache.flex.swf.types.StraightEdgeRecord;
-import org.apache.flex.swf.types.StyleChangeRecord;
-import org.apache.flex.swf.types.Styles;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.types.CurvedEdgeRecord;
+import org.apache.royale.swf.types.LineStyle;
+import org.apache.royale.swf.types.LineStyle2;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.ShapeRecord;
+import org.apache.royale.swf.types.StraightEdgeRecord;
+import org.apache.royale.swf.types.StyleChangeRecord;
+import org.apache.royale.swf.types.Styles;
 
 /**
  * A collection of utilities to help create SWF Shapes and ShapeRecords.

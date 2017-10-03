@@ -17,26 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.io.Reader;
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingAttributeNode;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingAttributeNode;
 
 /**
  * Implementation of the {@code IMXMLBindingAttributeNode} interface.

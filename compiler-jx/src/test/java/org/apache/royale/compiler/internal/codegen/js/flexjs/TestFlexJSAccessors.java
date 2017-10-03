@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.test.ASTestBase;
-import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.tree.as.IClassNode;
 import org.junit.Test;
 
 /**
@@ -124,7 +124,7 @@ public class TestRoyaleAccessors extends ASTestBase
         		"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"FalconTest_A.prototype.bindable__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
         		"FalconTest_A.prototype.set__label = function(value) {\nvar oldValue = this.get__label();\nif (oldValue != value) {\nthis.bindable__set__label(value);\n" +
-        		"    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(\n" +
+        		"    this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(\n" +
         		"         this, \"label\", oldValue, value));\n}\n};\n\n\n" +
         		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
         		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";

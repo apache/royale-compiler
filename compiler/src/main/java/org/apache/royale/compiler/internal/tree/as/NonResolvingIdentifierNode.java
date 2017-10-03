@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.INonResolvingIdentifierNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.INonResolvingIdentifierNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 
 /**
  * Represents an identifier that we will currently not resolve, such as - field

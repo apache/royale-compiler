@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.tree.metadata;
+package org.apache.royale.compiler.tree.metadata;
 
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
 /**
  * Represents an Event metadata tag, of the form [Event(name="string",

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.externals.reference;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;

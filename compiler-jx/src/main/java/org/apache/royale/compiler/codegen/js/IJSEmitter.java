@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.royale.compiler.codegen.js;
 
 import java.io.Writer;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.ITypeNode;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.compiler.visitor.IASNodeStrategy;
 
 /**
  * The {@link IJSEmitter} interface allows abstraction between the

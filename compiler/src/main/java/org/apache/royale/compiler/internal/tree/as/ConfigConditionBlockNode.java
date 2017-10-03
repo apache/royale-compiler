@@ -17,8 +17,8 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
-import org.apache.flex.compiler.tree.ASTNodeID;
+package org.apache.royale.compiler.internal.tree.as;
+import org.apache.royale.compiler.tree.ASTNodeID;
 
 /**
  * Special block node for a block gated with a configuration condition. For

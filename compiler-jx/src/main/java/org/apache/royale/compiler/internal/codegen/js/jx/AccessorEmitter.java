@@ -17,42 +17,42 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.common.ModifiersSet;
-import org.apache.flex.compiler.definitions.IAccessorDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.SetterNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IAccessorNode;
-import org.apache.flex.compiler.tree.as.IGetterNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
+import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
 
 public class AccessorEmitter extends JSSubEmitter implements
         ISubEmitter<IAccessorNode>

@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.scopes.CatchScope;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.scopes.CatchScope;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IParameterNode;
 
 /**
  * Each instance of this class represents the definition of an ActionScript

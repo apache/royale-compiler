@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.utils.StringUtils;
+import org.apache.royale.utils.StringUtils;
 import org.junit.Ignore;
 
 /**

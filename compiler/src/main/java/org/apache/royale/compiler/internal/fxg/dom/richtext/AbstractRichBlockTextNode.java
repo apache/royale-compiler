@@ -17,40 +17,40 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BASELINEOFFSET_ASCENT_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BASELINEOFFSET_AUTO_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BASELINEOFFSET_LINEHEIGHT_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BLOCKPROGRESSION_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_COLUMNCOUNT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_COLUMNGAP_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_COLUMNWIDTH_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_FIRSTBASELINEOFFSET_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_INHERIT_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_LINEBREAK_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_NUMBERAUTO_AUTO_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_PADDINGBOTTOM_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_PADDINGLEFT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_PADDINGRIGHT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_PADDINGTOP_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_VERTICALALIGN_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BASELINEOFFSET_ASCENT_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BASELINEOFFSET_AUTO_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BASELINEOFFSET_LINEHEIGHT_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BLOCKPROGRESSION_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_COLUMNCOUNT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_COLUMNGAP_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_COLUMNWIDTH_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_FIRSTBASELINEOFFSET_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_INHERIT_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_LINEBREAK_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_NUMBERAUTO_AUTO_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_PADDINGBOTTOM_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_PADDINGLEFT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_PADDINGRIGHT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_PADDINGTOP_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_VERTICALALIGN_ATTRIBUTE;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.types.BaselineOffset;
-import org.apache.flex.compiler.internal.fxg.dom.types.BaselineOffset.BaselineOffsetAsEnum;
-import org.apache.flex.compiler.internal.fxg.dom.types.BlockProgression;
-import org.apache.flex.compiler.internal.fxg.dom.types.LineBreak;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberAuto;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberAuto.NumberAutoAsEnum;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberInherit;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberInherit.NumberInheritAsEnum;
-import org.apache.flex.compiler.internal.fxg.dom.types.VerticalAlign;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.types.BaselineOffset;
+import org.apache.royale.compiler.internal.fxg.dom.types.BaselineOffset.BaselineOffsetAsEnum;
+import org.apache.royale.compiler.internal.fxg.dom.types.BlockProgression;
+import org.apache.royale.compiler.internal.fxg.dom.types.LineBreak;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberAuto;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberAuto.NumberAutoAsEnum;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberInherit;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberInherit.NumberInheritAsEnum;
+import org.apache.royale.compiler.internal.fxg.dom.types.VerticalAlign;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 
 /**

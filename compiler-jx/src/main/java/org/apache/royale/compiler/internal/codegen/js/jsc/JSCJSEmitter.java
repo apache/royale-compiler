@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jsc;
+package org.apache.royale.compiler.internal.codegen.js.jsc;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
 
 /**
  * Concrete implementation of the 'Royale' JavaScript production.

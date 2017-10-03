@@ -17,35 +17,35 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
-import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.GetterNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.flex.compiler.tree.as.IOperatorNode.OperatorType;
-import org.apache.flex.compiler.utils.ASNodeUtils;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
+import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.GetterNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceAccessExpressionNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
+import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class MemberAccessEmitter extends JSSubEmitter implements
         ISubEmitter<IMemberAccessExpressionNode>

@@ -17,33 +17,33 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.ModifiersSet;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public class FieldEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>

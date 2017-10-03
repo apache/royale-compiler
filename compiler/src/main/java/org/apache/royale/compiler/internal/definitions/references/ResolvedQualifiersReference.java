@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions.references;
+package org.apache.royale.compiler.internal.definitions.references;
 
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Multiname;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Qname;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Multiname;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Qname;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.internal.definitions.AmbiguousDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 

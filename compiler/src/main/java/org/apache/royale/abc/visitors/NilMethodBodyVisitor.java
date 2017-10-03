@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.Name;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.Name;
 
 /**
  * An IMethodBodyVisitor that ignores its input as far as possible.

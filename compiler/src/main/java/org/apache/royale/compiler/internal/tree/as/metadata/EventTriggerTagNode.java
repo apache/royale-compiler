@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IEventDefinition;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.metadata.IEventTriggerTagNode;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IEventDefinition;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.metadata.IEventTriggerTagNode;
 
 /**
  * Implementation of {@link IEventTriggerTagNode}.

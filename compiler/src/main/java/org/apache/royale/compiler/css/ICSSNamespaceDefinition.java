@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 /**
  * Namespace definition maps a namespace URI to a prefix name. For example:

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,21 +25,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TextHelper;
-import org.apache.flex.compiler.internal.fxg.dom.text.BRNode;
-import org.apache.flex.compiler.internal.fxg.dom.CDATANode;
-import org.apache.flex.compiler.internal.fxg.dom.text.ParagraphNode;
-import org.apache.flex.compiler.internal.fxg.dom.text.SpanNode;
-import org.apache.flex.compiler.internal.fxg.dom.text.AbstractCharacterTextNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.Kerning;
-import org.apache.flex.compiler.internal.fxg.dom.types.LineBreak;
-import org.apache.flex.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
-import org.apache.flex.compiler.problems.FXGInvalidNodeAttributeProblem;
-import org.apache.flex.compiler.problems.FXGContentNotContiguousProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TextHelper;
+import org.apache.royale.compiler.internal.fxg.dom.text.BRNode;
+import org.apache.royale.compiler.internal.fxg.dom.CDATANode;
+import org.apache.royale.compiler.internal.fxg.dom.text.ParagraphNode;
+import org.apache.royale.compiler.internal.fxg.dom.text.SpanNode;
+import org.apache.royale.compiler.internal.fxg.dom.text.AbstractCharacterTextNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.Kerning;
+import org.apache.royale.compiler.internal.fxg.dom.types.LineBreak;
+import org.apache.royale.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
+import org.apache.royale.compiler.problems.FXGInvalidNodeAttributeProblem;
+import org.apache.royale.compiler.problems.FXGContentNotContiguousProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 public class TextGraphicNode extends GraphicContentNode implements ITextNode
 {

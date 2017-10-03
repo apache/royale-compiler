@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.exceptions;
+package org.apache.royale.compiler.exceptions;
 
 /**
  *  Checked exception thrown by the control-flow management

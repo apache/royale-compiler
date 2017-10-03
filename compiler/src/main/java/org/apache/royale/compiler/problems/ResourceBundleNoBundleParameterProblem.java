@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.tree.mxml.IMXMLResourceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLResourceNode;
 
 /**
  * This problem gets created when the bundle parameter cannot be found in an @Resource

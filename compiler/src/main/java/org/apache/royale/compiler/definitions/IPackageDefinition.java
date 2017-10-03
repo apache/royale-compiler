@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.tree.as.IPackageNode;
+import org.apache.royale.compiler.tree.as.IPackageNode;
 
 /**
  * A definition representing a package declaration.

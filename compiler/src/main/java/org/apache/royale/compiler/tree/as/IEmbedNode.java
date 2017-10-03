@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 
 /**
  * An AST node representing an embedded asset.

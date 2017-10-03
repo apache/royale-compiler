@@ -96,7 +96,7 @@
     </target>
 	
 	<!-- The ProblemLocalizer tool is used to create a problems_en.properties file -->
-	<!-- filled with localization strings from classes extending org.apache.flex.compiler.CompilerProblem -->
+	<!-- filled with localization strings from classes extending org.apache.royale.compiler.CompilerProblem -->
 	<target name="problem.localizer"
 	        description="Compiles the ProblemLocalizer build tool">
 	    <mkdir dir="${compiler-build-tools}/target/classes"/>

@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
 import java.io.InputStream;
 
-import org.apache.flex.swc.dita.IDITAList;
-import org.apache.flex.swc.io.SWCReader;
+import org.apache.royale.swc.dita.IDITAList;
+import org.apache.royale.swc.io.SWCReader;
 
 /**
  * Interface used by {@link SWCReader} to parse DITA files containing ASDoc

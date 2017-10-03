@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSNamespaceDefinition;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;

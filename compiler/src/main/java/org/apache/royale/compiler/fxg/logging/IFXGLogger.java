@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.logging;
+package org.apache.royale.compiler.fxg.logging;
 
 /**
  * A simple interface to report information while processing an FXG docuemnt.

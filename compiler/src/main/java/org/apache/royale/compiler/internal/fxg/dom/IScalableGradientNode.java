@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
 
 public interface IScalableGradientNode
 {

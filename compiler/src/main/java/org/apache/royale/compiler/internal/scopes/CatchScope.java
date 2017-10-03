@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.scopes.IASScope;
 
 /**
  * {@link ASScope} subclass for Catch block scopes.

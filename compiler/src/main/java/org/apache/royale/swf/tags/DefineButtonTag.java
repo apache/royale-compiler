@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.types.ButtonRecord;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.types.ButtonRecord;
 
 /**
  * Represents a <code>DefineButton</code> tag in a SWF file.

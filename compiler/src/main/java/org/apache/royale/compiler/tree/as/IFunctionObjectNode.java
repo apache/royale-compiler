@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 
 /**
  * An anonymous function (e.g. function() {...}) is an expression, but acts like

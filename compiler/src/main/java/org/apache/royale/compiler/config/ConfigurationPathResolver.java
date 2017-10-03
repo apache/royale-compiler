@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.io.File;
 
-import org.apache.flex.compiler.common.IPathResolver;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.IPathResolver;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * A path resolver for configuration options.

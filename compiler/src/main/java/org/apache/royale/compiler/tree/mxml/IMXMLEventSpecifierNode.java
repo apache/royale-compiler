@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 
 /**
  * This AST node represents an MXML tag or attribute which specifies

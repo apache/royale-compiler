@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swc.dita.IDITAList;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swc.dita.IDITAList;
 
 /**
  * Implementation of {@code ISWC}. It contains the in-memory model of a SWC

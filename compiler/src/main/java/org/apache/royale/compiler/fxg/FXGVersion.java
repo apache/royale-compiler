@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.fxg;
+package org.apache.royale.compiler.fxg;
 
 import java.lang.Long;
 

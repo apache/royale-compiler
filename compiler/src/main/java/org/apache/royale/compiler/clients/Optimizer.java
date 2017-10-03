@@ -17,41 +17,41 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
-import org.apache.flex.compiler.Messages;
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
-import org.apache.flex.compiler.clients.problems.ProblemPrinter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.config.CommandLineConfigurator;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.config.ConfigurationPathResolver;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.IConfigurationFilter;
-import org.apache.flex.compiler.internal.config.annotations.Arguments;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.targets.AppSWFTarget;
-import org.apache.flex.compiler.internal.targets.Target;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ConfigurationProblem;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.swf.io.ISWFWriterFactory;
-import org.apache.flex.swf.Header;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.io.ISWFWriter;
-import org.apache.flex.swf.io.SWFReader;
-import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
+import org.apache.royale.compiler.Messages;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemPrinter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
+import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.CommandLineConfigurator;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.config.ConfigurationPathResolver;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.IConfigurationFilter;
+import org.apache.royale.compiler.internal.config.annotations.Arguments;
+import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.targets.AppSWFTarget;
+import org.apache.royale.compiler.internal.targets.Target;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ConfigurationProblem;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.swf.io.ISWFWriterFactory;
+import org.apache.royale.swf.Header;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.io.ISWFWriter;
+import org.apache.royale.swf.io.SWFReader;
+import org.apache.royale.swf.io.SizeReportWritingSWFWriter;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.BufferedInputStream;
@@ -69,7 +69,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.flex.tools.FlexTool;
+import org.apache.royale.tools.FlexTool;
 
 /**
  * Command line optimizer - can read in a swf, apply the optimizations usually done during swf linking,
@@ -79,7 +79,7 @@ public class Optimizer implements FlexTool
 {
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_VAR = "input";
-    private static final String L10N_CONFIG_PREFIX = "org.apache.flex.compiler.internal.config.configuration";
+    private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 
     /**
      * Entry point for <code>optimizer</code> tool.

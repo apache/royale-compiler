@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,21 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.IDefinitionPriority;
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.projects.ASProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.IInvisibleCompilationUnit;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.IRequest;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.compiler.common.IDefinitionPriority;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.projects.ASProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.IInvisibleCompilationUnit;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.IRequest;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 
 /**
  * Implementation of {@link IInvisibleCompilationUnit}.

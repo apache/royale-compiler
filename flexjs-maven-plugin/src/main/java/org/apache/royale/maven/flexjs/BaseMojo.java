@@ -12,12 +12,12 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs;
+package org.apache.royale.maven.flexjs;
 
-import org.apache.flex.maven.flexjs.utils.DependencyHelper;
-import org.apache.flex.tools.FlexTool;
-import org.apache.flex.tools.FlexToolGroup;
-import org.apache.flex.tools.FlexToolRegistry;
+import org.apache.royale.maven.flexjs.utils.DependencyHelper;
+import org.apache.royale.tools.FlexTool;
+import org.apache.royale.tools.FlexToolGroup;
+import org.apache.royale.tools.FlexToolRegistry;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

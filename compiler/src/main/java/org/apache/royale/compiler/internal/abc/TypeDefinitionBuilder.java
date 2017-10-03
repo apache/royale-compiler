@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.abc;
+package org.apache.royale.compiler.internal.abc;
 
-import org.apache.flex.abc.visitors.IClassVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
+import org.apache.royale.abc.visitors.IClassVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
 
 /**
  * Visit class_info and instance_info to build an ActionScript3 class or

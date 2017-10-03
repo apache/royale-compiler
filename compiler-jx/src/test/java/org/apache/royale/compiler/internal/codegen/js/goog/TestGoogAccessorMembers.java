@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.goog;
+package org.apache.royale.compiler.internal.codegen.js.goog;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.as.TestAccessorMembers;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.tree.as.IGetterNode;
-import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.as.TestAccessorMembers;
+import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
 import org.junit.Test;
 
 /**

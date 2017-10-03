@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -28,16 +28,16 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
-import org.apache.flex.compiler.internal.config.TargetSettings;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogProject;
+import org.apache.royale.compiler.internal.config.TargetSettings;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.utils.FilenameNormalization;
+import org.apache.royale.utils.ITestAdapter;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 

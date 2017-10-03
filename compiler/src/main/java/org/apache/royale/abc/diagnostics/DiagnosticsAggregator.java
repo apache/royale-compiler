@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.abc.diagnostics;
+package org.apache.royale.abc.diagnostics;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.ScriptInfo;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.ScriptInfo;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
 
 /**
  *  A DiagnosticsAggregator collects AET diagnostics for analysis.

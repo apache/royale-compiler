@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * This AST node represents an MXML tag which maps to an ActionScript class,

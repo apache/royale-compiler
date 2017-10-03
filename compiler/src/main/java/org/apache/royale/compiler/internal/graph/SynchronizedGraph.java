@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.util.Collections;
 import java.util.HashSet;

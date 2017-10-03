@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.abc.graph;
+package org.apache.royale.abc.graph;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.Instruction;
 
 /**
  *  IBasicBlock defines the minimum necessary semantics

@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinitionBase;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinitionBase;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 
 /**
  * Represents identifiers that are built into the AS3 language.

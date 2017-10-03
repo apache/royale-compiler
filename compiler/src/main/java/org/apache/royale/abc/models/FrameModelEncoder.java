@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.abc.models;
+package org.apache.royale.abc.models;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
-import org.apache.flex.abc.visitors.IFlowGraphVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.visitors.IFlowGraphVisitor;
 
 /**
  *  The FrameModelEncoder abstracts ABC instructions into

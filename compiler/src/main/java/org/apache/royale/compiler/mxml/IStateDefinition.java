@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 /**
  * Represents the base definition of either a state or a state group defined

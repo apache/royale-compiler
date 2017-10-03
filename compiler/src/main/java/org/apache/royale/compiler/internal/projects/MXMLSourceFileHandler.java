@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.units.MXMLCompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Implementation of ISourceFileHandler that can constructs

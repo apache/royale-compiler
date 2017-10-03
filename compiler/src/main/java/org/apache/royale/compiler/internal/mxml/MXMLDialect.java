@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -25,10 +25,10 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
  * This is the abstract base class for classes representing dialects of MXML,

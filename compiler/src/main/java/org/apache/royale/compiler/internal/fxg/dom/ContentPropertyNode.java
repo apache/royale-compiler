@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.FXGConstants;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.problems.FXGInvalidChildNodeProblem;
-import org.apache.flex.compiler.problems.FXGMultipleElementProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGConstants;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.problems.FXGInvalidChildNodeProblem;
+import org.apache.royale.compiler.problems.FXGMultipleElementProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * This is a special delegate which special cases content node children for

@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Name;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Name;
 
 /**
  * A representation of a method's <a href="http://learn.adobe.com/wiki/display/AVM2/4.5+Method+signature">method signature</a>.

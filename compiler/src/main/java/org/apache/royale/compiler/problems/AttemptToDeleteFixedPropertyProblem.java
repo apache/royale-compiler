@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  *  Strict semantics diagnostic emitted when the method body

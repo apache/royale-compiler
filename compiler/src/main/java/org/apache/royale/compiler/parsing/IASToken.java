@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
 
 /**
  * A token returned back by an {@link IASTokenizer} created when we scan text

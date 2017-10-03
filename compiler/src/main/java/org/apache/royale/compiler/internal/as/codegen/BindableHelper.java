@@ -17,52 +17,52 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.abc.semantics.PooledValue;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.abc.FunctionGeneratorHelper;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.abc.semantics.PooledValue;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
 
 import java.util.Vector;
 
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PrivateNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Qname;
-import static org.apache.flex.abc.ABCConstants.OP_callproperty;
-import static org.apache.flex.abc.ABCConstants.OP_callpropvoid;
-import static org.apache.flex.abc.ABCConstants.OP_constructprop;
-import static org.apache.flex.abc.ABCConstants.OP_findpropstrict;
-import static org.apache.flex.abc.ABCConstants.OP_getlex;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal0;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal1;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal2;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal3;
-import static org.apache.flex.abc.ABCConstants.OP_getproperty;
-import static org.apache.flex.abc.ABCConstants.OP_iffalse;
-import static org.apache.flex.abc.ABCConstants.OP_ifstricteq;
-import static org.apache.flex.abc.ABCConstants.OP_pushstring;
-import static org.apache.flex.abc.ABCConstants.OP_returnvalue;
-import static org.apache.flex.abc.ABCConstants.OP_returnvoid;
-import static org.apache.flex.abc.ABCConstants.OP_setlocal2;
-import static org.apache.flex.abc.ABCConstants.OP_setproperty;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Getter;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Method;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Setter;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Var;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PackageNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PrivateNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Qname;
+import static org.apache.royale.abc.ABCConstants.OP_callproperty;
+import static org.apache.royale.abc.ABCConstants.OP_callpropvoid;
+import static org.apache.royale.abc.ABCConstants.OP_constructprop;
+import static org.apache.royale.abc.ABCConstants.OP_findpropstrict;
+import static org.apache.royale.abc.ABCConstants.OP_getlex;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal0;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal1;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal2;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal3;
+import static org.apache.royale.abc.ABCConstants.OP_getproperty;
+import static org.apache.royale.abc.ABCConstants.OP_iffalse;
+import static org.apache.royale.abc.ABCConstants.OP_ifstricteq;
+import static org.apache.royale.abc.ABCConstants.OP_pushstring;
+import static org.apache.royale.abc.ABCConstants.OP_returnvalue;
+import static org.apache.royale.abc.ABCConstants.OP_returnvoid;
+import static org.apache.royale.abc.ABCConstants.OP_setlocal2;
+import static org.apache.royale.abc.ABCConstants.OP_setproperty;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Getter;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Method;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Setter;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Var;
 
 /**
  * Contains helper methods to generate the appropriate code for classes and properties

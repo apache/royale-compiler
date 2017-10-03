@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.ScopedDefinitionBase;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.ScopedDefinitionBase;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 import java.util.Set;
 

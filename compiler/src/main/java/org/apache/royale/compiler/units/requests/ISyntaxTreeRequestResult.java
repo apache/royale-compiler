@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.units.requests;
+package org.apache.royale.compiler.units.requests;
 
 import java.util.Set;
 
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.collect.ImmutableSet;
 
 /**

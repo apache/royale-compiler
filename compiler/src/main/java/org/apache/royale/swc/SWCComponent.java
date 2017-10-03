@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 /**
  * Component tag in catalog.xml file.

@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.types;
+package org.apache.royale.compiler.internal.fxg.types;
 
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
 
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.types.Matrix;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.types.Matrix;
 
 /**
  * Utility class to help with matrix transformation for coordinate transformation.

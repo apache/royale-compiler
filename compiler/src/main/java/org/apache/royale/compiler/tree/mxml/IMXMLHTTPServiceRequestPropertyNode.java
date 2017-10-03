@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 /**
  * AST node for {@code <s:request>} tags under {@code <s:HTTPService>} tags.

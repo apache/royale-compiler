@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.Collections;
 import java.util.Map;

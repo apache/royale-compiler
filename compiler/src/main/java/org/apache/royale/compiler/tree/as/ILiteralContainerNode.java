@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.internal.tree.as.ContainerNode;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 
 /**
  * Base container node for a literal that is made up of other literals, like XML

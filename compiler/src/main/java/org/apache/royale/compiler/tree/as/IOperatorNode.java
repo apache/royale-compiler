@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 
 /**
  * An AST node representing any kind of operator expression.

@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs;
+package org.apache.royale.maven.flexjs;
 
-import org.apache.flex.maven.flexjs.trust.TrustHandler;
+import org.apache.royale.maven.flexjs.trust.TrustHandler;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

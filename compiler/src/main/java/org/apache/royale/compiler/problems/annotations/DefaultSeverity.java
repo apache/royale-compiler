@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.problems.annotations;
+package org.apache.royale.compiler.problems.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,7 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 
 /**
  * The default severity of this type of problem. The default severity can be

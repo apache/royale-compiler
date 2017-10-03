@@ -17,23 +17,23 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js.goog;
+package org.apache.royale.compiler.internal.driver.js.goog;
 
 import java.io.FilterWriter;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
-import org.apache.flex.compiler.internal.driver.js.JSBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.royale.compiler.internal.driver.js.JSBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A concrete implementation of the {@link IBackend} API for the 'goog' code

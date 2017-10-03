@@ -17,38 +17,38 @@
  *
  */
 
-package org.apache.flex.compiler.internal.abc;
+package org.apache.royale.compiler.internal.abc;
 
 import java.util.Vector;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.ClassInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.abc.semantics.PooledValue;
-import org.apache.flex.abc.semantics.Traits;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.ConstantDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.GetterDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.definitions.SetterDefinition;
-import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.FunctionScope;
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.ClassInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.abc.semantics.PooledValue;
+import org.apache.royale.abc.semantics.Traits;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.GetterDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.definitions.SetterDefinition;
+import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.scopes.IASScope;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 

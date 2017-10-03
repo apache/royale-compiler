@@ -17,24 +17,24 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLRequiredAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLSameBindingSourceAndDestinationProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingAttributeNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLEmptyAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLRequiredAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLSameBindingSourceAndDestinationProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingAttributeNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * Implementation of the {@code IMXMLBindingNode} interface.

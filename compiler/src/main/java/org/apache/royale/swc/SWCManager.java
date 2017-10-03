@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.internal.caches.AssetTagCache;
-import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
-import org.apache.flex.compiler.internal.caches.CacheStoreKeyBase;
-import org.apache.flex.compiler.internal.caches.ConcurrentCacheStoreBase;
-import org.apache.flex.compiler.internal.caches.FileScopeCache;
-import org.apache.flex.compiler.internal.caches.SWFCache;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.swc.io.SWCReader;
+import org.apache.royale.compiler.internal.caches.AssetTagCache;
+import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
+import org.apache.royale.compiler.internal.caches.CacheStoreKeyBase;
+import org.apache.royale.compiler.internal.caches.ConcurrentCacheStoreBase;
+import org.apache.royale.compiler.internal.caches.FileScopeCache;
+import org.apache.royale.compiler.internal.caches.SWFCache;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.swc.io.SWCReader;
 
 /**
  * This is a cached implementation for {@link ISWCManager} based on

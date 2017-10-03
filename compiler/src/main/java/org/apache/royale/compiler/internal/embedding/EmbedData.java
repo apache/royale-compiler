@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding;
+package org.apache.royale.compiler.internal.embedding;
 
 import java.io.File;
 import java.util.Collection;
@@ -29,43 +29,43 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
-import org.apache.flex.compiler.definitions.IGetterDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.embedding.transcoders.DataTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.ImageTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.JPEGTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.MovieTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.PBJTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.SoundTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.TranscoderBase;
-import org.apache.flex.compiler.internal.embedding.transcoders.XMLTranscoder;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.ASProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.SourcePathManager;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.EmbedInvalidAttributeValueProblem;
-import org.apache.flex.compiler.problems.EmbedNoSourceAttributeProblem;
-import org.apache.flex.compiler.problems.EmbedQualityValueProblem;
-import org.apache.flex.compiler.problems.EmbedScalingGridValueProblem;
-import org.apache.flex.compiler.problems.EmbedSourceAttributeDoesNotExistProblem;
-import org.apache.flex.compiler.problems.EmbedUnknownAttributeProblem;
-import org.apache.flex.compiler.problems.EmbedUnknownMimeTypeProblem;
-import org.apache.flex.compiler.problems.EmbedUnrecogniedFileTypeProblem;
-import org.apache.flex.compiler.problems.FontEmbeddingNotSupported;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.StringEncoder;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.royale.compiler.definitions.IGetterDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.embedding.transcoders.DataTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.ImageTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.JPEGTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.MovieTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.PBJTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.SoundTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
+import org.apache.royale.compiler.internal.embedding.transcoders.XMLTranscoder;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.ASProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.SourcePathManager;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.EmbedInvalidAttributeValueProblem;
+import org.apache.royale.compiler.problems.EmbedNoSourceAttributeProblem;
+import org.apache.royale.compiler.problems.EmbedQualityValueProblem;
+import org.apache.royale.compiler.problems.EmbedScalingGridValueProblem;
+import org.apache.royale.compiler.problems.EmbedSourceAttributeDoesNotExistProblem;
+import org.apache.royale.compiler.problems.EmbedUnknownAttributeProblem;
+import org.apache.royale.compiler.problems.EmbedUnknownMimeTypeProblem;
+import org.apache.royale.compiler.problems.EmbedUnrecogniedFileTypeProblem;
+import org.apache.royale.compiler.problems.FontEmbeddingNotSupported;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.utils.FilenameNormalization;
+import org.apache.royale.utils.StringEncoder;
 
 /**
  * This is the main class which contains all information extracted from embed

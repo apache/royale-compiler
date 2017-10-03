@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.ICSSSelector;
 
 /**
  * When a type selector doesn't specify namespace prefix, a default namespace

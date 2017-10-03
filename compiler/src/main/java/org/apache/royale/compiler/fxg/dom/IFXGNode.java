@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.dom;
+package org.apache.royale.compiler.fxg.dom;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Implementations of IFXGNode represent a node in the DOM of an FXG document.

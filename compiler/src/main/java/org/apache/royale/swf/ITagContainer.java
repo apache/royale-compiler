@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.tags.ITag;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.tags.ITag;
 
 /**
  * A container of SWF tags.

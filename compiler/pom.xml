@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
+    <groupId>org.apache.royale.flexjs.compiler</groupId>
     <artifactId>flexjs-compiler-parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
@@ -191,7 +191,7 @@
             <version>1.10.3</version>
           </dependency>
           <dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <groupId>org.apache.royale.flexjs.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
             <version>${compiler-jburg-types.version}</version>
           </dependency>
@@ -239,7 +239,7 @@
               Do all the custom processing with the falcon build tools.
       -->
       <plugin>
-        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <groupId>org.apache.royale.flexjs.compiler</groupId>
         <artifactId>compiler-build-tools</artifactId>
         <version>${compiler-build-tools.version}</version>
         <executions>
@@ -360,12 +360,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.flexjs.compiler</groupId>
       <artifactId>compiler-jburg-types</artifactId>
       <version>${compiler-jburg-types.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.flex</groupId>
+      <groupId>org.apache.royale</groupId>
       <artifactId>flex-tool-api</artifactId>
       <version>1.0.0</version>
     </dependency>
@@ -412,7 +412,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.flexjs.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
       <version>0.9.0-SNAPSHOT</version>
       <scope>test</scope>
@@ -450,21 +450,21 @@
     </dependency>
     <!-- Import a part of the Flex sdk -->
     <dependency>
-      <groupId>org.apache.flex.framework</groupId>
+      <groupId>org.apache.royale.framework</groupId>
       <artifactId>framework</artifactId>
       <version>${flex.version}</version>
       <type>swc</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.flex.framework</groupId>
+      <groupId>org.apache.royale.framework</groupId>
       <artifactId>rpc</artifactId>
       <version>${flex.version}</version>
       <type>swc</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.flex.framework</groupId>
+      <groupId>org.apache.royale.framework</groupId>
       <artifactId>spark</artifactId>
       <version>${flex.version}</version>
       <type>swc</type>
@@ -472,7 +472,7 @@
     </dependency>
     <!-- Make sure the framework config-zip is available -->
     <dependency>
-      <groupId>org.apache.flex.framework</groupId>
+      <groupId>org.apache.royale.framework</groupId>
       <artifactId>framework</artifactId>
       <version>${flex.version}</version>
       <type>zip</type>

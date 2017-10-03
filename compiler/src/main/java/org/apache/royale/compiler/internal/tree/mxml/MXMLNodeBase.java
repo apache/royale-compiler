@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,51 +29,51 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragment;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.internal.parsing.as.IncludeHandler;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.parsing.as.StreamingASTokenizer;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLScopeBuilder;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLTokenizer;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.parsing.IMXMLToken;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLAttributeVersionProblem;
-import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLOtherLanguageNamespaceProblem;
-import org.apache.flex.compiler.problems.MXMLPrivateAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLUnexpectedAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLUnexpectedTagProblem;
-import org.apache.flex.compiler.problems.MXMLUnexpectedTextProblem;
-import org.apache.flex.compiler.problems.MXMLUnknownNamespaceProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLScopeBuilder;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLTokenizer;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLAttributeVersionProblem;
+import org.apache.royale.compiler.problems.MXMLEmptyAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLOtherLanguageNamespaceProblem;
+import org.apache.royale.compiler.problems.MXMLPrivateAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLUnexpectedAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLUnexpectedTagProblem;
+import org.apache.royale.compiler.problems.MXMLUnexpectedTextProblem;
+import org.apache.royale.compiler.problems.MXMLUnknownNamespaceProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLSpecifierNode;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * {@code MXMLNodeBase} is the abstract base class for all MXML nodes in an AST.

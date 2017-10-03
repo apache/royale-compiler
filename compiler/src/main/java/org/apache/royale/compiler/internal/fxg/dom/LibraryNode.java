@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_LIBRARY_ELEMENT;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_LIBRARY_ELEMENT;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.FXGConstants;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.problems.FXGMissingAttributeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGConstants;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.problems.FXGMissingAttributeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents the special &lt;Library&gt; section of an FXG document.

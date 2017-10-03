@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
 
 /**
  * A factory class that creates {@link IMXMLToken} objects.

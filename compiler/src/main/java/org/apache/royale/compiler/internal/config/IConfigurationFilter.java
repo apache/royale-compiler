@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 /**
  * Defines the API for configuration filters, which can be used to

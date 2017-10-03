@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 /**
  * Code to read and write Base64-encoded text.  Fairly

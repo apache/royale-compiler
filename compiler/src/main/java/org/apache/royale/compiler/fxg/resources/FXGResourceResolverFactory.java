@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.resources;
+package org.apache.royale.compiler.fxg.resources;
 
-import org.apache.flex.compiler.internal.fxg.resources.FXGFileResolver;
+import org.apache.royale.compiler.internal.fxg.resources.FXGFileResolver;
 
 /**
  * A simple factory used to create an instance of a ResourceResolver
@@ -31,7 +31,7 @@ public class FXGResourceResolverFactory
      * Creates a new instance of the default implementation of IFXGParser.
      * 
      * @return an IFXGParser instance
-     * @see org.apache.flex.compiler.fxg.IFXGParser 
+     * @see org.apache.royale.compiler.fxg.IFXGParser 
      */
     public static IFXGResourceResolver createDefaultResourceResolver()
     {

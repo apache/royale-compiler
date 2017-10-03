@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
-import org.apache.flex.compiler.internal.definitions.metadata.ResourceBundleMetaTag;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
-import org.apache.flex.compiler.tree.metadata.IResourceBundleTagNode;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.royale.compiler.internal.definitions.metadata.ResourceBundleMetaTag;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.tree.metadata.IResourceBundleTagNode;
 
 /**
  * Represents an ResourceBundle metadata tag, of the form

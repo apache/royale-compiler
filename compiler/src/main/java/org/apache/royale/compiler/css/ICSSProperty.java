@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 /**
  * A "property" is a key value pair inside a CSS rule body.

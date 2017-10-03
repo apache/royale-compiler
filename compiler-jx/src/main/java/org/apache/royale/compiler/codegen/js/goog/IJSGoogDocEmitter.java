@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js.goog;
+package org.apache.royale.compiler.codegen.js.goog;
 
-import org.apache.flex.compiler.codegen.js.IJSDocEmitter;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.codegen.js.IJSDocEmitter;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * The {@link IJSGoogDocEmitter} interface allows the abstraction of JavaScript

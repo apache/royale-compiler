@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.models;
+package org.apache.royale.abc.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,14 +28,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.abc.semantics.ExceptionInfo;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
-import org.apache.flex.abc.visitors.NilDiagnosticsVisitor;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.algorithms.DominatorTree.Multimap;
+import org.apache.royale.abc.semantics.ExceptionInfo;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.visitors.NilDiagnosticsVisitor;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.algorithms.DominatorTree.Multimap;
 
 /**
  *  The TreeModelEncoder translates the stack-oriented semantics

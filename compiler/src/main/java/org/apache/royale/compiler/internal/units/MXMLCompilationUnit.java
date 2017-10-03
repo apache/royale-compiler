@@ -17,42 +17,42 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 
 import static com.google.common.collect.Collections2.transform;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.parsing.as.OffsetCue;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLScopeBuilder;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLTreeBuilder;
-import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.parsing.as.OffsetCue;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLScopeBuilder;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLTreeBuilder;
+import org.apache.royale.compiler.internal.units.requests.ASFileScopeRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SWFTagsRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLDataManager;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.filters;
+package org.apache.royale.compiler.internal.fxg.dom.filters;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BEVEL_FULL_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BEVEL_INNER_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_BEVEL_OUTER_VALUE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_TYPE_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BEVEL_FULL_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BEVEL_INNER_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_BEVEL_OUTER_VALUE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_TYPE_ATTRIBUTE;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.fxg.dom.AbstractFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.IFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.BevelType;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.fxg.dom.AbstractFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.IFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.BevelType;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 public abstract class AbstractFilterNode extends AbstractFXGNode implements IFilterNode
 {

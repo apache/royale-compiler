@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * The MATRIX record represents a standard 2x3 transformation matrix of the sort

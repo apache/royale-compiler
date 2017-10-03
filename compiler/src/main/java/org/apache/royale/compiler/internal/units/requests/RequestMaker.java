@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units.requests;
+package org.apache.royale.compiler.internal.units.requests;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -28,9 +28,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.units.requests.IRequest;
-import org.apache.flex.compiler.units.requests.IRequestResult;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.units.requests.IRequest;
+import org.apache.royale.compiler.units.requests.IRequestResult;
 
 /**
  * Creates implementations of the IRequest, where the object returned from the

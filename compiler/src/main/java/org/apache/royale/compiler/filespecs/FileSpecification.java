@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.filespecs;
+package org.apache.royale.compiler.filespecs;
 
-import static org.apache.flex.compiler.filespecs.CombinedFile.getBOM;
+import static org.apache.royale.compiler.filespecs.CombinedFile.getBOM;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.apache.flex.compiler.filespecs.CombinedFile.BOM;
+import org.apache.royale.compiler.filespecs.CombinedFile.BOM;
 
 /**
  * A file specification that reads the content of the file from the file itself.

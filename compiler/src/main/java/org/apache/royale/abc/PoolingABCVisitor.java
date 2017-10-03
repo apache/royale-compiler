@@ -17,31 +17,31 @@
  *
  */
 
-package org.apache.flex.abc;
+package org.apache.royale.abc;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.ClassInfo;
-import org.apache.flex.abc.semantics.ExceptionInfo;
-import org.apache.flex.abc.semantics.InstanceInfo;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.Metadata;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.abc.semantics.ScriptInfo;
-import org.apache.flex.abc.semantics.Trait;
-import org.apache.flex.abc.semantics.Traits;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.abc.visitors.IClassVisitor;
-import org.apache.flex.abc.visitors.IMetadataVisitor;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IMethodVisitor;
-import org.apache.flex.abc.visitors.IScriptVisitor;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.ClassInfo;
+import org.apache.royale.abc.semantics.ExceptionInfo;
+import org.apache.royale.abc.semantics.InstanceInfo;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.abc.semantics.ScriptInfo;
+import org.apache.royale.abc.semantics.Trait;
+import org.apache.royale.abc.semantics.Traits;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.abc.visitors.IClassVisitor;
+import org.apache.royale.abc.visitors.IMetadataVisitor;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IMethodVisitor;
+import org.apache.royale.abc.visitors.IScriptVisitor;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -489,7 +489,7 @@ public class PoolingABCVisitor implements IABCVisitor
      */
     private class MethodBodyVisitor implements IMethodBodyVisitor
     {
-        MethodBodyVisitor (org.apache.flex.abc.semantics.MethodBodyInfo mbinfo)
+        MethodBodyVisitor (org.apache.royale.abc.semantics.MethodBodyInfo mbinfo)
         {
             this.mbi = mbinfo;
         }

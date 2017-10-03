@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Range that represents a generic token within code model

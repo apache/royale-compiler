@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import static org.apache.flex.compiler.internal.parsing.as.ASTokenTypes.*;
+import static org.apache.royale.compiler.internal.parsing.as.ASTokenTypes.*;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 
 /**
  * Abstract base class for all binary operator nodes.

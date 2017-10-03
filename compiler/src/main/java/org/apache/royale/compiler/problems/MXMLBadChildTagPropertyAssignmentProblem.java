@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated for property value child tag on an property MXML tag.

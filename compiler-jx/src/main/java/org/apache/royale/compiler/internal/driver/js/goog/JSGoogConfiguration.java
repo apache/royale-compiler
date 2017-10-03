@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js.goog;
+package org.apache.royale.compiler.internal.driver.js.goog;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,15 +28,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.clients.JSConfiguration;
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.annotations.Arguments;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
-import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
-import org.apache.flex.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.clients.JSConfiguration;
+import org.apache.royale.compiler.clients.MXMLJSC;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.annotations.Arguments;
+import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.annotations.FlexOnly;
+import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
+import org.apache.royale.compiler.internal.config.annotations.Mapping;
 
 /**
  * The {@link JSGoogConfiguration} class holds all compiler arguments needed for

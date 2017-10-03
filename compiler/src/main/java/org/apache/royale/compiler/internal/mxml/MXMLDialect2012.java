@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
  * This singleton class represents the experimental 2012 dialect of MXML,

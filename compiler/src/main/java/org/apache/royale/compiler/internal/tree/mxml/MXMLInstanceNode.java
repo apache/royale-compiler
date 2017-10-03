@@ -17,42 +17,42 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_EXCLUDE_FROM;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ID;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_LOCAL_ID;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_INCLUDE_IN;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_CREATION_POLICY;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_DESTRUCTION_POLICY;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_CREATION_POLICY_DEFERRED;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_CREATION_POLICY_IMMEDIATE;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_DESTRUCTION_POLICY_AUTO;
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_DESTRUCTION_POLICY_NEVER;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_EXCLUDE_FROM;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ID;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_LOCAL_ID;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_INCLUDE_IN;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_CREATION_POLICY;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_DESTRUCTION_POLICY;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ITEM_CREATION_POLICY_DEFERRED;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ITEM_CREATION_POLICY_IMMEDIATE;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ITEM_DESTRUCTION_POLICY_AUTO;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.ITEM_DESTRUCTION_POLICY_NEVER;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLAttributeVersionProblem;
-import org.apache.flex.compiler.problems.MXMLDuplicateIDProblem;
-import org.apache.flex.compiler.problems.MXMLIncludeInAndExcludeFromProblem;
-import org.apache.flex.compiler.problems.MXMLInvalidIDProblem;
-import org.apache.flex.compiler.problems.MXMLInvalidItemCreationPolicyProblem;
-import org.apache.flex.compiler.problems.MXMLInvalidItemDestructionPolicyProblem;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassReferenceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLAttributeVersionProblem;
+import org.apache.royale.compiler.problems.MXMLDuplicateIDProblem;
+import org.apache.royale.compiler.problems.MXMLIncludeInAndExcludeFromProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidIDProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidItemCreationPolicyProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidItemDestructionPolicyProblem;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassReferenceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
 
 class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstanceNode
 {

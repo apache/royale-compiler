@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
 
 /**
  * Marker interface to imply node can be used to create a mask.

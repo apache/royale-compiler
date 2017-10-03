@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.clients.JSConfiguration;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.driver.js.IJSApplication;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
+import org.apache.royale.compiler.clients.JSConfiguration;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IASProject;
 
 /**
  * The {@link IJSTarget} interface allows the compiler an abstraction to

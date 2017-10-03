@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -32,8 +32,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Maps {@link File}'s to collections of {@link ICompilationUnit}'s whose root

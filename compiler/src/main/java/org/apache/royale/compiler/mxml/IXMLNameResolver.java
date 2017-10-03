@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 
 /**
  * Interface to handle resolving an XML name to a fully-qualified ActionScript
@@ -40,7 +40,7 @@ public interface IXMLNameResolver
      * example) and package namespaces such as <d:Sprite
      * xmlns:d="flash.display.*">. <b>Note:</b> This method should only be
      * called when resolving a tag outside the context of an MXML file. Normally
-     * {@link org.apache.flex.compiler.internal.scopes.MXMLFileScope#resolveTagToQualifiedName(IMXMLTagData)}
+     * {@link org.apache.royale.compiler.internal.scopes.MXMLFileScope#resolveTagToQualifiedName(IMXMLTagData)}
      * should be used instead.
      * 
      * @param tagXMLName An {@link XMLName} to resolve to a fully-qualified

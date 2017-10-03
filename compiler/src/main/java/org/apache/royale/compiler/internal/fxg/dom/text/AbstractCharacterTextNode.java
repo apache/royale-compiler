@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.text;
+package org.apache.royale.compiler.internal.fxg.dom.text;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.Kerning;
-import org.apache.flex.compiler.internal.fxg.dom.types.LineBreak;
-import org.apache.flex.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.Kerning;
+import org.apache.royale.compiler.internal.fxg.dom.types.LineBreak;
+import org.apache.royale.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A base class for text nodes that have character formatting.

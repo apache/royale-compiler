@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.internal.fxg.dom.types.FillMode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.internal.fxg.dom.types.FillMode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 public class BitmapGraphicNode extends GraphicContentNode
 {

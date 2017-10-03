@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 /**
  * Model for a media query condition in CSS3. A CSS3 rule can be enclosed in a

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.diagnostics.AbstractDiagnosticVisitor;
+import org.apache.royale.abc.diagnostics.AbstractDiagnosticVisitor;
 
 /**
  * Nil implementation of {@link IDiagnosticsVisitor}.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 /**
  * A Label represents the target of a branch instruction; it is not the ABC

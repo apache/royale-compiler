@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -30,21 +30,21 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.flex.compiler.common.IPathResolver;
-import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.exceptions.ConfigurationException.*;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.config.*;
-import org.apache.flex.compiler.internal.config.annotations.*;
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
-import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.problems.*;
-import org.apache.flex.swc.catalog.XMLFormatter;
-import org.apache.flex.utils.FileUtils;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.IPathResolver;
+import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.exceptions.ConfigurationException.*;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.config.*;
+import org.apache.royale.compiler.internal.config.annotations.*;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.problems.*;
+import org.apache.royale.swc.catalog.XMLFormatter;
+import org.apache.royale.utils.FileUtils;
+import org.apache.royale.utils.FilenameNormalization;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
@@ -77,7 +77,7 @@ public class Configuration
     private static final int DEFAULT_WIDTH_MAX = 4096;
     private static final int DEFAULT_WIDTH_MIN = 1;
 
-    public static final String DEFAULT_OUTPUT_DIRECTORY_TOKEN = "org.apache.flex.default.output.directory";
+    public static final String DEFAULT_OUTPUT_DIRECTORY_TOKEN = "org.apache.royale.default.output.directory";
 
     public static final String SWC_AIRGLOBAL = "airglobal.swc";
 
@@ -1743,7 +1743,7 @@ public class Configuration
     // 'compiler.proxy-base-class' option
     //
 
-    private String proxyBaseClass = "org.apache.flex.utils.Proxy";
+    private String proxyBaseClass = "org.apache.royale.utils.Proxy";
 
     public String getProxyBaseClass()
     {
@@ -5686,7 +5686,7 @@ public class Configuration
      * Resolve a problem class name to a Java Class.
      * 
      * @param className May be fully qualified. If the class name is not fully qualified, it is assumed to live in the
-     *        "org.apache.flex.compiler.problems" package.
+     *        "org.apache.royale.compiler.problems" package.
      * 
      * @return A class corresponding to the className or null if the class name was not found.
      */

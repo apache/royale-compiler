@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,12 +28,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.graph.algorithms.DepthFirstPreorderIterator;
-import org.apache.flex.abc.graph.algorithms.DominatorTree;
-import org.apache.flex.abc.visitors.IFlowGraphVisitor;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.graph.algorithms.DepthFirstPreorderIterator;
+import org.apache.royale.abc.graph.algorithms.DominatorTree;
+import org.apache.royale.abc.visitors.IFlowGraphVisitor;
 
 /**
  * A ControlFlowGraph represents the flow of control through a sequence of

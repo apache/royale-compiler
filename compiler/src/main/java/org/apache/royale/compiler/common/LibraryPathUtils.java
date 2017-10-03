@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 import java.io.File;
 
-import org.apache.flex.compiler.internal.projects.LibraryPathManager;
+import org.apache.royale.compiler.internal.projects.LibraryPathManager;
 
 /**
  * Some stray library filename utils.

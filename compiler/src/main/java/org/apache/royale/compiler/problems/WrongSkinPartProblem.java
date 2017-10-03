@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 
 /**
  * Created when type type of the skin part is not compatible with the host

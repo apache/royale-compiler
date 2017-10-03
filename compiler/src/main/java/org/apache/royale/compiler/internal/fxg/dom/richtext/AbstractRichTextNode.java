@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,12 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.AbstractFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.CDATANode;
-import org.apache.flex.compiler.internal.fxg.dom.ITextNode;
-import org.apache.flex.compiler.problems.FXGInvalidChildNodeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.AbstractFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.CDATANode;
+import org.apache.royale.compiler.internal.fxg.dom.ITextNode;
+import org.apache.royale.compiler.problems.FXGInvalidChildNodeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A base class for all FXG nodes concerned with formatted text.

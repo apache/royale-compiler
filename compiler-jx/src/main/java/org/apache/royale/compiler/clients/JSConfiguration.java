@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,17 +25,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.clients.MXMLJSC.JSTargetType;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
-import org.apache.flex.compiler.internal.config.annotations.Arguments;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
-import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
-import org.apache.flex.compiler.internal.config.annotations.Mapping;
-import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.royale.compiler.clients.MXMLJSC.JSTargetType;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.exceptions.ConfigurationException.CannotOpen;
+import org.apache.royale.compiler.internal.config.annotations.Arguments;
+import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.annotations.FlexOnly;
+import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
+import org.apache.royale.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 
 import com.google.common.collect.ImmutableList;
 

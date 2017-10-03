@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.workspaces;
+package org.apache.royale.compiler.internal.workspaces;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -42,37 +42,37 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.flex.compiler.asdoc.IASDocDelegate;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IBinaryFileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.caches.PackageNamespaceDefinitionCache;
-import org.apache.flex.compiler.internal.definitions.references.ReferenceCache;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.mxml.MXMLDataManager;
-import org.apache.flex.compiler.internal.parsing.as.NilASDocDelegate;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DependencyGraph;
-import org.apache.flex.compiler.internal.projects.ASProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.units.CompilationUnitBase;
-import org.apache.flex.compiler.internal.units.StringToCompilationUnitMap;
-import org.apache.flex.compiler.internal.units.requests.RequestMaker;
-import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.scopes.IFileScope;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.workspaces.IInvalidationListener;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.compiler.workspaces.IWorkspaceProfilingDelegate;
-import org.apache.flex.compiler.workspaces.IInvalidationListener.InvalidatedDefinition;
-import org.apache.flex.swc.ISWCManager;
-import org.apache.flex.swc.SWCManager;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.asdoc.IASDocDelegate;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IBinaryFileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.caches.PackageNamespaceDefinitionCache;
+import org.apache.royale.compiler.internal.definitions.references.ReferenceCache;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.mxml.MXMLDataManager;
+import org.apache.royale.compiler.internal.parsing.as.NilASDocDelegate;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.internal.projects.ASProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.units.CompilationUnitBase;
+import org.apache.royale.compiler.internal.units.StringToCompilationUnitMap;
+import org.apache.royale.compiler.internal.units.requests.RequestMaker;
+import org.apache.royale.compiler.mxml.IMXMLDataManager;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IASProject;
+import org.apache.royale.compiler.scopes.IFileScope;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.workspaces.IInvalidationListener;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.workspaces.IWorkspaceProfilingDelegate;
+import org.apache.royale.compiler.workspaces.IInvalidationListener.InvalidatedDefinition;
+import org.apache.royale.swc.ISWCManager;
+import org.apache.royale.swc.SWCManager;
+import org.apache.royale.utils.FilenameNormalization;
 
 import com.google.common.base.FinalizableReferenceQueue;
 import com.google.common.base.Function;

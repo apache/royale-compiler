@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.junit.Test;
 
 /**

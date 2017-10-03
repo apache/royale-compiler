@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -33,39 +33,39 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.parsing.as.IProjectConfigVariables;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.ASScopeCache;
-import org.apache.flex.compiler.internal.targets.AppSWFTarget;
-import org.apache.flex.compiler.internal.targets.Target;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MissingBuiltinProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.targets.ISWFTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IRequest;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.parsing.as.IProjectConfigVariables;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.ASScopeCache;
+import org.apache.royale.compiler.internal.targets.AppSWFTarget;
+import org.apache.royale.compiler.internal.targets.Target;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MissingBuiltinProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.targets.ISWFTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IRequest;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -735,7 +735,7 @@ public abstract class CompilerProject implements ICompilerProject
 
     /**
      * Called by
-     * {@link Workspace#fileAdded(org.apache.flex.compiler.filespecs.IFileSpecification)}
+     * {@link Workspace#fileAdded(org.apache.royale.compiler.filespecs.IFileSpecification)}
      * for each project in the workspace. Each subclass of this class must
      * decide when an added file is interesting or should be ignored.
      * 
@@ -762,7 +762,7 @@ public abstract class CompilerProject implements ICompilerProject
 	}
     /**
      * Sets project config variables for use on this project
-     * @see org.apache.flex.compiler.internal.projects.ConfigManager#addConfigVariables(Map)
+     * @see org.apache.royale.compiler.internal.projects.ConfigManager#addConfigVariables(Map)
      * @param map the mapping of config names to their expressions
      */
     public void addConfigVariables(Map<String, String> map) {
@@ -775,7 +775,7 @@ public abstract class CompilerProject implements ICompilerProject
     
     /**
      * Sets project config variable for use on this project
-     * @see org.apache.flex.compiler.internal.projects.ConfigManager#addConfigVariables(Map)
+     * @see org.apache.royale.compiler.internal.projects.ConfigManager#addConfigVariables(Map)
      * @param namespace the config namespace
      * @param expression the config expression for the namespace 
      */

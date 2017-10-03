@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
 import java.io.Closeable;
 

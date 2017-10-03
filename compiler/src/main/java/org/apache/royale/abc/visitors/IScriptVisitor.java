@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
 
 /**
  * An IScriptVisitor generates a visitor for the script's traits, and records the

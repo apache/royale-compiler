@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 /**
  * This interface provides information about where something 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.as;
+package org.apache.royale.compiler.codegen.as;
 
 import java.io.Closeable;
 import java.io.File;

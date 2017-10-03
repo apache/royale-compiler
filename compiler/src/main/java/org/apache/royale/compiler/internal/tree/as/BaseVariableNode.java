@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.internal.definitions.ConstantDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.parts.IDecorationPart;
-import org.apache.flex.compiler.internal.tree.as.parts.VariableDecorationPart;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.parts.IDecorationPart;
+import org.apache.royale.compiler.internal.tree.as.parts.VariableDecorationPart;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 /**
  * Base class for variables, including both traditional variables as well as

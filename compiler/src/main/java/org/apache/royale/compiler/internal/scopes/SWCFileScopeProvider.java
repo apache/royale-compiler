@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.definitions.IDocumentableDefinition;
-import org.apache.flex.compiler.internal.abc.ABCScopeBuilder;
-import org.apache.flex.compiler.internal.projects.ASProject;
-import org.apache.flex.compiler.internal.projects.LibraryPathManager;
-import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IFileScopeProvider;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.definitions.IDocumentableDefinition;
+import org.apache.royale.compiler.internal.abc.ABCScopeBuilder;
+import org.apache.royale.compiler.internal.projects.ASProject;
+import org.apache.royale.compiler.internal.projects.LibraryPathManager;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IFileScopeProvider;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 import com.google.common.base.Strings;
 

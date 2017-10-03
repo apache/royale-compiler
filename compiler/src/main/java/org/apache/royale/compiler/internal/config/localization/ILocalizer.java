@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config.localization;
+package org.apache.royale.compiler.internal.config.localization;
 
 import java.util.Locale;
 

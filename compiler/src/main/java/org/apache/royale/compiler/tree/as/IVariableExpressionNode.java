@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
 /**
  * Expression that represents a variable contained within an iterative loop.

@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
 
 /**
  * A string literal must be terminated before the line break, unless a new line

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 
 /**
- * {@link ICompilerProblem} implementation when a {@link org.apache.flex.compiler.units.ICompilationUnit} does
+ * {@link ICompilerProblem} implementation when a {@link org.apache.royale.compiler.units.ICompilationUnit} does
  * not define an definition it should based on its location in the source path
  * directory hierarchy.
  * <p>

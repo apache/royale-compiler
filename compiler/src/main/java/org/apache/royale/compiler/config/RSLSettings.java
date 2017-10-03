@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 
 /**
  * The runtime RSL settings for a given library. The specified library will 

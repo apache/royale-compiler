@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
 import java.util.List;
 
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.ModifiersSet;
-import org.apache.flex.compiler.definitions.metadata.IDeprecationInfo;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 
 /**
  * The base class for all definitions.

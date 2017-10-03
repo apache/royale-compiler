@@ -16,19 +16,19 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.test;
+package org.apache.royale.compiler.internal.test;
 
 import java.io.File;
 import java.util.List;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
-import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.utils.ITestAdapter;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 @Ignore

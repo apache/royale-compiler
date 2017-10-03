@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
-import org.apache.flex.tools.AbstractFlexToolGroup;
+import org.apache.royale.tools.AbstractFlexToolGroup;
 
 /**
  * FlexToolGroup exposing the implementations of the Falcon compilers tools.

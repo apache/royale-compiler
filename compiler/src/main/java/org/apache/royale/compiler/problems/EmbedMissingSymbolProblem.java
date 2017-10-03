@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.ISourceLocation;
 
 /**
  * This problem gets created when embedding a swf file with the symbol attribute

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
 
 /**
  * Error #1078: Label must be a simple identifier.

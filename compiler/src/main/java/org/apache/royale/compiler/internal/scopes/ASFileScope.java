@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -25,28 +25,28 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.flex.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyType;
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.ScopedDefinitionBase;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.compiler.scopes.IFileScope;
-import org.apache.flex.utils.FastStack;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.ScopedDefinitionBase;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.scopes.IFileScope;
+import org.apache.royale.utils.FastStack;
 
 /**
  * IASScope implementation for FileNodes. Conceptually, the file scope contains

@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.math.BigInteger;
 
-import org.apache.flex.abc.semantics.ECMASupport;
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.INumericLiteralNode;
+import org.apache.royale.abc.semantics.ECMASupport;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 
 public class NumericLiteralNode extends LiteralNode implements INumericLiteralNode
 {

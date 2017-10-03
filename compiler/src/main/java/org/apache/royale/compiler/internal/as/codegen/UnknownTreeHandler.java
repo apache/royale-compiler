@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 
-import org.apache.flex.compiler.problems.BURMPatternMatchFailureProblem;
-import org.apache.flex.compiler.problems.CodegenInternalProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.problems.BURMPatternMatchFailureProblem;
+import org.apache.royale.compiler.problems.CodegenInternalProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
 
-import static org.apache.flex.compiler.tree.ASTNodeID.*;
+import static org.apache.royale.compiler.tree.ASTNodeID.*;
 
 
 /**

@@ -17,31 +17,31 @@
  *
  */
 
-package org.apache.flex.compiler.driver;
+package org.apache.royale.compiler.driver;
 
 import java.io.File;
 import java.io.FilterWriter;
 import java.util.List;
 
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.codegen.IDocEmitter;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.IBlockWalker;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.compiler.clients.MXMLJSC;
+import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
  * The backend strategy for the {@link MXMLJSC} javascript compiler.

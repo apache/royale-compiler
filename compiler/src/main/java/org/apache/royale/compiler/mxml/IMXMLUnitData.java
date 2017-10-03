@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 
 /**
  * Represents one unit of MXML.

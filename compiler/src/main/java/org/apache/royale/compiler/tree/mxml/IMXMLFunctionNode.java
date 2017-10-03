@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * This AST node represents an MXML <code>&lt;Function&gt;</code> tag.

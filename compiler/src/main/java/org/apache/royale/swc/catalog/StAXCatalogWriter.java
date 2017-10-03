@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.catalog;
+package org.apache.royale.swc.catalog;
 
 import java.io.Writer;
 import java.util.ArrayList;
@@ -34,14 +34,14 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCComponent;
-import org.apache.flex.swc.ISWCDigest;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swc.ISWCLibrary;
-import org.apache.flex.swc.ISWCScript;
-import org.apache.flex.swc.ISWCVersion;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCComponent;
+import org.apache.royale.swc.ISWCDigest;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.ISWCLibrary;
+import org.apache.royale.swc.ISWCScript;
+import org.apache.royale.swc.ISWCVersion;
 import com.google.common.collect.Iterables;
 
 /**

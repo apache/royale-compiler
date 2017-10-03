@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc;
+package org.apache.royale.abc;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.flex.abc.semantics.InstanceInfo;
-import org.apache.flex.abc.semantics.Name;
+import org.apache.royale.abc.semantics.InstanceInfo;
+import org.apache.royale.abc.semantics.Name;
 
 /**
  * ClassDependencySort contains data structures and algorithms to sort a list of

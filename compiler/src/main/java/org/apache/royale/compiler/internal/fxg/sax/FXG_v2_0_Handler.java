@@ -17,58 +17,58 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.sax;
+package org.apache.royale.compiler.internal.fxg.sax;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.flex.FlexGraphicNode;
-import org.apache.flex.compiler.fxg.flex.FlexRichTextNode;
-import org.apache.flex.compiler.internal.fxg.dom.BitmapGraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.ContentPropertyNode;
-import org.apache.flex.compiler.internal.fxg.dom.DefinitionNode;
-import org.apache.flex.compiler.internal.fxg.dom.DelegateNode;
-import org.apache.flex.compiler.internal.fxg.dom.EllipseNode;
-import org.apache.flex.compiler.internal.fxg.dom.GradientEntryNode;
-import org.apache.flex.compiler.internal.fxg.dom.GroupDefinitionNode;
-import org.apache.flex.compiler.internal.fxg.dom.GroupNode;
-import org.apache.flex.compiler.internal.fxg.dom.LibraryNode;
-import org.apache.flex.compiler.internal.fxg.dom.LineNode;
-import org.apache.flex.compiler.internal.fxg.dom.MaskPropertyNode;
-import org.apache.flex.compiler.internal.fxg.dom.PathNode;
-import org.apache.flex.compiler.internal.fxg.dom.RectNode;
-import org.apache.flex.compiler.internal.fxg.dom.fills.BitmapFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.fills.LinearGradientFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.fills.RadialGradientFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.fills.SolidColorFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.BevelFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.BlurFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.ColorMatrixFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.DropShadowFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.GlowFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.GradientBevelFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.filters.GradientGlowFilterNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.BRNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.DivNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.ImgNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.LinkNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.ParagraphNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.SpanNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TCYNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TabNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TextLayoutFormatNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TextPropertyNode;
-import org.apache.flex.compiler.internal.fxg.dom.strokes.LinearGradientStrokeNode;
-import org.apache.flex.compiler.internal.fxg.dom.strokes.RadialGradientStrokeNode;
-import org.apache.flex.compiler.internal.fxg.dom.strokes.SolidColorStrokeNode;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.ColorTransformNode;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.flex.FlexGraphicNode;
+import org.apache.royale.compiler.fxg.flex.FlexRichTextNode;
+import org.apache.royale.compiler.internal.fxg.dom.BitmapGraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.ContentPropertyNode;
+import org.apache.royale.compiler.internal.fxg.dom.DefinitionNode;
+import org.apache.royale.compiler.internal.fxg.dom.DelegateNode;
+import org.apache.royale.compiler.internal.fxg.dom.EllipseNode;
+import org.apache.royale.compiler.internal.fxg.dom.GradientEntryNode;
+import org.apache.royale.compiler.internal.fxg.dom.GroupDefinitionNode;
+import org.apache.royale.compiler.internal.fxg.dom.GroupNode;
+import org.apache.royale.compiler.internal.fxg.dom.LibraryNode;
+import org.apache.royale.compiler.internal.fxg.dom.LineNode;
+import org.apache.royale.compiler.internal.fxg.dom.MaskPropertyNode;
+import org.apache.royale.compiler.internal.fxg.dom.PathNode;
+import org.apache.royale.compiler.internal.fxg.dom.RectNode;
+import org.apache.royale.compiler.internal.fxg.dom.fills.BitmapFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.fills.LinearGradientFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.fills.RadialGradientFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.fills.SolidColorFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.BevelFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.BlurFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.ColorMatrixFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.DropShadowFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.GlowFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.GradientBevelFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.filters.GradientGlowFilterNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.BRNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.DivNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.ImgNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.LinkNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.ParagraphNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.SpanNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TCYNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TabNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TextLayoutFormatNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TextPropertyNode;
+import org.apache.royale.compiler.internal.fxg.dom.strokes.LinearGradientStrokeNode;
+import org.apache.royale.compiler.internal.fxg.dom.strokes.RadialGradientStrokeNode;
+import org.apache.royale.compiler.internal.fxg.dom.strokes.SolidColorStrokeNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.ColorTransformNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
 
 /**
  * IFXGVersionHandler for FXG 2.0

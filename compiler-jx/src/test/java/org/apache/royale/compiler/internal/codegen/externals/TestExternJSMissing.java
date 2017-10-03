@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.externals;
 
 import java.io.IOException;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
 
 import com.google.javascript.jscomp.Result;
 import org.junit.Test;

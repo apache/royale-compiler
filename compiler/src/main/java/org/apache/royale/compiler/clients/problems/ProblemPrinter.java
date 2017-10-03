@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A printer utility class for {@link ICompilerProblem}s.

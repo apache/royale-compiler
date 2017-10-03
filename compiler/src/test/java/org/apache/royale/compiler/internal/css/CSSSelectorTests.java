@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -25,9 +25,9 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.apache.flex.compiler.css.ICSSCombinator;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.ICSSCombinator;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSSelector;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;

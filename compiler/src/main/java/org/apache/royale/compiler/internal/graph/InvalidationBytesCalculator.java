@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.internal.projects.DependencyGraph;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
 
 /**
  * Helper class to calculate bytes invalidated by changing a {@link ICompilationUnit}

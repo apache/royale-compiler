@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 
 import java.io.FilterWriter;
@@ -27,27 +27,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
-import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleASDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.*;
-import org.apache.flex.compiler.tree.mxml.*;
-import org.apache.flex.compiler.utils.NativeUtils;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
+import org.apache.royale.compiler.internal.codegen.databinding.BindingInfo;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleASDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.tree.mxml.*;
+import org.apache.royale.compiler.utils.NativeUtils;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
  * @author Erik de Bruin
@@ -318,7 +318,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
                 indentPush();
                 writeNewline("if (value != this." + instance.id + "_) {");
                 writeNewline("this." + instance.id + "_ = value;");
-                write("this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, '");
+                write("this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(this, '");
                 indentPop();
                 writeNewline(instance.id + "', null, value));");
                 indentPop();
@@ -1076,7 +1076,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
     public void emitFactory(IMXMLFactoryNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
+        ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
 
         IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
@@ -1092,7 +1092,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
+        ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
 
         ps.value += formatQualifiedName(documentDefinition.getQualifiedName()) + ".";
         ps.value += formatQualifiedName(node.getName());

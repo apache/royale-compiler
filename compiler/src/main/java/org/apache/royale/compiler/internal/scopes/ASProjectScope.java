@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -43,33 +43,33 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.MapMaker;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.IDefinitionPriority;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.PackageDefinition;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
-import org.apache.flex.compiler.internal.tree.as.ImportNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.scopes.IFileScope;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IRequest;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.IDefinitionPriority;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.PackageDefinition;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
+import org.apache.royale.compiler.internal.tree.as.ImportNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.scopes.IFileScope;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IRequest;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * An ASProjectScope is the topmost scope for a particular project.

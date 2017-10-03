@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.metadata.IEffectTagNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.metadata.IEffectTagNode;
 
 /**
  * Represents effect metadata decorating a class definition,

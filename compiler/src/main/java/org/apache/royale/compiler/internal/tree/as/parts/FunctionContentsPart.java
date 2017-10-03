@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.parts;
+package org.apache.royale.compiler.internal.tree.as.parts;
 
-import org.apache.flex.compiler.internal.tree.as.ContainerNode;
-import org.apache.flex.compiler.internal.tree.as.KeywordNode;
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
-import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
+import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.KeywordNode;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.tree.as.IContainerNode.ContainerType;
 
 /**
  * Base function contents part

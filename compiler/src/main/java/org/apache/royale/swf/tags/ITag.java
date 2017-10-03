@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
+import org.apache.royale.swf.TagType;
 
 /**
  * The interface for all the SWF tags. Each tag has a type code.

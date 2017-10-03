@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 public final class MultipleContructorDefinitionsProblem extends SemanticProblem
 {

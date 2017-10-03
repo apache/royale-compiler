@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * {@code LineStyle2} builds upon the capabilities of the {@code LineStyle}
  * record by allowing the use of new types of joins and caps as well as scaling
  * options and the ability to fill a stroke. In order to use {@code LineStyle2},
- * the shape must be defined with {@link org.apache.flex.swf.tags.DefineShape4Tag}.
+ * the shape must be defined with {@link org.apache.royale.swf.tags.DefineShape4Tag}.
  */
 public class LineStyle2 extends LineStyle
 {

@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
 
 /**
  * A representation of a <a href="http://learn.adobe.com/wiki/display/AVM2/4.3+Constant+pool">name</a>.

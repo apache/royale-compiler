@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.externals;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
 

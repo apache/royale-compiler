@@ -752,7 +752,7 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
-                <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="**/org.apache.royale.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>

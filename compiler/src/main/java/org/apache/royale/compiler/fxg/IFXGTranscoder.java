@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.fxg;
+package org.apache.royale.compiler.fxg;
 
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.flex.FXGSymbolClass;
-import org.apache.flex.compiler.fxg.resources.IFXGResourceResolver;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.tags.ITag;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.flex.FXGSymbolClass;
+import org.apache.royale.compiler.fxg.resources.IFXGResourceResolver;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.tags.ITag;
 
 /**
  * Simple interface for a transcoder on an FXG DOM.

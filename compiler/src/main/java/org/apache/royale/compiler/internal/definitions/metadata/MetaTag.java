@@ -17,26 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions.metadata;
+package org.apache.royale.compiler.internal.definitions.metadata;
 
 import java.util.Arrays;
 
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.common.NodeReference;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.tree.as.ClassNode;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.common.NodeReference;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.tree.as.ClassNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 public class MetaTag implements IMetaTag
 {

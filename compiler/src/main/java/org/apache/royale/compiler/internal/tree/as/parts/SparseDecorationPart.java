@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.parts;
+package org.apache.royale.compiler.internal.tree.as.parts;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.internal.tree.as.ModifiersContainerNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.internal.tree.as.ModifiersContainerNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 
 public class SparseDecorationPart implements IDecorationPart
 {

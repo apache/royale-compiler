@@ -17,23 +17,23 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.definitions.SetterDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.tree.as.parts.IAccessorFunctionContentsPart;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.definitions.SetterDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.tree.as.parts.IAccessorFunctionContentsPart;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
 
 /**
  * ActionScript parse tree node representing a setter definition (e.g. function

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.types;
+package org.apache.royale.compiler.internal.fxg.dom.types;
 
 /**
  * A scaling grid is used to calculate the center rectangle that determines 

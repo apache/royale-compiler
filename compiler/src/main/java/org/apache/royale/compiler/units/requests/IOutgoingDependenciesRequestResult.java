@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.units.requests;
+package org.apache.royale.compiler.units.requests;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Result object for the GET_SEMANTIC_PROBLEMS operation on ICompilationUnit.
  * 
- * @see org.apache.flex.compiler.units.ICompilationUnit
+ * @see org.apache.royale.compiler.units.ICompilationUnit
  */
 public interface IOutgoingDependenciesRequestResult extends IRequestResult
 {

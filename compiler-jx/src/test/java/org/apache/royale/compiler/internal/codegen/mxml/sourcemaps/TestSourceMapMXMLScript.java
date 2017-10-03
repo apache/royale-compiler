@@ -16,14 +16,14 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml.sourcemaps;
+package org.apache.royale.compiler.internal.codegen.mxml.sourcemaps;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.test.RoyaleSourceMapTestBase;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.test.RoyaleSourceMapTestBase;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

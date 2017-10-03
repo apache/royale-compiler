@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.catalog;
+package org.apache.royale.swc.catalog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,18 +30,18 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.internal.config.QNameNormalization;
-import org.apache.flex.compiler.problems.ComponentTagWithoutURIProblem;
-import org.apache.flex.compiler.problems.FileInLibraryIOProblem;
-import org.apache.flex.swc.ISWCVersion;
-import org.apache.flex.swc.SWC;
-import org.apache.flex.swc.SWCComponent;
-import org.apache.flex.swc.SWCDigest;
-import org.apache.flex.swc.SWCLibrary;
-import org.apache.flex.swc.SWCScript;
-import org.apache.flex.swc.io.SWCReader;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.internal.config.QNameNormalization;
+import org.apache.royale.compiler.problems.ComponentTagWithoutURIProblem;
+import org.apache.royale.compiler.problems.FileInLibraryIOProblem;
+import org.apache.royale.swc.ISWCVersion;
+import org.apache.royale.swc.SWC;
+import org.apache.royale.swc.SWCComponent;
+import org.apache.royale.swc.SWCDigest;
+import org.apache.royale.swc.SWCLibrary;
+import org.apache.royale.swc.SWCScript;
+import org.apache.royale.swc.io.SWCReader;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * A StAX implementation to parse catalog.xml in a SWC.

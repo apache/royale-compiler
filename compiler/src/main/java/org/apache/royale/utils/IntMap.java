@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 import java.util.Iterator;
 import java.util.Map;

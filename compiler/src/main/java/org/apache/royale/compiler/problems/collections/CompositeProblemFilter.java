@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems.collections;
+package org.apache.royale.compiler.problems.collections;
 
-import org.apache.flex.compiler.clients.problems.IProblemFilter;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.clients.problems.IProblemFilter;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  *  A CompositeProblemFilter combines one more more filters

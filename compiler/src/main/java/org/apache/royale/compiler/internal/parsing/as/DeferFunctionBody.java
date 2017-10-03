@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 /**
  * Options to turn on and off "deferred function body" feature.

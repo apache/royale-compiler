@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 import java.util.List;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.tree.as.XMLLiteralNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 
 /**
  * Utilities for parsing XML in functions with [JSX] metadata.

@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
-import static org.apache.flex.compiler.constants.IMXMLCoreConstants.*;
+import static org.apache.royale.compiler.constants.IMXMLCoreConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragment;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Encapsulation of a block of text in MXML

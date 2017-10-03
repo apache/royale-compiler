@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 /**
  * An AST node representing a declaration of a package, class,

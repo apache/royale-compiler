@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;

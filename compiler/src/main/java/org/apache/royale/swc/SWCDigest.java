@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 /**
  * Implementation of a SWC digest.

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IASToken;
 
 /**
  * Abstract base class for all post-fix unary operator nodes.

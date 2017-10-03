@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IConditionalNode;
-import org.apache.flex.compiler.tree.as.IContainerNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
-import org.apache.flex.compiler.tree.as.ITerminalNode;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IConditionalNode;
+import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IIfNode;
+import org.apache.royale.compiler.tree.as.ITerminalNode;
 
 public class IfEmitter extends JSSubEmitter implements
         ISubEmitter<IIfNode>

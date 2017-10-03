@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;

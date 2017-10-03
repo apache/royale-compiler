@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 /**
  * An interface to allow clients to obtain a reference to a code generator.

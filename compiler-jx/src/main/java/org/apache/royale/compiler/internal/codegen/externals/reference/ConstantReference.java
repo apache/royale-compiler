@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 import java.util.HashMap;
 
-import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+import org.apache.royale.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;

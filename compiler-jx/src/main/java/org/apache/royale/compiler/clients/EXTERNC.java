@@ -17,25 +17,25 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
-import org.apache.flex.compiler.clients.problems.ProblemPrinter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.config.ExterncConfigurator;
-import org.apache.flex.compiler.internal.codegen.externals.emit.ReferenceEmitter;
-import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.tools.FlexTool;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemPrinter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.config.ExterncConfigurator;
+import org.apache.royale.compiler.internal.codegen.externals.emit.ReferenceEmitter;
+import org.apache.royale.compiler.internal.codegen.externals.pass.ReferenceCompiler;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.tools.FlexTool;
 
 import com.google.javascript.jscomp.Result;
 

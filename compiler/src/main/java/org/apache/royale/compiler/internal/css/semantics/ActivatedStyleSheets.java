@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.semantics;
+package org.apache.royale.compiler.internal.css.semantics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.internal.projects.LibraryPathManager;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.internal.projects.LibraryPathManager;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 

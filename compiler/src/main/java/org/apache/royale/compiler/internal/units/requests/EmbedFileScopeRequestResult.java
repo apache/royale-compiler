@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units.requests;
+package org.apache.royale.compiler.internal.units.requests;
 
 import java.util.Collections;
 
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Result of the file scope request on a EmbedCompilationUnit

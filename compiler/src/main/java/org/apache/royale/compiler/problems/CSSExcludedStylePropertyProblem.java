@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.css.ICSSProperty;
+import org.apache.royale.compiler.css.ICSSProperty;
 
 /**
  * Compiler problem for using excluded style.

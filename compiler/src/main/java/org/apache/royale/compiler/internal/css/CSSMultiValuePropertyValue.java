@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import java.util.List;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.css.ICSSPropertyValue;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding.transcoders;
+package org.apache.royale.compiler.internal.embedding.transcoders;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -28,16 +28,16 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.EmbedCouldNotDetermineSampleFrameCountProblem;
-import org.apache.flex.compiler.problems.EmbedUnsupportedSamplingRateProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.tags.DefineSoundTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.utils.DAByteArrayOutputStream;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.EmbedCouldNotDetermineSampleFrameCountProblem;
+import org.apache.royale.compiler.problems.EmbedUnsupportedSamplingRateProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.tags.DefineSoundTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.utils.DAByteArrayOutputStream;
 
 /**
  * Handle the embedding of sound

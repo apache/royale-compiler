@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.mxml.IStateDefinition;
-import org.apache.flex.compiler.mxml.IStateGroupDefinition;
-import org.apache.flex.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.mxml.IStateDefinition;
+import org.apache.royale.compiler.mxml.IStateGroupDefinition;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
 
 /**
  * This AST node represents an MXML tag which defines a new class.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
@@ -29,18 +29,18 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.common.MutablePrefixMap;
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.flex.compiler.parsing.IMXMLToken;
-import org.apache.flex.compiler.parsing.IMXMLTokenizer;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem2;
-import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
-import org.apache.flex.utils.NonLockingStringReader;
+import org.apache.royale.compiler.common.MutablePrefixMap;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.parsing.IMXMLTokenizer;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
+import org.apache.royale.compiler.problems.MXMLUnclosedTagProblem;
+import org.apache.royale.utils.NonLockingStringReader;
 
 /**
  * Tokenizes MXML files.  Uses RawTagTokenizer to get basic tokens.  Ignores comments (<!--...-->),

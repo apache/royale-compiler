@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IASScope;
 
 /**
  * An AST node that has an attached scope.

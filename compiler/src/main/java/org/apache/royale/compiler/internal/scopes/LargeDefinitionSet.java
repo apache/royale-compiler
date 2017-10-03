@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 
 /**
  * An implementation of {@link IMutableDefinitionSet}

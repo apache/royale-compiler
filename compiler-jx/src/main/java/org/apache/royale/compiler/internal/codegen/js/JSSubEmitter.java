@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.royale.compiler.internal.codegen.js;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.visitor.IBlockWalker;
 
 public class JSSubEmitter
 {

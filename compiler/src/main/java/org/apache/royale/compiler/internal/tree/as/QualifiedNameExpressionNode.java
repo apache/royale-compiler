@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.ASTNodeID;
 
 /**
  * A collapsed version of a FullNameNode.

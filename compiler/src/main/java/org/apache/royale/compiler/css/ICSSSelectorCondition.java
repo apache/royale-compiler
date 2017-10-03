@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 /**
  * Conditions follows the "element" in a simple selector. The supported

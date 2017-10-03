@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 /**
  * Unexpectedly hit the end of the SWF file. All valid SWFs must be terminated

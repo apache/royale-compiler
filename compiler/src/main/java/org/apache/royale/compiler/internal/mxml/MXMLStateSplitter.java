@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.parsing.IMXMLToken;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.SyntaxProblem;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 
 /**
  * Simple utility for parsing attribute.state phrases.

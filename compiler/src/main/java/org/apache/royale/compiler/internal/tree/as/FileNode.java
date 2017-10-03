@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,34 +29,34 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.common.RecursionGuard;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.as.IncludeHandler;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.semantics.PostProcessStep;
-import org.apache.flex.compiler.internal.targets.ITargetAttributes;
-import org.apache.flex.compiler.internal.targets.TargetAttributesMetadata;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IPackageNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.common.RecursionGuard;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.semantics.PostProcessStep;
+import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.internal.targets.TargetAttributesMetadata;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IPackageNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * ActionScript parse tree node representing a file

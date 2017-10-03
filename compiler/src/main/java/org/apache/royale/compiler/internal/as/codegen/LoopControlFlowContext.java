@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * There is an active LoopControlFlowContext for the syntactic region of each

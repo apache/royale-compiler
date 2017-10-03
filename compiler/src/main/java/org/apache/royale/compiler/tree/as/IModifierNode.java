@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.ASModifier;
 
 /**
  * An AST node representing one of the modifiers that can be used with a

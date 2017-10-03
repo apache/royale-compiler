@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,36 +25,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IForLoopNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.definitions.ClassTraitsDefinition;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * These tools need to be refactored into utility classes.

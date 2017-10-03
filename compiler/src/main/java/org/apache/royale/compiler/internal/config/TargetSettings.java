@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,13 +30,13 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.internal.projects.LibraryPathManager;
-import org.apache.flex.compiler.projects.IFlexProject;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.internal.projects.LibraryPathManager;
+import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
 
 /**

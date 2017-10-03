@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.ant.types;
+package org.apache.royale.compiler.ant.types;
 
 import java.io.File;
 
 import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.util.FileUtils;
 
-import org.apache.flex.compiler.ant.config.OptionSpec;
+import org.apache.royale.compiler.ant.config.OptionSpec;
 
 public class FlexSWCFileSet extends FlexFileSet 
 {

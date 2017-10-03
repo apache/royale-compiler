@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.flex.compiler.Messages;
-import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.Messages;
+import org.apache.royale.compiler.common.ISourceLocation;
 
 public final class EmbedSourceAttributeDoesNotExistProblem extends CompilerProblem
 {

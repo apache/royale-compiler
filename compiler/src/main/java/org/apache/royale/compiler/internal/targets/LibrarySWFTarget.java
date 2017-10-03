@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCLinker;
-import org.apache.flex.abc.ABCLinker.ABCLinkerSettings;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.units.ResourceBundleCompilationUnit;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swf.SWFFrame;
-import org.apache.flex.swf.tags.DoABCTag;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCLinker;
+import org.apache.royale.abc.ABCLinker.ABCLinkerSettings;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swf.SWFFrame;
+import org.apache.royale.swf.tags.DoABCTag;
 import com.google.common.collect.ImmutableSet;
 
 /**

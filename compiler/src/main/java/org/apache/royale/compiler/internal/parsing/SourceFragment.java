@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing;
+package org.apache.royale.compiler.internal.parsing;
 
-import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.ISourceLocation;
 
 /**
  * This class is an implementation of the {@code ISourceFragment} interface.

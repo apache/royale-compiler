@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
 
 /**
  * This AST node represents a concatenated expression involving text and

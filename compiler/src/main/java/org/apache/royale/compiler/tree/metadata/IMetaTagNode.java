@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.metadata;
+package org.apache.royale.compiler.tree.metadata;
 
-import org.apache.flex.compiler.common.IDecoration;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.common.IDecoration;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * An AST node representing a single metadata annotation on a declaration.

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.fxg;
+package org.apache.royale.compiler.fxg;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * Temporary class to wrap a IFXGNode in an IASNode.

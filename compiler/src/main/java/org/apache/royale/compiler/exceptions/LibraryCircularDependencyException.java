@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.exceptions;
+package org.apache.royale.compiler.exceptions;
 
 import java.util.List;
 
-import org.apache.flex.compiler.internal.projects.LibraryDependencyGraph;
+import org.apache.royale.compiler.internal.projects.LibraryDependencyGraph;
 import com.google.common.collect.ImmutableList;
 
 /**

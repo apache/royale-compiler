@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing;
+package org.apache.royale.compiler.internal.parsing;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.parsing.ICMToken;
 
 public class FilteringList<T extends ICMToken> extends ArrayList<T>
 {

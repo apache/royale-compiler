@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs;
+package org.apache.royale.maven.flexjs;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;

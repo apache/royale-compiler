@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 
 /**
  * An implementation of {@link IDefinitionStore} for large numbers of definitions.

@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.GetterDefinition;
-import org.apache.flex.compiler.internal.tree.as.parts.IAccessorFunctionContentsPart;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.GetterDefinition;
+import org.apache.royale.compiler.internal.tree.as.parts.IAccessorFunctionContentsPart;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IGetterNode;
 
 /**
  * ActionScript parse tree node representing a getter definition (e.g. function

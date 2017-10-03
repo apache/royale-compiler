@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.externals.reference;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
-import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.royale.compiler.internal.codegen.externals.utils.FunctionUtils;
+import org.apache.royale.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;

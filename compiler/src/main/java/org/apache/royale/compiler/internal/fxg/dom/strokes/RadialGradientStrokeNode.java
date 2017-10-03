@@ -17,25 +17,25 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.strokes;
+package org.apache.royale.compiler.internal.fxg.dom.strokes;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.logging.FXGLog;
-import org.apache.flex.compiler.fxg.logging.IFXGLogger;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.GradientEntryNode;
-import org.apache.flex.compiler.internal.fxg.dom.IScalableGradientNode;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.InterpolationMethod;
-import org.apache.flex.compiler.internal.fxg.dom.types.SpreadMethod;
-import org.apache.flex.compiler.problems.FXGInvalidChildMatrixNodeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.logging.FXGLog;
+import org.apache.royale.compiler.fxg.logging.IFXGLogger;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.GradientEntryNode;
+import org.apache.royale.compiler.internal.fxg.dom.IScalableGradientNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.InterpolationMethod;
+import org.apache.royale.compiler.internal.fxg.dom.types.SpreadMethod;
+import org.apache.royale.compiler.problems.FXGInvalidChildMatrixNodeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 public class RadialGradientStrokeNode extends AbstractStrokeNode implements IScalableGradientNode
 {

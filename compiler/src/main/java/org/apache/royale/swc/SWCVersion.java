@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 /**
  * Version information of a SWC in catalog.xml file.

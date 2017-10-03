@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.exceptions;
+package org.apache.royale.compiler.exceptions;
 
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 
 /**
  * A common base class for configuration related exceptions.

@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IConditionalNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.ISwitchNode;
-import org.apache.flex.compiler.tree.as.ITerminalNode;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IConditionalNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.ISwitchNode;
+import org.apache.royale.compiler.tree.as.ITerminalNode;
 
 /**
  * Represents a switch statement found in ActionScript. A switch has a

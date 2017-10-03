@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant;
+package org.apache.royale.compiler.ant;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,21 +27,21 @@ import java.io.File;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicConfigurator;
 
-import org.apache.flex.compiler.ant.config.ConfigAppendString;
-import org.apache.flex.compiler.ant.config.ConfigBoolean;
-import org.apache.flex.compiler.ant.config.ConfigInt;
-import org.apache.flex.compiler.ant.config.ConfigString;
-import org.apache.flex.compiler.ant.config.ConfigVariable;
-import org.apache.flex.compiler.ant.config.NestedAttributeElement;
-import org.apache.flex.compiler.ant.config.IOptionSource;
-import org.apache.flex.compiler.ant.config.OptionSpec;
-import org.apache.flex.compiler.ant.types.DefaultScriptLimits;
-import org.apache.flex.compiler.ant.types.DefaultSize;
-import org.apache.flex.compiler.ant.types.FlexFileSet;
-import org.apache.flex.compiler.ant.types.FlexSWCFileSet;
-import org.apache.flex.compiler.ant.types.Fonts;
-import org.apache.flex.compiler.ant.types.Metadata;
-import org.apache.flex.compiler.ant.types.RuntimeSharedLibraryPath;
+import org.apache.royale.compiler.ant.config.ConfigAppendString;
+import org.apache.royale.compiler.ant.config.ConfigBoolean;
+import org.apache.royale.compiler.ant.config.ConfigInt;
+import org.apache.royale.compiler.ant.config.ConfigString;
+import org.apache.royale.compiler.ant.config.ConfigVariable;
+import org.apache.royale.compiler.ant.config.NestedAttributeElement;
+import org.apache.royale.compiler.ant.config.IOptionSource;
+import org.apache.royale.compiler.ant.config.OptionSpec;
+import org.apache.royale.compiler.ant.types.DefaultScriptLimits;
+import org.apache.royale.compiler.ant.types.DefaultSize;
+import org.apache.royale.compiler.ant.types.FlexFileSet;
+import org.apache.royale.compiler.ant.types.FlexSWCFileSet;
+import org.apache.royale.compiler.ant.types.Fonts;
+import org.apache.royale.compiler.ant.types.Metadata;
+import org.apache.royale.compiler.ant.types.RuntimeSharedLibraryPath;
 
 /**
  * Implements the {@code <mxmlc>} Ant task.
@@ -82,7 +82,7 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
 	
 	private static final String TOOL_JAR_FILE_NAME = "jsc.jar";
 
-	private static final String TOOL_CLASS_NAME = "org.apache.flex.compiler.clients.MXMLJSC";
+	private static final String TOOL_CLASS_NAME = "org.apache.royale.compiler.clients.MXMLJSC";
 
 	private static final String TOOL_METHOD_NAME = "staticMainNoExit";
 	

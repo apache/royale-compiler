@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 /**
  * Class to manage access to the ICodeGenerator.

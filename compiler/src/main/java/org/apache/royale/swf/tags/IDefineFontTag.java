@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 /**
  * Common interface between DefineFontTag, DefineFontTag2, DefineFontTag3,

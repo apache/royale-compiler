@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 
 /**
  * Represents a config directive definition

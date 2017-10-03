@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 public interface ProblemQueryProvider {
     public ProblemQuery getProblemQuery();

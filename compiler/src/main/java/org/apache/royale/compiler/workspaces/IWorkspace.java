@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.workspaces;
+package org.apache.royale.compiler.workspaces;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.asdoc.IASDocDelegate;
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWCManager;
+import org.apache.royale.compiler.asdoc.IASDocDelegate;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.mxml.IMXMLDataManager;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.ISWCManager;
 
 /**
  * Implementations maintain a collection of ICompilerProject's in the workspace

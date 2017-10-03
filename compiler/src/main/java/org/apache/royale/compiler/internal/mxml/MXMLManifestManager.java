@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,15 +37,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import org.apache.flex.compiler.mxml.IMXMLManifestManager;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ManifestProblem;
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.swc.ISWCComponent;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.compiler.mxml.IMXMLManifestManager;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ManifestProblem;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.swc.ISWCComponent;
+import org.apache.royale.swc.ISWC;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
 /**
  * An ITraitVisitor generates a IMetadataVisitor to define a trait's metadata, and

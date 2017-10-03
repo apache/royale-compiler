@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.goog;
+package org.apache.royale.compiler.internal.codegen.js.goog;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.as.TestClass;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.as.TestClass;
+import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
 /**
@@ -40,7 +40,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TestGoogClass extends TestClass
         //               in JS we ignore it
         IClassNode node = getClassNode("internal class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TestGoogClass extends TestClass
         //               in JS we ignore it
         IClassNode node = getClassNode("public final class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TestGoogClass extends TestClass
         // (erikdebruin) all JS objects are 'dynamic' by design
         IClassNode node = getClassNode("public dynamic class A{}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -90,7 +90,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A implements IEventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
@@ -108,7 +108,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -117,7 +117,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -126,7 +126,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public final class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -135,7 +135,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher implements flash.events.IEventDispatcher, flash.display.IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A {public function A() { }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A {public function A() { super(); }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\t;\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n\tvar self = this;\n\t;\n};");
     }
 
     @Test
@@ -160,7 +160,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher { public function A() { super('foo', 42);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\torg.apache.flex.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.royale.A = function() {\n\tvar self = this;\n\torg.apache.royale.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -169,7 +169,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n};");
+        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n};");
     }
 
     @Override
@@ -178,7 +178,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n\torg.apache.flex.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n\torg.apache.royale.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -188,7 +188,7 @@ public class TestGoogClass extends TestClass
         IClassNode node = getClassNode("public class A {public var a:Object;protected var b:String; "
                 + "private var c:int; internal var d:uint; var e:Number}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.a;\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.flex.A.prototype.b;\n\n/**\n * @private\n * @type {number}\n */\norg.apache.flex.A.prototype.c;\n\n/**\n * @type {number}\n */\norg.apache.flex.A.prototype.d;\n\n/**\n * @type {number}\n */\norg.apache.flex.A.prototype.e;");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n/**\n * @type {Object}\n */\norg.apache.royale.A.prototype.a;\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.royale.A.prototype.b;\n\n/**\n * @private\n * @type {number}\n */\norg.apache.royale.A.prototype.c;\n\n/**\n * @type {number}\n */\norg.apache.royale.A.prototype.d;\n\n/**\n * @type {number}\n */\norg.apache.royale.A.prototype.e;");
     }
 
     @Override
@@ -201,7 +201,7 @@ public class TestGoogClass extends TestClass
                 + "private static const C:Number = 42;"
                 + "foo_bar static const C:String = 'me' + 'you';}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n/**\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n/**\n * @const\n * @type {number}\n */\norg.apache.royale.A.A = 42;\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.royale.A.B = 42;\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.royale.A.C = 42;\n\n/**\n * @const\n * @type {string}\n */\norg.apache.royale.A.C = 'me' + 'you';");
     }
 
     @Override
@@ -220,7 +220,7 @@ public class TestGoogClass extends TestClass
                 + "foo_bar function get foo6():Object{return null;}"
                 + "foo_bar function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo1;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo1', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo1', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @protected\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo2;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo2', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo2', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @private\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo3;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo3', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo3', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo5;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo5', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo5', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo6;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo6', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo6', \n\t{set:function(value) {\n\t}, configurable:true}\n);");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n/**\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo1;\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo1', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo1', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @protected\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo2;\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo2', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo2', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @private\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo3;\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo3', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo3', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo5;\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo5', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo5', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo6;\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo6', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.royale.A.prototype, \n\t'foo6', \n\t{set:function(value) {\n\t}, configurable:true}\n);");
     }
 
     @Override
@@ -238,13 +238,13 @@ public class TestGoogClass extends TestClass
                 + "public static function foo7(value:Object):void{}"
                 + "foo_bar static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n\tvar self = this;\n\treturn org.apache.flex.A.base(this, 'foo1b');\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n\tvar self = this;\n\treturn org.apache.royale.A.base(this, 'foo1b');\n};\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo6 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};");
     }
 
     @Override
     protected IClassNode getClassNode(String code)
     {
-        String source = "package org.apache.flex {import flash.events.IEventDispatcher;import flash.events.EventDispatcher;import flash.events.Event;import flash.display.IBitmapDrawable;"
+        String source = "package org.apache.royale {import flash.events.IEventDispatcher;import flash.events.EventDispatcher;import flash.events.Event;import flash.display.IBitmapDrawable;"
                 + code + "}";
         IFileNode node = compileAS(source);
         IClassNode child = (IClassNode) findFirstDescendantOfType(node,

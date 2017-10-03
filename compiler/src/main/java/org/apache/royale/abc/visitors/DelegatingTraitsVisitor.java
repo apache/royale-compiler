@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.semantics.ClassInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Traits;
+import org.apache.royale.abc.semantics.ClassInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Traits;
 
 /**
  * this class just passes all calls through to the delegate - used as a base

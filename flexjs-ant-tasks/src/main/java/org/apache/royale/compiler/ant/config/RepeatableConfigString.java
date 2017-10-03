@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant.config;
+package org.apache.royale.compiler.ant.config;
 
 import java.util.ArrayList;
 import java.util.Iterator;

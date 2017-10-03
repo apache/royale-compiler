@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml;
+package org.apache.royale.compiler.internal.codegen.mxml;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 /**
  * @author Erik de Bruin

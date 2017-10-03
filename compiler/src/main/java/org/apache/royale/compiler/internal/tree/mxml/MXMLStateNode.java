@@ -17,25 +17,25 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.mxml.StateDefinition;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IStateDefinition;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLSemanticProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.mxml.StateDefinition;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IStateDefinition;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLSemanticProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStateNode;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 class MXMLStateNode extends MXMLInstanceNode implements IMXMLStateNode
 {

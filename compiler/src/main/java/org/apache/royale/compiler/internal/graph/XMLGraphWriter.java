@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,9 +39,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 
 
-import org.apache.flex.compiler.internal.projects.DependencyGraph;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /** 
  * The base class of {@link IReportWriter} that transforms a {@link DependencyGraph} to output in XML

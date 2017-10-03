@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 import java.util.Collection;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.XMLName;
+import org.apache.royale.compiler.common.XMLName;
 
 /**
  * 

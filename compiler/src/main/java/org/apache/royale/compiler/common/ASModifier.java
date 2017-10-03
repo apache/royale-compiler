@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 import java.util.HashMap;
 
-import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 
 /**
  * Modifiers found within the AS3 language.

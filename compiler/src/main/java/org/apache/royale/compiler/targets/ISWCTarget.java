@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.util.Collection;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swc.ISWC;
 
 /**
  * A target which can build a SWC.

@@ -17,45 +17,45 @@
  *
  */
 
-package org.apache.flex.compiler.internal.abc;
+package org.apache.royale.compiler.internal.abc;
 
-import static org.apache.flex.abc.ABCConstants.OP_dup;
-import static org.apache.flex.abc.ABCConstants.OP_findpropstrict;
-import static org.apache.flex.abc.ABCConstants.OP_getlocal0;
-import static org.apache.flex.abc.ABCConstants.OP_getproperty;
-import static org.apache.flex.abc.ABCConstants.OP_getscopeobject;
-import static org.apache.flex.abc.ABCConstants.OP_initproperty;
-import static org.apache.flex.abc.ABCConstants.OP_newclass;
-import static org.apache.flex.abc.ABCConstants.OP_popscope;
-import static org.apache.flex.abc.ABCConstants.OP_pushscope;
-import static org.apache.flex.abc.ABCConstants.OP_returnvoid;
+import static org.apache.royale.abc.ABCConstants.OP_dup;
+import static org.apache.royale.abc.ABCConstants.OP_findpropstrict;
+import static org.apache.royale.abc.ABCConstants.OP_getlocal0;
+import static org.apache.royale.abc.ABCConstants.OP_getproperty;
+import static org.apache.royale.abc.ABCConstants.OP_getscopeobject;
+import static org.apache.royale.abc.ABCConstants.OP_initproperty;
+import static org.apache.royale.abc.ABCConstants.OP_newclass;
+import static org.apache.royale.abc.ABCConstants.OP_popscope;
+import static org.apache.royale.abc.ABCConstants.OP_pushscope;
+import static org.apache.royale.abc.ABCConstants.OP_returnvoid;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.ClassInfo;
-import org.apache.flex.abc.semantics.InstanceInfo;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.PooledValue;
-import org.apache.flex.abc.semantics.Trait;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.abc.visitors.IClassVisitor;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IMethodVisitor;
-import org.apache.flex.abc.visitors.IScriptVisitor;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.ClassInfo;
+import org.apache.royale.abc.semantics.InstanceInfo;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.PooledValue;
+import org.apache.royale.abc.semantics.Trait;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.abc.visitors.IClassVisitor;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IMethodVisitor;
+import org.apache.royale.abc.visitors.IScriptVisitor;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * Utility class for writing a class definition into an IABCVisitor.

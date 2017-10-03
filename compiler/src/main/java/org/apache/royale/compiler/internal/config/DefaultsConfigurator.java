@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
 
 /**
  * This class makes the default values go in through the configuration

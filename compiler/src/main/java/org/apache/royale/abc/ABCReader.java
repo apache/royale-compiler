@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc;
+package org.apache.royale.abc;
 
 /**
  * ABCReader contains the byte-level methods that read ABC bytecode.

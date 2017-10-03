@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.swf;
+package org.apache.royale.compiler.internal.fxg.swf;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.internal.fxg.dom.IScalableGradientNode;
-import org.apache.flex.compiler.internal.fxg.dom.fills.BitmapFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.FillMode;
-import org.apache.flex.compiler.internal.fxg.types.FXGMatrix;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.internal.fxg.dom.IScalableGradientNode;
+import org.apache.royale.compiler.internal.fxg.dom.fills.BitmapFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.FillMode;
+import org.apache.royale.compiler.internal.fxg.types.FXGMatrix;
 
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.types.CXFormWithAlpha;
-import org.apache.flex.swf.types.Matrix;
-import org.apache.flex.swf.types.RGBA;
-import org.apache.flex.swf.types.Rect;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.types.CXFormWithAlpha;
+import org.apache.royale.swf.types.Matrix;
+import org.apache.royale.swf.types.RGBA;
+import org.apache.royale.swf.types.Rect;
 
 
 /**

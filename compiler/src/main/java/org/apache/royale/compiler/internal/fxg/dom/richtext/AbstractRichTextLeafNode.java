@@ -17,36 +17,36 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.AbstractFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.types.AlignmentBaseline;
-import org.apache.flex.compiler.internal.fxg.dom.types.BaselineShift;
-import org.apache.flex.compiler.internal.fxg.dom.types.BreakOpportunity;
-import org.apache.flex.compiler.internal.fxg.dom.types.ColorWithEnum;
-import org.apache.flex.compiler.internal.fxg.dom.types.DigitCase;
-import org.apache.flex.compiler.internal.fxg.dom.types.DigitWidth;
-import org.apache.flex.compiler.internal.fxg.dom.types.DominantBaseline;
-import org.apache.flex.compiler.internal.fxg.dom.types.FontStyle;
-import org.apache.flex.compiler.internal.fxg.dom.types.FontWeight;
-import org.apache.flex.compiler.internal.fxg.dom.types.Kerning;
-import org.apache.flex.compiler.internal.fxg.dom.types.LigatureLevel;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberInherit;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextDecoration;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextRotation;
-import org.apache.flex.compiler.internal.fxg.dom.types.TypographicCase;
-import org.apache.flex.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
-import org.apache.flex.compiler.internal.fxg.dom.types.BaselineShift.BaselineShiftAsEnum;
-import org.apache.flex.compiler.internal.fxg.dom.types.ColorWithEnum.ColorEnum;
-import org.apache.flex.compiler.internal.fxg.dom.types.NumberInherit.NumberInheritAsEnum;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.AbstractFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.types.AlignmentBaseline;
+import org.apache.royale.compiler.internal.fxg.dom.types.BaselineShift;
+import org.apache.royale.compiler.internal.fxg.dom.types.BreakOpportunity;
+import org.apache.royale.compiler.internal.fxg.dom.types.ColorWithEnum;
+import org.apache.royale.compiler.internal.fxg.dom.types.DigitCase;
+import org.apache.royale.compiler.internal.fxg.dom.types.DigitWidth;
+import org.apache.royale.compiler.internal.fxg.dom.types.DominantBaseline;
+import org.apache.royale.compiler.internal.fxg.dom.types.FontStyle;
+import org.apache.royale.compiler.internal.fxg.dom.types.FontWeight;
+import org.apache.royale.compiler.internal.fxg.dom.types.Kerning;
+import org.apache.royale.compiler.internal.fxg.dom.types.LigatureLevel;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberInherit;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextDecoration;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextRotation;
+import org.apache.royale.compiler.internal.fxg.dom.types.TypographicCase;
+import org.apache.royale.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
+import org.apache.royale.compiler.internal.fxg.dom.types.BaselineShift.BaselineShiftAsEnum;
+import org.apache.royale.compiler.internal.fxg.dom.types.ColorWithEnum.ColorEnum;
+import org.apache.royale.compiler.internal.fxg.dom.types.NumberInherit.NumberInheritAsEnum;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 
 /**

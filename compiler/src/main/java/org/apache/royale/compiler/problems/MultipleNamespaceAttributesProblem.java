@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 
 /**
  * A definition can only have at most one user-defined namespace attributes.

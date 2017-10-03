@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 
 import java.io.File;
@@ -30,59 +30,59 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.js.IMappingEmitter;
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
-import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.PropertyWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.StaticPropertyWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
-import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
-import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
-import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
-import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.targets.ITargetAttributes;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.*;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.tree.mxml.*;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.utils.NativeUtils;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.IMappingEmitter;
+import org.apache.royale.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
+import org.apache.royale.compiler.internal.codegen.databinding.BindingInfo;
+import org.apache.royale.compiler.internal.codegen.databinding.FunctionWatcherInfo;
+import org.apache.royale.compiler.internal.codegen.databinding.PropertyWatcherInfo;
+import org.apache.royale.compiler.internal.codegen.databinding.StaticPropertyWatcherInfo;
+import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase;
+import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
+import org.apache.royale.compiler.internal.codegen.databinding.XMLWatcherInfo;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
+import org.apache.royale.compiler.internal.codegen.js.jx.PackageFooterEmitter;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.tree.mxml.*;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.utils.NativeUtils;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.swc.ISWC;
 
 import com.google.common.base.Joiner;
 import com.google.debugging.sourcemap.FilePosition;
@@ -1653,7 +1653,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 indentPush();
                 writeNewline("if (value != this." + instance.id + "_) {");
                 writeNewline("this." + instance.id + "_ = value;");
-                write("this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, '");
+                write("this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(this, '");
                 indentPop();
                 writeNewline(instance.id + "', null, value));");
                 indentPop();
@@ -2490,7 +2490,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     public void emitFactory(IMXMLFactoryNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
+        ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
 
         IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
@@ -2506,7 +2506,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
+        ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
 
         ps.value += formatQualifiedName(documentDefinition.getQualifiedName()) + ".";
         ps.value += formatQualifiedName(node.getName());

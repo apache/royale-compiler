@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
 
 /**
  * This error represents a general error that has been encountered during parsing, usually triggered by an exception

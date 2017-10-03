@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,18 +30,18 @@ import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.ANTLRInputStream;
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSFontFace;
-import org.apache.flex.compiler.css.ICSSNamespaceDefinition;
-import org.apache.flex.compiler.css.ICSSNode;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.internal.css.CSSDocument;
-import org.apache.flex.compiler.internal.css.CSSModelTreeType;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.io.SWCReader;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
+import org.apache.royale.compiler.css.ICSSNode;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.internal.css.CSSDocument;
+import org.apache.royale.compiler.internal.css.CSSModelTreeType;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.io.SWCReader;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
 
 /**

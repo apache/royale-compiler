@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,37 +28,37 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.flex.compiler.clients.JSConfiguration;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.css.ICSSMediaQueryCondition;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
-import org.apache.flex.compiler.internal.targets.ITargetAttributes;
-import org.apache.flex.compiler.internal.targets.LinkageChecker;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
-import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.clients.JSConfiguration;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
+import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.internal.targets.LinkageChecker;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 import com.google.common.collect.ImmutableList;
 
@@ -451,7 +451,7 @@ public class RoyaleProject extends FlexProject
 	public boolean isModule(String mainClass)
 	{
         IResolvedQualifiersReference iModuleRef = ReferenceFactory.packageQualifiedReference(
-                getWorkspace(), "org.apache.flex.core.IModule");
+                getWorkspace(), "org.apache.royale.core.IModule");
         ITypeDefinition moddef = (ITypeDefinition)iModuleRef.resolve(this);
         IResolvedQualifiersReference mainRef = ReferenceFactory.packageQualifiedReference(
                 getWorkspace(), mainClass);

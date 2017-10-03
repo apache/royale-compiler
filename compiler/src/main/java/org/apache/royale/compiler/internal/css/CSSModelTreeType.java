@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 /**
  * Tree node type of CSS DOM tree.

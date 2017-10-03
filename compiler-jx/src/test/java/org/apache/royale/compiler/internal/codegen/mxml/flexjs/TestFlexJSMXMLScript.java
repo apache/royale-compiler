@@ -16,12 +16,12 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
-import org.apache.flex.compiler.internal.test.RoyaleTestBase;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.test.RoyaleTestBase;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 import org.junit.Test;
 
 public class TestRoyaleMXMLScript extends RoyaleTestBase
@@ -53,13 +53,13 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -76,7 +76,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"   */\n" +
         		"  this.mxmldp;\n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -154,18 +154,18 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
         		"  \n" +
-        		"  this.foo = org.apache.flex.utils.Language.closure(this.bar, this, 'bar');\n" +
+        		"  this.foo = org.apache.royale.utils.Language.closure(this.bar, this, 'bar');\n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {Array}\n" +
@@ -178,7 +178,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"   */\n" +
         		"  this.mxmldp;\n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -260,13 +260,13 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
         		"goog.provide('AppName');\n" +
         		"\n" +
-        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
         		" */\n" +
         		"AppName = function() {\n" +
         		"  AppName.base(this, 'constructor');\n" +
@@ -284,7 +284,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"   */\n" +
         		"  this.mxmldp;\n" +
         		"};\n" +
-        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +

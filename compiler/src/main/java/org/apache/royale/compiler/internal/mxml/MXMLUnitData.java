@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.utils.FastStack;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.utils.FastStack;
 
 /**
  * Encapsulation of an MXML unit: an open/close/empty tag, a chunk of text

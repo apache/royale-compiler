@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * The BalancingMXMLProcessor performs a balancing operation over a collection of 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 /**
  * A value object for an x and y pair.

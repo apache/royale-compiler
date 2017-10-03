@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.flex;
+package org.apache.royale.compiler.fxg.flex;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicContext;
-import org.apache.flex.compiler.internal.fxg.dom.RichTextNode;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicContext;
+import org.apache.royale.compiler.internal.fxg.dom.RichTextNode;
 
 /**
  * A Flex specific override for RichTextNode used to capture the 

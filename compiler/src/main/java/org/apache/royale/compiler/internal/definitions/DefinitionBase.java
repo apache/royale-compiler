@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import static org.apache.flex.compiler.common.ISourceLocation.UNKNOWN;
+import static org.apache.royale.compiler.common.ISourceLocation.UNKNOWN;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,51 +27,51 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.ModifiersSet;
-import org.apache.flex.compiler.common.NodeReference;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.IAccessorDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IDocumentableDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.definitions.metadata.IDeprecationInfo;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.common.Counter;
-import org.apache.flex.compiler.internal.definitions.metadata.DeprecationInfo;
-import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
-import org.apache.flex.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.ASScopeBase;
-import org.apache.flex.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.common.NodeReference;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDocumentableDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.common.Counter;
+import org.apache.royale.compiler.internal.definitions.metadata.DeprecationInfo;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.ASScopeBase;
+import org.apache.royale.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * This class is the abstract base class for all ActionScript definitions in the

@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.fills;
+package org.apache.royale.compiler.internal.fxg.dom.fills;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.transforms.MatrixNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.FillMode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.MatrixNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.FillMode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 public class BitmapFillNode extends AbstractFillNode
 {

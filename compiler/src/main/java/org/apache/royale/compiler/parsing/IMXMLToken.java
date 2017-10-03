@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.parsing;
+package org.apache.royale.compiler.parsing;
 
 /**
  * A token returned back by an {@link IMXMLTokenizer} created when we scan text

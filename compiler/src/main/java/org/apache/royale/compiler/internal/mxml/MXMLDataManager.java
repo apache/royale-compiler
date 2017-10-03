@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.caches.MXMLDataCache;
-import org.apache.flex.compiler.mxml.IMXMLDataManager;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.caches.MXMLDataCache;
+import org.apache.royale.compiler.mxml.IMXMLDataManager;
 
 /**
  * The {@code MXMLDataManager} of the {@code IWorkspace}

@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.databinding;
+package org.apache.royale.compiler.internal.codegen.databinding;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 public class StaticPropertyWatcherInfo extends PropertyWatcherInfo
 {

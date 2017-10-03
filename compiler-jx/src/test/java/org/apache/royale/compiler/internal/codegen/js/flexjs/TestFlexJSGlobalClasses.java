@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
-import org.apache.flex.compiler.internal.tree.as.VariableNode;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IForLoopNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -63,7 +63,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IFunctionNode node = getMethod("function a():void {  trace(arguments);}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.a = function() {\n  org.apache.flex.utils.Language.trace(arguments);\n}");
+        assertOut("FalconTest_A.prototype.a = function() {\n  org.apache.royale.utils.Language.trace(arguments);\n}");
     }
 
     @Test
@@ -148,7 +148,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo')");
         IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
         asBlockWalker.visitFunctionCall(parentNode);
-        assertOut("org.apache.flex.utils.Language.sortOn(a, 'foo')");
+        assertOut("org.apache.royale.utils.Language.sortOn(a, 'foo')");
     }
 
     @Test
@@ -157,7 +157,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo', 10)");
         IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
         asBlockWalker.visitFunctionCall(parentNode);
-        assertOut("org.apache.flex.utils.Language.sortOn(a, 'foo', 10)");
+        assertOut("org.apache.royale.utils.Language.sortOn(a, 'foo', 10)");
     }
 
     @Test
@@ -165,7 +165,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:int = new int(\"123\");");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(\"123\")");
+        assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language._int(\"123\")");
     }
 
     @Override
@@ -174,7 +174,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:uint = new uint(-100);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language.uint(-100)");
+        assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language.uint(-100)");
     }
 
     @Test
@@ -300,7 +300,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(['Hello', 'World'], 'String')");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector(['Hello', 'World'], 'String')");
     }
 
     @Test
@@ -332,7 +332,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector()");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector()");
     }
 
     @Test
@@ -341,7 +341,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World');");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector('Hello', 'String')");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector('Hello', 'String')");
     }
 
     @Test
@@ -350,7 +350,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World', 'Three');");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector('Hello', 'String')");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector('Hello', 'String')");
     }
 
     @Test
@@ -358,7 +358,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(30, 'String')");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector(30, 'String')");
     }
 
     @Test
@@ -367,7 +367,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, 40);");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(30, 'String')");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector(30, 'String')");
     }
 
     @Test
@@ -376,7 +376,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(['Hello', 'World'], 'String')");
+        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector(['Hello', 'World'], 'String')");
     }
 
     @Test
@@ -531,7 +531,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete (b.xml as XML).child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("org.apache.flex.utils.Language.as(b.xml, XML).child('child').removeChild('grandchild')");
+        assertOut("org.apache.royale.utils.Language.as(b.xml, XML).child('child').removeChild('grandchild')");
     }    
 
     @Test
@@ -572,7 +572,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete (b.xml as XML).child.grandchild[0];");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("org.apache.flex.utils.Language.as(b.xml, XML).child('child').child('grandchild').removeChildAt(0)");
+        assertOut("org.apache.royale.utils.Language.as(b.xml, XML).child('child').child('grandchild').removeChildAt(0)");
     }
     
     @Test
@@ -582,7 +582,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ b = org.apache.flex.utils.Language.string(a.name())");
+        assertOut("var /** @type {string} */ b = org.apache.royale.utils.Language.string(a.name())");
     }
     
     @Test
@@ -642,7 +642,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ b = org.apache.flex.utils.Language.string(a.attribute('attr1'))");
+        assertOut("var /** @type {string} */ b = org.apache.royale.utils.Language.string(a.attribute('attr1'))");
     }
     
     @Test
@@ -650,7 +650,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String; b = a.@attr1;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("b = org.apache.flex.utils.Language.string(a.attribute('attr1'))");
+        assertOut("b = org.apache.royale.utils.Language.string(a.attribute('attr1'))");
     }
     
     @Test
@@ -796,7 +796,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:*;for each (var p:XML in (a as XMLList)) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = org.apache.flex.utils.Language.as(a, XMLList);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = org.apache.royale.utils.Language.as(a, XMLList);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
     }
     
     @Test

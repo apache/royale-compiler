@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.css.ICSSPropertyValue;
 
 /**
  * Base class for all CSS property value types.

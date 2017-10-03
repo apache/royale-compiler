@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLRequiredAttributeProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLWebServiceOperationNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLEmptyAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLRequiredAttributeProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * Implementation of the {@link IMXMLWebServiceOperationNode} interface.

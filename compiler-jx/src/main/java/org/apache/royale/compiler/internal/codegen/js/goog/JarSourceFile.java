@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.goog;
+package org.apache.royale.compiler.internal.codegen.js.goog;
 
 import com.google.common.io.CharSource;
 import com.google.javascript.jscomp.Region;

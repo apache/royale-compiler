@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.jsc;
+package org.apache.royale.compiler.internal.codegen.mxml.jsc;
 
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
+import org.apache.royale.compiler.codegen.mxml.flexjs.IMXMLRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyaleEmitter;
 
 /**
  * @author Erik de Bruin

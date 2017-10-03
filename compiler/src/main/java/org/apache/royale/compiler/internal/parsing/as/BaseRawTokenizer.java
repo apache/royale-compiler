@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.parsing.ICMToken;
-import org.apache.flex.compiler.problems.BadCharacterProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.problems.BadCharacterProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Base class for JFlex-based tokenizers (RawScriptTokenizer, RawTagTokenizer,

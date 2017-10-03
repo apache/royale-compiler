@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,15 +27,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.tags.DoABCTag;
-import org.apache.flex.swf.tags.ExportAssetsTag;
-import org.apache.flex.swf.tags.FrameLabelTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.IManagedTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.ShowFrameTag;
-import org.apache.flex.swf.tags.SymbolClassTag;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.tags.DoABCTag;
+import org.apache.royale.swf.tags.ExportAssetsTag;
+import org.apache.royale.swf.tags.FrameLabelTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.IManagedTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.tags.ShowFrameTag;
+import org.apache.royale.swf.tags.SymbolClassTag;
 
 /**
  * SWF frame model manages a list of SWF tags. For the "managed" tags,

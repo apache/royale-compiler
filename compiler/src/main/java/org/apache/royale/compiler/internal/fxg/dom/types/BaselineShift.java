@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.types;
+package org.apache.royale.compiler.internal.fxg.dom.types;
 
 /**
  * The BaselineShift class. Underline value can be either a double or 

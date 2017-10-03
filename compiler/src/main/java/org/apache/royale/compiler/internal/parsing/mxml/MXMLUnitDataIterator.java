@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
 import java.util.Iterator;
 
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
 
 /**
  * Faster iterator for dealing with MXMLUnitData objects

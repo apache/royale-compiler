@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,15 +31,15 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSFontFace;
-import org.apache.flex.compiler.css.ICSSNamespaceDefinition;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.internal.css.CSSLexer;
-import org.apache.flex.compiler.internal.css.CSSParser;
-import org.apache.flex.compiler.internal.css.CSSTree;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.internal.css.CSSLexer;
+import org.apache.royale.compiler.internal.css.CSSParser;
+import org.apache.royale.compiler.internal.css.CSSTree;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

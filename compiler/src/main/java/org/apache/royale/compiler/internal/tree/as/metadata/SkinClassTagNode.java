@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 
 /**
  * Represents SkinClass metadata

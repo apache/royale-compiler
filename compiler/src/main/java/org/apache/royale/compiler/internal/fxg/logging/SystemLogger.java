@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.logging;
+package org.apache.royale.compiler.internal.fxg.logging;
 
 import java.io.PrintStream;
 

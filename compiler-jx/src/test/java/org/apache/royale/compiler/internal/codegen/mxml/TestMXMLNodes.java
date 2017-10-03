@@ -16,10 +16,10 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml;
+package org.apache.royale.compiler.internal.codegen.mxml;
 
-import org.apache.flex.compiler.internal.test.MXMLTestBase;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.internal.test.MXMLTestBase;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.junit.Test;
 
 public class TestMXMLNodes extends MXMLTestBase

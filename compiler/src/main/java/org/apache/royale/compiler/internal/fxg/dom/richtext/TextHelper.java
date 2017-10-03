@@ -17,41 +17,41 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.AlignmentBaseline;
-import org.apache.flex.compiler.internal.fxg.dom.types.BlockProgression;
-import org.apache.flex.compiler.internal.fxg.dom.types.BreakOpportunity;
-import org.apache.flex.compiler.internal.fxg.dom.types.DigitCase;
-import org.apache.flex.compiler.internal.fxg.dom.types.DigitWidth;
-import org.apache.flex.compiler.internal.fxg.dom.types.Direction;
-import org.apache.flex.compiler.internal.fxg.dom.types.DominantBaseline;
-import org.apache.flex.compiler.internal.fxg.dom.types.FontStyle;
-import org.apache.flex.compiler.internal.fxg.dom.types.FontWeight;
-import org.apache.flex.compiler.internal.fxg.dom.types.JustificationRule;
-import org.apache.flex.compiler.internal.fxg.dom.types.JustificationStyle;
-import org.apache.flex.compiler.internal.fxg.dom.types.Kerning;
-import org.apache.flex.compiler.internal.fxg.dom.types.LeadingModel;
-import org.apache.flex.compiler.internal.fxg.dom.types.LigatureLevel;
-import org.apache.flex.compiler.internal.fxg.dom.types.LineBreak;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextAlign;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextDecoration;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextJustify;
-import org.apache.flex.compiler.internal.fxg.dom.types.TextRotation;
-import org.apache.flex.compiler.internal.fxg.dom.types.TypographicCase;
-import org.apache.flex.compiler.internal.fxg.dom.types.VerticalAlign;
-import org.apache.flex.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
-import org.apache.flex.compiler.problems.FXGInvalidTabStopsProblem;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.AlignmentBaseline;
+import org.apache.royale.compiler.internal.fxg.dom.types.BlockProgression;
+import org.apache.royale.compiler.internal.fxg.dom.types.BreakOpportunity;
+import org.apache.royale.compiler.internal.fxg.dom.types.DigitCase;
+import org.apache.royale.compiler.internal.fxg.dom.types.DigitWidth;
+import org.apache.royale.compiler.internal.fxg.dom.types.Direction;
+import org.apache.royale.compiler.internal.fxg.dom.types.DominantBaseline;
+import org.apache.royale.compiler.internal.fxg.dom.types.FontStyle;
+import org.apache.royale.compiler.internal.fxg.dom.types.FontWeight;
+import org.apache.royale.compiler.internal.fxg.dom.types.JustificationRule;
+import org.apache.royale.compiler.internal.fxg.dom.types.JustificationStyle;
+import org.apache.royale.compiler.internal.fxg.dom.types.Kerning;
+import org.apache.royale.compiler.internal.fxg.dom.types.LeadingModel;
+import org.apache.royale.compiler.internal.fxg.dom.types.LigatureLevel;
+import org.apache.royale.compiler.internal.fxg.dom.types.LineBreak;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextAlign;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextDecoration;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextJustify;
+import org.apache.royale.compiler.internal.fxg.dom.types.TextRotation;
+import org.apache.royale.compiler.internal.fxg.dom.types.TypographicCase;
+import org.apache.royale.compiler.internal.fxg.dom.types.VerticalAlign;
+import org.apache.royale.compiler.internal.fxg.dom.types.WhiteSpaceCollapse;
+import org.apache.royale.compiler.problems.FXGInvalidTabStopsProblem;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Utilities to help create Text.

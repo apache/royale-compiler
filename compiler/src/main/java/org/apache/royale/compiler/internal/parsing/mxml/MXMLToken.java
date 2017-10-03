@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.parsing.ICMToken;
-import org.apache.flex.compiler.parsing.IMXMLToken;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 
 /**
  * MXML token (output unit of MXMLTokenizer, input unit of MXMLData constructor).

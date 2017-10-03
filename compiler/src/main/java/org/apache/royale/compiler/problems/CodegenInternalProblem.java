@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  *  A CodegenInternalProblem represents a

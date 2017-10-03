@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
-import org.apache.flex.compiler.internal.definitions.metadata.MetaTagAttribute;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTagAttribute;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 
 /**
  * One name/value pair from the meta attribute. Subclass of

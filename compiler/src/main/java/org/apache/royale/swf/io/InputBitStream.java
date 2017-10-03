@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -28,8 +28,8 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.swf.Header;
-import org.apache.flex.utils.DAByteArrayOutputStream;
+import org.apache.royale.swf.Header;
+import org.apache.royale.utils.DAByteArrayOutputStream;
 
 /**
  * Implementation of {@link InputBitStream}. This implementation allows you to

@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.problems.collections;
+package org.apache.royale.compiler.problems.collections;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.flex.compiler.clients.problems.IProblemFilter;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.clients.problems.IProblemFilter;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  *  A FilteredIterator applies a IProblemFilter to an

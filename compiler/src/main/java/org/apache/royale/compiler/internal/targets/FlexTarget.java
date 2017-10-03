@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.Collection;
@@ -28,50 +28,50 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.config.RSLSettings.RSLAndPolicyFileURLPair;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
-import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
-import org.apache.flex.compiler.internal.config.FrameInfo;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.targets.Target.DirectDependencies;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InvalidBackgroundColorProblem;
-import org.apache.flex.compiler.problems.MissingSignedDigestProblem;
-import org.apache.flex.compiler.problems.MissingUnsignedDigestProblem;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCDigest;
-import org.apache.flex.swc.ISWCLibrary;
-import org.apache.flex.swc.ISWCManager;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.tags.ProductInfoTag;
-import org.apache.flex.swf.tags.ProductInfoTag.Edition;
-import org.apache.flex.swf.tags.ProductInfoTag.Product;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.config.RSLSettings.RSLAndPolicyFileURLPair;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
+import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
+import org.apache.royale.compiler.internal.config.FrameInfo;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.targets.Target.DirectDependencies;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InvalidBackgroundColorProblem;
+import org.apache.royale.compiler.problems.MissingSignedDigestProblem;
+import org.apache.royale.compiler.problems.MissingUnsignedDigestProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCDigest;
+import org.apache.royale.swc.ISWCLibrary;
+import org.apache.royale.swc.ISWCManager;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.tags.ProductInfoTag;
+import org.apache.royale.swf.tags.ProductInfoTag.Edition;
+import org.apache.royale.swf.tags.ProductInfoTag.Product;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * Delegate class used by flex specific targets to generate flex specific code.

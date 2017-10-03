@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 import java.util.List;
 
-import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IFileNode;
 
 /**
  * This AST node represents an MXML file. It is the root of an MXML AST.

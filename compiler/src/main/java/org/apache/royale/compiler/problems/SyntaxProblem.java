@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
-import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.compiler.common.ISourceLocation;
 
 @ProblemClassification(CompilerProblemClassification.SYNTAX_ERROR)
 public class SyntaxProblem extends ParserProblem implements ICompilerProblem

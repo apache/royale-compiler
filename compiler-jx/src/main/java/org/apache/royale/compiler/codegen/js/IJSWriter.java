@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.royale.compiler.codegen.js;
 
 import java.io.File;
 import java.io.OutputStream;
 
-import org.apache.flex.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.as.IASWriter;
 
 /**
  * A JavaScript writer that outputs cross compiled string data to the output

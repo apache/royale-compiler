@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.filespecs;
+package org.apache.royale.compiler.internal.filespecs;
 
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * A {@link IFileSpecification} implementation from a file path and text string. 

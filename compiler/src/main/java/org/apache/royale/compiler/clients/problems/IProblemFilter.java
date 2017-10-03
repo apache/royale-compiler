@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
  
 /**
  *  IProblemFilter defines the interface used by problem filtering

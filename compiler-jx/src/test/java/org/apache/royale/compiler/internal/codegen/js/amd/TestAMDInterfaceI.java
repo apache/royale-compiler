@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
-import org.apache.flex.compiler.internal.test.AMDTestBase;
+import org.apache.royale.compiler.internal.test.AMDTestBase;
 import org.junit.Test;
 
 /**

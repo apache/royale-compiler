@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.css.ICSSSelector;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * Report unused type selector used in {@code <fx:Style>} in an MXML document.

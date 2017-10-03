@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.io;
+package org.apache.royale.swc.io;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -34,13 +34,13 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCFileEntry;
-import org.apache.flex.swc.ISWCLibrary;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.io.ISWFWriter;
-import org.apache.flex.swf.io.ISWFWriterFactory;
-import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.ISWCLibrary;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.io.ISWFWriter;
+import org.apache.royale.swf.io.ISWFWriterFactory;
+import org.apache.royale.swf.io.SizeReportWritingSWFWriter;
 
 /**
  * Implementation for serializing a SWC model to a *.swc library file.

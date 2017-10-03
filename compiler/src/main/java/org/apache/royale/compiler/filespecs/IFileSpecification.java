@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.filespecs;
+package org.apache.royale.compiler.filespecs;
 
 import java.io.FileNotFoundException;
 import java.io.Reader;

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.logging;
+package org.apache.royale.compiler.internal.fxg.logging;
 
-import org.apache.flex.compiler.fxg.logging.IFXGLogger;
+import org.apache.royale.compiler.fxg.logging.IFXGLogger;
 
 /**
  * An abstract IFXGLogger implementation to redirect the various utility

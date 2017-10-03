@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -38,38 +38,38 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.flex.compiler.Messages;
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
-import org.apache.flex.compiler.clients.problems.ProblemPrinter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.config.CommandLineConfigurator;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.config.ConfigurationPathResolver;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.annotations.Arguments;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
-import org.apache.flex.compiler.internal.config.annotations.Mapping;
-import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.LibraryDependencyGraph;
-import org.apache.flex.compiler.internal.targets.SWFTarget;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ConfigurationProblem;
-import org.apache.flex.compiler.problems.FileIOProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.catalog.XMLFormatter;
+import org.apache.royale.compiler.Messages;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemPrinter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.CommandLineConfigurator;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.config.ConfigurationPathResolver;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.annotations.Arguments;
+import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
+import org.apache.royale.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.LibraryDependencyGraph;
+import org.apache.royale.compiler.internal.targets.SWFTarget;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ConfigurationProblem;
+import org.apache.royale.compiler.problems.FileIOProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.catalog.XMLFormatter;
 
 /**
  * swcdepends command line utility.
@@ -96,7 +96,7 @@ public class SWCDepends
     
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_VAR = "no-default-arg";
-    private static final String L10N_CONFIG_PREFIX = "org.apache.flex.compiler.internal.config.configuration";
+    private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 
     protected Workspace workspace;
     protected FlexProject project;

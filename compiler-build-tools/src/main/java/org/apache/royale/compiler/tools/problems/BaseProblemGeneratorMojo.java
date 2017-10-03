@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.compiler.tools.problems;
+package org.apache.royale.compiler.tools.problems;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

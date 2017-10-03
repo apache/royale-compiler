@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 import com.google.common.base.Function;
 
 /**

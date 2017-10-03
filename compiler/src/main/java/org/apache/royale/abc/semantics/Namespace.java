@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import org.apache.flex.abc.ABCConstants;
+import org.apache.royale.abc.ABCConstants;
 
 /**
  * A representation of a <a href="http://learn.adobe.com/wiki/display/AVM2/4.3+Constant+pool">namespace</a>.

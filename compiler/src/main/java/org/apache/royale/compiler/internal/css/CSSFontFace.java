@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -27,10 +27,10 @@ import java.util.List;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.css.FontFaceSourceType;
-import org.apache.flex.compiler.css.ICSSFontFace;
-import org.apache.flex.compiler.css.ICSSProperty;
-import org.apache.flex.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.css.FontFaceSourceType;
+import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSProperty;
+import org.apache.royale.compiler.css.ICSSPropertyValue;
 
 /**
  * Implementation for {@code @font-face} statement DOM.

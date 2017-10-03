@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.QualifiedNameExpressionNode;
-import org.apache.flex.compiler.tree.as.ICommonClassNode;
-import org.apache.flex.compiler.tree.metadata.IStyleTagNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.utils.CheapArray;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.QualifiedNameExpressionNode;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.tree.metadata.IStyleTagNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.utils.CheapArray;
 
 public final class StyleTagNode extends BaseDefinitionMetaTagNode implements IStyleTagNode
 {

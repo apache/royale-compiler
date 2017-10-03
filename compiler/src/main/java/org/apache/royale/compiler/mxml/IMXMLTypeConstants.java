@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Namespace;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Namespace;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PackageNs;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 
 /**
  * Constants for AS3 types that have special significance to MXML and Flex

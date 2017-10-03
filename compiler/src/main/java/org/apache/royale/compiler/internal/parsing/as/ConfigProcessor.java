@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,43 +28,43 @@ import java.util.List;
 
 import antlr.Token;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.definitions.ConstantDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.parsing.as.ConfigCompilationUnit.ConfigFileNode;
-import org.apache.flex.compiler.internal.parsing.as.ConfigProcessor.ConfigProject.ConfigProjectScope;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.ConfigConstNode;
-import org.apache.flex.compiler.internal.tree.as.ConfigExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.ConfigNamespaceNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.CannotResolveConfigExpressionProblem;
-import org.apache.flex.compiler.problems.CannotResolveProjectLevelConfigExpressionProblem;
-import org.apache.flex.compiler.problems.ConflictingNameInNamespaceProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem2;
-import org.apache.flex.compiler.problems.NonConstantConfigInitProblem;
-import org.apache.flex.compiler.problems.UndefinedConfigNamespaceProblem;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.parsing.as.ConfigCompilationUnit.ConfigFileNode;
+import org.apache.royale.compiler.internal.parsing.as.ConfigProcessor.ConfigProject.ConfigProjectScope;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.ConfigConstNode;
+import org.apache.royale.compiler.internal.tree.as.ConfigExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.ConfigNamespaceNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.CannotResolveConfigExpressionProblem;
+import org.apache.royale.compiler.problems.CannotResolveProjectLevelConfigExpressionProblem;
+import org.apache.royale.compiler.problems.ConflictingNameInNamespaceProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
+import org.apache.royale.compiler.problems.NonConstantConfigInitProblem;
+import org.apache.royale.compiler.problems.UndefinedConfigNamespaceProblem;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.Iterables;
 
 /**
@@ -76,7 +76,7 @@ public class ConfigProcessor
     /**
      * Used as a fake project to facilitate type lookup
      */
-    final class ConfigProject extends org.apache.flex.compiler.internal.projects.ASProject
+    final class ConfigProject extends org.apache.royale.compiler.internal.projects.ASProject
     {
         /**
          * Scope that allows direct addition of IDefinitions without adding

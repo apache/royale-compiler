@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
 import java.util.Iterator;
 
 
-import org.apache.flex.compiler.definitions.IAccessorDefinition;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IGetterDefinition;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.ISetterDefinition;
-import org.apache.flex.compiler.problems.UnresolvedNamespaceProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
-import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IGetterDefinition;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.ISetterDefinition;
+import org.apache.royale.compiler.problems.UnresolvedNamespaceProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.scopes.ASScope;
 
 /**
  * {@code AccessorDefinition} is the abstract base class for definitions that

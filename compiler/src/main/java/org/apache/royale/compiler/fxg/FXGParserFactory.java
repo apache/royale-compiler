@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.fxg;
+package org.apache.royale.compiler.fxg;
 
-import org.apache.flex.compiler.internal.fxg.sax.FXGSAXParser;
+import org.apache.royale.compiler.internal.fxg.sax.FXGSAXParser;
 
 /**
  * A simple factory to create an instance of an IFXGParser implementation.
@@ -34,7 +34,7 @@ public class FXGParserFactory
      * Creates a new instance of the default implementation of IFXGParser.
      * 
      * @return an IFXGParser instance
-     * @see org.apache.flex.compiler.fxg.IFXGParser 
+     * @see org.apache.royale.compiler.fxg.IFXGParser 
      */
     public static IFXGParser createDefaultParser()
     {

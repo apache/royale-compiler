@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static com.google.common.base.Preconditions.checkState;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.css.ICSSNamespaceDefinition;
+import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
 import com.google.common.base.Joiner;
 
 /**

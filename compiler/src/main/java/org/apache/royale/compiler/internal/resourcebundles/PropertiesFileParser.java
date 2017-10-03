@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.resourcebundles;
+package org.apache.royale.compiler.internal.resourcebundles;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,25 +27,25 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.internal.parsing.as.ASParser;
-import org.apache.flex.compiler.internal.tree.as.ClassReferenceNode;
-import org.apache.flex.compiler.internal.tree.as.EmbedNode;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.flex.compiler.internal.tree.properties.ResourceBundleEntryNode;
-import org.apache.flex.compiler.internal.tree.properties.ResourceBundleFileNode;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem2;
-import org.apache.flex.compiler.problems.ParserProblem;
-import org.apache.flex.compiler.problems.ResourceBundleMalformedEncodingProblem;
-import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.internal.parsing.as.ASParser;
+import org.apache.royale.compiler.internal.tree.as.ClassReferenceNode;
+import org.apache.royale.compiler.internal.tree.as.EmbedNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
+import org.apache.royale.compiler.internal.tree.properties.ResourceBundleEntryNode;
+import org.apache.royale.compiler.internal.tree.properties.ResourceBundleFileNode;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
+import org.apache.royale.compiler.problems.ParserProblem;
+import org.apache.royale.compiler.problems.ResourceBundleMalformedEncodingProblem;
+import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * Properties parser that reads a properties file in Unicode. 

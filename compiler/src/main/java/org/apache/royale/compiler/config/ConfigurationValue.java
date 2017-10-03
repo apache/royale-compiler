@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.util.List;
 import java.util.LinkedList;

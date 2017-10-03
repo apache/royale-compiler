@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.InstructionFactory;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.InstructionFactory;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  *  A Binding collects information about a name that

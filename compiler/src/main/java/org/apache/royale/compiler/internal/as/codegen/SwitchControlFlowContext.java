@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.compiler.internal.tree.as.SwitchNode;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.compiler.internal.tree.as.SwitchNode;
 
 /**
  * There is an active SwitchControlFlowContext for the syntactic region of each

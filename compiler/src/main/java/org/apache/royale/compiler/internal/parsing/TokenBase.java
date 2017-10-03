@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing;
+package org.apache.royale.compiler.internal.parsing;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.common.Counter;
-import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.flex.compiler.internal.parsing.as.IncludeHandler;
-import org.apache.flex.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.common.Counter;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
+import org.apache.royale.compiler.parsing.ICMToken;
 
 /**
  * Base class of ASToken, MXMLToken, CSSToken

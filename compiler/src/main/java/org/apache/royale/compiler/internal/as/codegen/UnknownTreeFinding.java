@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.lang.reflect.Constructor;
 
 
-import static org.apache.flex.compiler.tree.ASTNodeID.UnknownID;
+import static org.apache.royale.compiler.tree.ASTNodeID.UnknownID;
 
 
-import org.apache.flex.compiler.internal.as.codegen.CmcEmitter;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.as.codegen.CmcEmitter;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 
 /**

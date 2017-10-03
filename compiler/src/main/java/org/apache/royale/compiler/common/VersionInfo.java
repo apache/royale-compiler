@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.flex.utils.Trace;
+import org.apache.royale.utils.Trace;
 
 /**
  * A helper class for querying build number, Flex version, and library

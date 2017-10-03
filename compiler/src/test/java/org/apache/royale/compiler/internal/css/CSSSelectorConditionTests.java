@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -26,10 +26,10 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.css.ConditionType;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSSelector;
-import org.apache.flex.compiler.css.ICSSSelectorCondition;
+import org.apache.royale.compiler.css.ConditionType;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.ICSSSelectorCondition;
 import org.junit.Test;
 
 /**

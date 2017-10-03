@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.io.SWFReader;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.io.SWFReader;
 
 /**
  * Model for library definitions in a SWC file.

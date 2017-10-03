@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.royale.compiler.codegen.js;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.IDocEmitter;
 
 /**
  * The {@link IJSDocEmitter} interface allows the abstraction of JavaScript

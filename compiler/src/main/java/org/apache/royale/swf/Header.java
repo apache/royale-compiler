@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
 import java.util.Arrays;
 
-import org.apache.flex.swf.types.Rect;
+import org.apache.royale.swf.types.Rect;
 
 /**
  * Represents the header of a SWF file.

@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.workspaces;
+package org.apache.royale.compiler.workspaces;
 
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Listener interface to allow clients of {@link IWorkspace} to be notified when

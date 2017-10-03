@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.units.requests;
+package org.apache.royale.compiler.units.requests;
 
-import org.apache.flex.swf.SWFFrame;
-import org.apache.flex.swf.tags.DoABCTag;
+import org.apache.royale.swf.SWFFrame;
+import org.apache.royale.swf.tags.DoABCTag;
 
 /**
  * Result object for the GET_SWF_TAGS operation on ICompilationUnit.
  * 
- * @see org.apache.flex.compiler.units.ICompilationUnit
+ * @see org.apache.royale.compiler.units.ICompilationUnit
  */
 public interface ISWFTagsRequestResult extends IRequestResult
 {

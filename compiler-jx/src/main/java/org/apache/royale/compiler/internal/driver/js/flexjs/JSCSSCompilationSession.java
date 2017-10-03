@@ -16,23 +16,23 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.driver.js.flexjs;
+package org.apache.royale.compiler.internal.driver.js.flexjs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSMediaQueryCondition;
-import org.apache.flex.compiler.css.ICSSProperty;
-import org.apache.flex.compiler.css.ICSSPropertyValue;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.css.ICSSSelector;
-import org.apache.flex.compiler.css.ICSSSelectorCondition;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.css.*;
-import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
+import org.apache.royale.compiler.css.ICSSProperty;
+import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.ICSSSelectorCondition;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.css.*;
+import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;

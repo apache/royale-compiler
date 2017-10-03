@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.visitor;
+package org.apache.royale.compiler.visitor;
 
 /**
  * @author Erik de Bruin

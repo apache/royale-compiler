@@ -19,11 +19,11 @@
 
 package flex2.tools;
 
-import org.apache.flex.compiler.clients.JSCompilerEntryPoint;
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.clients.JSCompilerEntryPoint;
+import org.apache.royale.compiler.clients.MXMLJSC;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

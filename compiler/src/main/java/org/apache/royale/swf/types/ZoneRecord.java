@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
- * ZoneRecord used in {@link org.apache.flex.swf.tags.DefineFontAlignZonesTag}.
+ * ZoneRecord used in {@link org.apache.royale.swf.tags.DefineFontAlignZonesTag}.
  */
 public class ZoneRecord implements IDataType
 {

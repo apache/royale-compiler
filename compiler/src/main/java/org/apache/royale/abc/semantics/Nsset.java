@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Collection;
 
-import org.apache.flex.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Namespace;
 
 /**
  * Nsset represents an ABC NamespaceSet, i.e., a set of Namespaces.

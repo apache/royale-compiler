@@ -17,27 +17,27 @@
  *
  */
 
-package org.apache.flex.abc.print;
+package org.apache.royale.abc.print;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCParser;
-import org.apache.flex.abc.PoolingABCVisitor;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.semantics.ClassInfo;
-import org.apache.flex.abc.semantics.ExceptionInfo;
-import org.apache.flex.abc.semantics.InstanceInfo;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.Metadata;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.abc.semantics.ScriptInfo;
-import org.apache.flex.abc.semantics.Trait;
-import org.apache.flex.abc.semantics.Traits;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCParser;
+import org.apache.royale.abc.PoolingABCVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.semantics.ClassInfo;
+import org.apache.royale.abc.semantics.ExceptionInfo;
+import org.apache.royale.abc.semantics.InstanceInfo;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.abc.semantics.ScriptInfo;
+import org.apache.royale.abc.semantics.Trait;
+import org.apache.royale.abc.semantics.Traits;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -54,30 +54,30 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Multiname;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_MultinameA;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_MultinameL;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Namespace;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageInternalNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_PrivateNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_ProtectedNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_Qname;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_QnameA;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_RTQname;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_RTQnameA;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_StaticProtectedNs;
-import static org.apache.flex.abc.ABCConstants.CONSTANT_TypeName;
-import static org.apache.flex.abc.ABCConstants.OP_debugfile;
-import static org.apache.flex.abc.ABCConstants.OP_lookupswitch;
-import static org.apache.flex.abc.ABCConstants.OP_pushstring;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Class;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Const;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Function;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Getter;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Method;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Setter;
-import static org.apache.flex.abc.ABCConstants.TRAIT_Var;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Multiname;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_MultinameA;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_MultinameL;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Namespace;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PackageInternalNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PackageNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_PrivateNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_ProtectedNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_Qname;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_QnameA;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_RTQname;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_RTQnameA;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_StaticProtectedNs;
+import static org.apache.royale.abc.ABCConstants.CONSTANT_TypeName;
+import static org.apache.royale.abc.ABCConstants.OP_debugfile;
+import static org.apache.royale.abc.ABCConstants.OP_lookupswitch;
+import static org.apache.royale.abc.ABCConstants.OP_pushstring;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Class;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Const;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Function;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Getter;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Method;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Setter;
+import static org.apache.royale.abc.ABCConstants.TRAIT_Var;
 
 /**
  * ABC Visitor implementation that can take an ABC and

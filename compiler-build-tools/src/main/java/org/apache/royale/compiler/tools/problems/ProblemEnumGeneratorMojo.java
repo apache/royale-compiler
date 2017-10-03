@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.compiler.tools.problems;
+package org.apache.royale.compiler.tools.problems;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -87,7 +87,7 @@ public class ProblemEnumGeneratorMojo
         writer.println(" *  limitations under the License.");
         writer.println(" */");
         writer.println();
-        writer.println("package org.apache.flex.compiler.problems;");
+        writer.println("package org.apache.royale.compiler.problems;");
         writer.println();
         writer.println("import java.util.EnumSet;");
         writer.println("import com.google.common.collect.ImmutableMap;");

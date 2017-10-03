@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.tree.ASTNodeID;
 
 /**
  * Node representing a ClassReference("...") expression. Currently, this is only

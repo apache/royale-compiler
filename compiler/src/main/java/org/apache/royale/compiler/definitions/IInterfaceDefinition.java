@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
 import java.util.Iterator;
 
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * A definition representing an <code>interface</code> declaration.

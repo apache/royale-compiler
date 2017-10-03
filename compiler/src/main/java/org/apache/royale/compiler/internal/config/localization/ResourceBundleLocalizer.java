@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config.localization;
+package org.apache.royale.compiler.internal.config.localization;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 
-import org.apache.flex.compiler.Messages;
+import org.apache.royale.compiler.Messages;
 
 /**
  * ILocalizer implementation, which supports looking up text in

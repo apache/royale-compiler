@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
-import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
 
 /**
  * This class stores the new MXMLTagData object, as well as the index

@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.sax;
+package org.apache.royale.compiler.internal.fxg.sax;
 
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
 
 /**
  * A IFXGVersionHandler defines interfaces to encapsulate FXG version specific

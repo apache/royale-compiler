@@ -17,27 +17,27 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.jx;
+package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.flex.compiler.codegen.ISubEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
-import org.apache.flex.compiler.internal.tree.as.LiteralNode;
-import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
-import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
-import org.apache.flex.utils.JSXUtil;
+import org.apache.royale.compiler.codegen.ISubEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.flexjs.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.RegExpLiteralNode;
+import org.apache.royale.compiler.internal.tree.as.XMLLiteralNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.royale.utils.JSXUtil;
 
 public class LiteralEmitter extends JSSubEmitter implements
         ISubEmitter<ILiteralNode>

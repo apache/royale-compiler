@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
+    <groupId>org.apache.royale.flexjs.compiler</groupId>
     <artifactId>flexjs-compiler-parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
@@ -87,7 +87,7 @@
       <version>3.4</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.flex</groupId>
+      <groupId>org.apache.royale</groupId>
       <artifactId>flex-tool-api</artifactId>
       <version>1.0.0</version>
     </dependency>

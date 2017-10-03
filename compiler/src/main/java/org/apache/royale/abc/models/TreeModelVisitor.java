@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.abc.models;
+package org.apache.royale.abc.models;
 
 import java.util.Collection;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.Name;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.Name;
 
 /**
  *  A TreeModelVisitor translates stack-oriented

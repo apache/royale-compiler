@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.units;
+package org.apache.royale.compiler.units;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IASProject;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * A public interface clients may use to compile a transient version of a file.

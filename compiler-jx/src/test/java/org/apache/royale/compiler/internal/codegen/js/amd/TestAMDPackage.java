@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
 import java.io.IOException;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.as.TestPackage;
-import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.as.TestPackage;
+import org.apache.royale.compiler.internal.driver.js.amd.AMDBackend;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
 
 /**

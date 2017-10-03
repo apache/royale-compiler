@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+package org.apache.royale.compiler.internal.css.codegen;
 
 import java.util.Map;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.MethodInfo;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.MethodInfo;
 
 /**
  * The CSS code generation produces two sets of ABC instructions - one for the

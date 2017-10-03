@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.Name;
 
 /**
  * ExceptionInfo represents an exception-handling annotation in a MethodBodyInfo

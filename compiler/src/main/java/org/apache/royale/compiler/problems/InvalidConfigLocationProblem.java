@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.ISourceLocation;
 
 /**
  *  A config namespace must be declared in a top level of a program or package.

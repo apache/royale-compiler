@@ -17,28 +17,28 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.databinding;
+package org.apache.royale.compiler.internal.codegen.databinding;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 import java.util.LinkedList;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.internal.as.codegen.Binding;
-import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
-import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLModelNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLModelPropertyNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLModelRootNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.as.codegen.Binding;
+import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
+import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLModelNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLModelRootNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 
 /**
  * Utility class for analyze binding destinations and making

@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler;
+package org.apache.royale.compiler;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
 
 /**
  * Class to look up messages for the compiler client classes. This class looks
@@ -33,7 +33,7 @@ import org.apache.flex.compiler.clients.problems.ProblemFormatter;
  */
 public final class Messages
 {
-    private static final String BUNDLE_NAME = "org.apache.flex.compiler.messages";
+    private static final String BUNDLE_NAME = "org.apache.royale.compiler.messages";
     
     private static ResourceBundle resourceBundle;
     private static Locale locale;

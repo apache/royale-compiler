@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLData;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.mxml.MXMLData;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents the syntax, but not the semantics, of an MXML file.

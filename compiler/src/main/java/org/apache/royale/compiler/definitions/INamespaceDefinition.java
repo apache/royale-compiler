@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.tree.as.INamespaceNode;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.tree.as.INamespaceNode;
 
 /**
  * A definition representing a <code>namespace</code> declaration.

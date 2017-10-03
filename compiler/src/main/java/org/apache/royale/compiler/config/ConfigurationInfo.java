@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.flex.compiler.internal.config.annotations.DefaultArgumentValue;
+import org.apache.royale.compiler.internal.config.annotations.DefaultArgumentValue;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 

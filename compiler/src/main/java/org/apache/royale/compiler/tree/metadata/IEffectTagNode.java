@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.tree.metadata;
+package org.apache.royale.compiler.tree.metadata;
 
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
 /**
  * Represents an Effect metadata tag, of the form [Effect(name="string",

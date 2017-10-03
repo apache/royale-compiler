@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.problems.FXGChildNodeNotSupportedProblem;
-import org.apache.flex.compiler.problems.FXGInvalidChildNodeProblem;
-import org.apache.flex.compiler.problems.FXGInvalidNodeAttributeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.problems.FXGChildNodeNotSupportedProblem;
+import org.apache.royale.compiler.problems.FXGInvalidChildNodeProblem;
+import org.apache.royale.compiler.problems.FXGInvalidNodeAttributeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A helper class that serves as the base implementation of IFXGNode. Subclasses

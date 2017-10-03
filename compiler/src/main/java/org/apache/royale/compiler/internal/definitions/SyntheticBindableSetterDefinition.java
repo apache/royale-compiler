@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.compiler.definitions.IBindableVariableDefinition;
+import org.apache.royale.compiler.definitions.IBindableVariableDefinition;
 
 /**
  * Setter definition created for a Bindable Variable

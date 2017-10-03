@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
 /**
  * This interface represents definition which are themselves defined by

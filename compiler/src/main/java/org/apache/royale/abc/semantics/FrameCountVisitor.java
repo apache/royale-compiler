@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.flex.abc.ABCConstants.*;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
-import org.apache.flex.abc.visitors.IFlowGraphVisitor;
+import static org.apache.royale.abc.ABCConstants.*;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.visitors.IFlowGraphVisitor;
 
 /**
  * A FrameCountVisitor tracks the stack, scope, local, and slot numbers

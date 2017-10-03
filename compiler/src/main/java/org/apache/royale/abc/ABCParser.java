@@ -17,23 +17,23 @@
  *
  */
 
-package org.apache.flex.abc;
+package org.apache.royale.abc;
 
 import java.io.*;
 import java.util.*;
 
-import org.apache.flex.abc.semantics.*;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.abc.visitors.IClassVisitor;
-import org.apache.flex.abc.visitors.IMetadataVisitor;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IMethodVisitor;
-import org.apache.flex.abc.visitors.IScriptVisitor;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
-import org.apache.flex.abc.visitors.NilVisitors;
+import org.apache.royale.abc.semantics.*;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.abc.visitors.IClassVisitor;
+import org.apache.royale.abc.visitors.IMetadataVisitor;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IMethodVisitor;
+import org.apache.royale.abc.visitors.IScriptVisitor;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
+import org.apache.royale.abc.visitors.NilVisitors;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 /**
  * ABCParser reads an ABC from a byte array or an input stream

@@ -17,40 +17,40 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.as;
+package org.apache.royale.compiler.internal.driver.as;
 
 import java.io.FilterWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.driver.IPublisher;
-import org.apache.flex.compiler.internal.codegen.as.ASAfterNodeStrategy;
-import org.apache.flex.compiler.internal.codegen.as.ASBeforeNodeStrategy;
-import org.apache.flex.compiler.internal.codegen.as.ASBlockWalker;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
-import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.codegen.as.ASWriter;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
-import org.apache.flex.compiler.internal.visitor.as.BeforeAfterStrategy;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.IBlockWalker;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.IPublisher;
+import org.apache.royale.compiler.internal.codegen.as.ASAfterNodeStrategy;
+import org.apache.royale.compiler.internal.codegen.as.ASBeforeNodeStrategy;
+import org.apache.royale.compiler.internal.codegen.as.ASBlockWalker;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
+import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.codegen.as.ASWriter;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
+import org.apache.royale.compiler.internal.visitor.as.BeforeAfterStrategy;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the

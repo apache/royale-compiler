@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.units.requests;
+package org.apache.royale.compiler.units.requests;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Result object for the GET_ABC_BYTES operation on ICompilationUnit.
  * 
- * @see org.apache.flex.compiler.units.ICompilationUnit
+ * @see org.apache.royale.compiler.units.ICompilationUnit
  */
 public interface IABCBytesRequestResult extends IRequestResult
 {

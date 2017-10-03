@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.semantics.Instruction;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.semantics.Instruction;
 
 /**
  * A IFlowGraphVisitor defines the behavior of a visitor over a control flow

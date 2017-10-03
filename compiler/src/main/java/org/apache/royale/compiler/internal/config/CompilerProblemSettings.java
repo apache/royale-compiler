@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ICompilerProblemSettings;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ICompilerProblemSettings;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A value object created by the Configurator. This object is used to control

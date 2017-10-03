@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js.flexjs;
+package org.apache.royale.compiler.codegen.js.flexjs;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.internal.projects.RoyaleASDocProject;
+import org.apache.royale.compiler.internal.projects.RoyaleASDocProject;
 
 /**
  * @author Erik de Bruin

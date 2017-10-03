@@ -17,26 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.mxml;
+package org.apache.royale.compiler.internal.driver.mxml;
 
 import java.io.FilterWriter;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
-import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.flex.compiler.internal.driver.js.JSBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
-import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.visitor.IBlockVisitor;
-import org.apache.flex.compiler.visitor.IBlockWalker;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.royale.compiler.internal.driver.js.JSBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
+import org.apache.royale.compiler.internal.visitor.mxml.MXMLNodeSwitch;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.visitor.IBlockVisitor;
+import org.apache.royale.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the

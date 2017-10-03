@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.QualifiedNameExpressionNode;
-import org.apache.flex.compiler.tree.metadata.ITypedTagNode;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.QualifiedNameExpressionNode;
+import org.apache.royale.compiler.tree.metadata.ITypedTagNode;
 
 public class TypedTagNode extends MetaTagNode implements ITypedTagNode
 {

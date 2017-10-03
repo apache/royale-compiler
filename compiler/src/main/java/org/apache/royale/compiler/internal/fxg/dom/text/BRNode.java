@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.text;
+package org.apache.royale.compiler.internal.fxg.dom.text;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 /**
  * Represents a &lt;br /&gt; child tag of FXG &lt;TextGraphic&gt; content. A

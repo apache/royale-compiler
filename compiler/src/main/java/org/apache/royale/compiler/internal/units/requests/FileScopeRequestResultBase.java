@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units.requests;
+package org.apache.royale.compiler.internal.units.requests;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,11 +26,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
 
 /**
  * Base implementation of an {@link IFileScopeRequestResult}.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -26,10 +26,10 @@ import java.util.List;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.css.ConditionType;
-import org.apache.flex.compiler.css.ICSSCombinator;
-import org.apache.flex.compiler.css.ICSSSelector;
-import org.apache.flex.compiler.css.ICSSSelectorCondition;
+import org.apache.royale.compiler.css.ConditionType;
+import org.apache.royale.compiler.css.ICSSCombinator;
+import org.apache.royale.compiler.css.ICSSSelector;
+import org.apache.royale.compiler.css.ICSSSelectorCondition;
 import com.google.common.collect.ImmutableList;
 
 /**

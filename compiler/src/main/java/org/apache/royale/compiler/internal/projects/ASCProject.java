@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.io.File;
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASCProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IASCProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Implementation class for an asc style project.

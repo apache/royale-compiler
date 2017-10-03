@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.projects;
+package org.apache.royale.compiler.projects;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.IInvisibleCompilationUnit;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.IInvisibleCompilationUnit;
+import org.apache.royale.swc.ISWC;
 
 /**
  * Base interface for all project types that use a source manager and library

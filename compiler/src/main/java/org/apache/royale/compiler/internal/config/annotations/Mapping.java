@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config.annotations;
+package org.apache.royale.compiler.internal.config.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.flex.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configuration;
 
 /**
  * This annotation explicitly specifies how a field in {@link Configuration}

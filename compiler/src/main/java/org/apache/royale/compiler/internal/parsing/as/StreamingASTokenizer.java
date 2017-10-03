@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
@@ -32,25 +32,25 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.flex.compiler.clients.ASC;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.ITokenStreamFilter;
-import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.parsing.IASTokenizer;
-import org.apache.flex.compiler.parsing.IASToken.ASTokenKind;
-import org.apache.flex.compiler.problems.CyclicalIncludesProblem;
-import org.apache.flex.compiler.problems.ExpectXmlBeforeNamespaceProblem;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem2;
-import org.apache.flex.compiler.problems.UnexpectedTokenProblem;
-import org.apache.flex.utils.ILengthAwareReader;
-import org.apache.flex.utils.NonLockingStringReader;
-import org.apache.flex.utils.ILengthAwareReader.InputType;
+import org.apache.royale.compiler.clients.ASC;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.ITokenStreamFilter;
+import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.units.ASCompilationUnit;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IASTokenizer;
+import org.apache.royale.compiler.parsing.IASToken.ASTokenKind;
+import org.apache.royale.compiler.problems.CyclicalIncludesProblem;
+import org.apache.royale.compiler.problems.ExpectXmlBeforeNamespaceProblem;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
+import org.apache.royale.compiler.problems.UnexpectedTokenProblem;
+import org.apache.royale.utils.ILengthAwareReader;
+import org.apache.royale.utils.NonLockingStringReader;
+import org.apache.royale.utils.ILengthAwareReader.InputType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 

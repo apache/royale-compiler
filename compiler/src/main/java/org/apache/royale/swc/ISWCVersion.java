@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 /**
  * Version information of a SWC file. Since Flex 3, Flex version is decoupled

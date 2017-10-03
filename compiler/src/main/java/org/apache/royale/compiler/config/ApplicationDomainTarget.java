@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 /**
  *  The ApplicationDomainTarget enum defines the possible values of the 

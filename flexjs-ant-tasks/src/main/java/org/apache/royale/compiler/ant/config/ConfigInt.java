@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant.config;
+package org.apache.royale.compiler.ant.config;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Commandline;

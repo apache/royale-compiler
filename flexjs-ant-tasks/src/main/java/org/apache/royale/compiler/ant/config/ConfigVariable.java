@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant.config;
+package org.apache.royale.compiler.ant.config;
 
 /**
  * Provides a base class for Configuration Variables that can be set with a

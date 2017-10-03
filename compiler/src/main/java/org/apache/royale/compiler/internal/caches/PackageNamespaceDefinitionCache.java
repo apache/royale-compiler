@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 
 public final class PackageNamespaceDefinitionCache extends ConcurrentCacheStoreBase<NamespaceDefinition.ILanguageNamespaceDefinition>
 {

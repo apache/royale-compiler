@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
+import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
 
 /**
  * Problem for processing CSS Embed() properties.

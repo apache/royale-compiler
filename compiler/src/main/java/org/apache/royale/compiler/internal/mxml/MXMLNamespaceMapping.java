@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 
 /**
  * This class stores a MXML-namespace-URI-to-manifest-file mapping.

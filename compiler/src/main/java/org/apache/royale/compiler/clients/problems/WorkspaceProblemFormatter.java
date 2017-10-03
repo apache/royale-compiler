@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,11 +26,11 @@ import java.io.Reader;
 
 import org.apache.commons.io.input.NullReader;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.CompilerProblemClassification;
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.CompilerProblemClassification;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

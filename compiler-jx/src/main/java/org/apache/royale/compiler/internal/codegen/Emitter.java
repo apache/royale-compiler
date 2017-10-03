@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen;
+package org.apache.royale.compiler.internal.codegen;
 
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.IEmitter;
-import org.apache.flex.compiler.codegen.IEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.codegen.IEmitter;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 
 /**
  * The base implementation for an ActionScript emitter.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config.annotations;
+package org.apache.royale.compiler.internal.config.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

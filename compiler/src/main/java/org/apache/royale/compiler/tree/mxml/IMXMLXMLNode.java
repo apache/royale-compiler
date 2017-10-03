@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
 
 /**
  * This AST node represents an MXML <code>&lt;XML&gt;</code> tag.

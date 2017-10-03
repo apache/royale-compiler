@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.units;
+package org.apache.royale.compiler.units;
 
 import java.io.File;
 import java.util.Collection;
@@ -26,19 +26,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.flex.compiler.common.IDefinitionPriority;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.targets.Target;
-import org.apache.flex.compiler.internal.units.CompilationUnitBase;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.IRequest;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.compiler.common.IDefinitionPriority;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.targets.Target;
+import org.apache.royale.compiler.internal.units.CompilationUnitBase;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.IRequest;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 
 
 /**

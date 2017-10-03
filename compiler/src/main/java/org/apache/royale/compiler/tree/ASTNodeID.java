@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree;
+package org.apache.royale.compiler.tree;
 
 /**
  * Constants used to identify AST nodes to the BURM.

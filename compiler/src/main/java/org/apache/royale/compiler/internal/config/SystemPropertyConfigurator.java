@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.util.Properties;
 import java.util.Enumeration;
@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
 
 /**
  * A utility class, which is used to load configuration options via

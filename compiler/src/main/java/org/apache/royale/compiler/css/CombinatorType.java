@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 /**
  * CSS3 selector combinators. Only <i>descendant</i> is supported at the moment.

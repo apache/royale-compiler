@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.internal.tree.as.BlockNode;
+import org.apache.royale.compiler.internal.tree.as.BlockNode;
 
 /**
  * An AST node representing the label block ("foo:{}").

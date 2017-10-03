@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 
 /**
  * This AST node represents an MXML compiler directive.

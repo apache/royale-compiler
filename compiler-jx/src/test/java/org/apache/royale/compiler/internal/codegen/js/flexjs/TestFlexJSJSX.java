@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.test.ASTestBase;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 
 import org.junit.Test;
 

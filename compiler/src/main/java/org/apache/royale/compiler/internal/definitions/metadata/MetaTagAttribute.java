@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions.metadata;
+package org.apache.royale.compiler.internal.definitions.metadata;
 
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 
 public class MetaTagAttribute implements IMetaTagAttribute
 {

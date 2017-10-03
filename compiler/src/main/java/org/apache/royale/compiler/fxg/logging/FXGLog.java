@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.logging;
+package org.apache.royale.compiler.fxg.logging;
 
 /**
  * Utility API to get access to the logger for the current thread from anywhere

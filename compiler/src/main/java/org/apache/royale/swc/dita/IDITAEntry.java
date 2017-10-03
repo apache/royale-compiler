@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swc.dita;
+package org.apache.royale.swc.dita;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * An IDITAEntry represents a category of DITA data stored within in a SWC for a specific package

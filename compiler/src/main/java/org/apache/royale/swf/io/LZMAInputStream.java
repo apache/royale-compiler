@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.flex.utils.DAByteArrayOutputStream;
+import org.apache.royale.utils.DAByteArrayOutputStream;
 
 import SevenZip.Compression.LZMA.Decoder;
 

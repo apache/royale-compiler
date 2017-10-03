@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.utils;
+package org.apache.royale.compiler.utils;
 
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 
 /**
  * @author Michael Schmalle

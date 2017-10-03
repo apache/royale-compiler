@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.logging;
+package org.apache.royale.compiler.fxg.logging;
 
-import org.apache.flex.compiler.internal.fxg.logging.SystemLogger;
+import org.apache.royale.compiler.internal.fxg.logging.SystemLogger;
 
 /**
  * A simple factory to create an instance of an IFXGLogger implementation.

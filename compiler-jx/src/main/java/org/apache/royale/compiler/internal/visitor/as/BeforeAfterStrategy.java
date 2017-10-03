@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.visitor.as;
+package org.apache.royale.compiler.internal.visitor.as;
 
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IBlockNode;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBlockNode;
+import org.apache.royale.compiler.visitor.IASNodeStrategy;
 
 /**
  * The {@link BeforeAfterStrategy} implements a before and after {@link IASNode}

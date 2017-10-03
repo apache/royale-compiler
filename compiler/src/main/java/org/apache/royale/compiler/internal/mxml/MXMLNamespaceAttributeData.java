@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.Collection;
 import java.util.ListIterator;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents an xmlns style namespace import found within the MXML language

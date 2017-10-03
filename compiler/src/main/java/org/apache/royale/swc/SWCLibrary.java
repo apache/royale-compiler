@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -30,9 +30,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
-import org.apache.flex.swc.io.SWCReader;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.io.SWFReader;
+import org.apache.royale.swc.io.SWCReader;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.io.SWFReader;
 
 /**
  * Implementation of library model in a SWC.

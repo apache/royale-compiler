@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.common.IPathResolver;
-import org.apache.flex.compiler.config.ICompilerProblemSettings;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IFlexProject;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.common.IPathResolver;
+import org.apache.royale.compiler.config.ICompilerProblemSettings;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.targets.ITargetSettings;
 
 /**
  * An interface to configure projects and targets. This interface is 
@@ -39,7 +39,7 @@ public interface IConfigurator
     /**
      * Apply the current configuration settings to a given project. If any 
      * configuration problems have a severity of
-     * {@linkplain org.apache.flex.compiler.problems.CompilerProblemSeverity#ERROR}, then the project will be 
+     * {@linkplain org.apache.royale.compiler.problems.CompilerProblemSeverity#ERROR}, then the project will be 
      * setup with the existing configuration but the project may not be 
      * correct.
      * Call {@linkplain #getConfigurationProblems()} to get a list of
@@ -55,7 +55,7 @@ public interface IConfigurator
     /**
      * Get the settings that apply to a given type of target based on the
      * current state of the configuration. If any of the problems have a
-     * severity of {@linkplain org.apache.flex.compiler.problems.CompilerProblemSeverity#ERROR}, then null will be
+     * severity of {@linkplain org.apache.royale.compiler.problems.CompilerProblemSeverity#ERROR}, then null will be
      * returned instead of the target settings. Call {@linkplain
      * #getConfigurationProblems()} to get a list of problems encountered while
      * processing the configuration.

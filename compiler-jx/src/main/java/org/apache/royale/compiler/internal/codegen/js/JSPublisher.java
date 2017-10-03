@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.royale.compiler.internal.codegen.js;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.codegen.js.IJSPublisher;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.codegen.js.IJSPublisher;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 
 public class JSPublisher implements IJSPublisher
 {

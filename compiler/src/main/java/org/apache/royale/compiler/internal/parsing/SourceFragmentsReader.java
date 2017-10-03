@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing;
+package org.apache.royale.compiler.internal.parsing;
 
 import java.io.StringReader;
 

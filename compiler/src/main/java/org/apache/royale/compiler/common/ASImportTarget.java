@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 public class ASImportTarget implements IImportTarget
 {

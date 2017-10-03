@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.resources;
+package org.apache.royale.compiler.internal.fxg.resources;
 
-import org.apache.flex.compiler.fxg.resources.IFXGResourceResolver;
+import org.apache.royale.compiler.fxg.resources.IFXGResourceResolver;
 
 import java.io.File;
 import java.io.FileInputStream;

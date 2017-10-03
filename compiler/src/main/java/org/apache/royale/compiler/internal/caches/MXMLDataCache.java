@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 import java.io.FileNotFoundException;
 import java.lang.ref.SoftReference;
@@ -25,10 +25,10 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLData;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLTokenizer;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.mxml.MXMLData;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLTokenizer;
 
 /**
  * Concurrent cache for parsed MXML models. The cache is a list of key-value pairs.

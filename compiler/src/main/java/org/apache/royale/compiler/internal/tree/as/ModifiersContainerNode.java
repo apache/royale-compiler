@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.common.ModifiersSet;
 
 // TODO Add interface for this class.
 public class ModifiersContainerNode extends TransparentContainerNode

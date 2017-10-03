@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.emit;
+package org.apache.royale.compiler.internal.codegen.externals.emit;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.FunctionReference;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.externals.reference.BaseReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ConstantReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.FunctionReference;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.jstype.JSType;

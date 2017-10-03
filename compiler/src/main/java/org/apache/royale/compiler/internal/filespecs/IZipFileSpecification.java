@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.filespecs;
+package org.apache.royale.compiler.internal.filespecs;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 
 
 /**

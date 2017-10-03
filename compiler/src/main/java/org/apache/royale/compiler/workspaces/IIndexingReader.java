@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.workspaces;
+package org.apache.royale.compiler.workspaces;
 
 import java.io.Closeable;
 
-import org.apache.flex.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
 
 public interface IIndexingReader extends Closeable
 {

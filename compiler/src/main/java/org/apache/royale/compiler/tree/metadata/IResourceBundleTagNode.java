@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.metadata;
+package org.apache.royale.compiler.tree.metadata;
 
 /**
  * Represents an ResourceBundle metadata tag, of the form

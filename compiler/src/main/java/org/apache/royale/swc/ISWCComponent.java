@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 /**
  * Each {@code ISWCComponent} object maps to a {@code <component>} entry in the

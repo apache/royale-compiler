@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+package org.apache.royale.compiler.internal.css.codegen;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.visitors.ITraitsVisitor;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.visitors.ITraitsVisitor;
 
 /**
  * Interface to results of the CSS code generator.

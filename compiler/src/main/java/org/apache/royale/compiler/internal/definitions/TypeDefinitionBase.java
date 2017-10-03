@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import static org.apache.flex.compiler.common.ISourceLocation.UNKNOWN;
+import static org.apache.royale.compiler.common.ISourceLocation.UNKNOWN;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,15 +27,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.ITypeNode;
-import org.apache.flex.utils.FastStack;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.utils.FastStack;
 import com.google.common.base.Strings;
 
 /**

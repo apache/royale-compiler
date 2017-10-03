@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.metadata;
+package org.apache.royale.compiler.tree.metadata;
 
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * Represents a DefaultProperty metadata tag, of the form

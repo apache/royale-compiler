@@ -16,22 +16,22 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.js.sourcemaps;
+package org.apache.royale.compiler.internal.codegen.js.sourcemaps;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.test.SourceMapTestBase;
-import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
-import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IIterationFlowNode;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.flex.compiler.tree.as.IReturnNode;
-import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IThrowNode;
-import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.test.SourceMapTestBase;
+import org.apache.royale.compiler.internal.tree.as.ArrayLiteralNode;
+import org.apache.royale.compiler.internal.tree.as.ObjectLiteralNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IIterationFlowNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.IReturnNode;
+import org.apache.royale.compiler.tree.as.ITernaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IThrowNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 
 import org.junit.Test;
 

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
 
 /**
  *  Diagnostic emitted when a namespace cannot be resolved.

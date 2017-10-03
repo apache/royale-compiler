@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.util.List;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.annotations.ArgumentNameGenerator;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
-import org.apache.flex.compiler.internal.config.annotations.Mapping;
-import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.annotations.ArgumentNameGenerator;
+import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
+import org.apache.royale.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
 
 /**
  * A Configuration to override some behaviors of the default configuration.

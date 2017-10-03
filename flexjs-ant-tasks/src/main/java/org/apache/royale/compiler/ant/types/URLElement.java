@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.ant.types;
+package org.apache.royale.compiler.ant.types;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicAttribute;
 import org.apache.tools.ant.types.Commandline;
 
-import org.apache.flex.compiler.ant.config.IOptionSource;
+import org.apache.royale.compiler.ant.config.IOptionSource;
 
 /**
  * Supports the nested URL based tags of RuntimeSharedLibraryPath.

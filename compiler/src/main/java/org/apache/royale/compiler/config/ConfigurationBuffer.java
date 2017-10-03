@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -35,18 +35,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.IConfigurationFilter;
-import org.apache.flex.compiler.internal.config.annotations.ArgumentNameGenerator;
-import org.apache.flex.compiler.internal.config.annotations.Arguments;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
-import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
-import org.apache.flex.compiler.internal.config.annotations.Mapping;
-import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
-import org.apache.flex.compiler.problems.ConfigurationProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.utils.Trace;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.IConfigurationFilter;
+import org.apache.royale.compiler.internal.config.annotations.ArgumentNameGenerator;
+import org.apache.royale.compiler.internal.config.annotations.Arguments;
+import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.annotations.FlexOnly;
+import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
+import org.apache.royale.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
+import org.apache.royale.compiler.problems.ConfigurationProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.utils.Trace;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 

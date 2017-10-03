@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.config;
+package org.apache.royale.compiler.config;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
 
 public class ExterncConfigurator extends Configurator
 {

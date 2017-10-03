@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.externals;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,23 +30,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.flex.compiler.clients.COMPC;
-import org.apache.flex.compiler.clients.EXTERNC;
-import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
-import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.visitor.as.IASBlockWalker;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.clients.COMPC;
+import org.apache.royale.compiler.clients.EXTERNC;
+import org.apache.royale.compiler.clients.ExternCConfiguration;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.utils.FilenameNormalization;
+import org.apache.royale.utils.ITestAdapter;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

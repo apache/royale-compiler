@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 /**
  * The {@code ITag}s implements {@code IAlwaysLongTag} will always be serialized

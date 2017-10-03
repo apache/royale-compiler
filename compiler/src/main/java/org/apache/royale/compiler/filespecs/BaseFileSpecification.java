@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.filespecs;
+package org.apache.royale.compiler.filespecs;
 
 import java.io.File;
 
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * Base class for all IFileSpecifications, which has a file path and knows

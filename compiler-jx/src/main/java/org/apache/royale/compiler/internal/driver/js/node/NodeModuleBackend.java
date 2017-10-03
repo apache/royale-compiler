@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js.node;
+package org.apache.royale.compiler.internal.driver.js.node;
 
 import java.util.List;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.node.NodePublisher;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
-import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.node.NodePublisher;
+import org.apache.royale.compiler.internal.codegen.mxml.flexjs.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.driver.js.jsc.JSCBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * A concrete implementation of the {@link IBackend} API for Node.js modules.

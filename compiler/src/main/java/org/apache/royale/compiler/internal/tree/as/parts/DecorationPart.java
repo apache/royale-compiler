@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.parts;
+package org.apache.royale.compiler.internal.tree.as.parts;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.internal.tree.as.ModifiersContainerNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.flex.utils.CheapArray;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.internal.tree.as.ModifiersContainerNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.utils.CheapArray;
 
 public class DecorationPart implements IDecorationPart
 {

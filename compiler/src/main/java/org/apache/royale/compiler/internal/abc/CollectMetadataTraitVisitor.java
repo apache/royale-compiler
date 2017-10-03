@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.abc;
+package org.apache.royale.compiler.internal.abc;
 
-import org.apache.flex.abc.semantics.Metadata;
-import org.apache.flex.abc.semantics.Trait;
-import org.apache.flex.abc.visitors.IMetadataVisitor;
-import org.apache.flex.abc.visitors.ITraitVisitor;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
-import org.apache.flex.compiler.internal.definitions.metadata.MetaTagAttribute;
+import org.apache.royale.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.Trait;
+import org.apache.royale.abc.visitors.IMetadataVisitor;
+import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTagAttribute;
 
 /**
  * Collect all the metadata and attributes in this trait.

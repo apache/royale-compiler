@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
 /**
  * Base interface for all visitors reachable from an {@link IABCVisitor}.

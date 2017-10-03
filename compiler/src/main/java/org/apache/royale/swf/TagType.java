@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
 /**
  * Type code of a SWF tag.

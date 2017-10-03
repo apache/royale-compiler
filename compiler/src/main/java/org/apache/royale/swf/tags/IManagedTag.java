@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 /**
- * A "managed" SWF tag cannot be added to {@link org.apache.flex.swf.SWFFrame} pragmatically. It is
+ * A "managed" SWF tag cannot be added to {@link org.apache.royale.swf.SWFFrame} pragmatically. It is
  * managed by the frame internally.
  * <p>
  * For example, {@code SymbolClass} and {@code ShowFrame} are managed tags.

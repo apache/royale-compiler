@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.diagnostics.AbstractDiagnosticVisitor;
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.ScriptInfo;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.diagnostics.AbstractDiagnosticVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.ScriptInfo;
 
 /**
  * IVisitor that is called by the {@link ABCEmitter} to notify clients of issues

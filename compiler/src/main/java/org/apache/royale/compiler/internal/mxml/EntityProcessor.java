@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragment;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLInvalidEntityProblem;
-import org.apache.flex.compiler.problems.MXMLUnterminatedEntityProblem;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidEntityProblem;
+import org.apache.royale.compiler.problems.MXMLUnterminatedEntityProblem;
 
 /**
  * {@code EntityProcessor} is an all-static utility class used in parsing MXML.

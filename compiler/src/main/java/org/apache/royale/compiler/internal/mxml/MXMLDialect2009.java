@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
  * This singleton class represents the 2009 dialect of MXML,

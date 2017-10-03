@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
 
 /**
  * This problem gets created when the sample frame count of an embeded mp3 asset

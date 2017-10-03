@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
 /**
  * A marker interface to represent a transparent container node which is

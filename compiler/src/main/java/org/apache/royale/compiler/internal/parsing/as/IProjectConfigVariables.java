@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.tree.as.ConfigConstNode;
-import org.apache.flex.compiler.internal.tree.as.ConfigNamespaceNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.tree.as.ConfigConstNode;
+import org.apache.royale.compiler.internal.tree.as.ConfigNamespaceNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Interface for interacting with config variables from the commandline or from

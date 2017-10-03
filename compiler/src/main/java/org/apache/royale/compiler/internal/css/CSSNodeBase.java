@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static com.google.common.collect.Collections2.transform;
 
@@ -28,8 +28,8 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.css.ICSSNode;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.css.ICSSNode;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 

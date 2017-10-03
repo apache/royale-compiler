@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.css.CSSModelTreeType;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.css.CSSModelTreeType;
 
 /**
  * All CSS DOM node classes implement this interface to adapt to JBurg's

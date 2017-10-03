@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.filespecs;
+package org.apache.royale.compiler.internal.filespecs;
 
-import static org.apache.flex.compiler.filespecs.CombinedFile.getBOM;
+import static org.apache.royale.compiler.filespecs.CombinedFile.getBOM;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -29,9 +29,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.apache.flex.compiler.filespecs.IBinaryFileSpecification;
-import org.apache.flex.compiler.filespecs.CombinedFile.BOM;
-import org.apache.flex.swc.ISWCFileEntry;
+import org.apache.royale.compiler.filespecs.IBinaryFileSpecification;
+import org.apache.royale.compiler.filespecs.CombinedFile.BOM;
+import org.apache.royale.swc.ISWCFileEntry;
 
 /**
  * A SWCFileSpecification allows us to attach read a file from a SWC.  This allows us to treat the SWC as one FileSpec

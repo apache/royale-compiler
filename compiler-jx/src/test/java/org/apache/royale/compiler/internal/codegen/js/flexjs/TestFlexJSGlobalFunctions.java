@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
 /**
@@ -123,7 +123,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:int = int(1.8);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(1.8)");
+        assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language._int(1.8)");
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:int = int(\"123\");");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(\"123\")");
+        assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language._int(\"123\")");
     }
 
     @Override
@@ -141,7 +141,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         IFunctionCallNode node = (IFunctionCallNode) getNode(
                 "trace('Hello World');", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
-        assertOut("org.apache.flex.utils.Language.trace('Hello World')");
+        assertOut("org.apache.royale.utils.Language.trace('Hello World')");
     }
 
     @Override
@@ -150,7 +150,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:uint = uint(-100);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language.uint(-100)");
+        assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language.uint(-100)");
     }
 
     @Override

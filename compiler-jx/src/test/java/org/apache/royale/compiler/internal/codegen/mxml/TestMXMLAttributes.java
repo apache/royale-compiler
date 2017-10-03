@@ -16,14 +16,14 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.mxml;
+package org.apache.royale.compiler.internal.codegen.mxml;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import org.apache.flex.compiler.internal.test.MXMLTestBase;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.internal.test.MXMLTestBase;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.junit.Test;
 
 public class TestMXMLAttributes extends MXMLTestBase

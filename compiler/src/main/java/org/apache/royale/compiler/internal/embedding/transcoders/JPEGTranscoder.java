@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding.transcoders;
+package org.apache.royale.compiler.internal.embedding.transcoders;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -37,18 +37,18 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.EmbedExceptionWhileTranscodingProblem;
-import org.apache.flex.compiler.problems.EmbedQualityRequiresCompressionProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.tags.DefineBitsJPEG3Tag;
-import org.apache.flex.swf.tags.DefineBitsTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.utils.DAByteArrayOutputStream;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.EmbedExceptionWhileTranscodingProblem;
+import org.apache.royale.compiler.problems.EmbedQualityRequiresCompressionProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.tags.DefineBitsJPEG3Tag;
+import org.apache.royale.swf.tags.DefineBitsTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.utils.DAByteArrayOutputStream;
 
 /**
  * Handle the embedding of images which need to be transcoded

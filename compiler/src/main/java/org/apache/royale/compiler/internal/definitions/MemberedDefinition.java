@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.compiler.definitions.IMemberedDefinition;
+import org.apache.royale.compiler.definitions.IMemberedDefinition;
 
 /**
  * {@code MemberedDefinition} is the abstract base class for definitions that

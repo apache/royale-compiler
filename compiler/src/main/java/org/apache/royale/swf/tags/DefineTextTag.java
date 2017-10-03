@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 import java.util.Arrays;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.types.Matrix;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.TextRecord;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.types.Matrix;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.TextRecord;
 
 /**
  * Represents a <code>DefineText</code> tag in a SWF file.

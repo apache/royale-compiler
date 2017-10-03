@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.visitor.mxml;
+package org.apache.royale.compiler.visitor.mxml;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.visitor.IBlockWalker;
 
 /**
  * @author Michael Schmalle

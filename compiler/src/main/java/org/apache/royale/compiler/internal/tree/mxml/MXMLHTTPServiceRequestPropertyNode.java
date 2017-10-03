@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLHTTPServiceRequestPropertyNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceRequestPropertyNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 
 /**
  * AST node for {@code <s:request>} tag under a {@code <s:HTTPService>} tag.

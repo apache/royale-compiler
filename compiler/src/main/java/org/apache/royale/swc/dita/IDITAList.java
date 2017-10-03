@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.swc.dita;
+package org.apache.royale.swc.dita;
 
 import java.util.List;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * An IDITAList represents the entries contained within the DITA manifest for a given SWC

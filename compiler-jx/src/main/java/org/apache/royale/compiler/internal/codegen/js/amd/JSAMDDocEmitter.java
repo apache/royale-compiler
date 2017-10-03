@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.amd;
+package org.apache.royale.compiler.internal.codegen.js.amd;
 
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.codegen.js.amd.IJSAMDDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.JSDocEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.amd.IJSAMDDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.JSDocEmitter;
 
 /**
  * @author Michael Schmalle

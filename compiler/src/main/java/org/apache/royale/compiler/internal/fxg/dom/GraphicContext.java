@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
 
 import java.util.List;
 
-import org.apache.flex.compiler.internal.fxg.dom.transforms.ColorTransformNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.BlendMode;
-import org.apache.flex.compiler.internal.fxg.dom.types.MaskType;
-import org.apache.flex.compiler.internal.fxg.dom.types.ScalingGrid;
-import org.apache.flex.compiler.internal.fxg.types.FXGMatrix;
+import org.apache.royale.compiler.internal.fxg.dom.transforms.ColorTransformNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.BlendMode;
+import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
+import org.apache.royale.compiler.internal.fxg.dom.types.ScalingGrid;
+import org.apache.royale.compiler.internal.fxg.types.FXGMatrix;
 
 /**
  * A simple context holding inheritable graphic transformation information to be

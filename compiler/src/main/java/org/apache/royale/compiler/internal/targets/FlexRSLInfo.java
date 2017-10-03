@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.exceptions.LibraryCircularDependencyException;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.swc.ISWC;
 
 /**
  * Class that contains information about RSLs used by a flex application SWF.

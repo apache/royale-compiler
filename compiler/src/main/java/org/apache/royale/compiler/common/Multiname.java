@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.abc.semantics.Nsset;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 public final class Multiname
 {

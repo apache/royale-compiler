@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,20 +34,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.DependencyTypeSet;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.driver.js.JSCompilationUnit;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.DependencyGraph;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCFileEntry;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.driver.js.JSCompilationUnit;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
 
 import com.google.common.io.Files;
 
@@ -619,7 +619,7 @@ public class GoogDepsWriter {
 					        			c2 = line.indexOf("}", c);
 					        			String impl = line.substring(c + 13, c2);
 					        			fi.impls.add(impl);
-					        			if (impl.equals("org.apache.flex.core.ICSSImpl"))
+					        			if (impl.equals("org.apache.royale.core.ICSSImpl"))
 					        				needCSS = true;
 					        		}
 					        		else
@@ -715,7 +715,7 @@ public class GoogDepsWriter {
     				FileUtils.copyFile(f, destFile);
     				
     				// (erikdebruin) copy class assets files
-    				if (className.contains("org.apache.flex"))
+    				if (className.contains("org.apache.royale"))
     				{
     				    File assetsDir = new File(f.getParentFile(), "assets");
     				    if (assetsDir.exists())
@@ -790,7 +790,7 @@ public class GoogDepsWriter {
     				inStream.close();
 
     				// (erikdebruin) copy class assets files
-    				if (className.contains("org.apache.flex"))
+    				if (className.contains("org.apache.royale"))
     				{
     					Map<String, ISWCFileEntry> includedfiles = swc.getFiles();
     					Set<String> includedList = includedfiles.keySet();

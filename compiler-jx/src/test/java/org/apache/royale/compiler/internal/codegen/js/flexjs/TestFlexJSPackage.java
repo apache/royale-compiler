@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js.flexjs;
+package org.apache.royale.compiler.internal.codegen.js.flexjs;
 
 import java.util.ArrayList;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogPackage;
-import org.apache.flex.compiler.internal.driver.js.flexjs.RoyaleBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogPackage;
+import org.apache.royale.compiler.internal.driver.js.flexjs.RoyaleBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
 /**
@@ -925,7 +925,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " * @constructor\n" +
         		  " */\n" +
         		  "foo.bar.baz.A = function() {\n" +
-        		  "  var /** @type {foo.bar.baz.A.ITestInterface} */ internalClass = org.apache.flex.utils.Language.as(new foo.bar.baz.A.InternalClass(), foo.bar.baz.A.ITestInterface);\n" +
+        		  "  var /** @type {foo.bar.baz.A.ITestInterface} */ internalClass = org.apache.royale.utils.Language.as(new foo.bar.baz.A.InternalClass(), foo.bar.baz.A.ITestInterface);\n" +
         		  "  internalClass.test();\n" +
         		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
         		  "\n" +

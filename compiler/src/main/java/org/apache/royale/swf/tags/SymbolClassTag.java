@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 import java.util.Set;
 
-import org.apache.flex.swf.TagType;
+import org.apache.royale.swf.TagType;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 

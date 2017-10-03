@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.as;
+package org.apache.royale.compiler.internal.codegen.as;
 
 import java.io.FilterWriter;
 import java.io.Writer;

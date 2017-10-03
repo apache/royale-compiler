@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.flex.compiler.mxml.IStateDefinition;
-import org.apache.flex.compiler.mxml.IStateGroupDefinition;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
+import org.apache.royale.compiler.mxml.IStateDefinition;
+import org.apache.royale.compiler.mxml.IStateGroupDefinition;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.mxml.IMXMLStateNode;
 
 /**
  * {@code StateDefinition} represents a state in MXML 2009 or later. States are

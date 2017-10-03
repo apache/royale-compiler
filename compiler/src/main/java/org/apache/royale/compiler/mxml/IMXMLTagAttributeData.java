@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents an attribute in MXML.

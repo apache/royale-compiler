@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * This is the base interface for all MXML-specific AST nodes.

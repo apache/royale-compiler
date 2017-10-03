@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.common.IImportTarget;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.common.IImportTarget;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * An AST node representing an <code>import</code> directive.

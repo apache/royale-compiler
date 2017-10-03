@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js.flexjs;
+package org.apache.royale.compiler.codegen.js.flexjs;
 
-import org.apache.flex.compiler.codegen.js.goog.IJSGoogEmitter;
+import org.apache.royale.compiler.codegen.js.goog.IJSGoogEmitter;
 
 /**
  * @author Erik de Bruin

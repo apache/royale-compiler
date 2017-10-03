@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Metadata;
-import org.apache.flex.abc.semantics.Name;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.Name;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 /**
  * A representation of an individual <a href="http://learn.adobe.com/wiki/display/AVM2/4.8+Trait">trait</a>.

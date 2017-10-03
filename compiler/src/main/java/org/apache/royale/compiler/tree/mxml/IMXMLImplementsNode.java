@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
 
 /**
  * This AST node represents an <code>implements</code> attribute on a class

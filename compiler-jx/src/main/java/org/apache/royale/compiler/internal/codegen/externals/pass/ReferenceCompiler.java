@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.externals.pass;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;

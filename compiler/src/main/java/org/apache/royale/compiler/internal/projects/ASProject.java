@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.io.File;
 import java.util.Collection;
@@ -27,20 +27,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.asdoc.IASDocBundleDelegate;
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.projects.SourcePathManager.QNameFile;
-import org.apache.flex.compiler.internal.units.CompilationUnitBase;
-import org.apache.flex.compiler.internal.units.InvisibleCompilationUnit;
-import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.IInvisibleCompilationUnit;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCFileEntry;
+import org.apache.royale.compiler.asdoc.IASDocBundleDelegate;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.projects.SourcePathManager.QNameFile;
+import org.apache.royale.compiler.internal.units.CompilationUnitBase;
+import org.apache.royale.compiler.internal.units.InvisibleCompilationUnit;
+import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IASProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.IInvisibleCompilationUnit;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

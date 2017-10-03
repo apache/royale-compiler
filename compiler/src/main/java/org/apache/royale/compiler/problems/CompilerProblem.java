@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
-import org.apache.flex.compiler.problems.annotations.ProblemClassification;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.ProblemClassification;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * CompilerProblem is the base class for all error and warning classes in the compiler,

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 /**
  * Qualified element name (XML namespace and local name). This does not contain

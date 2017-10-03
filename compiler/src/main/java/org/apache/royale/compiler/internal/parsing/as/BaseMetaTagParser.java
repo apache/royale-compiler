@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,15 +32,15 @@ import antlr.TokenBuffer;
 import antlr.TokenStream;
 import antlr.TokenStreamException;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.asdoc.IMetadataParserASDocDelegate;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.BaseDefinitionMetaTagNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.flex.compiler.parsing.GenericTokenStream;
-import org.apache.flex.compiler.parsing.IMetadataParser;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.asdoc.IMetadataParserASDocDelegate;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.BaseDefinitionMetaTagNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
+import org.apache.royale.compiler.parsing.GenericTokenStream;
+import org.apache.royale.compiler.parsing.IMetadataParser;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public class BaseMetaTagParser extends LLkParser implements IMetadataParser
 {

@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.tree.metadata.IAccessibilityTagNode;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.tree.metadata.IAccessibilityTagNode;
 
 public class AccessibilityTagNode extends TypedTagNode implements IAccessibilityTagNode
 {

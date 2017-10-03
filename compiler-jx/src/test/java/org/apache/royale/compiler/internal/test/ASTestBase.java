@@ -16,28 +16,28 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.test;
+package org.apache.royale.compiler.internal.test;
 
 import java.io.File;
 import java.util.List;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.as.ASBackend;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IAccessorNode;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.compiler.tree.as.IForLoopNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
-import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.as.ASBackend;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.utils.FilenameNormalization;
+import org.apache.royale.utils.ITestAdapter;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 @Ignore

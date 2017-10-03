@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import org.apache.flex.abc.semantics.Trait;
-import org.apache.flex.abc.semantics.Traits;
+import org.apache.royale.abc.semantics.Trait;
+import org.apache.royale.abc.semantics.Traits;
 
 /**
  * A representation of a <a href="http://learn.adobe.com/wiki/display/AVM2/4.10+Script">script info</a>.

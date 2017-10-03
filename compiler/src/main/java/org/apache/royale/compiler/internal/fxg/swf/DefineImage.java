@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.swf;
+package org.apache.royale.compiler.internal.fxg.swf;
 
-import org.apache.flex.swf.tags.IDefineBinaryImageTag;
+import org.apache.royale.swf.tags.IDefineBinaryImageTag;
 
 /**
  * A container class for any kind of binary image tag with a height and width.

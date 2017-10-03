@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.Metadata;
 
 /**
  * An IMetadataVisitor that ignores its input as far as possible.

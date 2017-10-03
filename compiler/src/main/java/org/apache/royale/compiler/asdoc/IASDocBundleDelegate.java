@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
-import org.apache.flex.compiler.definitions.IDocumentableDefinition;
-import org.apache.flex.compiler.internal.projects.ASProject;
+import org.apache.royale.compiler.definitions.IDocumentableDefinition;
+import org.apache.royale.compiler.internal.projects.ASProject;
 
 /**
  * Delegate interface used by {@link ASProject} to delegate

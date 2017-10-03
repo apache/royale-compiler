@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.graph.algorithms;
+package org.apache.royale.abc.graph.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,12 +31,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.flex.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IBasicBlock;
 
 /**
  * An implementation of the O(n log n) Lengauer-Tarjan algorithm for building the
  * <a href="http://en.wikipedia.org/wiki/Dominator_%28graph_theory%29">dominator tree</a>
- * of a {@link org.apache.flex.abc.graph.IFlowgraph flowgraph}.
+ * of a {@link org.apache.royale.abc.graph.IFlowgraph flowgraph}.
  */
 public class DominatorTree
 {

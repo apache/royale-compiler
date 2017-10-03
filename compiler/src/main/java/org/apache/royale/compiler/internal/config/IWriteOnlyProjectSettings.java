@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.config;
+package org.apache.royale.compiler.internal.config;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 
 /**
  * Setters for Project settings that can come from command line compiler 

@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding.transcoders;
+package org.apache.royale.compiler.internal.embedding.transcoders;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.EmbedScalingGridProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.tags.DefineScalingGridTag;
-import org.apache.flex.swf.tags.DefineSpriteTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.types.Rect;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.EmbedScalingGridProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.tags.DefineScalingGridTag;
+import org.apache.royale.swf.tags.DefineSpriteTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.types.Rect;
 
 /**
  * Abstract class which should be extended by any embedding transcoder

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
 
 /**
  * Error when a config namespace cannot be found

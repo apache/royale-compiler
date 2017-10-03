@@ -17,24 +17,24 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.GetterDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.definitions.SetterDefinition;
-import org.apache.flex.compiler.internal.definitions.SyntheticBindableGetterDefinition;
-import org.apache.flex.compiler.internal.definitions.SyntheticBindableSetterDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.FunctionScope;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.flex.compiler.tree.as.ITypedNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.GetterDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.definitions.SetterDefinition;
+import org.apache.royale.compiler.internal.definitions.SyntheticBindableGetterDefinition;
+import org.apache.royale.compiler.internal.definitions.SyntheticBindableSetterDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.ITypedNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 
 /**
  * Base class for definitions that have a type associated with them

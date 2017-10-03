@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
 /**
  * Scope for a with block.

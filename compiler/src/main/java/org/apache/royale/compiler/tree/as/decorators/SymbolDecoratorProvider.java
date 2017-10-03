@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as.decorators;
+package org.apache.royale.compiler.tree.as.decorators;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * This provider provides a way to decorate symbols with additional information,

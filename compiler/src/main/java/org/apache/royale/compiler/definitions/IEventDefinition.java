@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.tree.metadata.IEventTagNode;
+import org.apache.royale.compiler.tree.metadata.IEventTagNode;
 
 /**
  * Represents event metadata decorating a class definition,

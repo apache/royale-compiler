@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.mxml;
+package org.apache.royale.compiler.internal.driver.mxml;
 
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.units.ASCompilationUnit;
+import org.apache.royale.compiler.internal.units.MXMLCompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Implementation of ISourceFileHandler that constructs
@@ -32,7 +32,7 @@ import org.apache.flex.compiler.units.ICompilationUnit;
  * that provides JSCompilationUnit for *.mxml files. JSDriver registers
  * MXMLSourceFileHandler at FlexApplicationProject. This implementation is part
  * of FalconJS. For more details on FalconJS see
- * org.apache.flex.compiler.JSDriver
+ * org.apache.royale.compiler.JSDriver
  */
 public final class MXMLSourceFileHandler implements ISourceFileHandler
 {

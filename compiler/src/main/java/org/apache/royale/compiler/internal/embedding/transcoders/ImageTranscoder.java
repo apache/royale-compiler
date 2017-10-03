@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding.transcoders;
+package org.apache.royale.compiler.internal.embedding.transcoders;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -28,32 +28,32 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.EmbedExceptionWhileTranscodingProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.tags.DefineBitsJPEG2Tag;
-import org.apache.flex.swf.tags.DefineBitsTag;
-import org.apache.flex.swf.tags.DefineScalingGridTag;
-import org.apache.flex.swf.tags.DefineShape4Tag;
-import org.apache.flex.swf.tags.DefineShapeTag;
-import org.apache.flex.swf.tags.DefineSpriteTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.PlaceObject2Tag;
-import org.apache.flex.swf.types.FillStyle;
-import org.apache.flex.swf.types.FillStyleArray;
-import org.apache.flex.swf.types.IFillStyle;
-import org.apache.flex.swf.types.LineStyleArray;
-import org.apache.flex.swf.types.Matrix;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.ShapeWithStyle;
-import org.apache.flex.swf.types.StraightEdgeRecord;
-import org.apache.flex.swf.types.StyleChangeRecord;
-import org.apache.flex.swf.types.Styles;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.EmbedExceptionWhileTranscodingProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.tags.DefineBitsJPEG2Tag;
+import org.apache.royale.swf.tags.DefineBitsTag;
+import org.apache.royale.swf.tags.DefineScalingGridTag;
+import org.apache.royale.swf.tags.DefineShape4Tag;
+import org.apache.royale.swf.tags.DefineShapeTag;
+import org.apache.royale.swf.tags.DefineSpriteTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.tags.PlaceObject2Tag;
+import org.apache.royale.swf.types.FillStyle;
+import org.apache.royale.swf.types.FillStyleArray;
+import org.apache.royale.swf.types.IFillStyle;
+import org.apache.royale.swf.types.LineStyleArray;
+import org.apache.royale.swf.types.Matrix;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.ShapeWithStyle;
+import org.apache.royale.swf.types.StraightEdgeRecord;
+import org.apache.royale.swf.types.StyleChangeRecord;
+import org.apache.royale.swf.types.Styles;
 
 /**
  * Handle the embedding of images which don't need to be transcoded

@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  *  IFilter problems based on their class; the filter supports

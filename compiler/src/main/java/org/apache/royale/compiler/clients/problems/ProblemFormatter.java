@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.apache.flex.compiler.Messages;
-import org.apache.flex.compiler.problems.CompilerProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.Messages;
+import org.apache.royale.compiler.problems.CompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Abstract class that provide useful functionality for

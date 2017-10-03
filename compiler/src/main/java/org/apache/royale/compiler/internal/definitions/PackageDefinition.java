@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.tree.as.IPackageNode;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.tree.as.IPackageNode;
 
 /**
  * This is the abstract base class for definitions in the symbol table that

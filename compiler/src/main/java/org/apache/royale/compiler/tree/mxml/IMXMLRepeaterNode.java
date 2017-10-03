@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 /**
  * This AST node represents an MXML <code>&lt;Repeater&gt;</code> tag in an

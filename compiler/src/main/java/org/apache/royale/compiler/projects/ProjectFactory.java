@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.projects;
+package org.apache.royale.compiler.projects;
 
-import org.apache.flex.compiler.asdoc.IASDocBundleDelegate;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.asdoc.IASDocBundleDelegate;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * class factory for things like CompilerProject, FlexProject, etc...

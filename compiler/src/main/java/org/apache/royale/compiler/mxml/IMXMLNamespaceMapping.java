@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 /**
  * Interface to a MXML-namespace-URI-to-manifest-file mapping.

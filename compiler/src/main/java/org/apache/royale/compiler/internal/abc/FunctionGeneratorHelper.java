@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.abc;
+package org.apache.royale.compiler.internal.abc;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IMethodVisitor;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IMethodVisitor;
 
 /**
  * Utility class for writing a function into an {@link IABCVisitor}.

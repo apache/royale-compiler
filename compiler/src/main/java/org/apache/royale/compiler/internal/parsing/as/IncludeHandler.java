@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,15 +26,15 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.common.IFileSpecificationGetter;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLScopeBuilder;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.IFileSpecificationGetter;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLScopeBuilder;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.projects.IASProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.utils.FilenameNormalization;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swc.io;
+package org.apache.royale.swc.io;
 
 import java.io.IOException;
 
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.swc.ISWC;
 
 /**
  * API for writing an {@link ISWC} model into a SWC file.

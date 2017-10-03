@@ -17,46 +17,46 @@
  *
  */
 
-package org.apache.flex.compiler.internal.units;
+package org.apache.royale.compiler.internal.units;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.abc.ABCScopeBuilder;
-import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.embedding.transcoders.SkinTranscoder;
-import org.apache.flex.compiler.internal.embedding.transcoders.TranscoderBase;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.ASFileScopeProvider;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.tree.as.FileNode;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.internal.units.requests.ABCFileScopeRequestResult;
-import org.apache.flex.compiler.internal.units.requests.EmbedFileScopeRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
-import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InvalidABCByteCodeProblem;
-import org.apache.flex.compiler.problems.NoScopesInABCCompilationUnitProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
-import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
-import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.swc.ISWCFileEntry;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.abc.ABCScopeBuilder;
+import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.embedding.transcoders.SkinTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.ASFileScopeProvider;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.tree.as.FileNode;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.internal.units.requests.ABCFileScopeRequestResult;
+import org.apache.royale.compiler.internal.units.requests.EmbedFileScopeRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SWFTagsRequestResult;
+import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InvalidABCByteCodeProblem;
+import org.apache.royale.compiler.problems.NoScopesInABCCompilationUnitProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.swc.ISWCFileEntry;
 
 /**
  * This is a Compilation Unit which handles transcoding and embedding of embed

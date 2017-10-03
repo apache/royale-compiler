@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions.mxml;
+package org.apache.royale.compiler.internal.definitions.mxml;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.FunctionScope;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
  * Sub-class of {@link FunctionScope} for MXML event handlers.

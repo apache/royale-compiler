@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
-import org.apache.flex.abc.ABCConstants;
+import org.apache.royale.abc.ABCConstants;
 
 /**
  * An ArbitraryOperandsInstruction holds an array of operands as specified by

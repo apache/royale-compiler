@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs.types;
+package org.apache.royale.maven.flexjs.types;
 
 /**
  * Created by christoferdutz on 18.04.16.

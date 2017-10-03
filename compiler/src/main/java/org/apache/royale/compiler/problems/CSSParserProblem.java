@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import org.antlr.runtime.BaseRecognizer;
 import org.antlr.runtime.RecognitionException;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
 
 /**
  * CSS parser problem.

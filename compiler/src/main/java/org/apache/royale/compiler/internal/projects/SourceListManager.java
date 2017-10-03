@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,11 +28,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.problems.DuplicateSourceFileProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.UnsupportedSourceFileProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.problems.DuplicateSourceFileProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.UnsupportedSourceFileProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * Manages the include sources list of a {@link ASProject}.

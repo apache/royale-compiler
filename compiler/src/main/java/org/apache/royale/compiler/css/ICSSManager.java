@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.css;
+package org.apache.royale.compiler.css;
 
 import java.io.File;
 import java.util.Collection;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Manages CSS source file and inline CSS fragments in a project.

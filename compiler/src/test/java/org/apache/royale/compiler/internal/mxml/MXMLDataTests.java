@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -29,14 +29,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.StringUtils;
-import org.apache.flex.utils.TestAdapterFactory;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLDataManager;
+import org.apache.royale.utils.ITestAdapter;
+import org.apache.royale.utils.StringUtils;
+import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Test;
 
 public class MXMLDataTests

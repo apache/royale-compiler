@@ -131,7 +131,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLJSC" />
+				<attribute name="Main-Class" value="org.apache.royale.compiler.clients.MXMLJSC" />
                 <attribute name="Class-Path" value="args4j.jar org.json.jar jsc.jar" />
 			</manifest>
 		</jar>
@@ -145,7 +145,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPJSC" />
+				<attribute name="Main-Class" value="org.apache.royale.compiler.clients.COMPJSC" />
                 <attribute name="Class-Path" value="jsc.jar" />
 			</manifest>
 		</jar>
@@ -159,7 +159,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.EXTERNC" />
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.EXTERNC" />
                 <attribute name="Class-Path" value="jsc.jar" />
             </manifest>
         </jar>
@@ -173,7 +173,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.ASDOCJSC" />
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.ASDOCJSC" />
                 <attribute name="Class-Path" value="jsc.jar" />
             </manifest>
         </jar>

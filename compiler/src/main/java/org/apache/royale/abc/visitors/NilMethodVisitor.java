@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
 
 /**
  * An IMethodVisitor that ignores its input as far as possible.

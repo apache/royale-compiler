@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swc.dita.IDITAList;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swc.dita.IDITAList;
 
 
 /**

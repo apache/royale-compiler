@@ -17,27 +17,27 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
-import org.apache.flex.compiler.internal.tree.as.parts.AccessorFunctionContentsPart;
-import org.apache.flex.compiler.internal.tree.as.parts.IAccessorFunctionContentsPart;
-import org.apache.flex.compiler.internal.tree.as.parts.IFunctionContentsPart;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IAccessorNode;
-import org.apache.flex.compiler.tree.as.ICommonClassNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.IKeywordNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.as.decorators.IVariableTypeDecorator;
-import org.apache.flex.compiler.tree.as.decorators.SymbolDecoratorProvider;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
+import org.apache.royale.compiler.internal.tree.as.parts.AccessorFunctionContentsPart;
+import org.apache.royale.compiler.internal.tree.as.parts.IAccessorFunctionContentsPart;
+import org.apache.royale.compiler.internal.tree.as.parts.IFunctionContentsPart;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.IKeywordNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.decorators.IVariableTypeDecorator;
+import org.apache.royale.compiler.tree.as.decorators.SymbolDecoratorProvider;
 
 /**
  * ActionScript parse tree node that acts as a base class for getters and

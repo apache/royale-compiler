@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.graph.algorithms;
+package org.apache.royale.abc.graph.algorithms;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,8 +26,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
 
 /**
  * DepthFirstPreorderIterator yields a depth-first preorder traversal of a {@link IFlowgraph}.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.junit.Test;
 
 /**

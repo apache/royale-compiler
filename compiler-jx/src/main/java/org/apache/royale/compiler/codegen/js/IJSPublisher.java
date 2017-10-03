@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.royale.compiler.codegen.js;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.driver.IPublisher;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.driver.IPublisher;
 
 /**
  * The {@link IJSPublisher} interface allows the abstraction of project output

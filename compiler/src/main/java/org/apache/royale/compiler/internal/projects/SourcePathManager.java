@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,18 +33,18 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 
-import org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem;
-import org.apache.flex.compiler.problems.DuplicateSourceFileProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.NonDirectoryInSourcePathProblem;
-import org.apache.flex.compiler.problems.OverlappingSourcePathProblem;
-import org.apache.flex.compiler.problems.SourcePathNotFoundProblem;
-import org.apache.flex.compiler.problems.UnableToListFilesProblem;
-import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.projects.IFlexProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.utils.DirectoryID;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem;
+import org.apache.royale.compiler.problems.DuplicateSourceFileProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.NonDirectoryInSourcePathProblem;
+import org.apache.royale.compiler.problems.OverlappingSourcePathProblem;
+import org.apache.royale.compiler.problems.SourcePathNotFoundProblem;
+import org.apache.royale.compiler.problems.UnableToListFilesProblem;
+import org.apache.royale.compiler.projects.IASProject;
+import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.utils.DirectoryID;
+import org.apache.royale.utils.FilenameNormalization;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;

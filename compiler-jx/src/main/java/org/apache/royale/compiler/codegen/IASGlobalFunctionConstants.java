@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.codegen;
+package org.apache.royale.compiler.codegen;
 
 /**
  * AS3 language global functions, such as Array, encodeURI, isNaN etc.

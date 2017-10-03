@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.io;
+package org.apache.royale.swc.io;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -27,14 +27,14 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.flex.compiler.asdoc.IPackageDITAParser;
-import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
-import org.apache.flex.compiler.problems.FileInLibraryIOProblem;
-import org.apache.flex.compiler.problems.FileInLibraryNotFoundProblem;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.SWC;
-import org.apache.flex.swc.catalog.StAXCatalogReader;
-import org.apache.flex.swc.dita.IDITAList;
+import org.apache.royale.compiler.asdoc.IPackageDITAParser;
+import org.apache.royale.compiler.problems.LibraryNotFoundProblem;
+import org.apache.royale.compiler.problems.FileInLibraryIOProblem;
+import org.apache.royale.compiler.problems.FileInLibraryNotFoundProblem;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.SWC;
+import org.apache.royale.swc.catalog.StAXCatalogReader;
+import org.apache.royale.swc.dita.IDITAList;
 
 /**
  * Read a SWC file using Java ZIP utilities. The {@code SWCReader} owns the

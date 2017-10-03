@@ -17,20 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js;
+package org.apache.royale.compiler.internal.driver.js;
 
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.units.ASCompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Implementation of ISourceFileHandler that constructs
  * {@link ASCompilationUnit}'s. JSSourceFileHandler is the SourceFileHandler
  * that provides JSCompilationUnit for *.as files. JSDriver registers
  * JSSourceFileHandler at FlexApplicationProject. This implementation is part of
- * FalconJS. For more details on FalconJS see org.apache.flex.compiler.JSDriver
+ * FalconJS. For more details on FalconJS see org.apache.royale.compiler.JSDriver
  */
 public final class JSSourceFileHandler implements ISourceFileHandler
 {

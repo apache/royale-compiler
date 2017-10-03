@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 import java.util.ArrayList;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.ShapeWithStyle;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.ShapeWithStyle;
 
 /**
  * Represents a <code>DefineShape</code> tag in a SWF file.

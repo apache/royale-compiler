@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions.references;
+package org.apache.royale.compiler.internal.definitions.references;
 
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * Implementation of {@link IReference} representing a reference that always

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.resourcebundles;
+package org.apache.royale.compiler.internal.resourcebundles;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,22 +25,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.config.QNameNormalization;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.ResourceBundleSourceFileHandler;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.units.ResourceBundleCompilationUnit;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.ResourceBundleNotFoundForLocaleProblem;
-import org.apache.flex.compiler.problems.ResourceBundleNotFoundProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.config.QNameNormalization;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.ResourceBundleSourceFileHandler;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ResourceBundleNotFoundForLocaleProblem;
+import org.apache.royale.compiler.problems.ResourceBundleNotFoundProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
 
 public class ResourceBundleUtils
 {

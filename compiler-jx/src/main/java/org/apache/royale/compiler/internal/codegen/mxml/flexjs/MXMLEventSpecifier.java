@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
  * @author Erik de Bruin

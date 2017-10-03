@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.internal.tree.as.QualifiedNameExpressionNode;
-import org.apache.flex.compiler.tree.as.ICommonClassNode;
-import org.apache.flex.compiler.tree.metadata.IEventTagNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.tree.as.QualifiedNameExpressionNode;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.tree.metadata.IEventTagNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 public class EventTagNode extends BaseDefinitionMetaTagNode implements IEventTagNode
 {

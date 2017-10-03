@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.resources;
+package org.apache.royale.compiler.fxg.resources;
 
 import java.io.IOException;
 import java.io.InputStream;

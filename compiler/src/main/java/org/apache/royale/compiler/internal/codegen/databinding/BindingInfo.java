@@ -17,48 +17,48 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.databinding;
+package org.apache.royale.compiler.internal.codegen.databinding;
 
 import java.util.LinkedList;
 import java.util.List;
 
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.definitions.IAccessorDefinition;
-import org.apache.flex.compiler.definitions.IConstantDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
-import org.apache.flex.compiler.definitions.references.IReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
-import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.TypeScope;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingAttributeNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassReferenceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLConcatenatedDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLExpressionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLModelPropertyNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IConstantDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
+import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingAttributeNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassReferenceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLConcatenatedDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 
 /**
  * data that describes a single databinding expression.
@@ -382,7 +382,7 @@ public class BindingInfo implements Comparable<BindingInfo>
      *   
      * MXMLInstanceNode "spark.components.Button" id="b2" 38:3 loc: 863-901 abs: 863-901 null
      *   MXMLPropertySpecifierNode "label" 38:21 loc: 881-899 abs: 881-899 null
-     *     MXMLDataBindingNode "DataBinding" 38:28 loc: 888-898 abs: 888-898 D:\builder_trunk\compiler\org.apache.flex.compiler\generated\tests\scratch\mxmlfunctional\Binding3\bindtest3.mxml
+     *     MXMLDataBindingNode "DataBinding" 38:28 loc: 888-898 abs: 888-898 D:\builder_trunk\compiler\org.apache.royale.compiler\generated\tests\scratch\mxmlfunctional\Binding3\bindtest3.mxml
      *       MemberAccessExpressionNode "." 38:29 loc: 889-897 abs: 889-897 null
      *         IdentifierNode "b1" 38:29 loc: 889-891 abs: 889-891 null
      *         IdentifierNode "label" 38:32 loc: 892-897 abs: 892-897 null

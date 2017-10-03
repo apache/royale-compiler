@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.flex.compiler.tools.unknowntreehandler;
+package org.apache.royale.compiler.tools.unknowntreehandler;
 
 import java.io.PrintWriter;
 
@@ -47,7 +47,7 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
     /**
      *  Package name to use.  Hard-coded for now.
      */
-    String packageName = "org.apache.flex.compiler.internal.as.codegen";
+    String packageName = "org.apache.royale.compiler.internal.as.codegen";
 
     /**
      *  Class name to use.  Also hard-coded.
@@ -57,7 +57,7 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
     /**
      *  Emitter to use.  Hard-coded.
      */
-    String emitterName = "org.apache.flex.compiler.internal.as.codegen.CmcEmitter";
+    String emitterName = "org.apache.royale.compiler.internal.as.codegen.CmcEmitter";
 
     /**
      *  Load a map of templates from an XML file.
@@ -133,7 +133,7 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
                     if ( attr_value.startsWith("org.apache.") )
                         class_name = attr_value;
                     else
-                        class_name = "org.apache.flex.compiler.problems." + attr_value;
+                        class_name = "org.apache.royale.compiler.problems." + attr_value;
                     template.problemClass = class_name;
                 }
                 else if ( "nodeClass".equals(attr_name) )
@@ -142,7 +142,7 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
                     if ( attr_value.startsWith("org.apache.") )
                         class_name = attr_value;
                     else
-                        class_name = "org.apache.flex.compiler.internal.tree.as." + attr_value;
+                        class_name = "org.apache.royale.compiler.internal.tree.as." + attr_value;
                     template.nodeClass = class_name;
                 }
                 else if ( "provisional".equals(attr_name) )
@@ -197,7 +197,7 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
     {
         if ( argv.length < 2 )
         {
-            System.err.println("Usage: java org.apache.flex.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput <xml pattern file> <destination java file>");
+            System.err.println("Usage: java org.apache.royale.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput <xml pattern file> <destination java file>");
             System.exit(1);
         }
 
@@ -223,8 +223,8 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
         output.println("import java.util.ArrayList;");
         output.println("import java.util.HashMap;");
         output.println("import java.util.Map;");
-        output.println("import org.apache.flex.compiler.tree.ASTNodeID;");
-        output.println("import static org.apache.flex.compiler.tree.ASTNodeID.*;");
+        output.println("import org.apache.royale.compiler.tree.ASTNodeID;");
+        output.println("import static org.apache.royale.compiler.tree.ASTNodeID.*;");
         output.println("import " + this.emitterName + ";");
         output.println();
         output.println("public class " + this.className);

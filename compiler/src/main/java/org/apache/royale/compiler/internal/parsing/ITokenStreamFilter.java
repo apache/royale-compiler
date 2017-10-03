@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing;
+package org.apache.royale.compiler.internal.parsing;
 
-import org.apache.flex.compiler.parsing.ICMToken;
+import org.apache.royale.compiler.parsing.ICMToken;
 
 public interface ITokenStreamFilter
 {

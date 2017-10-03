@@ -16,15 +16,15 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
 
 /**
  * @author aharui

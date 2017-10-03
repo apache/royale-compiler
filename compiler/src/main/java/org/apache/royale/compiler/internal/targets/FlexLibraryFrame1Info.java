@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.collect.ImmutableSet;
 
 /**

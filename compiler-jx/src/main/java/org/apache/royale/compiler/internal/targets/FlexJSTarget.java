@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.Collection;
@@ -28,20 +28,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSManager;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.internal.css.semantics.ActivatedStyleSheets;
-import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.IJSTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.css.ICSSManager;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.css.semantics.ActivatedStyleSheets;
+import org.apache.royale.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.IJSTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 
 import com.google.common.collect.ImmutableList;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
@@ -27,7 +27,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.junit.Ignore;
 import org.junit.Test;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.royale.compiler.clients;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,30 +38,30 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.codegen.as.IASWriter;
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.driver.js.IJSApplication;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
-import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.flex.compiler.internal.codegen.js.JSWriter;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLRoyaleSWCBackend;
-import org.apache.flex.compiler.internal.parsing.as.RoyaleASDocDelegate;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.targets.RoyaleSWCTarget;
-import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
-import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.swc.io.SWCReader;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
+import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
+import org.apache.royale.compiler.internal.codegen.js.JSWriter;
+import org.apache.royale.compiler.internal.driver.mxml.flexjs.MXMLRoyaleSWCBackend;
+import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
+import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem;
+import org.apache.royale.compiler.problems.LibraryNotFoundProblem;
+import org.apache.royale.compiler.problems.UnableToBuildSWFProblem;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.swc.io.SWCReader;
 
 /**
  * @author Erik de Bruin

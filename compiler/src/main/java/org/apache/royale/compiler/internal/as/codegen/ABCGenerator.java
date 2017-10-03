@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,39 +32,39 @@ import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.ABCEmitter;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.PooledValue;
-import org.apache.flex.abc.visitors.IMethodBodyVisitor;
-import org.apache.flex.abc.visitors.IMethodVisitor;
-import org.apache.flex.abc.visitors.IScriptVisitor;
-import org.apache.flex.abc.visitors.IVisitor;
-import org.apache.flex.compiler.exceptions.BURMAbortException;
-import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
-import org.apache.flex.compiler.exceptions.MissingBuiltinException;
-import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnitFactory;
-import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
-import org.apache.flex.compiler.problems.CodegenInternalProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MissingBuiltinProblem;
-import org.apache.flex.compiler.problems.NonConstantParamInitializerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.ABCEmitter;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.PooledValue;
+import org.apache.royale.abc.visitors.IMethodBodyVisitor;
+import org.apache.royale.abc.visitors.IMethodVisitor;
+import org.apache.royale.abc.visitors.IScriptVisitor;
+import org.apache.royale.abc.visitors.IVisitor;
+import org.apache.royale.compiler.exceptions.BURMAbortException;
+import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
+import org.apache.royale.compiler.exceptions.MissingBuiltinException;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnitFactory;
+import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
+import org.apache.royale.compiler.problems.CodegenInternalProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MissingBuiltinProblem;
+import org.apache.royale.compiler.problems.NonConstantParamInitializerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
 import com.google.common.util.concurrent.Futures;
 
 /**
@@ -608,7 +608,7 @@ public class ABCGenerator implements ICodeGenerator
 
     /**
      * Helper method to expose the constant folding code to clients outside of the burm, such
-     * as org.apache.flex.compiler.internal.as.definitions.ConstantDefinition.
+     * as org.apache.royale.compiler.internal.as.definitions.ConstantDefinition.
      * @param subtree   the tree to generate a constant value for
      * @param project   the project to use to evaluate the tree
      * @return          the constant value for the subtree, or null if a constant value can't be determined

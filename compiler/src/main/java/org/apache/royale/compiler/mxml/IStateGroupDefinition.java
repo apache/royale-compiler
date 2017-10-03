@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 /**
  * Represents a state group defined with an MXML 4 document

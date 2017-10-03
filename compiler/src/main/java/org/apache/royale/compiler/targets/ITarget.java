@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.util.Set;
 
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * An ITarget is a promise to build a particular output from the
@@ -32,8 +32,8 @@ import org.apache.flex.compiler.units.ICompilationUnit;
  * be compiled and added to the output. Each type of IProject may define its own
  * ways of specifying which ICompilationUnits are part of a ITarget.
  * 
- * @see org.apache.flex.compiler.projects.ICompilerProject
- * @see org.apache.flex.compiler.units.ICompilationUnit
+ * @see org.apache.royale.compiler.projects.ICompilerProject
+ * @see org.apache.royale.compiler.units.ICompilationUnit
  */
 public interface ITarget
 {

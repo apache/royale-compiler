@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
 
 /**
  * Internal compiler problem created when the code generator produces code in a
@@ -29,7 +29,7 @@ import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
  * <p>
  * This compiler problem is created when AET, detects a operand stack underflow
  * in
- * {@link org.apache.flex.abc.semantics.MethodBodyInfo#computeFrameCounts(IDiagnosticsVisitor)}.
+ * {@link org.apache.royale.abc.semantics.MethodBodyInfo#computeFrameCounts(IDiagnosticsVisitor)}.
  */
 public final class OperandStackUnderflowProblem extends InvalidByteCodeGeneratedProblem
 {

@@ -16,14 +16,14 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.graph;
+package org.apache.royale.compiler.internal.graph;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.swc.ISWC;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.royale.swc.ISWC;
 
 public class GoogDepsWriterCordova extends GoogDepsWriter {
 

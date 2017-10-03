@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.royale.compiler.codegen.js;
 
 import java.util.List;
 
-import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.ISourceLocation;
 
 import com.google.debugging.sourcemap.FilePosition;
 

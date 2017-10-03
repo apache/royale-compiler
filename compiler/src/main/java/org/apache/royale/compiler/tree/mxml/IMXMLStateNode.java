@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 /**
  * This AST node represents an MXML <code>&lt;State&gt;</code> tag.

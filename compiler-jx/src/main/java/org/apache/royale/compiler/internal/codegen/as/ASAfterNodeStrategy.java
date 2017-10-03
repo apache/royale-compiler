@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.as;
+package org.apache.royale.compiler.internal.codegen.as;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IContainerNode;
-import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IContainerNode.ContainerType;
+import org.apache.royale.compiler.visitor.IASNodeStrategy;
 
 /**
  * A concrete implementation of the {@link IASNodeStrategy} that allows

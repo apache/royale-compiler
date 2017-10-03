@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.swf.builders;
+package org.apache.royale.swf.builders;
 
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.types.CurvedEdgeRecord;
-import org.apache.flex.swf.types.EdgeRecord;
-import org.apache.flex.swf.types.FillStyleArray;
-import org.apache.flex.swf.types.LineStyleArray;
-import org.apache.flex.swf.types.Shape;
-import org.apache.flex.swf.types.StraightEdgeRecord;
-import org.apache.flex.swf.types.StyleChangeRecord;
-import org.apache.flex.swf.types.Styles;
-import org.apache.flex.utils.Point;
-import org.apache.flex.utils.Trace;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.types.CurvedEdgeRecord;
+import org.apache.royale.swf.types.EdgeRecord;
+import org.apache.royale.swf.types.FillStyleArray;
+import org.apache.royale.swf.types.LineStyleArray;
+import org.apache.royale.swf.types.Shape;
+import org.apache.royale.swf.types.StraightEdgeRecord;
+import org.apache.royale.swf.types.StyleChangeRecord;
+import org.apache.royale.swf.types.Styles;
+import org.apache.royale.utils.Point;
+import org.apache.royale.utils.Trace;
 
 /**
  * A utility class to help construct a SWF Shape from Java2D AWT Shapes. By

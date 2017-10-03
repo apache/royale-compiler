@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.parts;
+package org.apache.royale.compiler.internal.tree.as.parts;
 
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.KeywordNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.tree.as.KeywordNode;
 
 public class VariableDecorationPart extends DecorationPart
 {

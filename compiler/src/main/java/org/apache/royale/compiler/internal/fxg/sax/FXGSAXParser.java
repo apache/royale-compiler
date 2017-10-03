@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.sax;
+package org.apache.royale.compiler.internal.fxg.sax;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -30,10 +30,10 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.apache.flex.compiler.fxg.IFXGParser;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.problems.FXGParserProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.IFXGParser;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.problems.FXGParserProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * FXGSAXParser implements a SAX parser for an input stream that represents a

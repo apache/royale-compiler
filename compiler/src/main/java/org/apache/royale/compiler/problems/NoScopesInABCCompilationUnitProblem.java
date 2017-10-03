@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 public final class NoScopesInABCCompilationUnitProblem extends CompilerProblem
 {

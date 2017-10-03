@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IEventDefinition;
-import org.apache.flex.compiler.tree.metadata.IEventTagNode;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IEventDefinition;
+import org.apache.royale.compiler.tree.metadata.IEventTagNode;
 
 /**
  * Each instance of this class represents the definition of an MXML event in the

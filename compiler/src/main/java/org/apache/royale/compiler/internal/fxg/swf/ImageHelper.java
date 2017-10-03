@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.swf;
+package org.apache.royale.compiler.internal.fxg.swf;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -27,32 +27,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.internal.embedding.transcoders.JPEGTranscoder;
-import org.apache.flex.compiler.internal.fxg.dom.AbstractFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.BitmapGraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.IFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.fills.BitmapFillNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.FillMode;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.internal.embedding.transcoders.JPEGTranscoder;
+import org.apache.royale.compiler.internal.fxg.dom.AbstractFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.BitmapGraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.IFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.fills.BitmapFillNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.FillMode;
 
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.tags.DefineBitsJPEG2Tag;
-import org.apache.flex.swf.tags.DefineBitsLossless2Tag;
-import org.apache.flex.swf.tags.DefineBitsLosslessTag;
-import org.apache.flex.swf.tags.DefineShape4Tag;
-import org.apache.flex.swf.tags.DefineShapeTag;
-import org.apache.flex.swf.types.FillStyle;
-import org.apache.flex.swf.types.FillStyleArray;
-import org.apache.flex.swf.types.LineStyleArray;
-import org.apache.flex.swf.types.Matrix;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.ShapeRecord;
-import org.apache.flex.swf.types.ShapeWithStyle;
-import org.apache.flex.swf.types.StraightEdgeRecord;
-import org.apache.flex.swf.types.StyleChangeRecord;
-import org.apache.flex.swf.types.Styles;
-import org.apache.flex.utils.FileUtils;
-import org.apache.flex.utils.Trace;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.tags.DefineBitsJPEG2Tag;
+import org.apache.royale.swf.tags.DefineBitsLossless2Tag;
+import org.apache.royale.swf.tags.DefineBitsLosslessTag;
+import org.apache.royale.swf.tags.DefineShape4Tag;
+import org.apache.royale.swf.tags.DefineShapeTag;
+import org.apache.royale.swf.types.FillStyle;
+import org.apache.royale.swf.types.FillStyleArray;
+import org.apache.royale.swf.types.LineStyleArray;
+import org.apache.royale.swf.types.Matrix;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.ShapeRecord;
+import org.apache.royale.swf.types.ShapeWithStyle;
+import org.apache.royale.swf.types.StraightEdgeRecord;
+import org.apache.royale.swf.types.StyleChangeRecord;
+import org.apache.royale.swf.types.Styles;
+import org.apache.royale.utils.FileUtils;
+import org.apache.royale.utils.Trace;
 
 /**
  * Utilities to help create SWF DefineBits and DefineBitsLossess image tags.

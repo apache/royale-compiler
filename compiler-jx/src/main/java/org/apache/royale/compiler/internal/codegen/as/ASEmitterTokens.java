@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.as;
+package org.apache.royale.compiler.internal.codegen.as;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 /**
  * @author Michael Schmalle

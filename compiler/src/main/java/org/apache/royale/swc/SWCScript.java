@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.swc;
+package org.apache.royale.swc;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyType;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
 
 /**
  * This AST node represents an MXML tag that creates an instance of an

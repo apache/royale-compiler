@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
+package org.apache.royale.compiler.internal.codegen.mxml.flexjs;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 
 import java.io.File;
 import java.io.IOException;

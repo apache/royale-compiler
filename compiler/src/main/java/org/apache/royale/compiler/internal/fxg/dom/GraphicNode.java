@@ -17,35 +17,35 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_GRAPHIC_ELEMENT;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_LUMINOSITYCLIP_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_LUMINOSITYINVERT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_MASKTYPE_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDBOTTOM_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDLEFT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDRIGHT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_SCALEGRIDTOP_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_VERSION_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_VIEWHEIGHT_ATTRIBUTE;
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_VIEWWIDTH_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_GRAPHIC_ELEMENT;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_LUMINOSITYCLIP_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_LUMINOSITYINVERT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_MASKTYPE_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDBOTTOM_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDLEFT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDRIGHT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_SCALEGRIDTOP_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_VERSION_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_VIEWHEIGHT_ATTRIBUTE;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_VIEWWIDTH_ATTRIBUTE;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.MaskType;
-import org.apache.flex.compiler.internal.fxg.dom.types.ScalingGrid;
-import org.apache.flex.compiler.problems.FXGInvalidLibraryElementProblem;
-import org.apache.flex.compiler.problems.FXGInvalidMaskElementProblem;
-import org.apache.flex.compiler.problems.FXGInvalidNodeAttributeProblem;
-import org.apache.flex.compiler.problems.FXGInvalidVersionProblem;
-import org.apache.flex.compiler.problems.FXGMultipleElementProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
+import org.apache.royale.compiler.internal.fxg.dom.types.ScalingGrid;
+import org.apache.royale.compiler.problems.FXGInvalidLibraryElementProblem;
+import org.apache.royale.compiler.problems.FXGInvalidMaskElementProblem;
+import org.apache.royale.compiler.problems.FXGInvalidNodeAttributeProblem;
+import org.apache.royale.compiler.problems.FXGInvalidVersionProblem;
+import org.apache.royale.compiler.problems.FXGMultipleElementProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents the root &lt;Graphic&gt; element of an FXG Document.

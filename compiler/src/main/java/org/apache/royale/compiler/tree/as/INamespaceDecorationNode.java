@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.common.IDecoration;
+import org.apache.royale.compiler.common.IDecoration;
 
 /**
  * An AST node representing a namespace attribute on a <code>class</code>,

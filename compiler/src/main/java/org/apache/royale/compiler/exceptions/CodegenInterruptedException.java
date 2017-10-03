@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.exceptions;
+package org.apache.royale.compiler.exceptions;
 
 /**
  * When an InterruptedException is thrown during codegen, wrap it in a RuntimeException

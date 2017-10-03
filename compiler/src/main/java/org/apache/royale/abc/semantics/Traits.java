@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.Iterator;
 import java.util.Vector;

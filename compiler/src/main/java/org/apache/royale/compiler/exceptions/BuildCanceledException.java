@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.exceptions;
+package org.apache.royale.compiler.exceptions;
 
 /**
  * This exception is thrown when the build of a target is canceled

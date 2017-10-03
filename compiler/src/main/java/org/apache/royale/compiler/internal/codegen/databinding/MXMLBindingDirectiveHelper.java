@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.databinding;
+package org.apache.royale.compiler.internal.codegen.databinding;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,31 +27,31 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.MethodInfo;
-import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.visitors.IABCVisitor;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
-import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.targets.FlexAppSWFTarget;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.targets.ISWFTarget;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.MethodInfo;
+import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.visitors.IABCVisitor;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
+import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.targets.FlexAppSWFTarget;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAsNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.targets.ISWFTarget;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * Keeps track of all the Data Bindings in an MXML file and helps with codegen 

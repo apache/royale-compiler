@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
+import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
 
-import static org.apache.flex.compiler.internal.css.CSSStringPropertyValue.stripQuotes;
+import static org.apache.royale.compiler.internal.css.CSSStringPropertyValue.stripQuotes;
 
 /**
  * CSS problem for unresolved classes used in {@code ClassReference()}.

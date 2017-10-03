@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
-import org.apache.flex.abc.semantics.Metadata;
+import org.apache.royale.abc.semantics.Metadata;
 
 /**
  * this class just passes all calls through to the delegate - used as a base

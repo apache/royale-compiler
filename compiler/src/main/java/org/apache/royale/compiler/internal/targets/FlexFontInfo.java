@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
-import org.apache.flex.abc.ABCConstants;
+import org.apache.royale.abc.ABCConstants;
 
 /**
  * Utility class to store font information obtained from the font transcoder

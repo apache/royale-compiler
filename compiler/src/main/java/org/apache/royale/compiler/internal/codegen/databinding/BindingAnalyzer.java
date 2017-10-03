@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.databinding;
+package org.apache.royale.compiler.internal.codegen.databinding;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 
 /**
  * Does an analysis of a single binding expressions.

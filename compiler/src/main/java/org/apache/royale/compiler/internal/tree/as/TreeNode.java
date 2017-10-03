@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.utils.CheapArray;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.utils.CheapArray;
 
 public abstract class TreeNode extends NodeBase
 {

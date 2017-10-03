@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
-import org.apache.flex.compiler.problems.SyntaxProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 
 /**
  * Interface for the stream of tokens that will be passed to the parser. This

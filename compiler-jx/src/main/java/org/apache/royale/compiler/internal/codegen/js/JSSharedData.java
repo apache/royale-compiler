@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.royale.compiler.internal.codegen.js;
 
 // TODO (mschmalle) This class sucks, figure out some other way instead of using
 // a static singleton class like this, change when implementing Configuration

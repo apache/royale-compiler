@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.flex;
+package org.apache.royale.compiler.fxg.flex;
 
 import java.io.File;
 import java.util.Collection;
@@ -26,44 +26,44 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.Multiname;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.swf.FXG2SWFTranscoder;
-import org.apache.flex.compiler.internal.fxg.dom.CDATANode;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicContentNode;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.GroupNode;
-import org.apache.flex.compiler.internal.fxg.dom.IMaskableNode;
-import org.apache.flex.compiler.internal.fxg.dom.IMaskingNode;
-import org.apache.flex.compiler.internal.fxg.dom.RichTextNode;
-import org.apache.flex.compiler.internal.fxg.dom.TextGraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.ITextNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.BRNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.DivNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.ImgNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.LinkNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.ParagraphNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.SpanNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TCYNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TabNode;
-import org.apache.flex.compiler.internal.fxg.dom.richtext.TextLayoutFormatNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.BlendMode;
-import org.apache.flex.compiler.internal.fxg.dom.types.MaskType;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.problems.FXGDefinitionNotFoundProblem;
-import org.apache.flex.compiler.problems.FXGUndefinedPropertyProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.swf.tags.DefineSpriteTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.PlaceObject3Tag;
-import org.apache.flex.utils.StringUtils;
+import org.apache.royale.compiler.common.Multiname;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.swf.FXG2SWFTranscoder;
+import org.apache.royale.compiler.internal.fxg.dom.CDATANode;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicContentNode;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.GroupNode;
+import org.apache.royale.compiler.internal.fxg.dom.IMaskableNode;
+import org.apache.royale.compiler.internal.fxg.dom.IMaskingNode;
+import org.apache.royale.compiler.internal.fxg.dom.RichTextNode;
+import org.apache.royale.compiler.internal.fxg.dom.TextGraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.ITextNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.BRNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.DivNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.ImgNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.LinkNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.ParagraphNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.SpanNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TCYNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TabNode;
+import org.apache.royale.compiler.internal.fxg.dom.richtext.TextLayoutFormatNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.BlendMode;
+import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
+import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.problems.FXGDefinitionNotFoundProblem;
+import org.apache.royale.compiler.problems.FXGUndefinedPropertyProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.swf.tags.DefineSpriteTag;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.tags.PlaceObject3Tag;
+import org.apache.royale.utils.StringUtils;
 
 /**
  * This implementation generates ActionScript classes for features not supported

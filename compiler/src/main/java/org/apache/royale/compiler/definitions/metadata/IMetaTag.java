@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.definitions.metadata;
+package org.apache.royale.compiler.definitions.metadata;
 
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 
 /**
  * One IMetaTag corresponds to a single metadata annoation (such as

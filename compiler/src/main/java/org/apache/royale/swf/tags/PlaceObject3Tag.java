@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.types.Filter;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.types.Filter;
 
 /**
  * Represents a <code>PlaceObject3</code> tag in a SWF file.

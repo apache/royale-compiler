@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 /**
  * This interface extends {@link IDefinitionSet} to add mutation methods.

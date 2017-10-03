@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
 import java.util.List;
 
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 
 /**
  * An AST node representing a <code>function</code> declaration,

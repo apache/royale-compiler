@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
 /**
  * An AST node representing an <code>if</code> statement.

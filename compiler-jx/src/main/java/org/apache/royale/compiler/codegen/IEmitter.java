@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.codegen;
+package org.apache.royale.compiler.codegen;
 
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * @author Michael Schmalle

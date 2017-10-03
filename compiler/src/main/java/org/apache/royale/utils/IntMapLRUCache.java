@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 /**
  * Caching data structure that uses a Least Recently Used (LRU)

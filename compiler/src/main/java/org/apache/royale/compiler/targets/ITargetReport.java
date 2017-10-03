@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.swf.types.RGB;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.swf.types.RGB;
 
 /**
  * This interface provides information about the {@link ITarget}

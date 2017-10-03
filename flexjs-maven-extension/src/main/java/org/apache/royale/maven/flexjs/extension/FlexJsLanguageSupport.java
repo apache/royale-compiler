@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs.extension;
+package org.apache.royale.maven.flexjs.extension;
 
 import org.apache.maven.repository.internal.LanguageSupport;
 import org.codehaus.plexus.component.annotations.Component;

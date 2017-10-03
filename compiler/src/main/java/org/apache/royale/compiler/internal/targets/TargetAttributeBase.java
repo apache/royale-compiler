@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
+import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * Base class for {@link ITargetAttributes}. Subclasses need to implement

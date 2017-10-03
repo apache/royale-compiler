@@ -16,9 +16,9 @@
  *  limitations under the License.
  *
  */
-package org.apache.flex.compiler.internal.codegen.js.node;
+package org.apache.royale.compiler.internal.codegen.js.node;
 
-import org.apache.flex.compiler.codegen.IEmitterTokens;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 public enum NodeEmitterTokens implements IEmitterTokens
 {

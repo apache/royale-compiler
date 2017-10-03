@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.projects;
+package org.apache.royale.compiler.projects;
 
 /**
  * IASCProject can create ISWFTargets that build SWF from AS3 files in a manner

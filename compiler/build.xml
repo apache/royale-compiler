@@ -185,7 +185,7 @@
         <attribute name="file"/>
         <attribute name="annotation"/>
         <sequential>
-            <java classname="org.apache.flex.compiler.tools.annotate.AnnotateClass" fork="false">
+            <java classname="org.apache.royale.compiler.tools.annotate.AnnotateClass" fork="false">
                 <classpath>
                     <path refid="classpath"/>
                     <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
@@ -361,7 +361,7 @@
     
     <target name="unknown.tree.handler.patterns" depends="set.unknown.tree.handler.patterns.uptodate" unless="unknown.tree.handler.patterns.uptodate">
         <mkdir dir="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen"/>
-        <java classname="org.apache.flex.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput" fork="true" failonerror="true">
+        <java classname="org.apache.royale.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput" fork="true" failonerror="true">
             <arg value="${compiler}/src/main/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
             <arg value="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
             <classpath>
@@ -497,7 +497,7 @@
         </copy>
         <!-- Copy the config file for the flex-tool-api. -->
         <copy todir="${compiler}/target/classes/META-INF/services"
-              file="src/main/resources/META-INF/services/org.apache.flex.tools.FlexToolGroup"/>
+              file="src/main/resources/META-INF/services/org.apache.royale.tools.FlexToolGroup"/>
     </target>
 	
 	<target name="set.messages.en.uptodate">
@@ -512,7 +512,7 @@
     <target name="localization" depends="compile, set.messages.en.uptodate" unless="messages.en.uptodate"
     	    description="Creates message_en.properties file">
         <echo message="Creating messages_en.properties file for compiler problem localization"/>
-        <java classname="org.apache.flex.compiler.tools.ProblemLocalizer" fork="true">
+        <java classname="org.apache.royale.compiler.tools.ProblemLocalizer" fork="true">
             <classpath>
                 <pathelement location="${compiler}/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
@@ -579,7 +579,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ASC Command Line Compiler"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.ASC"/>
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.ASC"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
@@ -605,7 +605,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - MXMLC Command Line Compiler"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLC"/>
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.MXMLC"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
@@ -631,7 +631,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - COMPC Command Line Compiler"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPC"/>
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.COMPC"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
@@ -657,7 +657,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - Apache SWF Optimizer"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.Optimizer"/>
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.Optimizer"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
@@ -683,7 +683,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - SWF Dump Command Line utility"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.swf.io.SWFDump"/>
+                <attribute name="Main-Class" value="org.apache.royale.swf.io.SWFDump"/>
                 <attribute name="Class-Path" value="compiler.jar commons-io.jar"/>
             </manifest>
         </jar>

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
+import org.apache.royale.swf.TagType;
 
 /**
  * Represents a <code>DefineFontInfo2</code> tag in a SWF file.

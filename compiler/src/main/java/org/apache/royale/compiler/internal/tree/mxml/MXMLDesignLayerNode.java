@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.mxml;
+package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDesignLayerNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDesignLayerNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLSpecifierNode;
 import com.google.common.base.Strings;
 
 /**

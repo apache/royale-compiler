@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.types.RGB;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.types.RGB;
 
 /**
  * Represents a <code>SetBackgroundColor</code> tag in a SWF file.

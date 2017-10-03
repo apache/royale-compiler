@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.scopes;
+package org.apache.royale.compiler.scopes;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
  * Interface implemented by all file scope, which is the root scope for any

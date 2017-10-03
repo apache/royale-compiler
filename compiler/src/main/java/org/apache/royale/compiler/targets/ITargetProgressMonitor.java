@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 /**
  * Interface that clients of Falcon can implement to receive progress

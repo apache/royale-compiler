@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
 /**
  * Represents an XML processing instruction.

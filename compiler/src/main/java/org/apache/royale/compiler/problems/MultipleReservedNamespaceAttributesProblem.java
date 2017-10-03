@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 
 /**
  * Only one of public, private, protected, or internal can be specified on a

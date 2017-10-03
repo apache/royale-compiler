@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
 /**
  * The IClassVisitor generates traits visitors for an ABC class' static and
  * instance traits.
  * 
- * @see org.apache.flex.abc.semantics.ClassInfo which holds the rest of the
+ * @see org.apache.royale.abc.semantics.ClassInfo which holds the rest of the
  * class' information.
  */
 public interface IClassVisitor extends IVisitor

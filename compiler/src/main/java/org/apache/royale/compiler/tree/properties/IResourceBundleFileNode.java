@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.properties;
+package org.apache.royale.compiler.tree.properties;
 
-import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
 
 /**
  * This AST node represents a .properties file.

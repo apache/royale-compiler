@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.tree.ASTNodeID;
 
 /**
  * The base interface for all AST (abstract syntax tree) nodes.

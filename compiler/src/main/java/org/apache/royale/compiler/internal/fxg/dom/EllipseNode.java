@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.swf.ISWFConstants;
-import org.apache.flex.swf.types.LineStyle;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.swf.types.ShapeRecord;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.ISWFConstants;
+import org.apache.royale.swf.types.LineStyle;
+import org.apache.royale.swf.types.Rect;
+import org.apache.royale.swf.types.ShapeRecord;
 
 public class EllipseNode extends AbstractShapeNode
 {

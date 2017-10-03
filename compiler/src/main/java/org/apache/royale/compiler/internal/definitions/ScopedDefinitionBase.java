@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.definitions;
+package org.apache.royale.compiler.internal.definitions;
 
-import org.apache.flex.compiler.definitions.IScopedDefinition;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.scopes.IASScope;
 
 /**
  * This is the abstract base class for definitions in the symbol table that have

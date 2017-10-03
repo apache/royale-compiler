@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+package org.apache.royale.compiler.internal.css.codegen;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.instructionlist.InstructionList;
 
 /**
  * Defines all the runtime constants in the CSS framework. The constants are of

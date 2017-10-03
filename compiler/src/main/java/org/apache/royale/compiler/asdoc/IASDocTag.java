@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.asdoc;
+package org.apache.royale.compiler.asdoc;
 
 public interface IASDocTag
 {

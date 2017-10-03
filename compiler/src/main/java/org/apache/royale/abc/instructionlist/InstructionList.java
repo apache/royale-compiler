@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.abc.instructionlist;
+package org.apache.royale.abc.instructionlist;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.semantics.Instruction;
-import org.apache.flex.abc.semantics.InstructionFactory;
-import org.apache.flex.abc.semantics.Label;
-import static org.apache.flex.abc.ABCConstants.*;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.InstructionFactory;
+import org.apache.royale.abc.semantics.Label;
+import static org.apache.royale.abc.ABCConstants.*;
 
 /**
  * An InstructionList is a structure that holds a sequence of Instructions, and

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.asdoc.IASDocComment;
 
 /**
  * An AST node representing a declaration that can have an ASDoc comment

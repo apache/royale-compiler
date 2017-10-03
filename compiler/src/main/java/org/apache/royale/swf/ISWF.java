@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
-import org.apache.flex.swf.tags.EnableDebugger2Tag;
-import org.apache.flex.swf.tags.EnableTelemetryTag;
-import org.apache.flex.swf.tags.ProductInfoTag;
-import org.apache.flex.swf.tags.ScriptLimitsTag;
-import org.apache.flex.swf.types.RGB;
-import org.apache.flex.swf.types.Rect;
+import org.apache.royale.swf.tags.EnableDebugger2Tag;
+import org.apache.royale.swf.tags.EnableTelemetryTag;
+import org.apache.royale.swf.tags.ProductInfoTag;
+import org.apache.royale.swf.tags.ScriptLimitsTag;
+import org.apache.royale.swf.types.RGB;
+import org.apache.royale.swf.types.Rect;
 
 /**
  * SWF model interface. The properties include fields in SWF header,

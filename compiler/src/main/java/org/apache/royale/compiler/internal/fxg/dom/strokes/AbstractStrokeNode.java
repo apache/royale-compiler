@@ -17,22 +17,22 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.strokes;
+package org.apache.royale.compiler.internal.fxg.dom.strokes;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.internal.fxg.dom.AbstractFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.DOMParserHelper;
-import org.apache.flex.compiler.internal.fxg.dom.GraphicNode;
-import org.apache.flex.compiler.internal.fxg.dom.IStrokeNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.Caps;
-import org.apache.flex.compiler.internal.fxg.dom.types.Joints;
-import org.apache.flex.compiler.internal.fxg.dom.types.ScaleMode;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.internal.fxg.dom.AbstractFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.DOMParserHelper;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.IStrokeNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.Caps;
+import org.apache.royale.compiler.internal.fxg.dom.types.Joints;
+import org.apache.royale.compiler.internal.fxg.dom.types.ScaleMode;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Base class for all FXG stroke nodes.

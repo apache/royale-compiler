@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
-import static org.apache.flex.abc.ABCConstants.OP_popscope;
-import static org.apache.flex.abc.ABCConstants.OP_pushwith;
+import static org.apache.royale.abc.ABCConstants.OP_popscope;
+import static org.apache.royale.abc.ABCConstants.OP_pushwith;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  *  The WithContext tracks the usage of a with scope

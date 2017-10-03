@@ -17,16 +17,16 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as.metadata;
+package org.apache.royale.compiler.internal.tree.as.metadata;
 
 import antlr.Token;
 
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.QualifiedNameExpressionNode;
-import org.apache.flex.compiler.tree.metadata.IInspectableTagNode;
-import org.apache.flex.utils.CheapArray;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.QualifiedNameExpressionNode;
+import org.apache.royale.compiler.tree.metadata.IInspectableTagNode;
+import org.apache.royale.utils.CheapArray;
 
 /**
  * Implementation of {@link IInspectableTagNode}.

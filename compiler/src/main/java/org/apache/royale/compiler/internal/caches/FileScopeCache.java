@@ -17,21 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.internal.caches;
+package org.apache.royale.compiler.internal.caches;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
 
-import org.apache.flex.compiler.internal.abc.ABCScopeBuilder;
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.scopes.SWCFileScopeProvider;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.ISWCScript;
-import org.apache.flex.swc.SWCManager;
-import org.apache.flex.swf.ITagContainer;
-import org.apache.flex.swf.tags.DoABCTag;
+import org.apache.royale.compiler.internal.abc.ABCScopeBuilder;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.scopes.SWCFileScopeProvider;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCScript;
+import org.apache.royale.swc.SWCManager;
+import org.apache.royale.swf.ITagContainer;
+import org.apache.royale.swf.tags.DoABCTag;
 
 /**
  * Each {@code <script>} tag maps to a {@code DoABC} tag in the library

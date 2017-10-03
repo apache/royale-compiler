@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
-import org.apache.flex.compiler.css.ICSSNode;
+import org.apache.royale.compiler.css.ICSSNode;
 import com.google.common.collect.ImmutableList;
 
 /**

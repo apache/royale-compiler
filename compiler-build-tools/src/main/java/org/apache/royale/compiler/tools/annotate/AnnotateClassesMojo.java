@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.compiler.tools.annotate;
+package org.apache.royale.compiler.tools.annotate;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

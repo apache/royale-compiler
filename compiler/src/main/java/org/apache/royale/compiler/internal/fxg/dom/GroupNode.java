@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.internal.fxg.dom.types.ScalingGrid;
-import org.apache.flex.compiler.problems.FXGInvalidScaleGridGroupChildProblem;
-import org.apache.flex.compiler.problems.FXGInvalidScaleGridRotationAttributeProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.internal.fxg.dom.types.ScalingGrid;
+import org.apache.royale.compiler.problems.FXGInvalidScaleGridGroupChildProblem;
+import org.apache.royale.compiler.problems.FXGInvalidScaleGridRotationAttributeProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 public class GroupNode extends GraphicContentNode implements IMaskingNode
 {

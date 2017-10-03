@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.utils;
+package org.apache.royale.utils;
 
 /**
  * Represents a four-part version number, such as <code>4.5.12.12345</code>.

@@ -17,31 +17,31 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom;
+package org.apache.royale.compiler.internal.fxg.dom;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.*;
+import static org.apache.royale.compiler.fxg.FXGConstants.*;
 
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.flex.compiler.fxg.FXGVersion;
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.fxg.logging.FXGLog;
-import org.apache.flex.compiler.fxg.logging.IFXGLogger;
-import org.apache.flex.compiler.internal.fxg.dom.types.FillMode;
-import org.apache.flex.compiler.internal.fxg.dom.types.InterpolationMethod;
-import org.apache.flex.compiler.internal.fxg.dom.types.MaskType;
-import org.apache.flex.compiler.internal.fxg.dom.types.SpreadMethod;
-import org.apache.flex.compiler.problems.FXGInvalidBooleanValueProblem;
-import org.apache.flex.compiler.problems.FXGInvalidColorValueProblem;
-import org.apache.flex.compiler.problems.FXGInvalidDoubleValueProblem;
-import org.apache.flex.compiler.problems.FXGInvalidFloatValueProblem;
-import org.apache.flex.compiler.problems.FXGInvalidIntegerValueProblem;
-import org.apache.flex.compiler.problems.FXGInvalidPercentValueProblem;
-import org.apache.flex.compiler.problems.FXGOutOfRangeValueProblem;
-import org.apache.flex.compiler.problems.FXGUnknownAttributeValueProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.FXGVersion;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.fxg.logging.FXGLog;
+import org.apache.royale.compiler.fxg.logging.IFXGLogger;
+import org.apache.royale.compiler.internal.fxg.dom.types.FillMode;
+import org.apache.royale.compiler.internal.fxg.dom.types.InterpolationMethod;
+import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
+import org.apache.royale.compiler.internal.fxg.dom.types.SpreadMethod;
+import org.apache.royale.compiler.problems.FXGInvalidBooleanValueProblem;
+import org.apache.royale.compiler.problems.FXGInvalidColorValueProblem;
+import org.apache.royale.compiler.problems.FXGInvalidDoubleValueProblem;
+import org.apache.royale.compiler.problems.FXGInvalidFloatValueProblem;
+import org.apache.royale.compiler.problems.FXGInvalidIntegerValueProblem;
+import org.apache.royale.compiler.problems.FXGInvalidPercentValueProblem;
+import org.apache.royale.compiler.problems.FXGOutOfRangeValueProblem;
+import org.apache.royale.compiler.problems.FXGUnknownAttributeValueProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Utilities to help parsing FXG.

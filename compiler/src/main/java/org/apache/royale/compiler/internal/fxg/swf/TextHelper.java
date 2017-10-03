@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.swf;
+package org.apache.royale.compiler.internal.fxg.swf;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

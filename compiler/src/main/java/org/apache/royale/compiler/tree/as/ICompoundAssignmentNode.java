@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * An AST node representing one of the 13 compound assignment binary operators.

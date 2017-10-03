@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
-import org.apache.flex.swf.io.SWFWriter;
+import org.apache.royale.swf.io.SWFWriter;
 
 /**
  * The curved-edge record stores the edge as two X-Y deltas. The three points

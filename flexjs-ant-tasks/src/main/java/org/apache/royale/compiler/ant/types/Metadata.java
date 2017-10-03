@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.ant.types;
+package org.apache.royale.compiler.ant.types;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,11 +26,11 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicElement;
 import org.apache.tools.ant.types.Commandline;
 
-import org.apache.flex.compiler.ant.FlexTask;
-import org.apache.flex.compiler.ant.config.ConfigString;
-import org.apache.flex.compiler.ant.config.NestedAttributeElement;
-import org.apache.flex.compiler.ant.config.IOptionSource;
-import org.apache.flex.compiler.ant.config.OptionSpec;
+import org.apache.royale.compiler.ant.FlexTask;
+import org.apache.royale.compiler.ant.config.ConfigString;
+import org.apache.royale.compiler.ant.config.NestedAttributeElement;
+import org.apache.royale.compiler.ant.config.IOptionSource;
+import org.apache.royale.compiler.ant.config.OptionSpec;
 
 /**
  * Supports the nested &lt;metadata&gt; tag.

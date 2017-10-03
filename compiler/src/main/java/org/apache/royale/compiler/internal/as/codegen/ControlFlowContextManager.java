@@ -17,23 +17,23 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.compiler.exceptions.DuplicateLabelException;
-import org.apache.flex.compiler.exceptions.UnknownControlFlowTargetException;
-import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.SwitchNode;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.ICatchNode;
-import org.apache.flex.compiler.tree.as.ITryNode;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.compiler.exceptions.DuplicateLabelException;
+import org.apache.royale.compiler.exceptions.UnknownControlFlowTargetException;
+import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.royale.compiler.internal.tree.as.SwitchNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.ICatchNode;
+import org.apache.royale.compiler.tree.as.ITryNode;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 /**
  *  The ControlFlowContextManager is the code generator's

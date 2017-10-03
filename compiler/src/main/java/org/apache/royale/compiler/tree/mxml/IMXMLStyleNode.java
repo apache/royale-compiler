@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * This AST node represents an MXML <code>&lt;Style&gt;</code> tag.

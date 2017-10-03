@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import java.io.File;
 
 /**
- * {@link org.apache.flex.compiler.problems.CompilerProblem} subclass for source path entries that are not
+ * {@link org.apache.royale.compiler.problems.CompilerProblem} subclass for source path entries that are not
  * directories.
  */
 public final class NonDirectoryInSourcePathProblem extends CompilerProblem

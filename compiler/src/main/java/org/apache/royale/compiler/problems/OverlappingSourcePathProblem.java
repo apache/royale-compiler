@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import java.io.File;
 
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
- * {@link org.apache.flex.compiler.problems.CompilerProblem} subclass for overlapping source path entries.
+ * {@link org.apache.royale.compiler.problems.CompilerProblem} subclass for overlapping source path entries.
  */
 @DefaultSeverity(CompilerProblemSeverity.WARNING)
 public final class OverlappingSourcePathProblem extends CompilerProblem

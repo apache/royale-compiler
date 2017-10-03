@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
 /**
  * The "priority" of a definition determines whether that definition shadows definitions from other

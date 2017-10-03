@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.as;
+package org.apache.royale.compiler.tree.as;
 
-import org.apache.flex.compiler.definitions.INamespaceDefinition.NamespaceClassification;
+import org.apache.royale.compiler.definitions.INamespaceDefinition.NamespaceClassification;
 
 /**
  * An AST node representing a <code>namespace</code> declaration.

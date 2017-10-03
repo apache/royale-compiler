@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.visitors;
+package org.apache.royale.abc.visitors;
 
 /**
  * An IClassVisitor that ignores its input as far as possible.

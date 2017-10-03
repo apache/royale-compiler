@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.DeflaterOutputStream;
 
-import org.apache.flex.utils.DAByteArrayOutputStream;
+import org.apache.royale.utils.DAByteArrayOutputStream;
 
 /**
  * The output stream that can write SWF primitive data types. It contains an

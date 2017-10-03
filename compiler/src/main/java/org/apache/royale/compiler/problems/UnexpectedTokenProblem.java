@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
-import org.apache.flex.compiler.parsing.IASToken.ASTokenKind;
+import org.apache.royale.compiler.internal.parsing.as.ASToken;
+import org.apache.royale.compiler.parsing.IASToken.ASTokenKind;
 
 public final class UnexpectedTokenProblem extends SyntaxProblem
 {

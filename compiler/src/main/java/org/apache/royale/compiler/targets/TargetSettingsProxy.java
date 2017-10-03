@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.targets;
+package org.apache.royale.compiler.targets;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.internal.config.FrameInfo;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.internal.config.FrameInfo;
 
 /**
  * When implementing a ITargetSettings, this utility abstract class can be

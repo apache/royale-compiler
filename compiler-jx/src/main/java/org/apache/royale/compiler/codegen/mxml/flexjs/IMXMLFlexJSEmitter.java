@@ -17,13 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.mxml.flexjs;
+package org.apache.royale.compiler.codegen.mxml.flexjs;
 
 import java.io.Writer;
 
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.visitor.IASNodeStrategy;
 
 /**
  * The {@link IMXMLRoyaleEmitter} interface allows abstraction between the

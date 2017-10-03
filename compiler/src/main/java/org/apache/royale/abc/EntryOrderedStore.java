@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc;
+package org.apache.royale.abc;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,28 +26,28 @@ import java.util.LinkedHashMap;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.MutablePrefixMap;
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.common.PrefixedXMLName;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
-import org.apache.flex.compiler.parsing.IMXMLToken;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLDuplicateAttributeProblem;
-import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
-import org.apache.flex.compiler.problems.SyntaxProblem;
-import org.apache.flex.utils.FastStack;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.MutablePrefixMap;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.common.PrefixedXMLName;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.mxml.IMXMLData;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLDuplicateAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLUnclosedTagProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
+import org.apache.royale.utils.FastStack;
 
 /**
  * Encapsulation of an open tag, a close tag, or an empty tag in MXML.

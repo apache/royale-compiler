@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package org.apache.royale.compiler.tree.mxml;
 
-import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 
 /**
  * This AST node represents a single databinding expression (such as

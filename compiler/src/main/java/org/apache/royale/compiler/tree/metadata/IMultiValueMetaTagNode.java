@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.tree.metadata;
+package org.apache.royale.compiler.tree.metadata;
 
 /**
  * Adds support for MetaTags that support multiple values

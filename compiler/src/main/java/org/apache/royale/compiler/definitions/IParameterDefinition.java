@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IParameterNode;
 
 /**
  * A definition representing a parameter declaration.
@@ -53,7 +53,7 @@ public interface IParameterDefinition extends IVariableDefinition
      * determined, or null if it can't be determined. This will be a String,
      * int, double, boolean, or Namespace depending on what the initial value
      * was. The value could also be
-     * org.apache.flex.abc.ABCConstants.UNDEFINED_VALUE if the initial
+     * org.apache.royale.abc.ABCConstants.UNDEFINED_VALUE if the initial
      * value was the undefined constant value Callers will need to use
      * instanceof to see what type the value is.
      */

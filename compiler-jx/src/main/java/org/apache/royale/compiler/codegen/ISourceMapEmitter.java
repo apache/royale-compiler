@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.codegen;
+package org.apache.royale.compiler.codegen;
 
 /**
  * Base interface for source map emitters.

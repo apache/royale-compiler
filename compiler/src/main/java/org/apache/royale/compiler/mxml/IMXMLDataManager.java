@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
-import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 
 /**
  * The {@code IMXMLDataManager} of the {@code IWorkspace} maintains a cache of

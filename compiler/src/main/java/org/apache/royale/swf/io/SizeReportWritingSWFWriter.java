@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,23 +30,23 @@ import java.io.Writer;
 
 import org.apache.commons.io.output.CountingOutputStream;
 
-import org.apache.flex.swf.Header.Compression;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.tags.CharacterTag;
-import org.apache.flex.swf.tags.DefineBinaryDataTag;
-import org.apache.flex.swf.tags.DefineFont2Tag;
-import org.apache.flex.swf.tags.DefineFont4Tag;
-import org.apache.flex.swf.tags.DefineFontNameTag;
-import org.apache.flex.swf.tags.DefineFontTag;
-import org.apache.flex.swf.tags.DefineShapeTag;
-import org.apache.flex.swf.tags.DefineSoundTag;
-import org.apache.flex.swf.tags.DefineSpriteTag;
-import org.apache.flex.swf.tags.DefineVideoStreamTag;
-import org.apache.flex.swf.tags.DoABCTag;
-import org.apache.flex.swf.tags.FileAttributesTag;
-import org.apache.flex.swf.tags.FrameLabelTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.SymbolClassTag;
+import org.apache.royale.swf.Header.Compression;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.tags.CharacterTag;
+import org.apache.royale.swf.tags.DefineBinaryDataTag;
+import org.apache.royale.swf.tags.DefineFont2Tag;
+import org.apache.royale.swf.tags.DefineFont4Tag;
+import org.apache.royale.swf.tags.DefineFontNameTag;
+import org.apache.royale.swf.tags.DefineFontTag;
+import org.apache.royale.swf.tags.DefineShapeTag;
+import org.apache.royale.swf.tags.DefineSoundTag;
+import org.apache.royale.swf.tags.DefineSpriteTag;
+import org.apache.royale.swf.tags.DefineVideoStreamTag;
+import org.apache.royale.swf.tags.DoABCTag;
+import org.apache.royale.swf.tags.FileAttributesTag;
+import org.apache.royale.swf.tags.FrameLabelTag;
+import org.apache.royale.swf.tags.ITag;
+import org.apache.royale.swf.tags.SymbolClassTag;
 
 /**
  * A class that writes a SWF and a size report. The path of the size report is

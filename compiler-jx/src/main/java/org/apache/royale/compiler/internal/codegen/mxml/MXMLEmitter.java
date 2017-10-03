@@ -17,44 +17,44 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.mxml;
+package org.apache.royale.compiler.internal.codegen.mxml;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.internal.codegen.Emitter;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
-import org.apache.flex.compiler.visitor.IBlockWalker;
-import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.internal.codegen.Emitter;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLComponentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLEmbedNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFactoryNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLImplementsNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLIntNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
  * The base implementation for an MXML emitter.

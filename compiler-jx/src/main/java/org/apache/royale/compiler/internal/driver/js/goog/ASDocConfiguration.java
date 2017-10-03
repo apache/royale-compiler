@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js.goog;
+package org.apache.royale.compiler.internal.driver.js.goog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationInfo;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationInfo;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
 
 /**
  * A Configuration to override some behaviors of the default configuration.

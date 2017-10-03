@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.clients;
+package org.apache.royale.compiler.internal.clients;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.workspaces;
+package org.apache.royale.compiler.workspaces;
 
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Interface that clients of Falcon can implement to record profile data about

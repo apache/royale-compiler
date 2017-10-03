@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.externals.pass;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.NodeTraversal;

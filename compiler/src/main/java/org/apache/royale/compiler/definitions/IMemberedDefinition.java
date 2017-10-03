@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.definitions;
+package org.apache.royale.compiler.definitions;
 
 public interface IMemberedDefinition extends IScopedDefinition
 {

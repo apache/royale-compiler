@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,21 +28,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.internal.projects.SourcePathManager;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.NoCompilationUnitForDefinitionProblem;
-import org.apache.flex.compiler.problems.NoSourceForClassInNamespaceProblem;
-import org.apache.flex.compiler.problems.NoSourceForClassProblem;
-import org.apache.flex.compiler.targets.IJSTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.SourcePathManager;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.NoCompilationUnitForDefinitionProblem;
+import org.apache.royale.compiler.problems.NoSourceForClassInNamespaceProblem;
+import org.apache.royale.compiler.problems.NoSourceForClassProblem;
+import org.apache.royale.compiler.targets.IJSTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;

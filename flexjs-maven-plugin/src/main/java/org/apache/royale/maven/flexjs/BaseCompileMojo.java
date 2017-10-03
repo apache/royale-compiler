@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs;
+package org.apache.royale.maven.flexjs;
 
-import org.apache.flex.tools.FlexTool;
+import org.apache.royale.tools.FlexTool;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.velocity.VelocityContext;
 

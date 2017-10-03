@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.projects;
+package org.apache.royale.compiler.internal.projects;
 
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * Factory interface for creating CompilationUnits.

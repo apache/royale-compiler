@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.royale.compiler.mxml;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 
 /**
  * Core MXML constants.

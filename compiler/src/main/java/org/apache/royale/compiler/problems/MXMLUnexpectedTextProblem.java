@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLTextData;
 
 /**
  * Problem generated for unexpected text in an MXML file.

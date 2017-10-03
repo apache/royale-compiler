@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.config.CommandLineConfigurator;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.config.CommandLineConfigurator;
+import org.apache.royale.compiler.exceptions.ConfigurationException;
 
 /**
  * This class is the base class for all problems found during configuration processing.

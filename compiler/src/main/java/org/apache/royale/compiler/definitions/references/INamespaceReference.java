@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.definitions.references;
+package org.apache.royale.compiler.definitions.references;
 
-import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.compiler.definitions.INamespaceDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
  * INamespaceReferences are used in the symbol table to represent

@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * Common class to store file/location information across all source types

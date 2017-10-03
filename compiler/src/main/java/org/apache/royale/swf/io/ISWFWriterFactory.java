@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swf.io;
+package org.apache.royale.swf.io;
 
-import org.apache.flex.swf.Header;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.io.ISWFWriter;
+import org.apache.royale.swf.Header;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.io.ISWFWriter;
 
 /**
  * A factory interface for creating {@link ISWFWriter}.

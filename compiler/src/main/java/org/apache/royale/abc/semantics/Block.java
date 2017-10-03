@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.abc.ABCConstants;
-import org.apache.flex.abc.graph.IBasicBlock;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.graph.IBasicBlock;
 
 /**
  * Block implements {@link IBasicBlock} and is

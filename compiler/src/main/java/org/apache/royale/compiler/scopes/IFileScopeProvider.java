@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.scopes;
+package org.apache.royale.compiler.scopes;
 
-import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.internal.units.ABCCompilationUnit;
-import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
+import org.apache.royale.compiler.internal.units.ABCCompilationUnit;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * Callback for constructing a {@code ASFileScope} object.

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.catalog;
+package org.apache.royale.swc.catalog;
 
 import java.util.Stack;
 

@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.CharacterIterableFactory;
+import org.apache.royale.swf.tags.ICharacterTag;
+import org.apache.royale.swf.tags.CharacterIterableFactory;
 
 /**
  * A fill style represents how a closed shape is filled in.

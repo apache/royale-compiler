@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.abc.graph;
+package org.apache.royale.abc.graph;
 
 import java.util.List;
 
-import org.apache.flex.abc.graph.algorithms.DominatorTree;
-import org.apache.flex.abc.semantics.Label;
-import org.apache.flex.abc.semantics.MethodBodyInfo;
-import org.apache.flex.abc.visitors.IFlowGraphVisitor;
+import org.apache.royale.abc.graph.algorithms.DominatorTree;
+import org.apache.royale.abc.semantics.Label;
+import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.visitors.IFlowGraphVisitor;
 
 /**
  * IFlowgraph defines the operations required of an object

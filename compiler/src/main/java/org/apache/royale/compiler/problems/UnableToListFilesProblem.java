@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
 import java.io.File;
 
 /**
- * {@link org.apache.flex.compiler.problems.CompilerProblem} subclass for directories that can't be listed.
+ * {@link org.apache.royale.compiler.problems.CompilerProblem} subclass for directories that can't be listed.
  */
 public final class UnableToListFilesProblem extends CompilerProblem
 {

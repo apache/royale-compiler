@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 import java.util.List;
 
-import org.apache.flex.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
 
 public abstract class BaseTokenizerWithFakeCharacters
 {

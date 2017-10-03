@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.common;
+package org.apache.royale.compiler.common;
 
-import org.apache.flex.compiler.constants.IMXMLCoreConstants;
-import org.apache.flex.compiler.internal.mxml.MXMLData;
+import org.apache.royale.compiler.constants.IMXMLCoreConstants;
+import org.apache.royale.compiler.internal.mxml.MXMLData;
 
 /**
  * A subclass of XMLName used by clients that need to manipulate the actual

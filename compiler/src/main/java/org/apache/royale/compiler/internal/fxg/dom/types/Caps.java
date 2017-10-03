@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.types;
+package org.apache.royale.compiler.internal.fxg.dom.types;
 
 /**
  * The Caps enumeration represents the type of line cap to use when painting

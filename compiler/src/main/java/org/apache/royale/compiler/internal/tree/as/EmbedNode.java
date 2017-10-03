@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,23 +25,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
-import org.apache.flex.compiler.internal.embedding.EmbedData;
-import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
-import org.apache.flex.compiler.internal.units.EmbedCompilationUnitFactory;
-import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IEmbedNode;
-import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
+import org.apache.royale.compiler.internal.units.EmbedCompilationUnitFactory;
+import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IEmbedNode;
+import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * AS parse tree node representing Embed meta data.

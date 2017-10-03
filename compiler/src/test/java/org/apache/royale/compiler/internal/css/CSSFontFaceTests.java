@@ -17,15 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.apache.flex.compiler.css.FontFaceSourceType;
-import org.apache.flex.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.FontFaceSourceType;
+import org.apache.royale.compiler.css.ICSSFontFace;
 import org.junit.Test;
 
 /**

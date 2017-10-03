@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf;
+package org.apache.royale.swf;
 
 /**
  * SWF related constants.

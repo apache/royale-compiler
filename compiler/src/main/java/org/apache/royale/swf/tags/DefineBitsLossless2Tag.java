@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.tags.DefineBitsLosslessTag;
+import org.apache.royale.swf.TagType;
+import org.apache.royale.swf.tags.DefineBitsLosslessTag;
 
 /**
  * Represents a <code>DefineBitsLossless2</code> tag in a SWF file.

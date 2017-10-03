@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swf.types;
+package org.apache.royale.swf.types;
 
 /**
  * The Gradient Bevel filter is extension of the normal Bevel IFilter and allow

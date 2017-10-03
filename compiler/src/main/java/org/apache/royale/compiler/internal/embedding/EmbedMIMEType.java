@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.embedding;
+package org.apache.royale.compiler.internal.embedding;
 
 /**
  * Map MIME types to file extensions

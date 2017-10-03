@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
-import org.apache.flex.swf.TagType;
+import org.apache.royale.swf.TagType;
 
 /**
  * A RawTag is a wrapper for the raw bytes of an unimplemented SWF tag.

@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.swf.tags;
+package org.apache.royale.swf.tags;
 
 /**
  * Interface for all binary data tags that represent an image. This is used in
- * {@link org.apache.flex.compiler.internal.fxg.swf.DefineImage} to separate binary image tags from other character tags
+ * {@link org.apache.royale.compiler.internal.fxg.swf.DefineImage} to separate binary image tags from other character tags
  */
 public interface IDefineBinaryImageTag extends ICharacterTag
 {

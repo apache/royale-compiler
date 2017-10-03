@@ -17,25 +17,25 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml;
+package org.apache.royale.compiler.internal.mxml;
 
 import java.util.Collection;
 import java.util.ListIterator;
 
-import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.PrefixMap;
-import org.apache.flex.compiler.common.SourceLocation;
-import org.apache.flex.compiler.common.XMLName;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.parsing.ISourceFragment;
-import org.apache.flex.compiler.internal.parsing.SourceFragment;
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.parsing.MXMLTokenTypes;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
-import org.apache.flex.compiler.problems.SyntaxProblem;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.PrefixMap;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.parsing.ISourceFragment;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLUnclosedTagProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 
 /**
  * Represents a tag attribute in MXML.

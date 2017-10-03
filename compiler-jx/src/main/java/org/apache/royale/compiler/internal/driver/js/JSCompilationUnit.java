@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.compiler.internal.driver.js;
+package org.apache.royale.compiler.internal.driver.js;
 
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
+import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.projects.DefinitionPriority;
+import org.apache.royale.compiler.internal.units.ASCompilationUnit;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
 
 /**
  * JSCompilationUnit is the CompilationUnit for compiling ActionScript source

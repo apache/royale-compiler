@@ -17,31 +17,31 @@
  *
  */
 
-package org.apache.flex.compiler.clients.problems;
+package org.apache.royale.compiler.clients.problems;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.flex.compiler.config.ICompilerProblemSettings;
-import org.apache.flex.compiler.internal.config.ICompilerSettings;
-import org.apache.flex.compiler.problems.AbstractDeprecatedAPIProblem;
-import org.apache.flex.compiler.problems.ArrayCastProblem;
-import org.apache.flex.compiler.problems.AssignmentInConditionalProblem;
-import org.apache.flex.compiler.problems.ConstNotInitializedProblem;
-import org.apache.flex.compiler.problems.DateCastProblem;
-import org.apache.flex.compiler.problems.DeprecatedConfigurationOptionProblem;
-import org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem;
-import org.apache.flex.compiler.problems.DuplicateVariableDefinitionProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.IllogicalComparionWithNaNProblem;
-import org.apache.flex.compiler.problems.IllogicalComparisonWithUndefinedProblem;
-import org.apache.flex.compiler.problems.InstanceOfProblem;
-import org.apache.flex.compiler.problems.NullUsedWhereOtherExpectedProblem;
-import org.apache.flex.compiler.problems.OverlappingSourcePathProblem;
-import org.apache.flex.compiler.problems.ScopedToDefaultNamespaceProblem;
-import org.apache.flex.compiler.problems.SemanticWarningProblem;
-import org.apache.flex.compiler.problems.StrictSemanticsProblem;
-import org.apache.flex.compiler.problems.VariableHasNoTypeDeclarationProblem;
+import org.apache.royale.compiler.config.ICompilerProblemSettings;
+import org.apache.royale.compiler.internal.config.ICompilerSettings;
+import org.apache.royale.compiler.problems.AbstractDeprecatedAPIProblem;
+import org.apache.royale.compiler.problems.ArrayCastProblem;
+import org.apache.royale.compiler.problems.AssignmentInConditionalProblem;
+import org.apache.royale.compiler.problems.ConstNotInitializedProblem;
+import org.apache.royale.compiler.problems.DateCastProblem;
+import org.apache.royale.compiler.problems.DeprecatedConfigurationOptionProblem;
+import org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem;
+import org.apache.royale.compiler.problems.DuplicateVariableDefinitionProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.IllogicalComparionWithNaNProblem;
+import org.apache.royale.compiler.problems.IllogicalComparisonWithUndefinedProblem;
+import org.apache.royale.compiler.problems.InstanceOfProblem;
+import org.apache.royale.compiler.problems.NullUsedWhereOtherExpectedProblem;
+import org.apache.royale.compiler.problems.OverlappingSourcePathProblem;
+import org.apache.royale.compiler.problems.ScopedToDefaultNamespaceProblem;
+import org.apache.royale.compiler.problems.SemanticWarningProblem;
+import org.apache.royale.compiler.problems.StrictSemanticsProblem;
+import org.apache.royale.compiler.problems.VariableHasNoTypeDeclarationProblem;
 
 /**
  * A problem filter that implements filtering based the values of the following

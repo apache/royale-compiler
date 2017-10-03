@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.scopes;
+package org.apache.royale.compiler.internal.scopes;
 
-import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 
 /**
  * Sub-class of ASScope used for function scopes. all definition in scope of

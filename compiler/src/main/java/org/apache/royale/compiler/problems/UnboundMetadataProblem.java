@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.royale.compiler.problems;
 
-import org.apache.flex.compiler.internal.parsing.TokenBase;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.internal.parsing.TokenBase;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * This problem is produced when metadata exists out of a definition context, and cannot be bound to a definition

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.config.RSLSettings;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
  * Class to handle all of the checks for external linkage.

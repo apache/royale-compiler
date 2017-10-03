@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.internal.fxg.dom.richtext;
+package org.apache.royale.compiler.internal.fxg.dom.richtext;
 
-import static org.apache.flex.compiler.fxg.FXGConstants.FXG_TAB_ELEMENT;
+import static org.apache.royale.compiler.fxg.FXGConstants.FXG_TAB_ELEMENT;
 
 import java.util.Collection;
 
-import org.apache.flex.compiler.fxg.dom.IFXGNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.fxg.dom.IFXGNode;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Represents a &lt;br /&gt; child tag of FXG &lt;RichText&gt; content. A

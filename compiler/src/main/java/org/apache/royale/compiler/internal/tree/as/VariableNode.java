@@ -17,26 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.internal.tree.as;
+package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.flex.compiler.common.ASImportTarget;
-import org.apache.flex.compiler.common.IImportTarget;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.ICommonClassNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
-import org.apache.flex.compiler.tree.as.decorators.IVariableTypeDecorator;
-import org.apache.flex.compiler.tree.as.decorators.SymbolDecoratorProvider;
-import org.apache.flex.compiler.tree.as.IScopedNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.common.ASImportTarget;
+import org.apache.royale.compiler.common.IImportTarget;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.royale.compiler.tree.as.decorators.IVariableTypeDecorator;
+import org.apache.royale.compiler.tree.as.decorators.SymbolDecoratorProvider;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * ActionScript parse tree node representing a variable definition (e.g. var

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.targets;
+package org.apache.royale.compiler.internal.targets;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,16 +25,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.flex.compiler.driver.js.IJSApplication;
-import org.apache.flex.compiler.exceptions.BuildCanceledException;
-import org.apache.flex.compiler.internal.driver.js.JSApplication;
-import org.apache.flex.compiler.internal.projects.RoyaleProject;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.targets.IJSTarget;
-import org.apache.flex.compiler.targets.ITargetProgressMonitor;
-import org.apache.flex.compiler.targets.ITargetReport;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.exceptions.BuildCanceledException;
+import org.apache.royale.compiler.internal.driver.js.JSApplication;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.IJSTarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetReport;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;

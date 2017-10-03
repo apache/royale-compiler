@@ -17,18 +17,18 @@
  *
  */
 
-package org.apache.flex.abc.semantics;
+package org.apache.royale.abc.semantics;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.flex.abc.graph.IBasicBlock;
-import org.apache.flex.abc.graph.IFlowgraph;
-import org.apache.flex.abc.instructionlist.InstructionList;
-import org.apache.flex.abc.visitors.IDiagnosticsVisitor;
+import org.apache.royale.abc.graph.IBasicBlock;
+import org.apache.royale.abc.graph.IFlowgraph;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.visitors.IDiagnosticsVisitor;
 
-import static org.apache.flex.abc.ABCConstants.*;
+import static org.apache.royale.abc.ABCConstants.*;
 
 /**
  * A representation of a method's <a href="http://learn.adobe.com/wiki/display/AVM2/4.11+Method+body">method body information</a>.

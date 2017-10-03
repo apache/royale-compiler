@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.fxg.flex;
+package org.apache.royale.compiler.fxg.flex;
 
-import org.apache.flex.compiler.internal.fxg.dom.GraphicNode;
+import org.apache.royale.compiler.internal.fxg.dom.GraphicNode;
 
 /**
  * A Flex specific override for GraphicNode used to record whether the
