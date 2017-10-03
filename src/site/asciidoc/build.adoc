@@ -17,13 +17,13 @@
 
 ////
 
-= Building FlexJS from source
+= Building Royale from source
 
-This document will guide you through the process of building FlexJS from source.
+This document will guide you through the process of building Royale from source.
 
 == Prerequisites
 
-In order to build FlexJS you require the following software installed on your machine:
+In order to build Royale you require the following software installed on your machine:
 
 - A Java JDK 1.6 or higher (a simple Java runtime is not enough) (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 - Apache Maven 3.3.1 or higher (http://maven.apache.org)
@@ -75,10 +75,10 @@ FLASHPLAYER_DEBUGGER={Absolute path to the executable}
 PATH=${PATH}:${JAVA_HOME}/bin;${MAVEN_HOME}/bin
 ----
 
-== Building FlexJS
+== Building Royale
 
 Currently you need to checkout and run builds in 3 different repositories.
-This is due to the fact that every part of the FlexJS SDK (Compiler,
+This is due to the fact that every part of the Royale SDK (Compiler,
 typedefs and framework) should be released separately. Also there is a
 technical reason for this, as the compiler part contains a plugin which
 is used by the typedefs and the framework. As Maven resolves all the plugins
@@ -88,7 +88,7 @@ hard to handle during Maven releases.
 In order to build, the compiler and the typedefs need a set of plugins which
 are not available as standard maven plugins. Therefore the compiler build
 contains a compiler-build-tools project which is a Maven plugin that provides
-all the additional logic needed to build all parts of FlexJS. This needs
+all the additional logic needed to build all parts of Royale. This needs
 to be built and released only once. As soon as that's done we will continue
 to reference the released version in the rest of the build. This module
 only needs to be built if there are changes to the tools.
@@ -158,7 +158,7 @@ every Maven call.
 
 The compiler block is the main part of the build. You can easily build
 it using the following command:
-(run it in the flex-falcon repo)
+(run it in the royale-compiler repo)
 
 ----
 mvn clean install
@@ -167,14 +167,14 @@ mvn clean install
 This contains a large set of unit- and integrationtests. If you just want
 to build the compiler, the following command will take care of this without
 running the unit- and integrationtests:
-(run it in the flex-falcon repo)
+(run it in the royale-compiler repo)
 
 ----
 mvn clean install -DskipTests
 ----
 
 If you want to run the unittests, but skip the integrationtests:
-(run it in the flex-falcon repo)
+(run it in the royale-compiler repo)
 
 ----
 mvn clean install -DskipITs
@@ -184,7 +184,7 @@ Maven also takes care of building the project website and documentation.
 This is handled as part of the Maven `site` lifecycle. If you want to build
 the documentation for the compiler, the following command will take care of
 this:
-(run it in the flex-falcon repo)
+(run it in the royale-compiler repo)
 
 ----
 mvn site
@@ -196,14 +196,14 @@ root project, the links to the sub-modules will not work as the local directory
 structure differs from the structure the deployed documentation would have.
 In order to locally read and test the documentation, the following command will
 wrap all parts into the `target/staging` directory of the project root.
-(run it in the flex-falcon repo)
+(run it in the royale-compiler repo)
 
 ----
 mvn site:stage
 ----
 
 You can of course wrap all together into one big build:
-(run it in the flex-falcon repo)
+(run it in the royale-compiler repo)
 
 ----
 mvn clean install site site:stage
@@ -211,12 +211,12 @@ mvn clean install site site:stage
 
 === Building the typedefs
 
-The second block of the FlexJS SDK are the typedefs (aka externs). These
-are located in a separate repo (flex-typedefs).
+The second block of the Royale SDK are the typedefs (aka externs). These
+are located in a separate repo (royale-typedefs).
 
 Building the typedefs is quite straight-forward. All you need to do, is run the
 following command:
-(run it in the flex-typedefs repo)
+(run it in the royale-typedefs repo)
 
 ----
 mvn clean install
@@ -224,14 +224,14 @@ mvn clean install
 
 === Building the framework
 
-The framework is the last building block and is located in the `flex-asjs` repo.
-This contains all the modules that make up the framework of FlexJS. It also
-contains a set of examples as well as the Maven assembly to build a local FlexJS
-SDK distribution, which can be configured in any IDE to build FlexJS applications.
+The framework is the last building block and is located in the `royale-asjs` repo.
+This contains all the modules that make up the framework of Royale. It also
+contains a set of examples as well as the Maven assembly to build a local Royale
+SDK distribution, which can be configured in any IDE to build Royale applications.
 
 Building the framework is quite straight-forward. All you need to do, is run the
 following command:
-(run it in the flex-asjs repo)
+(run it in the royale-asjs repo)
 
 ----
 mvn clean install
@@ -239,7 +239,7 @@ mvn clean install
 
 As compiling the examples takes quite a while, you have to enable the building
 of examples by activating the `build-examples` profile:
-(run it in the flex-asjs repo)
+(run it in the royale-asjs repo)
 
 ----
 mvn clean install -P build-examples
@@ -247,27 +247,27 @@ mvn clean install -P build-examples
 
 Building the distribution also takes a little while, so it is also not built in
 the default profile. In order to build the distribution, run the following build:
-(run it in the flex-asjs repo)
+(run it in the royale-asjs repo)
 
 ----
 mvn clean install -P build-distribution
 ----
 
 However this doesn't automatically build the directory distribution. It builds
-a zip and a tar.gz version of the FlexJS SDK, without any of the Adobe dependencies.
+a zip and a tar.gz version of the Royale SDK, without any of the Adobe dependencies.
 This is the part that is for example used by the Flex Installer to install a
 local FDK.
 
-If you want to have a FlexJS SDK (including Air, Flash, Fontkit, etc.) you need to
+If you want to have a Royale SDK (including Air, Flash, Fontkit, etc.) you need to
 tell the build where to put it by providing a property to the build:
-(run it in the flex-asjs repo)
+(run it in the royale-asjs repo)
 
 ----
 mvn clean install -P build-distribution -DdistributionTargetFolder={some directory}
 ----
 
 If you want to build everything:
-(run it in the flex-asjs repo)
+(run it in the royale-asjs repo)
 
 ----
 mvn clean install -P build-examples,build-distribution -DdistributionTargetFolder={some directory}

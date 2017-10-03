@@ -139,7 +139,7 @@
             <configuration>
                 <type>swc</type>
                 <extension>swc</extension>
-                <language>flex</language>
+                <language>royale</language>
                 <addedToClasspath>true</addedToClasspath>
             </configuration>
         </component>
@@ -152,7 +152,7 @@
             <configuration>
                 <type>js</type>
                 <extension>js</extension>
-                <language>flex</language>
+                <language>royale</language>
                 <addedToClasspath>true</addedToClasspath>
             </configuration>
         </component>
@@ -165,7 +165,7 @@
             <configuration>
                 <type>jswc</type>
                 <extension>jswc</extension>
-                <language>flex</language>
+                <language>royale</language>
                 <addedToClasspath>true</addedToClasspath>
             </configuration>
         </component>

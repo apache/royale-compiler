@@ -19,10 +19,10 @@
  *
  */
 
-// Pipeline as code for building FlexJS on Jenkins using the Pipeline Plugin.
+// Pipeline as code for building Royale on Jenkins using the Pipeline Plugin.
 
 // Run only on the windows-2012-1 agent as this is the only one setup to fully
-// support FlexJS builds.
+// support Royale builds.
 node('windows-2012-1') {
 
     currentBuild.result = "SUCCESS"
@@ -51,33 +51,33 @@ node('windows-2012-1') {
 
         stage 'Checkout Upstream Projects'
 
-            echo 'checking out flexjs-compiler for branch ' + env.BRANCH_NAME
-            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compiler']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-falcon.git']]])
+            echo 'checking out royale-compiler for branch ' + env.BRANCH_NAME
+            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compiler']], userRemoteConfigs: [[url: 'https://github.com/apache/royale-compiler.git']]])
 
-            echo 'checking out flexjs-typedefs for branch ' + env.BRANCH_NAME
-            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'typedefs']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-typedefs.git']]])
+            echo 'checking out royale-typedefs for branch ' + env.BRANCH_NAME
+            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'typedefs']], userRemoteConfigs: [[url: 'https://github.com/apache/royale-typedefs.git']]])
 
-            echo 'checking out flexjs-framework for branch ' + env.BRANCH_NAME
-            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-asjs.git']]])
+            echo 'checking out royale-framework for branch ' + env.BRANCH_NAME
+            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://github.com/apache/royale-asjs.git']]])
 
-        stage 'Build FlexJS Compiler'
+        stage 'Build Royale Compiler'
 
             dir('compiler') {
-                echo 'Building FlexJS Compiler'
+                echo 'Building Royale Compiler'
                 bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
             }
 
-        stage 'Build FlexJS Typedefs'
+        stage 'Build Royale Typedefs'
 
             dir('typedefs') {
-                echo 'Building FlexJS Typedefs'
+                echo 'Building Royale Typedefs'
                 bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
             }
 
-        stage 'Build FlexJS Framework'
+        stage 'Build Royale Framework'
 
             dir('framework') {
-                echo 'Building FlexJS Framework'
+                echo 'Building Royale Framework'
                 // It seems the distribution needs a little more perm-gen space.
                 withEnv(["MAVEN_OPTS=-XX:MaxPermSize=256m"]) {
                     bat "mvn -U -X clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
@@ -93,9 +93,9 @@ node('windows-2012-1') {
 
 /*            mail body: "project build error is here: ${env.BUILD_URL}" ,
             from: 'xxxx@yyyy.com',
-            replyTo: 'dev@flex.apache.org',
+            replyTo: 'dev@royale.apache.org',
             subject: 'Autobuild for Branch ' env.BRANCH_NAME
-            to: 'commits@flex.apache.org'
+            to: 'commits@royale.apache.org'
 */
         throw err
     }

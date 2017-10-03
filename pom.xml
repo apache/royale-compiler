@@ -31,13 +31,13 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Apache Flex - Royale: Compiler: Parent</name>
-  <description>The Apache Flex Royale Project</description>
+  <name>Apache Royale - Royale: Compiler: Parent</name>
+  <description>The Apache Royale Project</description>
 
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</developerConnection>
-    <url>https://github.com/apache/flex-falcon</url>
+    <connection>scm:https://github.com/apache/royale-compiler.git</connection>
+    <developerConnection>scm:https://github.com/apache/royale-compiler.git</developerConnection>
+    <url>https://github.com/apache/royale-compiler</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -69,29 +69,29 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</url>
+      <url>scm:git:https://github.com/apache/royale-compiler.git</url>
     </site>
   </distributionManagement>
 
   <issueManagement>
-    <system>Jira</system>
-    <url>https://issues.apache.org/jira/browse/FLEX</url>
+    <system>GitHub</system>
+    <url>https://github.com/apache/royale-compiler/issues</url>
   </issueManagement>
 
   <mailingLists>
     <mailingList>
-      <name>Apache Flex User List</name>
-      <subscribe>users-subscribe@flex.apache.org</subscribe>
-      <unsubscribe>users-unsubscribe@flex.apache.org</unsubscribe>
-      <post>users@flex.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/flex-users/</archive>
+      <name>Apache Royale User List</name>
+      <subscribe>users-subscribe@royale.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@royale.apache.org</unsubscribe>
+      <post>users@royale.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/royale-users/</archive>
     </mailingList>
     <mailingList>
-      <name>Apache Flex Developer List</name>
-      <subscribe>dev-subscribe@flex.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@flex.apache.org</unsubscribe>
-      <post>dev@flex.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/flex-dev/</archive>
+      <name>Apache Royale Developer List</name>
+      <subscribe>dev-subscribe@royale.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@royale.apache.org</unsubscribe>
+      <post>dev@royale.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/royale-dev/</archive>
     </mailingList>
   </mailingLists>
 
@@ -167,7 +167,7 @@
                 subdirectory. We need to exclude this directory from the compiler checks
                 as the typedefs build will handle all content in that directory
             -->
-            <exclude>flex-typedefs/**</exclude>
+            <exclude>royale-typedefs/**</exclude>
           </excludes>
         </configuration>
         <dependencies>

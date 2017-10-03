@@ -232,26 +232,26 @@ public abstract class FlexTask extends Java
      */
     public final void execute() throws BuildException
     {
-        String flexHomeProperty = getProject().getProperty("FLEX_HOME");
+        String royaleHomeProperty = getProject().getProperty("FLEX_HOME");
 
-        if (flexHomeProperty == null)
+        if (royaleHomeProperty == null)
             throw new BuildException("FLEX_HOME must be set to use the Flex Ant Tasks");
 		
         String falconHomeProperty = getProject().getProperty("FALCONJX_HOME");
         if (falconHomeProperty == null)
             throw new BuildException("FALCONJX_HOME must be set to use the Flex Ant Tasks");
 				
-        System.setProperty("FLEX_HOME", flexHomeProperty);
-        String flexlibProperty = flexHomeProperty.concat("/frameworks/");
-		System.setProperty("flexlib", flexlibProperty);
+        System.setProperty("FLEX_HOME", royaleHomeProperty);
+        String royalelibProperty = royaleHomeProperty.concat("/frameworks/");
+		System.setProperty("royalelib", royalelibProperty);
 
         final Variable variable = new Variable();
-        variable.setKey("flexlib");
-        variable.setValue(flexHomeProperty);
+        variable.setKey("royalelib");
+        variable.setValue(royaleHomeProperty);
 		addSysproperty(variable);
         
         // This allows the tool to find the default config file.
-        cmdline.createArgument().setValue("+flexlib=" + flexlibProperty);
+        cmdline.createArgument().setValue("+royalelib=" + royalelibProperty);
         
         prepareCommandline();
 
@@ -361,15 +361,15 @@ public abstract class FlexTask extends Java
         }
         catch (ClassNotFoundException ignoredClassNotFoundException)
         {
-            String flexHomeProperty = getProject().getProperty("FALCONJX_HOME");
+            String royaleHomeProperty = getProject().getProperty("FALCONJX_HOME");
 
-            if (flexHomeProperty != null)
+            if (royaleHomeProperty != null)
             {
-                File flexHome = new File(flexHomeProperty);
+                File royaleHome = new File(royaleHomeProperty);
 
-                if ( flexHome.exists() )
+                if ( royaleHome.exists() )
                 {
-                    File jarFile = new File(flexHome + "/lib", toolJARFileName);
+                    File jarFile = new File(royaleHome + "/lib", toolJARFileName);
 
                     if (jarFile.exists())
                     {

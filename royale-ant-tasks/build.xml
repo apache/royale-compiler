@@ -19,7 +19,7 @@
 
 -->
 
-<project name="flextasks" default="main" basedir=".">
+<project name="royaletasks" default="main" basedir=".">
 
     <!-- 
 
@@ -27,10 +27,10 @@
 
     -->
 
-    <!-- The 'flextasks' property is the absolute path, with forward slashes, -->
+    <!-- The 'royaletasks' property is the absolute path, with forward slashes, -->
     <!-- to the 'compiler' directory that contains this file. -->
     <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
-    <pathconvert property="flextasks" dirsep="/">
+    <pathconvert property="royaletasks" dirsep="/">
         <path location="${basedir}"/>
     </pathconvert>
 
@@ -39,15 +39,15 @@
     
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
-    <property file="${flextasks}/local.properties"/>
-    <property file="${flextasks}/../build.properties"/>
+    <property file="${royaletasks}/local.properties"/>
+    <property file="${royaletasks}/../build.properties"/>
     <property name="javadoc.params" value="" />
     
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
-    <property name="sdk" value="${flextasks}/../compiler-jx/lib"/>
-    <property name="compiler" value="${flextasks}/../compiler-jx"/>
+    <property name="sdk" value="${royaletasks}/../compiler-jx/lib"/>
+    <property name="compiler" value="${royaletasks}/../compiler-jx"/>
 
     <property name="src.depend" value="true"/>
 
@@ -62,7 +62,7 @@
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
-    <property name="flextasks.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
+    <property name="royaletasks.ant.binaries" value="org/apache/royale/compiler/ant/**/*.class"/>
     
     <!-- env.BUILD_NUMBER is set by Jenkins CI -->
     <condition property="build.number" value="nightly-${env.BUILD_NUMBER}">
@@ -81,34 +81,34 @@
     </path>
 
     <target name="compile" description="compile">
-        <mkdir dir="${flextasks}/target/classes"/>
+        <mkdir dir="${royaletasks}/target/classes"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
-        	   includes="**/*.java" destdir="${flextasks}/target/classes" classpathref="classpath" includeAntRuntime="true"
+        	   includes="**/*.java" destdir="${royaletasks}/target/classes" classpathref="classpath" includeAntRuntime="true"
                source="${javac.src}" target="${javac.src}">
-            <src path="${flextasks}/src/main/java"/>
+            <src path="${royaletasks}/src/main/java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
         </javac>
-        <copy todir="${flextasks}/target/classes">
-            <fileset dir="${flextasks}/src/main/resources" includes="**/*.properties"/>
+        <copy todir="${royaletasks}/target/classes">
+            <fileset dir="${royaletasks}/src/main/resources" includes="**/*.properties"/>
         </copy>
     </target>
 	
-	<target name="set.falcon.flextasks.jar.uptodate">
-		<uptodate property="falcon.flextasks.jar.uptodate"
-		          targetfile="${sdk}/falcon-flextasks.jar">
-			<srcfiles dir="${flextasks}/target/classes">
+	<target name="set.falcon.royaletasks.jar.uptodate">
+		<uptodate property="falcon.royaletasks.jar.uptodate"
+		          targetfile="${sdk}/falcon-royaletasks.jar">
+			<srcfiles dir="${royaletasks}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
 			</srcfiles>
 		</uptodate>
 	</target>
 	
-	<target name="falcon.flextasks.jar" depends="set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
-        <mkdir dir="${flextasks}/target/classes/META-INF"/>
-        <copy file="${basedir}/../LICENSE.base" tofile="${flextasks}/target/classes/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.base" tofile="${flextasks}/target/classes/META-INF/NOTICE"/>
+	<target name="falcon.royaletasks.jar" depends="set.falcon.royaletasks.jar.uptodate" unless="falcon.royaletasks.jar.uptodate">
+        <mkdir dir="${royaletasks}/target/classes/META-INF"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${royaletasks}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${royaletasks}/target/classes/META-INF/NOTICE"/>
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-flexTasks.jar" basedir="${flextasks}/target/classes" >
+        <jar file="${sdk}/falcon-royaleTasks.jar" basedir="${royaletasks}/target/classes" >
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -118,12 +118,12 @@
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Class-Path" value="jsc.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar"/>
             </manifest>
-            <fileset dir="${flextasks}/src/main/resources" includes="flexTasks.tasks"/>
-            <fileset dir="${flextasks}/target/classes" includes="${flextasks.ant.binaries}"/>
+            <fileset dir="${royaletasks}/src/main/resources" includes="royaleTasks.tasks"/>
+            <fileset dir="${royaletasks}/target/classes" includes="${royaletasks.ant.binaries}"/>
         </jar>
 	</target>
 
-    <target name="jar" depends="compile,falcon.flextasks.jar"
+    <target name="jar" depends="compile,falcon.royaletasks.jar"
     	    description="Creates JAR files"/>
 	    
     <!--
@@ -132,9 +132,9 @@
 
     -->
 	
-	<target name="sdk" depends="jar, test" description="Builds the falcon-flexTasks.jar"/>
+	<target name="sdk" depends="jar, test" description="Builds the falcon-royaleTasks.jar"/>
 
-    <target name="main" depends="sdk" description="Default target - Builds the falcon-flexTasks.jar">
+    <target name="main" depends="sdk" description="Default target - Builds the falcon-royaleTasks.jar">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>
@@ -152,8 +152,8 @@
     -->
 
     <target name="clean" description="clean">
-        <delete dir="${flextasks}/target" failonerror="false"/>
-        <delete file="${sdk}/falcon-flextasks.jar" failonerror="false"/>
+        <delete dir="${royaletasks}/target" failonerror="false"/>
+        <delete file="${sdk}/falcon-royaletasks.jar" failonerror="false"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">

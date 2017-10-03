@@ -51,14 +51,14 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public List<File> getLibraries(boolean withFlex) {
+    public List<File> getLibraries(boolean withRoyale) {
         List<File> libs = new ArrayList<File>();
         libs.add(getPlayerglobal());
-        if(withFlex) {
-            String flexVersion = System.getProperty("flexVersion");
-            libs.add(getDependency("org.apache.royale.framework", "framework", flexVersion, "swc", null));
-            libs.add(getDependency("org.apache.royale.framework", "rpc", flexVersion, "swc", null));
-            libs.add(getDependency("org.apache.royale.framework", "spark", flexVersion, "swc", null));
+        if(withRoyale) {
+            String royaleVersion = System.getProperty("royaleVersion");
+            libs.add(getDependency("org.apache.royale.framework", "framework", royaleVersion, "swc", null));
+            libs.add(getDependency("org.apache.royale.framework", "rpc", royaleVersion, "swc", null));
+            libs.add(getDependency("org.apache.royale.framework", "spark", royaleVersion, "swc", null));
         }
         return libs;
     }
@@ -86,35 +86,9 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public String getFlexManifestPath(String type) {
+    public String getRoyaleManifestPath(String type) {
         File configsZip = getDependency("org.apache.royale.framework", "framework",
-                System.getProperty("flexVersion"), "zip", "configs");
-        File frameworkDir = configsZip.getParentFile();
-        File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
-        // If the directory doesn't exist, we have to create it by unpacking the zip archive.
-        // This is identical behaviour to Flexmojos, which does the same thing.
-        if(!unpackedConfigsDir.exists()) {
-            unpackFrameworkConfigs(configsZip, unpackedConfigsDir);
-        }
-        return new File(unpackedConfigsDir, type + "-manifest.xml").getPath();
-    }
-
-    @Override
-    public File getFlexArtifact(String artifactName) {
-        String flexVersion = System.getProperty("flexVersion");
-        return getDependency("org.apache.royale.framework", artifactName, flexVersion, "swc", null);
-    }
-
-    @Override
-    public File getFlexArtifactResourceBundle(String artifactName) {
-        String flexVersion = System.getProperty("flexVersion");
-        return getDependency("org.apache.royale.framework", artifactName, flexVersion, "rb.swc", "en_US");
-    }
-
-    @Override
-    public String getFlexJsManifestPath(String type) {
-        File configsZip = getDependency("org.apache.royale.framework.flexjs", "framework",
-                System.getProperty("flexJsVersion"), "zip", "configs");
+                System.getProperty("royaleVersion"), "zip", "configs");
         File frameworkDir = configsZip.getParentFile();
         File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
         // If the directory doesn't exist, we have to create it by unpacking the zip archive.
@@ -127,8 +101,34 @@ public class MavenTestAdapter implements ITestAdapter {
 
     @Override
     public File getRoyaleArtifact(String artifactName) {
-        String flexJsVersion = System.getProperty("flexJsVersion");
-        return getDependency("org.apache.royale.framework.flexjs", artifactName, flexJsVersion, "swc", null);
+        String royaleVersion = System.getProperty("royaleVersion");
+        return getDependency("org.apache.royale.framework", artifactName, royaleVersion, "swc", null);
+    }
+
+    @Override
+    public File getRoyaleArtifactResourceBundle(String artifactName) {
+        String royaleVersion = System.getProperty("royaleVersion");
+        return getDependency("org.apache.royale.framework", artifactName, royaleVersion, "rb.swc", "en_US");
+    }
+
+    @Override
+    public String getRoyaleJsManifestPath(String type) {
+        File configsZip = getDependency("org.apache.royale.framework.royale", "framework",
+                System.getProperty("royaleVersion"), "zip", "configs");
+        File frameworkDir = configsZip.getParentFile();
+        File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
+        // If the directory doesn't exist, we have to create it by unpacking the zip archive.
+        // This is identical behaviour to Flexmojos, which does the same thing.
+        if(!unpackedConfigsDir.exists()) {
+            unpackFrameworkConfigs(configsZip, unpackedConfigsDir);
+        }
+        return new File(unpackedConfigsDir, type + "-manifest.xml").getPath();
+    }
+
+    @Override
+    public File getRoyaleArtifact(String artifactName) {
+        String royaleVersion = System.getProperty("royaleVersion");
+        return getDependency("org.apache.royale.framework", artifactName, royaleVersion, "swc", null);
     }
 
     @Override

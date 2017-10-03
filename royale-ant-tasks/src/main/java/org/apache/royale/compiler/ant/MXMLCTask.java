@@ -162,7 +162,7 @@ public final class MXMLCTask extends FlexTask implements DynamicConfigurator
         new ConfigBoolean(new OptionSpec("verify-digests")),
         new ConfigBoolean(new OptionSpec("use-direct-blit")),
         new ConfigBoolean(new OptionSpec("use-gpu")),
-        new ConfigBoolean(new OptionSpec("flex")),
+        new ConfigBoolean(new OptionSpec("royale")),
         
         // String options
         new ConfigString(new OptionSpec("compiler.actionscript-file-encoding")),

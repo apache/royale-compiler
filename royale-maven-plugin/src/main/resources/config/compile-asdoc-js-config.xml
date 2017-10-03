@@ -16,7 +16,7 @@
   limitations under the License.
 
 -->
-<flex-config>
+<royale-config>
 
   <compiler>
 
@@ -109,4 +109,4 @@
 #end
   </doc-sources>
 
-</flex-config>
+</royale-config>

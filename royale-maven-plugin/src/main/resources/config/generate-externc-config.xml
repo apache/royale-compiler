@@ -16,7 +16,7 @@
   limitations under the License.
 
 -->
-<flex-config>
+<royale-config>
 
     <compiler>
 #foreach($define in $defines)        <define>
@@ -50,4 +50,4 @@
     </exclude>
 #end
 
-</flex-config>
+</royale-config>

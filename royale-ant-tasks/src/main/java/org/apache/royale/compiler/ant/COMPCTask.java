@@ -165,7 +165,7 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
         new ConfigBoolean(new OptionSpec("static-link-runtime-shared-libraries", "static-rsls")),
         new ConfigBoolean(new OptionSpec("use-direct-blit")),
         new ConfigBoolean(new OptionSpec("use-gpu")),
-        new ConfigBoolean(new OptionSpec("flex")),
+        new ConfigBoolean(new OptionSpec("royale")),
         
         // String options
         new ConfigString(new OptionSpec("compiler.actionscript-file-encoding")),

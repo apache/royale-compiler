@@ -32,7 +32,7 @@ import org.apache.royale.compiler.ant.config.OptionSpec;
 /**
  * Adds support for setting Flex configuration options using Ant FileSets.  For example:
  * <code>
- *     &lt;library-path dir="${FLEX_HOME}/libs" includes="flex.swc" append="true"/&gt;
+ *     &lt;library-path dir="${FLEX_HOME}/libs" includes="royale.swc" append="true"/&gt;
  * </code>
  */
 public class FlexFileSet extends FileSet implements IOptionSource

@@ -20,7 +20,7 @@
 -->
 
 
-<flex-config>
+<royale-config>
 
   <js-output-type>FLEXJS</js-output-type>
   <!-- Specifies the version of the compiled SWF -->
@@ -227,7 +227,7 @@
       </managers>
 
       <!-- File containing cached system font licensing information produced via
-           java -cp mxmlc.jar flex2.tools.FontSnapshot (fontpath)
+           java -cp mxmlc.jar royale2.tools.FontSnapshot (fontpath)
            Will default to winFonts.ser on Windows XP and
            macFonts.ser on Mac OS X, so is commented out by default.
 
@@ -401,10 +401,10 @@
   <!-- Metadata added to SWFs via the SWF Metadata tag. -->
   <metadata>
     <title>Apache Royale Application</title>
-    <description>http://flex.apache.org/</description>
+    <description>http://royale.apache.org/</description>
     <publisher>Apache Software Foundation</publisher>
     <creator>unknown</creator>
     <language>EN</language>
   </metadata>
 
-</flex-config>
+</royale-config>

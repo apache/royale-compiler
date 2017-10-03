@@ -17,5 +17,5 @@
 ##
 ################################################################################
 
-mxmlc=org.apache.flex.compiler.ant.MXMLCTask
-compc=org.apache.flex.compiler.ant.COMPCTask
+mxmlc=org.apache.royale.compiler.ant.MXMLCTask
+compc=org.apache.royale.compiler.ant.COMPCTask
