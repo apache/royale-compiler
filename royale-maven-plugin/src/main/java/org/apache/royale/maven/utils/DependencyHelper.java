@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs.utils;
+package org.apache.royale.maven.utils;
 
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;

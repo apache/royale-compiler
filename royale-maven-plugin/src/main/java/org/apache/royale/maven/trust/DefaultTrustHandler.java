@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs.trust;
+package org.apache.royale.maven.trust;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;

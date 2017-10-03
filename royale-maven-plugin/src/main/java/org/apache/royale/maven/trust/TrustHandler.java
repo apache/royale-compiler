@@ -12,21 +12,15 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
+package org.apache.royale.maven.trust;
+
+import java.io.File;
 
 /**
- * Created by christoferdutz on 01.05.16.
+ * Created by christoferdutz on 14.04.16.
  */
-public class ClassExclude {
+public interface TrustHandler {
 
-    private String className;
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
+    void trustDirectory(File directory);
 
 }

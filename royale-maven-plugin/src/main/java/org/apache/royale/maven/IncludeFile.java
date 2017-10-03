@@ -12,27 +12,29 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
-
-import org.apache.royale.tools.FlexTool;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.velocity.VelocityContext;
-
-import java.io.File;
+package org.apache.royale.maven;
 
 /**
- * Created by christoferdutz on 30.04.16.
+ * Created by christoferdutz on 06.06.16.
  */
-public abstract class BaseCompileMojo extends BaseMojo {
+public class IncludeFile {
 
-    @Override
-    protected String getToolGroupName() {
-        return "Falcon";
+    private String name;
+    private String path;
+
+    public String getName() {
+        return name;
     }
 
-    @Override
-    protected String getFlexTool() {
-        return FlexTool.FLEX_TOOL_COMPC;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }

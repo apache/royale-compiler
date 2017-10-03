@@ -12,15 +12,14 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
+package org.apache.royale.maven;
 
 /**
  * Created by christoferdutz on 01.05.16.
  */
-public class FieldExclude {
+public class ClassExclude {
 
     private String className;
-    private String field;
 
     public String getClassName() {
         return className;
@@ -30,11 +29,4 @@ public class FieldExclude {
         this.className = className;
     }
 
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
 }

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
+package org.apache.royale.maven;
 
 import org.apache.royale.tools.FlexTool;
 import org.apache.maven.artifact.Artifact;
@@ -23,26 +23,29 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 
-import java.io.File;
+
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * goal which compiles a project into a flexjs swc library.
  */
-@Mojo(name="compile-as",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class CompileASMojo
+@Mojo(name="compile-js",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+public class CompileJSMojo
     extends BaseMojo
 {
 
-    @Parameter(defaultValue = "${project.artifactId}-${project.version}-swf.swc")
+    @Parameter(defaultValue = "${project.artifactId}-${project.version}-js.swc")
     private String outputFileName;
 
     @Parameter(defaultValue = "false")
     private boolean skipSwc;
 
     @Parameter(defaultValue = "false")
-    private boolean skipAS;
+    private boolean skipJS;
 
     @Component
     private MavenProjectHelper projectHelper;
@@ -59,7 +62,7 @@ public class CompileASMojo
 
     @Override
     protected String getConfigFileName() throws MojoExecutionException {
-        return "compile-swf-config.xml";
+        return "compile-js-config.xml";
     }
 
     @Override
@@ -69,18 +72,13 @@ public class CompileASMojo
 
     @Override
     protected boolean skip() {
-        return skipSwc || skipAS;
+        return skipSwc || skipJS;
     }
 
     @Override
-    public void execute() throws MojoExecutionException {
-        super.execute();
-
-        if(getOutput().exists()) {
-            // Attach the file created by the compiler as artifact file to maven.
-            project.getArtifact().setFile(getOutput());
-            projectHelper.attachArtifact(project, getOutput(), "swf");
-        }
+    protected boolean isForceSwcExternalLibraryPath() {
+        // The forceSwcExternalLibraryPath should only apply to Flash compilations.
+        return false;
     }
 
     @Override
@@ -92,18 +90,18 @@ public class CompileASMojo
     }
 
     @Override
-    protected List<Namespace> getNamespaces() {
-        List<Namespace> namespaces = new LinkedList<Namespace>();
-        for(Namespace namespace : super.getNamespaces()) {
-            if(namespace.getType().equals(Namespace.TYPE_DEFAULT) || namespace.getType().equals(Namespace.TYPE_AS)) {
-                namespaces.add(namespace);
-            }
+    public void execute() throws MojoExecutionException
+    {
+        super.execute();
+        
+        if(getOutput().exists()) {
+            // Add the extern to the artifact.
+            projectHelper.attachArtifact(project, getOutput(), "js");
         }
-        return namespaces;
     }
-
+    
     @Override
-    protected List<Namespace> getNamespacesJS() {
+    protected List<Namespace> getNamespaces() {
         List<Namespace> namespaces = new LinkedList<Namespace>();
         for(Namespace namespace : super.getNamespaces()) {
             if(namespace.getType().equals(Namespace.TYPE_DEFAULT) || namespace.getType().equals(Namespace.TYPE_JS)) {
@@ -112,12 +110,12 @@ public class CompileASMojo
         }
         return namespaces;
     }
-    
+
     @Override
     protected List<Define> getDefines() throws MojoExecutionException {
         List<Define> defines = super.getDefines();
-        defines.add(new Define("COMPILE::JS", "AUTO"));
-        defines.add(new Define("COMPILE::SWF", "AUTO"));
+        defines.add(new Define("COMPILE::JS", "true"));
+        defines.add(new Define("COMPILE::SWF", "false"));
         return defines;
     }
 
@@ -126,19 +124,55 @@ public class CompileASMojo
         String classifier = library.getClassifier();
         return (classifier == null) && !("provided".equalsIgnoreCase(library.getScope()));
     }
-    
+
     @Override
     protected boolean includeLibraryJS(Artifact library) {
         String classifier = library.getClassifier();
         return "typedefs".equalsIgnoreCase(classifier) ||
-                "js".equalsIgnoreCase(classifier);
+        "js".equalsIgnoreCase(classifier);
     }
 
     @Override
     protected boolean includeLibrarySWF(Artifact library) {
         String classifier = library.getClassifier();
-        return "swf".equalsIgnoreCase(classifier) ||
-        ((classifier == null) && "provided".equalsIgnoreCase(library.getScope()));
+        return "typedefs".equalsIgnoreCase(classifier) ||
+        "js".equalsIgnoreCase(classifier);
+    }
+    
+    private void createEmptySwc(File outputFile) throws MojoExecutionException {
+        if(!outputFile.getParentFile().exists()) {
+            if(!outputFile.getParentFile().mkdirs()) {
+                throw new MojoExecutionException("Could not create directory " + outputFile.getParent());
+            }
+        }
+
+        // Create a dummy swc (A zip file which contains a minimal catalog.xml) */
+        try {
+            OutputStream stream = new FileOutputStream(outputFile);
+            stream = new BufferedOutputStream(stream);
+            ZipOutputStream zipStream = new ZipOutputStream(stream);
+            ZipEntry entry = new ZipEntry("catalog.xml");
+            zipStream.putNextEntry(entry);
+            byte[] dummyCatalog = (
+                    "<?xml version=\"1.0\" ?>\n" +
+                    "<swc xmlns=\"http://www.adobe.com/flash/swccatalog/9\">\n" +
+                    "    <versions>\n" +
+                    "        <swc version=\"1.2\"/>\n" +
+                    "        <compiler name=\"Apache Flex - Royale: Compiler: Compiler\" version=\"0.8\" build=\"0-SNAPSHOT\"/>\n" +
+                    "    </versions>\n" +
+                    "    <features>\n" +
+                    "    </features>\n" +
+                    "    <libraries>\n" +
+                    "    </libraries>\n" +
+                    "</swc>").getBytes();
+            zipStream.write(dummyCatalog);
+            zipStream.closeEntry();
+            zipStream.close();
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException("Could not create empty zip file at " + outputFile.getPath());
+        } catch (IOException e) {
+            throw new MojoExecutionException("Could not create empty zip file at " + outputFile.getPath());
+        }
     }
 
 }

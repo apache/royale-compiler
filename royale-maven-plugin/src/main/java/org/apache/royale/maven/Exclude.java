@@ -12,17 +12,29 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
+package org.apache.royale.maven;
 
 /**
  * Created by christoferdutz on 01.05.16.
  */
-public class ExterncConfig {
+public class Exclude {
 
-    public ClassExclude[] classExcludes;
+    private String className;
+    private String name;
 
-    public FieldExclude[] fieldExcludes;
+    public String getClassName() {
+        return className;
+    }
 
-    public Exclude[] excludes;
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -12,15 +12,37 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs.types;
+package org.apache.royale.maven;
 
 /**
- * Created by christoferdutz on 18.04.16.
+ * Created by christoferdutz on 07.06.16.
  */
-public enum FlexScope {
+public class Define {
 
-    COMPILE,
-    TEST,
-    EXTERNAL
+    private String name;
+    private String value;
 
+    public Define() {
+    }
+
+    public Define(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

@@ -12,15 +12,17 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs.trust;
-
-import java.io.File;
+package org.apache.royale.maven;
 
 /**
- * Created by christoferdutz on 14.04.16.
+ * Created by christoferdutz on 01.05.16.
  */
-public interface TrustHandler {
+public class ExterncConfig {
 
-    void trustDirectory(File directory);
+    public ClassExclude[] classExcludes;
+
+    public FieldExclude[] fieldExcludes;
+
+    public Exclude[] excludes;
 
 }

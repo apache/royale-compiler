@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
+package org.apache.royale.maven;
 
 import org.apache.royale.tools.FlexTool;
 import org.apache.maven.artifact.Artifact;

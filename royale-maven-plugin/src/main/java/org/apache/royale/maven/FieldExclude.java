@@ -12,29 +12,29 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs;
+package org.apache.royale.maven;
 
 /**
- * Created by christoferdutz on 06.06.16.
+ * Created by christoferdutz on 01.05.16.
  */
-public class IncludeFile {
+public class FieldExclude {
 
-    private String name;
-    private String path;
+    private String className;
+    private String field;
 
-    public String getName() {
-        return name;
+    public String getClassName() {
+        return className;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public String getPath() {
-        return path;
+    public String getField() {
+        return field;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setField(String field) {
+        this.field = field;
     }
 }
