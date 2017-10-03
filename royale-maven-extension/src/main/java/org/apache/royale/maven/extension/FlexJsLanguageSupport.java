@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs.extension;
+package org.apache.royale.maven.extension;
 
 import org.apache.maven.repository.internal.LanguageSupport;
 import org.codehaus.plexus.component.annotations.Component;
@@ -26,7 +26,7 @@ import javax.inject.Named;
  * Created by christoferdutz on 18.07.16.
  */
 @Named
-@Component( role = LanguageSupport.class, hint = "flexjs" )
+@Component( role = LanguageSupport.class, hint = "royale" )
 public class FlexJsLanguageSupport implements LanguageSupport {
 
     private static final FlexJsScopeSelector SCOPE_SELECTOR = new FlexJsScopeSelector();
@@ -38,7 +38,7 @@ public class FlexJsLanguageSupport implements LanguageSupport {
 
     @Override
     public String getLanguageName() {
-        return "flexjs";
+        return "royale";
     }
 
     @Override

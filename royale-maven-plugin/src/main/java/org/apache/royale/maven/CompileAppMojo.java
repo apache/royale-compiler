@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * goal which compiles a project into a flexjs sef application.
+ * goal which compiles a project into a royale sef application.
  */
 @Mojo(name="compile-app",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class CompileAppMojo

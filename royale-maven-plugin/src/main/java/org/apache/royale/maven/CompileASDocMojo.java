@@ -125,7 +125,7 @@ public class CompileASDocMojo
     @Override
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
-        args.add("-js-output-type=flexjs_dita");
+        args.add("-js-output-type=royale_dita");
         return args;
     }
 

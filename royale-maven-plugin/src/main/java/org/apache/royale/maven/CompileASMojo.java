@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * goal which compiles a project into a flexjs swc library.
+ * goal which compiles a project into a royale swc library.
  */
 @Mojo(name="compile-as",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class CompileASMojo

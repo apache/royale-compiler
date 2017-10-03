@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.flexjs.extension;
+package org.apache.royale.maven.extension;
 
 import org.eclipse.aether.RepositoryException;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;

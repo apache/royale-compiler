@@ -31,7 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * goal which compiles a project into a flexjs swc library.
+ * goal which compiles a project into a royale swc library.
  */
 @Mojo(name="compile-js",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class CompileJSMojo
