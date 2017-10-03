@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.royale.flexjs.compiler</groupId>
+    <groupId>org.apache.royale.compiler</groupId>
     <artifactId>flexjs-compiler-parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
@@ -69,7 +69,7 @@ Do all the JBurg code generation.
             <version>1.10.3</version>
           </dependency>
           <dependency>
-            <groupId>org.apache.royale.flexjs.compiler</groupId>
+            <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
             <version>${compiler-build-tools.version}</version>
           </dependency>
@@ -80,7 +80,7 @@ Do all the JBurg code generation.
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.royale.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
@@ -117,7 +117,7 @@ Do all the JBurg code generation.
     </dependency>
 
     <!--dependency>
-      <groupId>org.apache.royale.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-build-tools</artifactId>
       <version>${compiler-build-tools.version}</version>
       <scope>test</scope>
