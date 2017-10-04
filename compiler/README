@@ -1,13 +1,13 @@
-Apache Flex - Falcon Compiler
+Apache Royale - Falcon Compiler
 =============================
 
-    Apache Flex is an application framework for easily building Flash-based applications 
+    Apache Royale is an application framework for easily building Flash-based applications 
     for mobile devices, the browser and desktop.
     
-    For detailed information about Apache Flex please visit 
-    http://incubator.apache.org/flex/
+    For detailed information about Apache Royale please visit 
+    http://royale.apache.org
 
-    Apache Flex is a large project with many pieces.  The framework is implemented
+    Apache Royale is a large project with many pieces.  The framework is implemented
     in ActionScript and the compiler is implemented in Java.  The Falcon Compiler is
     a new compiler for ActionScript and MXML.
 
@@ -15,16 +15,16 @@ Getting the latest sources via Git
 ==================================
 
     You can always get the latest source via Git using the following
-    command to clone Apache's flex-falcon repository:
+    command to clone Apache's royale-compiler repository:
 
-    git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git
+    git clone https://github.com/apache/royale-compiler.git
 
-    This command will create a flex-falcon directory inside the current directory.
+    This command will create a royale-compiler directory inside the current directory.
     
-Building The Apache Flex Falcon Compiler
+Building The Apache Royale Falcon Compiler
 ========================================
 
-    The Apache Flex Falcon Compiler requires some build tools which must be installed
+    The Apache Royale Falcon Compiler requires some build tools which must be installed
     prior to building and it depends on some external software which
     are downloaded as part of the build process.  See the Software Dependencies
     section for more information on the external software dependencies.
@@ -73,7 +73,7 @@ Install Prerequisites
 Software Dependencies
 ---------------------
 
-    Apache Flex uses third-party code that will be downloaded as part of the Falcon
+    Apache Royale uses third-party code that will be downloaded as part of the Falcon
     Compiler build.   
     
     The Apache Version 2.0 license is in the LICENSE file.  
@@ -103,7 +103,7 @@ Software Dependencies
 	A jar is created from the sources in this download.            
        
 
-Thanks for using Apache Flex.
+Thanks for using Apache Royale.
 
-                                          The Apache Flex Project
-                                          <http://flex.apache.org>
+                                          The Apache Royale Project
+                                          <http://royale.apache.org>
