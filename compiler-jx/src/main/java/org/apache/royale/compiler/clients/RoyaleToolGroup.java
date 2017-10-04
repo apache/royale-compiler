@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.clients;
 
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocDITABackend;
-import org.apache.royale.tools.AbstractFlexToolGroup;
+import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
  * Created by christoferdutz on 10.11.14.

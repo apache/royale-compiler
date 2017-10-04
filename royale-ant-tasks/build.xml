@@ -58,7 +58,7 @@
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
-    <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
@@ -95,7 +95,7 @@
 	
 	<target name="set.falcon.royaletasks.jar.uptodate">
 		<uptodate property="falcon.royaletasks.jar.uptodate"
-		          targetfile="${sdk}/falcon-royaletasks.jar">
+		          targetfile="${sdk}/falcon-royaleTasks.jar">
 			<srcfiles dir="${royaletasks}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -118,7 +118,7 @@
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Class-Path" value="jsc.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar"/>
             </manifest>
-            <fileset dir="${royaletasks}/src/main/resources" includes="royaleTasks.tasks"/>
+            <fileset dir="${royaletasks}/src/main/resources" includes="flexTasks.tasks"/>
             <fileset dir="${royaletasks}/target/classes" includes="${royaletasks.ant.binaries}"/>
         </jar>
 	</target>

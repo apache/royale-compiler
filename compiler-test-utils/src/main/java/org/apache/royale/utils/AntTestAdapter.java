@@ -90,7 +90,7 @@ public class AntTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public String getFlexJsManifestPath(String type) {
+    public String getRoyaleManifestPath(String type) {
         return null;
     }
 

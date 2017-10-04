@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSet;
  * This information is collected by looking at all the {@link ICompilationUnit}s
  * that will be built into a royale SWC.
  */
-class RoyaleLibraryFrame1Info extends FlexFrame1Info
+class RoyaleLibraryFrame1Info extends RoyaleFrame1Info
 {
 
     RoyaleLibraryFrame1Info(RoyaleProject royaleProject,

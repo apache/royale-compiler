@@ -40,11 +40,11 @@ import org.apache.royale.swc.ISWC;
  * Class that contains information about RSLs used by a royale application SWF.
  * <p>
  * The information about RSLs is computed from {@link ITargetSettings} and
- * {@code FlexApplicationFrame1Info}.
+ * {@code RoyaleApplicationFrame1Info}.
  */
 final class FlexRSLInfo
 {
-    FlexRSLInfo(FlexApplicationFrame1Info frame1Info, RoyaleProject royaleProject, ITargetSettings targetSettings)
+    FlexRSLInfo(RoyaleApplicationFrame1Info frame1Info, RoyaleProject royaleProject, ITargetSettings targetSettings)
     {
         this.frame1Info = frame1Info;
         this.royaleProject = royaleProject;
@@ -66,7 +66,7 @@ final class FlexRSLInfo
         }
     }
     
-    private final FlexApplicationFrame1Info frame1Info;
+    private final RoyaleApplicationFrame1Info frame1Info;
     private final ITargetSettings targetSettings;
     private final RoyaleProject royaleProject;
     

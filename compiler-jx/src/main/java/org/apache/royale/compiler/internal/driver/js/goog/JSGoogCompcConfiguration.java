@@ -34,7 +34,7 @@ import org.apache.royale.compiler.config.ConfigurationValue;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
-import org.apache.royale.compiler.internal.config.annotations.FlexOnly;
+import org.apache.royale.compiler.internal.config.annotations.RoyaleOnly;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
 
@@ -124,7 +124,7 @@ public class JSGoogCompcConfiguration extends JSConfiguration
     @Override
     @Config
     @Mapping({"compiler", "mxml", "children-as-data"})
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerMxmlChildrenAsData(ConfigurationValue cv, Boolean asData) throws ConfigurationException
     {
         childrenAsData = asData;

@@ -63,7 +63,7 @@ import org.apache.royale.compiler.units.ICompilationUnit;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class ASDOCJSC extends MXMLJSCFlex
+public class ASDOCJSC extends MXMLJSCRoyale
 {
     /*
      * Exit code enumerations.
@@ -134,12 +134,12 @@ public class ASDOCJSC extends MXMLJSCFlex
                     backend = new MXMLJSCJSSWCBackend();
                     break;
 
-                case FLEXJS:
-                case FLEXJS_DUAL:
+                case ROYALE:
+                case ROYALE_DUAL:
                     backend = new MXMLRoyaleASDocBackend();
                     break;
 
-                case FLEXJS_DITA:
+                case ROYALE_DITA:
                     backend = new MXMLRoyaleASDocDITABackend();
                     break;
                     
@@ -314,7 +314,7 @@ public class ASDOCJSC extends MXMLJSCFlex
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName

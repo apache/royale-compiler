@@ -45,16 +45,16 @@ import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Concrete sub-class of {@code FlexFrame1Info} that contains information about code that uses the Flex
+ * Concrete sub-class of {@code RoyaleFrame1Info} that contains information about code that uses the Flex
  * framework that is needed by the compiler to generate code in the first frame
  * of Flex application SWFs.
  * <p>
  * This information is collected by looking at all the {@link ICompilationUnit}s
  * that will be built into a Flex application SWF.
  */
-final class FlexApplicationFrame1Info extends FlexFrame1Info
+final class RoyaleApplicationFrame1Info extends RoyaleFrame1Info
 {
-    FlexApplicationFrame1Info(RoyaleProject royaleProject,
+    RoyaleApplicationFrame1Info(RoyaleProject royaleProject,
             ITargetSettings targetSettings,
             IClassDefinition mainApplicationClassDefinition,
             boolean generateSystemManagerAndFlexInit,
@@ -94,7 +94,7 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
      * {@inheritDoc}
      * <p>
      * In addition to the information collected by the base class (
-     * {@link FlexFrame1Info} ), this class collects:
+     * {@link RoyaleFrame1Info} ), this class collects:
      * <ul>
      * <li>Mix-in class names</li>
      * <li>File names of SWCs that contributed to code the royale application SWF</li>

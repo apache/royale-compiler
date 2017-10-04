@@ -41,7 +41,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleASDocEmitte
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -521,7 +521,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
 
     public void emitPropertyOverride(IMXMLPropertySpecifierNode propertyNode)
     {
-        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name propertyOverride = project.getPropertyOverrideClassName();
         emitPropertyOrStyleOverride(propertyOverride, propertyNode);
     }
@@ -534,7 +534,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
      */
     void emitStyleOverride(IMXMLStyleSpecifierNode styleNode)
     {
-        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name styleOverride = project.getStyleOverrideClassName();
         emitPropertyOrStyleOverride(styleOverride, styleNode);
     }
@@ -620,7 +620,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
         inStatesOverride = true;
         
         MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
-        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name eventOverride = project.getEventOverrideClassName();
         
         IASNode parentNode = eventNode.getParent();
@@ -680,7 +680,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
         inStatesOverride = true;
         
         MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
-        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name instanceOverrideName = project.getInstanceOverrideClassName();
 
         MXMLDescriptorSpecifier overrideInstances = getCurrentDescriptor("so");

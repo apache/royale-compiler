@@ -71,7 +71,7 @@ import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
-import org.apache.royale.tools.FlexTool;
+import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.ArgumentUtil;
 import org.apache.royale.utils.FilenameNormalization;
 
@@ -425,7 +425,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName

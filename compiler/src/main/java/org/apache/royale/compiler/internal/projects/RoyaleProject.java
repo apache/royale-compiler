@@ -78,7 +78,7 @@ import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.targets.AppSWFTarget;
-import org.apache.royale.compiler.internal.targets.FlexAppSWFTarget;
+import org.apache.royale.compiler.internal.targets.RoyaleAppSWFTarget;
 import org.apache.royale.compiler.internal.targets.SWCTarget;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLImplicitImportNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -545,7 +545,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject
         if (isFlex())
         {
             String rootClassName = targetSettings.getRootClassName();
-            target = new FlexAppSWFTarget(ReferenceFactory.packageQualifiedReference(
+            target = new RoyaleAppSWFTarget(ReferenceFactory.packageQualifiedReference(
                     getWorkspace(), rootClassName, true),
                     this, targetSettings, progressMonitor);
         }

@@ -65,7 +65,7 @@
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler-jburg-types}/src/main/java"/>
-            <include name="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java"/>
+            <include name="org/apache/royale/compiler/internal/as/codegen/IASNodeAdapter.java"/>
             <classpath>
                 <pathelement location="${compiler-jburg-types}/../compiler/lib/external/jburg.jar"/>
             </classpath>

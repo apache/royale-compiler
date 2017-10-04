@@ -15,9 +15,9 @@
 package org.apache.royale.maven;
 
 import org.apache.royale.maven.utils.DependencyHelper;
-import org.apache.royale.tools.FlexTool;
-import org.apache.royale.tools.FlexToolGroup;
-import org.apache.royale.tools.FlexToolRegistry;
+import org.apache.flex.tools.FlexTool;
+import org.apache.flex.tools.FlexToolGroup;
+import org.apache.flex.tools.FlexToolRegistry;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

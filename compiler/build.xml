@@ -497,7 +497,7 @@
         </copy>
         <!-- Copy the config file for the flex-tool-api. -->
         <copy todir="${compiler}/target/classes/META-INF/services"
-              file="src/main/resources/META-INF/services/org.apache.royale.tools.FlexToolGroup"/>
+              file="src/main/resources/META-INF/services/org.apache.flex.tools.FlexToolGroup"/>
     </target>
 	
 	<target name="set.messages.en.uptodate">

@@ -75,7 +75,7 @@ import org.apache.royale.swf.ISWF;
 import org.apache.royale.swf.SWF;
 import org.apache.royale.swf.types.RGB;
 import org.apache.royale.swf.types.Rect;
-import org.apache.royale.tools.FlexTool;
+import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.ArgumentUtil;
 import org.apache.royale.utils.FilenameNormalization;
 

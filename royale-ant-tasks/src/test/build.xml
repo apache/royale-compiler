@@ -51,7 +51,7 @@
     </condition>
 		
     <property name="compiler" value="${royaletasks.tests}/../../../compiler-jx"/>
-    <condition property="royalesdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
+    <condition property="flexsdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
         <isset property="FLEX_HOME" />
     </condition>
     <condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
@@ -68,22 +68,24 @@
     </path>
     
     <target name="ant.tests">
-        <property name="FLEX_HOME" value="${royalesdk}"/>
+        <property name="FLEX_HOME" value="${flexsdk}"/>
         <property name="FALCONJX_HOME" value="${falcon}"/>
         <echo message="GOOG_HOME: ${GOOG_HOME}"/>
-        <echo>FLEX_HOME=${royalesdk}</echo>
+        <echo>FLEX_HOME=${flexsdk}</echo>
         <echo>FALCONJX_HOME=${FALCONJX_HOME}</echo>
-        <taskdef resource="royaleTasks.tasks" classpathref="lib.path"/>
+        <taskdef resource="flexTasks.tasks" classpathref="lib.path"/>
         <mxmlc file="${royaletasks.tests}/as/Hello.as"
             output="${royaletasks}/target/junit/Hello.swf"
             compiler.targets="SWF"
             closure-lib="${GOOG_HOME}"
+            configname="flex"
             target-player="${playerglobal.version}">
             <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
         </mxmlc>
         <delete file="${royaletasks}/target/junit/Hello.swf"/>
         <compc output="${royaletasks}/target/junit/Hello.swc" include-classes="Hello"
             compiler.targets="SWF"
+            configname="flex"
             target-player="${playerglobal.version}">
             <source-path path-element="${royaletasks.tests}/as"/>
             <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />

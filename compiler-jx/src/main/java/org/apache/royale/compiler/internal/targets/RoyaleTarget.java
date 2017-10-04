@@ -63,7 +63,7 @@ public class RoyaleTarget extends JSTarget implements IJSTarget
 
     ///////////
     //
-    //  Copied from FlexAppSWFTarget.java then modified
+    //  Copied from RoyaleAppSWFTarget.java then modified
     //
     ///////////
     /**
@@ -299,7 +299,7 @@ public class RoyaleTarget extends JSTarget implements IJSTarget
     	for (ICompilationUnit unit : units)
     	{
         	try {
-				FlexApplicationFrame1Info.collectMixinMetaData(mixinClassNames, unit);
+				RoyaleApplicationFrame1Info.collectMixinMetaData(mixinClassNames, unit);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -312,7 +312,7 @@ public class RoyaleTarget extends JSTarget implements IJSTarget
     	for (ICompilationUnit unit : units)
     	{
         	try {
-				FlexApplicationFrame1Info.collectRemoteClassMetaData(remoteClassAliasMap, unit);
+				RoyaleApplicationFrame1Info.collectRemoteClassMetaData(remoteClassAliasMap, unit);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

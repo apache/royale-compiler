@@ -67,7 +67,7 @@ import org.apache.royale.swc.io.SWCReader;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class COMPJSCFlex extends MXMLJSCFlex
+public class COMPJSCRoyale extends MXMLJSCRoyale
 {
     /*
      * Exit code enumerations.
@@ -121,7 +121,7 @@ public class COMPJSCFlex extends MXMLJSCFlex
     {
         long startTime = System.nanoTime();
 
-        final COMPJSCFlex mxmlc = new COMPJSCFlex();
+        final COMPJSCRoyale mxmlc = new COMPJSCRoyale();
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
@@ -131,7 +131,7 @@ public class COMPJSCFlex extends MXMLJSCFlex
         return exitCode;
     }
 
-    public COMPJSCFlex()
+    public COMPJSCRoyale()
     {
         IBackend backend = new MXMLRoyaleSWCBackend();
 
@@ -384,7 +384,7 @@ public class COMPJSCFlex extends MXMLJSCFlex
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName

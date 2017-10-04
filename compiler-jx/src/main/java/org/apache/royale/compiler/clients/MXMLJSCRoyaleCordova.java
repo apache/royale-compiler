@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -51,7 +50,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyT
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
+import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleCordovaBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -72,7 +71,7 @@ import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
-import org.apache.royale.tools.FlexTool;
+import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.ArgumentUtil;
 import org.apache.royale.utils.FilenameNormalization;
 
@@ -83,7 +82,7 @@ import com.google.common.collect.Iterables;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
+public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryProvider,
         FlexTool
 {
     @Override
@@ -149,7 +148,7 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         long startTime = System.nanoTime();
 
-        final MXMLJSCFlex mxmlc = new MXMLJSCFlex();
+        final MXMLJSCRoyaleCordova mxmlc = new MXMLJSCRoyaleCordova();
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
@@ -173,12 +172,12 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
     
-    public MXMLJSCFlex()
+    public MXMLJSCRoyaleCordova()
     {
-    	this(new MXMLRoyaleBackend());
+    	this(new MXMLRoyaleCordovaBackend());
     }
     
-    public MXMLJSCFlex(IBackend backend)
+    public MXMLJSCRoyaleCordova(IBackend backend)
     {
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
@@ -331,10 +330,8 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
 	                roots.addAll(incs);
 	                project.mixinClassNames = new TreeSet<String>();
-	                project.remoteClassAliasMap = new HashMap<String, String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
 	                ((RoyaleTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
-	                ((RoyaleTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
@@ -431,7 +428,7 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName

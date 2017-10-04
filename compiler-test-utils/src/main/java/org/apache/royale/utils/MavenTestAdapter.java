@@ -86,9 +86,9 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public String getRoyaleManifestPath(String type) {
-        File configsZip = getDependency("org.apache.royale.framework", "framework",
-                System.getProperty("royaleVersion"), "zip", "configs");
+    public String getFlexManifestPath(String type) {
+        File configsZip = getDependency("org.apache.flex.framework", "framework",
+                System.getProperty("flexVersion"), "zip", "configs");
         File frameworkDir = configsZip.getParentFile();
         File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
         // If the directory doesn't exist, we have to create it by unpacking the zip archive.
@@ -100,20 +100,20 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public File getRoyaleArtifact(String artifactName) {
-        String royaleVersion = System.getProperty("royaleVersion");
-        return getDependency("org.apache.royale.framework", artifactName, royaleVersion, "swc", null);
+    public File getFlexArtifact(String artifactName) {
+        String flexVersion = System.getProperty("flexVersion");
+        return getDependency("org.apache.flex.framework", artifactName, flexVersion, "swc", null);
     }
 
     @Override
-    public File getRoyaleArtifactResourceBundle(String artifactName) {
-        String royaleVersion = System.getProperty("royaleVersion");
-        return getDependency("org.apache.royale.framework", artifactName, royaleVersion, "rb.swc", "en_US");
+    public File getFlexArtifactResourceBundle(String artifactName) {
+        String flexVersion = System.getProperty("flexVersion");
+        return getDependency("org.apache.flex.framework", artifactName, flexVersion, "rb.swc", "en_US");
     }
 
     @Override
-    public String getRoyaleJsManifestPath(String type) {
-        File configsZip = getDependency("org.apache.royale.framework.royale", "framework",
+    public String getRoyaleManifestPath(String type) {
+        File configsZip = getDependency("org.apache.royale.framework", "framework",
                 System.getProperty("royaleVersion"), "zip", "configs");
         File frameworkDir = configsZip.getParentFile();
         File unpackedConfigsDir = new File(frameworkDir, "configs_zip");

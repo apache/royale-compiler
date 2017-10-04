@@ -77,9 +77,9 @@ import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
  * Delegate class used by flex specific targets to generate flex specific code.
  * If we were writing this compiler in C++ this would be a mix-in class.
  */
-public abstract class FlexTarget
+public abstract class RoyaleTarget
 {
-    FlexTarget(ITargetSettings targetSettings, RoyaleProject project)
+    RoyaleTarget(ITargetSettings targetSettings, RoyaleProject project)
     {
         royaleProject = project;
         this.targetSettings = targetSettings;
@@ -270,7 +270,7 @@ public abstract class FlexTarget
             IASNode rootNode,
             ITargetAttributes targetAttributes,
             Collection<String> compiledLocales,
-            FlexFrame1Info frame1Info,
+            RoyaleFrame1Info frame1Info,
             Set<String> accessibilityClassNames,
             String royaleInitClassName,
             String stylesClassName,

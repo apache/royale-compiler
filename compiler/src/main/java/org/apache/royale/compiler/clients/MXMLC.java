@@ -38,6 +38,8 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.CountingOutputStream;
 
+import org.apache.flex.tools.FlexTool;
+
 import org.apache.royale.compiler.Messages;
 import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.clients.problems.ProblemFormatter;
@@ -89,7 +91,6 @@ import org.apache.royale.swf.Header;
 import org.apache.royale.swf.ISWF;
 import org.apache.royale.swf.io.ISWFWriter;
 import org.apache.royale.swf.io.SizeReportWritingSWFWriter;
-import org.apache.royale.tools.FlexTool;
 import org.apache.royale.utils.FilenameNormalization;
 
 import com.google.common.base.Function;

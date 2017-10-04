@@ -42,7 +42,7 @@ import org.apache.royale.swc.io.ISWCWriter;
 import org.apache.royale.swc.io.SWCDirectoryWriter;
 import org.apache.royale.swc.io.SWCWriter;
 import org.apache.royale.swf.io.SizeReportWritingSWFWriter;
-import org.apache.royale.tools.FlexTool;
+import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**

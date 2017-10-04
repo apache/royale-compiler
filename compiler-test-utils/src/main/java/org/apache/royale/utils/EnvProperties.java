@@ -31,10 +31,19 @@ import java.util.Properties;
  * 
  *  1) unittest.properties 
  *  2) environment variables
- *  3) for key FLEX_HOME &amp; PLAYERGLOBAL_HOME sets a default value.
  */
 public class EnvProperties {
 	
+    /**
+     * FLEX_HOME
+     */
+    public String SDK;
+    
+    /**
+     * TLF_HOME
+     */
+    public String TLF;
+    
 	/**
 	 * PLAYERGLOBAL_HOME
 	 */
@@ -55,6 +64,11 @@ public class EnvProperties {
      */
     public String ASJS;
 
+    /**
+     * GOOG_HOME
+     */
+    public String GOOG;
+    
     /**
      * PLAYERGLOBAL_VERSION
      */
@@ -97,9 +111,10 @@ public class EnvProperties {
 	        // Ignore
         }
 		
+		SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
+		System.out.println("environment property - FLEX_HOME = " + SDK);
+		
 		FPSDK = p.getProperty(prefix + "PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
-		if(FPSDK == null)
-			FPSDK = FilenameNormalization.normalize("../../../frameworks/libs/player");
 		System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
         
         FPVER = p.getProperty(prefix + "PLAYERGLOBAL_VERSION", System.getenv("PLAYERGLOBAL_VERSION"));
@@ -107,6 +122,9 @@ public class EnvProperties {
             FPVER = "11.1";
         System.out.println("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
         
+        TLF = p.getProperty(prefix + "TLF_HOME", System.getenv("TLF_HOME"));
+        System.out.println("environment property - TLF_HOME = " + TLF);
+		
 		AIRSDK = p.getProperty(prefix + "AIR_HOME", System.getenv("AIR_HOME"));
 		System.out.println("environment property - AIR_HOME = " + AIRSDK);
 
@@ -117,6 +135,10 @@ public class EnvProperties {
 		if (ASJS == null)
 			ASJS = FilenameNormalization.normalize("../../../../royale-asjs");
 		System.out.println("environment property - ASJS_HOME = " + ASJS);
+        
+        GOOG = p.getProperty(prefix + "GOOG_HOME", System.getenv("GOOG_HOME"));
+        System.out.println("environment property - GOOG_HOME = " + GOOG);
+
 	}
 
 }

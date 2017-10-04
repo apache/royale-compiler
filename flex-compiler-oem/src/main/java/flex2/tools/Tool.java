@@ -19,8 +19,6 @@
 
 package flex2.tools;
 
-import static org.apache.royale.compiler.clients.MXMLJSC.JSOutputType.FLEXJS_DUAL;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

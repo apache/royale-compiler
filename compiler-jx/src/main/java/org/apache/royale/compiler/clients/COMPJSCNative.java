@@ -383,7 +383,7 @@ public class COMPJSCNative extends MXMLJSCNative
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName

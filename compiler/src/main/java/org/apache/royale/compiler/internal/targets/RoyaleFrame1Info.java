@@ -50,9 +50,9 @@ import org.apache.royale.swc.ISWC;
  * This information is collected by looking at all the {@link ICompilationUnit}s
  * that will be built into a royale application SWF or royale SWC.
  */
-abstract class FlexFrame1Info
+abstract class RoyaleFrame1Info
 {
-    protected FlexFrame1Info(RoyaleProject royaleProject)
+    protected RoyaleFrame1Info(RoyaleProject royaleProject)
     {
         this.royaleProject = royaleProject;
         IResolvedQualifiersReference resourceBundleRef = ReferenceFactory.packageQualifiedReference(

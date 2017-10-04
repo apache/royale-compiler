@@ -70,7 +70,7 @@ import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -1198,7 +1198,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      */
     public boolean isProxy(IExpressionNode obj)
     {
-		FlexProject project = (FlexProject)getWalker().getProject();
+		RoyaleProject project = (RoyaleProject)getWalker().getProject();
 		// See if it is Proxy
 		ITypeDefinition leftDef = obj.resolveType(project);
 		if (leftDef == null)
@@ -1233,7 +1233,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      */
     public boolean isDateProperty(IExpressionNode obj)
     {
-		FlexProject project = (FlexProject)getWalker().getProject();
+		RoyaleProject project = (RoyaleProject)getWalker().getProject();
 		if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
 		{
 			IDefinition leftDef;

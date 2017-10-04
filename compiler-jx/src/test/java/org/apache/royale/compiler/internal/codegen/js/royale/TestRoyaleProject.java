@@ -47,7 +47,7 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestRoyaleJSProject extends TestGoogProject
+public class TestRoyaleProject extends TestGoogProject
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 

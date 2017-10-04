@@ -38,7 +38,7 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -100,7 +100,7 @@ public class TestExternalsJSCompile
         backend = new RoyaleBackend();
         if (project == null)
             project = new RoyaleJSProject(workspace, backend);
-        FlexProjectConfigurator.configure(project);
+        RoyaleProjectConfigurator.configure(project);
 
         //writer = backend.createWriterBuffer(project);
         //emitter = backend.createEmitter(writer);

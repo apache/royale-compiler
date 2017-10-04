@@ -48,7 +48,7 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
@@ -109,10 +109,6 @@ public class TestBase implements ITestBase
     @Before
     public void setUp()
     {
-        assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
-        assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set",
-                env.FPSDK);
-
         errors = new ArrayList<ICompilerProblem>();
 
         if (project == null)
@@ -122,7 +118,7 @@ public class TestBase implements ITestBase
         	project.setProxyBaseClass("flash.utils.Proxy");
         }
         project.setProblems(errors);
-        FlexProjectConfigurator.configure(project);
+        RoyaleProjectConfigurator.configure(project);
         try {
 	        Configurator projectConfigurator = backend.createConfigurator();
 	        project.setTargetSettings(projectConfigurator.getTargetSettings(null));

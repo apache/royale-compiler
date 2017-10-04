@@ -40,7 +40,7 @@ import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcesso
 import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
-import org.apache.royale.compiler.internal.targets.FlexAppSWFTarget;
+import org.apache.royale.compiler.internal.targets.RoyaleAppSWFTarget;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
@@ -152,9 +152,9 @@ public class MXMLBindingDirectiveHelper
         
         boolean isFlexSDK = false;
         ISWFTarget target = host.getProject().getSWFTarget();
-        if (target instanceof FlexAppSWFTarget)
+        if (target instanceof RoyaleAppSWFTarget)
         {
-            if (!((FlexAppSWFTarget)target).isFlexInfo())
+            if (!((RoyaleAppSWFTarget)target).isFlexInfo())
             {
                 makeSpecialMemberVariablesForBinding();
                 isFlexSDK = true;

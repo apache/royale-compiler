@@ -156,9 +156,12 @@ public class FileConfigurator
             {
                 if (!qname.equals(rootElement))
                 {
-                    throw new SAXConfigurationException(
+                    if (!qname.equals("flex-config"))
+                    {
+                        throw new SAXConfigurationException(
                             new ConfigurationException.IncorrectElement(rootElement, qname, this.source, locator.getLineNumber()),
                             locator);
+                    }
                 }
                 final ParseContext ctx = new ParseContext();
                 contextStack.push(ctx);

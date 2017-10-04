@@ -29,7 +29,7 @@ import org.apache.royale.compiler.units.ICompilationUnit;
  * Implementation of ISourceFileHandler that constructs
  * {@link ASCompilationUnit}'s. JSSourceFileHandler is the SourceFileHandler
  * that provides JSCompilationUnit for *.as files. JSDriver registers
- * JSSourceFileHandler at FlexApplicationProject. This implementation is part of
+ * JSSourceFileHandler at RoyaleApplicationProject. This implementation is part of
  * FalconJS. For more details on FalconJS see org.apache.royale.compiler.JSDriver
  */
 public final class JSSourceFileHandler implements ISourceFileHandler

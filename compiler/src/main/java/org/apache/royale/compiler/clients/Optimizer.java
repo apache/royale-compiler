@@ -69,7 +69,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.royale.tools.FlexTool;
+import org.apache.flex.tools.FlexTool;
 
 /**
  * Command line optimizer - can read in a swf, apply the optimizations usually done during swf linking,

@@ -66,7 +66,7 @@ import com.google.common.collect.ImmutableList;
  * @author aharui
  *
  */
-public class RoyaleJSProject extends FlexProject
+public class RoyaleJSProject extends RoyaleProject
 {
 
     /**

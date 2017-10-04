@@ -35,7 +35,7 @@ import org.apache.royale.compiler.internal.codegen.externals.reference.Reference
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
-import org.apache.royale.tools.FlexTool;
+import org.apache.flex.tools.FlexTool;
 
 import com.google.javascript.jscomp.Result;
 

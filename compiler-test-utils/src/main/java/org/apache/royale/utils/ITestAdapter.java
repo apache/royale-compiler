@@ -41,7 +41,7 @@ public interface ITestAdapter {
 
     File getFlexArtifactResourceBundle(String artifactName);
 
-    String getFlexJsManifestPath(String type);
+    String getRoyaleManifestPath(String type);
 
     File getRoyaleArtifact(String artifactName);
 

@@ -338,10 +338,10 @@ public final class RoyaleLibrarySWFTarget extends LibrarySWFTarget
 
 
     /**
-     * Sub-class of {@link FlexTarget} that adds logic specific to building 
+     * Sub-class of {@link RoyaleTarget} that adds logic specific to building 
      * library.swf's in royale SWCs.
      */
-    private class FlexDelegate extends FlexTarget
+    private class FlexDelegate extends RoyaleTarget
     {
 
         FlexDelegate(ITargetSettings targetSettings, RoyaleProject project)
@@ -442,7 +442,7 @@ public final class RoyaleLibrarySWFTarget extends LibrarySWFTarget
          */
         private void codegenInfoMethod(ClassGeneratorHelper classGen, 
                 String rootClassQName, 
-                FlexFrame1Info frame1Info, 
+                RoyaleFrame1Info frame1Info, 
                 Set<String> accessibleClassNames, 
                 Collection<ICompilerProblem> problemCollection) throws InterruptedException
         {

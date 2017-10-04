@@ -104,7 +104,7 @@ import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
  * Sub-class of {@link AppSWFTarget} that builds an application SWF that uses
  * the royale framework.
  */
-public class FlexAppSWFTarget extends AppSWFTarget
+public class RoyaleAppSWFTarget extends AppSWFTarget
 {
     /**
      * Constructor
@@ -118,7 +118,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
      * @param progressMonitor {@link ITargetProgressMonitor} to which status is
      * reported as this {@link AppSWFTarget} is built.
      */
-    public FlexAppSWFTarget(IResolvedQualifiersReference mainApplicationClass, RoyaleProject project,
+    public RoyaleAppSWFTarget(IResolvedQualifiersReference mainApplicationClass, RoyaleProject project,
             ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
         super(project, targetSettings, progressMonitor);
@@ -372,7 +372,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         assert frames.getLast().rootedUnits.contains(rootClassCU) :
             "The main class definition for the last frame, must be the main class definition for the SWF.";
         final FramesInformation explicitFrames = getExplicitFramesInformation();
-        return new FlexApplicationFramesInformation(frames, explicitFrames, initialFactoryClass, systemManagerFrame, applicationFrame);
+        return new RoyaleApplicationFramesInformation(frames, explicitFrames, initialFactoryClass, systemManagerFrame, applicationFrame);
     }
     
     @Override
@@ -691,10 +691,10 @@ public class FlexAppSWFTarget extends AppSWFTarget
      * Sub-class of {@link FramesInformation} that can create {@link SWFFrame}s
      * for all the frames in a royale application SWF.
      */
-    private class FlexApplicationFramesInformation extends FramesInformation
+    private class RoyaleApplicationFramesInformation extends FramesInformation
     {
 
-        FlexApplicationFramesInformation(Iterable<SWFFrameInfo> implicitFrames,
+        RoyaleApplicationFramesInformation(Iterable<SWFFrameInfo> implicitFrames,
                 FramesInformation explicitFrames,
                 ClassDefinition initialFactoryClass,
                 SWFFrameInfo systemManagerFrame,
@@ -712,7 +712,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         private final ClassDefinition initialFactoryClass;
         private final SWFFrameInfo systemManagerFrame;
         private final SWFFrameInfo applicationFrame;
-        private FlexApplicationFrame1Info frame1Info;
+        private RoyaleApplicationFrame1Info frame1Info;
         
         /**
          * If we are targeting flex 4.0 or greater and the root application
@@ -720,7 +720,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * analysis of the CSS type selectors in the root application class.
          * 
          * @param builtCompilationUnits An {@link ImmutableSet} of all the
-         * {@link ICompilationUnit}s built by the {@link FlexAppSWFTarget}.
+         * {@link ICompilationUnit}s built by the {@link RoyaleAppSWFTarget}.
          * @param problems {@link Collection} of {@link ICompilerProblem}s to
          * which {@link ICompilerProblem}s found by this method will be added.
          * @throws InterruptedException
@@ -758,7 +758,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             final FlexDelegate delegate = getDelegate();
             final ClassDefinition rootClassDefinition =
                 getRootClassDefinition();
-            frame1Info = new FlexApplicationFrame1Info(royaleProject,
+            frame1Info = new RoyaleApplicationFrame1Info(royaleProject,
                                 targetSettings,
                                 rootClassDefinition,
                                 delegate.getGenerateSystemManagerAndFlexInit(),
@@ -814,10 +814,10 @@ public class FlexAppSWFTarget extends AppSWFTarget
     }
     
     /**
-     * Sub-class of {@link FlexTarget} that adds logic specific to building flex
+     * Sub-class of {@link RoyaleTarget} that adds logic specific to building flex
      * applications.
      */
-    private class FlexDelegate extends FlexTarget
+    private class FlexDelegate extends RoyaleTarget
     {
         FlexDelegate(IClassDefinition mainApplicationClassDefinition, ITargetSettings targetSettings, RoyaleProject project)
         {
@@ -890,7 +890,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         /**
          * Cached frame 1 information.
          */
-        private FlexApplicationFrame1Info frame1Info;
+        private RoyaleApplicationFrame1Info frame1Info;
         
         /**
          * Cached RSL information
@@ -1181,11 +1181,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
             return rootNode;
         }
         
-        final FlexApplicationFrame1Info getFrame1Info() throws InterruptedException
+        final RoyaleApplicationFrame1Info getFrame1Info() throws InterruptedException
         {
             if (frame1Info != null)
                 return frame1Info;
-            frame1Info = new FlexApplicationFrame1Info(royaleProject,
+            frame1Info = new RoyaleApplicationFrame1Info(royaleProject,
                     targetSettings, mainApplicationClassDefinition, getGenerateSystemManagerAndFlexInit(), 
                     isFlexInfo((ClassDefinition)mainApplicationClassDefinition), getBuiltCompilationUnitSet().compilationUnits);
             return frame1Info;
@@ -1205,7 +1205,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * 
          * @param mainApplicationFrame {@link SWFFrame} that contains the main
          * application class of the royale application SWF being built.
-         * @param frame1Info {@link FlexApplicationFrame1Info} containing frame
+         * @param frame1Info {@link RoyaleApplicationFrame1Info} containing frame
          * 1 related code generation information collected from all the
          * {@link ICompilationUnit}s being built into the royale application SWF.
          * @param emittedCompilationUnits
@@ -1214,7 +1214,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * {@link SWFFrame}, false otherwise.
          * @throws InterruptedException
          */
-        boolean addGeneratedCodeToMainApplicationFrame(SWFFrame mainApplicationFrame, FlexApplicationFrame1Info frame1Info,
+        boolean addGeneratedCodeToMainApplicationFrame(SWFFrame mainApplicationFrame, RoyaleApplicationFrame1Info frame1Info,
                 Set<ICompilationUnit> emittedCompilationUnits,
                 Collection<ICompilerProblem> problems) throws InterruptedException
         {
@@ -1272,7 +1272,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * 
          * @param frame frame to add the generated DoABC for this class.
          */
-        private void addGeneratedCompiledResourceBundleInfoToFrame(FlexApplicationFrame1Info frame1Info, SWFFrame frame)
+        private void addGeneratedCompiledResourceBundleInfoToFrame(RoyaleApplicationFrame1Info frame1Info, SWFFrame frame)
         {
             Collection<String> locales = royaleProject.getLocales();
 
@@ -1353,7 +1353,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * @throws InterruptedException
          */
         private boolean addGeneratedFlexInitToFrame(final Collection<ICompilerProblem> problems, SWFFrame frame, Set<ICompilationUnit> emittedCompilationUnits, 
-                boolean isAppFlexInfo, FlexApplicationFrame1Info frame1Info, FlexRSLInfo rslInfo) throws InterruptedException
+                boolean isAppFlexInfo, RoyaleApplicationFrame1Info frame1Info, FlexRSLInfo rslInfo) throws InterruptedException
         {
             ABCEmitter emitter = new ABCEmitter();
             emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
@@ -1752,7 +1752,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * .
          * 
          * @param frame {@link SWFFrame} to add the generated class to.
-         * @param frame1Info {@link FlexApplicationFrame1Info}
+         * @param frame1Info {@link RoyaleApplicationFrame1Info}
          * @param systemManagerClass {@link ClassDefinition} for factory class
          * for which a generated sub-class should be created, usually
          * {@code mx.managers.SystemManager}.
@@ -1765,7 +1765,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * specified {@link SWFFrame}, false otherwise.
          * @throws InterruptedException
          */
-        boolean addGeneratedSystemManagerToFrame(SWFFrame frame, FlexApplicationFrame1Info frame1Info, ClassDefinition systemManagerClass, 
+        boolean addGeneratedSystemManagerToFrame(SWFFrame frame, RoyaleApplicationFrame1Info frame1Info, ClassDefinition systemManagerClass, 
                 ImmutableSet<ICompilationUnit> builtCompilationUnits, 
                 Collection<ICompilerProblem> problemCollection) throws InterruptedException
         {

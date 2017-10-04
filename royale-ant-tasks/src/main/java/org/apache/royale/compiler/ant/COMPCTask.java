@@ -29,6 +29,7 @@ import org.apache.tools.ant.DynamicConfigurator;
 import org.apache.royale.compiler.ant.config.ConfigBoolean;
 import org.apache.royale.compiler.ant.config.ConfigInt;
 import org.apache.royale.compiler.ant.config.ConfigString;
+import org.apache.royale.compiler.ant.config.ConfigAppendString;
 import org.apache.royale.compiler.ant.config.ConfigVariable;
 import org.apache.royale.compiler.ant.config.NestedAttributeElement;
 import org.apache.royale.compiler.ant.config.IOptionSource;
@@ -185,6 +186,7 @@ public final class COMPCTask extends FlexTask implements DynamicConfigurator
         new ConfigString(new OptionSpec("size-report")),
         new ConfigString(new OptionSpec("target-player")),
         new ConfigString(new OptionSpec("tools-locale")),
+        new ConfigAppendString(new OptionSpec("configname")),
 
         // Int options
         new ConfigInt(new OptionSpec("default-background-color")),
