@@ -41,7 +41,7 @@ import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
 import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
 import org.apache.royale.compiler.internal.parsing.mxml.MXMLScopeBuilder;
 import org.apache.royale.compiler.internal.parsing.mxml.MXMLTokenizer;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
@@ -653,7 +653,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
                 if (mxmlTextData.getTextType() != TextType.WHITESPACE)
                 {
                     final Workspace workspace = builder.getWorkspace();
-                    final FlexProject project = builder.getProject();
+                    final RoyaleProject project = builder.getProject();
                     final Collection<ICompilerProblem> problems = builder.getProblems();
 
                     final IncludeHandler includeHandler = new IncludeHandler(builder.getFileSpecificationGetter());

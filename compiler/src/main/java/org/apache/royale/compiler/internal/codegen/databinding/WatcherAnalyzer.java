@@ -32,7 +32,7 @@ import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDatabindingSourceNotBindableProblem;
@@ -215,7 +215,7 @@ public class WatcherAnalyzer
                 // maybe we are something like ObjectProxy.dynamicProperty
                 // (someone who extends ObjectProxy, like Model)
                 ITypeDefinition leftType= leftDef.resolveType(project);  
-                FlexProject project = (FlexProject)this.project;
+                RoyaleProject project = (RoyaleProject)this.project;
                 String objectProxyClass = project.getObjectProxyClass();
                 boolean isProxy = leftType==null ? false : leftType.isInstanceOf(objectProxyClass, project);
     

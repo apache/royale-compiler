@@ -35,7 +35,7 @@ import org.apache.royale.compiler.definitions.IStyleDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
@@ -250,7 +250,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     /**
      * Sets the definition of the ActionScript class to which this node refers.
      */
-    void setClassReference(FlexProject project, IClassDefinition classReference)
+    void setClassReference(RoyaleProject project, IClassDefinition classReference)
     {
         this.classReference = classReference;
 
@@ -285,7 +285,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      * name.
      * @param qname A fully qualified class name.
      */
-    void setClassReference(FlexProject project, String qname)
+    void setClassReference(RoyaleProject project, String qname)
     {
         ASProjectScope projectScope = (ASProjectScope)project.getScope();
         IDefinition definition = projectScope.findDefinitionByName(qname);
@@ -418,7 +418,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             return ;
         }
         
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         // Handle child tags that are property/style/event specifiers.
         MXMLSpecifierNodeBase childNode = createSpecifierNode(builder, childTag.getShortName());
@@ -537,7 +537,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     {
         if (!defaultPropertyDefinitionInitialized)
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             String defaultPropertyName = classReference.getDefaultPropertyName(project);
             if (defaultPropertyName != null)
             {
@@ -670,7 +670,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         MXMLSpecifierNodeBase specifierNode = null;
 
         // Check if the attribute is a declared property, style, or event.
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         IDefinition specifierDefinition = project.resolveSpecifier(classReference, specifierName);
 
         if (specifierDefinition instanceof ISetterDefinition ||
@@ -724,7 +724,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         // because we'll have to codegen descriptors.
         if (isContainer)
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             builder.addExpressionDependency(project.getUIComponentDescriptorClass());
         }
     }

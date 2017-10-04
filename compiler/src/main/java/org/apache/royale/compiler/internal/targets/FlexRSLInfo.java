@@ -32,22 +32,22 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.RSLSettings;
 import org.apache.royale.compiler.exceptions.LibraryCircularDependencyException;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.swc.ISWC;
 
 /**
- * Class that contains information about RSLs used by a flex application SWF.
+ * Class that contains information about RSLs used by a royale application SWF.
  * <p>
  * The information about RSLs is computed from {@link ITargetSettings} and
  * {@code FlexApplicationFrame1Info}.
  */
 final class FlexRSLInfo
 {
-    FlexRSLInfo(FlexApplicationFrame1Info frame1Info, FlexProject flexProject, ITargetSettings targetSettings)
+    FlexRSLInfo(FlexApplicationFrame1Info frame1Info, RoyaleProject royaleProject, ITargetSettings targetSettings)
     {
         this.frame1Info = frame1Info;
-        this.flexProject = flexProject;
+        this.royaleProject = royaleProject;
         this.targetSettings = targetSettings;
         requiredRSLs = new ArrayList<RSLSettings>();
         placeholderRSLs = new ArrayList<RSLSettings>();
@@ -68,10 +68,10 @@ final class FlexRSLInfo
     
     private final FlexApplicationFrame1Info frame1Info;
     private final ITargetSettings targetSettings;
-    private final FlexProject flexProject;
+    private final RoyaleProject royaleProject;
     
     /**
-     * {@link RSLSettings} for RSLs that must be loaded for the flex application
+     * {@link RSLSettings} for RSLs that must be loaded for the royale application
      * to load properly.
      */
     final ArrayList<RSLSettings> requiredRSLs;
@@ -79,7 +79,7 @@ final class FlexRSLInfo
     /**
      * {@link RSLSettings} for RSLs were specified by
      * {@link ITargetSettings#getRuntimeSharedLibraryPath()}, but that were not
-     * required by the flex application and were not marked as force load by
+     * required by the royale application and were not marked as force load by
      * {@link RSLSettings#isForceLoad()}.
      */
     final ArrayList<RSLSettings> placeholderRSLs;
@@ -156,7 +156,7 @@ final class FlexRSLInfo
             Set<String> swcDependencies;
             try
             {
-                swcDependencies = flexProject.computeLibraryDependencies(new File(swcPath), inheritanceDependency);
+                swcDependencies = royaleProject.computeLibraryDependencies(new File(swcPath), inheritanceDependency);
             }
             catch (LibraryCircularDependencyException e)
             {
@@ -192,7 +192,7 @@ final class FlexRSLInfo
                     try
                     {
                         inheritanceDependencies.addAll(
-                                flexProject.computeLibraryDependencies(new File(targetSWC), 
+                                royaleProject.computeLibraryDependencies(new File(targetSWC), 
                                         inheritanceDependency));
                     }
                     catch (LibraryCircularDependencyException e)
@@ -220,12 +220,12 @@ final class FlexRSLInfo
     private boolean isSWCFiltered(String swcPath)
     {
         // if compatibility-version is not set then we won't be doing any filtering.
-        if (flexProject.getCompatibilityVersion() == null)
+        if (royaleProject.getCompatibilityVersion() == null)
             return false;
         
-        int compatibilityVersion = flexProject.getCompatibilityVersion();
-        ISWC swc = flexProject.getWorkspace().getSWCManager().get(new File(swcPath));
-        if (compatibilityVersion < swc.getVersion().getFlexMinSupportedVersionInt())
+        int compatibilityVersion = royaleProject.getCompatibilityVersion();
+        ISWC swc = royaleProject.getWorkspace().getSWCManager().get(new File(swcPath));
+        if (compatibilityVersion < swc.getVersion().getRoyaleMinSupportedVersionInt())
         {
             return true;
         }

@@ -24,21 +24,21 @@ goog.provide('controllers.MyController');
 goog.require('FlexJSTest_again');
 goog.require('MyInitialView');
 goog.require('models.MyModel');
-goog.require('org.apache.flex.core.IDocument');
-goog.require('org.apache.flex.utils.Language');
+goog.require('org.apache.royale.core.IDocument');
+goog.require('org.apache.royale.utils.Language');
 
 
 
 /**
  * @constructor
- * @implements {org.apache.flex.core.IDocument}
- * @param {org.apache.flex.core.Application=} app
+ * @implements {org.apache.royale.core.IDocument}
+ * @param {org.apache.royale.core.Application=} app
  */
 controllers.MyController = function(app) {
   app = typeof app !== 'undefined' ? app : null;
   if (app) {
-    this.app = org.apache.flex.utils.Language.as(app, FlexJSTest_again);
-    app.addEventListener("viewChanged", org.apache.flex.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
+    this.app = org.apache.royale.utils.Language.as(app, FlexJSTest_again);
+    app.addEventListener("viewChanged", org.apache.royale.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
   }
 };
 
@@ -72,71 +72,71 @@ controllers.MyController.prototype.app;
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.viewChangeHandler = function(event) {
-  this.app.initialView.addEventListener("buttonClicked", org.apache.flex.utils.Language.closure(this.buttonClickHandler, this, 'buttonClickHandler'));
-  this.app.initialView.addEventListener("listChanged", org.apache.flex.utils.Language.closure(this.listChangedHandler, this, 'listChangedHandler'));
-  this.app.initialView.addEventListener("cityListChanged", org.apache.flex.utils.Language.closure(this.cityListChangeHandler, this, 'cityListChangeHandler'));
-  this.app.initialView.addEventListener("transferClicked", org.apache.flex.utils.Language.closure(this.transferClickHandler, this, 'transferClickHandler'));
-  this.app.initialView.addEventListener("comboBoxChanged", org.apache.flex.utils.Language.closure(this.comboBoxChangeHandler, this, 'comboBoxChangeHandler'));
+  this.app.initialView.addEventListener("buttonClicked", org.apache.royale.utils.Language.closure(this.buttonClickHandler, this, 'buttonClickHandler'));
+  this.app.initialView.addEventListener("listChanged", org.apache.royale.utils.Language.closure(this.listChangedHandler, this, 'listChangedHandler'));
+  this.app.initialView.addEventListener("cityListChanged", org.apache.royale.utils.Language.closure(this.cityListChangeHandler, this, 'cityListChangeHandler'));
+  this.app.initialView.addEventListener("transferClicked", org.apache.royale.utils.Language.closure(this.transferClickHandler, this, 'transferClickHandler'));
+  this.app.initialView.addEventListener("comboBoxChanged", org.apache.royale.utils.Language.closure(this.comboBoxChangeHandler, this, 'comboBoxChangeHandler'));
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.buttonClickHandler = function(event) {
-  var /** @type {string} */ sym = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).symbol;
+  var /** @type {string} */ sym = org.apache.royale.utils.Language.as(this.app.initialView, MyInitialView, true).symbol;
   this.app.service.url = this.queryBegin + sym + this.queryEnd;
   this.app.service.send();
-  this.app.service.addEventListener("complete", org.apache.flex.utils.Language.closure(this.completeHandler, this, 'completeHandler'));
+  this.app.service.addEventListener("complete", org.apache.royale.utils.Language.closure(this.completeHandler, this, 'completeHandler'));
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.completeHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.flex.utils.Language.as(this.app.collection.getItemAt(0), String);
+  org.apache.royale.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.royale.utils.Language.as(this.app.collection.getItemAt(0), String);
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.listChangedHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).symbol;
+  org.apache.royale.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.royale.utils.Language.as(this.app.initialView, MyInitialView, true).symbol;
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.cityListChangeHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).city;
+  org.apache.royale.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.royale.utils.Language.as(this.app.initialView, MyInitialView, true).city;
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.transferClickHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).inputText;
+  org.apache.royale.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.royale.utils.Language.as(this.app.initialView, MyInitialView, true).inputText;
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.royale.events.Event} event
  */
 controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).comboBoxValue;
+  org.apache.royale.utils.Language.as(this.app.model, models.MyModel, true).labelText = org.apache.royale.utils.Language.as(this.app.initialView, MyInitialView, true).comboBoxValue;
 };
 
 
@@ -147,8 +147,8 @@ controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
  */
 controllers.MyController.prototype.setDocument = function(document, id) {
   id = typeof id !== 'undefined' ? id : null;
-  this.app = org.apache.flex.utils.Language.as(document, FlexJSTest_again);
-  this.app.addEventListener("viewChanged", org.apache.flex.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
+  this.app = org.apache.royale.utils.Language.as(document, FlexJSTest_again);
+  this.app.addEventListener("viewChanged", org.apache.royale.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
 };
 
 
@@ -157,7 +157,7 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.flex.core.IDocument] };
+controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.royale.core.IDocument] };
 
 
 
@@ -172,7 +172,7 @@ controllers.MyController.prototype.FLEXJS_REFLECTION_INFO = function () {
     accessors: function () {return {};},
     methods: function () {
       return {
-        'MyController': { type: '', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'org.apache.flex.core.Application', optional: true } ]; }},
+        'MyController': { type: '', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'org.apache.royale.core.Application', optional: true } ]; }},
         'setDocument': { type: 'void', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'Object', optional: false },{ index: 2, type: 'String', optional: true } ]; }}
       };
     }

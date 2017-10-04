@@ -29,8 +29,8 @@
   <artifactId>compiler</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - Royale: Compiler: Compiler</name>
-  <description>The Apache Flex Falcon Compiler</description>
+  <name>Apache Royale: Compiler: Compiler</name>
+  <description>The Apache Royale Compiler</description>
 
   <build>
     <plugins>
@@ -50,9 +50,9 @@
             <configuration>
               <outputDirectory>target/generated-sources/jflex</outputDirectory>
               <lexDefinitions>
-                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
+                <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
               </lexDefinitions>
-              <skeleton>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
+              <skeleton>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.falcon</skeleton>
             </configuration>
           </execution>
           <execution>
@@ -63,9 +63,9 @@
             <configuration>
               <outputDirectory>target/generated-sources/jflex</outputDirectory>
               <lexDefinitions>
-                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
+                <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
               </lexDefinitions>
-              <skeleton>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
+              <skeleton>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.default</skeleton>
             </configuration>
           </execution>
           <execution>
@@ -76,7 +76,7 @@
             <configuration>
               <outputDirectory>target/generated-sources/jflex</outputDirectory>
               <lexDefinitions>
-                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
+                <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
               </lexDefinitions>
             </configuration>
           </execution>
@@ -96,7 +96,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <grammars>org/apache/flex/compiler/internal/parsing/as/ASParser.g</grammars>
+              <grammars>org/apache/royale/compiler/internal/parsing/as/ASParser.g</grammars>
             </configuration>
           </execution>
         </executions>
@@ -134,10 +134,10 @@
                 <classpath />
                 <arguments>antlr.Tool</arguments>
                 <argument>-o</argument>
-                <argument>../../../../../../../../../../target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as</argument>
+                <argument>../../../../../../../../../../target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as</argument>
                 <argument>MetadataParser.g</argument>
               </arguments>
-              <workingDirectory>src/main/antlr/org/apache/flex/compiler/internal/parsing/as</workingDirectory>
+              <workingDirectory>src/main/antlr/org/apache/royale/compiler/internal/parsing/as</workingDirectory>
               <sourceRoot>target/generated-sources/antlr</sourceRoot>
             </configuration>
           </execution>
@@ -162,8 +162,8 @@
               <includes>
                 <include>CSSEmitter.jbg</include>
               </includes>
-              <sourceDirectory>src/main/jburg/org/apache/flex/compiler/internal/css/codegen</sourceDirectory>
-              <outputDirectory>target/generated-sources/jburg/org/apache/flex/compiler/internal/css/codegen</outputDirectory>
+              <sourceDirectory>src/main/jburg/org/apache/royale/compiler/internal/css/codegen</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -175,8 +175,8 @@
               <includes>
                 <include>CmcEmitter.jbg</include>
               </includes>
-              <sourceDirectory>src/main/jburg/org/apache/flex/compiler/internal/as/codegen</sourceDirectory>
-              <outputDirectory>target/generated-sources/jburg/org/apache/flex/compiler/internal/as/codegen</outputDirectory>
+              <sourceDirectory>src/main/jburg/org/apache/royale/compiler/internal/as/codegen</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -215,8 +215,8 @@
               <includes>
                 <include>CSS.g</include>
               </includes>
-              <sourceDirectory>src/main/antlr3/org/apache/flex/compiler/internal/css</sourceDirectory>
-              <outputDirectory>target/generated-sources/antlr3/org/apache/flex/compiler/internal/css</outputDirectory>
+              <sourceDirectory>src/main/antlr3/org/apache/royale/compiler/internal/css</sourceDirectory>
+              <outputDirectory>target/generated-sources/antlr3/org/apache/royale/compiler/internal/css</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -228,8 +228,8 @@
               <includes>
                 <include>CSSTree.g</include>
               </includes>
-              <sourceDirectory>src/main/antlr3/org/apache/flex/compiler/internal/css</sourceDirectory>
-              <outputDirectory>target/generated-sources/antlr3/org/apache/flex/compiler/internal/css</outputDirectory>
+              <sourceDirectory>src/main/antlr3/org/apache/royale/compiler/internal/css</sourceDirectory>
+              <outputDirectory>target/generated-sources/antlr3/org/apache/royale/compiler/internal/css</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -249,8 +249,8 @@
               <goal>generate-unknown-tree-handler</goal>
             </goals>
             <configuration>
-              <inputFile>org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml</inputFile>
-              <outputFile>org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java</outputFile>
+              <inputFile>org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml</inputFile>
+              <outputFile>org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java</outputFile>
             </configuration>
           </execution>
           <execution>
@@ -260,9 +260,9 @@
             </goals>
             <configuration>
               <includes>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.java</include>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/ASTokenTypes.java</include>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/ASTokenTypes.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/MetadataTokenTypes.java</include>
               </includes>
               <annotation>@SuppressWarnings("unused")</annotation>
             </configuration>
@@ -274,7 +274,7 @@
             </goals>
             <configuration>
               <includes>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java</include>
               </includes>
               <annotation>@SuppressWarnings("all")</annotation>
             </configuration>
@@ -286,8 +286,8 @@
             </goals>
             <configuration>
               <includes>
-                <include>jburg/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java</include>
-                <include>jburg/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java</include>
+                <include>jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java</include>
+                <include>jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java</include>
               </includes>
               <annotation>@SuppressWarnings({"rawtypes", "unchecked", "unused"})</annotation>
             </configuration>

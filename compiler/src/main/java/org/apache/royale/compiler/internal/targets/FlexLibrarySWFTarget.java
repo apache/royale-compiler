@@ -36,7 +36,7 @@ import org.apache.royale.compiler.definitions.references.IResolvedQualifiersRefe
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.ResourceBundleNotFoundForLocaleProblem;
 import org.apache.royale.compiler.problems.ResourceBundleNotFoundProblem;
@@ -50,17 +50,17 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
-public final class FlexLibrarySWFTarget extends LibrarySWFTarget
+public final class RoyaleLibrarySWFTarget extends LibrarySWFTarget
 {
-    public FlexLibrarySWFTarget(FlexProject project, ITargetSettings targetSettings, Set<ICompilationUnit> rootedCompilationUnits)
+    public RoyaleLibrarySWFTarget(RoyaleProject project, ITargetSettings targetSettings, Set<ICompilationUnit> rootedCompilationUnits)
     {
         super(project, targetSettings, rootedCompilationUnits);
-        flexProject = project;
+        royaleProject = project;
         delegate = new FlexDelegate(targetSettings, project);
         isLibrary = true;
     }
     
-    private final FlexProject flexProject;
+    private final RoyaleProject royaleProject;
     
     private ModuleFactoryInfo moduleFactoryInfo;
     
@@ -69,9 +69,9 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
     private ModuleFactoryInfo computeModuleFactoryInfo()
     {
         final IResolvedQualifiersReference moduleFactoryBaseClassReference =
-            ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), getBaseClassQName());
+            ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), getBaseClassQName());
         final IDefinition moduleFactoryBaseClassDef =
-            moduleFactoryBaseClassReference.resolve(flexProject);
+            moduleFactoryBaseClassReference.resolve(royaleProject);
         if (!(moduleFactoryBaseClassDef instanceof ClassDefinition))
             return ModuleFactoryInfo.create(Collections.<ICompilerProblem>emptyList()); // TODO make a compiler problem here!
         
@@ -79,7 +79,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
             (ClassDefinition)moduleFactoryBaseClassDef;
         
         final ICompilationUnit moduleFactoryBaseClassCompilationUnit =
-            flexProject.getScope().getCompilationUnitForDefinition(moduleFactoryBaseClass);
+            royaleProject.getScope().getCompilationUnitForDefinition(moduleFactoryBaseClass);
         assert moduleFactoryBaseClassCompilationUnit != null : "Unable to find compilation unit for definition!";
         
         return ModuleFactoryInfo.create(getGeneratedModuleFactoryClassName(moduleFactoryBaseClass), moduleFactoryBaseClass, moduleFactoryBaseClassCompilationUnit);
@@ -112,7 +112,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
             Sets.union(Collections.singleton(moduleFactoryInfo.moduleFactoryBaseClassCompilationUnit), this.rootedCompilationUnits);
         final SWFFrameInfo frameInfo =
             new SWFFrameInfo(null, SWFFrameInfo.EXTERNS_ALLOWED, compilationUnits, moduleFactoryInfo.problems);
-        final FlexLibrarySWFFramesInformation framesInfo = new FlexLibrarySWFFramesInformation(frameInfo);
+        final RoyaleLibrarySWFFramesInformation framesInfo = new RoyaleLibrarySWFFramesInformation(frameInfo);
         return framesInfo;
     }
 
@@ -232,20 +232,20 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
     
     /**
      * Sub-class of {@link FramesInformation} that can create {@link SWFFrame}s
-     * for all the frames in a library.swf in a flex SWC.
+     * for all the frames in a library.swf in a royale SWC.
      * <p>
      * This class should only be constructed if we are also generating a module
      * factory.
      */
-    private class FlexLibrarySWFFramesInformation extends FramesInformation
+    private class RoyaleLibrarySWFFramesInformation extends FramesInformation
     {
         /**
          * Constructor
          * 
          * @param frameInfo The single {@link SWFFrameInfo} for the one frame in
-         * a libary.swf in a flex SWC.
+         * a libary.swf in a royale SWC.
          */
-        FlexLibrarySWFFramesInformation(SWFFrameInfo frameInfo)
+        RoyaleLibrarySWFFramesInformation(SWFFrameInfo frameInfo)
         {
             super(Collections.singletonList(frameInfo));
         }
@@ -292,7 +292,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
         /**
          * Creates a {@link ModuleFactoryInfo} that will cause a module factory
          * to be generated. The resulting library.swf will be suitable for
-         * loading as an RSL in a flex application.
+         * loading as an RSL in a royale application.
          * 
          * @param generatedModuleFactoryClassName The name of the module factory
          * to generate
@@ -339,12 +339,12 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
 
     /**
      * Sub-class of {@link FlexTarget} that adds logic specific to building 
-     * library.swf's in flex SWCs.
+     * library.swf's in royale SWCs.
      */
     private class FlexDelegate extends FlexTarget
     {
 
-        FlexDelegate(ITargetSettings targetSettings, FlexProject project)
+        FlexDelegate(ITargetSettings targetSettings, RoyaleProject project)
         {
             super(targetSettings, project);
         }
@@ -398,8 +398,8 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
             // methods in the base class. Same deal for the Create and Info Methods.
             codegenCallInContextMethod(classGen, true);
 
-            final FlexLibraryFrame1Info frame1Info =
-                new FlexLibraryFrame1Info(flexProject, emittedCompilationUnits);
+            final RoyaleLibraryFrame1Info frame1Info =
+                new RoyaleLibraryFrame1Info(royaleProject, emittedCompilationUnits);
             
             // Override the create() and info() methods if we have embedded fonts.
             if (!frame1Info.embeddedFonts.isEmpty())
@@ -457,7 +457,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
                     null, // locales
                     frame1Info,
                     accessibleClassNames,
-                    null, // flex init
+                    null, // royale init
                     null, // styles class name
                     null, // rsls
                     null, // rslinof

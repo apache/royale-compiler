@@ -24,9 +24,9 @@ import org.apache.royale.abc.ABCConstants;
 /**
  * Utility class to store font information obtained from the font transcoder
  */
-public final class FlexFontInfo
+public final class RoyaleFontInfo
 {
-    public FlexFontInfo(boolean bold, boolean italic)
+    public RoyaleFontInfo(boolean bold, boolean italic)
     {
         if (!bold && !italic)
             regularOp = ABCConstants.OP_pushtrue;

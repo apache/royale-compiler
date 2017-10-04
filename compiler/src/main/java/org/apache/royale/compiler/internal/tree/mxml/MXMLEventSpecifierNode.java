@@ -32,7 +32,7 @@ import org.apache.royale.compiler.internal.definitions.mxml.MXMLEventHandlerScop
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
 import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
@@ -138,7 +138,7 @@ class MXMLEventSpecifierNode extends MXMLSpecifierNodeBase
     {
         super.initializeFromAttribute(builder, attribute, info);
 
-        final FlexProject project = builder.getProject();
+        final RoyaleProject project = builder.getProject();
         final Workspace workspace = builder.getWorkspace();
         final Collection<ICompilerProblem> problems = builder.getProblems();
 

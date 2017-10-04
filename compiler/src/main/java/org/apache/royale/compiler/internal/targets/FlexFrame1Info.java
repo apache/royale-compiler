@@ -32,7 +32,7 @@ import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.embedding.transcoders.MovieTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
 import org.apache.royale.compiler.problems.DependencyNotCompatibleProblem;
@@ -45,32 +45,32 @@ import org.apache.royale.swc.ISWC;
 /**
  * Abstract base class that contains information about code that uses the flex
  * framework that is needed by the compiler to generate code in the first frame
- * of flex application SWFs or library.swfs in flex SWCs.
+ * of royale application SWFs or library.swfs in royale SWCs.
  * <p>
  * This information is collected by looking at all the {@link ICompilationUnit}s
- * that will be built into a flex application SWF or flex SWC.
+ * that will be built into a royale application SWF or royale SWC.
  */
 abstract class FlexFrame1Info
 {
-    protected FlexFrame1Info(FlexProject flexProject)
+    protected FlexFrame1Info(RoyaleProject royaleProject)
     {
-        this.flexProject = flexProject;
+        this.royaleProject = royaleProject;
         IResolvedQualifiersReference resourceBundleRef = ReferenceFactory.packageQualifiedReference(
-                flexProject.getWorkspace(), flexProject.getResourceBundleClass());
-        resourceBundleDefinition = (ClassDefinition)resourceBundleRef.resolve(flexProject);
+                royaleProject.getWorkspace(), royaleProject.getResourceBundleClass());
+        resourceBundleDefinition = (ClassDefinition)resourceBundleRef.resolve(royaleProject);
         
         // sorted set of resouce bundles
         compiledResourceBundleNames = new TreeSet<String>();
         
-        embeddedFonts = new TreeMap<String, FlexFontInfo>();
+        embeddedFonts = new TreeMap<String, RoyaleFontInfo>();
         
         problems = new ArrayList<ICompilerProblem>();
     }
     
-    protected final FlexProject flexProject;
+    protected final RoyaleProject royaleProject;
     private final ClassDefinition resourceBundleDefinition;
     final TreeSet<String> compiledResourceBundleNames;
-    final TreeMap<String, FlexFontInfo> embeddedFonts;
+    final TreeMap<String, RoyaleFontInfo> embeddedFonts;
     
     final ArrayList<ICompilerProblem> problems;
     
@@ -80,7 +80,7 @@ abstract class FlexFrame1Info
      * 
      * @param builtCompilationUnits {@link Iterable} that can be used to iterate
      * over all the {@link ICompilationUnit}s being built into a flex
-     * application SWF or flex SWC.
+     * application SWF or royale SWC.
      * @throws InterruptedException
      */
     protected final void collectFromCompilationUnits(Iterable<ICompilationUnit> builtCompilationUnits) throws InterruptedException
@@ -130,9 +130,9 @@ abstract class FlexFrame1Info
             return;
 
         MovieTranscoder movieTranscoder = (MovieTranscoder)transcoder;
-        FlexFontInfo flexFontInfo = movieTranscoder.getFlexFontInfo();
-        if (flexFontInfo != null)
-            embeddedFonts.put(movieTranscoder.getSymbol(), flexFontInfo);
+        RoyaleFontInfo royaleFontInfo = movieTranscoder.getRoyaleFontInfo();
+        if (royaleFontInfo != null)
+            embeddedFonts.put(movieTranscoder.getSymbol(), royaleFontInfo);
     }
 
     /**
@@ -165,7 +165,7 @@ abstract class FlexFrame1Info
                     ClassDefinition classDef = (ClassDefinition)def;
                     //check whether class extends ResourceBundle, but not ResourceBundle.
                     if(!resourceBundleDefinition.equals(classDef) &&
-                            classDef.isInstanceOf(resourceBundleDefinition, flexProject)) 
+                            classDef.isInstanceOf(resourceBundleDefinition, royaleProject)) 
                     {
                         //this is a class that extents mx.resources.ResourceBundle, so add it to the list
                         compiledResourceBundleNames.add(def.getQualifiedName());
@@ -184,7 +184,7 @@ abstract class FlexFrame1Info
      */
     private void checkSWCVersioningFilter(ArrayList<ICompilerProblem> problems, ICompilationUnit cu) throws InterruptedException
     {
-        Integer compatibilityVersion = flexProject.getCompatibilityVersion();
+        Integer compatibilityVersion = royaleProject.getCompatibilityVersion();
         // if compatibility-version is not set then we won't be doing any filtering.
         if (compatibilityVersion == null)
             return;
@@ -193,22 +193,22 @@ abstract class FlexFrame1Info
         if (cu.getCompilationUnitType() == UnitType.SWC_UNIT)
             return;
         
-        Set<ICompilationUnit> dependencies = flexProject.getDependencies(cu);
+        Set<ICompilationUnit> dependencies = royaleProject.getDependencies(cu);
         
         for (ICompilationUnit dependency : dependencies)
         {
             if (dependency.getCompilationUnitType() != UnitType.SWC_UNIT)
                 continue;
 
-            ISWC swc = flexProject.getWorkspace().getSWCManager().get(
+            ISWC swc = royaleProject.getWorkspace().getSWCManager().get(
                     new File(dependency.getAbsoluteFilename()));
-            int flexMinSupportedVersion = swc.getVersion().getFlexMinSupportedVersionInt();
-            if (compatibilityVersion.intValue() < flexMinSupportedVersion)
+            int royaleMinSupportedVersion = swc.getVersion().getRoyaleMinSupportedVersionInt();
+            if (compatibilityVersion.intValue() < royaleMinSupportedVersion)
             {
                 problems.add(new DependencyNotCompatibleProblem(dependency.getQualifiedNames().get(0),
                               dependency.getAbsoluteFilename(),
-                              swc.getVersion().getFlexMinSupportedVersion(),
-                              flexProject.getCompatibilityVersionString()));
+                              swc.getVersion().getRoyaleMinSupportedVersion(),
+                              royaleProject.getCompatibilityVersionString()));
             }
         }
     }

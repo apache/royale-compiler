@@ -781,7 +781,7 @@ public class Configuration
     @Config(allowMultiple = true)
     @Mapping("include-resource-bundles")
     @Arguments("bundle")
-    @FlexOnly
+    @RoyaleOnly
     public void setIncludeResourceBundles(ConfigurationValue cv, List<String> values)
     {
         includeResourceBundles.addAll(values);
@@ -795,7 +795,7 @@ public class Configuration
     @Config(advanced = true)
     @Mapping("resource-bundle-list")
     @Arguments("filename")
-    @FlexOnly
+    @RoyaleOnly
     public void setResourceBundleList(ConfigurationValue cv, String filename)
     {
         this.rbListFileName = getOutputPath(cv, filename);
@@ -825,7 +825,7 @@ public class Configuration
     @Mapping("runtime-shared-libraries")
     @Arguments("url")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setRuntimeSharedLibraries(ConfigurationValue cfgval, List<String> urls) throws ConfigurationException
     {
         rslList.addAll(urls);
@@ -937,7 +937,7 @@ public class Configuration
     @SoftPrerequisites({ "static-link-runtime-shared-libraries" })
     @ArgumentNameGenerator(RSLArgumentNameGenerator.class)
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setRuntimeSharedLibraryPath(ConfigurationValue cfgval, List<String> urls) throws ConfigurationException
     {
 
@@ -1048,7 +1048,7 @@ public class Configuration
      */
     @Config
     @Mapping("static-link-runtime-shared-libraries")
-    @FlexOnly
+    @RoyaleOnly
     public void setStaticLinkRuntimeSharedLibraries(ConfigurationValue cv, boolean b)
     {
         staticLinkRsl = b;
@@ -1067,7 +1067,7 @@ public class Configuration
 
     @Config
     @Mapping({ "use-flashbuilder-project-files" })
-    @FlexOnly
+    @RoyaleOnly
     public void setUseFlashBuilderProjectFiles(ConfigurationValue cv, Boolean useFiles) throws ConfigurationException
     {
         useFlashBuilderProjectFiles = useFiles;
@@ -1096,7 +1096,7 @@ public class Configuration
      * file.
      */
     @Config(advanced = true)
-    @FlexOnly
+    @RoyaleOnly
     public void setVerifyDigests(ConfigurationValue cv, boolean b)
     {
         verifyDigests = b;
@@ -1117,7 +1117,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @FlexOnly
+    @RoyaleOnly
     public void setRemoveUnusedRsls(ConfigurationValue cv, boolean b)
     {
         removeUnusedRSLs = b;
@@ -1201,11 +1201,11 @@ public class Configuration
      * The major_version is required while minor_version and revision are optional. The minimum value is 10.0.0. If you
      * do not specify the minor_version or revision, then the compiler uses zeros.
      * <p>
-     * The value of major_version is also used by the {targetPlayerMajorVersion} token in the flex-config.xml file. This
+     * The value of major_version is also used by the {targetPlayerMajorVersion} token in the royale-config.xml file. This
      * token can be used in any <path-element> element.
      * <p>
-     * If you do not explicitly set the value of this option, the compiler uses the default from the flex-config.xml
-     * file. The value in flex-config.xml is the version of Flash Player that shipped with the SDK.
+     * If you do not explicitly set the value of this option, the compiler uses the default from the royale-config.xml
+     * file. The value in royale-config.xml is the version of Flash Player that shipped with the SDK.
      * <p>
      * This option is useful if your application's audience has a specific player and cannot upgrade. You can use this
      * to "downgrade" your application for that audience.
@@ -1431,7 +1431,7 @@ public class Configuration
      */
     @Config
     @Mapping({ "compiler", "accessible" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerAccessible(ConfigurationValue cv, boolean accessible)
     {
         this.accessible = accessible;
@@ -1826,10 +1826,10 @@ public class Configuration
      *
      * Example: <code>-define=CONFIG::debugging,true</code>
      *
-     * In <code>flex-config.xml</code>:<br/>
+     * In <code>royale-config.xml</code>:<br/>
      * 
      * <pre>
-     * <flex-config>
+     * <royale-config>
      *    <compiler>
      *       <define>
      *          <name>CONFIG::debugging</name>
@@ -1837,7 +1837,7 @@ public class Configuration
      *       </define>
      *       ...
      *    </compile>
-     * </flex-config>
+     * </royale-config>
      * </pre>
      *
      * Values:<br/>
@@ -1858,7 +1858,7 @@ public class Configuration
      * String values in configuration files need only be single- or double- quoted:<br/>
      * 
      * <pre>
-     * <flex-config>
+     * <royale-config>
      *    <compiler>
      *       <define>
      *          <name>NAMES::Organization</name>
@@ -1870,7 +1870,7 @@ public class Configuration
      *       </define>
      *       ...
      *    </compile>
-     * </flex-config>
+     * </royale-config>
      * </pre>
      *
      * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and <code>''</code> or
@@ -1885,7 +1885,7 @@ public class Configuration
      * user config file, for instance) with the same namespace and name, and a new value.
      * 
      * Definitions cannot be removed/undefined. You can undefine ALL existing definitions from (e.g. from
-     * flex-config.xml) if you do not use append syntax ("=" or append="false").
+     * royale-config.xml) if you do not use append syntax ("=" or append="false").
      * 
      * IMPORTANT FOR FLEXBUILDER If you are using "Additional commandline arguments" to "-define", don't use the
      * following syntax though I suggest it above: -define+=CONFIG::foo,"'value'" The trouble is that FB parses the
@@ -1948,7 +1948,7 @@ public class Configuration
     @Config
     @Mapping({ "compiler", "context-root" })
     @Arguments("context-path")
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerContextRoot(ConfigurationValue cv, String contextRoot)
     {
         this.contextRoot = contextRoot;
@@ -1997,7 +1997,7 @@ public class Configuration
      */
     @Config(advanced = true)
     @Mapping({ "compiler", "defaults-css-url" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerDefaultsCssUrl(ConfigurationValue cv, String defaultsCssUrlPath) throws CannotOpen
     {
         defaultsCssUrl = resolvePathStrict(defaultsCssUrlPath, cv);
@@ -2141,7 +2141,7 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping({ "compiler", "headless-server" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerHeadlessServer(ConfigurationValue cv, boolean headlessServer)
     {
         this.headlessServer = headlessServer;
@@ -2205,7 +2205,7 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping({ "compiler", "keep-all-type-selectors" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerKeepAllTypeSelectors(ConfigurationValue cv, boolean keepAllTypeSelectors)
     {
         this.keepAllTypeSelectors = keepAllTypeSelectors;
@@ -2266,7 +2266,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "enable-runtime-design-layers" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerEnableRuntimeDesignLayers(ConfigurationValue cv, boolean enable)
     {
         enableRuntimeDesignLayers = enable;
@@ -2385,15 +2385,15 @@ public class Configuration
 
     /**
      * Specifies one or more locales to be compiled into the SWF file. If you do not specify a locale, then the compiler
-     * uses the default locale from the flex-config.xml file. The default value is en_US. You can append additional
-     * locales to the default locale by using the += operator. If you remove the default locale from the flex-config.xml
+     * uses the default locale from the royale-config.xml file. The default value is en_US. You can append additional
+     * locales to the default locale by using the += operator. If you remove the default locale from the royale-config.xml
      * file, and do not specify one on the command line, then the compiler will use the machine's locale.
      */
     @Config(allowMultiple = true)
     @Mapping({ "compiler", "locale" })
     @Arguments("locale-element")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerLocale(ConfigurationValue cv, String[] newLocales)
     {
         locales.addAll(Arrays.asList(newLocales));
@@ -2429,7 +2429,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "mxml", "children-as-data" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerMxmlChildrenAsData(ConfigurationValue cv, Boolean asData) throws ConfigurationException
     {
         childrenAsData = asData;
@@ -2447,8 +2447,8 @@ public class Configuration
     }
 
     @Config
-    @Mapping({ "compiler", "info", "flex" })
-    @FlexOnly
+    @Mapping({ "compiler", "info", "royale" })
+    @RoyaleOnly
     public void setCompilerInfoFlex(ConfigurationValue cv, Boolean asData) throws ConfigurationException
     {
     	infoFlex = asData;
@@ -2466,7 +2466,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "allow-subclass-overrides" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerAllowSubclassOverrides(ConfigurationValue cv, Boolean allow) throws ConfigurationException
     {
         allowSubclassOverrides = allow;
@@ -2486,7 +2486,7 @@ public class Configuration
     @Mapping({ "compiler", "mxml", "imports" })
     @Arguments("implicit-import")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerMxmlImplicitImports(ConfigurationValue cv, String[] imports) throws ConfigurationException
     {
         implicitImports = imports;
@@ -2522,7 +2522,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "minimum-supported-version" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerMinimumSupportedVersion(ConfigurationValue cv, String version) throws ConfigurationException
     {
         setCompilerMxmlMinimumSupportedVersion(cv, version);
@@ -2608,7 +2608,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "preloader" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerPreloader(ConfigurationValue cv, String value)
     {
         preloader = value;
@@ -2643,7 +2643,7 @@ public class Configuration
     @Config
     @Mapping({ "compiler", "services" })
     @Arguments("filename")
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerServices(ConfigurationValue cv, String servicesPath) throws ConfigurationException
     {
         try
@@ -2759,7 +2759,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "report-invalid-styles-as-warnings" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerReportInvalidStylesAsWarnings(ConfigurationValue cv, boolean show)
     {
         this.reportInvalidStylesAsWarnings = show;
@@ -2782,7 +2782,7 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping({ "compiler", "report-missing-required-skin-parts-as-warnings" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerReportMissingRequiredSkinPartsAsWarnings(ConfigurationValue cv, boolean b)
     {
         reportMissingRequiredSkinPartsAsWarnings = b;
@@ -2808,7 +2808,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "show-invalid-css-property-warnings" })
-    @FlexOnly
+    @RoyaleOnly
     public void setShowInvalidCssPropertyWarnings(ConfigurationValue cv, boolean show)
     {
         this.showInvalidCSSPropertyWarnings = show;
@@ -2840,11 +2840,11 @@ public class Configuration
     //
     @Config
     @Mapping({ "compiler", "show-shadowed-device-font-warnings" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerShowShadowedDeviceFontWarnings(ConfigurationValue cv, boolean show)
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     //
@@ -2871,7 +2871,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "show-unused-type-selector-warnings" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerShowUnusedTypeSelectorWarnings(ConfigurationValue cv, boolean show)
     {
         this.showUnusedTypeSelectorWarnings = show;
@@ -3057,7 +3057,7 @@ public class Configuration
     @Mapping({ "compiler", "theme" })
     @Arguments("filename")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerTheme(ConfigurationValue cv, List<String> paths) throws CannotOpen
     {
         // Use "resolvePathsStrict()" if invalid theme file can't be ignored.
@@ -3107,7 +3107,7 @@ public class Configuration
     @Mapping({ "compiler", "defaults-css-files" })
     @Arguments("filename")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setDefaultsCSSFiles(ConfigurationValue cv, List<String> paths) throws CannotOpen
     {
         final ImmutableList<String> resolved = resolvePathsStrict(ImmutableList.copyOf(paths), cv);
@@ -3150,7 +3150,7 @@ public class Configuration
     @Mapping({ "compiler", "exclude-defaults-css-files" })
     @Arguments("filename")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setExcludeDefaultsCSSFiles(ConfigurationValue cv, List<String> paths) throws CannotOpen
     {
         final ImmutableList<String> resolved = resolvePathsStrict(ImmutableList.copyOf(paths), cv, true);
@@ -3231,7 +3231,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-array-tostring-changes" })
     public void setCompilerWarnArrayTostringChanges(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_array_tostring_changes)
             addRemovedConfigurationOptionProblem(cv);
@@ -3288,7 +3288,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-bad-bool-assignment" })
     public void setCompilerWarnBadBoolAssignment(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_bad_bool_assignment)
             addRemovedConfigurationOptionProblem(cv);
@@ -3327,7 +3327,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-bad-es3-type-method" })
     public void setCompilerWarnBadEs3TypeMethod(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_bad_es3_type_method)
             addRemovedConfigurationOptionProblem(cv);
@@ -3348,7 +3348,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-bad-es3-type-prop" })
     public void setCompilerWarnBadEs3TypeProp(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_bad_es3_type_prop)
             addRemovedConfigurationOptionProblem(cv);
@@ -3405,7 +3405,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-bad-null-comparison" })
     public void setCompilerWarnBadNullComparison(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_bad_null_comparison)
             addRemovedConfigurationOptionProblem(cv);
@@ -3444,7 +3444,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-boolean-constructor-with-no-args" })
     public void setCompilerWarnBooleanConstructorWithNoArgs(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_boolean_constructor_with_no_args)
             addRemovedConfigurationOptionProblem(cv);
@@ -3465,7 +3465,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-changes-in-resolve" })
     public void setCompilerWarnChangesInResolve(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_changes_in_resolve)
             addRemovedConfigurationOptionProblem(cv);
@@ -3486,7 +3486,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-class-is-sealed" })
     public void setCompilerWarnClassIsSealed(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_class_is_sealed)
             addRemovedConfigurationOptionProblem(cv);
@@ -3525,7 +3525,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-constructor-returns-value" })
     public void setCompilerWarnConstructorReturnsValue(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_constructor_returns_value)
             addRemovedConfigurationOptionProblem(cv);
@@ -3546,7 +3546,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-deprecated-event-handler-error" })
     public void setCompilerWarnDeprecatedEventHandlerError(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_deprecated_event_handler_error)
             addRemovedConfigurationOptionProblem(cv);
@@ -3567,7 +3567,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-deprecated-function-error" })
     public void setCompilerWarnDeprecatedFunctionError(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_deprecated_function_error)
             addRemovedConfigurationOptionProblem(cv);
@@ -3588,7 +3588,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-deprecated-property-error" })
     public void setCompilerWarnDeprecatedPropertyError(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_deprecated_property_error)
             addRemovedConfigurationOptionProblem(cv);
@@ -3609,7 +3609,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-duplicate-argument-names" })
     public void setCompilerWarnDuplicateArgumentNames(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_duplicate_argument_names)
             addRemovedConfigurationOptionProblem(cv);
@@ -3648,7 +3648,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-for-var-in-changes" })
     public void setCompilerWarnForVarInChanges(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_for_var_in_changes)
             addRemovedConfigurationOptionProblem(cv);
@@ -3669,7 +3669,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-import-hides-class" })
     public void setCompilerWarnImportHidesClass(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_import_hides_class)
             addRemovedConfigurationOptionProblem(cv);
@@ -3708,7 +3708,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-internal-error" })
     public void setCompilerWarnInternalError(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_internal_error)
             addRemovedConfigurationOptionProblem(cv);
@@ -3729,7 +3729,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-level-not-supported" })
     public void setCompilerWarnLevelNotSupported(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_level_not_supported)
             addRemovedConfigurationOptionProblem(cv);
@@ -3768,7 +3768,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-negative-uint-literal" })
     public void setCompilerWarnNegativeUintLiteral(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_negative_uint_literal)
             addRemovedConfigurationOptionProblem(cv);
@@ -3789,7 +3789,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-no-constructor" })
     public void setCompilerWarnNoConstructor(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_no_constructor)
             addRemovedConfigurationOptionProblem(cv);
@@ -3810,7 +3810,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-no-explicit-super-call-in-constructor" })
     public void setCompilerWarnNoExplicitSuperCallInConstructor(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_no_explicit_super_call_in_constructor)
             addRemovedConfigurationOptionProblem(cv);
@@ -3849,7 +3849,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-number-from-string-changes" })
     public void setCompilerWarnNumberFromStringChanges(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_number_from_string_changes)
             addRemovedConfigurationOptionProblem(cv);
@@ -3870,7 +3870,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-scoping-change-in-this" })
     public void setCompilerWarnScopingChangeInThis(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_scoping_change_in_this)
             addRemovedConfigurationOptionProblem(cv);
@@ -3891,7 +3891,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-slow-text-field-addition" })
     public void setCompilerWarnSlowTextFieldAddition(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_slow_text_field_addition)
             addRemovedConfigurationOptionProblem(cv);
@@ -3912,7 +3912,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-unlikely-function-value" })
     public void setCompilerWarnUnlikelyFunctionValue(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_unlikely_function_value)
             addRemovedConfigurationOptionProblem(cv);
@@ -3933,7 +3933,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-xml-class-has-changed" })
     public void setCompilerWarnXmlClassHasChanged(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != warn_xml_class_has_changed)
             addRemovedConfigurationOptionProblem(cv);
@@ -3974,7 +3974,7 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping({ "compiler", "isolate-styles" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerIsolateStyles(ConfigurationValue cv, boolean isolateStyles)
     {
         this.isolateStyles = isolateStyles;
@@ -4014,7 +4014,7 @@ public class Configuration
     // Special Case for Apache.  These are not currently exposed with command line options.
     public static final String PLAYERGLOBAL_HOME_TOKEN = "{playerglobalHome}";
     public static final String AIR_HOME_TOKEN = "{airHome}";
-    public static final String FLEX_VERSION_TOKEN = "{flexVersion}";
+    public static final String FLEX_VERSION_TOKEN = "{royaleVersion}";
 
     public static final String STRICT = "compiler.strict";
     public static final String AS3 = "compiler.as3";
@@ -4076,10 +4076,10 @@ public class Configuration
         for (String pathElement : pathElements)
         {
             pathElement = expandRuntimeTokens(pathElement, configurationValue.getBuffer());
-            String flexVersion =  getClass().getPackage().getImplementationVersion();
-            if (flexVersion != null)
+            String royaleVersion =  getClass().getPackage().getImplementationVersion();
+            if (royaleVersion != null)
             {
-                pathElement = pathElement.replace(FLEX_VERSION_TOKEN, flexVersion);
+                pathElement = pathElement.replace(FLEX_VERSION_TOKEN, royaleVersion);
             }
 
             String playerExpandedPath = pathElement.replaceAll(TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED,
@@ -4362,71 +4362,71 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "fonts", "advanced-anti-aliasing" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsAdvancedAntiAliasing(ConfigurationValue cv, boolean val)
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     @Config(allowMultiple = true, advanced = true)
     @Mapping({ "compiler", "fonts", "languages", "language-range" })
     @Arguments({ "lang", "range" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsLanguagesLanguageRange(ConfigurationValue cv, String lang, String range)
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     @Config
     @Mapping({ "compiler", "fonts", "local-fonts-snapshot" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsLocalFontsSnapshot(ConfigurationValue cv, String localFontsSnapshotPath)
             throws CannotOpen
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     @Config
     @Mapping({ "compiler", "fonts", "local-font-paths" })
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsLocalFontPaths(ConfigurationValue cv, List<String> list) throws CannotOpen
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     @Config(advanced = true)
     @Mapping({ "compiler", "fonts", "managers" })
     @Arguments("manager-class")
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsManagers(ConfigurationValue cv, List<String> list)
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     @Config
     @Mapping({ "compiler", "fonts", "max-cached-fonts" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsMaxCachedFonts(ConfigurationValue cv, String val)
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     @Config
     @Mapping({ "compiler", "fonts", "max-glyphs-per-face" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerFontsMaxGlyphsPerFace(ConfigurationValue cv, String val)
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
-        // as to not generate warnings for flex-config's which still set this options
+        // as to not generate warnings for royale-config's which still set this options
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -4453,7 +4453,7 @@ public class Configuration
     @Mapping({ "compiler", "namespaces", "namespace" })
     @Arguments({ "uri", "manifest" })
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerNamespacesNamespace(ConfigurationValue cfgval, List<String> args)
             throws ConfigurationException
     {
@@ -4642,7 +4642,7 @@ public class Configuration
     @SoftPrerequisites({ "runtime-shared-library-path" })
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setForceRsls(ConfigurationValue cfgval, String[] args) throws ConfigurationException
     {
         if (forceRsls == null)
@@ -4710,7 +4710,7 @@ public class Configuration
     @Mapping({ "runtime-shared-library-settings", "application-domain" })
     @Arguments({ "path-element", "application-domain-target" })
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     // TODO: need to create an argument name generator for the args.
     public void setApplicationDomain(ConfigurationValue cfgval, String[] args) throws ConfigurationException
     {
@@ -4838,7 +4838,7 @@ public class Configuration
     }
 
     /*
-     * Unlike the framework's FlexVersion.compatibilityVersionString, this
+     * Unlike the framework's RoyaleVersion.compatibilityVersionString, this
      * returns null rather than a string like "3.0.0" for the current version.
      * But if a -compatibility-version was specified, this string will always be
      * of the form N.N.N. For example, if -compatibility-version=2, this string
@@ -4863,7 +4863,7 @@ public class Configuration
     @Config
     @Mapping({ "compiler", "mxml", "compatibility-version" })
     @Arguments("version")
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerMxmlCompatibilityVersion(ConfigurationValue cv, String version) throws ConfigurationException
     {
         if (version == null)
@@ -4959,7 +4959,7 @@ public class Configuration
 
     @Config
     @Mapping({ "compiler", "mxml", "minimum-supported-version" })
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerMxmlMinimumSupportedVersion(ConfigurationValue cv, String version)
             throws ConfigurationException
     {
@@ -5118,7 +5118,7 @@ public class Configuration
     @DeprecatedConfig
     public void setAS3(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != as3)
             addRemovedConfigurationOptionProblem(cv);
@@ -5135,7 +5135,7 @@ public class Configuration
     @DeprecatedConfig
     public void setES(ConfigurationValue cv, boolean b)
     {
-        // This option is set in flex-config.xml so only warn
+        // This option is set in royale-config.xml so only warn
         // if the user sets a non-default value.
         if (b != es)
             addRemovedConfigurationOptionProblem(cv);
@@ -5279,7 +5279,7 @@ public class Configuration
      */
     @Config(compcOnly = true, advanced = true)
     @Mapping("include-lookup-only")
-    @FlexOnly
+    @RoyaleOnly
     public void setIncludeLookupOnly(ConfigurationValue cv, boolean value)
     {
         includeLookupOnly = value;
@@ -5307,7 +5307,7 @@ public class Configuration
     @Config(compcOnly = true, allowMultiple = true)
     @Mapping("include-namespaces")
     @Arguments({ "uri" })
-    @FlexOnly
+    @RoyaleOnly
     public void setIncludeNamespaces(ConfigurationValue cv, List<String> values)
     {
         includeNamespaces.addAll(values);
@@ -5399,7 +5399,7 @@ public class Configuration
     @Config(compcOnly = true, allowMultiple = true)
     @Mapping("include-stylesheet")
     @Arguments({ "name", "path" })
-    @FlexOnly
+    @RoyaleOnly
     public void setIncludeStyleSheets(ConfigurationValue cv, List<String> values) throws NotAFile
     {
         fillListWithResolvedPaths(values, includeStyleSheets, cv);
@@ -5766,7 +5766,7 @@ public class Configuration
     @Config(allowMultiple = true, hidden = true)
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    @SoftPrerequisites("flex")
+    @SoftPrerequisites("royale")
     public void setFileSpecs(ConfigurationValue cv, List<String> args) throws ConfigurationException
     {
         this.fileSpecs.addAll(args);
@@ -5777,7 +5777,7 @@ public class Configuration
     private void checkForMxmlFiles(List<String> paths)
     {
         // If there are mxml or css files then we are compiling a flex 
-        // application so enable "flex".
+        // application so enable "royale".
         for (String path : paths)
         {
             if (path.endsWith(".mxml") || path.endsWith(".css"))
@@ -5931,7 +5931,7 @@ public class Configuration
     {
         if (dumpConfigFile != null)
         {
-            final String text = FileConfigurator.formatBuffer(configurationBuffer, "flex-config",
+            final String text = FileConfigurator.formatBuffer(configurationBuffer, "royale-config",
                     LocalizationManager.get(), "flex2.configuration");
             try
             {
@@ -5961,14 +5961,14 @@ public class Configuration
         return configurationProblems;
     }
 
-    private boolean warnOnFlexOnlyOptionUsage = false;
+    private boolean warnOnRoyaleOnlyOptionUsage = false;
 
     /**
      * @return True if warnings are generated when "Flex only" options are used, false otherwise.
      */
-    public boolean getWarnOnFlexOnlyOptionUsage()
+    public boolean getWarnOnRoyaleOnlyOptionUsage()
     {
-        return warnOnFlexOnlyOptionUsage;
+        return warnOnRoyaleOnlyOptionUsage;
     }
 
     /**
@@ -5976,9 +5976,9 @@ public class Configuration
      * 
      * @param value True to enable warnings, false to disable warnings. The default is to not warn.
      */
-    public void setWarnOnFlexOnlyOptionUsage(boolean value)
+    public void setWarnOnRoyaleOnlyOptionUsage(boolean value)
     {
-        this.warnOnFlexOnlyOptionUsage = value;
+        this.warnOnRoyaleOnlyOptionUsage = value;
     }
 
     private boolean enableTelemetry = false;
@@ -6010,7 +6010,7 @@ public class Configuration
      */
     @Config(advanced = true)
     @Mapping({ "compiler", "advanced-telemetry" })
-    @FlexOnly
+    @RoyaleOnly
     public void setEnableTelemetry(ConfigurationValue cv, boolean enableTelemetry) throws CannotOpen
     {
         this.enableTelemetry = enableTelemetry;
@@ -6038,9 +6038,9 @@ public class Configuration
                                 replacement, since, cv.getSource(), cv.getLine());
                         configurationProblems.add(problem);
                     }
-                    else if (warnOnFlexOnlyOptionUsage && info.isFlexOnly())
+                    else if (warnOnRoyaleOnlyOptionUsage && info.isRoyaleOnly())
                     {
-                        FlexOnlyConfigurationOptionNotSupported problem = new FlexOnlyConfigurationOptionNotSupported(
+                        RoyaleOnlyConfigurationOptionNotSupported problem = new RoyaleOnlyConfigurationOptionNotSupported(
                                 var, cv.getSource(), cv.getLine());
                         configurationProblems.add(problem);
                     }
@@ -6090,7 +6090,7 @@ public class Configuration
      */
     @Config(advanced = true)
     @Mapping({ "compiler", "strict-xml" })
-    @FlexOnly
+    @RoyaleOnly
     public void setStrictXML(ConfigurationValue cv, boolean strictXML) throws CannotOpen
     {
         this.strictXML = strictXML;

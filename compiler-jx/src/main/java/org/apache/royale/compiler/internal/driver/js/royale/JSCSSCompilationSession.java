@@ -179,7 +179,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         for (ICSSRule rule : rules)
         {
         	String s = cssRuleToString(rule);
-        	if (s.startsWith("@media -flex-flash"))
+        	if (s.startsWith("@media -royale-swf"))
         		continue;
         	if (s.startsWith(".global {"))
         		s = s.replace(".global {", "* {");
@@ -220,7 +220,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         int n = mqlist.size();
         if (n > 0)
         {
-            if (mqlist.get(0).toString().equals("-flex-flash"))
+            if (mqlist.get(0).toString().equals("-royale-swf"))
                 return null;
             
             result.append(n);

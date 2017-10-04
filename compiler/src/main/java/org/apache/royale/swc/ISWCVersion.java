@@ -32,24 +32,24 @@ public interface ISWCVersion
     String getSWCVersion();
     void setSWCVersion(String value);
 
-    String getFlexVersion();
-    void setFlexVersion(String value);
+    String getRoyaleVersion();
+    void setRoyaleVersion(String value);
     
     String getFlexBuild();
     void setFlexBuild(String value);
     
-    String getFlexMinSupportedVersion();
-    void setFlexMinSupportedVersion(String value);
+    String getRoyaleMinSupportedVersion();
+    void setRoyaleMinSupportedVersion(String value);
     
     /**
-     * Get the flex min supported version as an integer. The bits 24-31 are the
-     * flex major version number, bits 16-23 are the flex minor version number,
+     * Get the royale min supported version as an integer. The bits 24-31 are the
+     * royale major version number, bits 16-23 are the royale minor version number,
      * and bits 0-15 are the flex revision number.
      * <p>
      * For example, "4.6.1" becomes (4<<24) | (6<<16) | 1.
-     * @return the flex min supported version as an integer
+     * @return the royale min supported version as an integer
      */
-    int getFlexMinSupportedVersionInt();
+    int getRoyaleMinSupportedVersionInt();
 
     /**
      * The name of the compiler that created the SWC.

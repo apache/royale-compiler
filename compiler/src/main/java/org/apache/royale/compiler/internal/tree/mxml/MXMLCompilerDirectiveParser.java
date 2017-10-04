@@ -23,7 +23,7 @@ import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.problems.EmbedTypeNotEmbeddableProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -84,7 +84,7 @@ class MXMLCompilerDirectiveParser
         MXMLCompilerDirectiveNodeBase result = null;
         if (IMetaAttributeConstants.ATTRIBUTE_EMBED.equals(functionName))
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             ITypeDefinition stringType = (ITypeDefinition)project.getBuiltinType(BuiltinType.STRING);
             ITypeDefinition classType = (ITypeDefinition)project.getBuiltinType(BuiltinType.CLASS);
             ITypeDefinition anyType = (ITypeDefinition)project.getBuiltinType(BuiltinType.ANY_TYPE);

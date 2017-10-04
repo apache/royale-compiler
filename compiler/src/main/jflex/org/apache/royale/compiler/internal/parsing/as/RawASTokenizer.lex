@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 /*
  * This file is generated from RawASTokenizer.lex.
@@ -27,8 +27,8 @@ package org.apache.flex.compiler.internal.parsing.as;
 
 import antlr.Token;
 import antlr.CommonToken;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 
 @SuppressWarnings("all")
 

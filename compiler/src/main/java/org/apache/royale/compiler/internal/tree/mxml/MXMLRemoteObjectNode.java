@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.common.XMLName;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -65,7 +65,7 @@ class MXMLRemoteObjectNode extends MXMLInstanceNode implements IMXMLRemoteObject
         // Create MXMLRemoteObjectMethodNode for a {@code <method>} child tag.
         if (childTag.getShortName().equals(TAG_METHOD))
         {
-            final FlexProject project = builder.getProject();
+            final RoyaleProject project = builder.getProject();
             final XMLName name = new XMLName(childTag.getXMLName().getXMLNamespace(), BASENAME_REMOTE_OBJECT_METHOD);
             final String qname = builder.getFileScope().resolveXMLNameToQualifiedName(name, builder.getMXMLDialect());
             final String remoteObjectMethodQName = project.getRemoteObjectMethodQName();

@@ -46,7 +46,7 @@ import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
 import org.apache.royale.compiler.internal.embedding.transcoders.XMLTranscoder;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.ASProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.SourcePathManager;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -79,7 +79,7 @@ public class EmbedData
     {
         public boolean needsIBorder;
         public boolean needsIFlexDisplayObject;
-        public boolean flexMovieClipOrSprite;
+        public boolean royaleMovieClipOrSprite;
 
         public boolean needsBorderMetrics;
         public boolean needsMeasuredHeight;
@@ -92,7 +92,7 @@ public class EmbedData
         {
             needsIBorder = !definition.isInstanceOf(TranscoderBase.CORE_PACKAGE + ".IBorder", project);
             needsIFlexDisplayObject = !definition.isInstanceOf(TranscoderBase.CORE_PACKAGE + ".IFlexDisplayObject", project);
-            flexMovieClipOrSprite = definition.isInstanceOf(TranscoderBase.CORE_PACKAGE + ".FlexMovieClip", project) ||
+            royaleMovieClipOrSprite = definition.isInstanceOf(TranscoderBase.CORE_PACKAGE + ".RoyaleMovieClip", project) ||
                                     definition.isInstanceOf(TranscoderBase.CORE_PACKAGE + ".FlexSprite", project);
 
             final INamespaceDefinition qualifier = definition.getNamespaceReference().resolveNamespaceReference(project);
@@ -645,18 +645,18 @@ public class EmbedData
             sourceFile = getResolvedSourcePath((ASProject)project, filename,
                     searchedLocations);
         }
-        if (project instanceof FlexProject)
+        if (project instanceof RoyaleProject)
         {
-            FlexProject flexProject = (FlexProject) project;
+            RoyaleProject royaleProject = (RoyaleProject) project;
             String packagePath = null;
-            if((containingSourcePath != null) && !flexProject.getSourcePath().isEmpty()) {
-                for (File sourcePath : flexProject.getSourcePath()) {
+            if((containingSourcePath != null) && !royaleProject.getSourcePath().isEmpty()) {
+                for (File sourcePath : royaleProject.getSourcePath()) {
                     if (containingSourcePath.startsWith(sourcePath.getAbsolutePath())) {
                         packagePath = containingSourcePath.substring(sourcePath.getAbsolutePath().length() + 1);
                     }
                 }
             }
-            sourceFile = getResolvedSourcePath((FlexProject)project, filename, packagePath,
+            sourceFile = getResolvedSourcePath((RoyaleProject)project, filename, packagePath,
                     searchedLocations);
         }
 
@@ -694,7 +694,7 @@ public class EmbedData
         return sourceFile;
     }
 
-    private String getResolvedSourcePath(FlexProject project, String filename, String packagePath,
+    private String getResolvedSourcePath(RoyaleProject project, String filename, String packagePath,
                                          Map<String,String> searchedLocations)
     {
         // Only files that start with a leading "/" are resolved using the

@@ -32,7 +32,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.CannotOpen;
 import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
-import org.apache.royale.compiler.internal.config.annotations.FlexOnly;
+import org.apache.royale.compiler.internal.config.annotations.RoyaleOnly;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
@@ -65,7 +65,7 @@ public class JSConfiguration extends Configuration
     public List<String> getCompilerTargets()
     {
     	if (targets.size() == 0)
-    		targets.add(JSTargetType.JS_FLEX.getText());
+    		targets.add(JSTargetType.JS_ROYALE.getText());
         return targets;
     }
 
@@ -192,10 +192,10 @@ public class JSConfiguration extends Configuration
      *
      * Example: <code>-define=CONFIG::debugging,true</code>
      *
-     * In <code>flex-config.xml</code>:<br/>
+     * In <code>royale-config.xml</code>:<br/>
      * 
      * <pre>
-     * <flex-config>
+     * <royale-config>
      *    <compiler>
      *       <define>
      *          <name>CONFIG::debugging</name>
@@ -203,7 +203,7 @@ public class JSConfiguration extends Configuration
      *       </define>
      *       ...
      *    </compile>
-     * </flex-config>
+     * </royale-config>
      * </pre>
      *
      * Values:<br/>
@@ -224,7 +224,7 @@ public class JSConfiguration extends Configuration
      * String values in configuration files need only be single- or double- quoted:<br/>
      * 
      * <pre>
-     * <flex-config>
+     * <royale-config>
      *    <compiler>
      *       <define>
      *          <name>NAMES::Organization</name>
@@ -232,11 +232,11 @@ public class JSConfiguration extends Configuration
      *       </define>
      *       <define>
      *          <name>NAMES::Application</name>
-     *          <value>"Flex 4.8.0"</value>
+     *          <value>"Royale 4.8.0"</value>
      *       </define>
      *       ...
      *    </compile>
-     * </flex-config>
+     * </royale-config>
      * </pre>
      *
      * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and <code>''</code> or
@@ -251,9 +251,9 @@ public class JSConfiguration extends Configuration
      * user config file, for instance) with the same namespace and name, and a new value.
      * 
      * Definitions cannot be removed/undefined. You can undefine ALL existing definitions from (e.g. from
-     * flex-config.xml) if you do not use append syntax ("=" or append="false").
+     * royale-config.xml) if you do not use append syntax ("=" or append="false").
      * 
-     * IMPORTANT FOR FLEXBUILDER If you are using "Additional commandline arguments" to "-define", don't use the
+     * IMPORTANT FOR FLASH BUILDER If you are using "Additional commandline arguments" to "-define", don't use the
      * following syntax though I suggest it above: -define+=CONFIG::foo,"'value'" The trouble is that FB parses the
      * double quotes incorrectly as <"'value'> -- the trailing double-quote is dropped. The solution is to avoid inner
      * double-quotes and put them around the whole expression: -define+="CONFIG::foo,'value'"
@@ -344,7 +344,7 @@ public class JSConfiguration extends Configuration
     @Mapping({ "compiler", "js-namespaces", "namespace" })
     @Arguments({ "uri", "manifest" })
     @InfiniteArguments
-    @FlexOnly
+    @RoyaleOnly
     public void setCompilerJsNamespacesNamespace(ConfigurationValue cfgval, List<String> args)
             throws ConfigurationException
     {

@@ -58,12 +58,12 @@
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
-    <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
-    <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
-    <property name="compiler.font.binaries" value="org/apache/flex/fonts/**"/>
+    <property name="compiler.ant.binaries" value="org/apache/royale/compiler/ant/**/*.class"/>
+    <property name="compiler.font.binaries" value="org/apache/royale/fonts/**"/>
             
     <!-- env.BUILD_NUMBER is set by Jenkins CI -->
     <condition property="build.number" value="nightly-${env.BUILD_NUMBER}">
@@ -93,7 +93,7 @@
     -->
     <macrodef name="jflex">
         <attribute name="input"/>
-        <attribute name="skeleton" default="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.default"/>
+        <attribute name="skeleton" default="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.default"/>
         <attribute name="output"/>
         <sequential>
             <java jar="${compiler}/lib/external/jflex.jar" fork="true">
@@ -219,8 +219,8 @@
 	
 	<target name="set.raw.as.tokenizer.uptodate">
 		<uptodate property="raw.as.tokenizer.uptodate"
-       	          targetfile="${compiler}/target/generated-sources/jflex/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.java">
-            <srcfiles dir="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as">
+       	          targetfile="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.java">
+            <srcfiles dir="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as">
                 <include name="RawASTokenizer.lex"/>
                 <include name="skeleton.falcon"/>
             </srcfiles>
@@ -230,15 +230,15 @@
 	<target name="raw.as.tokenizer" depends="set.raw.as.tokenizer.uptodate" unless="raw.as.tokenizer.uptodate"
 		    description="Generates RawASTokenizer.java">
 		<echo message="Generating RawASTokenizer"/>
-        <jflex input="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex"
-               skeleton="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon"
-               output="${compiler}/target/generated-sources/jflex/org/apache/flex/compiler/internal/parsing/as"/>
+        <jflex input="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.lex"
+               skeleton="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.falcon"
+               output="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as"/>
 	</target>
 	
     <target name="set.raw.asdoc.tokenizer.uptodate">
         <uptodate property="raw.asdoc.tokenizer.uptodate"
-                  targetfile="${compiler}/target/generated-sources/jflex/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.java">
-			<srcfiles dir="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as">
+                  targetfile="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.java">
+			<srcfiles dir="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as">
             	<include name="RawASDocTokenizer.lex"/>
             	<include name="skeleton.default"/>
         	</srcfiles>
@@ -248,14 +248,14 @@
     <target name="raw.asdoc.tokenizer" depends="set.raw.asdoc.tokenizer.uptodate" unless="raw.asdoc.tokenizer.uptodate"
             description="Generates RawASDocTokenizer.java">
         <echo message="Generating RawASDocTokenizer"/>
-        <jflex input="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex"
-               output="${compiler}/target/generated-sources/jflex/org/apache/flex/compiler/internal/parsing/as"/>
+        <jflex input="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.lex"
+               output="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as"/>
     </target>
 
     <target name="set.raw.mxml.tokenizer.uptodate">
         <uptodate property="raw.mxml.tokenizer.uptodate"
-                 targetfile="${compiler}/target/generated-sources/jflex/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.java">
-		    <srcfiles dir="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/mxml">
+                 targetfile="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.java">
+		    <srcfiles dir="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/mxml">
         	    <include name="RawMXMLTokenizer.lex"/>
         	    <include name="skeleton.default"/>
     	    </srcfiles>
@@ -265,8 +265,8 @@
     <target name="raw.mxml.tokenizer" depends="set.raw.mxml.tokenizer.uptodate" unless="raw.mxml.tokenizer.uptodate"
             description="Generates RawMXMLTokenizer.java">
         <echo message="Generating RawMXMLTokenizer"/>
-        <jflex input="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
-               output="${compiler}/target/generated-sources/jflex/org/apache/flex/compiler/internal/parsing/mxml"/>
+        <jflex input="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
+               output="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/mxml"/>
     </target>
 
 	<target name="jflex" depends="raw.as.tokenizer, raw.asdoc.tokenizer, raw.mxml.tokenizer"
@@ -280,24 +280,24 @@
 	
 	<target name="set.as.parser.uptodate">
 		<uptodate property="as.parser.uptodate"
-		          srcfile="${compiler}/src/main/antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.g"
-		          targetfile="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.java"/>
+		          srcfile="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.g"
+		          targetfile="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java"/>
 	</target>
 	
     <target name="as.parser" depends="set.as.parser.uptodate" unless="as.parser.uptodate">
     	<echo message="Generating ASParser and ASTokenTypes"/>
-        <antlr2 input="${compiler}/src/main/antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.g"
-                output="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as"/>
-        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.java"
+        <antlr2 input="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.g"
+                output="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java"
                         annotation='@SuppressWarnings("unused")'/>
-        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as/ASTokenTypes.java"
+        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASTokenTypes.java"
                         annotation='@SuppressWarnings("unused")'/>   
     </target>
 	
 	<target name="set.metadata.parser.uptodate">
         <uptodate property="metadata.parser.uptodate"
-                  targetfile="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java">
-	        <srcfiles dir="${compiler}/src/main/antlr/org/apache/flex/compiler/internal/parsing/as">
+                  targetfile="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java">
+	        <srcfiles dir="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as">
     	        <include name="MetadataParser.g"/>
     	        <include name="ImportMetadataTokenTypes.txt"/>
 	        </srcfiles>
@@ -306,41 +306,41 @@
     
     <target name="metadata.parser" depends="set.metadata.parser.uptodate" unless="metadata.parser.uptodate">
     	<echo message="Generating MetadataParser and MetadataTokenTypes"/>
-        <antlr2 input="${compiler}/src/main/antlr/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
-                output="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as"/>
-        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java"
+        <antlr2 input="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.g"
+                output="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java"
                          annotation='@SuppressWarnings("all")'/>    
-        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java"
+        <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataTokenTypes.java"
                          annotation='@SuppressWarnings("unused")'/>    
     </target>
     
     <target name="set.css.lexer.and.parser.uptodate">
         <uptodate property="css.lexer.and.parser.uptodate"
-                  srcfile="${compiler}/src/main/antlr/org/apache/flex/compiler/internal/css/CSS.g"
-                  targetfile="${compiler}/target/generated-sources/java/org/apache/flex/compiler/internal/css/CSSParser.java"/>
+                  srcfile="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/css/CSS.g"
+                  targetfile="${compiler}/target/generated-sources/java/org/apache/royale/compiler/internal/css/CSSParser.java"/>
     </target>
 
     <target name="css.lexer.and.parser" depends="set.css.lexer.and.parser.uptodate" unless="css.lexer.and.parser.uptodate">
     	<echo message="Generating CSSLexer and CSSParser"/>
-        <antlr3 input="${compiler}/src/main/antlr3/org/apache/flex/compiler/internal/css/CSS.g"
-                output="${compiler}/target/generated-sources/antlr3/org/apache/flex/compiler/internal/css"/>
-        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSLexer.java"
+        <antlr3 input="${compiler}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSS.g"
+                output="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css"/>
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/royale/compiler/internal/css/CSSLexer.java"
                         annotation='@SuppressWarnings("unused")'/>-->
-        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/royale/compiler/internal/css/CSSParser.java"
                         annotation='@SuppressWarnings("unused")'/>-->
     </target>
         
     <target name="set.css.tree.uptodate">
         <uptodate property="css.tree.uptodate"
-                  srcfile="${compiler}/src/main/antlr3/org/apache/flex/compiler/internal/css/CSSTree.g"
-                  targetfile="${compiler}/target/generated-sources/antlr3/org/apache/flex/compiler/internal/css/CSSTree.java"/>
+                  srcfile="${compiler}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSSTree.g"
+                  targetfile="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css/CSSTree.java"/>
     </target>
 
     <target name="css.tree" depends="set.css.tree.uptodate" unless="css.tree.uptodate">
     	<echo message="Generating CSSTree"/>
-        <antlr3 input="${compiler}/src/main/antlr3/org/apache/flex/compiler/internal/css/CSSTree.g"
-                output="${compiler}/target/generated-sources/antlr3/org/apache/flex/compiler/internal/css"/>
-        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"
+        <antlr3 input="${compiler}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSSTree.g"
+                output="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css"/>
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/royale/compiler/internal/css/CSSTree.java"
                         annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>-->        
     </target>
         
@@ -355,15 +355,15 @@
  
 	<target name="set.unknown.tree.handler.patterns.uptodate">
         <uptodate property="unknown.tree.handler.patterns.uptodate"
-        srcfile="${compiler}/src/main/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"
-        targetfile="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
+        srcfile="${compiler}/src/main/unknowntreehandler/org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"
+        targetfile="${compiler}/target/generated-sources/unknowntreehandler/org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
     </target>
     
     <target name="unknown.tree.handler.patterns" depends="set.unknown.tree.handler.patterns.uptodate" unless="unknown.tree.handler.patterns.uptodate">
-        <mkdir dir="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen"/>
+        <mkdir dir="${compiler}/target/generated-sources/unknowntreehandler/org/apache/royale/compiler/internal/as/codegen"/>
         <java classname="org.apache.royale.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput" fork="true" failonerror="true">
-            <arg value="${compiler}/src/main/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
-            <arg value="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
+            <arg value="${compiler}/src/main/unknowntreehandler/org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
+            <arg value="${compiler}/target/generated-sources/unknowntreehandler/org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
             <classpath>
                 <pathelement location="${compiler}/target/classes"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
@@ -373,8 +373,8 @@
     
 	<target name="set.cmc.emitter.uptodate">
         <uptodate property="cmc.emitter.uptodate"
-                  targetfile="${compiler}/target/generated-sources/jburg/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java">
-	        <srcfiles dir="${compiler}/src/main/jburg/org/apache/flex/compiler/internal/as/codegen">
+                  targetfile="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java">
+	        <srcfiles dir="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/as/codegen">
     	        <include name="*.jbg"/>
 	        </srcfiles>
 		</uptodate>
@@ -382,16 +382,16 @@
 	
 	<target name="cmc.emitter" depends="unknown.tree.handler.patterns, set.cmc.emitter.uptodate" unless="cmc.emitter.uptodate">
 		<echo message="Generating CmcEmitter"/>
-        <jburg input="${compiler}/src/main/jburg/org/apache/flex/compiler/internal/as/codegen/cmc.jbg"
-               output="${compiler}/target/generated-sources/jburg/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"/>
-        <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"
+        <jburg input="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/as/codegen/cmc.jbg"
+               output="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java"/>
+        <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java"
                         annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>		
 	</target>
 	
 	<target name="set.css.emitter.uptodate">
         <uptodate property="css.emitter.uptodate"
-                  targetfile="${compiler}/target/generated-sources/jburg/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java">
-	        <srcfiles dir="${compiler}/src/main/jburg/org/apache/flex/compiler/internal/css/codegen">
+                  targetfile="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java">
+	        <srcfiles dir="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/css/codegen">
 	            <include name="css.jbg"/>
 	            <include name="CSSPatterns.jbg"/>
 	            <include name="CSSRules.jbg"/>
@@ -401,9 +401,9 @@
 	
 	<target name="css.emitter" depends="set.css.emitter.uptodate" unless="css.emitter.uptodate">
         <echo message="Generating CSSEmitter"/>
-        <jburg input="${compiler}/src/main/jburg/org/apache/flex/compiler/internal/css/codegen/css.jbg"
-               output="${compiler}/target/generated-sources/jburg/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"/>
-        <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"
+        <jburg input="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/css/codegen/css.jbg"
+               output="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java"/>
+        <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java"
                         annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>	
 	</target>
 	
@@ -502,8 +502,8 @@
 	
 	<target name="set.messages.en.uptodate">
 		<uptodate property="messages.en.uptodate"
-		          targetfile="${compiler}/target/classes/org/apache/flex/compiler/messages_en.properties">
-			<srcfiles dir="${compiler}/target/classes/org/apache/flex/compiler/problems">
+		          targetfile="${compiler}/target/classes/org/apache/royale/compiler/messages_en.properties">
+			<srcfiles dir="${compiler}/target/classes/org/apache/royale/compiler/problems">
 				<include name="*Problem.class"/>
 			</srcfiles>
 		</uptodate>
@@ -518,9 +518,9 @@
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
             <!-- arg0: location of directory to search for problem class files -->
-            <arg value="${compiler}/target/classes/org/apache/flex/compiler/problems"/>
+            <arg value="${compiler}/target/classes/org/apache/royale/compiler/problems"/>
             <!-- arg1: location of where to write messages_en.properties -->
-            <arg value="${compiler}/target/classes/org/apache/flex/compiler"/>
+            <arg value="${compiler}/target/classes/org/apache/royale/compiler"/>
         </java>
     </target>
 

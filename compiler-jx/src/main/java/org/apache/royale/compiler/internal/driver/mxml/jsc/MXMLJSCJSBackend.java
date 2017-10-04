@@ -37,7 +37,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWa
 import org.apache.royale.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.targets.RoyaleTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
@@ -73,7 +73,7 @@ public class MXMLJSCJSBackend extends MXMLRoyaleBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -105,7 +105,7 @@ public class MXMLJSCJSBackend extends MXMLRoyaleBackend
     }
 
     @Override
-    public IJSWriter createMXMLWriter(RoyaleProject project,
+    public IJSWriter createMXMLWriter(RoyaleJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -113,7 +113,7 @@ public class MXMLJSCJSBackend extends MXMLRoyaleBackend
     }
 
     @Override
-    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleJSProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
         return new RoyaleTarget(project, settings, monitor);

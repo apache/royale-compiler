@@ -29,7 +29,7 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
@@ -187,9 +187,9 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             {
                 boolean defaultInitializers = false;
                 ICompilerProject project = getProject();
-                if(project instanceof RoyaleProject)
+                if(project instanceof RoyaleJSProject)
                 {
-                    RoyaleProject fjsProject = (RoyaleProject) project; 
+                    RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
                     if(fjsProject.config != null)
                     {
                         defaultInitializers = fjsProject.config.getJsDefaultInitializers();

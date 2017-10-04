@@ -59,7 +59,7 @@ import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
 import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.LibraryDependencyGraph;
 import org.apache.royale.compiler.internal.targets.SWFTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -99,7 +99,7 @@ public class SWCDepends
     private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 
     protected Workspace workspace;
-    protected FlexProject project;
+    protected RoyaleProject project;
     protected DependencyConfiguration config;
     protected ProblemQuery problems;
     protected ConfigurationBuffer configBuffer;
@@ -133,7 +133,7 @@ public class SWCDepends
     public SWCDepends()
     {
         workspace = new Workspace();
-        project = new FlexProject(workspace);
+        project = new RoyaleProject(workspace);
         problems = new ProblemQuery();
     }
 

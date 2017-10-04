@@ -26,7 +26,7 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.jsc.JSCPublisher;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.driver.mxml.jsc.MXMLJSCJSBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
@@ -38,7 +38,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 public class JSCBackend extends MXMLJSCJSBackend
 {
     @Override
-    public MXMLRoyalePublisher createPublisher(RoyaleProject project,
+    public MXMLRoyalePublisher createPublisher(RoyaleJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new JSCPublisher(project, config);

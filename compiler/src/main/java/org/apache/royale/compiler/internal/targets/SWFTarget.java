@@ -51,7 +51,7 @@ import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.exceptions.BuildCanceledException;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -904,8 +904,8 @@ public abstract class SWFTarget extends Target implements ISWFTarget
         String attrBackgroundColorString = getTargetAttributes().getBackgroundColor();
         if (!Strings.isNullOrEmpty(attrBackgroundColorString))
         {
-            if (project instanceof FlexProject)
-                swfBackgroundColorInt = ((FlexProject)project).getColorAsInt(attrBackgroundColorString);
+            if (project instanceof RoyaleProject)
+                swfBackgroundColorInt = ((RoyaleProject)project).getColorAsInt(attrBackgroundColorString);
             else
                 swfBackgroundColorInt = Integer.decode(attrBackgroundColorString).intValue();
         }

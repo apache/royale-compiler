@@ -470,7 +470,7 @@ public interface ITargetSettings
      * 
      * @return the minimum supported version of Flex.
      */
-    String getFlexMinimumSupportedVersion();
+    String getRoyaleMinimumSupportedVersion();
 
     /**
      * @return true if MXML child nodes are encoded into a data stream instead

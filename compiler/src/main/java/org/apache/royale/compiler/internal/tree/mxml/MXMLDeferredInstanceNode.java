@@ -28,7 +28,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
@@ -88,7 +88,7 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
                                    IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         // Check whether the child tag is an instance tag.
         IDefinition definition = builder.getFileScope().resolveTagToDefinition(childTag);
@@ -109,7 +109,7 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
                                    List<IMXMLUnitData> contentUnits)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         assert (contentUnits.isEmpty()) ||
                 (!builder.getFileScope().isScriptTag(contentUnits.get(0))) : "Script tags should not start a default property!";
@@ -177,7 +177,7 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
                                         ISourceFragment[] fragments)
     {
         // This node represents an instance of mx.core.DeferredInstanceFromClass.
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         String qname = project.getDeferredInstanceFromClassClass();
         setClassReference(project, qname);
 

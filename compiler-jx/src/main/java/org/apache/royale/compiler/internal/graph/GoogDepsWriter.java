@@ -43,7 +43,7 @@ import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
@@ -930,7 +930,7 @@ public class GoogDepsWriter {
 		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
 		if (cu == null) return false; // unit testing
 		
-		return ((RoyaleProject)project).isExternalLinkage(cu);
+		return ((RoyaleJSProject)project).isExternalLinkage(cu);
 	}
 	
 	private class GoogDep

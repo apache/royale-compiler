@@ -215,7 +215,7 @@ public class SkinTranscoder extends TranscoderBase
         // catch(e:Error)
         // {
         // }
-        if (!skinClassInfo.flexMovieClipOrSprite)
+        if (!skinClassInfo.royaleMovieClipOrSprite)
         {
             Name name = new Name("name");
             classITraitsInit.addInstruction(ABCConstants.OP_getlocal0);
@@ -429,7 +429,7 @@ public class SkinTranscoder extends TranscoderBase
         // {
         //     return NameUtil.displayObjectToString(this);
         // }
-        if (!skinClassInfo.flexMovieClipOrSprite)
+        if (!skinClassInfo.royaleMovieClipOrSprite)
         {
             InstructionList body = new InstructionList();
             body.addInstruction(ABCConstants.OP_getlocal0);

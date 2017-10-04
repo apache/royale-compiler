@@ -34,7 +34,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogProject;
 import org.apache.royale.compiler.internal.config.TargetSettings;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.ITestAdapter;
 import org.apache.royale.utils.TestAdapterFactory;
@@ -47,7 +47,7 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestRoyaleProject extends TestGoogProject
+public class TestRoyaleJSProject extends TestGoogProject
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
@@ -59,7 +59,7 @@ public class TestRoyaleProject extends TestGoogProject
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleProject(workspace, backend);
+        project = new RoyaleJSProject(workspace, backend);
         project.config = new JSGoogConfiguration();
         super.setUp();
     }
@@ -170,11 +170,11 @@ public class TestRoyaleProject extends TestGoogProject
         String fileName = "Test";
 
         try {
-			((RoyaleProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			((RoyaleJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((RoyaleProject)project).config, (RoyaleProject)project));
+        project.setTargetSettings(new TargetSettings(((RoyaleJSProject)project).config, (RoyaleJSProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/overrides").getPath();
@@ -193,11 +193,11 @@ public class TestRoyaleProject extends TestGoogProject
         String fileName = "Test";
 
         try {
-			((RoyaleProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			((RoyaleJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((RoyaleProject)project).config, (RoyaleProject)project));
+        project.setTargetSettings(new TargetSettings(((RoyaleJSProject)project).config, (RoyaleJSProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/bad_overrides").getPath();
@@ -344,7 +344,7 @@ public class TestRoyaleProject extends TestGoogProject
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(FilenameNormalization.normalize(sourcePath)));
-        ((RoyaleProject)project).unitTestExterns = externs;
+        ((RoyaleJSProject)project).unitTestExterns = externs;
     }
 
     @Override

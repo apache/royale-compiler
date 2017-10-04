@@ -47,7 +47,7 @@ import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.scopes.TypeScope;
@@ -120,7 +120,7 @@ public class MXMLScopeBuilder
 
     // Each project knows how to resolve MXML tags to ActionScript classes.
     // Different projects can resolve the same tag to different classes.
-    private FlexProject project;
+    private RoyaleProject project;
     
     // The MXMLCompilationUnit for which we're building a file scope.
     private MXMLCompilationUnit compilationUnit;
@@ -699,7 +699,7 @@ public class MXMLScopeBuilder
      * If so, call <code>addSourceDependency()</code>
      * on the <code>MXMLFileScope</code>.
      * If not, call <code>addUnfoundReferenceSourceFileDependency()</code>
-     * on the <code>FlexProject</code>.
+     * on the <code>RoyaleProject</code>.
      */
     private void processSourceAttribute(IMXMLTagData tag)
     {

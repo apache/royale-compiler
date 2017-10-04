@@ -25,7 +25,7 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogPackage;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class TestRoyalePackage extends TestGoogPackage
     public void setUp()
     {
 		backend = createBackend();
-		project = new RoyaleProject(workspace, backend);
+		project = new RoyaleJSProject(workspace, backend);
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	ArrayList<String> values = new ArrayList<String>();
     	values.add("Event");
@@ -47,7 +47,7 @@ public class TestRoyalePackage extends TestGoogPackage
     	ArrayList<String> values2 = new ArrayList<String>();
     	values2.add("Before");
     	config.setCompilerKeepCodeWithMetadata(null, values2);
-    	((RoyaleProject)project).config = config;
+    	((RoyaleJSProject)project).config = config;
         super.setUp();
     }
     

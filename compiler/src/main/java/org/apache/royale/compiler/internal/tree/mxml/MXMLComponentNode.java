@@ -22,7 +22,7 @@ package org.apache.royale.compiler.internal.tree.mxml;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.scopes.TypeScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
@@ -124,7 +124,7 @@ class MXMLComponentNode extends MXMLFactoryNode implements IMXMLComponentNode
 
             // check also that there is only one child tag and that
             // there are no text units around the child tag
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             IDefinition tagDef = builder.getFileScope().resolveTagToDefinition(childTag);
 
             // Check that the root tag mapped to a definition.

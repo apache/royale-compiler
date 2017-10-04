@@ -25,10 +25,10 @@ package org.apache.royale.swc;
 public class SWCVersion implements ISWCVersion
 {
     private String swcVersion;
-    private String flexVersion;
-    private String flexBuild;
-    private String flexMinSupportedVersion;
-    private int flexMinSupportedVersionInt;
+    private String royaleVersion;
+    private String royaleBuild;
+    private String royaleMinSupportedVersion;
+    private int royaleMinSupportedVersionInt;
     private String compilerName;
     private String compilerVersion;
     private String compilerBuild;
@@ -52,74 +52,74 @@ public class SWCVersion implements ISWCVersion
     }
 
     /**
-     * @return the flexVersion
+     * @return the royaleVersion
      */
     @Override
-    public String getFlexVersion()
+    public String getRoyaleVersion()
     {
-        return flexVersion;
+        return royaleVersion;
     }
 
     /**
-     * @param flexVersion the flexVersion to set
+     * @param royaleVersion the royaleVersion to set
      */
     @Override
-    public void setFlexVersion(String flexVersion)
+    public void setRoyaleVersion(String royaleVersion)
     {
-        this.flexVersion = flexVersion;
+        this.royaleVersion = royaleVersion;
     }
 
     /**
-     * @return the flexBuild
+     * @return the royaleBuild
      */
     @Override
     public String getFlexBuild()
     {
-        return flexBuild;
+        return royaleBuild;
     }
 
     /**
-     * @param flexBuild the flexBuild to set
+     * @param royaleBuild the royaleBuild to set
      */
     @Override
-    public void setFlexBuild(String flexBuild)
+    public void setFlexBuild(String royaleBuild)
     {
-        this.flexBuild = flexBuild;
+        this.royaleBuild = royaleBuild;
     }
 
     /**
-     * @return the flexMinSupportedVersion
+     * @return the royaleMinSupportedVersion
      */
     @Override
-    public String getFlexMinSupportedVersion()
+    public String getRoyaleMinSupportedVersion()
     {
-        return flexMinSupportedVersion;
+        return royaleMinSupportedVersion;
     }
 
     /**
-     * @param flexMinSupportedVersion the flexMinSupportedVersion to set
+     * @param royaleMinSupportedVersion the royaleMinSupportedVersion to set
      */
     @Override
-    public void setFlexMinSupportedVersion(String flexMinSupportedVersion)
+    public void setRoyaleMinSupportedVersion(String royaleMinSupportedVersion)
     {
-        this.flexMinSupportedVersion = flexMinSupportedVersion; 
-        this.flexMinSupportedVersionInt = flexVersionStringToInt(flexMinSupportedVersion);
+        this.royaleMinSupportedVersion = royaleMinSupportedVersion; 
+        this.royaleMinSupportedVersionInt = royaleVersionStringToInt(royaleMinSupportedVersion);
     }
 
     @Override
-    public int getFlexMinSupportedVersionInt()
+    public int getRoyaleMinSupportedVersionInt()
     {
-        return this.flexMinSupportedVersionInt;
+        return this.royaleMinSupportedVersionInt;
     }
     
     /**
-     * Convert a flex version String to an integer.
+     * Convert a royale version String to an integer.
      * 
      * @param versionString
      * @return The string as a version. -1 if versionString is null.
      * 
      */
-    private static int flexVersionStringToInt(final String versionString)
+    private static int royaleVersionStringToInt(final String versionString)
     {
         if (versionString == null)
             return -1;

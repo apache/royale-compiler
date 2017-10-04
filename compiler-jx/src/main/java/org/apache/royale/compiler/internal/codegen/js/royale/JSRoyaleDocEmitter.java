@@ -39,7 +39,7 @@ import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -108,7 +108,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
-    	RoyaleProject fjp = (RoyaleProject)project;
+    	RoyaleJSProject fjp = (RoyaleJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         if (fjp.config != null)
         	emitExports = fjp.config.getExportPublicSymbols();
@@ -345,7 +345,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     public void emitInterfaceMemberDoc(IDefinitionNode node,
             ICompilerProject project)
     {
-    	RoyaleProject fjp =  (RoyaleProject)project;
+    	RoyaleJSProject fjp =  (RoyaleJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         boolean hasDoc = false;
 

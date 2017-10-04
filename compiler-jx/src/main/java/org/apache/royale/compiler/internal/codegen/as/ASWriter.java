@@ -27,14 +27,14 @@ import java.util.List;
 
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 
 public class ASWriter implements IASWriter
 {
-    private RoyaleProject project;
+    private RoyaleJSProject project;
 
     private List<ICompilerProblem> problems;
 
@@ -49,7 +49,7 @@ public class ASWriter implements IASWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public ASWriter(RoyaleProject project, List<ICompilerProblem> problems,
+    public ASWriter(RoyaleJSProject project, List<ICompilerProblem> problems,
                     ICompilationUnit compilationUnit, boolean enableDebug)
     {
         this.project = project;

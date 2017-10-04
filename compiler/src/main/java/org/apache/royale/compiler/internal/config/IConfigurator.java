@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.royale.compiler.common.IPathResolver;
 import org.apache.royale.compiler.config.ICompilerProblemSettings;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 
@@ -50,7 +50,7 @@ public interface IConfigurator
      * @return true if the configuration contains no errors and the project was
      * successfully configured, false if the configuration contains errors.
      */
-    boolean applyToProject(IFlexProject project);
+    boolean applyToProject(IRoyaleProject project);
 
     /**
      * Get the settings that apply to a given type of target based on the

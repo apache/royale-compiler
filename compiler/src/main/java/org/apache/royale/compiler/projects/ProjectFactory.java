@@ -20,25 +20,25 @@
 package org.apache.royale.compiler.projects;
 
 import org.apache.royale.compiler.asdoc.IASDocBundleDelegate;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.workspaces.IWorkspace;
 
 /**
- * class factory for things like CompilerProject, FlexProject, etc...
+ * class factory for things like CompilerProject, RoyaleProject, etc...
  */
 public class ProjectFactory
 {
     /**
-     * Create a new FlexProject with a new Workspace
+     * Create a new RoyaleProject with a new Workspace
      */
-    public static IFlexProject createSimpleFlexProject()
+    public static IRoyaleProject createSimpleRoyaleProject()
     {
-        return new FlexProject( new Workspace());
+        return new RoyaleProject( new Workspace());
     }
     
-    public static IFlexProject createFlexProject(IWorkspace workspace, IASDocBundleDelegate asDocBundleDelegate)
+    public static IRoyaleProject createRoyaleProject(IWorkspace workspace, IASDocBundleDelegate asDocBundleDelegate)
     {
-        return new FlexProject( (Workspace)workspace,  asDocBundleDelegate);
+        return new RoyaleProject( (Workspace)workspace,  asDocBundleDelegate);
     }
 }

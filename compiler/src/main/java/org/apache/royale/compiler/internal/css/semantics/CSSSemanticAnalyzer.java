@@ -62,7 +62,7 @@ import org.apache.royale.compiler.problems.CSSUnresolvedClassReferenceProblem;
 import org.apache.royale.compiler.problems.CSSUnusedTypeSelectorProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.utils.FilenameNormalization;
@@ -220,7 +220,7 @@ public class CSSSemanticAnalyzer
             final IXMLNameResolver xmlNameResolver,
             final ICSSDocument css,
             final Collection<ICompilerProblem> problems,
-            final IFlexProject project,
+            final IRoyaleProject project,
             final boolean isCompatibilityVersion3)
     {
         assert xmlNameResolver != null : "Expected xmlNameResolver";
@@ -316,7 +316,7 @@ public class CSSSemanticAnalyzer
      * @param document CSS document
      * @return All the selectors in the CSS.
      */
-    public static ImmutableSet<ICSSSelector> getAllSelectors(final ICSSDocument document, final IFlexProject project)
+    public static ImmutableSet<ICSSSelector> getAllSelectors(final ICSSDocument document, final IRoyaleProject project)
     {
         assert document != null : "Expected CSS document";
 
@@ -461,7 +461,7 @@ public class CSSSemanticAnalyzer
      * passed in.
      * 
      * @param session CSS compilation session data.
-     * @param flexProject Flex project.
+     * @param royaleProject Flex project.
      * @param cssDocument CSS document.
      * @param qnames A set of QNames of the definitions to be matched the CSS
      * rules.
@@ -470,14 +470,14 @@ public class CSSSemanticAnalyzer
      */
     public static ImmutableSet<ICSSRule> getMatchedRules(
             final CSSCompilationSession session,
-            final IFlexProject flexProject,
+            final IRoyaleProject royaleProject,
             final ICSSDocument cssDocument,
             final ImmutableSet<String> qnames,
             final Collection<ICompilerProblem> problems)
     {
-        final boolean isFlex3CSS = flexProject.getCSSManager().isFlex3CSS();
+        final boolean isFlex3CSS = royaleProject.getCSSManager().isFlex3CSS();
         final ImmutableMap<ICSSSelector, String> resolvedSelectors =
-                resolveSelectors(flexProject, cssDocument, problems, flexProject, isFlex3CSS);
+                resolveSelectors(royaleProject, cssDocument, problems, royaleProject, isFlex3CSS);
         final Predicate<ICSSRule> predicate;
         if (isFlex3CSS)
         {

@@ -31,7 +31,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
 import org.apache.royale.compiler.internal.css.codegen.CSSEmitter;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
@@ -97,7 +97,7 @@ public class CSSModuleGenerator
      * @throws Exception CSS code generation exception.
      */
     public static void generateStyleDataClass(final IABCVisitor abcEmitter,
-                                              final FlexProject project,
+                                              final RoyaleProject project,
                                               final ICSSDocument cssDocument,
                                               final CSSCompilationSession cssCompilationSession,
                                               final Name stylesDataClassName)

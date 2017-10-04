@@ -70,7 +70,7 @@ import org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
@@ -102,7 +102,7 @@ import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * Sub-class of {@link AppSWFTarget} that builds an application SWF that uses
- * the flex framework.
+ * the royale framework.
  */
 public class FlexAppSWFTarget extends AppSWFTarget
 {
@@ -110,24 +110,24 @@ public class FlexAppSWFTarget extends AppSWFTarget
      * Constructor
      * 
      * @param mainApplicationClass {@link IResolvedQualifiersReference} that
-     * resolve to the main class for the flex application.
-     * @param project {@link FlexProject} containing all the code that will be
+     * resolve to the main class for the royale application.
+     * @param project {@link RoyaleProject} containing all the code that will be
      * compiled into the application.
      * @param targetSettings {@link ITargetSettings} with configuration
      * information for this target.
      * @param progressMonitor {@link ITargetProgressMonitor} to which status is
      * reported as this {@link AppSWFTarget} is built.
      */
-    public FlexAppSWFTarget(IResolvedQualifiersReference mainApplicationClass, FlexProject project,
+    public FlexAppSWFTarget(IResolvedQualifiersReference mainApplicationClass, RoyaleProject project,
             ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
         super(project, targetSettings, progressMonitor);
-        flexProject = project;
+        royaleProject = project;
     }
     
     private boolean isFlexSDKInfo = targetSettings.getInfoFlex();
     
-    private final FlexProject flexProject;
+    private final RoyaleProject royaleProject;
     
     public boolean isFlexInfo()
     {
@@ -142,7 +142,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             return delegate;
         final ClassDefinition mainAppClass = getRootClassDefinition();
         assert mainAppClass != null : "build should be abort before this point if root class does not exist!";
-        delegate = new FlexDelegate(mainAppClass, targetSettings, flexProject);
+        delegate = new FlexDelegate(mainAppClass, targetSettings, royaleProject);
         return delegate;
     }
     
@@ -168,7 +168,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             ImmutableSet.Builder<ICompilationUnit> compilationUnits,
             ImmutableList.Builder<ICompilerProblem> problems)
     {
-        final IDefinition definition = referenceToResolve.resolve(flexProject);
+        final IDefinition definition = referenceToResolve.resolve(royaleProject);
         // TODO add a problem if definition is not found
         if (definition != null)
         {
@@ -180,7 +180,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
     
     /**
      * Creates a {@link SWFFrameInfo} for a generated sub-class of the
-     * {@code mx.managers.SystemManager} class from the flex framework.
+     * {@code mx.managers.SystemManager} class from the royale framework.
      * 
      * @param factoryClass {@link ClassDefinition} for which a sub-class should
      * be generated, usually {@code mx.managers.SystemManager}.
@@ -189,7 +189,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
      */
     private SWFFrameInfo createFrameInfoForGeneratedSystemManager(ClassDefinition factoryClass) throws InterruptedException
     {
-        final ICompilationUnit factoryClassCompilationUnit = flexProject.getScope().getCompilationUnitForDefinition(factoryClass);
+        final ICompilationUnit factoryClassCompilationUnit = royaleProject.getScope().getCompilationUnitForDefinition(factoryClass);
         assert factoryClassCompilationUnit != null :"Unable to find compilation unit for definiton!";
         
         final ImmutableSet.Builder<ICompilationUnit> compilationUnits =
@@ -199,11 +199,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
         
         compilationUnits.add(factoryClassCompilationUnit);
         
-        final ASProjectScope projectScope = flexProject.getScope();
+        final ASProjectScope projectScope = royaleProject.getScope();
         
         final FlexDelegate delegate = getDelegate();
         
-        if (delegate.iModuleFactoryReference.resolve(flexProject) != null)
+        if (delegate.iModuleFactoryReference.resolve(royaleProject) != null)
         {
             resolveReferenceToCompilationUnit(delegate.iModuleFactoryReference,
                     projectScope,
@@ -211,7 +211,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     problems);
         }
         
-        if (delegate.iSWFContextReference.resolve(flexProject) != null)
+        if (delegate.iSWFContextReference.resolve(royaleProject) != null)
         {
             resolveReferenceToCompilationUnit(delegate.iSWFContextReference,
                     projectScope,
@@ -231,9 +231,9 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     compilationUnits,
                     problems);
         
-        final String compatibilityVersion = flexProject.getCompatibilityVersionString();
+        final String compatibilityVersion = royaleProject.getCompatibilityVersionString();
         if (compatibilityVersion != null)
-            resolveReferenceToCompilationUnit(delegate.flexVersionReference,
+            resolveReferenceToCompilationUnit(delegate.royaleVersionReference,
                     projectScope,
                     compilationUnits,
                     problems);
@@ -261,11 +261,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
     }
     
     /**
-     * Creates a {@link SWFFrameInfo} for the frame in a flex application SWF
+     * Creates a {@link SWFFrameInfo} for the frame in a royale application SWF
      * that defines the main application class.
      * 
      * @param rootClassDefinition {@link ClassDefinition} for the root
-     * application class of a flex application SWF.
+     * application class of a royale application SWF.
      * @return A new {@link SWFFrameInfo}.
      * @throws InterruptedException
      */
@@ -293,7 +293,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         compilationUnits.addAll(includeLibrariesCompilationUnits);
         
         final FlexDelegate delegate = getDelegate();
-        final ASProjectScope projectScope = flexProject.getScope();
+        final ASProjectScope projectScope = royaleProject.getScope();
         
         if (delegate.getGenerateSystemManagerAndFlexInit() && isFlexSDKInfo)
         {
@@ -344,7 +344,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         frames.addFirst(applicationFrame);
         
         final ClassDefinition initialFactoryClass =
-            rootClassDef.resolveInheritedFactoryClass(flexProject);
+            rootClassDef.resolveInheritedFactoryClass(royaleProject);
         ClassDefinition currentFrameClass = initialFactoryClass;
         
         SWFFrameInfo systemManagerFrame = null;
@@ -360,7 +360,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         
         while ((currentFrameClass != null) && (!currentFrameClass.isImplicit()))
         {
-            ICompilationUnit currentFrameClassCompilationUnit = flexProject.getScope().getCompilationUnitForDefinition(currentFrameClass);
+            ICompilationUnit currentFrameClassCompilationUnit = royaleProject.getScope().getCompilationUnitForDefinition(currentFrameClass);
             assert currentFrameClassCompilationUnit != null :"Unable to find compilation unit for definiton!";
             final SWFFrameInfo frameInfo = new SWFFrameInfo(currentFrameClass.getQualifiedName(), SWFFrameInfo.EXTERNS_DISALLOWED,
                     Collections.<ICompilationUnit>singleton(currentFrameClassCompilationUnit),
@@ -496,7 +496,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         // included in the dependency checking, even none of its rules are matched.
         final ActivatedStyleSheets activatedStyleSheets = new ActivatedStyleSheets();
 
-        final ICSSManager cssManager = flexProject.getCSSManager();
+        final ICSSManager cssManager = royaleProject.getCSSManager();
         
         collectThemes(cssManager, activatedStyleSheets, problems);
         collectDefaultCSS(cssManager, activatedStyleSheets, problems);
@@ -689,7 +689,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
 
     /**
      * Sub-class of {@link FramesInformation} that can create {@link SWFFrame}s
-     * for all the frames in a flex application SWF.
+     * for all the frames in a royale application SWF.
      */
     private class FlexApplicationFramesInformation extends FramesInformation
     {
@@ -728,7 +728,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         private void validateRootCompiltionUnitCSS(ImmutableSet<ICompilationUnit> builtCompilationUnits, Collection<ICompilerProblem> problems) throws InterruptedException
         {
             // Validate root MXML's style model if not in Flex 3 mode.
-            final Integer compatibilityVersion = flexProject.getCompatibilityVersion();
+            final Integer compatibilityVersion = royaleProject.getCompatibilityVersion();
             if ((compatibilityVersion != null) && (compatibilityVersion < Configuration.MXML_VERSION_4_0))
                 return;
             
@@ -758,7 +758,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             final FlexDelegate delegate = getDelegate();
             final ClassDefinition rootClassDefinition =
                 getRootClassDefinition();
-            frame1Info = new FlexApplicationFrame1Info(flexProject,
+            frame1Info = new FlexApplicationFrame1Info(royaleProject,
                                 targetSettings,
                                 rootClassDefinition,
                                 delegate.getGenerateSystemManagerAndFlexInit(),
@@ -819,7 +819,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
      */
     private class FlexDelegate extends FlexTarget
     {
-        FlexDelegate(IClassDefinition mainApplicationClassDefinition, ITargetSettings targetSettings, FlexProject project)
+        FlexDelegate(IClassDefinition mainApplicationClassDefinition, ITargetSettings targetSettings, RoyaleProject project)
         {
             super(targetSettings, project);
             
@@ -834,7 +834,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             getClassByAliasReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IASLanguageConstants.getClassByAlias);
             registerClassAliasReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IASLanguageConstants.registerClassAlias);
             crossDomainRSLItemReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.CrossDomainRSLItem);
-            flexVersionReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.FlexVersion);
+            royaleVersionReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.RoyaleVersion);
             capabilitiesReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IASLanguageConstants.Capabilities);
             textFieldFactoryReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.TextFieldFactory);
             iSWFContextReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.ISWFContext);
@@ -855,7 +855,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         private final IResolvedQualifiersReference getClassByAliasReference;
         private final IResolvedQualifiersReference registerClassAliasReference;
         private final IResolvedQualifiersReference crossDomainRSLItemReference;
-        private final IResolvedQualifiersReference flexVersionReference;
+        private final IResolvedQualifiersReference royaleVersionReference;
         private final IResolvedQualifiersReference capabilitiesReference;
         private final IResolvedQualifiersReference textFieldFactoryReference;
         private final IResolvedQualifiersReference iSWFContextReference;
@@ -864,7 +864,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         
         /**
          * Cached boolean for whether or not the system manager
-         * and flex init classes should be generated.
+         * and royale init classes should be generated.
          */
         private Boolean generateSystemManagerAndFlexInit;
         
@@ -901,7 +901,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
 
         private String getMainClassQName()
         {
-            Name mainApplicationName = ((DefinitionBase)mainApplicationClassDefinition).getMName(flexProject);
+            Name mainApplicationName = ((DefinitionBase)mainApplicationClassDefinition).getMName(royaleProject);
             String mainApplicationPackageName = Iterables.getFirst(mainApplicationName.getQualifiers(), null).getName();
             if (mainApplicationPackageName.length() != 0)
                 mainApplicationPackageName = mainApplicationPackageName + ".";
@@ -910,16 +910,16 @@ public class FlexAppSWFTarget extends AppSWFTarget
         
         private String getFlexInitClassName()
         {
-            String flexInitClassName = "_" + getMainClassQName() + "_FlexInit";
-            flexInitClassName = flexInitClassName.replaceAll("[^a-zA-Z0-9]", "_");
-            return flexInitClassName;
+            String royaleInitClassName = "_" + getMainClassQName() + "_FlexInit";
+            royaleInitClassName = royaleInitClassName.replaceAll("[^a-zA-Z0-9]", "_");
+            return royaleInitClassName;
         }
         
         private String getStylesClassName()
         {
-            String flexInitClassName = "_" + getMainClassQName() + "_Styles";
-            flexInitClassName = flexInitClassName.replaceAll("[^a-zA-Z0-9]", "_");
-            return flexInitClassName;
+            String royaleInitClassName = "_" + getMainClassQName() + "_Styles";
+            royaleInitClassName = royaleInitClassName.replaceAll("[^a-zA-Z0-9]", "_");
+            return royaleInitClassName;
         }
         
         private String getGeneratedSystemManagerClassName(ClassDefinition systemManagerClass)
@@ -933,11 +933,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
         {
             ABCEmitter emitter = new ABCEmitter();
             emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
-            ICSSCodeGenResult cssCodeGenResult = cssCompilationSession.emitStyleDataClass(flexProject, emitter);
+            ICSSCodeGenResult cssCodeGenResult = cssCompilationSession.emitStyleDataClass(royaleProject, emitter);
 
             Name stylesClassName = new Name(getStylesClassName());
 
-            IDefinition objectDef = objectReference.resolve(flexProject);
+            IDefinition objectDef = objectReference.resolve(royaleProject);
             if ((objectDef == null) || (!(objectDef instanceof ClassDefinition)))
                 return false;
 
@@ -955,7 +955,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             cinit.addInstruction(ABCConstants.OP_returnvoid);
 
             ClassGeneratorHelper classGenerator = new ClassGeneratorHelper(
-                        flexProject,
+                        royaleProject,
                         emitter,
                         stylesClassName,
                         objectClassDef,
@@ -979,16 +979,16 @@ public class FlexAppSWFTarget extends AppSWFTarget
         private boolean computeGenerateSystemManagerAndFlexInit()
         {
             ClassDefinition rootClassDef = (ClassDefinition)mainApplicationClassDefinition;
-            ClassDefinition rootFactoryClass = rootClassDef.resolveInheritedFactoryClass(flexProject);
+            ClassDefinition rootFactoryClass = rootClassDef.resolveInheritedFactoryClass(royaleProject);
             generateSystemManagerAndFlexInit =
-                (rootFactoryClass != null) && (!rootClassDef.hasOwnFactoryClass(flexProject.getWorkspace()));
+                (rootFactoryClass != null) && (!rootClassDef.hasOwnFactoryClass(royaleProject.getWorkspace()));
 
             return generateSystemManagerAndFlexInit;
         }
         
         public boolean isFlexInfo(ClassDefinition rootClassDef)
         {
-            ClassDefinition superClass = (ClassDefinition)rootClassDef.resolveBaseClass(flexProject);
+            ClassDefinition superClass = (ClassDefinition)rootClassDef.resolveBaseClass(royaleProject);
             while (superClass != null && !superClass.getBaseName().equals(IASLanguageConstants.Object))
             {
                 String impls[] = superClass.getImplementedInterfacesAsDisplayStrings();
@@ -999,7 +999,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
                         return true;
                     }
                 }
-                superClass = (ClassDefinition)superClass.resolveBaseClass(flexProject);
+                superClass = (ClassDefinition)superClass.resolveBaseClass(royaleProject);
             }
             return false;
         }
@@ -1077,7 +1077,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
                             if (attributeName.equals(setter.getBaseName()))
                             {
                                 Collection<ICompilerProblem> problems = null;
-                                splashUnit = node.resolveCompilationUnit(flexProject, problems);
+                                splashUnit = node.resolveCompilationUnit(royaleProject, problems);
                                 break;
                             }
                         }
@@ -1117,7 +1117,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             }
             
             if (className != null)
-                splashScreenImageReference = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), className);
+                splashScreenImageReference = ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), className);
             return new FlexSplashScreenImage(splashScreenImageEmbedUnit, splashScreenImageReference);
         }
         
@@ -1141,7 +1141,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             if (!(root instanceof IFileNode))
                 return NilTargetAttributes.INSTANCE;
 
-            final ITargetAttributes nodeTargetAttributes = ((IFileNode)root).getTargetAttributes(flexProject);
+            final ITargetAttributes nodeTargetAttributes = ((IFileNode)root).getTargetAttributes(royaleProject);
             if (nodeTargetAttributes == null)
                 return NilTargetAttributes.INSTANCE;
             return nodeTargetAttributes;
@@ -1167,10 +1167,10 @@ public class FlexAppSWFTarget extends AppSWFTarget
             if (rootNode != null)
                 return rootNode;
 
-            ASProjectScope projectScope = flexProject.getScope();
+            ASProjectScope projectScope = royaleProject.getScope();
             
             ClassDefinition mainClassDef = (ClassDefinition) mainApplicationClassDefinition;
-            if (mainClassDef.hasOwnFactoryClass(flexProject.getWorkspace()))
+            if (mainClassDef.hasOwnFactoryClass(royaleProject.getWorkspace()))
                 return null;
 
             ICompilationUnit mainUnit = projectScope.getCompilationUnitForDefinition(mainClassDef);
@@ -1185,7 +1185,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         {
             if (frame1Info != null)
                 return frame1Info;
-            frame1Info = new FlexApplicationFrame1Info(flexProject,
+            frame1Info = new FlexApplicationFrame1Info(royaleProject,
                     targetSettings, mainApplicationClassDefinition, getGenerateSystemManagerAndFlexInit(), 
                     isFlexInfo((ClassDefinition)mainApplicationClassDefinition), getBuiltCompilationUnitSet().compilationUnits);
             return frame1Info;
@@ -1196,7 +1196,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             if (rslInfo != null)
                 return rslInfo;
             
-            rslInfo = new FlexRSLInfo(getFrame1Info(), flexProject, targetSettings);
+            rslInfo = new FlexRSLInfo(getFrame1Info(), royaleProject, targetSettings);
             return rslInfo;  
         }
         
@@ -1204,10 +1204,10 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * Adds generated classes to the specified {@link SWFFrame}.
          * 
          * @param mainApplicationFrame {@link SWFFrame} that contains the main
-         * application class of the flex application SWF being built.
+         * application class of the royale application SWF being built.
          * @param frame1Info {@link FlexApplicationFrame1Info} containing frame
          * 1 related code generation information collected from all the
-         * {@link ICompilationUnit}s being built into the flex application SWF.
+         * {@link ICompilationUnit}s being built into the royale application SWF.
          * @param emittedCompilationUnits
          * @param problems
          * @return true if code was generated and added to the specified
@@ -1274,7 +1274,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          */
         private void addGeneratedCompiledResourceBundleInfoToFrame(FlexApplicationFrame1Info frame1Info, SWFFrame frame)
         {
-            Collection<String> locales = flexProject.getLocales();
+            Collection<String> locales = royaleProject.getLocales();
 
             if (locales.size() == 0 || frame1Info.compiledResourceBundleNames.size() == 0)
             {
@@ -1284,14 +1284,14 @@ public class FlexAppSWFTarget extends AppSWFTarget
 
             String className = IMXMLTypeConstants._CompiledResourceBundleInfo;       
             IResolvedQualifiersReference mainClassRef = ReferenceFactory.packageQualifiedReference(
-                     flexProject.getWorkspace(), className);
+                     royaleProject.getWorkspace(), className);
 
             ABCEmitter emitter = new ABCEmitter();
             emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
 
-            ClassGeneratorHelper classGen = new ClassGeneratorHelper(flexProject, emitter,
+            ClassGeneratorHelper classGen = new ClassGeneratorHelper(royaleProject, emitter,
                      mainClassRef.getMName(),
-                     (ClassDefinition)flexProject.getBuiltinType(BuiltinType.OBJECT),
+                     (ClassDefinition)royaleProject.getBuiltinType(BuiltinType.OBJECT),
                      ClassGeneratorHelper.returnVoid());
 
             //Create method body for compiledLocales getter
@@ -1340,7 +1340,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         }
         
         /**
-         * Generates the flex initializer class and adds it to the specified
+         * Generates the royale initializer class and adds it to the specified
          * {@link SWFFrame}.
          * 
          * @param problemCollection {@link Collection} that any
@@ -1348,7 +1348,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * to.
          * @param frame {@link SWFFrame} the generated class will be added to.
          * @param emittedCompilationUnits
-         * @return true if the flex init class was successfully generated and
+         * @return true if the royale init class was successfully generated and
          * added to the speciifed {@link SWFFrame}.
          * @throws InterruptedException
          */
@@ -1359,13 +1359,13 @@ public class FlexAppSWFTarget extends AppSWFTarget
             emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
             
             
-            String flexInitClassNameString = getFlexInitClassName();
+            String royaleInitClassNameString = getFlexInitClassName();
             
-            Name flexInitClassName = new Name(flexInitClassNameString);
+            Name royaleInitClassName = new Name(royaleInitClassNameString);
             
             Name stylesClassName = new Name(getStylesClassName());
 
-            IDefinition objectDef = objectReference.resolve(flexProject);
+            IDefinition objectDef = objectReference.resolve(royaleProject);
             if ((objectDef == null) || (!(objectDef instanceof ClassDefinition)))
                 return false;
             ClassDefinition objectClassDef = (ClassDefinition)objectDef;
@@ -1416,14 +1416,14 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     if (visibleDef instanceof ClassDefinition)
                     {
                         ClassDefinition visibleClass = (ClassDefinition) visibleDef;
-                        IEffectDefinition[] effectDefinitions = visibleClass.getEffectDefinitions(flexProject.getWorkspace());
+                        IEffectDefinition[] effectDefinitions = visibleClass.getEffectDefinitions(royaleProject.getWorkspace());
                         for (IEffectDefinition effectDefinition : effectDefinitions)
                         {
                             // TODO create compiler problem if effect already has a trigger.
                             effectNameToTriggerMap.put(effectDefinition.getBaseName(), effectDefinition.getEvent());
                         }
                         
-                        IStyleDefinition[] styleDefinitions = visibleClass.getStyleDefinitions(flexProject.getWorkspace());
+                        IStyleDefinition[] styleDefinitions = visibleClass.getStyleDefinitions(royaleProject.getWorkspace());
                         for (IStyleDefinition styleDefinition : styleDefinitions)
                         {
                             boolean isInheriting = styleDefinition.isInheriting();
@@ -1447,7 +1447,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             classITraitsInit.addInstruction(ABCConstants.OP_getlocal0);
             classITraitsInit.addInstruction(ABCConstants.OP_constructsuper, 0);
             classITraitsInit.addInstruction(ABCConstants.OP_returnvoid);
-            ClassGeneratorHelper classGen = new ClassGeneratorHelper(flexProject, emitter, flexInitClassName, 
+            ClassGeneratorHelper classGen = new ClassGeneratorHelper(royaleProject, emitter, royaleInitClassName, 
                     objectClassDef, Collections.<Name>emptyList(), classITraitsInit);
             
             // Generate code for the static init method:
@@ -1509,14 +1509,14 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 initMethodTraitVisitor.visitEnd();
 
                 codegenInfoMethod(classGen, 
-                        flexProject.getCompatibilityVersion(),
+                        royaleProject.getCompatibilityVersion(),
                         getMainClassQName(),
                         getPreloaderClassReference(),
                         getRuntimeDPIProviderClassReference(),
                         splashScreenImage,
                         getRootNode(),
                         getTargetAttributes(),
-                        flexProject.getLocales(),
+                        royaleProject.getLocales(),
                         frame1Info,
                         accessibleClassNames,
                         getFlexInitClassName(),
@@ -1562,13 +1562,13 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 // register effects
                 if (!effectNameToTriggerMap.isEmpty())
                 {
-                    IDefinition mxInternalDef = mxInternalReference.resolve(flexProject);
+                    IDefinition mxInternalDef = mxInternalReference.resolve(royaleProject);
                     if (!(mxInternalDef instanceof NamespaceDefinition))
                         return false;
                     
                     
                     IResolvedQualifiersReference registerEffectTriggerRef =
-                        ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(), (INamespaceDefinition)mxInternalDef, 
+                        ReferenceFactory.resolvedQualifierQualifiedReference(royaleProject.getWorkspace(), (INamespaceDefinition)mxInternalDef, 
                                 "registerEffectTrigger");
                     Name registerEffectTriggerName = registerEffectTriggerRef.getMName();
                     
@@ -1603,13 +1603,13 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     Label accessibilityEnd = new Label();
                     initMethod.addInstruction(ABCConstants.OP_iffalse, accessibilityEnd);
     
-                    IResolvedQualifiersReference enableAccessibilityReference = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
+                    IResolvedQualifiersReference enableAccessibilityReference = ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(),
                             "enableAccessibility");            
                     Name enableAccessibilityName = enableAccessibilityReference.getMName();
                     Object[] enableAccessibilityCallPropOperands = new Object[] { enableAccessibilityName, 0 };
                     for (String accessibilityClassName : accessibleClassNames)
                     {
-                        IResolvedQualifiersReference ref = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
+                        IResolvedQualifiersReference ref = ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(),
                                 accessibilityClassName);
                         Name accName = ref.getMName();
                         initMethod.addInstruction(ABCConstants.OP_getlex, accName);
@@ -1634,7 +1634,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
                         initMethod.addInstruction(ABCConstants.OP_finddef, getClassByAliasName);
                         initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
                         initMethod.addInstruction(ABCConstants.OP_callproperty, getClassByAliasCallPropOperands);
-                        Name classMName = classAliasEntry.getKey().getMName(flexProject);
+                        Name classMName = classAliasEntry.getKey().getMName(royaleProject);
                         initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
                         Label endTryLabel = new Label();
                         initMethod.addInstruction(ABCConstants.OP_ifeq, endTryLabel);
@@ -1724,7 +1724,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 preloaderClassName = targetSettings.getPreloaderClassName();
 
             // set up the reference to downloadProgressBarRef
-            preloaderReference = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), 
+            preloaderReference = ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), 
                     preloaderClassName);
             return preloaderReference;
         }
@@ -1742,7 +1742,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             if (runtimeDPIProviderClassName == null)
                 return null;
             
-            return ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), runtimeDPIProviderClassName);
+            return ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), runtimeDPIProviderClassName);
         }
         
         
@@ -1778,11 +1778,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
             Name generatedSystemManagerName = new Name(generatedSystemManagerClassNameString);
 
             ImmutableList.Builder<Name> listOfInterfaces = new ImmutableList.Builder<Name>();
-            if (iModuleFactoryReference.resolve(flexProject) != null && isFlexSDKInfo)
+            if (iModuleFactoryReference.resolve(royaleProject) != null && isFlexSDKInfo)
             {
                 listOfInterfaces.add(iModuleFactoryReference.getMName());
             }
-            if (iSWFContextReference.resolve(flexProject) != null && isFlexSDKInfo)
+            if (iSWFContextReference.resolve(royaleProject) != null && isFlexSDKInfo)
             {
                 listOfInterfaces.add(iSWFContextReference.getMName());
             }
@@ -1791,40 +1791,40 @@ public class FlexAppSWFTarget extends AppSWFTarget
             // Generate code for the constructor:
             // public function ClassName()
             // {
-            //    FlexVersion.compatibilityVersionString = "4.5.0";
+            //    RoyaleVersion.compatibilityVersionString = "4.5.0";
             //    super();
             // }
-            final String compatibilityVersion = flexProject.getCompatibilityVersionString();
+            final String compatibilityVersion = royaleProject.getCompatibilityVersionString();
             final InstructionList classITraitsInit = new InstructionList();
-            if (compatibilityVersion != null && flexVersionReference.resolve(flexProject) != null && isFlexSDKInfo)
+            if (compatibilityVersion != null && royaleVersionReference.resolve(royaleProject) != null && isFlexSDKInfo)
             {
-                Name flexVersionSlotName = flexVersionReference.getMName();
-                classITraitsInit.addInstruction(ABCConstants.OP_getlex, flexVersionSlotName);
+                Name royaleVersionSlotName = royaleVersionReference.getMName();
+                classITraitsInit.addInstruction(ABCConstants.OP_getlex, royaleVersionSlotName);
                 classITraitsInit.addInstruction(ABCConstants.OP_pushstring, compatibilityVersion);
                 classITraitsInit.addInstruction(ABCConstants.OP_setproperty, new Name("compatibilityVersionString"));
             }
             classITraitsInit.addInstruction(ABCConstants.OP_getlocal0);
             classITraitsInit.addInstruction(ABCConstants.OP_constructsuper, 0);
             classITraitsInit.addInstruction(ABCConstants.OP_returnvoid);
-            ClassGeneratorHelper classGen = new ClassGeneratorHelper(flexProject, emitter, generatedSystemManagerName, systemManagerClass, implementedInterfaces, classITraitsInit);
+            ClassGeneratorHelper classGen = new ClassGeneratorHelper(royaleProject, emitter, generatedSystemManagerName, systemManagerClass, implementedInterfaces, classITraitsInit);
 
             final FlexRSLInfo rslInfo = getRSLInfo();
             
             final FlexSplashScreenImage splashScreenImage = getSplashScreenImage();
             
             // Codegen various methods
-            if (iSWFContextReference.resolve(flexProject) != null && isFlexSDKInfo)
+            if (iSWFContextReference.resolve(royaleProject) != null && isFlexSDKInfo)
                 codegenCallInContextMethod(classGen, true);
-            codegenCreateMethod(classGen, ((DefinitionBase)mainApplicationClassDefinition).getMName(flexProject), isFlexSDKInfo);
+            codegenCreateMethod(classGen, ((DefinitionBase)mainApplicationClassDefinition).getMName(royaleProject), isFlexSDKInfo);
             codegenInfoMethod(classGen, 
-                    flexProject.getCompatibilityVersion(),
+                    royaleProject.getCompatibilityVersion(),
                     getMainClassQName(),
                     getPreloaderClassReference(),
                     getRuntimeDPIProviderClassReference(),
                     splashScreenImage,
                     getRootNode(),
                     getTargetAttributes(),
-                    flexProject.getLocales(),
+                    royaleProject.getLocales(),
                     frame1Info,
                     accessibleClassNames,
                     getFlexInitClassName(),

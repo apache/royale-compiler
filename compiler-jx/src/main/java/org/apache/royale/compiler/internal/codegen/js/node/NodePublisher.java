@@ -21,7 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.node;
 
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.internal.codegen.js.jsc.JSCPublisher;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class NodePublisher extends JSCPublisher
 {
     public boolean exportModule = false;
 
-    public NodePublisher(Configuration config, RoyaleProject project)
+    public NodePublisher(Configuration config, RoyaleJSProject project)
     {
         super(project, config);
     }

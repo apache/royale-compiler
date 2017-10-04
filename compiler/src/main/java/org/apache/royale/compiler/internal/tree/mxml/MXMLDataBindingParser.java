@@ -31,7 +31,7 @@ import org.apache.royale.compiler.internal.parsing.SourceFragment;
 import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.IProjectConfigVariables;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
@@ -376,7 +376,7 @@ class MXMLDataBindingParser
         Reader reader = new SourceFragmentsReader(sourceLocation.getSourcePath(), fragments.toArray(new ISourceFragment[0]));
         // IExpressionNode expressionNode = ASParser.parseDataBinding(workspace, reader, problems);
         IProjectConfigVariables projectConfigVariables =
-            ((FlexProject)project).getProjectConfigVariables();
+            ((RoyaleProject)project).getProjectConfigVariables();
         IExpressionNode expressionNode = ASParser.parseExpression(workspace, reader, problems, 
                             projectConfigVariables, sourceLocation);
 

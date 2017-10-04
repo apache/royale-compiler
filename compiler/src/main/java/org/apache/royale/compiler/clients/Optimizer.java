@@ -37,7 +37,7 @@ import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.targets.AppSWFTarget;
 import org.apache.royale.compiler.internal.targets.Target;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -216,7 +216,7 @@ public class Optimizer implements FlexTool
     public Optimizer()
     {
         workspace = new Workspace();
-        project = new FlexProject(workspace);
+        project = new RoyaleProject(workspace);
         problems = new ProblemQuery();
     }
 
@@ -348,7 +348,7 @@ public class Optimizer implements FlexTool
     }
 
     private Workspace workspace;
-    private FlexProject project;
+    private RoyaleProject project;
     private Configurator projectConfigurator;
     private OptimizerConfiguration config;
     private ITargetSettings targetSettings;

@@ -19,7 +19,7 @@
 
 package org.apache.royale.compiler.definitions;
 
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
@@ -140,7 +140,7 @@ public interface IVariableDefinition extends IDocumentableDefinition
      * specified type for the array elements. Otherwise, it returns
      * <code>null</code>.
      */
-    String getArrayElementType(FlexProject project);
+    String getArrayElementType(RoyaleProject project);
 
     /**
      * If this {@code IVariableDefinition} is of type
@@ -148,7 +148,7 @@ public interface IVariableDefinition extends IDocumentableDefinition
      * metadata, this method returns the specified type for the deferred
      * instance. Otherwise, it returns <code>null</code>.
      */
-    String getInstanceType(FlexProject project);
+    String getInstanceType(RoyaleProject project);
 
     /**
      * If this {@code IVariableDefinition} has
@@ -156,26 +156,26 @@ public interface IVariableDefinition extends IDocumentableDefinition
      * this method returns the specified property name.
      * Otherwise, it returns <code>null</code>
      */
-    String getPercentProxy(FlexProject project);
+    String getPercentProxy(RoyaleProject project);
 
     /**
      * If this {@code IVariableDefinition} has <code>[RichTextContent]</code>
      * metadata, this method returns <code>true</code> Otherwise, it returns
      * <code>false</code>
      */
-    boolean hasRichTextContent(FlexProject project);
+    boolean hasRichTextContent(RoyaleProject project);
 
     /**
      * If this {@code IVariableDefinition} has <code>[CollapseWhiteSpace]</code>
      * metadata, this method returns <code>true</code> Otherwise, it returns
      * <code>false</code>
      */
-    boolean hasCollapseWhiteSpace(FlexProject project);
+    boolean hasCollapseWhiteSpace(RoyaleProject project);
 
     /**
      * Returns <code>true</code> if this {@code IVariableDefinition} has
      * <code>[Inspectable(...)]</code> metadata that specifies
      * <code>format="Color"</code> Otherwise, returns <code>false</code>.
      */
-    boolean isColor(FlexProject project);
+    boolean isColor(RoyaleProject project);
 }

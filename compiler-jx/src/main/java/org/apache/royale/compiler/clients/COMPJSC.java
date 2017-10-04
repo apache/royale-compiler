@@ -203,11 +203,11 @@ public class COMPJSC extends MXMLJSC
 	                    	break targetloop;
 	                    }
 	                    break;
-	                case JS_FLEX:
-	                	System.out.println("COMPCJSCFlex");
-	                	COMPJSCFlex flex = new COMPJSCFlex();
-	                	lastCompiler = flex;
-	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                case JS_ROYALE:
+	                	System.out.println("COMPCJSCRoyale");
+	                	COMPJSCRoyale royale = new COMPJSCRoyale();
+	                	lastCompiler = royale;
+	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0)
 	                    {
 	                    	break targetloop;
@@ -518,7 +518,7 @@ public class COMPJSC extends MXMLJSC
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName

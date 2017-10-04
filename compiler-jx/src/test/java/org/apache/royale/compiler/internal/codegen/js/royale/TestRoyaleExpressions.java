@@ -26,7 +26,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
@@ -50,7 +50,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleProject(workspace, backend);
+        project = new RoyaleJSProject(workspace, backend);
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	try {
@@ -59,7 +59,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	((RoyaleProject)project).config = config;
+    	((RoyaleJSProject)project).config = config;
         super.setUp();
     }
 

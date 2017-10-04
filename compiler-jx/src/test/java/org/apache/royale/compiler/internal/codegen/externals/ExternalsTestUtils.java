@@ -58,10 +58,10 @@ public class ExternalsTestUtils
         MISSING_JS_FILE = FilenameNormalization.normalize(f);
 
         f = new File(
-        "../../../royale-typedefs/js/src/main/flex/AS3.as");
+        "../../../royale-typedefs/js/src/main/royale/AS3.as");
         if (!f.exists())
         	f = new File(
-            "../../../../royale-typedefs/js/src/main/flex/AS3.as");
+            "../../../../royale-typedefs/js/src/main/royale/AS3.as");
         // XXX AS3.as is a namespace needed to override toString in some classes
         AS3_NAMESPACE_FILE = FilenameNormalization.normalize(f);
 

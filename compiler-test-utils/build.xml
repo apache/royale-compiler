@@ -49,7 +49,7 @@
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
-    <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
     
@@ -80,7 +80,7 @@
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler-test-utils}/src/main/java"/>
-            <include name="org/apache/flex/utils/*.java"/>
+            <include name="org/apache/royale/utils/*.java"/>
             <classpath>
                 <pathelement location="${compiler-test-utils}/target/classes"/>
                 <fileset dir="${compiler-test-utils}/../compiler/lib/external" includes="**/*.jar"/>

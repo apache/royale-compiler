@@ -25,7 +25,7 @@ import org.apache.royale.compiler.clients.MXMLJSC;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.test.RoyaleTestBase;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
@@ -47,7 +47,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     public void setUp()
     {
         super.setUp();
-    	((RoyaleProject)project).config = new JSGoogConfiguration();
+    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
     }
 
     @Test

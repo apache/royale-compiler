@@ -19,7 +19,7 @@ header
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 /*
  * This file is generated from ASTreeAssembler.g
@@ -29,18 +29,18 @@ package org.apache.flex.compiler.internal.parsing.as;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.flex.compiler.tree.as.*;
-import org.apache.flex.compiler.workspaces.IWorkspace;
-import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.parsing.IASToken.ASTokenKind;
-import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
-import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
-import org.apache.flex.compiler.internal.tree.as.*;
-import org.apache.flex.compiler.internal.tree.as.metadata.*;
-import org.apache.flex.compiler.asdoc.IASParserASDocDelegate;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.*;
+import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IASToken.ASTokenKind;
+import org.apache.royale.compiler.tree.as.IContainerNode.ContainerType;
+import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.internal.tree.as.metadata.*;
+import org.apache.royale.compiler.asdoc.IASParserASDocDelegate;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.*;
 
 }
 
@@ -51,7 +51,7 @@ import org.apache.flex.compiler.problems.*;
  *
  * @see <a href="https://zerowing.corp.adobe.com/display/FlashPlayer/ActionScript+Language+Specification">ActionScript Language Syntax Specification</a>
  */
-class ASParser extends Parser("org.apache.flex.compiler.internal.parsing.as.BaseASParser");
+class ASParser extends Parser("org.apache.royale.compiler.internal.parsing.as.BaseASParser");
  
 options
 { 
@@ -678,7 +678,7 @@ packageDirective[ContainerNode c]
 	
 /**
  * Matches a package name such as:
- *     org.apache.flex
+ *     org.apache.royale
  *
  * A Whitespace or LineTerminator is allowed around a . in a PackageName. 
  * For example, the following is a syntactically valid

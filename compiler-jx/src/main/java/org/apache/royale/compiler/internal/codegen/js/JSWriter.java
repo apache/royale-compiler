@@ -32,14 +32,14 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.driver.js.IJSBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 
 public class JSWriter implements IJSWriter
 {
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
 
     protected List<ICompilerProblem> problems;
 
@@ -61,7 +61,7 @@ public class JSWriter implements IJSWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public JSWriter(RoyaleProject project, List<ICompilerProblem> problems,
+    public JSWriter(RoyaleJSProject project, List<ICompilerProblem> problems,
             ICompilationUnit compilationUnit, boolean enableDebug)
     {
         this.project = project;

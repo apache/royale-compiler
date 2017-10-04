@@ -23,7 +23,7 @@ import org.apache.royale.compiler.clients.JSConfiguration;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.royale.compiler.visitor.IBlockWalker;
@@ -46,7 +46,7 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
         boolean sourceMap = false;
 
         IBlockWalker walker = getWalker();
-        RoyaleProject project = (RoyaleProject) walker.getProject();
+        RoyaleJSProject project = (RoyaleJSProject) walker.getProject();
         if (project != null)
         {
             JSConfiguration config = project.config;

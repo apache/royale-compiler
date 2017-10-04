@@ -41,7 +41,7 @@ import org.apache.royale.compiler.problems.OverlappingSourcePathProblem;
 import org.apache.royale.compiler.problems.SourcePathNotFoundProblem;
 import org.apache.royale.compiler.problems.UnableToListFilesProblem;
 import org.apache.royale.compiler.projects.IASProject;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.utils.DirectoryID;
 import org.apache.royale.utils.FilenameNormalization;
@@ -203,8 +203,8 @@ public final class SourcePathManager
                     }
 
                     String locale = null;
-                    if (compilerProject instanceof IFlexProject)
-                        locale = ((IFlexProject)compilerProject).getResourceLocale(sourcePathEntry.getAbsolutePath());
+                    if (compilerProject instanceof IRoyaleProject)
+                        locale = ((IRoyaleProject)compilerProject).getResourceLocale(sourcePathEntry.getAbsolutePath());
 
                     accumulateQNameFiles(filesInPath, sourcePathEntry, "", locale, 
                     problems, order);
@@ -355,8 +355,8 @@ public final class SourcePathManager
             if (qname != null)
             {
                 String locale = null;
-                if(compilerProject instanceof IFlexProject)
-                    locale = ((IFlexProject)compilerProject).getResourceLocale(dir.getFile().getAbsolutePath());
+                if(compilerProject instanceof IRoyaleProject)
+                    locale = ((IRoyaleProject)compilerProject).getResourceLocale(dir.getFile().getAbsolutePath());
                 
                 QNameFile newQNameFile = new QNameFile(qname, f, locale, order);
                 sourcePathEntry.getValue().add(newQNameFile);
@@ -614,8 +614,8 @@ public final class SourcePathManager
             if (qname != null)
             {
                 String locale = null;
-                if(compilerProject instanceof IFlexProject)
-                    locale = ((IFlexProject)compilerProject).getResourceLocale(dir.getFile().getAbsolutePath());
+                if(compilerProject instanceof IRoyaleProject)
+                    locale = ((IRoyaleProject)compilerProject).getResourceLocale(dir.getFile().getAbsolutePath());
                 
                 QNameFile newQNameFile = new QNameFile(qname, f, locale, order);
                 sourcePathEntry.getValue().add(newQNameFile);

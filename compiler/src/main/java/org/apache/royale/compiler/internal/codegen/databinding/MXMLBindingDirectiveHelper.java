@@ -38,7 +38,7 @@ import org.apache.royale.compiler.definitions.references.IResolvedQualifiersRefe
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.targets.FlexAppSWFTarget;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAsNode;
@@ -609,7 +609,7 @@ public class MXMLBindingDirectiveHelper
     {
         // List of SDK classed we depend on
         // TODO: generated complete and minimal list dynamically.
-        FlexProject project = host.getProject();
+        RoyaleProject project = host.getProject();
         
         String[] depends = {
           project.getBindingClass(),

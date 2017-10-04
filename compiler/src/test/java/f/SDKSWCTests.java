@@ -61,7 +61,7 @@ public class SDKSWCTests
 		assertNotNull("AIR_HOME not set in unittest.properties", env.AIRSDK);
         assertNotNull("TLF_HOME not set in unittest.properties", env.TLF);
 		
-		System.setProperty("flexlib", env.SDK + "/frameworks");
+		System.setProperty("royalelib", env.SDK + "/frameworks");
 		
 		String output = null;
 		String outputSwcName = projectName;

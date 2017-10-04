@@ -39,15 +39,15 @@ import org.apache.royale.compiler.internal.config.SystemPropertyConfigurator;
 import org.apache.royale.compiler.internal.config.TargetSettings;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.config.localization.ResourceBundleLocalizer;
-import org.apache.royale.compiler.internal.projects.FlexProject;
-import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.SourcePathManager;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.problems.ANELibraryNotAllowedProblem;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.workspaces.IWorkspace;
@@ -231,7 +231,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         excludes.add("compiler.show-shadowed-device-font-warnings");
         excludes.add("compiler.show-binding-warnings");
         excludes.add("compiler.verbose-stacktraces");
-        excludes.add("flex");
+        excludes.add("royale");
     }
     
     /**
@@ -256,7 +256,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         keepSizeReport = false;
         keepConfigurationReport = false;
         reportMissingLibraries = true;
-        warnOnFlexOnlyOptionUsage = false;
+        warnOnRoyaleOnlyOptionUsage = false;
         isConfigurationDirty = true;
         configurationDefaultVariable = ICompilerSettingsConstants.FILE_SPECS_VAR; // the default variable of the configuration.
         configurationPathResolver = new ConfigurationPathResolver(System.getProperty("user.dir"));
@@ -276,7 +276,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     private boolean keepLinkReport, keepSizeReport, keepConfigurationReport;
     private String mainDefinition;
     private boolean reportMissingLibraries;
-    private boolean warnOnFlexOnlyOptionUsage;
+    private boolean warnOnRoyaleOnlyOptionUsage;
     private List<String> loadedConfigFiles;
     private List<String> missingConfigFiles;
     
@@ -287,7 +287,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     private Collection<ICompilerProblem> configurationProblems;
     private boolean extrasRequireDefaultVariable;
     private IPathResolver configurationPathResolver;
-    private IFlexProject project;
+    private IRoyaleProject project;
 
     // 
     // IConfigurator related methods
@@ -308,7 +308,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
     
     @Override
-    public boolean applyToProject(IFlexProject project)
+    public boolean applyToProject(IRoyaleProject project)
     {
     	this.project = project;
         final IWorkspace workspace = project.getWorkspace();
@@ -321,18 +321,18 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             if (configuration == null)
                 return false;
             
-            if (project instanceof FlexProject)
+            if (project instanceof RoyaleProject)
             {
-                FlexProject flexProject = (FlexProject)project;
+                RoyaleProject royaleProject = (RoyaleProject)project;
     
-                FlexProjectConfigurator.configure(flexProject, configuration);
-                setupCompatibilityVersion(flexProject);
-                setupConfigVariables(flexProject);
-                setupLocaleSettings(flexProject);
-                setupServices(flexProject);
-                setupThemeFiles(flexProject);
-                setupFlex(flexProject);
-                setupCodegenOptions(flexProject);
+                RoyaleProjectConfigurator.configure(royaleProject, configuration);
+                setupCompatibilityVersion(royaleProject);
+                setupConfigVariables(royaleProject);
+                setupLocaleSettings(royaleProject);
+                setupServices(royaleProject);
+                setupThemeFiles(royaleProject);
+                setupFlex(royaleProject);
+                setupCodegenOptions(royaleProject);
             }
             
             project.setRuntimeSharedLibraryPath(getRSLSettingsFromConfiguration(configuration));
@@ -351,14 +351,14 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         return success;
     }
 
-    private void setupFlex(FlexProject flexProject)
+    private void setupFlex(RoyaleProject royaleProject)
     {
-        flexProject.setFlex(configuration.isFlex());
+        royaleProject.setFlex(configuration.isFlex());
     }
 
-    private void setupCodegenOptions(FlexProject flexProject)
+    private void setupCodegenOptions(RoyaleProject royaleProject)
     {
-        flexProject.setEnableInlining(configuration.isInliningEnabled());
+        royaleProject.setEnableInlining(configuration.isInliningEnabled());
     }
 
     private String computeQNameForTargetFile()
@@ -551,7 +551,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         assert configurationPathResolver != null : "No configuration path resolver was set.";
         configuration.setPathResolver(configurationPathResolver);
         configuration.setReportMissingCompilerLibraries(reportMissingLibraries);
-        configuration.setWarnOnFlexOnlyOptionUsage(warnOnFlexOnlyOptionUsage);
+        configuration.setWarnOnRoyaleOnlyOptionUsage(warnOnRoyaleOnlyOptionUsage);
     }
 
     /**
@@ -569,7 +569,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     /**
      * Setup theme files.
      */
-    protected void setupThemeFiles(FlexProject project)
+    protected void setupThemeFiles(RoyaleProject project)
     {
         project.setThemeFiles(toFileSpecifications(configuration.getCompilerThemeFiles(), 
                 project.getWorkspace()));
@@ -592,7 +592,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * @param project
      * @return true if successful, false if there is an error.
      */
-    protected boolean setupProjectLibraries(IFlexProject project)
+    protected boolean setupProjectLibraries(IRoyaleProject project)
     {
         LinkedHashSet<File> libraries = new LinkedHashSet<File>();
         
@@ -625,7 +625,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * @param externalLibraryFiles the external library path.
      * @return true if successful, false if there is an error.
      */
-    private boolean validateNoANEFiles(IFlexProject project, 
+    private boolean validateNoANEFiles(IRoyaleProject project, 
             List<File>externalLibraryFiles)
     {
         // Get all the library files in the project.
@@ -672,7 +672,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * Setup {@code -compatibility-version} level. Falcon only support Flex 3+.
      * @param project 
      */
-    protected void setupCompatibilityVersion(FlexProject project)
+    protected void setupCompatibilityVersion(RoyaleProject project)
     {
         final int compatibilityVersion = configuration.getCompilerMxmlCompatibilityVersion();
         if (compatibilityVersion < Configuration.MXML_VERSION_3_0)
@@ -688,7 +688,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      *     -context-root
      * 
      */
-    protected void setupServices(FlexProject project)
+    protected void setupServices(RoyaleProject project)
     {
         if (configuration.getCompilerServices() != null)
             project.setServicesXMLPath(configuration.getCompilerServices().getPath(), configuration.getCompilerContextRoot());
@@ -699,7 +699,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * 
      * @return true if successful, false otherwise.
      */
-    protected boolean setupSources(IFlexProject project)
+    protected boolean setupSources(IRoyaleProject project)
     {
         // -source-path
         List<String> sourcePath = new ArrayList<String>();
@@ -793,14 +793,14 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         return false;
     }
 
-    protected void setupConfigVariables(IFlexProject project)
+    protected void setupConfigVariables(IRoyaleProject project)
     {
         final Map<String, String> compilerDefine = configuration.getCompilerDefine();
         if (compilerDefine != null)
             project.setDefineDirectives(compilerDefine);
     }
 
-    protected void setupNamespaces(IFlexProject project)
+    protected void setupNamespaces(IRoyaleProject project)
     {
         final List<? extends IMXMLNamespaceMapping> configManifestMappings =
                 project.getCompilerNamespacesManifestMappings(configuration);
@@ -813,7 +813,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     /**
      * Setups the locale related settings.
      */
-    protected void setupLocaleSettings(IFlexProject project)
+    protected void setupLocaleSettings(IRoyaleProject project)
     {
         project.setLocales(configuration.getCompilerLocales());
         project.setLocaleDependentResources(configuration.getLocaleDependentSources());
@@ -912,10 +912,10 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             // the default style loading in loadDefaults().  
             byPassConfigurationsRequiringFlexSDK();
             
-            SystemPropertyConfigurator.load(cfgbuf, "flex");
+            SystemPropertyConfigurator.load(cfgbuf, "royale");
 
             // Parse the command line a first time, to peak at stuff like
-            // "flexlib" and "load-config".  The first parse is thrown
+            // "royalelib" and "load-config".  The first parse is thrown
             // away after that and we intentionally parse a second time
             // below.  See note below.
             CommandLineConfigurator.parse(cfgbuf, configurationDefaultVariable, argsArray);
@@ -1014,7 +1014,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      */
     protected void byPassConfigurationsRequiringFlexSDK() throws ConfigurationException
     {
-        if (System.getProperty("flexlib") == null &&
+        if (System.getProperty("royalelib") == null &&
             System.getProperty("application.home") == null)
         {
             cfgbuf.clearVar("load-config", null, -1);
@@ -1028,14 +1028,14 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      */
     protected void overrideDefaults() throws ConfigurationException
     {
-        String flexlib = cfgbuf.getToken("flexlib");
-        if (flexlib == null)
+        String royalelib = cfgbuf.getToken("royalelib");
+        if (royalelib == null)
         {
             final String appHome = System.getProperty("application.home");
             if (appHome == null)
-                cfgbuf.setToken("flexlib", ".");
+                cfgbuf.setToken("royalelib", ".");
             else
-                cfgbuf.setToken("flexlib", appHome + File.separator + "frameworks");
+                cfgbuf.setToken("royalelib", appHome + File.separator + "frameworks");
         }
 
         // Framework Type: halo, gumbo, interop...
@@ -1045,7 +1045,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
 
         String configname = cfgbuf.getToken("configname");
         if (configname == null)
-            cfgbuf.setToken("configname", "flex");
+            cfgbuf.setToken("configname", "royale");
 
         String buildNumber = cfgbuf.getToken("build.number");
         if (buildNumber == null)
@@ -1093,7 +1093,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                                     cfgbuf,
                                     configFile,
                                     new File(configFile.getPath()).getParent(),
-                                    "flex-config",
+                                    "royale-config",
                                     false))
                            {
                                success = false;
@@ -1190,7 +1190,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                                 cfgbuf,
                                 projectFile,
                                 new File(project).getParent(),
-                                "flex-config",
+                                "royale-config",
                                 false))
                         {
                             success = false;
@@ -1297,9 +1297,9 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                         val = "\"\"";
                     }
                     
-                    /* note '+=': defines from all flex-config.xmls will be collected (just '=' would
+                    /* note '+=': defines from all royale-config.xmls will be collected (just '=' would
                      * always ignore all but the most recent definitions), hopefully in a meaningful
-                     * order (flex-config, user-config, commandline) since we now allow re-definitions.
+                     * order (royale-config, user-config, commandline) since we now allow re-definitions.
                      */
                     buffer.add(COMPILER_DEFINE + PLUS_EQUALS_STRING + name + COMMA_STRING + val);
                 }
@@ -1695,7 +1695,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                 {
                 }
             }
-            else if ("flex".equals(var))
+            else if ("royale".equals(var))
             {
                 try
                 {
@@ -2110,9 +2110,9 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * @param value True to enable warnings, false to disable warnings. The
      * default is to not warn.
      */
-    public void setWarnOnFlexOnlyOptionUsage(boolean value)
+    public void setWarnOnRoyaleOnlyOptionUsage(boolean value)
     {
-        this.warnOnFlexOnlyOptionUsage = value;
+        this.warnOnRoyaleOnlyOptionUsage = value;
         
         isConfigurationDirty = true;
     }
@@ -2756,7 +2756,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
 
     /**
-     * Loads a file containing configuration options. The file format follows the format of <code>flex-config.xml</code>.
+     * Loads a file containing configuration options. The file format follows the format of <code>royale-config.xml</code>.
      * This is equivalent to using <code>mxmlc/compc --load-config</code>.
      * 
      * @param file an instance of <code>java.io.File</code>
@@ -3077,7 +3077,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * Defines a token. mxmlc and compc support token substitutions. For example,
      * 
      * <pre>
-     * mxmlc +flexlib=path1 +foo=bar --var=${foo}
+     * mxmlc +royalelib=path1 +foo=bar --var=${foo}
      * </pre>
      * 
      * <code>var=bar</code> after the substitution of <code>${foo}</code>.
@@ -3324,7 +3324,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         cloneConfig.keepSizeReport = keepSizeReport;
         cloneConfig.keepConfigurationReport = keepConfigurationReport;
         cloneConfig.reportMissingLibraries = reportMissingLibraries;
-        cloneConfig.warnOnFlexOnlyOptionUsage = warnOnFlexOnlyOptionUsage;
+        cloneConfig.warnOnRoyaleOnlyOptionUsage = warnOnRoyaleOnlyOptionUsage;
         cloneConfig.mainDefinition = mainDefinition;
         cloneConfig.isConfigurationDirty = true;
         

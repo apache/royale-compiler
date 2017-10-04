@@ -37,7 +37,7 @@ import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
-import org.apache.royale.compiler.internal.targets.FlexFontInfo;
+import org.apache.royale.compiler.internal.targets.RoyaleFontInfo;
 import org.apache.royale.compiler.internal.targets.TagSorter;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorNodeBase;
 import org.apache.royale.compiler.internal.tree.as.BlockNode;
@@ -102,14 +102,14 @@ public class MovieTranscoder extends ScalableTranscoder
         super(data, workspace);
         this.symbol = null;
         this.symbolTag = null;
-        this.flexFontInfo = null;
+        this.royaleFontInfo = null;
         this.swfWidth = 0;
         this.swfHeight = 0;
     }
 
     private String symbol;
     private ICharacterTag symbolTag;
-    private FlexFontInfo flexFontInfo;
+    private RoyaleFontInfo royaleFontInfo;
     private int swfWidth;
     private int swfHeight;
 
@@ -162,11 +162,11 @@ public class MovieTranscoder extends ScalableTranscoder
 
             if (symbolTag instanceof DefineFont2Tag)
             {
-                flexFontInfo = new FlexFontInfo(((DefineFont2Tag)symbolTag).isFontFlagsBold(), ((DefineFont2Tag)symbolTag).isFontFlagsItalic());
+                royaleFontInfo = new RoyaleFontInfo(((DefineFont2Tag)symbolTag).isFontFlagsBold(), ((DefineFont2Tag)symbolTag).isFontFlagsItalic());
             }
             else if (symbolTag instanceof DefineFont4Tag)
             {
-                flexFontInfo = new FlexFontInfo(((DefineFont4Tag)symbolTag).isFontFlagsBold(), ((DefineFont4Tag)symbolTag).isFontFlagsItalic());                
+                royaleFontInfo = new RoyaleFontInfo(((DefineFont4Tag)symbolTag).isFontFlagsBold(), ((DefineFont4Tag)symbolTag).isFontFlagsItalic());                
             }
         }
 
@@ -359,11 +359,11 @@ public class MovieTranscoder extends ScalableTranscoder
      * Get the font info if the SWF being embedded is a font, or null if not
      * a font.
      * 
-     * @return FlexFontInfo for the font, or null.
+     * @return RoyaleFontInfo for the font, or null.
      */
-    public FlexFontInfo getFlexFontInfo()
+    public RoyaleFontInfo getRoyaleFontInfo()
     {
-        return flexFontInfo;
+        return royaleFontInfo;
     }
 
     private SWFReader getSWFReader(Collection<ICompilerProblem> problems)

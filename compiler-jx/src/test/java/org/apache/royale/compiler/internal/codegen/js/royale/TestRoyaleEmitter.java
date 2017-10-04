@@ -25,7 +25,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogEmitter;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     public void setUp()
     {
 		backend = createBackend();
-		project = new RoyaleProject(workspace, backend);
+		project = new RoyaleJSProject(workspace, backend);
 
         super.setUp();
     }

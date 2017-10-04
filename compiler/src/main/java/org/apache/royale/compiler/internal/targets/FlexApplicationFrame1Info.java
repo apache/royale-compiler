@@ -32,7 +32,7 @@ import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.units.ASCompilationUnit;
 import org.apache.royale.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
@@ -54,14 +54,14 @@ import com.google.common.collect.ImmutableSet;
  */
 final class FlexApplicationFrame1Info extends FlexFrame1Info
 {
-    FlexApplicationFrame1Info(FlexProject flexProject,
+    FlexApplicationFrame1Info(RoyaleProject royaleProject,
             ITargetSettings targetSettings,
             IClassDefinition mainApplicationClassDefinition,
             boolean generateSystemManagerAndFlexInit,
             boolean isFlexInfo,
             ImmutableSet<ICompilationUnit> builtCompilationUnits) throws InterruptedException
     {
-        super(flexProject);
+        super(royaleProject);
         this.targetSettings = targetSettings;
         this.mainApplicationClassDefinition = mainApplicationClassDefinition;
         this.generateSystemManagerAndFlexInit = generateSystemManagerAndFlexInit;
@@ -97,9 +97,9 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
      * {@link FlexFrame1Info} ), this class collects:
      * <ul>
      * <li>Mix-in class names</li>
-     * <li>File names of SWCs that contributed to code the flex application SWF</li>
+     * <li>File names of SWCs that contributed to code the royale application SWF</li>
      * <li>Problems about application sub-classes that are not the root class of
-     * a flex application SWF</li>
+     * a royale application SWF</li>
      * </ul>
      */
     protected void collectFromCompilationUnit(ICompilationUnit cu) throws InterruptedException
@@ -194,7 +194,7 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
                 final ITypeDefinition typeDef = (ITypeDefinition)def;
                 // If the mainClass extends this class then don't report a problem
                 assert mainApplicationClassDefinition instanceof ITypeDefinition;
-                if (!mainApplicationClassDefinition.isInstanceOf(typeDef, flexProject))
+                if (!mainApplicationClassDefinition.isInstanceOf(typeDef, royaleProject))
                 {
                     problems.add(new CompiledAsAComponentProblem(cu.getName(), 
                             mainApplicationClassDefinition.getBaseName()));
@@ -225,11 +225,11 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
         ApplicationAndModuleDefinitions()
         {
             IResolvedQualifiersReference sparkAppRef = ReferenceFactory.packageQualifiedReference(
-                    flexProject.getWorkspace(), IMXMLTypeConstants.SparkApplication);
+                    royaleProject.getWorkspace(), IMXMLTypeConstants.SparkApplication);
             IResolvedQualifiersReference haloAppRef = ReferenceFactory.packageQualifiedReference(
-                  flexProject.getWorkspace(), IMXMLTypeConstants.HaloApplication);
+                  royaleProject.getWorkspace(), IMXMLTypeConstants.HaloApplication);
             IResolvedQualifiersReference iModuleRef = ReferenceFactory.packageQualifiedReference(
-                  flexProject.getWorkspace(), IMXMLTypeConstants.IModule);
+                  royaleProject.getWorkspace(), IMXMLTypeConstants.IModule);
         
             sparkApplication = resolveType(sparkAppRef);
             haloApplication = resolveType(haloAppRef);
@@ -261,14 +261,14 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
                 return false;
             }
                 
-                return ((sparkApplication != null && typeDef.isInstanceOf(sparkApplication, flexProject)) ||
-                        (iModule != null && typeDef.isInstanceOf(iModule, flexProject)) ||
-                        (haloApplication != null && typeDef.isInstanceOf(iModule, flexProject)));
+                return ((sparkApplication != null && typeDef.isInstanceOf(sparkApplication, royaleProject)) ||
+                        (iModule != null && typeDef.isInstanceOf(iModule, royaleProject)) ||
+                        (haloApplication != null && typeDef.isInstanceOf(iModule, royaleProject)));
         }
         
         private ITypeDefinition resolveType(IResolvedQualifiersReference ref)
         {
-            IDefinition def = ref.resolve(flexProject);
+            IDefinition def = ref.resolve(royaleProject);
             if (!(def instanceof ITypeDefinition))
                 return null;
             return (ITypeDefinition)def;

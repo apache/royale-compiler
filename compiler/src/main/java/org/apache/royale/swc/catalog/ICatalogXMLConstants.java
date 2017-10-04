@@ -53,7 +53,7 @@ public interface ICatalogXMLConstants
     static final String TAG_FEATURES = "features";
     static final String TAG_FILE = "file";
     static final String TAG_FILES = "files";
-    static final String TAG_FLEX = "flex";
+    static final String TAG_FLEX = "royale";
     static final String TAG_KEEP_AS3_METADATA = "keep-as3-metadata";
     static final String TAG_LIBRARIES = "libraries";
     static final String TAG_LIBRARY = "library";

@@ -47,7 +47,7 @@ import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -85,7 +85,7 @@ public class TestBase implements ITestBase
     protected static EnvProperties env = EnvProperties.initiate();
 
     protected static Workspace workspace = new Workspace();
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
 
     protected IBackend backend;
     protected ASFilterWriter writer;
@@ -118,7 +118,7 @@ public class TestBase implements ITestBase
         if (project == null)
         {
             backend = createBackend();
-        	project = new RoyaleProject(workspace, backend);
+        	project = new RoyaleJSProject(workspace, backend);
         	project.setProxyBaseClass("flash.utils.Proxy");
         }
         project.setProblems(errors);
@@ -491,7 +491,7 @@ public class TestBase implements ITestBase
 
         String fileData = readCode(new File(path));
         int reqidx = fileData.indexOf(appendString.toString());
-	    if (reqidx == -1 && project instanceof RoyaleProject && ((RoyaleProject)project).needLanguage)
+	    if (reqidx == -1 && project instanceof RoyaleJSProject && ((RoyaleJSProject)project).needLanguage)
         {
 	    	boolean afterProvide = false;
             reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -519,7 +519,7 @@ public class TestBase implements ITestBase
         appendStringXML.append(ASEmitterTokens.SEMICOLON.getToken());
         appendStringXML.append("\n");
 
-        if (project instanceof RoyaleProject && ((RoyaleProject)project).needXML)
+        if (project instanceof RoyaleJSProject && ((RoyaleJSProject)project).needXML)
         {
 	        fileData = readCode(new File(path));
 	        reqidx = fileData.indexOf(appendStringXML.toString());

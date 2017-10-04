@@ -38,7 +38,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -234,9 +234,9 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     	exportSymbols = new ArrayList<String>();
 		ICompilerProject project = getWalker().getProject();
     	Set<String> exportMetadata = Collections.<String> emptySet();
-    	if (project instanceof RoyaleProject)
+    	if (project instanceof RoyaleJSProject)
     	{
-    		RoyaleProject fjsp = ((RoyaleProject)project);
+    		RoyaleJSProject fjsp = ((RoyaleJSProject)project);
     		if (fjsp.config != null)
     			exportMetadata = fjsp.config.getCompilerKeepCodeWithMetadata();
     	}
@@ -863,7 +863,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     
     private void writeMetaData(IMetaTagNode[] tags)
     {
-    	JSGoogConfiguration config = ((RoyaleProject)getWalker().getProject()).config;
+    	JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
     	Set<String> allowedNames = config.getCompilerKeepAs3Metadata();
     	
 	    // metadata: function() {

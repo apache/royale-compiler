@@ -31,7 +31,7 @@ import org.apache.royale.compiler.common.Multiname;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.config.QNameNormalization;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.ResourceBundleSourceFileHandler;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
@@ -153,7 +153,7 @@ public class ResourceBundleUtils
             bundleName, project, refCompUnit.getAbsoluteFilename(), location, errors);
         for (Map.Entry<String, ICompilationUnit> entry : qualifiedNameMap.entrySet())
         {
-            ((FlexProject)project).addDependency(refCompUnit, entry.getValue(), 
+            ((RoyaleProject)project).addDependency(refCompUnit, entry.getValue(), 
                     DependencyType.EXPRESSION, entry.getKey());
         }
     }
@@ -196,12 +196,12 @@ public class ResourceBundleUtils
         
         Map<String, ICompilationUnit> compilationUnits = new HashMap<String, ICompilationUnit>();
         
-        if (project instanceof FlexProject)
+        if (project instanceof RoyaleProject)
         {
             final String normalizedBundleName = QNameNormalization.normalize(bundleName);
-            final FlexProject flexProject = (FlexProject)project;
-            final ASProjectScope scope = flexProject.getScope();
-            final Collection<String> locales = flexProject.getLocales();
+            final RoyaleProject royaleProject = (RoyaleProject)project;
+            final ASProjectScope scope = royaleProject.getScope();
+            final Collection<String> locales = royaleProject.getLocales();
             
             if(locales.size() == 0)
             {
@@ -321,8 +321,8 @@ public class ResourceBundleUtils
                     if (def instanceof ClassDefinition)
                     {
                         //check whether class extends ResourceBundle
-                        if (project instanceof FlexProject &&
-                           ((ClassDefinition)def).isInstanceOf(((FlexProject)project).getResourceBundleClass(), project))
+                        if (project instanceof RoyaleProject &&
+                           ((ClassDefinition)def).isInstanceOf(((RoyaleProject)project).getResourceBundleClass(), project))
                         {
                             return true;
                         }

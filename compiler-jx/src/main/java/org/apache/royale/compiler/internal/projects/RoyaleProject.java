@@ -66,7 +66,7 @@ import com.google.common.collect.ImmutableList;
  * @author aharui
  *
  */
-public class RoyaleProject extends FlexProject
+public class RoyaleJSProject extends FlexProject
 {
 
     /**
@@ -74,7 +74,7 @@ public class RoyaleProject extends FlexProject
      *
      * @param workspace The {@code Workspace} containing this project.
      */
-    public RoyaleProject(Workspace workspace, IBackend backend)
+    public RoyaleJSProject(Workspace workspace, IBackend backend)
     {
         super(workspace);
         this.backend = backend;
@@ -430,7 +430,7 @@ public class RoyaleProject extends FlexProject
         int n = mqlist.size();
         if (n > 0)
         {
-            if (mqlist.get(0).toString().equals("-flex-flash"))
+            if (mqlist.get(0).toString().equals("-royale-swf"))
                 return false;
         }
 		return true;

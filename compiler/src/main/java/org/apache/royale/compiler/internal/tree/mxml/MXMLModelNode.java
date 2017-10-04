@@ -19,7 +19,7 @@
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLData;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
@@ -88,7 +88,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
     @Override
     protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         String qname = project.getModelClass();
         setClassReference(project, qname);
 

@@ -23,7 +23,7 @@ import java.io.StringWriter;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
@@ -187,7 +187,7 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
         // An old-style <XML> tag introduces a dependency on mx.utils.XMLUtils.
         if (xmlType == XML_TYPE.OLDXML)
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             builder.addExpressionDependency(project.getXMLUtilClass());
         }
     }

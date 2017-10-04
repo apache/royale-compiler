@@ -33,7 +33,7 @@ import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVar
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
@@ -170,9 +170,9 @@ public class FieldEmitter extends JSSubEmitter implements
         	}
             boolean defaultInitializers = false;
             ICompilerProject project = getProject();
-            if(project instanceof RoyaleProject)
+            if(project instanceof RoyaleJSProject)
             {
-                RoyaleProject fjsProject = (RoyaleProject) project;
+                RoyaleJSProject fjsProject = (RoyaleJSProject) project;
                 if(fjsProject.config != null)
                 {
                     defaultInitializers = fjsProject.config.getJsDefaultInitializers();

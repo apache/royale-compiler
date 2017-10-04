@@ -168,13 +168,13 @@ public class StAXCatalogReader implements ICatalogXMLConstants
                 }
                 else if (tagName.equals(TAG_FLEX))
                 {
-                    final String flexVersion = reader.getAttributeValue(null, ATTR_VERSION);
+                    final String royaleVersion = reader.getAttributeValue(null, ATTR_VERSION);
                     final String minSupportedVersion = reader.getAttributeValue(null, ATTR_MINIMUM_SUPPORTED_VERSION);
-                    final String flexBuild = reader.getAttributeValue(null, ATTR_BUILD);
+                    final String royaleBuild = reader.getAttributeValue(null, ATTR_BUILD);
                     ISWCVersion swcVersion = swc.getVersion();
-                    swcVersion.setFlexVersion(flexVersion);
-                    swcVersion.setFlexMinSupportedVersion(minSupportedVersion);
-                    swcVersion.setFlexBuild(flexBuild);
+                    swcVersion.setRoyaleVersion(royaleVersion);
+                    swcVersion.setRoyaleMinSupportedVersion(minSupportedVersion);
+                    swcVersion.setFlexBuild(royaleBuild);
                 }
                 else if (tagName.equals(TAG_SWC))
                 {

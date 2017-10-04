@@ -53,7 +53,7 @@ import org.apache.royale.compiler.internal.fxg.dom.richtext.TabNode;
 import org.apache.royale.compiler.internal.fxg.dom.richtext.TextLayoutFormatNode;
 import org.apache.royale.compiler.internal.fxg.dom.types.BlendMode;
 import org.apache.royale.compiler.internal.fxg.dom.types.MaskType;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.problems.FXGDefinitionNotFoundProblem;
 import org.apache.royale.compiler.problems.FXGUndefinedPropertyProblem;
@@ -1050,7 +1050,7 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
                 String attribValue = entry.getValue();
                 String thisAttrib = null;
                 
-                IDefinition propertyDefinition = ((FlexProject)project).resolveProperty(type, attribName);
+                IDefinition propertyDefinition = ((RoyaleProject)project).resolveProperty(type, attribName);
                 if (propertyDefinition != null) //is it a property?
                 {
                     ITypeDefinition propertyType = propertyDefinition.resolveType(project);
@@ -1065,7 +1065,7 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
                          thisAttrib = attribName + " = " + attribValue;
                     }
                 }
-                else if (((FlexProject)project).resolveStyle(type, attribName) != null) //is it a style?
+                else if (((RoyaleProject)project).resolveStyle(type, attribName) != null) //is it a style?
                 {
                     thisAttrib = "setStyle(\"" + attribName + "\", \"" + attribValue + "\")";
                 }

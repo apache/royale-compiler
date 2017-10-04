@@ -43,14 +43,14 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.ManifestProblem;
 import org.apache.royale.compiler.common.XMLName;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.swc.ISWCComponent;
 import org.apache.royale.swc.ISWC;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 /**
- * Each {@code FlexProject} has an {@code MXMLManifestManager} to resolve MXML tags to ActionScript classes,
+ * Each {@code RoyaleProject} has an {@code MXMLManifestManager} to resolve MXML tags to ActionScript classes,
  * using the <component> tags inside SWCs' catalog.xml files and any manifest files associated
  * with the project.
  * This manager must be recreated whenever the library path, or a manifest file, changes.
@@ -74,10 +74,10 @@ public class MXMLManifestManager implements IMXMLManifestManager
     /**
      * Constructor.
      * 
-     * @param project The {@code FlexProject} for which this manifest manager
+     * @param project The {@code RoyaleProject} for which this manifest manager
      * provides MXML-tag-to-ActionScript-classname mappings.
      */
-    public MXMLManifestManager(FlexProject project)
+    public MXMLManifestManager(RoyaleProject project)
     {
         // Loop over all the SWCs on the library path.
         for (ISWC swc : project.getLibraries())
@@ -212,7 +212,7 @@ public class MXMLManifestManager implements IMXMLManifestManager
         }        
     }
     
-    private void addManifest(FlexProject project, String uri, String manifestFileName)
+    private void addManifest(RoyaleProject project, String uri, String manifestFileName)
     {
         Document manifestDocument = null;
         

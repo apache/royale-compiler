@@ -37,7 +37,7 @@ import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
@@ -107,7 +107,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
 
         if (attribute.isSpecialAttribute(ATTRIBUTE_TYPE))
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             IDefinition def = resolveElementType(value, project);
 
             if (def instanceof ITypeDefinition)
@@ -148,7 +148,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
      * Helper method to convert the type string into an IDefinition. This method
      * will handle nested vectors, like a Vector of Vectors of Vectors of Foo.
      */
-    private IDefinition resolveElementType(String value, FlexProject project)
+    private IDefinition resolveElementType(String value, RoyaleProject project)
     {
         IDefinition def = null;
         int dotLessIdx = value.indexOf(DOT_LESS_THAN_ESCAPED);
@@ -199,7 +199,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
                                    IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         String tagName = builder.getFileScope().resolveTagToQualifiedName(childTag);
         IDefinition definition = project.getScope().findDefinitionByName(tagName);
         if (definition instanceof ClassDefinition)
@@ -227,7 +227,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
             List<IMXMLUnitData> contentUnits)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         ITypeDefinition typeDef = defaultPropertyDefinition.resolveType(project);
         
@@ -287,7 +287,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
         // dependent on the compilation unit for the class or interface specified by 'type'.
         if (type != null)
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
 
             ITypeDefinition t = type;
             // for Vectors we want to create a dependency on the element type - we don't

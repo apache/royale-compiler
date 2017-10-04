@@ -37,7 +37,7 @@ import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -67,7 +67,7 @@ public class TestExternalsJSCompile
     private static File jsSWCFile = new File(testAdapter.getTempDir(), "externals/bin/JS.swc");
 
     protected static Workspace workspace = new Workspace();
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
     private ArrayList<ICompilerProblem> errors;
 
     private RoyaleBackend backend;
@@ -99,7 +99,7 @@ public class TestExternalsJSCompile
 
         backend = new RoyaleBackend();
         if (project == null)
-            project = new RoyaleProject(workspace, backend);
+            project = new RoyaleJSProject(workspace, backend);
         FlexProjectConfigurator.configure(project);
 
         //writer = backend.createWriterBuffer(project);
@@ -174,7 +174,7 @@ public class TestExternalsJSCompile
         ICompilationUnit mainCU = Iterables.getOnlyElement(workspace.getCompilationUnits(
                 FilenameNormalization.normalize(mainFileName), project));
 
-        if (project instanceof RoyaleProject)
+        if (project instanceof RoyaleJSProject)
             project.mainCU = mainCU;
 
         Configurator projectConfigurator = backend.createConfigurator();

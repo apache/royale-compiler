@@ -36,7 +36,7 @@ import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
@@ -86,7 +86,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         requiredResourceBundles = new HashSet<String>();
     }
 
-    private FlexProject project;
+    private RoyaleProject project;
 
     private String qname;
 

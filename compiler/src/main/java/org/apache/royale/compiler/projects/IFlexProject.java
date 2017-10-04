@@ -45,7 +45,7 @@ import org.apache.royale.compiler.targets.ITargetSettings;
  * Base interface for all project types that support all flex source file types
  * ( mxml, fxg, css, etc ).
  */
-public interface IFlexProject extends IASProject, IXMLNameResolver, IWriteOnlyProjectSettings
+public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnlyProjectSettings
 {
     /**
      * Create a SWC target

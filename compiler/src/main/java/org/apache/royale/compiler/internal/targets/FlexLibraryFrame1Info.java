@@ -19,25 +19,25 @@
 
 package org.apache.royale.compiler.internal.targets;
 
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.collect.ImmutableSet;
 
 /**
  * Abstract base class that contains information about code that uses the flex
  * framework that is needed by the compiler to generate code in the first frame
- * of library.swfs in flex SWCs.
+ * of library.swfs in royale SWCs.
  * <p>
  * This information is collected by looking at all the {@link ICompilationUnit}s
- * that will be built into a flex SWC.
+ * that will be built into a royale SWC.
  */
-class FlexLibraryFrame1Info extends FlexFrame1Info
+class RoyaleLibraryFrame1Info extends FlexFrame1Info
 {
 
-    FlexLibraryFrame1Info(FlexProject flexProject,
+    RoyaleLibraryFrame1Info(RoyaleProject royaleProject,
                           ImmutableSet<ICompilationUnit> compilationUnitsToBuild) throws InterruptedException
     {
-        super(flexProject);
+        super(royaleProject);
 
         collectFromCompilationUnits(compilationUnitsToBuild);
     }

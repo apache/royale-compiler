@@ -24,7 +24,7 @@ import java.io.File;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.test.RoyaleTestBase;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.utils.TestAdapterFactory;
@@ -42,7 +42,7 @@ public class TestRoyaleFile extends RoyaleTestBase
     public void setUp()
     {
         super.setUp();
-    	((RoyaleProject)project).config = new JSGoogConfiguration();
+    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
     }
 
     @Test

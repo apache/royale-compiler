@@ -43,7 +43,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
@@ -80,7 +80,7 @@ public class AccessorEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-        RoyaleProject project = (RoyaleProject)getWalker().getProject();
+        RoyaleJSProject project = (RoyaleJSProject)getWalker().getProject();
         boolean emitExports = true;
         if (project != null && project.config != null)
         	emitExports = project.config.getExportPublicSymbols();

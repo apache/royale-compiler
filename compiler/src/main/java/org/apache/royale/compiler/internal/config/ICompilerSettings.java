@@ -38,7 +38,7 @@ public interface ICompilerSettings extends IWriteOnlyProjectSettings
      * the following way:
      * 
      * <pre>
-     * mxmlc +flexlib=path1 +foo=bar -var=${foo}
+     * mxmlc +royalelib=path1 +foo=bar -var=${foo}
      * </pre>
      * 
      * Where <code>var=bar</code> occurs after the substitution of <code>${foo}</code>.

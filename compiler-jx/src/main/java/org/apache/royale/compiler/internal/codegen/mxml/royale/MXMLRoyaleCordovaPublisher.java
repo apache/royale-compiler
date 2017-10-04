@@ -22,14 +22,14 @@ package org.apache.royale.compiler.internal.codegen.mxml.royale;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.config.Configuration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 
 import java.io.File;
 import java.io.IOException;
 
 public class MXMLRoyaleCordovaPublisher extends MXMLRoyalePublisher
 {
-    public MXMLRoyaleCordovaPublisher(Configuration config, RoyaleProject project)
+    public MXMLRoyaleCordovaPublisher(Configuration config, RoyaleJSProject project)
     {
         super(project, config);
     }

@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -103,7 +103,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
      */
     private void initializeObjectNode(MXMLTreeBuilder builder, IMXMLTagData tag, MXMLNodeInfo info)
     {
-        final FlexProject project = builder.getProject();
+        final RoyaleProject project = builder.getProject();
         objectNode.setClassReference(project, IASLanguageConstants.Object);
         objectNode.initializeFromTag(builder, tag);
         objectNode.initializationComplete(builder, tag, createNodeInfo(builder));

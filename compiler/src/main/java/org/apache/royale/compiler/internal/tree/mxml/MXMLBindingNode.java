@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
@@ -134,7 +134,7 @@ class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
         children = info.getChildNodeList().toArray(new IMXMLBindingAttributeNode[0]);
 
         // Add an expression dependency on mx.binding.BindingManager.
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         builder.addExpressionDependency(project.getBindingManagerClass());
 
         // Do some semantic checks.

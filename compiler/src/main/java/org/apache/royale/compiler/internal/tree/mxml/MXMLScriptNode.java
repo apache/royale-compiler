@@ -33,7 +33,7 @@ import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
 import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
@@ -122,7 +122,7 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
             String sourcePath = resolveSourceAttributePath(builder, attribute, info);
             if (sourcePath != null)
             {
-                FlexProject project = builder.getProject();
+                RoyaleProject project = builder.getProject();
                 Workspace workspace = builder.getWorkspace();
                 Collection<ICompilerProblem> problems = builder.getProblems();
                 IFileSpecification sourceFileSpec = workspace.getFileSpecification(sourcePath);

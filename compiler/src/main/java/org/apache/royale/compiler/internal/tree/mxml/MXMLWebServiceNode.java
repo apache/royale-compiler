@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.common.XMLName;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -65,7 +65,7 @@ class MXMLWebServiceNode extends MXMLInstanceNode implements IMXMLWebServiceNode
         // Create MXMLWebServiceOperationNode for an {@code <operation>} child tag.
         if (childTag.getShortName().equals(TAG_OPERATION))
         {
-            final FlexProject project = builder.getProject();
+            final RoyaleProject project = builder.getProject();
             final XMLName name = new XMLName(childTag.getXMLName().getXMLNamespace(), BASENAME_WEB_SERVICE_OPERATION);
             final String qname = builder.getFileScope().resolveXMLNameToQualifiedName(name, builder.getMXMLDialect());
             final String webServiceOperationQName = project.getWebServiceOperationQName();

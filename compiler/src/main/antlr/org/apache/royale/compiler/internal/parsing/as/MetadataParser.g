@@ -19,7 +19,7 @@ header
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.as;
+package org.apache.royale.compiler.internal.parsing.as;
 
 /*
  * This file is generated from MetadataParser.g.
@@ -37,17 +37,17 @@ import antlr.TokenStream;
 import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
 
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.*; 
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.*; 
 
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 
 }
 
 // MetadataParser parses a bunch of metadata attrs for a single node
 // (var, class, etc.) and makes up some tables of what it found.
-class MetadataParser extends Parser("org.apache.flex.compiler.internal.parsing.as.BaseMetaTagParser");
+class MetadataParser extends Parser("org.apache.royale.compiler.internal.parsing.as.BaseMetaTagParser");
 options
 {
 	importVocab = ImportMetadata;

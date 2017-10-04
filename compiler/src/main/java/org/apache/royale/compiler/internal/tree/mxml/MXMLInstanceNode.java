@@ -36,7 +36,7 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
@@ -317,7 +317,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
             excludeFrom = null;
         }
 
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         IClassDefinition classReference = getClassReference(project);
         if (classReference != null)
         {

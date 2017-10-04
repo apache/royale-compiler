@@ -45,7 +45,7 @@ import org.apache.royale.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.royale.compiler.internal.codegen.js.JSPublisher;
 import org.apache.royale.compiler.internal.codegen.js.JSSourceMapEmitter;
 import org.apache.royale.compiler.internal.codegen.js.JSWriter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
@@ -86,14 +86,14 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleJSProject project, ITargetSettings settings,
                                  ITargetProgressMonitor monitor)
     {
         return new JSTarget(project, settings, monitor);
     }
 
     @Override
-    public IASBlockWalker createWalker(RoyaleProject project,
+    public IASBlockWalker createWalker(RoyaleJSProject project,
             List<ICompilerProblem> errors, IASEmitter emitter)
     {
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
@@ -108,7 +108,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -116,7 +116,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public JSFilterWriter createWriterBuffer(RoyaleProject project)
+    public JSFilterWriter createWriterBuffer(RoyaleJSProject project)
     {
         StringWriter out = new StringWriter();
         JSFilterWriter writer = new JSFilterWriter(out);
@@ -124,7 +124,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IJSWriter createWriter(RoyaleProject project,
+    public IJSWriter createWriter(RoyaleJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -132,7 +132,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IJSWriter createMXMLWriter(RoyaleProject project,
+    public IJSWriter createMXMLWriter(RoyaleJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -164,7 +164,7 @@ public class JSBackend implements IJSBackend
     }
 
     @Override
-    public IPublisher createPublisher(RoyaleProject project,
+    public IPublisher createPublisher(RoyaleJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new JSPublisher(project, config);

@@ -40,7 +40,7 @@ import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
@@ -181,7 +181,7 @@ public class BindingCodeGenUtils
      *                      be OP_newfunction, but could be anything that leaves the methods on the stack
      *
      */
-    public static void makeBinding(InstructionList insns, FlexProject project, String destStr, String srcString, InstructionList methodInstr)
+    public static void makeBinding(InstructionList insns, RoyaleProject project, String destStr, String srcString, InstructionList methodInstr)
     {
         log(insns, "making binding dest=" + destStr);
            
@@ -252,7 +252,7 @@ public class BindingCodeGenUtils
             List<String> eventNames,
             List<BindingInfo> bindingInfo,
             MethodInfo propertyGetterFunction,
-            FlexProject project
+            RoyaleProject project
            
             )
     {
@@ -315,7 +315,7 @@ public class BindingCodeGenUtils
           InstructionList insns, 
           String propertyName,
           List<BindingInfo> bindingInfo,
-          FlexProject project)
+          RoyaleProject project)
     {
         
         /* ctor arguments:
@@ -371,7 +371,7 @@ public class BindingCodeGenUtils
      */
     
     public static  void makeFunctionWatcher(InstructionList insns,
-            FlexProject project,
+            RoyaleProject project,
             IABCVisitor emitter,
             String functionName,
             List<String> eventNames,

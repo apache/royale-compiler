@@ -318,9 +318,9 @@ public abstract class TargetSettingsProxy implements ITargetSettings
     }
 
     @Override
-    public String getFlexMinimumSupportedVersion()
+    public String getRoyaleMinimumSupportedVersion()
     {
-        return baseTargetSettings.getFlexMinimumSupportedVersion();
+        return baseTargetSettings.getRoyaleMinimumSupportedVersion();
     }
 
     @Override

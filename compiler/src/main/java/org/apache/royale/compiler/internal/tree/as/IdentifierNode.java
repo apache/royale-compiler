@@ -55,7 +55,7 @@ import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
@@ -861,7 +861,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    if (!((FlexProject)project).useStrictXML() && isXMLish(baseType, project))
+                    if (!((RoyaleProject)project).useStrictXML() && isXMLish(baseType, project))
                         return null;
                     
                     if (baseExpr instanceof IdentifierNode)
@@ -1035,9 +1035,9 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
 
     public boolean isLegacyCodegen(ICompilerProject project)
     {
-        if (!(project instanceof FlexProject))
+        if (!(project instanceof RoyaleProject))
             return false;
-        final Integer compatibilityVersion = ((FlexProject)project).getCompatibilityVersion();
+        final Integer compatibilityVersion = ((RoyaleProject)project).getCompatibilityVersion();
         if (compatibilityVersion == null)
             return false;
         else if (compatibilityVersion <= Configuration.MXML_VERSION_4_6)

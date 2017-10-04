@@ -54,7 +54,7 @@ import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.RoyaleTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -101,10 +101,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public enum JSOutputType
     {
         AMD("amd"),
-        FLEXJS("royale"),
+        ROYALE("royale"),
         GOOG("goog"),
-        FLEXJS_DUAL("royale_dual"),
-        FLEXJS_DITA("royale_dita"),
+        ROYALE_DUAL("royale_dual"),
+        ROYALE_DITA("royale_dita"),
         JSC("jsc"),
         NODE("node");
 
@@ -137,8 +137,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public enum JSTargetType
     {
         SWF("SWF"),
-        JS_FLEX("JSFlex"),
-        JS_FLEX_CORDOVA("JSFlexCordova"),
+        JS_ROYALE("JSRoyale"),
+        JS_ROYALE_CORDOVA("JSRoyaleCordova"),
         //JS without the Royale framework
         JS_NATIVE("JS"),
         //Node.js application
@@ -165,7 +165,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 if (text.equalsIgnoreCase(jsTargetType.text))
                     return jsTargetType;
             }
-            return JS_FLEX;
+            return JS_ROYALE;
         }
     }
 
@@ -243,7 +243,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     protected Workspace workspace;
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
@@ -336,19 +336,19 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	break targetloop;
 	                    }
 	                    break;
-	                case JS_FLEX:
-	                	MXMLJSCFlex flex = new MXMLJSCFlex();
-	                	lastCompiler = flex;
-	                    result = flex.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                case JS_ROYALE:
+	                	MXMLJSCRoyale royale = new MXMLJSCRoyale();
+	                	lastCompiler = royale;
+	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
 	                    }
 	                    break;
-	                case JS_FLEX_CORDOVA:
-	                	MXMLJSCFlexCordova flexCordova = new MXMLJSCFlexCordova();
-	                	lastCompiler = flexCordova;
-	                    result = flexCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                case JS_ROYALE_CORDOVA:
+	                	MXMLJSCRoyaleCordova royaleCordova = new MXMLJSCRoyaleCordova();
+	                	lastCompiler = royaleCordova;
+	                    result = royaleCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
@@ -620,7 +620,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     /**
-     * Replaces FlexApplicationProject::buildSWF()
+     * Replaces RoyaleApplicationProject::buildSWF()
      * 
      * @param applicationProject
      * @param rootClassName
@@ -976,7 +976,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public static boolean isFatalFailure(final int code)
     {
         // This method really belongs in ExitCode
-        // but that would complicate FlexTask.
+        // but that would complicate RoyaleTask.
         return code == ExitCode.FAILED_WITH_ERRORS.getCode() ||
                code == ExitCode.FAILED_WITH_EXCEPTIONS.getCode() ||
                code == ExitCode.FAILED_WITH_CONFIG_PROBLEMS.getCode();

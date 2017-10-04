@@ -56,11 +56,11 @@ public class ResourceBundleSourceFileHandler implements ISourceFileHandler
     @Override
     public boolean needCompilationUnit(CompilerProject project, String path, String qname, String locale)
     {
-        if(project instanceof FlexProject) 
+        if(project instanceof RoyaleProject) 
         {
             //If the project's locale is empty, then don't try to create this 
             //because no resource bundles will go into swf or swc anyways.
-            return ((FlexProject)project).getLocales().size() > 0;
+            return ((RoyaleProject)project).getLocales().size() > 0;
         }
         return false;
     }

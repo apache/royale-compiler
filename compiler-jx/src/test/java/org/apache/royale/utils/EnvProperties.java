@@ -36,16 +36,6 @@ import java.util.Properties;
 public class EnvProperties {
 
     /**
-     * FLEX_HOME
-     */
-    public String SDK;
-
-    /**
-     * TLF_HOME
-     */
-    public String TLF;
-
-    /**
      * PLAYERGLOBAL_HOME
      */
     public String FPSDK;
@@ -110,16 +100,6 @@ public class EnvProperties {
         } catch (IOException e) {
             // Ignore
         }
-
-        SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
-        if(SDK == null)
-        {
-            SDK = FilenameNormalization.normalize("../../../../flex-sdk");
-            File mxmlc = new File(SDK + "/lib/mxmlc.jar");
-            if (!mxmlc.exists())
-                SDK = FilenameNormalization.normalize("../../../compiler/lib");
-        }
-        System.out.println("environment property - FLEX_HOME = " + SDK);
 
         FPSDK = p.getProperty(prefix + "PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
         if(FPSDK == null)

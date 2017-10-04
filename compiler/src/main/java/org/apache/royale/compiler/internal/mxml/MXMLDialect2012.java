@@ -22,7 +22,7 @@ package org.apache.royale.compiler.internal.mxml;
 import java.util.EnumSet;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
@@ -89,7 +89,7 @@ public class MXMLDialect2012 extends MXMLDialect2009
     }
     
     @Override
-    public Boolean parseBoolean(FlexProject project, String s, EnumSet<TextParsingFlags> flags)
+    public Boolean parseBoolean(RoyaleProject project, String s, EnumSet<TextParsingFlags> flags)
     {
         // Unlike 2006 and 2009, 2012 recognizes only lowercase true and false.
         

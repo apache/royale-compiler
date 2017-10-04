@@ -26,14 +26,14 @@ import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
  * supported.
  */
 @DefaultSeverity(CompilerProblemSeverity.WARNING)
-public class FlexOnlyConfigurationOptionNotSupported extends ConfigurationProblem
+public class RoyaleOnlyConfigurationOptionNotSupported extends ConfigurationProblem
 {
     public static final String DESCRIPTION =
         "'${option}' is not fully supported.";
     
     public static final int warningCode = 5043;
     
-    public FlexOnlyConfigurationOptionNotSupported(String option, String source, int line)
+    public RoyaleOnlyConfigurationOptionNotSupported(String option, String source, int line)
     {
         super(source, line, "");
         this.option = option;

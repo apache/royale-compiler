@@ -85,7 +85,7 @@ import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLManifestManager;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.targets.ISWCTarget;
 import org.apache.royale.compiler.targets.ISWFTarget;
@@ -102,10 +102,10 @@ import org.apache.royale.swc.ISWC;
 import com.google.common.collect.ImmutableList;
 
 /**
- * {@code FlexProject} extends {@code ASProject} to add support for compiling
+ * {@code RoyaleProject} extends {@code ASProject} to add support for compiling
  * .mxml, .css, and .properties files.
  */
-public class FlexProject extends ASProject implements IFlexProject
+public class RoyaleProject extends ASProject implements IRoyaleProject
 {
     // TODO Remove the redundant fooClass (a qname String) field
     // when we have a fooClassName (an AET Name) field. We can always
@@ -118,7 +118,7 @@ public class FlexProject extends ASProject implements IFlexProject
      * @param asDocBundleDelegate {@link IASDocBundleDelegate} the new project will use to find
      * ASDoc comments for definitions from SWCs.
      */
-    public FlexProject(Workspace workspace, IASDocBundleDelegate asDocBundleDelegate)
+    public RoyaleProject(Workspace workspace, IASDocBundleDelegate asDocBundleDelegate)
     {
         super(workspace, true, asDocBundleDelegate); // the "true" here forces the opening of the AS3 namespace.
 
@@ -138,7 +138,7 @@ public class FlexProject extends ASProject implements IFlexProject
      * 
      * @param workspace The {@code Workspace} containing this project.
      */
-    public FlexProject(Workspace workspace)
+    public RoyaleProject(Workspace workspace)
     {
         this(workspace, IASDocBundleDelegate.NIL_DELEGATE);
     }
@@ -412,7 +412,7 @@ public class FlexProject extends ASProject implements IFlexProject
      * for classes supporting a moduleFactory property.
      * Currently this is "mx.core.IFlexModule".
      */
-    private String flexModuleInterface;
+    private String royaleModuleInterface;
     
     /**
      * The fully-qualified name of the runtime interface
@@ -1048,12 +1048,12 @@ public class FlexProject extends ASProject implements IFlexProject
     
     public String getFlexModuleInterface()
     {
-        return flexModuleInterface;
+        return royaleModuleInterface;
     }
     
-    public void setFlexModuleInterface(String flexModuleInterface)
+    public void setFlexModuleInterface(String royaleModuleInterface)
     {
-        this.flexModuleInterface = flexModuleInterface;
+        this.royaleModuleInterface = royaleModuleInterface;
     }
     
     public String getDeferredInstantiationUIComponentInterface()

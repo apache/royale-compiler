@@ -46,7 +46,7 @@ import org.apache.royale.compiler.internal.parsing.ISourceFragment;
 import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.IProjectConfigVariables;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
@@ -151,7 +151,7 @@ public class MXMLTreeBuilder
 
     private final IFileSpecificationGetter fileSpecGetter;
 
-    private final FlexProject project;
+    private final RoyaleProject project;
 
     private final ASProjectScope projectScope;
 
@@ -188,9 +188,9 @@ public class MXMLTreeBuilder
     /**
      * Gets the project which is building the MXML tree.
      * 
-     * @return A {@code FlexProject} object.
+     * @return A {@code RoyaleProject} object.
      */
-    public FlexProject getProject()
+    public RoyaleProject getProject()
     {
         return project;
     }
@@ -390,7 +390,7 @@ public class MXMLTreeBuilder
         return result;
     }
 
-    private Number parsePercent(FlexProject project, IMXMLNode propertyNode,
+    private Number parsePercent(RoyaleProject project, IMXMLNode propertyNode,
             String s, EnumSet<TextParsingFlags> flags)
     {
         if (flags != null && flags.contains(TextParsingFlags.ALLOW_PERCENT))
@@ -869,7 +869,7 @@ public class MXMLTreeBuilder
         // otherCU will be null if qname is "*" because the "*" type does not come from any compilation unit
         if (otherCU != null)
         {
-            FlexProject project = getProject();
+            RoyaleProject project = getProject();
             project.addDependency(thisCU, otherCU, type, qname);
         }
     }

@@ -37,7 +37,7 @@ import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.internal.codegen.js.JSPublisher;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.utils.JSClosureCompilerUtil;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -57,7 +57,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
     protected JSGoogConfiguration googConfiguration;
 
-    public JSGoogPublisher(RoyaleProject project, Configuration config)
+    public JSGoogPublisher(RoyaleJSProject project, Configuration config)
     {
         super(project, config);
         googConfiguration = (JSGoogConfiguration) config;

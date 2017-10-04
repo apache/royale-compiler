@@ -21,7 +21,7 @@ package org.apache.royale.compiler.internal.definitions.metadata;
 
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.resourcebundles.ResourceBundleUtils;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -46,10 +46,10 @@ public class ResourceBundleMetaTag extends MetaTag
 
     public void resolveDependencies(Collection<ICompilerProblem> errors, ICompilerProject project) throws InterruptedException
     {
-        if (project instanceof FlexProject)
+        if (project instanceof RoyaleProject)
         {
             //compilation unit of the file that has the metadata
-            final ICompilationUnit refCompUnit = ((FlexProject)project).getScope().getCompilationUnitForScope(getDecoratedDefinition().getContainingScope());
+            final ICompilationUnit refCompUnit = ((RoyaleProject)project).getScope().getCompilationUnitForScope(getDecoratedDefinition().getContainingScope());
             assert refCompUnit != null;
 
             ResourceBundleUtils.resolveDependencies(bundleName, refCompUnit, project, this, errors);

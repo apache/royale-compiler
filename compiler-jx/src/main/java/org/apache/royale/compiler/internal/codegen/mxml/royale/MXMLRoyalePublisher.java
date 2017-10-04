@@ -38,7 +38,7 @@ import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
@@ -75,7 +75,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         }
     }
 
-    public MXMLRoyalePublisher(RoyaleProject project, Configuration config)
+    public MXMLRoyalePublisher(RoyaleJSProject project, Configuration config)
     {
         super(project, config);
         this.isMarmotinniRun = googConfiguration.getMarmotinni() != null;
@@ -85,7 +85,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         this.project = project;
     }
 
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
 
     private boolean isMarmotinniRun;
     private String outputPathParameter;
@@ -130,7 +130,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             String mainClassFolder = configuration.getTargetFileDirectory();
             if (mainClassFolder.endsWith("src"))
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
-            else if (mainClassFolder.endsWith("src/main/flex") || mainClassFolder.endsWith("src\\main\\flex"))
+            else if (mainClassFolder.endsWith("src/main/royale") || mainClassFolder.endsWith("src\\main\\royale"))
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile().getParentFile().getParentFile();
             else
                 outputParentFolder = new File(configuration.getTargetFileDirectory());

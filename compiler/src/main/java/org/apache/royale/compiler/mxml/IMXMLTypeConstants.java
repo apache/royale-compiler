@@ -49,7 +49,7 @@ public interface IMXMLTypeConstants
     static final String EffectManager = "mx.effects.EffectManager";
     static final String FlexGlobals = "mx.core.FlexGlobals";
     static final String FlexModuleFactory = "mx.core.FlexModuleFactory";
-    static final String FlexVersion = "mx.core.FlexVersion";
+    static final String RoyaleVersion = "mx.core.RoyaleVersion";
     static final String GroupBase = "spark.components.supportClasses.GroupBase";
     static final String HTTPService = "mx.rpc.http.mxml.HTTPService";
     static final String HaloApplication = "mx.core.Application";

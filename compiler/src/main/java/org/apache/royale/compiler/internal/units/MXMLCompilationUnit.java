@@ -33,7 +33,7 @@ import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
 import org.apache.royale.compiler.internal.parsing.mxml.MXMLScopeBuilder;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.scopes.TypeScope;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
@@ -283,8 +283,8 @@ public class MXMLCompilationUnit extends CompilationUnitBase
     }
     
     @Override
-    public FlexProject getProject()
+    public RoyaleProject getProject()
     {
-        return (FlexProject)super.getProject();
+        return (RoyaleProject)super.getProject();
     }
 }

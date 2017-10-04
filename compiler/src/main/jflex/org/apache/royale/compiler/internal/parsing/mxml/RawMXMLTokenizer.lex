@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.parsing.mxml;
+package org.apache.royale.compiler.internal.parsing.mxml;
 
 /*
  * RawMXMLTokenizer.java is generated from RawMXMLTokenizer.lex.
@@ -27,8 +27,8 @@ package org.apache.flex.compiler.internal.parsing.mxml;
 
 import antlr.Token;
 import antlr.CommonToken;
-import org.apache.flex.compiler.internal.parsing.mxml.BaseRawMXMLTokenizer;
-import static org.apache.flex.compiler.parsing.MXMLTokenTypes.*;
+import org.apache.royale.compiler.internal.parsing.mxml.BaseRawMXMLTokenizer;
+import static org.apache.royale.compiler.parsing.MXMLTokenTypes.*;
 
 @SuppressWarnings("all")
 

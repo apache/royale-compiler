@@ -30,7 +30,7 @@ import org.apache.royale.compiler.internal.workspaces.Workspace;
  * @author aharui
  *
  */
-public class RoyaleASDocProject extends RoyaleProject
+public class RoyaleASDocProject extends RoyaleJSProject
 {
 
     /**

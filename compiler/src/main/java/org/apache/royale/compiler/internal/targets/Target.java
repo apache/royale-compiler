@@ -168,7 +168,7 @@ public abstract class Target implements ITarget
      * specified {@link Collection}.
      * <p>
      * This method exists for the sole purpose of allowing the
-     * {@link FlexLibrarySWFTarget} to filter out
+     * {@link RoyaleLibrarySWFTarget} to filter out
      * {@link ResourceBundleNotFoundProblem}s and
      * {@link ResourceBundleNotFoundForLocaleProblem}s from
      * {@link SWCCompilationUnit}'s that are externally linked.

@@ -20,8 +20,8 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
-import org.apache.royale.compiler.internal.projects.FlexProject;
-import org.apache.royale.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
@@ -52,7 +52,7 @@ public class MXMLNodeBaseTests
 
 	protected static Workspace workspace = new Workspace();
 	
-	protected FlexProject project;
+	protected RoyaleProject project;
 	
  	protected String[] getTemplate()
 	{
@@ -119,8 +119,8 @@ public class MXMLNodeBaseTests
     
     protected IMXMLFileNode getMXMLFileNode(String mxml, boolean withFlex)
 	{
-		project = new FlexProject(workspace);
-		FlexProjectConfigurator.configure(project);
+		project = new RoyaleProject(workspace);
+		RoyaleProjectConfigurator.configure(project);
 
 		ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 		String tempDir = testAdapter.getTempDir();

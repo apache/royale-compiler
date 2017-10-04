@@ -22,7 +22,7 @@ package org.apache.royale.compiler.internal.driver.mxml;
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.units.ASCompilationUnit;
 import org.apache.royale.compiler.internal.units.MXMLCompilationUnit;
@@ -73,7 +73,7 @@ public final class ASDocMXMLSourceFileHandler implements ISourceFileHandler
     public boolean needCompilationUnit(CompilerProject project, String path,
             String qname, String locale)
     {
-    	RoyaleProject fproject = (RoyaleProject)project;
+    	RoyaleJSProject fproject = (RoyaleJSProject)project;
     	ASDocConfiguration config = (ASDocConfiguration)(fproject.config);
     	return !(config.getExcludeSources().contains(path));
     }

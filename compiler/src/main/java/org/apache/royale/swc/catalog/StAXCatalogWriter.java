@@ -342,19 +342,19 @@ public class StAXCatalogWriter implements ICatalogXMLConstants
         }
 
         // Flex version
-        final String flexVersion = version.getFlexVersion();
-        if (flexVersion != null)
+        final String royaleVersion = version.getRoyaleVersion();
+        if (royaleVersion != null)
         {
             xmlWriter.writeEmptyElement(TAG_FLEX);
-            xmlWriter.writeAttribute(ATTR_VERSION, flexVersion);
+            xmlWriter.writeAttribute(ATTR_VERSION, royaleVersion);
 
-            final String flexBuild = version.getFlexBuild();
-            if (flexBuild != null)
-                xmlWriter.writeAttribute(ATTR_BUILD, flexBuild);
+            final String royaleBuild = version.getFlexBuild();
+            if (royaleBuild != null)
+                xmlWriter.writeAttribute(ATTR_BUILD, royaleBuild);
 
-            final String flexMinSupportedVersion = version.getFlexMinSupportedVersion();
-            if (flexMinSupportedVersion != null)
-                xmlWriter.writeAttribute(ATTR_MINIMUM_SUPPORTED_VERSION, flexMinSupportedVersion);
+            final String royaleMinSupportedVersion = version.getRoyaleMinSupportedVersion();
+            if (royaleMinSupportedVersion != null)
+                xmlWriter.writeAttribute(ATTR_MINIMUM_SUPPORTED_VERSION, royaleMinSupportedVersion);
         }
 
         // Compiler version

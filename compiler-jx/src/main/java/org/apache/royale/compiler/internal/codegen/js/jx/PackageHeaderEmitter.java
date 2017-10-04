@@ -41,7 +41,7 @@ import org.apache.royale.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
@@ -118,7 +118,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             return;
         }
 
-        RoyaleProject project = (RoyaleProject) getProject();
+        RoyaleJSProject project = (RoyaleJSProject) getProject();
         List<File> sourcePaths = project.getSourcePath();
         String sourceName = definition.getSourcePath();
         for (File sourcePath : sourcePaths)
@@ -226,13 +226,13 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             }
         }
 
-        RoyaleProject flexProject = (RoyaleProject) getProject();
-        ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
+        RoyaleJSProject royaleProject = (RoyaleJSProject) getProject();
+        ASProjectScope projectScope = (ASProjectScope) royaleProject.getScope();
         ICompilationUnit cu = projectScope
                 .getCompilationUnitForDefinition(type != null ? type : otherMainDefinition);
-        ArrayList<String> requiresList = flexProject.getRequires(cu);
-        ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
-        ArrayList<String> externalRequiresList = flexProject.getExternalRequires(cu);
+        ArrayList<String> requiresList = royaleProject.getRequires(cu);
+        ArrayList<String> interfacesList = royaleProject.getInterfaces(cu);
+        ArrayList<String> externalRequiresList = royaleProject.getExternalRequires(cu);
 
         String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
@@ -240,14 +240,14 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         if (type instanceof IClassDefinition) {
             //check whether we should add the requires for the implicit Bindable EventDispatcher implementations
-            boolean needsBindableSupport = ((IClassDefinition) type).needsEventDispatcher(flexProject);
+            boolean needsBindableSupport = ((IClassDefinition) type).needsEventDispatcher(royaleProject);
 
             if (needsBindableSupport) {
                 IClassDefinition bindableClassDef = (IClassDefinition) type;
-                ClassDefinition objectClassDefinition = (ClassDefinition)flexProject.getBuiltinType(
+                ClassDefinition objectClassDefinition = (ClassDefinition)royaleProject.getBuiltinType(
                         IASLanguageConstants.BuiltinType.OBJECT);
 
-                if (bindableClassDef.resolveBaseClass(flexProject).equals(objectClassDefinition)) {
+                if (bindableClassDef.resolveBaseClass(royaleProject).equals(objectClassDefinition)) {
                     //keep the decision in the model for later
                     getModel().registerImplicitBindableImplementation( bindableClassDef,
                                                                        ImplicitBindableImplementation.EXTENDS);
@@ -272,7 +272,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             if (!needsBindableSupport) {
                 //we still need to check for static-only bindable requirements. If it was also instance-bindable,
                 //then the static-only requirements have already been met above
-                needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(flexProject);
+                needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(royaleProject);
                 //static-only bindable *only* requires the Dispatcher class, not the interface
                 if (needsBindableSupport
                         && !requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
@@ -290,16 +290,16 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
         //              include any of the code if it is not used in the project.
-        boolean makingSWC = flexProject.getSWFTarget() != null &&
-                flexProject.getSWFTarget().getTargetType() == TargetType.SWC;
-        boolean isMainCU = flexProject.mainCU != null
-                && cu.getName().equals(flexProject.mainCU.getName());
+        boolean makingSWC = royaleProject.getSWFTarget() != null &&
+                royaleProject.getSWFTarget().getTargetType() == TargetType.SWC;
+        boolean isMainCU = royaleProject.mainCU != null
+                && cu.getName().equals(royaleProject.mainCU.getName());
         if (isMainCU || makingSWC)
         {
             ICompilerProject project = this.getProject();
-            if (project instanceof RoyaleProject)
+            if (project instanceof RoyaleJSProject)
             {
-                if (((RoyaleProject)project).needLanguage)
+                if (((RoyaleJSProject)project).needLanguage)
                 {
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);

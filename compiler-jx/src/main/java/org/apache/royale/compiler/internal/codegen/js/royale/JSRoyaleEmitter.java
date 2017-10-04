@@ -69,7 +69,7 @@ import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.FlexProject;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
@@ -212,9 +212,9 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                     //imports are at the beginning of the file. other code,
                     //later in the file, may require Language.
                     ICompilerProject project = getWalker().getProject();
-                    if (project instanceof RoyaleProject)
+                    if (project instanceof RoyaleJSProject)
                     {
-                        RoyaleProject flexJSProject = (RoyaleProject) project;
+                        RoyaleJSProject royaleProject = (RoyaleJSProject) project;
                         boolean needLanguage = getModel().needLanguage;
                         if (needLanguage && !foundLanguage)
                         {
@@ -239,7 +239,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                                 addLineToMappings(i);
                             }
                         }
-                        boolean needXML = flexJSProject.needXML;
+                        boolean needXML = royaleProject.needXML;
                         if (needXML && !foundXML)
                         {
                             StringBuilder appendString = new StringBuilder();
@@ -939,8 +939,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 	public void emitClosureStart()
     {
         ICompilerProject project = getWalker().getProject();;
-        if (project instanceof RoyaleProject)
-        	((RoyaleProject)project).needLanguage = true;
+        if (project instanceof RoyaleJSProject)
+        	((RoyaleJSProject)project).needLanguage = true;
         getModel().needLanguage = true;
         write(JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -1295,7 +1295,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
 		if (cu == null) return false; // unit testing
 		
-		return ((RoyaleProject)project).isExternalLinkage(cu);
+		return ((RoyaleJSProject)project).isExternalLinkage(cu);
 	}
 
 }

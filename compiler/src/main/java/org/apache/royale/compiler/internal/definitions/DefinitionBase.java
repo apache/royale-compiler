@@ -57,7 +57,7 @@ import org.apache.royale.compiler.internal.definitions.metadata.DeprecationInfo;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -1450,7 +1450,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * in DefinitionBase because it is common to VariableDefinition,
      * GetterDefinition, and SetterDefinition.
      */
-    public String getArrayElementType(FlexProject project)
+    public String getArrayElementType(RoyaleProject project)
     {
         if (getTypeAsDisplayString().equals(IASLanguageConstants.Array))
         {
@@ -1468,7 +1468,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public String getInstanceType(FlexProject project)
+    public String getInstanceType(RoyaleProject project)
     {
         if (getTypeAsDisplayString().equals(project.getDeferredInstanceInterface()))
         {
@@ -1485,7 +1485,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * DefinitionBase because it is common to VariableDefinition,
      * GetterDefinition, and SetterDefinition.
      */
-    public String getPercentProxy(FlexProject project)
+    public String getPercentProxy(RoyaleProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
                 project, IMetaAttributeConstants.ATTRIBUTE_PERCENT_PROXY);
@@ -1500,7 +1500,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public boolean hasRichTextContent(FlexProject project)
+    public boolean hasRichTextContent(RoyaleProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
                 project, IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT);
@@ -1515,7 +1515,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public boolean hasCollapseWhiteSpace(FlexProject project)
+    public boolean hasCollapseWhiteSpace(RoyaleProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
                 project, IMetaAttributeConstants.ATTRIBUTE_COLLAPSEWHITESPACE);
@@ -1531,7 +1531,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public boolean isColor(FlexProject project)
+    public boolean isColor(RoyaleProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
                 project, IMetaAttributeConstants.ATTRIBUTE_INSPECTABLE);
@@ -1543,7 +1543,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         return format.equals(IMetaAttributeConstants.VALUE_INSPECTABLE_FORMAT_COLOR);
     }
 
-    private IMetaTag getPropertyMetaTag(FlexProject project, String metadataName)
+    private IMetaTag getPropertyMetaTag(RoyaleProject project, String metadataName)
     {
         // Look for metadata with the specified name.
         IMetaTag metaTag = getMetaTagByName(metadataName);
@@ -1565,7 +1565,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This helper method is called by {@code getArrayElementType()} and
      * {@code getInstanceType()}.
      */
-    private String getPropertyMetaTagValue(FlexProject project, String metadataName)
+    private String getPropertyMetaTagValue(RoyaleProject project, String metadataName)
     {
         // Look for metadata with the specified name.
         IMetaTag metaTag = getPropertyMetaTag(project, metadataName);

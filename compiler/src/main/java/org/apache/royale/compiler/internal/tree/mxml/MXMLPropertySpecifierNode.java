@@ -37,7 +37,7 @@ import org.apache.royale.compiler.internal.mxml.MXMLTagData;
 import org.apache.royale.compiler.internal.mxml.MXMLTextData;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
 import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
@@ -161,7 +161,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     {
         IDefinition definition = getDefinition();
 
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         // If there is no property definition, this is a dynamic property with type "*".
         if (definition == null)
@@ -239,7 +239,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         EnumSet<TextParsingFlags> flags = FLAGS.clone();
 
         IDefinition definition = getDefinition();
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         if (definition instanceof IVariableDefinition)
         {
             if (((IVariableDefinition)definition).hasCollapseWhiteSpace(project))
@@ -336,7 +336,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
                                    List<IMXMLUnitData> contentUnits)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         assert (contentUnits.isEmpty()) ||
                 (!builder.getFileScope().isScriptTag(contentUnits.get(0))) : "Script tags should not start a default property!";
@@ -451,7 +451,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         else
         {
             String propertyTypeName = getPropertyTypeName(builder);
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
 
             // If the property is of type IDeferredInstance or ITransientDeferredInstance,
             // create an implicit MXMLDeferredInstanceNode.
@@ -553,7 +553,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     {
         super.initializationComplete(builder, tag, info);
 
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         // If this property is type Array, and it didn't get set to an Array tag,
         // then create an implicit Array tag and initialize it from the
@@ -578,7 +578,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     }
 
     @Override
-    public IVariableDefinition getPercentProxyDefinition(FlexProject project)
+    public IVariableDefinition getPercentProxyDefinition(RoyaleProject project)
     {
         // Get the name of the proxy property
         // from the [PercentProxy(...)] metadata.

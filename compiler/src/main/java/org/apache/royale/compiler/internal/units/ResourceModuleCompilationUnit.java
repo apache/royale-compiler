@@ -38,7 +38,7 @@ import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
@@ -147,20 +147,20 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
         final Collection<ICompilerProblem> problems = Collections.emptyList();
         try
         {
-            final FlexProject flexProject = (FlexProject)getProject();
+            final RoyaleProject royaleProject = (RoyaleProject)getProject();
             
             //flex.compiler.support.ResourceModuleBase
-            ASProjectScope scope = flexProject.getScope();
-            IDefinition def = scope.findDefinitionByName(flexProject.getResourceModuleBaseClass());
+            ASProjectScope scope = royaleProject.getScope();
+            IDefinition def = scope.findDefinitionByName(royaleProject.getResourceModuleBaseClass());
             ICompilationUnit resourceModuleBaseCompUnit = scope.getCompilationUnitForDefinition(def);
-            flexProject.addDependency(this, resourceModuleBaseCompUnit, DependencyType.INHERITANCE,
+            royaleProject.addDependency(this, resourceModuleBaseCompUnit, DependencyType.INHERITANCE,
                     def.getQualifiedName());
             
             //Add dependency to all the resource bundle compilation units we want to 
             //include in the resource module SWF
             for(ICompilationUnit compUnit : resourceBundleCompUnits)
             {
-                flexProject.addDependency(this, compUnit, DependencyType.EXPRESSION);
+                royaleProject.addDependency(this, compUnit, DependencyType.EXPRESSION);
             }
         }
         catch (Exception t)
@@ -206,7 +206,7 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
         startProfile(Operation.GET_ABC_BYTES);
         try
         {
-            final FlexProject flexProject = (FlexProject)getProject();
+            final RoyaleProject royaleProject = (RoyaleProject)getProject();
             final Collection<ICompilerProblem> problems = new LinkedList<ICompilerProblem>();
             final ABCEmitter emitter = new ABCEmitter();
             
@@ -215,7 +215,7 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
             {
                 //this class extends "flex.compiler.support.ResourceModuleBase"
                 IResolvedQualifiersReference resourceModuleBaseRef = ReferenceFactory.packageQualifiedReference(
-                        flexProject.getWorkspace(), flexProject.getResourceModuleBaseClass());
+                        royaleProject.getWorkspace(), royaleProject.getResourceModuleBaseClass());
                 
                 //Create constructor instruction list
                 InstructionList constructorInstructionList = new InstructionList();
@@ -236,9 +236,9 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
                 constructorInstructionList.addInstruction(ABCConstants.OP_constructsuper, 1);
                 constructorInstructionList.addInstruction(ABCConstants.OP_returnvoid);
                 
-                ClassGeneratorHelper classGen = new ClassGeneratorHelper(flexProject, emitter,
+                ClassGeneratorHelper classGen = new ClassGeneratorHelper(royaleProject, emitter,
                         new Name(qname),
-                        (ClassDefinition)resourceModuleBaseRef.resolve(flexProject),
+                        (ClassDefinition)resourceModuleBaseRef.resolve(royaleProject),
                         Collections.<Name> emptyList(), 
                         constructorInstructionList);
 

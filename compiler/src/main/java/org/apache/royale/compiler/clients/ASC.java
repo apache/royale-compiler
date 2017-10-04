@@ -450,7 +450,7 @@ public class ASC
         }
 
         @Override
-        public String getFlexMinimumSupportedVersion()
+        public String getRoyaleMinimumSupportedVersion()
         {
             // Not used because ASC does not create SWCs.
             return null;

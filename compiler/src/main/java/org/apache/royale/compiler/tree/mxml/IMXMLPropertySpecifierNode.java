@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.tree.mxml;
 
 import org.apache.royale.compiler.definitions.IVariableDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 
 /**
  * This AST node represents an MXML tag or attribute that specifies a property.
@@ -44,8 +44,8 @@ public interface IMXMLPropertySpecifierNode extends IMXMLSpecifierNode
      * metadata, this method returns the definition for the property specified
      * by the metadata.
      * 
-     * @param project The {@link FlexProject} in which compilation is occuring.
+     * @param project The {@link RoyaleProject} in which compilation is occuring.
      * @return An {@link IVariableDefinition} object defining the proxy property.
      */
-    IVariableDefinition getPercentProxyDefinition(FlexProject project);
+    IVariableDefinition getPercentProxyDefinition(RoyaleProject project);
 }

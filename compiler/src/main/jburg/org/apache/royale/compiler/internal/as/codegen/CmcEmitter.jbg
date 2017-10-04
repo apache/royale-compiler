@@ -17,31 +17,31 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.royale.compiler.internal.as.codegen;
 
 header
 {
-    import org.apache.flex.compiler.problems.ICompilerProblem;
-    import org.apache.flex.compiler.problems.*;
-    import org.apache.flex.compiler.exceptions.BURMAbortException;
+    import org.apache.royale.compiler.problems.ICompilerProblem;
+    import org.apache.royale.compiler.problems.*;
+    import org.apache.royale.compiler.exceptions.BURMAbortException;
 
-    import static org.apache.flex.abc.ABCConstants.*;
+    import static org.apache.royale.abc.ABCConstants.*;
 
-//    import org.apache.flex.abc.semantics.Label;
-    import org.apache.flex.abc.semantics.Name;
-    import org.apache.flex.abc.semantics.Namespace;
-    import org.apache.flex.abc.semantics.ECMASupport;
-    import org.apache.flex.abc.instructionlist.InstructionList;
+//    import org.apache.royale.abc.semantics.Label;
+    import org.apache.royale.abc.semantics.Name;
+    import org.apache.royale.abc.semantics.Namespace;
+    import org.apache.royale.abc.semantics.ECMASupport;
+    import org.apache.royale.abc.instructionlist.InstructionList;
 
-//    import org.apache.flex.compiler.constants.IASLanguageConstants;
+//    import org.apache.royale.compiler.constants.IASLanguageConstants;
 
-    import org.apache.flex.compiler.tree.ASTNodeID;
-    import static org.apache.flex.compiler.tree.ASTNodeID.*;
+    import org.apache.royale.compiler.tree.ASTNodeID;
+    import static org.apache.royale.compiler.tree.ASTNodeID.*;
 
-    import org.apache.flex.compiler.internal.semantics.SemanticUtils;
+    import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 
-    import org.apache.flex.compiler.tree.as.IASNode;
-//    import org.apache.flex.compiler.tree.as.ITryNode;
+    import org.apache.royale.compiler.tree.as.IASNode;
+//    import org.apache.royale.compiler.tree.as.ITryNode;
 
 }
 
@@ -51,7 +51,7 @@ OpcodeType ASTNodeID;
 /*
  *  The I-node type is IASNode, and it has its own adapter.
  */
-INodeAdapter org.apache.flex.compiler.internal.as.codegen.IASNodeAdapter;
+INodeAdapter org.apache.royale.compiler.internal.as.codegen.IASNodeAdapter;
 
 //  Generate Java output.
 Language java;

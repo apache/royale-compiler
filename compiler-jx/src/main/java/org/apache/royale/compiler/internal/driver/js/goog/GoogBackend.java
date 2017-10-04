@@ -32,7 +32,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.royale.compiler.internal.driver.js.JSBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
@@ -65,7 +65,7 @@ public class GoogBackend extends JSBackend
     }
 
     @Override
-    public JSGoogPublisher createPublisher(RoyaleProject project,
+    public JSGoogPublisher createPublisher(RoyaleJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new JSGoogPublisher(project, config);

@@ -39,7 +39,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.MXMLBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.targets.RoyaleTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
@@ -75,7 +75,7 @@ public class MXMLRoyaleBackend extends MXMLBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -107,7 +107,7 @@ public class MXMLRoyaleBackend extends MXMLBackend
     }
 
     @Override
-    public IJSWriter createMXMLWriter(RoyaleProject project,
+    public IJSWriter createMXMLWriter(RoyaleJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -115,14 +115,14 @@ public class MXMLRoyaleBackend extends MXMLBackend
     }
 
     @Override
-    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleJSProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
         return new RoyaleTarget(project, settings, monitor);
     }
 
     @Override
-    public MXMLRoyalePublisher createPublisher(RoyaleProject project,
+    public MXMLRoyalePublisher createPublisher(RoyaleJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new MXMLRoyalePublisher(project, config);

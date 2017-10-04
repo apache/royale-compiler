@@ -70,7 +70,7 @@ import org.apache.royale.compiler.mxml.IXMLNameResolver;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.InternalCompilerProblem2;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IFileNodeAccumulator;
@@ -166,9 +166,9 @@ public abstract class CompilationUnitBase implements ICompilationUnit
 
         for (final ICSSDocument cssDocument : cssDocuments)
         {
-            final boolean isFlex3CSS = ((IFlexProject)project).getCSSManager().isFlex3CSS();
+            final boolean isFlex3CSS = ((IRoyaleProject)project).getCSSManager().isFlex3CSS();
             final ImmutableMap<ICSSSelector, String> resolvedSelectors =
-                    CSSSemanticAnalyzer.resolveSelectors(xmlNameResolver, cssDocument, problems, (IFlexProject) project, isFlex3CSS);
+                    CSSSemanticAnalyzer.resolveSelectors(xmlNameResolver, cssDocument, problems, (IRoyaleProject) project, isFlex3CSS);
             
             // Store resolved type selectors required by CSS code generation.
             cssCompilationSession.resolvedSelectors.putAll(resolvedSelectors);
@@ -176,7 +176,7 @@ public abstract class CompilationUnitBase implements ICompilationUnit
             // Store resolved embed compilation units required by CSS code generation.
             for (final ICSSRule cssRule : cssDocument.getRules())
             {
-            	if (project instanceof IFlexProject && !((IFlexProject)project).isPlatformRule(cssRule))
+            	if (project instanceof IRoyaleProject && !((IRoyaleProject)project).isPlatformRule(cssRule))
             		continue;
                 final Map<CSSFunctionCallPropertyValue, EmbedCompilationUnit> resolvedEmbedProperties =
                         new HashMap<CSSFunctionCallPropertyValue, EmbedCompilationUnit>();

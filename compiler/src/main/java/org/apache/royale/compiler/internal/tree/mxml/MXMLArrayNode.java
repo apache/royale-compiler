@@ -34,7 +34,7 @@ import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
 import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
@@ -108,7 +108,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
             IVariableDefinition propertyDefinition =
                     (IVariableDefinition)((IMXMLPropertySpecifierNode)parent).getDefinition();
             // propertyDefinition will be null in the case of a property of an <Object> tag
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             arrayElementType = propertyDefinition != null ?
             		           propertyDefinition.getArrayElementType(project) :
             		           IASLanguageConstants.Object;
@@ -134,7 +134,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
 
         // report problem if it isn't an instance
 
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         String tagName = builder.getFileScope().resolveTagToQualifiedName(childTag);
         IDefinition definition = project.getScope().findDefinitionByName(tagName);
@@ -225,7 +225,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
                                    List<IMXMLUnitData> contentUnits)
     {
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         // Set the location of the implicit array node
         // to span the tags that specify the default property value.

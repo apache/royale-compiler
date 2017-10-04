@@ -33,7 +33,7 @@ import org.apache.royale.compiler.css.ICSSManager;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.css.semantics.ActivatedStyleSheets;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -52,14 +52,14 @@ public class RoyaleTarget extends JSTarget implements IJSTarget
      * 
      * @param project the owner project
      */
-    public RoyaleTarget(RoyaleProject project, ITargetSettings targetSettings,
+    public RoyaleTarget(RoyaleJSProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
-        flexProject = project;
+        royaleProject = project;
     }
     
-    private final RoyaleProject flexProject;
+    private final RoyaleJSProject royaleProject;
 
     ///////////
     //
@@ -145,7 +145,7 @@ public class RoyaleTarget extends JSTarget implements IJSTarget
             final Collection<ICompilerProblem> problems)
             throws InterruptedException
     {
-        JSCSSCompilationSession cssCompilationSession = (JSCSSCompilationSession) flexProject.getCSSCompilationSession();
+        JSCSSCompilationSession cssCompilationSession = (JSCSSCompilationSession) royaleProject.getCSSCompilationSession();
         cssCompilationSession.setKeepAllTypeSelectors(targetSettings.keepAllTypeSelectors());
         cssCompilationSession.setExcludeDefaultsCSSFiles(targetSettings.getExcludeDefaultsCSSFiles());
         
@@ -172,7 +172,7 @@ public class RoyaleTarget extends JSTarget implements IJSTarget
         // included in the dependency checking, even none of its rules are matched.
         final ActivatedStyleSheets activatedStyleSheets = new ActivatedStyleSheets();
 
-        final ICSSManager cssManager = flexProject.getCSSManager();
+        final ICSSManager cssManager = royaleProject.getCSSManager();
         
         collectThemes(cssManager, activatedStyleSheets, problems);
         collectDefaultCSS(cssManager, activatedStyleSheets, problems);

@@ -16,7 +16,7 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package org.apache.flex
+package org.apache.royale
 {
 
 import flash.events.EventDispatcher;

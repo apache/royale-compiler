@@ -52,7 +52,7 @@ LocalFunction.prototype.myMemberMethod = function(value) {
   function myLocalFunction(value) {
     return self.myMemberProperty + value;
   };
-  org.apache.flex.utils.Language.trace("WOW! :: " + myLocalFunction(value + 42));
+  org.apache.royale.utils.Language.trace("WOW! :: " + myLocalFunction(value + 42));
 };
 
 

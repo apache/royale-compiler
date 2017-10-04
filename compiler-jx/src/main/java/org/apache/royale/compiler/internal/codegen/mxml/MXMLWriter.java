@@ -33,7 +33,7 @@ import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.royale.compiler.internal.codegen.js.JSWriter;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.visitor.as.IASBlockWalker;
@@ -47,7 +47,7 @@ public class MXMLWriter extends JSWriter
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public MXMLWriter(RoyaleProject project, List<ICompilerProblem> problems,
+    public MXMLWriter(RoyaleJSProject project, List<ICompilerProblem> problems,
                       ICompilationUnit compilationUnit, boolean enableDebug)
     {
         super(project, problems, compilationUnit, enableDebug);

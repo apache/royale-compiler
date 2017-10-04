@@ -24,7 +24,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
@@ -115,7 +115,7 @@ class MXMLClassNode extends MXMLExpressionNodeBase implements IMXMLClassNode
     {
         setLocation(location);
 
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         setClassReference(project, IASLanguageConstants.Class);
 
         ITypeDefinition type = builder.getBuiltinType(getName());

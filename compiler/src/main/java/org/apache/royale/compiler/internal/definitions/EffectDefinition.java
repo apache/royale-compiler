@@ -24,7 +24,7 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IEffectDefinition;
 import org.apache.royale.compiler.definitions.IEventDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.metadata.IEffectTagNode;
 
@@ -78,11 +78,11 @@ public class EffectDefinition extends MetadataDefinitionBase implements IEffectD
         if (!(decoratedDefinition instanceof IClassDefinition))
             return null;
 
-        if (!(project instanceof FlexProject))
+        if (!(project instanceof RoyaleProject))
             return null;
 
-        FlexProject flexProject = (FlexProject)project;
+        RoyaleProject royaleProject = (RoyaleProject)project;
         IClassDefinition decoratedClass = (IClassDefinition)decoratedDefinition;
-        return flexProject.resolveEvent(decoratedClass, event);
+        return royaleProject.resolveEvent(decoratedClass, event);
     }
 }

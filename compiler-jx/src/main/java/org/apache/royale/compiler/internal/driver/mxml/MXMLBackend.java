@@ -28,7 +28,7 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.royale.compiler.internal.driver.js.JSBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.royale.compiler.internal.visitor.mxml.MXMLNodeSwitch;
@@ -60,7 +60,7 @@ public class MXMLBackend extends JSBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {

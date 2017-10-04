@@ -43,7 +43,7 @@ import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.units.requests.ABCBytesRequestResult;
@@ -196,7 +196,7 @@ public class StyleModuleCompilationUnit extends CompilationUnitBase
         final StyleModuleSemanticRequestResult semanticResult = (StyleModuleSemanticRequestResult) getOutgoingDependenciesRequest().get();
         final ABCEmitter emitter = new ABCEmitter();
         emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
-        final FlexProject project = (FlexProject)getProject();
+        final RoyaleProject project = (RoyaleProject)getProject();
         final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         byte[] bytes = null;
         try
@@ -252,15 +252,15 @@ public class StyleModuleCompilationUnit extends CompilationUnitBase
         final CSSCompilationSession session = new CSSCompilationSession();
         if (syntaxResult.cssDocument != null)
         {
-            final FlexProject flexProject = (FlexProject)getProject();
+            final RoyaleProject royaleProject = (RoyaleProject)getProject();
             updateStyleCompilationUnitDependencies(
                     session,
-                    flexProject,
+                    royaleProject,
                     ImmutableList.<ICSSDocument> of(syntaxResult.cssDocument),
                     cssSemanticProblems);
             IResolvedQualifiersReference styleModuleBaseClassRef = ReferenceFactory.packageQualifiedReference(
                     getProject().getWorkspace(), "StyleModuleBase");
-            styleModuleBaseClassRef.resolve(flexProject, this, DependencyType.INHERITANCE);
+            styleModuleBaseClassRef.resolve(royaleProject, this, DependencyType.INHERITANCE);
         }
 
         return new StyleModuleSemanticRequestResult(syntaxResult.cssDocument, session, cssSemanticProblems);

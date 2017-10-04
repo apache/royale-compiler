@@ -345,12 +345,12 @@ public class ConfigurationInfo
     /**
      * @return True the option requires Flex in order to be useful. 
      */
-    public boolean isFlexOnly() 
+    public boolean isRoyaleOnly() 
     {
-        return isFlexOnly;
+        return isRoyaleOnly;
     }
 
-    protected boolean isFlexOnly = false;
+    protected boolean isRoyaleOnly = false;
     
     protected final void setSetterMethod(Method setter)
     {

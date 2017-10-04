@@ -193,7 +193,7 @@
             value="true" />
     </target>
     <target name="get_asjs" unless="asjs.ok" >
-        <get src="http://apacheflexbuild.cloudapp.net:8080/job/flex-asjs/lastSuccessfulBuild/artifact/out/apache-flex-royale-0.9.0-bin.zip" dest="${compiler}/target/junit-temp/royale.zip"/>
+        <get src="http://apacheflexbuild.cloudapp.net:8080/job/royale-asjs/lastSuccessfulBuild/artifact/out/apache-royale-flexjs-0.9.0-bin.zip" dest="${compiler}/target/junit-temp/royale.zip"/>
         <unzip src="${compiler}/target/junit-temp/royale.zip" dest="${env.ASJS_HOME}">
             <patternset>
                 <include name="frameworks/libs/*.swc"/>

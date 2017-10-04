@@ -21,14 +21,14 @@
 
 goog.provide('wildcard_import');
 
-goog.require('org.apache.flex.core.Application');
-goog.require('org.apache.flex.html.Button');
+goog.require('org.apache.royale.core.Application');
+goog.require('org.apache.royale.html.Button');
 
 
 
 /**
  * @constructor
- * @extends {org.apache.flex.core.Application}
+ * @extends {org.apache.royale.core.Application}
  */
 wildcard_import = function() {
   wildcard_import.base(this, 'constructor');
@@ -45,7 +45,7 @@ wildcard_import = function() {
    */
   this.mxmldp;
 };
-goog.inherits(wildcard_import, org.apache.flex.core.Application);
+goog.inherits(wildcard_import, org.apache.royale.core.Application);
 
 
 /**
@@ -59,8 +59,8 @@ goog.exportSymbol('wildcard_import', wildcard_import);
  * @private
  */
 wildcard_import.prototype.tmp = function() {
-  var /** @type {org.apache.flex.html.Button} */ myButton;
-  myButton = new org.apache.flex.html.Button();
+  var /** @type {org.apache.royale.html.Button} */ myButton;
+  myButton = new org.apache.royale.html.Button();
 };
 
 

@@ -39,7 +39,7 @@ import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.mxml.StateDefinition;
 import org.apache.royale.compiler.internal.mxml.StateGroupDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.scopes.TypeScope;
 import org.apache.royale.compiler.internal.tree.as.ImportNode;
@@ -112,7 +112,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     /**
      * The project for this class.
      */
-    private FlexProject project;
+    private RoyaleProject project;
     
     /**
      * A map mapping an id to the instance node with that id.
@@ -684,7 +684,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
             }
         }
 
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
 
         if (haveInstanceOverride)
             builder.addExpressionDependency(project.getInstanceOverrideClass());

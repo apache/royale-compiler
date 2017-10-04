@@ -226,7 +226,7 @@ public class VersionInfo
         return buildNum;
     }
     
-	public static String getFlexVersion()
+	public static String getRoyaleVersion()
 	{
 	    if (FLEX_VERSION_NUMBER == null)
 	    {

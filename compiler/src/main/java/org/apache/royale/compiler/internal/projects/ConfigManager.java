@@ -218,9 +218,9 @@ public final class ConfigManager
      *
      * Example: <code>-define=CONFIG::debugging,true</code>
      *
-     * In <code>flex-config.xml</code>:<br/>
+     * In <code>royale-config.xml</code>:<br/>
      * <pre>
-     * <flex-config>
+     * <royale-config>
      *    <compiler>
      *       <define>
      *          <name>CONFIG::debugging</name>
@@ -228,7 +228,7 @@ public final class ConfigManager
      *       </define>
      *       ...
      *    </compile>
-     * </flex-config>
+     * </royale-config>
      * </pre>
      *
      * Values:<br/>
@@ -249,7 +249,7 @@ public final class ConfigManager
      *
      * String values in configuration files need only be single- or double- quoted:<br/>
      * <pre>
-     * <flex-config>
+     * <royale-config>
      *    <compiler>
      *       <define>
      *          <name>NAMES::Organization</name>
@@ -261,7 +261,7 @@ public final class ConfigManager
      *       </define>
      *       ...
      *    </compile>
-     * </flex-config>
+     * </royale-config>
      * </pre>
      *
      * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and
@@ -278,7 +278,7 @@ public final class ConfigManager
      * and name, and a new value.
      * 
      * Definitions cannot be removed/undefined. You can undefine ALL existing definitions
-     * from (e.g. from flex-config.xml) if you do not use append syntax ("=" or append="false").
+     * from (e.g. from royale-config.xml) if you do not use append syntax ("=" or append="false").
      * 
      * IMPORTANT FOR FLEXBUILDER
      * If you are using "Additional commandline arguments" to "-define", don't use the following

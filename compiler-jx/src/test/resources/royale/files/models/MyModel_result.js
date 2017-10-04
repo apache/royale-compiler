@@ -21,14 +21,14 @@
 
 goog.provide('models.MyModel');
 
-goog.require('org.apache.flex.events.Event');
-goog.require('org.apache.flex.events.EventDispatcher');
+goog.require('org.apache.royale.events.Event');
+goog.require('org.apache.royale.events.EventDispatcher');
 
 
 
 /**
  * @constructor
- * @extends {org.apache.flex.events.EventDispatcher}
+ * @extends {org.apache.royale.events.EventDispatcher}
  */
 models.MyModel = function() {
   models.MyModel.base(this, 'constructor');
@@ -36,7 +36,7 @@ models.MyModel = function() {
 this._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
 this._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
 };
-goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
+goog.inherits(models.MyModel, org.apache.royale.events.EventDispatcher);
 
 
 /**
@@ -74,7 +74,7 @@ models.MyModel.prototype.get__labelText = function() {
 models.MyModel.prototype.set__labelText = function(value) {
   if (value != this._labelText) {
     this._labelText = value;
-    this.dispatchEvent(new org.apache.flex.events.Event("labelTextChanged"));
+    this.dispatchEvent(new org.apache.royale.events.Event("labelTextChanged"));
   }
 };
 

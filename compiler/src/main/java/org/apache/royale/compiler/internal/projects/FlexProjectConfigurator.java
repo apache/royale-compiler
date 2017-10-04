@@ -37,16 +37,16 @@ import org.apache.royale.compiler.internal.units.FXGCompilationUnit;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 
 /**
- * This class applies configuration settings to a FlexProject.
+ * This class applies configuration settings to a RoyaleProject.
  * Currently the settings are hard-coded
  * and only applied when the project is originally created.
- * Eventually they will come from flex-config.xml
+ * Eventually they will come from royale-config.xml
  * and this class will support updating with new configuration values.
  */
-public class FlexProjectConfigurator
+public class RoyaleProjectConfigurator
 {
     /**
-     * These imports will eventually come from flex-config.xml.
+     * These imports will eventually come from royale-config.xml.
      * <p>
      * Note taht we include AIR-specific imports even for non-AIR projects.
      * This does not cause compiler warnings about unknown imports
@@ -120,12 +120,12 @@ public class FlexProjectConfigurator
         
     }
 
-    public static void configure(FlexProject project)
+    public static void configure(RoyaleProject project)
     {
         configure(project, null);
     }
     
-    public static void configure(FlexProject project, Configuration configuration)
+    public static void configure(RoyaleProject project, Configuration configuration)
     {
         String[] imports = null;
         if (configuration != null)
@@ -136,7 +136,7 @@ public class FlexProjectConfigurator
         
         // Set the qualified names of various runtime types
         // that the compiler needs to know about.
-        // They will also eventually come from flex-config.xml.
+        // They will also eventually come from royale-config.xml.
         project.setComponentTagType(IMXMLTypeConstants.IFactory);
         project.setStateClass(IMXMLTypeConstants.State);
         project.setStateClientInterface(IMXMLTypeConstants.StateClient);

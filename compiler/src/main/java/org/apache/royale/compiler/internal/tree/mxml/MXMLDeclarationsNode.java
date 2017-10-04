@@ -23,7 +23,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
@@ -78,7 +78,7 @@ class MXMLDeclarationsNode extends MXMLNodeBase implements IMXMLDeclarationsNode
         }
         else
         {
-            FlexProject project = builder.getProject();
+            RoyaleProject project = builder.getProject();
             IDefinition definition = builder.getFileScope().resolveTagToDefinition(childTag);
             if (definition instanceof ClassDefinition)
             {

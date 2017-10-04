@@ -61,7 +61,7 @@ import org.apache.royale.compiler.internal.common.Counter;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.graph.GraphMLWriter;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
 import org.apache.royale.compiler.internal.targets.LinkageChecker;
 import org.apache.royale.compiler.internal.targets.SWFTarget;
@@ -389,12 +389,12 @@ public class MXMLC implements FlexTool
     public MXMLC()
     {
         workspace = new Workspace();
-        project = new FlexProject(workspace);
+        project = new RoyaleProject(workspace);
         problems = new ProblemQuery();
     }
 
     protected Workspace workspace;
-    protected FlexProject project;
+    protected RoyaleProject project;
     public Configuration config;
     public ProblemQuery problems;
     public ConfigurationBuffer configBuffer;
@@ -488,7 +488,7 @@ public class MXMLC implements FlexTool
 
             ConfigurationPathResolver resolver = new ConfigurationPathResolver(System.getProperty("user.dir")); 
             projectConfigurator.setConfigurationPathResolver(resolver);
-            projectConfigurator.setWarnOnFlexOnlyOptionUsage(false);
+            projectConfigurator.setWarnOnRoyaleOnlyOptionUsage(false);
             if (useFlashBuilderProjectFiles(args))
                 projectConfigurator.setConfiguration(FlashBuilderConfigurator.computeFlashBuilderArgs(args, getTargetType().getExtension()), 
                                                         getConfigurationDefaultVariable());

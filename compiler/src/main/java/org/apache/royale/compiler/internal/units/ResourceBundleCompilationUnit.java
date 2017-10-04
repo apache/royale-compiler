@@ -54,7 +54,7 @@ import org.apache.royale.compiler.internal.definitions.PackageDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.resourcebundles.PropertiesFileParser;
 import org.apache.royale.compiler.internal.resourcebundles.ResourceBundleUtils;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
@@ -172,7 +172,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
     private static Collection<String> getQnames(CompilerProject project, String qname, String locale)
     {
         //if this comp unit is not locale dependent, then create qnames  for each locale project targets
-        Collection<String> locales = (locale == null) ? ((FlexProject)project).getLocales() : Collections.<String>singleton(locale);
+        Collection<String> locales = (locale == null) ? ((RoyaleProject)project).getLocales() : Collections.<String>singleton(locale);
         
         
         // For each local we are using, add the qnames promised for that locale
@@ -224,9 +224,9 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
      * 
      * @return the flex project.
      */
-    private FlexProject getFlexProject()
+    private RoyaleProject getRoyaleProject()
     {
-        return (FlexProject)getProject();
+        return (RoyaleProject)getProject();
     }
 
     @Override
@@ -366,7 +366,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
             getABCBytesRequest().get();
 
             //Add dependency to 'mx.resources.ResourceBundle' since we want it to be picked up.
-            FlexProject project = getFlexProject();
+            RoyaleProject project = getRoyaleProject();
             IResolvedQualifiersReference resourceBundleClassRef = ReferenceFactory.packageQualifiedReference(
                     getProject().getWorkspace(), project.getResourceBundleClass());
             resourceBundleClassRef.resolve(project, this, DependencyType.INHERITANCE);
@@ -540,7 +540,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
             INamespaceDefinition packageNS = Iterables.getOnlyElement(mname.getNamespaceSet());
 
             ClassDefinition classDefinition = new ClassDefinition(mname.getBaseName(), (INamespaceReference)packageNS);
-            IReference baseClass = ReferenceFactory.packageQualifiedReference(getProject().getWorkspace(), getFlexProject().getResourceBundleClass());
+            IReference baseClass = ReferenceFactory.packageQualifiedReference(getProject().getWorkspace(), getRoyaleProject().getResourceBundleClass());
             classDefinition.setBaseClassReference(baseClass);
             classDefinition.setExcludedClass();
 
@@ -595,7 +595,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
             final Collection<ICompilerProblem> problems)
     {
 
-        FlexProject project = getFlexProject();
+        RoyaleProject project = getRoyaleProject();
 
         //this class extends "mx.resources.ResourceBundle"
         IResolvedQualifiersReference resourceBundleReference = ReferenceFactory.packageQualifiedReference(

@@ -26,19 +26,19 @@ import java.util.List;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 
 public class JSCPublisher extends MXMLRoyalePublisher
 {
-    public JSCPublisher(RoyaleProject project, Configuration config)
+    public JSCPublisher(RoyaleJSProject project, Configuration config)
     {
         super(project, config);
         this.project = project;
     }
 
-    private RoyaleProject project;
+    private RoyaleJSProject project;
 
     @Override
     protected String getTemplateBody(String projectName)

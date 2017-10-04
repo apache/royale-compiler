@@ -63,7 +63,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.FlexProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
@@ -211,9 +211,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	    		{
 	    	    	// append info() structure if main CU
 	    	        ICompilerProject project = getMXMLWalker().getProject();
-    	            RoyaleProject flexJSProject = null;
-	    	        if (project instanceof RoyaleProject)
-	    	            flexJSProject = (RoyaleProject) project;
+    	            RoyaleJSProject royaleProject = null;
+	    	        if (project instanceof RoyaleJSProject)
+	    	            royaleProject = (RoyaleJSProject) project;
 	    	        
 	    			stillSearching = false;
                     for (String usedName :usedNames) {
@@ -221,7 +221,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                             if (usedName.equals(classDefinition.getQualifiedName())) continue;
                             if (((JSRoyaleEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
                             if (subDocumentNames.contains(usedName)) continue;
-                            if (flexJSProject != null && flexJSProject.isExternalLinkage(flexJSProject.resolveQNameToCompilationUnit(usedName)))
+                            if (royaleProject != null && royaleProject.isExternalLinkage(royaleProject.resolveQNameToCompilationUnit(usedName)))
                             	continue;
                             namesToAdd.add(usedName);
                         }
@@ -237,7 +237,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		}
     		finalLines.add(line);
     	}
-        boolean needXML = ((RoyaleProject)(((IMXMLBlockWalker) getMXMLWalker()).getProject())).needXML;
+        boolean needXML = ((RoyaleJSProject)(((IMXMLBlockWalker) getMXMLWalker()).getProject())).needXML;
         if (needXML && !foundXML)
         {
             StringBuilder appendString = new StringBuilder();
@@ -254,14 +254,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
     	// append info() structure if main CU
         ICompilerProject project = getMXMLWalker().getProject();
-        if (project instanceof RoyaleProject)
+        if (project instanceof RoyaleJSProject)
         {
-            RoyaleProject flexJSProject = (RoyaleProject) project;
-        	if (flexJSProject.mainCU != null)
+            RoyaleJSProject royaleProject = (RoyaleJSProject) project;
+        	if (royaleProject.mainCU != null)
         	{
 	            String mainDef = null;
 				try {
-					mainDef = flexJSProject.mainCU.getQualifiedNames().get(0);
+					mainDef = royaleProject.mainCU.getQualifiedNames().get(0);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -272,7 +272,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
 					"  return { ";
 	            	String sep = "";
-	            	Set<String> mixins = flexJSProject.mixinClassNames;
+	            	Set<String> mixins = royaleProject.mixinClassNames;
 	            	if (mixins.size() > 0)
 	            	{
 		            	String mixinInject = "mixins: [";
@@ -301,7 +301,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	infoInject += mixinInject;
 		            	sep = ",\n";
 	            	}
-	            	Map<String, String> aliases = flexJSProject.remoteClassAliasMap;
+	            	Map<String, String> aliases = royaleProject.remoteClassAliasMap;
 	            	if (aliases != null && aliases.size() > 0)
 	            	{
 		            	String aliasInject = "remoteClassAliases: {";
@@ -322,7 +322,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	sep = ",\n";
 	            	}
 	            	boolean isMX = false;
-	            	List<ISWC> swcs = flexJSProject.getLibraries();
+	            	List<ISWC> swcs = royaleProject.getLibraries();
 	            	for (ISWC swc : swcs)
 	            	{
 	            		if (swc.getSWCFile().getName().equalsIgnoreCase("MX.swc"))
@@ -339,7 +339,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            			MXMLFileNode mxmlFile = (MXMLFileNode)mxmlDoc.getParent();
 	            			if (mxmlFile != null)
 	            			{
-	            				ITargetAttributes attrs = mxmlFile.getTargetAttributes(flexJSProject);
+	            				ITargetAttributes attrs = mxmlFile.getTargetAttributes(royaleProject);
 	            				if (attrs != null && attrs.getUsePreloader() != null)
 	            				{
 	            					String preloaderInject = sep + IMXMLLanguageConstants.ATTRIBUTE_USE_PRELOADER + ": ";
@@ -360,7 +360,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     }
                     
                     String cssInject = "\n\n" + thisDef + ".prototype.cssData = [";
-                    JSCSSCompilationSession cssSession = (JSCSSCompilationSession) flexJSProject.getCSSCompilationSession();
+                    JSCSSCompilationSession cssSession = (JSCSSCompilationSession) royaleProject.getCSSCompilationSession();
                     String s = cssSession.getEncodedCSS();
                     if (s != null)
                     {
@@ -532,7 +532,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @Override
     public void emitDocument(IMXMLDocumentNode node)
     {
-        RoyaleProject fjp = (RoyaleProject) getMXMLWalker().getProject();
+        RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
     	if (fjp.config != null)
     		emitExports = fjp.config.getExportPublicSymbols();
     	
@@ -891,7 +891,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private void emitReflectionData(IClassDefinition cdef)
     {
         JSRoyaleEmitter asEmitter = (JSRoyaleEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        RoyaleProject fjs = (RoyaleProject) getMXMLWalker().getProject();
+        RoyaleJSProject fjs = (RoyaleJSProject) getMXMLWalker().getProject();
     	ArrayList<String> exportProperties = new ArrayList<String>();
     	ArrayList<String> exportSymbols = new ArrayList<String>();
     	Set<String> exportMetadata = Collections.<String> emptySet();
@@ -1071,7 +1071,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     private void collectAccessors(HashMap<String, PropertyNodes> accessors, ArrayList<PackageFooterEmitter.AccessorData> accessorData,IClassDefinition cdef ) {
         JSRoyaleEmitter asEmitter = (JSRoyaleEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        RoyaleProject fjs = (RoyaleProject) getMXMLWalker().getProject();
+        RoyaleJSProject fjs = (RoyaleJSProject) getMXMLWalker().getProject();
 
         for (String propName : accessors.keySet())
         {
@@ -1180,7 +1180,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (node instanceof IMXMLSingleDataBindingNode)
             {
             	IMXMLSingleDataBindingNode sbdn = (IMXMLSingleDataBindingNode)node;
-            	RoyaleProject project = (RoyaleProject)getMXMLWalker().getProject();
+            	RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
             	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
             	if (bdef != null)
             	{
@@ -1681,7 +1681,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         // top level is 'mxmlContent', skip it...
         if (descriptorTree.size() > 0)
         {
-            RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
+            RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
             project.needLanguage = true;
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
@@ -1736,17 +1736,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private void collectExportedNames(MXMLDescriptorSpecifier descriptor)
     {
         ICompilerProject project = getMXMLWalker().getProject();
-        RoyaleProject flexJSProject = null;
-        if (project instanceof RoyaleProject)
+        RoyaleJSProject royaleProject = null;
+        if (project instanceof RoyaleJSProject)
         {
-            flexJSProject = (RoyaleProject) project;
+            royaleProject = (RoyaleJSProject) project;
             String name = descriptor.name;
             if (name == null)
             	name = this.classDefinition.getQualifiedName();
             for (MXMLDescriptorSpecifier prop : descriptor.propertySpecifiers)
             {
             	String propName = prop.name;
-            	flexJSProject.addExportedName(/*name + "." + */propName);
+            	royaleProject.addExportedName(/*name + "." + */propName);
             	if (prop.propertySpecifiers.size() > 0)
             	{
                     collectExportedNames(prop.propertySpecifiers.get(0));            		
@@ -2536,7 +2536,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         String cname = node.getFileNode().getName();
         String bcname = node.getBaseClassName();
 
-        RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
+        RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
         List<File> sourcePaths = project.getSourcePath();
         String sourceName = node.getSourcePath();
         for (File sourcePath : sourcePaths)
@@ -2652,9 +2652,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         if (project.mainCU != null &&
                 cu.getName().equals(project.mainCU.getName()))
         {
-            if (project instanceof RoyaleProject)
+            if (project instanceof RoyaleJSProject)
             {
-            	if (((RoyaleProject)project).needLanguage)
+            	if (((RoyaleJSProject)project).needLanguage)
             		emitHeaderLine(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
             }
         }
@@ -2883,7 +2883,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
 		if (cu == null) return false; // unit testing
 		
-		return ((RoyaleProject)project).isExternalLinkage(cu);
+		return ((RoyaleJSProject)project).isExternalLinkage(cu);
 	}
 
 }

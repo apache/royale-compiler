@@ -23,7 +23,7 @@ limitations under the License.
 	<fx:Script>
 		<![CDATA[
 			
-			import org.apache.flex.html.*;
+			import org.apache.royale.html.*;
 			
 			private function tmp():void
 			{

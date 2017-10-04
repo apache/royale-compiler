@@ -69,7 +69,7 @@ import org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.problems.CSSCodeGenProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -144,7 +144,7 @@ public class CSSReducer implements ICSSCodeGenResult
      * @param isDefaultFactory If true, the generated code will register the
      * styles with {@link ICSSRuntimeConstants#DEFAULT_FACTORY}.
      */
-    public CSSReducer(final IFlexProject project,
+    public CSSReducer(final IRoyaleProject project,
                       final ICSSDocument cssDocument,
                       final IABCVisitor abcVisitor,
                       final CSSCompilationSession session,
@@ -201,7 +201,7 @@ public class CSSReducer implements ICSSCodeGenResult
     /**
      * Owner project.
      */
-    private final IFlexProject project;
+    private final IRoyaleProject project;
 
     /**
      * The "factory" with which the styles will be registered.

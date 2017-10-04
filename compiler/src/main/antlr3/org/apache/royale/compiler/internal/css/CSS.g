@@ -57,18 +57,18 @@ tokens
  *
  */
 
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
 import java.util.Map;
 import java.util.HashMap;
-import org.apache.flex.compiler.problems.CSSParserProblem;
+import org.apache.royale.compiler.problems.CSSParserProblem;
 }
 
 @lexer::header 
 {
-package org.apache.flex.compiler.internal.css;
+package org.apache.royale.compiler.internal.css;
 
-import org.apache.flex.compiler.problems.CSSParserProblem;
+import org.apache.royale.compiler.problems.CSSParserProblem;
 } 
 
 @lexer::members

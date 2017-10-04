@@ -32,7 +32,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -56,7 +56,7 @@ public class ClassEmitter extends JSSubEmitter implements
     public void emit(IClassNode node)
     {
     	boolean keepASDoc = false;
-        RoyaleProject project = (RoyaleProject)getEmitter().getWalker().getProject();
+        RoyaleJSProject project = (RoyaleJSProject)getEmitter().getWalker().getProject();
         keepASDoc = project.config != null && project.config.getKeepASDoc();
     	
         getModel().pushClass(node.getDefinition());

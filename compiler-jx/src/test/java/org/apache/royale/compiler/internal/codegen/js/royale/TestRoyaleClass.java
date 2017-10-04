@@ -23,7 +23,7 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogClass;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.junit.Test;
@@ -37,8 +37,8 @@ public class TestRoyaleClass extends TestGoogClass
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleProject(workspace, backend);
-    	((RoyaleProject)project).config = new JSGoogConfiguration();
+        project = new RoyaleJSProject(workspace, backend);
+    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
         super.setUp();
     }
     

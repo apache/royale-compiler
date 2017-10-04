@@ -22,7 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogStatements;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IForLoopNode;
@@ -45,7 +45,7 @@ public class TestRoyaleStatements extends TestGoogStatements
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleProject(workspace, backend);
+        project = new RoyaleJSProject(workspace, backend);
         super.setUp();
     }
     

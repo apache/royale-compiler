@@ -149,7 +149,7 @@ import org.apache.royale.compiler.internal.definitions.EventDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.resourcebundles.ResourceBundleUtils;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -163,7 +163,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLExecutableStatementsInScriptBlockProblem;
 import org.apache.royale.compiler.problems.MXMLOuterDocumentAlreadyDeclaredProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -705,7 +705,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (stateDependentNodes==null)
             return;
     
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         String deferredInstanceFromFunctionClass = project.getDeferredInstanceFromFunctionClass();
         Name deferredInstanceFromFunctionName = project.getDeferredInstanceFromFunctionName();
 
@@ -1364,7 +1364,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     // If not, what happens if there is already a variable with the same name?
     private void createDocumentDescriptorVariable(IMXMLClassDefinitionNode node)
     {
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         Name uiComponentDescriptorName = project.getUIComponentDescriptorClassName();
         addVariableTrait(NAME_DOCUMENT_DESCRIPTOR, uiComponentDescriptorName);
     }
@@ -1392,7 +1392,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     {
         context.startUsing(IL.DESCRIPTOR);
         
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         IClassDefinition instanceClass = node.getClassReference(project);
         
         Name type = ((ClassDefinition)instanceClass).getMName(project);
@@ -2045,7 +2045,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private void setCurrentState(InstructionList insns)
     {
         // Check if the class being generated implements IStateClient.
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         String stateClientInterface = project.getStateClientInterface();
         if (classDefinition.isInstanceOf(stateClientInterface, project))
         {
@@ -2071,11 +2071,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     }
     
     /**
-     * Returns the {@code FlexProject} for this processor.
+     * Returns the {@code RoyaleProject} for this processor.
      */
-    public FlexProject getProject()
+    public RoyaleProject getProject()
     {
-        return (FlexProject)classScope.getProject();
+        return (RoyaleProject)classScope.getProject();
     }
     
     /** 
@@ -3466,7 +3466,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (!instanceNode.getClassDefinitionNode().getHasDataBindings())
             return;
         
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         
         // Get the Name for the mx.binding.BindingManager class.
         Name bindingManagerName = project.getBindingManagerClassName();
@@ -4170,7 +4170,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     {
         ITypeDefinition type = node.getType();
         
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
 
         try
         {
@@ -4254,13 +4254,13 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (css == CSSDocumentCache.EMPTY_CSS_DOCUMENT)
             return;
         
-        final IFlexProject flexProject = (IFlexProject)getProject();
+        final IRoyaleProject royaleProject = (IRoyaleProject)getProject();
 
         final CSSCompilationSession session = styleNode.getFileNode().getCSSCompilationSession();
         if (session == null)
             return;
 
-        final CSSReducer reducer = new CSSReducer(flexProject, css, this.emitter, session, false, styleTagIndex);
+        final CSSReducer reducer = new CSSReducer(royaleProject, css, this.emitter, session, false, styleTagIndex);
         final CSSEmitter emitter = new CSSEmitter(reducer);
         try
         {
@@ -4421,7 +4421,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processPropertyOverride(IMXMLPropertySpecifierNode propertyNode, Context context)
     {
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         Name propertyOverride = project.getPropertyOverrideClassName();
         processPropertyOrStyleOverride(propertyOverride, propertyNode, context);
     }
@@ -4434,7 +4434,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processStyleOverride(IMXMLStyleSpecifierNode styleNode, Context context)
     {
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         Name styleOverride = project.getStyleOverrideClassName();
         processPropertyOrStyleOverride(styleOverride, styleNode, context);
     }
@@ -4536,7 +4536,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processEventOverride(IMXMLEventSpecifierNode eventNode, Context context)
     {
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         Name eventOverride = project.getEventOverrideClassName();
         
         IASNode parentNode = eventNode.getParent();
@@ -4619,7 +4619,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
 
     void processInstanceOverride(IMXMLInstanceNode instanceNode, Context context)
     {
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         Name instanceOverrideName = project.getInstanceOverrideClassName();
         
         assert nodeToIndexMap != null;
@@ -4917,8 +4917,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.OLDXML)
         {
             // mx.utils.XMLUtil.createXMLDocument(xmlString).firstChild
-            FlexProject flexProject = (FlexProject)getProject();
-            context.addInstruction(OP_getlex, flexProject.getXMLUtilClassName());
+            RoyaleProject royaleProject = (RoyaleProject)getProject();
+            context.addInstruction(OP_getlex, royaleProject.getXMLUtilClassName());
             context.addInstruction(OP_pushstring, node.getXMLString());
             context.addInstruction(OP_callproperty, CREATE_XML_DOCUMENT_CALL_OPERANDS);
             context.addInstruction(OP_getproperty, new Name("firstChild"));
@@ -4956,7 +4956,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void pushModelClass(Context context)
     {
-        FlexProject project = getProject();
+        RoyaleProject project = getProject();
         Name modelClassName = project.getModelClassName();
         
         // Push a new ObjectProxy.
@@ -5084,9 +5084,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         {
             // We can only override the setter for moduleFactory
             // if the class implements mx.core.IFlexModule.
-            FlexProject project = getProject();
-            String flexModuleInterface = project.getFlexModuleInterface();
-            if (classDefinition.isInstanceOf(flexModuleInterface, project))
+            RoyaleProject project = getProject();
+            String royaleModuleInterface = project.getFlexModuleInterface();
+            if (classDefinition.isInstanceOf(royaleModuleInterface, project))
             {
                 addVariableTrait(NAME_MODULE_FACTORY_INITIALIZED, NAME_BOOLEAN);
                 
@@ -5146,10 +5146,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         methodInfo.setParamNames(ImmutableList.<String> of("factory"));
 
         final Vector<Name> paramTypes = new Vector<Name>();
-        final Name flexModuleFactoryTypeName = new Name(
+        final Name royaleModuleFactoryTypeName = new Name(
                 new Namespace(ABCConstants.CONSTANT_PackageNs, "mx.core"),
                 "IFlexModuleFactory");
-        paramTypes.add(flexModuleFactoryTypeName);
+        paramTypes.add(royaleModuleFactoryTypeName);
         methodInfo.setParamTypes(paramTypes);
         
         final InstructionList methodInstructions = new InstructionList();
@@ -5176,7 +5176,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         if (hasStyleSpecifiers || hasEffectSpecifiers)
         {
-            FlexProject project = this.getProject();
+            RoyaleProject project = this.getProject();
             Name cssStyleDeclarationName = project.getCSSStyleDeclarationClassName();
             
             // Create an anonymous function from the style and effect-style specifiers

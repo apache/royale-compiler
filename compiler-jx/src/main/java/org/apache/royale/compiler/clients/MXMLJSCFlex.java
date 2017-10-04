@@ -54,7 +54,7 @@ import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.RoyaleTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -160,7 +160,7 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     protected Workspace workspace;
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
@@ -182,7 +182,7 @@ public class MXMLJSCFlex implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
-        project = new RoyaleProject(workspace, backend);
+        project = new RoyaleJSProject(workspace, backend);
         problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         asFileHandler = backend.getSourceFileHandlerInstance();
     }

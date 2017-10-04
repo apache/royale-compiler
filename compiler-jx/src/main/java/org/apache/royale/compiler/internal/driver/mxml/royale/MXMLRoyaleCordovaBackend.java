@@ -28,7 +28,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleCordovaPublisher;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 
@@ -48,7 +48,7 @@ public class MXMLRoyaleCordovaBackend extends MXMLRoyaleBackend
     }
 
     @Override
-    public MXMLRoyalePublisher createPublisher(RoyaleProject project,
+    public MXMLRoyalePublisher createPublisher(RoyaleJSProject project,
             List<ICompilerProblem> errors, Configuration config)
     {
         return new MXMLRoyaleCordovaPublisher(config, project);

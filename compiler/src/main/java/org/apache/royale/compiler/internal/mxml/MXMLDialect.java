@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.apache.royale.compiler.common.PrefixMap;
 import org.apache.royale.compiler.common.XMLName;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
@@ -571,72 +571,72 @@ public abstract class MXMLDialect
     /**
      * Parses an ActionScript <code>Boolean</code> value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
      * @return A Java <code>Boolean</code> representing the ActionScript
      * <code>Boolean</code>, or <code>null</code>.
      */
-    public abstract Boolean parseBoolean(FlexProject project, String s,
+    public abstract Boolean parseBoolean(RoyaleProject project, String s,
                                          EnumSet<TextParsingFlags> flags);
 
     /**
      * Parses an ActionScript <code>int</code> value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
      * @return A Java <code>Integer</code> representing the ActionScript
      * <code>int</code>, or <code>null</code>.
      */
-    public abstract Integer parseInt(FlexProject project, String s,
+    public abstract Integer parseInt(RoyaleProject project, String s,
                                      EnumSet<TextParsingFlags> flags);
 
     /**
      * Parses an ActionScript <code>uint</code> value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
      * @return A Java <code>Long</code> representing the ActionScript
      * <code>uint</code>, or <code>null</code>.
      */
-    public abstract Long parseUint(FlexProject project, String s,
+    public abstract Long parseUint(RoyaleProject project, String s,
                                    EnumSet<TextParsingFlags> flags);
 
     /**
      * Parses an ActionScript <code>Number</code> value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
      * @return A Java <code>Number</code> representing the ActionScript
      * <code>Number</code>, or <code>null</code>.
      */
-    public abstract Number parseNumber(FlexProject project, String s,
+    public abstract Number parseNumber(RoyaleProject project, String s,
                                        EnumSet<TextParsingFlags> flags);
 
     /**
      * Parses an ActionScript <code>String</code> value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
      * @return A Java <code>String</code> representing the ActionScript
      * <code>String</code>, or <code>null</code>.
      */
-    public abstract String parseString(FlexProject project, String s,
+    public abstract String parseString(RoyaleProject project, String s,
                                        EnumSet<TextParsingFlags> flags);
 
     /**
      * Parses an ActionScript <code>Array</code> value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
@@ -644,20 +644,20 @@ public abstract class MXMLDialect
      * representing the elements of the ActionScript <code>Array</code>, or
      * <code>null</code>.
      */
-    public abstract List<Object> parseArray(FlexProject project, String s,
+    public abstract List<Object> parseArray(RoyaleProject project, String s,
                                             EnumSet<TextParsingFlags> flags);
 
     /**
      * Parses an ActionScript value from a string.
      * 
-     * @param project The {@link FlexProject} within which the MXML is being
+     * @param project The {@link RoyaleProject} within which the MXML is being
      * parsed.
      * @param s The string to be parsed.
      * @param flags A set of flags controlling the text parsing.
      * @return A Java <code>Object</code> representing the ActionScript value,
      * or <code>null</code>.
      */
-    public abstract Object parseObject(FlexProject project, String s,
+    public abstract Object parseObject(RoyaleProject project, String s,
                                        EnumSet<TextParsingFlags> flags);
 
     /**

@@ -39,7 +39,7 @@ import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
 import org.apache.royale.compiler.internal.caches.CacheStoreKeyBase;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.problems.CSSUnresolvedClassReferenceProblem;
@@ -63,13 +63,13 @@ public class CSSManager implements ICSSManager
      * 
      * @param session CSS compilation session that stores resolved embed
      * compilation units.
-     * @param flexProject Flex project.
+     * @param royaleProject Flex project.
      * @param cssRules Resolve class dependencies in these CSS rules.
      * @param problems Problem collection.
      */
     static void getClassDefinitionDependencies(
             final CSSCompilationSession session,
-            final FlexProject flexProject,
+            final RoyaleProject royaleProject,
             final ImmutableSet<ICSSRule> cssRules,
             final Set<IClassDefinition> classReferences,
             final Set<EmbedCompilationUnit> embedCompilationUnits,
@@ -80,7 +80,7 @@ public class CSSManager implements ICSSManager
             resolveDependencies(
                     session.resolvedEmbedProperties,
                     matchedRule,
-                    flexProject,
+                    royaleProject,
                     classReferences,
                     embedCompilationUnits,
                     problems);
@@ -92,20 +92,20 @@ public class CSSManager implements ICSSManager
      * not have a compilation unit, but a compiler problem must already be
      * logged for it in {@code problems} before this method is called.
      * 
-     * @param flexProject Flex project.
+     * @param royaleProject Flex project.
      * @param classDefinitions Class definitions.
      * @param problems Problems collection.
      * @return A set of compilation unit for the given class definitions.
      */
     static ImmutableSet<ICompilationUnit> getCompilationUnitsForDefinitions(
-            final FlexProject flexProject,
+            final RoyaleProject royaleProject,
             final Set<IClassDefinition> classDefinitions,
             final Collection<ICompilerProblem> problems)
     {
         final ImmutableSet.Builder<ICompilationUnit> builder = new ImmutableSet.Builder<ICompilationUnit>();
         for (final IClassDefinition classDefinition : classDefinitions)
         {
-            final ASProjectScope scope = flexProject.getScope();
+            final ASProjectScope scope = royaleProject.getScope();
             final ICompilationUnit compilationUnit = scope.getCompilationUnitForDefinition(classDefinition);
             if (compilationUnit != null)
                 builder.add(compilationUnit);
@@ -140,17 +140,17 @@ public class CSSManager implements ICSSManager
     }
 
     /** Owner project. */
-    private final FlexProject flexProject;
+    private final RoyaleProject royaleProject;
 
     /**
      * Initialize a CSS manager.
      * 
-     * @param flexProject Owner project.
+     * @param royaleProject Owner project.
      */
-    public CSSManager(final FlexProject flexProject)
+    public CSSManager(final RoyaleProject royaleProject)
     {
-        assert flexProject != null;
-        this.flexProject = flexProject;
+        assert royaleProject != null;
+        this.royaleProject = royaleProject;
     }
 
     @Override
@@ -164,7 +164,7 @@ public class CSSManager implements ICSSManager
     public Collection<ICSSDocument> getCSSFromSWCDefaultStyle()
     {
         final Collection<ICSSDocument> result = new ArrayList<ICSSDocument>();
-        for (final ISWC swc : flexProject.getLibraries())
+        for (final ISWC swc : royaleProject.getLibraries())
         {
             final ICSSDocument css = getDefaultCSS(swc.getSWCFile());
             if (css != null)
@@ -176,10 +176,10 @@ public class CSSManager implements ICSSManager
     @Override
     public ICSSDocument getDefaultCSS(final File swcFile)
     {
-        final ISWCManager swcManager = flexProject.getWorkspace().getSWCManager();
+        final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cache = swcManager.getCSSDocumentCache();
         final ISWC swc = swcManager.get(swcFile);
-        return cache.getDefaultsCSS(swc, flexProject.getCompatibilityVersion());
+        return cache.getDefaultsCSS(swc, royaleProject.getCompatibilityVersion());
     }
     
     @Override
@@ -196,14 +196,14 @@ public class CSSManager implements ICSSManager
         final ImmutableSet<String> qnames = buildQNameToDefinitionMap(getClassDefinitionSet(definitions)).keySet();
 
         // IFilter (ICSSRule[], IClassDefinition[]) -> (ICSSRule[] applies to IClassDefinition[])
-        final ImmutableSet<ICSSRule> matchedRules = getMatchedRules(session, flexProject, cssDocument, qnames, problems);
+        final ImmutableSet<ICSSRule> matchedRules = getMatchedRules(session, royaleProject, cssDocument, qnames, problems);
 
         // Find IClassDefinition(ClassReference) and CompilationUnit(Embed) from the matched ICSSRule[] 
         final Set<IClassDefinition> classReferences = new HashSet<IClassDefinition>();
         final Set<EmbedCompilationUnit> embedCompilationUnits = new HashSet<EmbedCompilationUnit>();
         getClassDefinitionDependencies(
                 session,
-                flexProject,
+                royaleProject,
                 matchedRules,
                 classReferences, // output
                 embedCompilationUnits, // output
@@ -211,7 +211,7 @@ public class CSSManager implements ICSSManager
 
         // Find ICompilationUnit[] for IClassDefinition(ClassReference)[]
         final ImmutableSet<ICompilationUnit> classReferenceCompilationUnits =
-                getCompilationUnitsForDefinitions(flexProject, classReferences, problems);
+                getCompilationUnitsForDefinitions(royaleProject, classReferences, problems);
 
         // Only "activated" rules are included in code generation.
         for (final ICSSRule rule : matchedRules)
@@ -230,9 +230,9 @@ public class CSSManager implements ICSSManager
     public Collection<ICSSDocument> getCSSFromThemes(final Collection<ICompilerProblem> problems)
     {
         final ImmutableList.Builder<ICSSDocument> builder = new ImmutableList.Builder<ICSSDocument>();
-        final ISWCManager swcManager = flexProject.getWorkspace().getSWCManager();
+        final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cssCache = swcManager.getCSSDocumentCache();
-        for (final IFileSpecification themeFile : flexProject.getThemeFiles())
+        for (final IFileSpecification themeFile : royaleProject.getThemeFiles())
         {
             try
             {
@@ -243,7 +243,7 @@ public class CSSManager implements ICSSManager
                     final ISWC swc = swcManager.get(new File(themeFile.getPath()));
                     css = cssCache.getDefaultsCSS(
                                 swc,
-                                flexProject.getCompatibilityVersion());
+                                royaleProject.getCompatibilityVersion());
                 }
                 else if ("css".equalsIgnoreCase(extension))
                 {
@@ -271,7 +271,7 @@ public class CSSManager implements ICSSManager
     @Override
     public boolean isFlex3CSS()
     {
-        final Integer compatibilityVersion = flexProject.getCompatibilityVersion();
+        final Integer compatibilityVersion = royaleProject.getCompatibilityVersion();
         if (compatibilityVersion == null)
             return false;
         else if (compatibilityVersion > Configuration.MXML_VERSION_3_0)
@@ -283,7 +283,7 @@ public class CSSManager implements ICSSManager
     @Override
     public ICSSDocument getCSS(String cssFilename)
     {
-        final CSSDocumentCache cache = flexProject.getWorkspace().getSWCManager().getCSSDocumentCache();
+        final CSSDocumentCache cache = royaleProject.getWorkspace().getSWCManager().getCSSDocumentCache();
         final CacheStoreKeyBase key = CSSDocumentCache.createKey(cssFilename);
         final ICSSDocument css = cache.get(key);
         

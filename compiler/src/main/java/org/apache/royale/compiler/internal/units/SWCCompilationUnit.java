@@ -44,7 +44,7 @@ import org.apache.royale.compiler.internal.caches.SWFCache;
 import org.apache.royale.compiler.internal.graph.LinkReportWriter.QNameComparator;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.resourcebundles.ResourceBundleUtils;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.targets.TagSorter;
@@ -150,7 +150,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
             boolean isFlex = false;
             CompilerProject project = getProject();
             
-            if ((project instanceof FlexProject) && ((FlexProject)project).isFlex())
+            if ((project instanceof RoyaleProject) && ((RoyaleProject)project).isFlex())
             {
                 isFlex = true;
             }

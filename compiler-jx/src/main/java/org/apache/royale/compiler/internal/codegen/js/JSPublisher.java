@@ -26,18 +26,18 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 
 public class JSPublisher implements IJSPublisher
 {
 
-    public JSPublisher(RoyaleProject project, Configuration config)
+    public JSPublisher(RoyaleJSProject project, Configuration config)
     {
         this.project = project;
         this.configuration = config;
     }
 
-    protected RoyaleProject project;
+    protected RoyaleJSProject project;
     protected File outputFolder;
     protected File outputParentFolder;
 

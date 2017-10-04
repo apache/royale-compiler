@@ -32,7 +32,7 @@ import org.apache.royale.compiler.common.XMLName;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.SourcePathManager;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.NoCompilationUnitForDefinitionProblem;
@@ -58,14 +58,14 @@ public class RoyaleSWCTarget extends JSTarget implements IJSTarget
      * 
      * @param project the owner project
      */
-    public RoyaleSWCTarget(RoyaleProject project, ITargetSettings targetSettings,
+    public RoyaleSWCTarget(RoyaleJSProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
-        flexProject = (RoyaleProject)project;
+        royaleProject = (RoyaleJSProject)project;
     }
 
-    private RoyaleProject flexProject;
+    private RoyaleJSProject royaleProject;
     
     @Override
     protected Target.RootedCompilationUnits computeRootedCompilationUnits() throws InterruptedException
@@ -136,7 +136,7 @@ public class RoyaleSWCTarget extends JSTarget implements IJSTarget
     {
         List<ICompilationUnit> sourcePathUnits = new ArrayList<ICompilationUnit>(compilationUnitsForFile);
         boolean foundHighestPriorityUnit = false;
-        for (File sourcePath : flexProject.getSourcePath())
+        for (File sourcePath : royaleProject.getSourcePath())
         {
             for (ICompilationUnit unit : sourcePathUnits)
             {
@@ -193,7 +193,7 @@ public class RoyaleSWCTarget extends JSTarget implements IJSTarget
             // Validate the compilation units are resolved to source
             // files unless there are lookupOnly entries.
             final Collection<String> includeNamespaceQualifiedNames =
-                flexProject.getQualifiedClassNamesForManifestNamespaces(
+                royaleProject.getQualifiedClassNamesForManifestNamespaces(
                         Collections.singleton(namespace));
             final Collection<ICompilationUnit> units = 
                 getCompilationUnitsFromClassNames(namespace, includeNamespaceQualifiedNames, problems);
@@ -221,12 +221,12 @@ public class RoyaleSWCTarget extends JSTarget implements IJSTarget
         {
             List<String> classNames = unit.getQualifiedNames();
             String className = classNames.get(classNames.size() - 1);
-            Collection<XMLName> xmlNames = flexProject.getTagNamesForClass(className);
+            Collection<XMLName> xmlNames = royaleProject.getTagNamesForClass(className);
             for (XMLName xmlName : xmlNames)
             {
                 if (namespace.equals(xmlName.getXMLNamespace()))
                 {
-                    if (!flexProject.isManifestComponentLookupOnly(xmlName) && 
+                    if (!royaleProject.isManifestComponentLookupOnly(xmlName) && 
                         unit.getCompilationUnitType() == UnitType.SWC_UNIT)
                     {
                         problems.add(new NoSourceForClassInNamespaceProblem(namespace, className));
@@ -252,11 +252,11 @@ public class RoyaleSWCTarget extends JSTarget implements IJSTarget
         Collection<String> compilableClassNames = new ArrayList<String>();
         for (String className : classNames)
         {
-            Collection<XMLName> tagNames = flexProject.getTagNamesForClass(className);
+            Collection<XMLName> tagNames = royaleProject.getTagNamesForClass(className);
             boolean okToAdd = true;
             for (XMLName tagName : tagNames)
             {
-                if (flexProject.isManifestComponentLookupOnly(tagName))
+                if (royaleProject.isManifestComponentLookupOnly(tagName))
                     okToAdd = false;
             }
             if (okToAdd)
@@ -277,7 +277,7 @@ public class RoyaleSWCTarget extends JSTarget implements IJSTarget
         Collection<ICompilationUnit> units = new LinkedList<ICompilationUnit>();
         for (IResolvedQualifiersReference reference : references)
         {
-            IDefinition def = reference.resolve(flexProject);
+            IDefinition def = reference.resolve(royaleProject);
             if (def == null)
             {
                 if (namespace == null)

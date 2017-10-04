@@ -33,7 +33,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
 import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
@@ -126,8 +126,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
-                        if (project instanceof RoyaleProject)
-                            ((RoyaleProject) project).needLanguage = true;
+                        if (project instanceof RoyaleJSProject)
+                            ((RoyaleJSProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
                         write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -189,8 +189,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
-                        if (project instanceof RoyaleProject)
-                            ((RoyaleProject) project).needLanguage = true;
+                        if (project instanceof RoyaleJSProject)
+                            ((RoyaleJSProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
                         startMapping(node.getNameNode());
                         write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
@@ -205,8 +205,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     		def.getParent().getQualifiedName().equals("Array"))
                 		{
                             ICompilerProject project = this.getProject();
-                            if (project instanceof RoyaleProject)
-                                ((RoyaleProject) project).needLanguage = true;
+                            if (project instanceof RoyaleJSProject)
+                                ((RoyaleJSProject) project).needLanguage = true;
                             getEmitter().getModel().needLanguage = true;
                             write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -229,8 +229,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
 	                			IDefinition paramDef1 = param1.resolveType(project);
 	                			if (paramDef1.getBaseName().equals(IASLanguageConstants._int))
 	                			{
-		                            if (project instanceof RoyaleProject)
-		                                ((RoyaleProject) project).needLanguage = true;
+		                            if (project instanceof RoyaleJSProject)
+		                                ((RoyaleJSProject) project).needLanguage = true;
 		                            getEmitter().getModel().needLanguage = true;
 		                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
 		                            write(ASEmitterTokens.MEMBER_ACCESS);

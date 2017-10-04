@@ -21,7 +21,7 @@ package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -98,7 +98,7 @@ class MXMLFactoryNode extends MXMLInstanceNode implements IMXMLFactoryNode
     private void initialize(MXMLTreeBuilder builder)
     {
         // This node represents an instance of mx.core.ClassFactory.
-        FlexProject project = builder.getProject();
+        RoyaleProject project = builder.getProject();
         String qname = project.getClassFactoryClass();
         setClassReference(project, qname);
 

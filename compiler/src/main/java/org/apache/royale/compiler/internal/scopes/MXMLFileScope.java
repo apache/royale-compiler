@@ -33,7 +33,7 @@ import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.royale.compiler.mxml.IMXMLData;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
@@ -83,9 +83,9 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
     }
 
     /**
-     * The {@code FlexProject} for this file scope.
+     * The {@code RoyaleProject} for this file scope.
      */
-    private final FlexProject project;
+    private final RoyaleProject project;
     
     /**
      * The {@code MXMLDialect} for this file scope.

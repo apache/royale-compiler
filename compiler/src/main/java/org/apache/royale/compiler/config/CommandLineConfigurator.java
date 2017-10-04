@@ -554,10 +554,10 @@ public class CommandLineConfigurator
                         String defaultString = lmgr.getLocalizedTextString(l10nPrefix + ".Default");
                         flags += (((flags.length() == 0) ? " (" : ", ") + defaultString);
                     }
-                    if (info.isFlexOnly())
+                    if (info.isRoyaleOnly())
                     {
-                        String flexOnlylString = Messages.getString("FlexOnly");
-                        flags += (((flags.length() == 0) ? " (" : ", ") + flexOnlylString);
+                        String royaleOnlylString = Messages.getString("RoyaleOnly");
+                        flags += (((flags.length() == 0) ? " (" : ", ") + royaleOnlylString);
                     }
                     if (flags.length() != 0)
                     {

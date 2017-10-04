@@ -52,7 +52,7 @@ import org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer;
 import org.apache.royale.compiler.internal.css.codegen.CSSEmitter;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
@@ -278,7 +278,7 @@ public class CSSCompilationSession
      * added.
      * @throws Exception error
      */
-    public ICSSCodeGenResult emitStyleDataClass(final IFlexProject project, final IABCVisitor abcVisitor) throws Exception
+    public ICSSCodeGenResult emitStyleDataClass(final IRoyaleProject project, final IABCVisitor abcVisitor) throws Exception
     {
         final ICSSDocument css = synthesisNormalizedCSS();
         //LoggingProfiler.onSynthesisCSS(css);

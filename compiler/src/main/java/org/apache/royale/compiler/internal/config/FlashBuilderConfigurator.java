@@ -79,7 +79,7 @@ public class FlashBuilderConfigurator
         {
             if (arg.equals("-debug") || arg.equals("-debug=true"))
                 isDebug = true;
-            if (arg.contains("+flexlib"))
+            if (arg.contains("+royalelib"))
                 sdkdir = arg.substring(9);
         }
 
@@ -94,7 +94,7 @@ public class FlashBuilderConfigurator
             e.printStackTrace();
         }
 
-        FlexLibPropertiesReader flpr = new FlexLibPropertiesReader();
+        RoyaleLibPropertiesReader flpr = new RoyaleLibPropertiesReader();
         if (suffix.equals(".swc"))
         {
             try
@@ -384,12 +384,12 @@ public class FlashBuilderConfigurator
         }
     }
 
-    private static class FlexLibPropertiesReader
+    private static class RoyaleLibPropertiesReader
     {        
         public void read(ArrayList<String> fbArgs, String fbFolder) throws ConfigurationException
         {
-            String path = fbFolder + "/" + ".flexLibProperties";
-            final FlexLibPropertiesHandler h = new FlexLibPropertiesHandler(fbArgs, path, fbFolder, "flexLibProperties");
+            String path = fbFolder + "/" + ".royaleLibProperties";
+            final RoyaleLibPropertiesHandler h = new RoyaleLibPropertiesHandler(fbArgs, path, fbFolder, "royaleLibProperties");
             final SAXParserFactory factory = SAXParserFactory.newInstance();
             Reader reader = null;
             try
@@ -440,11 +440,11 @@ public class FlashBuilderConfigurator
 
 
     /**
-     * SAX handler for .flexLibProperties XML.
+     * SAX handler for .royaleLibProperties XML.
      */
-    private static class FlexLibPropertiesHandler extends DefaultHandler
+    private static class RoyaleLibPropertiesHandler extends DefaultHandler
     {
-        public FlexLibPropertiesHandler(ArrayList<String> fbArgs,
+        public RoyaleLibPropertiesHandler(ArrayList<String> fbArgs,
                        String source,
                        String contextPath,
                        String rootElement)

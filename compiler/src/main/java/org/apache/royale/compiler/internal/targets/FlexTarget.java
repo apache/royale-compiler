@@ -48,7 +48,7 @@ import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
 import org.apache.royale.compiler.internal.config.FrameInfo;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.targets.Target.DirectDependencies;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -79,15 +79,15 @@ import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
  */
 public abstract class FlexTarget
 {
-    FlexTarget(ITargetSettings targetSettings, FlexProject project)
+    FlexTarget(ITargetSettings targetSettings, RoyaleProject project)
     {
-        flexProject = project;
+        royaleProject = project;
         this.targetSettings = targetSettings;
         
         accessibleClassNames = new HashSet<String>();
     }
     
-    protected final FlexProject flexProject;
+    protected final RoyaleProject royaleProject;
     private final ITargetSettings targetSettings;
     
     /**
@@ -118,7 +118,7 @@ public abstract class FlexTarget
      */
     protected final void codegenCallInContextMethod(ClassGeneratorHelper classGen, boolean isOverride)
     {
-        IResolvedQualifiersReference applyReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(), 
+        IResolvedQualifiersReference applyReference = ReferenceFactory.resolvedQualifierQualifiedReference(royaleProject.getWorkspace(), 
                 NamespaceDefinition.getAS3NamespaceDefinition(), "apply");
 
         InstructionList callInContext = new InstructionList();
@@ -164,13 +164,13 @@ public abstract class FlexTarget
      */
     protected final void codegenCreateMethod(ClassGeneratorHelper classGen, Name mainApplicationName, boolean isFlexSDKInfo)
     {
-        IResolvedQualifiersReference applyReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(), 
+        IResolvedQualifiersReference applyReference = ReferenceFactory.resolvedQualifierQualifiedReference(royaleProject.getWorkspace(), 
                 NamespaceDefinition.getAS3NamespaceDefinition(), "apply");
         IResolvedQualifiersReference getDefinitionByNameReference =
-                ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IASLanguageConstants.getDefinitionByName);
+                ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), IASLanguageConstants.getDefinitionByName);
         IResolvedQualifiersReference iFlexModule =
-                ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IMXMLTypeConstants.IFlexModule);
-        boolean codegenIFlexModule = iFlexModule.resolve(flexProject) != null && isFlexSDKInfo;
+                ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), IMXMLTypeConstants.IFlexModule);
+        boolean codegenIFlexModule = iFlexModule.resolve(royaleProject) != null && isFlexSDKInfo;
         Name getDefinitionByName = getDefinitionByNameReference.getMName();
         InstructionList create = new InstructionList();
         create.addInstruction(ABCConstants.OP_getlocal1);
@@ -272,7 +272,7 @@ public abstract class FlexTarget
             Collection<String> compiledLocales,
             FlexFrame1Info frame1Info,
             Set<String> accessibilityClassNames,
-            String flexInitClassName,
+            String royaleInitClassName,
             String stylesClassName,
             List<String> rsls,
             FlexRSLInfo rslInfo,
@@ -282,19 +282,19 @@ public abstract class FlexTarget
             Map<ClassDefinition, String> remoteClassAliasMap) 
             throws InterruptedException
     {
-        IResolvedQualifiersReference applicationDomainRef = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
+        IResolvedQualifiersReference applicationDomainRef = ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(),
                 IASLanguageConstants.ApplicationDomain);
         IResolvedQualifiersReference infoSlotReference;
         if (isAppFlexInfo)
         {
             NamespaceDefinition.IStaticProtectedNamespaceDefinition staticNSDef = NamespaceDefinition.createStaticProtectedNamespaceDefinition("");
-            infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(),
+            infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(royaleProject.getWorkspace(),
                     staticNSDef, "_info");            
         }
         else
         {
             NamespaceDefinition.IPrivateNamespaceDefinition privateNSDef = NamespaceDefinition.createPrivateNamespaceDefinition("");
-            infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(),
+            infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(royaleProject.getWorkspace(),
                     privateNSDef, "info");
         }
         Name infoSlotName = infoSlotReference.getMName();
@@ -330,10 +330,10 @@ public abstract class FlexTarget
             infoEntries++;
         }
 
-        // flexVersion:
+        // royaleVersion:
         if (compatibilityVersion != null)
         {
-            info.addInstruction(ABCConstants.OP_pushstring, "flexVersion");
+            info.addInstruction(ABCConstants.OP_pushstring, "royaleVersion");
             info.addInstruction(ABCConstants.OP_pushstring, compatibilityVersion);
             infoEntries++;
         }
@@ -354,7 +354,7 @@ public abstract class FlexTarget
         if (!isAppFlexInfo && isFlexSDKInfo)
         {
             // preloader:
-            if (preloaderReference != null && preloaderReference.resolve(flexProject) != null)
+            if (preloaderReference != null && preloaderReference.resolve(royaleProject) != null)
             {
                 info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_PRELOADER);
                 info.addInstruction(ABCConstants.OP_getlex, preloaderReference.getMName());
@@ -362,7 +362,7 @@ public abstract class FlexTarget
             }
             
             // runtimeDPIProvider:
-            if (runtimeDPIProviderReference != null && runtimeDPIProviderReference.resolve(flexProject) != null)
+            if (runtimeDPIProviderReference != null && runtimeDPIProviderReference.resolve(royaleProject) != null)
             {
                 info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_RUNTIME_DPI_PROVIDER);
                 info.addInstruction(ABCConstants.OP_getlex, runtimeDPIProviderReference.getMName());
@@ -410,10 +410,10 @@ public abstract class FlexTarget
         }
         
         // mixins:
-        if (flexInitClassName != null)
+        if (royaleInitClassName != null)
         {
             info.addInstruction(ABCConstants.OP_pushstring, "mixins");
-            info.addInstruction(ABCConstants.OP_pushstring, flexInitClassName);
+            info.addInstruction(ABCConstants.OP_pushstring, royaleInitClassName);
             int mixinEntries = 1;
             final Set<String> mixinClassNames = frame1Info.getMixins();
             for (String className : frame1Info.getMixins())
@@ -443,11 +443,11 @@ public abstract class FlexTarget
         if (!frame1Info.embeddedFonts.isEmpty())
         {
             info.addInstruction(ABCConstants.OP_pushstring, "fonts");
-            for (Entry<String, FlexFontInfo> entry : frame1Info.embeddedFonts.entrySet())
+            for (Entry<String, RoyaleFontInfo> entry : frame1Info.embeddedFonts.entrySet())
             {
                 info.addInstruction(ABCConstants.OP_pushstring, entry.getKey());
                 info.addInstruction(ABCConstants.OP_convert_s);
-                FlexFontInfo fontInfo = entry.getValue();
+                RoyaleFontInfo fontInfo = entry.getValue();
                 info.addInstruction(ABCConstants.OP_pushstring, "regular");
                 info.addInstruction(fontInfo.regularOp);
                 info.addInstruction(ABCConstants.OP_pushstring, "bold");
@@ -561,7 +561,7 @@ public abstract class FlexTarget
         {
             try
             {
-                final int backgroundColor = flexProject.getColorAsInt(backgroundColorString);
+                final int backgroundColor = royaleProject.getColorAsInt(backgroundColorString);
                 final String hexString = "0x" + Integer.toHexString(backgroundColor).toUpperCase();
                 info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_BACKGROUND_COLOR);
                 info.addInstruction(ABCConstants.OP_pushstring, hexString);
@@ -593,12 +593,12 @@ public abstract class FlexTarget
             String entryLabel,
             List<RSLSettings> rslSettingsList)
     {
-        ISWCManager swcManager = flexProject.getWorkspace().getSWCManager();
+        ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         
         info.addInstruction(ABCConstants.OP_pushstring, entryLabel);
         
         IResolvedQualifiersReference mxCoreRSLDataReference = 
-            ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IMXMLTypeConstants.RSLData);
+            ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(), IMXMLTypeConstants.RSLData);
         Name mxCoreRSLDataSlotName = mxCoreRSLDataReference.getMName();
         Object[] mxCoreRSLDataCtor = new Object[] { mxCoreRSLDataSlotName, 7 };
         
@@ -729,17 +729,17 @@ public abstract class FlexTarget
             if (accessibilityClass == null)
                 continue;
             
-            IResolvedQualifiersReference ref = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
+            IResolvedQualifiersReference ref = ReferenceFactory.packageQualifiedReference(royaleProject.getWorkspace(),
                     accessibilityClass);
             assert ref != null;
 
             // Collect a list of classes to add to the info structure.
             accessibleClassNames.add(accessibilityClass);
             
-            IDefinition accessibilityClassDefinition = ref.resolve(flexProject);
+            IDefinition accessibilityClassDefinition = ref.resolve(royaleProject);
             if ((accessibilityClassDefinition != null) && (!accessibilityClassDefinition.isImplicit()))
             {
-                ICompilationUnit cu = flexProject.getScope().getCompilationUnitForDefinition(accessibilityClassDefinition);
+                ICompilationUnit cu = royaleProject.getScope().getCompilationUnitForDefinition(accessibilityClassDefinition);
                 assert cu != null : "Unable to find compilation unit for definition!";
                 accessibleCompilationUnits.add(cu);
             }

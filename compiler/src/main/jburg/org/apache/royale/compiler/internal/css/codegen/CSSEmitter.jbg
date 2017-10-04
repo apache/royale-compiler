@@ -17,19 +17,19 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+package org.apache.royale.compiler.internal.css.codegen;
 
 header 
 {
-    import static org.apache.flex.abc.ABCConstants.*;
-    import static org.apache.flex.compiler.internal.css.CSSModelTreeType.*;
+    import static org.apache.royale.abc.ABCConstants.*;
+    import static org.apache.royale.compiler.internal.css.CSSModelTreeType.*;
     
-    import org.apache.flex.compiler.css.*;
-    import org.apache.flex.compiler.internal.css.*;
+    import org.apache.royale.compiler.css.*;
+    import org.apache.royale.compiler.internal.css.*;
 
-    import org.apache.flex.abc.semantics.*;
-    import org.apache.flex.abc.instructionlist.InstructionList;
-    import org.apache.flex.compiler.internal.css.codegen.Pair.*;
+    import org.apache.royale.abc.semantics.*;
+    import org.apache.royale.abc.instructionlist.InstructionList;
+    import org.apache.royale.compiler.internal.css.codegen.Pair.*;
 }
 
 INodeType ICSSNode;

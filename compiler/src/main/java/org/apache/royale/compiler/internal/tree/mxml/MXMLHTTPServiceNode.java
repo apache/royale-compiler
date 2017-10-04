@@ -21,7 +21,7 @@ package org.apache.royale.compiler.internal.tree.mxml;
 
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceNode;
@@ -82,7 +82,7 @@ class MXMLHTTPServiceNode extends MXMLInstanceNode implements IMXMLHTTPServiceNo
     {
         if (TAG_REQUEST.equals(specifierName))
         {
-            final FlexProject project = builder.getProject();
+            final RoyaleProject project = builder.getProject();
             final IClassDefinition classHTTPService = getClassReference(project);
             final IDefinition definitionRequest = project.resolveSpecifier(classHTTPService, TAG_REQUEST);
             if (definitionRequest != null)

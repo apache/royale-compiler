@@ -34,7 +34,7 @@ import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.RSLSettings;
 import org.apache.royale.compiler.internal.projects.LibraryPathManager;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
@@ -47,7 +47,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class TargetSettings implements ITargetSettings
 {
-    public TargetSettings(Configuration configuration, IFlexProject project)
+    public TargetSettings(Configuration configuration, IRoyaleProject project)
     {
         this.configuration = configuration;
         this.project = project;
@@ -64,7 +64,7 @@ public class TargetSettings implements ITargetSettings
     private Map<String, File> includeFiles;
     
     private final Configuration configuration;
-    private final IFlexProject project;
+    private final IRoyaleProject project;
     
     private Set<String> externalLinkageLibraries;
     
@@ -576,7 +576,7 @@ public class TargetSettings implements ITargetSettings
     }
 
     @Override
-    public String getFlexMinimumSupportedVersion()
+    public String getRoyaleMinimumSupportedVersion()
     {
         return configuration.getCompilerMinimumSupportedVersionString();
     }

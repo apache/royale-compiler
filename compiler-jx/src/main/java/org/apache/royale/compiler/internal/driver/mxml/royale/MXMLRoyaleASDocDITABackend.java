@@ -37,7 +37,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleASDocEm
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWalker;
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.ASDocASSourceFileHandler;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -74,7 +74,7 @@ public class MXMLRoyaleASDocDITABackend extends MXMLRoyaleSWCBackend
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(RoyaleProject project,
+    public IMXMLBlockWalker createMXMLWalker(RoyaleJSProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
             IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
@@ -106,7 +106,7 @@ public class MXMLRoyaleASDocDITABackend extends MXMLRoyaleSWCBackend
     }
     
     @Override
-    public IJSWriter createMXMLWriter(RoyaleProject project,
+    public IJSWriter createMXMLWriter(RoyaleJSProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {
@@ -114,7 +114,7 @@ public class MXMLRoyaleASDocDITABackend extends MXMLRoyaleSWCBackend
     }
 
     @Override
-    public JSTarget createTarget(RoyaleProject project, ITargetSettings settings,
+    public JSTarget createTarget(RoyaleJSProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
         return new RoyaleSWCTarget(project, settings, monitor);

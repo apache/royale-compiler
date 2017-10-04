@@ -45,7 +45,7 @@ import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.problems.DuplicateSourceFileProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.projects.IFlexProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -208,8 +208,8 @@ public final class LibraryPathManager
         
         //If the project's locale is empty, then don't try to create ResourceBundleCompilationUnits 
         // because no resource bundles won't go into swf or swc anyways.
-        if (flashProject instanceof IFlexProject && 
-                ((IFlexProject)flashProject).getLocales().size() > 0)
+        if (flashProject instanceof IRoyaleProject && 
+                ((IRoyaleProject)flashProject).getLocales().size() > 0)
         {   
             //Create compilation units for all the .properties files in the swc.
             for (final ISWCFileEntry entry : swc.getFiles().values())

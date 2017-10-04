@@ -27,7 +27,7 @@
 		 risk around caching bad downloads and/or needing to
 		 clean up the cache -->
 		 
-    <property name="FALCON_HOME" location="${basedir}"/>
+    <property name="COMPILER_HOME" location="${basedir}"/>
     
     <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
     <!-- Java 7 on Mac requires OSX 10.7.3 or higher and is 64-bit only -->
@@ -41,30 +41,30 @@
         </and>
     </condition>
 
-    <property file="${FALCON_HOME}/env.properties"/>
+    <property file="${COMPILER_HOME}/env.properties"/>
     <property environment="env"/>
-    <property file="${FALCON_HOME}/local.properties"/>
-    <property file="${FALCON_HOME}/build.properties"/>
-    <property file="${FALCON_HOME}/installer.properties/${bundle}.properties"/>
-    <property file="${FALCON_HOME}/installer.properties/en_US.properties"/>
+    <property file="${COMPILER_HOME}/local.properties"/>
+    <property file="${COMPILER_HOME}/build.properties"/>
+    <property file="${COMPILER_HOME}/installer.properties/${bundle}.properties"/>
+    <property file="${COMPILER_HOME}/installer.properties/en_US.properties"/>
 
-    <!-- assumes Falcon expanded two levels deep in a Flex SDK folder -->
-    <condition property="FLEX_HOME" value="${basedir}/../.." >
+    <!-- assumes Royale Compiler expanded two levels deep in a Royale SDK folder -->
+    <condition property="ROYALE_HOME" value="${basedir}/../.." >
         <available file="${basedir}/../../lib/mxmlc.jar" />
     </condition>
-    <!-- assumes Falcon expanded into the temp folder in a Flex SDK folder -->
-    <condition property="FLEX_HOME" value="${basedir}/.." >
+    <!-- assumes Royale Compiler expanded into the temp folder in a Royale SDK folder -->
+    <condition property="ROYALE_HOME" value="${basedir}/.." >
         <available file="${basedir}/../lib/mxmlc.jar" />
     </condition>
-    <!-- assumes Falcon expanded into the temp folder in a Flex SDK folder -->
+    <!-- assumes Royale Compiler expanded into the temp folder in a Royale SDK folder -->
     <condition property="install.jx" value="true" >
         <available file="${basedir}/compiler-jx" type="dir" />
     </condition>
     
-    <fail message="FLEX_HOME not specified. Environment variable not used." >
+    <fail message="ROYALE_HOME not specified. Environment variable not used." >
         <condition>
             <not>
-                <isset property="FLEX_HOME" />
+                <isset property="ROYALE_HOME" />
             </not>
         </condition>
     </fail>
@@ -88,96 +88,94 @@
         <os family="unix" />
     </condition>
     
-    <target name="overlay" depends="movefiles,download,copyfiles,copy.jx.lib,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
-        <echo>Falcon and FalconJX installed in ${FLEX_HOME}</echo>
+    <target name="overlay" depends="movefiles,download,copyfiles,copy.jx.lib,download.jx,copyfiles.jx" description="Places Royale Compiler files in an SDK folder">
+        <echo>Royale Compiler installed in ${ROYALE_HOME}</echo>
     </target>
     
     <target name="download" description="download compiler dependencies">
         <echo>${download.compiler.deps}</echo>
-        <property name="FALCON_HOME" value="${FLEX_HOME}" />
+        <property name="COMPILER_HOME" value="${ROYALE_HOME}" />
         <ant dir="${basedir}/compiler/src/main/resources" antfile="downloads.xml"/>
     </target>
     
-    <target name="download.jx" if="install.jx" description="download FalconJX compiler dependencies">
+    <target name="download.jx" if="install.jx" description="download Royale Transpiler dependencies">
         <echo>${download.compiler.jx.deps}</echo>
-        <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
+        <property name="TRANSPILER_HOME" value="${ROYALE_HOME}/js" />
         <ant dir="${basedir}/compiler-jx/src/main/resources" antfile="downloads.xml"/>
     </target>
     
     <target name="copy.jx.lib" if="install.jx" description="copy our bundled GCC before running download.jx so we don't download GCC">
-        <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
-        <mkdir dir="${FLEX_HOME}/js/lib/google/closure-compiler" />
+        <property name="TRANSPILER_HOME" value="${ROYALE_HOME}/js" />
+        <mkdir dir="${ROYALE_HOME}/js/lib/google/closure-compiler" />
     </target>
     
     <target name="movefiles" description="move SDK files into -legacy folders" unless="royale">
-        <mkdir dir="${FLEX_HOME}/lib-legacy" />
-        <move todir="${FLEX_HOME}/lib-legacy" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FLEX_HOME}/lib">
+        <mkdir dir="${ROYALE_HOME}/lib-legacy" />
+        <move todir="${ROYALE_HOME}/lib-legacy" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${ROYALE_HOME}/lib">
                 <include name="**/*"/>
             </fileset>
         </move>
     </target>
     
-    <target name="copyfiles" description="copy Falcon files into SDK" >
-        <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
-        <copy todir="${FLEX_HOME}/ant/lib" failOnError="false" overwrite="false">
-            <fileset dir="${FALCON_HOME}/compiler/lib">
-                <include name="flexTasks.jar"/>
+    <target name="copyfiles" description="copy Royale Compiler files into SDK" >
+        <!-- If sdk.branch is set to binary distro royaleTasks is in a different place. -->
+        <copy todir="${ROYALE_HOME}/ant/lib" failOnError="false" overwrite="false">
+            <fileset dir="${COMPILER_HOME}/compiler/lib">
+                <include name="royaleTasks.jar"/>
             </fileset>
         </copy>
         <antcall target="bin-legacy" />
-        <copy todir="${FLEX_HOME}/bin" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FALCON_HOME}/compiler/src/assembly/scripts">
+        <copy todir="${ROYALE_HOME}/bin" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${COMPILER_HOME}/compiler/src/assembly/scripts">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/lib" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FALCON_HOME}/compiler/lib">
+        <copy todir="${ROYALE_HOME}/lib" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${COMPILER_HOME}/compiler/lib">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/lib" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FALCON_HOME}/lib">
+        <copy todir="${ROYALE_HOME}/lib" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${COMPILER_HOME}/lib">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <!-- needed to make FB happy, maybe other IDEs as well -->
-        <copy tofile="${FLEX_HOME}/lib/mxmlc.jar" file="${FLEX_HOME}/lib/falcon-mxmlc.jar" overwrite="true"/>
     </target>
 
     <target name="bin-legacy" unless="royale">
-        <mkdir dir="${FLEX_HOME}/bin-legacy" />
-        <move todir="${FLEX_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FLEX_HOME}/bin">
+        <mkdir dir="${ROYALE_HOME}/bin-legacy" />
+        <move todir="${ROYALE_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${ROYALE_HOME}/bin">
                 <include name="**/*"/>
             </fileset>
         </move>
     </target>
     
-    <target name="copyfiles.jx" if="install.jx" description="copy FalconJX files into SDK" >
-        <mkdir dir="${FLEX_HOME}/js/bin" />
-        <mkdir dir="${FLEX_HOME}/js/lib" />
-        <mkdir dir="${FLEX_HOME}/js/libs" />
-        <copy todir="${FLEX_HOME}/js/lib" failOnError="false" overwrite="true">
-            <fileset dir="${FALCON_HOME}/js/lib">
+    <target name="copyfiles.jx" if="install.jx" description="copy Royale Transpiler files into SDK" >
+        <mkdir dir="${ROYALE_HOME}/js/bin" />
+        <mkdir dir="${ROYALE_HOME}/js/lib" />
+        <mkdir dir="${ROYALE_HOME}/js/libs" />
+        <copy todir="${ROYALE_HOME}/js/lib" failOnError="false" overwrite="true">
+            <fileset dir="${COMPILER_HOME}/js/lib">
                 <include name="**/**"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/js/libs" failOnError="false" overwrite="true">
-            <fileset dir="${FALCON_HOME}/js/libs">
+        <copy todir="${ROYALE_HOME}/js/libs" failOnError="false" overwrite="true">
+            <fileset dir="${COMPILER_HOME}/js/libs">
                 <include name="**/**"/>
             </fileset>
         </copy>
-        <!-- flex-asjs has custom files
-        <copy todir="${FLEX_HOME}/js/bin" failOnError="false" overwrite="true">
-            <fileset dir="${FALCON_HOME}/js/bin">
+        <!-- royale-asjs has custom files
+        <copy todir="${ROYALE_HOME}/js/bin" failOnError="false" overwrite="true">
+            <fileset dir="${COMPILER_HOME}/js/bin">
                 <include name="**/**"/>
             </fileset>
         </copy>
         -->
-        <mkdir dir="${FLEX_HOME}/flex-typedefs" />
-        <copy todir="${FLEX_HOME}/flex-typedefs" failOnError="false" overwrite="true">
-            <fileset dir="${FALCON_HOME}/flex-typedefs">
+        <mkdir dir="${ROYALE_HOME}/royale-typedefs" />
+        <copy todir="${ROYALE_HOME}/royale-typedefs" failOnError="false" overwrite="true">
+            <fileset dir="${COMPILER_HOME}/royale-typedefs">
                 <include name="**/**"/>
             </fileset>
         </copy>

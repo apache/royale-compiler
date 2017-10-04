@@ -40,7 +40,7 @@ import org.apache.royale.compiler.internal.config.IConfigurationFilter;
 import org.apache.royale.compiler.internal.config.annotations.ArgumentNameGenerator;
 import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
-import org.apache.royale.compiler.internal.config.annotations.FlexOnly;
+import org.apache.royale.compiler.internal.config.annotations.RoyaleOnly;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
 import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
@@ -605,9 +605,9 @@ public final class ConfigurationBuffer
                         configName = Joiner.on(".").skipNulls().join(mapping.value());
                     
                     // Is this a Flex only option?
-                    final FlexOnly flexOnly = method.getAnnotation(FlexOnly.class);
-                    if (flexOnly != null)
-                        info.isFlexOnly = true;
+                    final RoyaleOnly royaleOnly = method.getAnnotation(RoyaleOnly.class);
+                    if (royaleOnly != null)
+                        info.isRoyaleOnly = true;
                 }
 
                 // Fall back to naming convention for configuration names.

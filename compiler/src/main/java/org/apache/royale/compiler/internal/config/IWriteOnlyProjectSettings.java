@@ -28,7 +28,7 @@ import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 
 /**
  * Setters for Project settings that can come from command line compiler 
- * options. This interface is implemented by Configurator and IFlexProject to
+ * options. This interface is implemented by Configurator and IRoyaleProject to
  * keep the common setters for these interfaces in sync.  
  */
 public interface IWriteOnlyProjectSettings

@@ -97,8 +97,8 @@ public class DefaultsConfigurator
 
 	private static void loadCommonDefaults( ConfigurationBuffer cfgbuf ) throws ConfigurationException
 	{
-        // specified in case people are using older flex-config.xml
-        // also specified in flex-config.xml
+        // specified in case people are using older royale-config.xml
+        // also specified in royale-config.xml
         set( cfgbuf, "target-player", "11.1.0" );
 
 	    set( cfgbuf,
@@ -130,7 +130,7 @@ public class DefaultsConfigurator
 	    set( cfgbuf, "debug-password", "" );
 	    //set( cfgbuf, "framework", "halo" );
         // The Flex 4 default theme.
-        set( cfgbuf, "compiler.theme", "${flexlib}/themes/Spark/spark.css" );
+        set( cfgbuf, "compiler.theme", "${royalelib}/themes/Spark/spark.css" );
 	    set( cfgbuf, "compiler.locale", java.util.Locale.getDefault().toString());
 
 	    set( cfgbuf, "default-frame-rate", "24" );
@@ -142,7 +142,7 @@ public class DefaultsConfigurator
 	    cfgbuf.setVar( "default-size", args, "defaults", -1 );
 
 	    args.clear();
-	    args.add( "${flexlib}/${configname}-config.xml" );
+	    args.add( "${royalelib}/${configname}-config.xml" );
         // we should probably have a dedicated subclass of DefaultsConfigurator for
         // each product (i.e. webtier doesn't use this var), but for now, this seems
         // like such a seductively easy workaround, lets see if this is adequate:
@@ -169,13 +169,13 @@ public class DefaultsConfigurator
         {
             os = os.toLowerCase();
             if (os.startsWith( "windows xp") )
-                set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${flexlib}/winFonts.ser" );
+                set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${royalelib}/winFonts.ser" );
             else if (os.startsWith("mac os x"))
-                set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${flexlib}/macFonts.ser" );
+                set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${royalelib}/macFonts.ser" );
             else
-                set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${flexlib}/localFonts.ser" );
+                set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${royalelib}/localFonts.ser" );
 	    }
         else
-            set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${flexlib}/localFonts.ser" );
+            set( cfgbuf, "compiler.fonts.local-fonts-snapshot", "${royalelib}/localFonts.ser" );
     }
 }

@@ -57,7 +57,7 @@ import org.apache.royale.compiler.filespecs.IBinaryFileSpecification;
 import org.apache.royale.compiler.internal.config.QNameNormalization;
 import org.apache.royale.compiler.internal.filespecs.SWCFileSpecification;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.LibraryPathManager;
 import org.apache.royale.compiler.internal.projects.ResourceBundleSourceFileHandler;
 import org.apache.royale.compiler.internal.projects.SourcePathManager;
@@ -100,15 +100,15 @@ public class SWCTarget extends Target implements ISWCTarget
 {
     private static final String LIBRARY_SWF = "library.swf";
 
-    public SWCTarget(final FlexProject project, ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor)
+    public SWCTarget(final RoyaleProject project, ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
         swc = new SWC(targetSettings.getOutput());
-        flexProject = project;
+        royaleProject = project;
     }
 
     private final SWC swc;
-    private final FlexProject flexProject;
+    private final RoyaleProject royaleProject;
     private ILibrarySWFTarget librarySWFTarget;
     
     private RootedCompilationUnits rootedCompilationUnits;
@@ -155,11 +155,11 @@ public class SWCTarget extends Target implements ISWCTarget
     {
         ISWCVersion swcVersion = swc.getVersion();
         swcVersion.setSWCVersion(VersionInfo.getLibVersion());
-        if (flexProject.isFlex())
+        if (royaleProject.isFlex())
         {
-            swcVersion.setFlexVersion(VersionInfo.getFlexVersion());
+            swcVersion.setRoyaleVersion(VersionInfo.getRoyaleVersion());
             swcVersion.setFlexBuild(VersionInfo.getBuild());
-            swcVersion.setFlexMinSupportedVersion(targetSettings.getFlexMinimumSupportedVersion());
+            swcVersion.setRoyaleMinSupportedVersion(targetSettings.getRoyaleMinimumSupportedVersion());
         }
         swcVersion.setCompilerName(VersionInfo.getCompilerName());
         swcVersion.setCompilerVersion(VersionInfo.getCompilerVersion());
@@ -172,14 +172,14 @@ public class SWCTarget extends Target implements ISWCTarget
         if (librarySWFTarget == null)
         {
             Target.RootedCompilationUnits rootedCompilationUnits = getRootedCompilationUnits();
-            if (flexProject.isFlex())
+            if (royaleProject.isFlex())
             {
                 librarySWFTarget =
-                    new FlexLibrarySWFTarget(flexProject, targetSettings, rootedCompilationUnits.getUnits());                
+                    new RoyaleLibrarySWFTarget(royaleProject, targetSettings, rootedCompilationUnits.getUnits());                
             }
             else
             {
-                librarySWFTarget = new LibrarySWFTarget(flexProject, targetSettings,
+                librarySWFTarget = new LibrarySWFTarget(royaleProject, targetSettings,
                         rootedCompilationUnits.getUnits());                
             }
         }
@@ -209,11 +209,11 @@ public class SWCTarget extends Target implements ISWCTarget
             // Validate the compilation units are resolved to source
             // files unless there are lookupOnly entries.
             final Collection<String> includeNamespaceQualifiedNames =
-                flexProject.getQualifiedClassNamesForManifestNamespaces(
+                royaleProject.getQualifiedClassNamesForManifestNamespaces(
                         Collections.singleton(namespace));
             for (String qName : includeNamespaceQualifiedNames)
             {
-                final Collection<XMLName> tagNames = flexProject.getTagNamesForClass(qName);
+                final Collection<XMLName> tagNames = royaleProject.getTagNamesForClass(qName);
                 for (XMLName tagName : tagNames)
                 {
                     if (includeComponent(tagName, includedNamespaces))
@@ -233,7 +233,7 @@ public class SWCTarget extends Target implements ISWCTarget
         {
             final String qName = def.getQualifiedName();
             
-            final Collection<XMLName> tagNames = flexProject.getTagNamesForClass(qName);
+            final Collection<XMLName> tagNames = royaleProject.getTagNamesForClass(qName);
             for (XMLName tagName : tagNames)
             {
                 if (includeComponent(tagName, includedNamespaces))
@@ -267,7 +267,7 @@ public class SWCTarget extends Target implements ISWCTarget
     {
         if (includedNamespaces.contains(tagName.getXMLNamespace()))
         {
-            return !flexProject.isManifestComponentLookupOnly(tagName) ||
+            return !royaleProject.isManifestComponentLookupOnly(tagName) ||
                    targetSettings.isIncludeLookupOnlyEnabled();
         }
         
@@ -373,7 +373,7 @@ public class SWCTarget extends Target implements ISWCTarget
         Iterables.addAll(problems, getRootedCompilationUnits().getProblems());
         
         final LinkageChecker externalLinkageChecker = new LinkageChecker(
-                flexProject, targetSettings);
+                royaleProject, targetSettings);
         ((Target)librarySWFTarget).setLinkageChecker(externalLinkageChecker);
         setLinkageChecker(externalLinkageChecker);
         final ISWF defaultLibrarySWF = librarySWFTarget.build(problems);
@@ -394,8 +394,8 @@ public class SWCTarget extends Target implements ISWCTarget
             //Resource bundles processed uniquely
             else if (cu instanceof ResourceBundleCompilationUnit)
             {
-                assert project instanceof FlexProject;
-                processResourceBundle((FlexProject)project, (ResourceBundleCompilationUnit)cu,
+                assert project instanceof RoyaleProject;
+                processResourceBundle((RoyaleProject)project, (ResourceBundleCompilationUnit)cu,
                             swc, problems);
             }
             else
@@ -533,7 +533,7 @@ public class SWCTarget extends Target implements ISWCTarget
                 definitionsToBuild.add(def);
         }
         final DependencyGraph dependencyGraph =
-            flexProject.getDependencyGraph();
+            royaleProject.getDependencyGraph();
         Set<ICompilationUnit> directDependencies = 
             dependencyGraph.getDirectDependencies(cu);
         for (ICompilationUnit directDependency : directDependencies)
@@ -559,7 +559,7 @@ public class SWCTarget extends Target implements ISWCTarget
      * @param swc target swc
      * @param problems problems collection
      */
-    private void processResourceBundle(FlexProject project, ResourceBundleCompilationUnit cu,
+    private void processResourceBundle(RoyaleProject project, ResourceBundleCompilationUnit cu,
             SWC swc, Collection<ICompilerProblem> problems)
     {
         Collection<String> locales = null;
@@ -684,7 +684,7 @@ public class SWCTarget extends Target implements ISWCTarget
     {
         List<ICompilationUnit> sourcePathUnits = new ArrayList<ICompilationUnit>(compilationUnitsForFile);
         boolean foundHighestPriorityUnit = false;
-        for (File sourcePath : flexProject.getSourcePath())
+        for (File sourcePath : royaleProject.getSourcePath())
         {
             for (ICompilationUnit unit : sourcePathUnits)
             {
@@ -741,7 +741,7 @@ public class SWCTarget extends Target implements ISWCTarget
             // Validate the compilation units are resolved to source
             // files unless there are lookupOnly entries.
             final Collection<String> includeNamespaceQualifiedNames =
-                flexProject.getQualifiedClassNamesForManifestNamespaces(
+                royaleProject.getQualifiedClassNamesForManifestNamespaces(
                         Collections.singleton(namespace));
             final Collection<ICompilationUnit> units = 
                 getCompilationUnitsFromClassNames(namespace, includeNamespaceQualifiedNames, problems);
@@ -769,12 +769,12 @@ public class SWCTarget extends Target implements ISWCTarget
         {
             List<String> classNames = unit.getQualifiedNames();
             String className = classNames.get(classNames.size() - 1);
-            Collection<XMLName> xmlNames = flexProject.getTagNamesForClass(className);
+            Collection<XMLName> xmlNames = royaleProject.getTagNamesForClass(className);
             for (XMLName xmlName : xmlNames)
             {
                 if (namespace.equals(xmlName.getXMLNamespace()))
                 {
-                    if (!flexProject.isManifestComponentLookupOnly(xmlName) && 
+                    if (!royaleProject.isManifestComponentLookupOnly(xmlName) && 
                         unit.getCompilationUnitType() == UnitType.SWC_UNIT)
                     {
                         problems.add(new NoSourceForClassInNamespaceProblem(namespace, className));
@@ -800,11 +800,11 @@ public class SWCTarget extends Target implements ISWCTarget
         Collection<String> compilableClassNames = new ArrayList<String>();
         for (String className : classNames)
         {
-            Collection<XMLName> tagNames = flexProject.getTagNamesForClass(className);
+            Collection<XMLName> tagNames = royaleProject.getTagNamesForClass(className);
             boolean okToAdd = true;
             for (XMLName tagName : tagNames)
             {
-                if (flexProject.isManifestComponentLookupOnly(tagName))
+                if (royaleProject.isManifestComponentLookupOnly(tagName))
                     okToAdd = false;
             }
             if (okToAdd)
@@ -825,7 +825,7 @@ public class SWCTarget extends Target implements ISWCTarget
         Collection<ICompilationUnit> units = new LinkedList<ICompilationUnit>();
         for (IResolvedQualifiersReference reference : references)
         {
-            IDefinition def = reference.resolve(flexProject);
+            IDefinition def = reference.resolve(royaleProject);
             if (def == null)
             {
                 if (namespace == null)

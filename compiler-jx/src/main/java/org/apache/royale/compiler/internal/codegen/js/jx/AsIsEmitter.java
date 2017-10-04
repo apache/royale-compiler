@@ -27,7 +27,7 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -53,8 +53,8 @@ public class AsIsEmitter extends JSSubEmitter
         if (id != ASTNodeID.Op_IsID && dnode != null)
         {
             boolean emit = coercion ? 
-            		!((RoyaleProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_FUNCTION_COERCIONS.getToken()) :
-                	!((RoyaleProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_AS_COERCIONS.getToken());
+            		!((RoyaleJSProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_FUNCTION_COERCIONS.getToken()) :
+                	!((RoyaleJSProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_AS_COERCIONS.getToken());
             			
             // find the function node
             IFunctionNode functionNode = (IFunctionNode) left
@@ -129,8 +129,8 @@ public class AsIsEmitter extends JSSubEmitter
         }
 
         ICompilerProject project = this.getProject();
-        if (project instanceof RoyaleProject)
-        	((RoyaleProject)project).needLanguage = true;
+        if (project instanceof RoyaleJSProject)
+        	((RoyaleJSProject)project).needLanguage = true;
         getEmitter().getModel().needLanguage = true;
         if (node instanceof IBinaryOperatorNode)
         {

@@ -23,7 +23,7 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
@@ -38,7 +38,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleProject(workspace, backend);
+        project = new RoyaleJSProject(workspace, backend);
         project.config = new JSGoogConfiguration();
     	project.setProxyBaseClass("flash.utils.Proxy");
         super.setUp();

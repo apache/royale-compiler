@@ -48,7 +48,7 @@ import org.apache.royale.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleASDocProject;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -174,7 +174,7 @@ public class ASDOCJSC extends MXMLJSCFlex
         IBackend backend = new MXMLRoyaleBackend();
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
-        project = new RoyaleProject(workspace, backend);
+        project = new RoyaleJSProject(workspace, backend);
         problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         asFileHandler = backend.getSourceFileHandlerInstance();    	
     }

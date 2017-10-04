@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.apache.royale.compiler.common.XMLName;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
@@ -149,7 +149,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public Boolean parseBoolean(FlexProject project, String s,
+    public Boolean parseBoolean(RoyaleProject project, String s,
                                 EnumSet<TextParsingFlags> flags)
     {
         s = trim(s);
@@ -165,7 +165,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public Integer parseInt(FlexProject project, String s,
+    public Integer parseInt(RoyaleProject project, String s,
                             EnumSet<TextParsingFlags> flags)
     {
         s = trim(s);
@@ -197,7 +197,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public Long parseUint(FlexProject project, String s,
+    public Long parseUint(RoyaleProject project, String s,
                           EnumSet<TextParsingFlags> flags)
     {
         s = trim(s);
@@ -232,7 +232,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public Number parseNumber(FlexProject project, String s,
+    public Number parseNumber(RoyaleProject project, String s,
                               EnumSet<TextParsingFlags> flags)
     {
         // Don't parse Numbers with leading zeros, which are not octal.
@@ -256,7 +256,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public String parseString(FlexProject project, String s,
+    public String parseString(RoyaleProject project, String s,
                               EnumSet<TextParsingFlags> flags)
     {
         if (flags != null && flags.contains(TextParsingFlags.COLLAPSE_WHITE_SPACE))
@@ -266,7 +266,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public List<Object> parseArray(FlexProject project, String s,
+    public List<Object> parseArray(RoyaleProject project, String s,
                                    EnumSet<TextParsingFlags> flags)
     {
         if (flags != null && flags.contains(TextParsingFlags.ALLOW_ARRAY))
@@ -363,7 +363,7 @@ public class MXMLDialect2006 extends MXMLDialect
     }
     
     @Override
-    public Object parseObject(FlexProject project, String s,
+    public Object parseObject(RoyaleProject project, String s,
                               EnumSet<TextParsingFlags> flags)
     {
         String trimmed = trim(s);

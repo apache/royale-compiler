@@ -30,7 +30,7 @@ import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
 import org.apache.royale.compiler.internal.projects.ASProject;
-import org.apache.royale.compiler.internal.projects.FlexProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnitFactory;
@@ -121,7 +121,7 @@ class MXMLEmbedNode extends MXMLCompilerDirectiveNodeBase implements IMXMLEmbedN
             EmbedCompilationUnit cu = resolveCompilationUnit(project, problems);
             if (cu == null)
                 return null;
-            setClassReference((FlexProject)project, cu.getName());
+            setClassReference((RoyaleProject)project, cu.getName());
         }
         catch (InterruptedException e)
         {
