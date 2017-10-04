@@ -365,7 +365,7 @@
       <version>${compiler-jburg-types.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.royale</groupId>
+      <groupId>org.apache.flex</groupId>
       <artifactId>flex-tool-api</artifactId>
       <version>1.0.0</version>
     </dependency>
@@ -450,21 +450,21 @@
     </dependency>
     <!-- Import a part of the Flex sdk -->
     <dependency>
-      <groupId>org.apache.royale.framework</groupId>
+      <groupId>org.apache.flex.framework</groupId>
       <artifactId>framework</artifactId>
       <version>${flex.version}</version>
       <type>swc</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.royale.framework</groupId>
+      <groupId>org.apache.flex.framework</groupId>
       <artifactId>rpc</artifactId>
       <version>${flex.version}</version>
       <type>swc</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.royale.framework</groupId>
+      <groupId>org.apache.flex.framework</groupId>
       <artifactId>spark</artifactId>
       <version>${flex.version}</version>
       <type>swc</type>
@@ -472,7 +472,7 @@
     </dependency>
     <!-- Make sure the framework config-zip is available -->
     <dependency>
-      <groupId>org.apache.royale.framework</groupId>
+      <groupId>org.apache.flex.framework</groupId>
       <artifactId>framework</artifactId>
       <version>${flex.version}</version>
       <type>zip</type>

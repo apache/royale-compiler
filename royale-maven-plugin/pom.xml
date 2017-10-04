@@ -87,7 +87,7 @@
       <version>3.4</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.royale</groupId>
+      <groupId>org.apache.flex</groupId>
       <artifactId>flex-tool-api</artifactId>
       <version>1.0.0</version>
     </dependency>

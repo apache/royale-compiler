@@ -29,11 +29,11 @@ import java.io.*;
 public class ProblemResourceBundleGeneratorMojo
     extends BaseProblemGeneratorMojo
 {
-    @Parameter(defaultValue="${project.basedir}/src/main/java/org/apache/flex/compiler/problems",
+    @Parameter(defaultValue="${project.basedir}/src/main/java/org/apache/royale/compiler/problems",
             property="inputDir", required=true)
     private File inputDirectory;
 
-    @Parameter(defaultValue="${project.build.directory}/classes/org/apache/flex/compiler",
+    @Parameter(defaultValue="${project.build.directory}/classes/org/apache/royale/compiler",
             property="outputDir", required=true)
     private File outputDirectory;
 

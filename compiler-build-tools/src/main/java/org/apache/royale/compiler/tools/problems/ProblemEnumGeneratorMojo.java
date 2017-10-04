@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 public class ProblemEnumGeneratorMojo
     extends BaseProblemGeneratorMojo
 {
-    @Parameter(defaultValue="${project.basedir}/src/main/java/org/apache/flex/compiler/problems",
+    @Parameter(defaultValue="${project.basedir}/src/main/java/org/apache/royale/compiler/problems",
             property="inputDir", required=true)
     private File inputDirectory;
 
@@ -38,7 +38,7 @@ public class ProblemEnumGeneratorMojo
             property="outputDir", required=true)
     private File outputDirectory;
 
-    @Parameter(defaultValue="org/apache/flex/compiler/problems/ProblemID.java",
+    @Parameter(defaultValue="org/apache/royale/compiler/problems/ProblemID.java",
             property="outputFile", required=true)
     private String outputFile;
 
