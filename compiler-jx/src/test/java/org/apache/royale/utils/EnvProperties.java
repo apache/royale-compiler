@@ -111,13 +111,6 @@ public class EnvProperties {
             FPVER = "11.1";
         System.out.println("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
 
-        TLF = p.getProperty(prefix + "TLF_HOME", System.getenv("TLF_HOME"));
-        if (TLF == null)
-        {
-            TLF = FilenameNormalization.normalize("../../../../flex-tlf");
-        }
-        System.out.println("environment property - TLF_HOME = " + TLF);
-
         AIRSDK = p.getProperty(prefix + "AIR_HOME", System.getenv("AIR_HOME"));
         System.out.println("environment property - AIR_HOME = " + AIRSDK);
 
