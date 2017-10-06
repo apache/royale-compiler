@@ -491,7 +491,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject
     //
     private String actionScriptFileEncoding = "utf-8";
     private Map<File, List<String>> extensions;
-    private boolean isFlex = false;
+    private boolean isRoyale = false;
     private boolean strictXML = false;
 
     /**
@@ -542,7 +542,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject
     {
         this.targetSettings = targetSettings;
         
-        if (isFlex())
+        if (isRoyale())
         {
             String rootClassName = targetSettings.getRootClassName();
             target = new RoyaleAppSWFTarget(ReferenceFactory.packageQualifiedReference(
@@ -2108,15 +2108,15 @@ public class RoyaleProject extends ASProject implements IRoyaleProject
     }
 
     @Override
-    public boolean isFlex()
+    public boolean isRoyale()
     {
-        return this.isFlex;
+        return this.isRoyale;
     }
 
     @Override
-    public void setFlex(boolean value)
+    public void setRoyale(boolean value)
     {
-        this.isFlex = value;
+        this.isRoyale = value;
     }
 
     @Override

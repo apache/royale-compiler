@@ -56,7 +56,7 @@ import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
-import org.apache.royale.compiler.internal.targets.RoyaleTarget;
+import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
@@ -316,7 +316,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
             if (continueCompilation)
             {
-
             	targetloop:
             	for (String target : config.getCompilerTargets())
             	{
@@ -522,8 +521,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                project.mixinClassNames = new TreeSet<String>();
 	                project.remoteClassAliasMap = new HashMap<String, String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
-	                ((RoyaleTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
-	                ((RoyaleTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
+	                ((RoyaleJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
+	                ((RoyaleJSTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
@@ -535,7 +534,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                                cu.getQualifiedNames().get(0), outputFolder);
 	
 	                        System.out.println("Compiling file: " + outputClassFile);
-	
+
 	                        ICompilationUnit unit = cu;
 	
 	                        IJSWriter writer;

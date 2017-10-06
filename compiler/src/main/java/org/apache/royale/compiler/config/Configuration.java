@@ -569,7 +569,7 @@ public class Configuration
             xmlWriter.writeCharacters("application/x-shockwave-flash");
             xmlWriter.writeEndElement();
 
-            if (isFlex())
+            if (isRoyale())
             {
                 // write localizedTitles
                 writeMap(xmlWriter, DC_URI, "description", localizedDescriptions);
@@ -5647,21 +5647,21 @@ public class Configuration
     //
     // 'flex'
     //
-    private boolean isFlex = false;
+    private boolean isRoyale = false;
 
-    public boolean isFlex()
+    public boolean isRoyale()
     {
-        return isFlex;
+        return isRoyale;
     }
 
     /**
-     * Option to enable or prevent various Flex compiler behaviors. This is currently used to enable/disable the
-     * generation of a root class for library swfs and generation of Flex specific code for application swfs.
+     * Option to enable or prevent various Royale compiler behaviors. This is currently used to enable/disable the
+     * generation of a root class for library swfs and generation of Royale specific code for application swfs.
      */
     @Config(hidden = true)
-    public void setFlex(ConfigurationValue cv, boolean value) throws ConfigurationException
+    public void setRoyale(ConfigurationValue cv, boolean value) throws ConfigurationException
     {
-        isFlex = value;
+        isRoyale = value;
     }
 
     private boolean isExcludeNativeJSLibraries = false;
@@ -5769,6 +5769,7 @@ public class Configuration
     @SoftPrerequisites("royale")
     public void setFileSpecs(ConfigurationValue cv, List<String> args) throws ConfigurationException
     {
+    	
         this.fileSpecs.addAll(args);
 
         checkForMxmlFiles(args);
@@ -5781,7 +5782,7 @@ public class Configuration
         for (String path : paths)
         {
             if (path.endsWith(".mxml") || path.endsWith(".css"))
-                isFlex = true;
+                isRoyale = true;
         }
     }
 

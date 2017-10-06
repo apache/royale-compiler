@@ -102,7 +102,7 @@ public interface IWriteOnlyProjectSettings
     
     /**
      * Configure this project to use a services-config.xml file. 
-     * The services-config.xml file is used to configure a Flex client to talk 
+     * The services-config.xml file is used to configure a Royale client to talk 
      * to a BlazeDS server.
      * 
      * This is equivalent to using <code>mxmlc/compc <code>--services</code> and 
@@ -126,13 +126,13 @@ public interface IWriteOnlyProjectSettings
     void setIncludeSources(Collection<File> sources) throws InterruptedException;
  
     /**
-     * Option to enable or prevent various Flex compiler behaviors. This is
+     * Option to enable or prevent various Royale compiler behaviors. This is
      * currently used to enable/disable the generation of a root class for
-     * library swfs and generation of Flex specific code for application swfs.
+     * library swfs and generation of Royale specific code for application swfs.
      * 
-     * @param value true to turn on Flex behaviors, false otherwise.
+     * @param value true to turn on Royale behaviors, false otherwise.
      */
-    void setFlex(boolean value);
+    void setRoyale(boolean value);
 
     /**
      * Option to remove the Native JS libraries from external-library-path

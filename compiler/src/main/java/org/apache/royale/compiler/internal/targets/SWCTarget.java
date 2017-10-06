@@ -155,7 +155,7 @@ public class SWCTarget extends Target implements ISWCTarget
     {
         ISWCVersion swcVersion = swc.getVersion();
         swcVersion.setSWCVersion(VersionInfo.getLibVersion());
-        if (royaleProject.isFlex())
+        if (royaleProject.isRoyale())
         {
             swcVersion.setRoyaleVersion(VersionInfo.getRoyaleVersion());
             swcVersion.setFlexBuild(VersionInfo.getBuild());
@@ -172,7 +172,7 @@ public class SWCTarget extends Target implements ISWCTarget
         if (librarySWFTarget == null)
         {
             Target.RootedCompilationUnits rootedCompilationUnits = getRootedCompilationUnits();
-            if (royaleProject.isFlex())
+            if (royaleProject.isRoyale())
             {
                 librarySWFTarget =
                     new RoyaleLibrarySWFTarget(royaleProject, targetSettings, rootedCompilationUnits.getUnits());                

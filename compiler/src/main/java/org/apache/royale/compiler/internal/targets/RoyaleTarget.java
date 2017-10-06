@@ -79,7 +79,7 @@ import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
  */
 public abstract class RoyaleTarget
 {
-    RoyaleTarget(ITargetSettings targetSettings, RoyaleProject project)
+    public RoyaleTarget(ITargetSettings targetSettings, RoyaleProject project)
     {
         royaleProject = project;
         this.targetSettings = targetSettings;

@@ -150,7 +150,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
             boolean isFlex = false;
             CompilerProject project = getProject();
             
-            if ((project instanceof RoyaleProject) && ((RoyaleProject)project).isFlex())
+            if ((project instanceof RoyaleProject) && ((RoyaleProject)project).isRoyale())
             {
                 isFlex = true;
             }

@@ -331,7 +331,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                 setupLocaleSettings(royaleProject);
                 setupServices(royaleProject);
                 setupThemeFiles(royaleProject);
-                setupFlex(royaleProject);
+                setupRoyale(royaleProject);
                 setupCodegenOptions(royaleProject);
             }
             
@@ -351,9 +351,9 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         return success;
     }
 
-    private void setupFlex(RoyaleProject royaleProject)
+    private void setupRoyale(RoyaleProject royaleProject)
     {
-        royaleProject.setFlex(configuration.isFlex());
+        royaleProject.setRoyale(configuration.isRoyale());
     }
 
     private void setupCodegenOptions(RoyaleProject royaleProject)
@@ -878,6 +878,10 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             {
                 reportConfigurationException(e);
                 success = false;
+            }
+            catch (Exception e)
+            {
+            	e.printStackTrace();
             }
         }
         else
@@ -1702,11 +1706,11 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                     String value = extrasBuffer.peekSimpleConfigurationVar(var);
                     if ("true".equals(value))
                     {
-                        setFlex(true);
+                        setRoyale(true);
                     }
                     else if ("false".equals(value))
                     {
-                        setFlex(false);
+                        setRoyale(false);
                     }
                 }
                 catch (ConfigurationException ex)
@@ -3437,7 +3441,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
     
     @Override
-    public void setFlex(boolean value)
+    public void setRoyale(boolean value)
     {
         args.put(FLEX, value ? Boolean.TRUE : Boolean.FALSE);
         

@@ -25,7 +25,7 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.targets.RoyaleTarget;
+import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.targets.ITargetProgressMonitor;
 import org.apache.royale.compiler.targets.ITargetSettings;
@@ -48,6 +48,6 @@ public class RoyaleBackend extends GoogBackend
     public JSTarget createTarget(RoyaleJSProject project, ITargetSettings settings,
                                  ITargetProgressMonitor monitor)
     {
-        return new RoyaleTarget(project, settings, monitor);
+        return new RoyaleJSTarget(project, settings, monitor);
     }
 }

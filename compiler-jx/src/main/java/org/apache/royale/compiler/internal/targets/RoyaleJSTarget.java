@@ -45,14 +45,14 @@ import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 
 import com.google.common.collect.ImmutableList;
 
-public class RoyaleTarget extends JSTarget implements IJSTarget
+public class RoyaleJSTarget extends JSTarget implements IJSTarget
 {
     /**
      * Initialize a JS target with the owner project and root compilation units.
      * 
      * @param project the owner project
      */
-    public RoyaleTarget(RoyaleJSProject project, ITargetSettings targetSettings,
+    public RoyaleJSTarget(RoyaleJSProject project, ITargetSettings targetSettings,
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);

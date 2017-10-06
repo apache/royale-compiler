@@ -194,7 +194,7 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      * This is currently used to enable/disable the generation of a root class for library swfs 
      * and generation of code for application swfs.
      */
-    boolean isFlex();
+    boolean isRoyale();
     
     /**
      * Uses the manifest information to find all the MXML tags that map to a

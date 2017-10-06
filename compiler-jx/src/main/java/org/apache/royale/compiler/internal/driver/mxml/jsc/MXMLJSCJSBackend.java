@@ -38,7 +38,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.targets.RoyaleTarget;
+import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.royale.compiler.internal.visitor.mxml.MXMLNodeSwitch;
@@ -116,6 +116,6 @@ public class MXMLJSCJSBackend extends MXMLRoyaleBackend
     public JSTarget createTarget(RoyaleJSProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
-        return new RoyaleTarget(project, settings, monitor);
+        return new RoyaleJSTarget(project, settings, monitor);
     }
 }
