@@ -116,12 +116,12 @@ Do all the JBurg code generation.
       <version>0.0-20150902-b129bb9e</version>
     </dependency>
 
-    <!--dependency>
+   <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-build-tools</artifactId>
       <version>${compiler-build-tools.version}</version>
       <scope>test</scope>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
