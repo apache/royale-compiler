@@ -96,8 +96,6 @@
   </mailingLists>
 
   <modules>
-    <module>compiler-jburg-types</module>
-    <module>compiler-build-tools</module>
     <module>compiler</module>
     <module>compiler-jx</module>
     <module>compiler-test-utils</module>
