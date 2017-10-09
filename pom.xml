@@ -51,6 +51,7 @@
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
 
+    <jburgTypesRequired>true</jburgTypesRequired>
     <compiler-build-tools.version>1.1.0-SNAPSHOT</compiler-build-tools.version>
     <compiler-jburg-types.version>1.1.0-SNAPSHOT</compiler-jburg-types.version>
 
@@ -95,27 +96,64 @@
     </mailingList>
   </mailingLists>
 
-  <modules>
-    <module>compiler</module>
-    <module>compiler-jx</module>
-    <module>compiler-test-utils</module>
-    <module>debugger</module>
-    <module>flex-compiler-oem</module>
-    <module>royale-ant-tasks</module>
-    <module>royale-maven-extension</module>
-    <module>royale-maven-plugin</module>
-  </modules>
-
   <!--
-      As the compiler needs artifacts that are part of this project, the build
-      will fail, if the utility artifacts compiler-build-tools or compiler-jburg-types
-      haven't been built. We therefore have a utils profile, that builds these
-      prerequisites. After one build with "-P utils" has been built, the default
-      build should be able to do it's job.
+      As the compiler build uses the jburg plugin which has a dependency on
+      the compiler-jburg-types artifact that are part of this project. We therefore have
+      a utils profile, that builds these these artifacts so Maven doesn't fail
+      as it resolves plugin dependencies before starting the build.
+      After one build with "-P -main,utils" (don't use main profile, use utils profile
+      has been built, the default build should be able to do it's job.
   -->
   <profiles>
     <profile>
+      <id>utils</id>
+      <activation>
+          <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+          <jburgTypesRequired>false</jburgTypesRequired>
+      </properties>
+      <modules>
+        <module>compiler-build-tools</module>
+        <module>compiler-jburg-types</module>
+      </modules>
+    </profile>
+    <profile>
+        <id>main</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <modules>
+            <module>compiler</module>
+            <module>compiler-jx</module>
+            <module>compiler-test-utils</module>
+            <module>debugger</module>
+            <module>flex-compiler-oem</module>
+            <module>royale-ant-tasks</module>
+            <!--<module>royale-maven-extension</module>-->
+            <module>royale-maven-plugin</module>
+        </modules>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>net.sourceforge.jburg</groupId>
+              <artifactId>jburg-maven-plugin</artifactId>
+              <dependencies>
+                <dependency>
+                  <groupId>org.apache.royale.compiler</groupId>
+                  <artifactId>compiler-jburg-types</artifactId>
+                  <version>${compiler-jburg-types.version}</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
+    <profile>
       <id>apache-release</id>
+      <activation>
+          <activeByDefault>false</activeByDefault>
+      </activation>
       <properties>
         <website.path>${project.version}</website.path>
       </properties>
@@ -149,6 +187,8 @@
             <exclude>fb.properties</exclude>
             <!-- FlashBuilder / Eclipse settings. If checked in, they should have apache headers -->
             <exclude>**/.settings/**</exclude>
+            <exclude>**/*.classpath</exclude>
+            <exclude>**/*.project</exclude>
             <!-- Ignore IntelliJ IDEA project files -->
             <exclude>**/*.iml</exclude>
             <exclude>**/.idea/**</exclude>
