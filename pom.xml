@@ -254,7 +254,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.6.201602180812</version>
+        <version>0.7.9</version>
         <executions>
           <!--
               Prepares the property pointing to the JaCoCo runtime agent which
@@ -571,7 +571,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.6.201602180812</version>
+        <version>0.7.9</version>
       </plugin>
 
       <!-- Generates a report with the SonarQube analysis reports -->
