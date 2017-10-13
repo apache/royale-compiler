@@ -61,7 +61,7 @@
     </target>
     
     <target name="jar.tests">
-        <java jar="${falcon}/lib/falcon-mxmlc.jar" fork="true"/>
+        <java jar="${falcon}/lib/compiler-mxmlc.jar" fork="true"/>
         <java jar="${falcon}/lib/compiler-compc.jar" fork="true"/>
         <java jar="${falcon}/lib/compiler-asc.jar" fork="true"/>
         <java jar="${falcon}/lib/falcon-optimizer.jar" fork="true"/>

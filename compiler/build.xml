@@ -587,7 +587,7 @@
 
 	<target name="set.falcon.mxmlc.jar.uptodate">
 		<uptodate property="falcon.mxmlc.jar.uptodate"
-		          targetfile="${sdk}/falcon-mxmlc.jar">
+		          targetfile="${sdk}/compiler-mxmlc.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -597,7 +597,7 @@
 	
 	<target name="falcon.mxmlc.jar" depends="compiler.jar, set.falcon.mxmlc.jar.uptodate" unless="falcon.mxmlc.jar.uptodate">
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-mxmlc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
+        <jar file="${sdk}/compiler-mxmlc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
