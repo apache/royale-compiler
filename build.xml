@@ -131,7 +131,7 @@
         <ant dir="royale-ant-tasks" target="test"/>
     </target>
 
-    <target name="copyLastSuccessfulBuild" description="Copies last flex-asjs build.">
+    <target name="copyLastSuccessfulBuild" description="Copies last royale-asjs build.">
         <ant dir="compiler-jx/src/test" target="copyLastSuccessfulBuild"/>
     </target>
     
