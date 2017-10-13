@@ -52,11 +52,11 @@ import java.util.*;
 public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 {
 
-    public static final String FLEXJS_OUTPUT_DIR_NAME = "bin";
-    public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "js-debug";
-    public static final String FLEXJS_RELEASE_DIR_NAME = "js-release";
+    public static final String ROYALE_OUTPUT_DIR_NAME = "bin";
+    public static final String ROYALE_INTERMEDIATE_DIR_NAME = "js-debug";
+    public static final String ROYALE_RELEASE_DIR_NAME = "js-release";
 
-    private static final String FLEXJS_EXTERNS = "externs";
+    private static final String ROYALE_EXTERNS = "externs";
 
     class DependencyRecord
     {
@@ -136,9 +136,9 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                 outputParentFolder = new File(configuration.getTargetFileDirectory());
         }
 
-        outputParentFolder = new File(outputParentFolder, FLEXJS_OUTPUT_DIR_NAME);
+        outputParentFolder = new File(outputParentFolder, ROYALE_OUTPUT_DIR_NAME);
 
-        outputFolder = new File(outputParentFolder, File.separator + FLEXJS_INTERMEDIATE_DIR_NAME);
+        outputFolder = new File(outputParentFolder, File.separator + ROYALE_INTERMEDIATE_DIR_NAME);
 
         // (erikdebruin) Marmotinni handles file management, so we
         // bypass the setup.
@@ -159,7 +159,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         final String outputFileName = projectName + "." + project.getBackend().getOutputExtension();
 
         // The "release" is the "js-release" directory.
-        File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
+        File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
 
         /////////////////////////////////////////////////////////////////////////////////
         // Copy static resources to the intermediate (and release) directory.
@@ -280,7 +280,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             Map<String, ISWCFileEntry> files = swc.getFiles();
             for (String key : files.keySet())
             {
-                if (key.startsWith(FLEXJS_EXTERNS))
+                if (key.startsWith(ROYALE_EXTERNS))
                 {
                     ISWCFileEntry fileEntry = swc.getFile(key);
                     if (fileEntry != null)
@@ -766,7 +766,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         // Only create a release directory for release builds.
         if (configuration.release()) {
-            File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
+            File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
             if (!releaseDir.exists() && !releaseDir.mkdirs()) {
                 throw new RuntimeException("Unable to create release directory at " + releaseDir.getAbsolutePath());
             }

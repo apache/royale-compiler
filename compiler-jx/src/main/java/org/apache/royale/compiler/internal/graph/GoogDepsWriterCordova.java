@@ -32,17 +32,17 @@ public class GoogDepsWriterCordova extends GoogDepsWriter {
 		super(outputFolder, mainClassName, config, swcs);
 	}
 	
-    private final String FLEXJS_CORDOVA_PLUGIN = "@royalecordovaplugin";
+    private final String ROYALE_CORDOVA_PLUGIN = "@royalecordovaplugin";
     
     public ArrayList<String> cordovaPlugins = new ArrayList<String>();
 
     @Override
 	protected void otherScanning(String s)
 	{	
-    	int c = s.indexOf(FLEXJS_CORDOVA_PLUGIN);
+    	int c = s.indexOf(ROYALE_CORDOVA_PLUGIN);
     	if (c > -1)
     	{
-    		cordovaPlugins.add(s.substring(c + FLEXJS_CORDOVA_PLUGIN.length()).trim());
+    		cordovaPlugins.add(s.substring(c + ROYALE_CORDOVA_PLUGIN.length()).trim());
     	}
 	}
 }

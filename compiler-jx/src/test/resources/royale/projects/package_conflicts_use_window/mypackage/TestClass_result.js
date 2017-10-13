@@ -61,7 +61,7 @@ mypackage.TestClass.prototype.event2;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-mypackage.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'mypackage.TestClass', kind: 'class' }] };
+mypackage.TestClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'mypackage.TestClass', kind: 'class' }] };
 
 
 
@@ -70,7 +70,7 @@ mypackage.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass',
  *
  * @return {Object.<string, Function>}
  */
-mypackage.TestClass.prototype.FLEXJS_REFLECTION_INFO = function () {
+mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

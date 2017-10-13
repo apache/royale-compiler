@@ -410,7 +410,7 @@ public class GoogDepsWriter {
             
             boolean firstDependency = true;
         	StringBuilder sb = new StringBuilder();
-        	sb.append(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
+        	sb.append(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
         	
             FileInfo fi = gd.fileInfo;
             int suppressCount = 0;
@@ -422,7 +422,7 @@ public class GoogDepsWriter {
             {
             	if (i < stopLine)
             	{
-                    int c = line.indexOf(JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken());
+                    int c = line.indexOf(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
                     if (c > -1)
                     	return; // already been processed
                     c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -635,7 +635,7 @@ public class GoogDepsWriter {
 						        		}
 						        		else
 						        		{
-						        			String token = JSGoogEmitterTokens.FLEXJS_STATIC_DEPENDENCY_LIST.getToken();
+						        			String token = JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken();
 						    				c = line.indexOf(token);
 						    				if (c > -1)
 						    				{
@@ -646,7 +646,7 @@ public class GoogDepsWriter {
 						    				}
 						    				else
 						    				{
-							        			token = JSGoogEmitterTokens.FLEXJS_DEPENDENCY_LIST.getToken();
+							        			token = JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken();
 							    				c = line.indexOf(token);
 							    				if (c > -1)
 							    				{

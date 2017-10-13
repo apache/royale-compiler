@@ -70,7 +70,7 @@ set: Super.prototype.set__text}}
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', kind: 'class' }] };
+Super.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', kind: 'class' }] };
 
 
 
@@ -79,7 +79,7 @@ Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', k
  *
  * @return {Object.<string, Function>}
  */
-Super.prototype.FLEXJS_REFLECTION_INFO = function () {
+Super.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {

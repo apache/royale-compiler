@@ -114,7 +114,7 @@ get: models.MyModel.prototype.get__cities}}
  *
  * @type {Object.<string, Array.<Object>>}
  */
-models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel', kind: 'class' }] };
+models.MyModel.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel', kind: 'class' }] };
 
 
 
@@ -123,7 +123,7 @@ models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName:
  *
  * @return {Object.<string, Function>}
  */
-models.MyModel.prototype.FLEXJS_REFLECTION_INFO = function () {
+models.MyModel.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {

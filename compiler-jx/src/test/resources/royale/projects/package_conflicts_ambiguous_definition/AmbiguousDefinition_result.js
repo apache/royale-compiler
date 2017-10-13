@@ -46,4 +46,4 @@ AmbiguousDefinition.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-AmbiguousDefinition.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AmbiguousDefinition', qName: 'AmbiguousDefinition', kind: 'class' }] };
+AmbiguousDefinition.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AmbiguousDefinition', qName: 'AmbiguousDefinition', kind: 'class' }] };

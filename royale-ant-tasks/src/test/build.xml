@@ -41,12 +41,12 @@
         </and>
     </condition>
     
-    <condition property="GOOG_HOME" value="${FLEXJS_HOME}/js/lib/google/closure-library">
+    <condition property="GOOG_HOME" value="${ROYALE_HOME}/js/lib/google/closure-library">
         <and>
             <not>
                 <isset property="GOOG_HOME" />
             </not>
-            <available file="${FLEXJS_HOME}/js/lib/google/closure-library/closure/goog/base.js" type="file" />
+            <available file="${ROYALE_HOME}/js/lib/google/closure-library/closure/goog/base.js" type="file" />
         </and>
     </condition>
 		

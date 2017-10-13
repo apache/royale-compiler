@@ -45,7 +45,7 @@ interfaces.IE.prototype.myMethod = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE', kind: 'interface' }] };
+interfaces.IE.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE', kind: 'interface' }] };
 
 
 
@@ -54,7 +54,7 @@ interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'inte
  *
  * @return {Object.<string, Function>}
  */
-interfaces.IE.prototype.FLEXJS_REFLECTION_INFO = function () {
+interfaces.IE.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     accessors: function () {
       return {

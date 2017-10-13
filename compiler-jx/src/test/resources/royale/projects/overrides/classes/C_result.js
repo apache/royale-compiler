@@ -46,7 +46,7 @@ goog.exportSymbol('classes.C', classes.C);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'classes.C', kind: 'class' }] };
+classes.C.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'C', qName: 'classes.C', kind: 'class' }] };
 
 
 
@@ -55,7 +55,7 @@ classes.C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'classes.C
  *
  * @return {Object.<string, Function>}
  */
-classes.C.prototype.FLEXJS_REFLECTION_INFO = function () {
+classes.C.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

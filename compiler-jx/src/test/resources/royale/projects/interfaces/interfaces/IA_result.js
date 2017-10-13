@@ -44,7 +44,7 @@ goog.exportSymbol('interfaces.IA', interfaces.IA);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA', kind: 'interface' }], interfaces: [interfaces.IC] };
+interfaces.IA.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA', kind: 'interface' }], interfaces: [interfaces.IC] };
 
 
 
@@ -53,7 +53,7 @@ interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'inte
  *
  * @return {Object.<string, Function>}
  */
-interfaces.IA.prototype.FLEXJS_REFLECTION_INFO = function () {
+interfaces.IA.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     accessors: function () {return {};},
     methods: function () {return {};}

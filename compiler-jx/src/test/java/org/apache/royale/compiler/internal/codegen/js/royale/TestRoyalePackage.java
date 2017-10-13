@@ -90,7 +90,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A', kind: 'class' }] };\n" +
+        		"A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -99,7 +99,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
         		"    variables: function () {return {};},\n" +
         		"    accessors: function () {return {};},\n" +
@@ -138,7 +138,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -147,7 +147,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -186,7 +186,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -195,7 +195,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -243,7 +243,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -252,7 +252,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -294,7 +294,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -303,7 +303,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -352,7 +352,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -361,7 +361,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -415,7 +415,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -424,7 +424,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -450,7 +450,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -459,7 +459,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -508,7 +508,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -517,7 +517,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -571,7 +571,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -580,7 +580,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -649,7 +649,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -658,7 +658,7 @@ public class TestRoyalePackage extends TestGoogPackage
             		" *\n" +
             		" * @return {Object.<string, Function>}\n" +
             		" */\n" +
-            		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+            		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
 					"    variables: function () {return {};},\n" +
 					"    accessors: function () {return {};},\n" +
@@ -709,7 +709,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -718,7 +718,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {\n" +
 				"      return {\n" +
@@ -806,7 +806,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -815,7 +815,7 @@ public class TestRoyalePackage extends TestGoogPackage
             		" *\n" +
             		" * @return {Object.<string, Function>}\n" +
             		" */\n" +
-            		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+            		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
 					"    variables: function () {return {};},\n" +
             		"    accessors: function () {\n" +
@@ -862,7 +862,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -871,7 +871,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
         		"    accessors: function () {\n" +
@@ -889,7 +889,7 @@ public class TestRoyalePackage extends TestGoogPackage
     }
 
     @Test
-    public void testPackageQualified_ClassAndInternalFLEXJS_CLASS_INFO()
+    public void testPackageQualified_ClassAndInternalROYALE_CLASS_INFO()
     {
         IFileNode node = compileAS("package foo.bar.baz {\n" +
         							  "public class A {\n" +
@@ -935,7 +935,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -944,7 +944,7 @@ public class TestRoyalePackage extends TestGoogPackage
             		" *\n" +
             		" * @return {Object.<string, Function>}\n" +
             		" */\n" +
-            		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+            		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
 					"    variables: function () {return {};},\n" +
 					"    accessors: function () {return {};},\n" +
@@ -972,7 +972,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.ITestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface', kind: 'interface' }] };\n" +
+        		  "foo.bar.baz.A.ITestInterface.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface', kind: 'interface' }] };\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -981,7 +981,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.ITestInterface.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
@@ -1014,7 +1014,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -1023,7 +1023,7 @@ public class TestRoyalePackage extends TestGoogPackage
             		" *\n" +
             		" * @return {Object.<string, Function>}\n" +
             		" */\n" +
-            		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+            		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
 					"    variables: function () {return {};},\n" +
 					"    accessors: function () {return {};},\n" +
@@ -1091,7 +1091,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };\n" +
+				"foo.bar.A.Internal.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -1100,7 +1100,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"foo.bar.A.Internal.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +

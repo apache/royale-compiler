@@ -55,7 +55,7 @@ public class MXMLRoyaleCordovaPublisher extends MXMLRoyalePublisher
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
 
         // The "release" is the "js-release" directory.
-        File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
+        File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
 
     }
 }

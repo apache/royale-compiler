@@ -26,11 +26,11 @@ import org.apache.royale.compiler.codegen.IEmitterTokens;
  */
 public enum JSRoyaleEmitterTokens implements IEmitterTokens
 {
-    FLEXJS_CLASS_INFO("FLEXJS_CLASS_INFO"),
-    FLEXJS_REFLECTION_INFO("FLEXJS_REFLECTION_INFO"),
-    FLEXJS_CLASS_INFO_KIND("kind"),
-    FLEXJS_CLASS_INFO_CLASS_KIND("class"),
-    FLEXJS_CLASS_INFO_INTERFACE_KIND("interface"),
+    ROYALE_CLASS_INFO("ROYALE_CLASS_INFO"),
+    ROYALE_REFLECTION_INFO("ROYALE_REFLECTION_INFO"),
+    ROYALE_CLASS_INFO_KIND("kind"),
+    ROYALE_CLASS_INFO_CLASS_KIND("class"),
+    ROYALE_CLASS_INFO_INTERFACE_KIND("interface"),
     GOOG_EXPORT_PROPERTY("goog.exportProperty"),
     GOOG_EXPORT_SYMBOL("goog.exportSymbol"),
     INDENT("  "),

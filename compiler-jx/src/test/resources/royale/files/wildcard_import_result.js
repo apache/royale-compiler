@@ -69,7 +69,7 @@ wildcard_import.prototype.tmp = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import', qName: 'wildcard_import', kind: 'class'  }] };
+wildcard_import.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'wildcard_import', qName: 'wildcard_import', kind: 'class'  }] };
 
 
 
@@ -78,7 +78,7 @@ wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import
  *
  * @return {Object.<string, Function>}
  */
-wildcard_import.prototype.FLEXJS_REFLECTION_INFO = function () {
+wildcard_import.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

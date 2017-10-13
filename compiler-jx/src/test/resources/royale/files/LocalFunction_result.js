@@ -69,7 +69,7 @@ LocalFunction.prototype.doIt = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction', kind: 'class' }] };
+LocalFunction.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction', kind: 'class' }] };
 
 
 
@@ -78,7 +78,7 @@ LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', q
  *
  * @return {Object.<string, Function>}
  */
-LocalFunction.prototype.FLEXJS_REFLECTION_INFO = function () {
+LocalFunction.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

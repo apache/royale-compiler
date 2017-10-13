@@ -51,7 +51,7 @@ UseWindow.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-UseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'UseWindow', kind: 'class' }] };
+UseWindow.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'UseWindow', kind: 'class' }] };
 
 
 
@@ -60,7 +60,7 @@ UseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'U
  *
  * @return {Object.<string, Function>}
  */
-UseWindow.prototype.FLEXJS_REFLECTION_INFO = function () {
+UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

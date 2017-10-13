@@ -42,7 +42,7 @@ goog.exportSymbol('Event', Event);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'Event', kind: 'class' }] };
+Event.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Event', qName: 'Event', kind: 'class' }] };
 
 
 
@@ -51,7 +51,7 @@ Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'Event', k
  *
  * @return {Object.<string, Function>}
  */
-Event.prototype.FLEXJS_REFLECTION_INFO = function () {
+Event.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

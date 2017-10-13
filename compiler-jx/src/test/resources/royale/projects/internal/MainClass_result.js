@@ -44,7 +44,7 @@ goog.exportSymbol('MainClass', MainClass);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-MainClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'MainClass', kind: 'class' }] };
+MainClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'MainClass', kind: 'class' }] };
 
 
 
@@ -53,7 +53,7 @@ MainClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'M
  *
  * @return {Object.<string, Function>}
  */
-MainClass.prototype.FLEXJS_REFLECTION_INFO = function () {
+MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},
@@ -93,7 +93,7 @@ MainClass.InternalClass.prototype.foo;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-MainClass.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass', kind: 'class' }] };
+MainClass.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass', kind: 'class' }] };
 
 
 
@@ -102,7 +102,7 @@ MainClass.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Interna
  *
  * @return {Object.<string, Function>}
  */
-MainClass.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {
+MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {
       return {

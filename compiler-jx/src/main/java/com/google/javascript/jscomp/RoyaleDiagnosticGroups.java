@@ -30,7 +30,7 @@ public class RoyaleDiagnosticGroups {
 	 * Flex ItemRenderer Factories store the constructor in a variable
 	 * resulting in this warning.
 	 */
-	public static final DiagnosticGroup FLEXJS_NOT_A_CONSTRUCTOR =
+	public static final DiagnosticGroup ROYALE_NOT_A_CONSTRUCTOR =
 		DiagnosticGroups.registerGroup("royaleNotAConstructor",
                 TypeCheck.NOT_A_CONSTRUCTOR);
 
@@ -38,11 +38,11 @@ public class RoyaleDiagnosticGroups {
 	 * Flex code calls super.methodName from functions other than
 	 * overrides of the methodName.
 	 */
-	public static final DiagnosticGroup FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME =
+	public static final DiagnosticGroup ROYALE_SUPER_CALL_TO_DIFFERENT_NAME =
 		DiagnosticGroups.registerGroup("royaleSuperCallToDifferentName",
                 ProcessClosurePrimitives.BASE_CLASS_ERROR);
 	/*
-	public static final DiagnosticGroup FLEXJS_REFERENCE_BEFORE_DECLARE =
+	public static final DiagnosticGroup ROYALE_REFERENCE_BEFORE_DECLARE =
 		DiagnosticGroups.registerGroup("royaleReferenceBeforeDeclare",
                 VariableReferenceCheck.UNDECLARED_REFERENCE);
     */
@@ -51,7 +51,7 @@ public class RoyaleDiagnosticGroups {
 	 * Flex code won't always generate a goog.requires for types only used
 	 * in JSDoc annotations, but the compiler complains.
 	 */
-	public static final DiagnosticGroup FLEXJS_UNKNOWN_JSDOC_TYPE_NAME =
+	public static final DiagnosticGroup ROYALE_UNKNOWN_JSDOC_TYPE_NAME =
 		DiagnosticGroups.registerGroup("royaleUnknownJSDocTypeName",
                 RhinoErrorReporter.TYPE_PARSE_ERROR);
 

@@ -862,16 +862,16 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         writeNewline(" *");
         writeNewline(" * @type {Object.<string, Array.<Object>>}");
         writeNewline(" */");
-        write(formatQualifiedName(cname) + ".prototype.FLEXJS_CLASS_INFO = { names: [{ name: '");
+        write(formatQualifiedName(cname) + ".prototype.ROYALE_CLASS_INFO = { names: [{ name: '");
         write(cdef.getBaseName());
         write("', qName: '");
         write(formatQualifiedName(cname));
         write("'");
         writeToken(ASEmitterTokens.COMMA);
-        write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_KIND);
+        write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_KIND);
         writeToken(ASEmitterTokens.COLON);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
+        write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_CLASS_KIND);
         writeToken(ASEmitterTokens.SINGLE_QUOTE);
         write(" }]");
         if (interfaceList != null)

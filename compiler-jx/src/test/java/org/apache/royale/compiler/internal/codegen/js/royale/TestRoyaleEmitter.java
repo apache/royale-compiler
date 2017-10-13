@@ -120,7 +120,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"com.example.components.MyEventTarget.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget', kind: 'class' }] };\n" +
+        		"com.example.components.MyEventTarget.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -129,7 +129,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"com.example.components.MyEventTarget.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"com.example.components.MyEventTarget.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
         		"    variables: function () {\n" +
         		"      return {\n" +
@@ -184,7 +184,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"com.example.components.TestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface', kind: 'interface' }] };\n" +
+        		"com.example.components.TestInterface.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface', kind: 'interface' }] };\n" +
 				"\n" +
         		"\n" +
         		"\n" +
@@ -193,7 +193,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"com.example.components.TestInterface.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
         		"    accessors: function () {return {};},\n" +
         		"    methods: function () {return {};}\n" +
@@ -239,7 +239,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
+				"com.example.components.TestClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -248,7 +248,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" *\n" +
 				" * @return {Object.<string, Function>}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
@@ -303,7 +303,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
+				"com.example.components.TestClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass', kind: 'class' }] };\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -312,7 +312,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" *\n" +
 				" * @return {Object.<string, Function>}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +

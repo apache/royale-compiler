@@ -66,7 +66,7 @@ Test.prototype.doSomething = function(ic) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }], interfaces: [interfaces.IA, interfaces.IE] };
+Test.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }], interfaces: [interfaces.IA, interfaces.IE] };
 
 
 
@@ -75,7 +75,7 @@ Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind
  *
  * @return {Object.<string, Function>}
  */
-Test.prototype.FLEXJS_REFLECTION_INFO = function () {
+Test.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

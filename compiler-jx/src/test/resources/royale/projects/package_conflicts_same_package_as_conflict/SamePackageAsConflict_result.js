@@ -51,7 +51,7 @@ SamePackageAsConflict.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-SamePackageAsConflict.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SamePackageAsConflict', qName: 'SamePackageAsConflict', kind: 'class' }] };
+SamePackageAsConflict.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'SamePackageAsConflict', qName: 'SamePackageAsConflict', kind: 'class' }] };
 
 
 
@@ -60,7 +60,7 @@ SamePackageAsConflict.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SamePacka
  *
  * @return {Object.<string, Function>}
  */
-SamePackageAsConflict.prototype.FLEXJS_REFLECTION_INFO = function () {
+SamePackageAsConflict.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

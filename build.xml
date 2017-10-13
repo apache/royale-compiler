@@ -33,27 +33,27 @@
     <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
 
     <target name="check-typedefs-home"
-        description="Check FLEXJS_TYPEDEFS_HOME">
+        description="Check ROYALE_TYPEDEFS_HOME">
         
-        <echo message="FLEXJS_TYPEDEFS_HOME is ${env.FLEXJS_TYPEDEFS_HOME}"/>
+        <echo message="ROYALE_TYPEDEFS_HOME is ${env.ROYALE_TYPEDEFS_HOME}"/>
         
-        <available file="${env.FLEXJS_TYPEDEFS_HOME}"
+        <available file="${env.ROYALE_TYPEDEFS_HOME}"
         type="dir"
-        property="FLEXJS_TYPEDEFS_HOME"
-        value="${env.FLEXJS_TYPEDEFS_HOME}" />
+        property="ROYALE_TYPEDEFS_HOME"
+        value="${env.ROYALE_TYPEDEFS_HOME}" />
         
         <available file="${basedir}/../royale-typedefs"
         type="dir"
-        property="FLEXJS_TYPEDEFS_HOME"
+        property="ROYALE_TYPEDEFS_HOME"
         value="${basedir}/../royale-typedefs" />
         
         <available file="${basedir}/royale-typedefs"
         type="dir"
-        property="FLEXJS_TYPEDEFS_HOME"
+        property="ROYALE_TYPEDEFS_HOME"
         value="${basedir}/royale-typedefs" />
         
-        <fail message="The environment variable FLEXJS_TYPEDEFS_HOME is not set to a directory"
-        unless="FLEXJS_TYPEDEFS_HOME"/>
+        <fail message="The environment variable ROYALE_TYPEDEFS_HOME is not set to a directory"
+        unless="ROYALE_TYPEDEFS_HOME"/>
         
     </target>
 
@@ -138,13 +138,13 @@
     <target name="typedef.swcs">
         <property name="FALCON_HOME" value="${basedir}/compiler" />
         <property name="FALCONJX_HOME" value="${basedir}/compiler-jx" />
-        <ant dir="${FLEXJS_TYPEDEFS_HOME}" />
+        <ant dir="${ROYALE_TYPEDEFS_HOME}" />
     </target>
     <target name="typedef.swcs.clean" >
-        <ant dir="${FLEXJS_TYPEDEFS_HOME}" target="clean"/>
+        <ant dir="${ROYALE_TYPEDEFS_HOME}" target="clean"/>
     </target>
     <target name="typedef.swcs.wipe" >
-        <ant dir="${FLEXJS_TYPEDEFS_HOME}" target="wipe"/>
+        <ant dir="${ROYALE_TYPEDEFS_HOME}" target="wipe"/>
     </target>
     <target name="typedef.tests">
         <ant dir="compiler-jx/src/test" target="extern.tests" />
@@ -479,7 +479,7 @@
 
     <target name="stage-typedefs" depends="check-typedefs-home">
         <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
+            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
                 <include name="**"/>
                 <exclude name="**/target/**" />
             </fileset>
@@ -595,7 +595,7 @@
         <antcall target="stage-source-jx" />
 
         <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
+            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
                 <include name="createjs/target/downloads/EaselJS-0.8.0/LICENSE.txt" />
                 <include name="createjs/target/downloads/TweenJS-0.6.2/LICENSE.txt" />
             </fileset>
@@ -624,19 +624,19 @@
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${FLEXJS_TYPEDEFS_HOME}/js/target/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${FLEXJS_TYPEDEFS_HOME}/cordova/target/cordova.swc" />
-        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${FLEXJS_TYPEDEFS_HOME}/createjs/target/createjs.swc" />
-        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${FLEXJS_TYPEDEFS_HOME}/google_maps/target/google_maps.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${FLEXJS_TYPEDEFS_HOME}/jasmine/target/jasmine.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${FLEXJS_TYPEDEFS_HOME}/jquery/target/jquery-1.9.swc" />
-        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${FLEXJS_TYPEDEFS_HOME}/GCL/target/GCL.swc" />
-        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${FLEXJS_TYPEDEFS_HOME}/node/target/node.swc" />
+        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${ROYALE_TYPEDEFS_HOME}/js/target/js.swc" />
+        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${ROYALE_TYPEDEFS_HOME}/cordova/target/cordova.swc" />
+        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${ROYALE_TYPEDEFS_HOME}/createjs/target/createjs.swc" />
+        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${ROYALE_TYPEDEFS_HOME}/google_maps/target/google_maps.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${ROYALE_TYPEDEFS_HOME}/jasmine/target/jasmine.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${ROYALE_TYPEDEFS_HOME}/jquery/target/jquery-1.9.swc" />
+        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${ROYALE_TYPEDEFS_HOME}/GCL/target/GCL.swc" />
+        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${ROYALE_TYPEDEFS_HOME}/node/target/node.swc" />
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/royale-typedefs"/>
         <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
+            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
                 <include name="**/**"/>
                 <exclude name="**/externs.zip" />
                 <exclude name="**/target/.plxarc" />
@@ -648,7 +648,7 @@
         </copy>
         <echo>copy easel and tween</echo>
         <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
+            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
                 <include name="createjs/target/downloads/Easel*/src/**"/>
                 <include name="createjs/target/downloads/Tween*/src/**"/>
             </fileset>

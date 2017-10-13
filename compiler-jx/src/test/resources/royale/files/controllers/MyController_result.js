@@ -157,7 +157,7 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.royale.core.IDocument] };
+controllers.MyController.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.royale.core.IDocument] };
 
 
 
@@ -166,7 +166,7 @@ controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyCont
  *
  * @return {Object.<string, Function>}
  */
-controllers.MyController.prototype.FLEXJS_REFLECTION_INFO = function () {
+controllers.MyController.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

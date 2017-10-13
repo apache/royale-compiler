@@ -35,4 +35,4 @@ interfaces.IB = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IB.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IB', qName: 'interfaces.IB', kind: 'interface' }] };
+interfaces.IB.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IB', qName: 'interfaces.IB', kind: 'interface' }] };

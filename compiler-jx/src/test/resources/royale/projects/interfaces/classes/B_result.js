@@ -41,7 +41,7 @@ goog.exportSymbol('classes.B', classes.B);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B', kind: 'class' }] };
+classes.B.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B', kind: 'class' }] };
 
 
 
@@ -50,7 +50,7 @@ classes.B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B
  *
  * @return {Object.<string, Function>}
  */
-classes.B.prototype.FLEXJS_REFLECTION_INFO = function () {
+classes.B.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

@@ -858,7 +858,7 @@ null
    *
    * @type {Object.<string, Array.<Object>>}
    */
-  MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView', kind: 'class'  }] };
+  MyInitialView.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView', kind: 'class'  }] };
 
 
 
@@ -867,7 +867,7 @@ null
  *
  * @return {Object.<string, Function>}
  */
-MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
+MyInitialView.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {

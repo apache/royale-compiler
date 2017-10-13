@@ -51,7 +51,7 @@ NoConflictUseWindow.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-NoConflictUseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictUseWindow', qName: 'NoConflictUseWindow', kind: 'class' }] };
+NoConflictUseWindow.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'NoConflictUseWindow', qName: 'NoConflictUseWindow', kind: 'class' }] };
 
 
 
@@ -60,7 +60,7 @@ NoConflictUseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictU
  *
  * @return {Object.<string, Function>}
  */
-NoConflictUseWindow.prototype.FLEXJS_REFLECTION_INFO = function () {
+NoConflictUseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

@@ -584,7 +584,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              " *\n" +
         		              " * @type {Object.<string, Array.<Object>>}\n" +
         		              " */\n" +
-        		              "FalconTest_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A', kind: 'class' }] };\n" +
+        		              "FalconTest_A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A', kind: 'class' }] };\n" +
         		          		"\n" +
         		        		"\n" +
         		        		"\n" +
@@ -593,7 +593,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		        		" *\n" +
         		        		" * @return {Object.<string, Function>}\n" +
         		        		" */\n" +
-        		        		"FalconTest_A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		        		"FalconTest_A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		        		"return {\n" +
                                 "  variables: function () {return {};},\n" +
                                 "  accessors: function () {return {};},\n" +

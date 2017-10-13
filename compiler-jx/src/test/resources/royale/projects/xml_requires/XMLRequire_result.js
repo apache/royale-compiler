@@ -44,7 +44,7 @@ goog.exportSymbol('XMLRequire', XMLRequire);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-XMLRequire.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'XMLRequire', qName: 'XMLRequire', kind: 'class' }] };
+XMLRequire.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'XMLRequire', qName: 'XMLRequire', kind: 'class' }] };
 
 
 
@@ -53,7 +53,7 @@ XMLRequire.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'XMLRequire', qName: 
  *
  * @return {Object.<string, Function>}
  */
-XMLRequire.prototype.FLEXJS_REFLECTION_INFO = function () {
+XMLRequire.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

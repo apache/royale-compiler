@@ -57,7 +57,7 @@ F.a = function(b) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-F.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'F', qName: 'F', kind: 'class' }] };
+F.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'F', qName: 'F', kind: 'class' }] };
 
 
 
@@ -66,7 +66,7 @@ F.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'F', qName: 'F', kind: 'class'
  *
  * @return {Object.<string, Function>}
  */
-F.prototype.FLEXJS_REFLECTION_INFO = function () {
+F.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},

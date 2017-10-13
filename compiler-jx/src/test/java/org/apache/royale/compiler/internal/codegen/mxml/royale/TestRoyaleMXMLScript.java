@@ -101,7 +101,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -110,7 +110,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
         		"    variables: function () {return {};},\n" +
         		"    accessors: function () {return {};},\n" +
@@ -208,7 +208,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -217,7 +217,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
         		"    variables: function () {return {};},\n" +
         		"    accessors: function () {return {};},\n" +
@@ -306,7 +306,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -315,7 +315,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" *\n" +
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
 				"    variables: function () {\n" +
 				"      return {\n" +

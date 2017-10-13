@@ -502,10 +502,10 @@ public class JSClosureCompilerWrapper
 
             // create custom DiagnosticGroups to shut off some individual warnings when we
             // still want warnings for others in the group.
-            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
-            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME, CheckLevel.OFF);
-            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_UNKNOWN_JSDOC_TYPE_NAME, CheckLevel.OFF);
-//            options_.setWarningLevel(RoyaleDiagnosticGroups.FLEXJS_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
+            options_.setWarningLevel(RoyaleDiagnosticGroups.ROYALE_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
+            options_.setWarningLevel(RoyaleDiagnosticGroups.ROYALE_SUPER_CALL_TO_DIFFERENT_NAME, CheckLevel.OFF);
+            options_.setWarningLevel(RoyaleDiagnosticGroups.ROYALE_UNKNOWN_JSDOC_TYPE_NAME, CheckLevel.OFF);
+//            options_.setWarningLevel(RoyaleDiagnosticGroups.ROYALE_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
         }
         
         options_.sourceMapFormat = SourceMap.Format.V3;

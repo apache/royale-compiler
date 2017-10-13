@@ -179,7 +179,7 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
  *
  * @type {Object.<string, Array.<Object>>}
  */
-FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class'  }] };
+FlexJSTest_again.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class'  }] };
 
 
 
@@ -188,7 +188,7 @@ FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_aga
  *
  * @return {Object.<string, Function>}
  */
-FlexJSTest_again.prototype.FLEXJS_REFLECTION_INFO = function () {
+FlexJSTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {

@@ -294,7 +294,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		if (staticUsedNames.size() > 0)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.append(JSGoogEmitterTokens.FLEXJS_STATIC_DEPENDENCY_LIST.getToken());
+			sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
 			boolean firstDependency = true;
 			for (String staticName : staticUsedNames)
 			{

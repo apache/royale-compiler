@@ -94,7 +94,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    write(ASEmitterTokens.MEMBER_ACCESS);
 	    write(JSEmitterTokens.PROTOTYPE);
 	    write(ASEmitterTokens.MEMBER_ACCESS);
-	    writeToken(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO);
+	    writeToken(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO);
 	    writeToken(ASEmitterTokens.EQUAL);
 	    writeToken(ASEmitterTokens.BLOCK_OPEN);
 	
@@ -115,11 +115,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
 	    write(ASEmitterTokens.SINGLE_QUOTE);
 		writeToken(ASEmitterTokens.COMMA);
-		write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_KIND);
+		write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_KIND);
 		writeToken(ASEmitterTokens.COLON);
 		write(ASEmitterTokens.SINGLE_QUOTE);
-		if (isInterface) write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_INTERFACE_KIND);
-		else write(JSRoyaleEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
+		if (isInterface) write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_INTERFACE_KIND);
+		else write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_CLASS_KIND);
 		writeToken(ASEmitterTokens.SINGLE_QUOTE);
 	    write(ASEmitterTokens.BLOCK_CLOSE);
 	    write(ASEmitterTokens.SQUARE_CLOSE);
@@ -493,12 +493,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		writeNewline(" * @return {Object.<string, Function>}");
 		doc.end();
 
-		// a.B.prototype.FLEXJS_REFLECTION_INFO = function() {
+		// a.B.prototype.ROYALE_REFLECTION_INFO = function() {
 		write(typeName);
 		write(ASEmitterTokens.MEMBER_ACCESS);
 		write(JSEmitterTokens.PROTOTYPE);
 		write(ASEmitterTokens.MEMBER_ACCESS);
-		writeToken(JSRoyaleEmitterTokens.FLEXJS_REFLECTION_INFO);
+		writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
 		writeToken(ASEmitterTokens.EQUAL);
 		writeToken(ASEmitterTokens.FUNCTION);
 		write(ASEmitterTokens.PAREN_OPEN);

@@ -68,7 +68,7 @@ set: Base.prototype.set__text}}
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind: 'class' }] };
+Base.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind: 'class' }] };
 
 
 
@@ -77,7 +77,7 @@ Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind
  *
  * @return {Object.<string, Function>}
  */
-Base.prototype.FLEXJS_REFLECTION_INFO = function () {
+Base.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {
