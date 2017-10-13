@@ -64,8 +64,8 @@
         <java jar="${falcon}/lib/compiler-mxmlc.jar" fork="true"/>
         <java jar="${falcon}/lib/compiler-compc.jar" fork="true"/>
         <java jar="${falcon}/lib/compiler-asc.jar" fork="true"/>
-        <java jar="${falcon}/lib/falcon-optimizer.jar" fork="true"/>
-        <java jar="${falcon}/lib/falcon-swfdump.jar" fork="true"/>
+        <java jar="${falcon}/lib/compiler-optimizer.jar" fork="true"/>
+        <java jar="${falcon}/lib/compiler-swfdump.jar" fork="true"/>
     </target>
     
     <!-- tests used to be divided up like this

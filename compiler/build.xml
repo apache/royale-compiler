@@ -639,7 +639,7 @@
 
 	<target name="set.falcon.optimizer.jar.uptodate">
 		<uptodate property="falcon.optimizer.jar.uptodate"
-		          targetfile="${sdk}/falcon-optimizer.jar">
+		          targetfile="${sdk}/compiler-optimizer.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -649,7 +649,7 @@
 	
 	<target name="falcon.optimizer.jar" depends="compiler.jar, set.falcon.optimizer.jar.uptodate" unless="falcon.optimizer.jar.uptodate">
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-optimizer.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
+        <jar file="${sdk}/compiler-optimizer.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -665,7 +665,7 @@
 
 	<target name="set.falcon.swfdump.jar.uptodate">
 		<uptodate property="falcon.swfdump.jar.uptodate"
-		          targetfile="${sdk}/falcon-swfdump.jar">
+		          targetfile="${sdk}/compiler-swfdump.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -675,7 +675,7 @@
 	
 	<target name="falcon.swfdump.jar" depends="compiler.jar, set.falcon.swfdump.jar.uptodate" unless="falcon.swfdump.jar.uptodate">
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-swfdump.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
+        <jar file="${sdk}/compiler-swfdump.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
