@@ -1,14 +1,14 @@
-Apache Flex Cross-Compiler
+Apache Royale Cross-Compiler
 ====================
 
-    This Apache Flex Cross-Compiler is also known as the 'FalconJX' compiler.  It 
-    leverages code from the Apache Flex 'Falcon' Compiler but outputs JavaScript
+    This Apache Royale Cross-Compiler is also known as the 'FalconJX' compiler.  It 
+    leverages code from the Apache Royale Compiler but outputs JavaScript
     instead of a SWF.
 
-    For detailed information about Apache Flex please visit
-    http://flex.apache.org/
+    For detailed information about Apache Royale please visit
+    http://royale.apache.org/
 
-    This compiler is used in the Apache FlexJS SDK.  FlexJS is a
+    This compiler is used in the Apache Royale SDK.  Royale is a
     next-generation SDK that allows the developer to leverage MXML and ActionScript
     to build applications that not only run as a SWF, but can also be cross-compiled
     to JavaScript and run natively in a browser or anywhere JavaScript runs.
@@ -16,25 +16,25 @@ Apache Flex Cross-Compiler
 Getting the latest sources via git
 ==================================
 
-    Getting the source code is the recommended way to get the Apache Flex Cross-Compiler.  
+    Getting the source code is the recommended way to get the Apache Royale Cross-Compiler.  
     We also offer an automated installer along with binary distributions on our 
-    website at http://flex.apache.org/.
+    website at http://royale.apache.org/.
 
     You can always checkout the latest source via git using the following
     command:
 
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git falcon
-	 cd falcon
+	 git clone https://github.com/apache/royale-compiler.git royale-compiler
+	 cd royale-compiler
 	 git checkout develop
 
     See the main README for instructions on setting up and building the Apache
-    Flex 'Falcon' cross-compiler.
+    Royale cross-compiler.
 
-Building the Apache Flex Cross-Compiler
+Building the Apache Royale Cross-Compiler
 =======================================
 
-    The Apache Flex Cross-Compiler is a large project. It requires that the
-    Apache Flex Compiler has been built.  See the main README for instructions.
+    The Apache Royale Cross-Compiler is a large project. It requires that the
+    Apache Royale Compiler has been built.  See the main README for instructions.
 
     Linux support is currently experimental and while it is possible to compile
     the SDK it has not been fully tested so you may run into issues.
@@ -42,25 +42,25 @@ Building the Apache Flex Cross-Compiler
 Install Prerequisites
 ---------------------
 
-    Before building the Apache Flex FalconJX Compiler you must install the same
+    Before building the Apache Royale FalconJX Compiler you must install the same
     software as specified in the main README.  In addition, you may also need:
 
     ==================================================================================
     SOFTWARE                                    ENVIRONMENT VARIABLE (absolute paths)
     ==================================================================================
 
-    Apache FlexJS SDK or repository             ASJS_HOME
+    Apache Royale SDK or repository             ASJS_HOME
 
     ==================================================================================
 
-    *1) Set the ASJS_HOME variable to the root of the Apache FlexJS SDK or repository.
-        This is optional and only required to run the FlexJS dependent tests in
+    *1) Set the ASJS_HOME variable to the root of the Apache Royale SDK or repository.
+        This is optional and only required to run the Royale dependent tests in
         the compiler-jx folder.
 
 Software Dependencies
 ---------------------
 
-    The Apache Flex Cross-Compiler uses third-party code that will be downloaded as 
+    The Apache Royale Cross-Compiler uses third-party code that will be downloaded as 
     part of the build.
 
     The Apache Version 2.0 license is in the LICENSE file.
@@ -68,7 +68,7 @@ Software Dependencies
     The following dependencies have licenses which are, or are compatible with,
     the Apache Version 2.0 license.  You will not be prompted to acknowledge the
     download.  Most of the jars are installed in lib/external when installed
-    into an Apache Flex SDK and the lib folder in the repository working copy.
+    into an Apache Royale SDK and the lib folder in the repository working copy.
 
 	args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
         Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
@@ -79,19 +79,19 @@ Using the Binary Distribution
 -----------------------------
 
     The binary distribution is intended to be installed into an existing 
-    Apache FlexJS SDK.
+    Apache Royale SDK.
 
     There is an Apache Ant script in the binary distribution that will copy the 
     files into the right places.
 
     To run it, use:
-        ant -f installer.xml -DFLEX_HOME=<path to FlexJS SDK
+        ant -f installer.xml -DFLEX_HOME=<path to Royale SDK
 
     The script does not check the FLEX_HOME environment variable as that often
     points to your primary Flex SDK.
 
     If you expand the binary distribution into the "in" folder of an Apache
-    FlexJS SDK, the installer.xml script should find FLEX_HOME automatically.
+    Royale SDK, the installer.xml script should find FLEX_HOME automatically.
 
     Another option is to use the InstallApacheFlex (version 3.0 or higher).
 
@@ -137,7 +137,7 @@ Before running unit-, functional- or feature-tests you may need to create a unit
 
 
 
-Thanks for using Apache Flex.  Enjoy!
+Thanks for using Apache Royale.  Enjoy!
 
-                                          The Apache Flex Project
-                                          <http://flex.apache.org>
+                                          The Apache Royale Project
+                                          <http://royale.apache.org>

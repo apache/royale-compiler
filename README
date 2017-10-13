@@ -13,7 +13,7 @@ Apache Royale Compiler
     http://flex.apache.org/
 
     This compiler may eventually replace MXMLC in the Apache Flex SDK, but is
-    also being used as the compiler for the Apache FlexJS SDK.  FlexJS is a
+    also being used as the compiler for the Apache Royale SDK.  Royale is a
     next-generation SDK that allows the developer to leverage MXML and ActionScript
     to build applications that not only run as a SWF, but can also be cross-compiled
     to JavaScript and run natively in a browser or anywhere JavaScript runs.
@@ -23,13 +23,13 @@ Getting the latest sources via git
 
     Getting the source code is the recommended way to get the Apache Flex Compiler.  
     We also offer an automated installer along with binary distributions on our 
-    website at http://flex.apache.org/.
+    website at http://royale.apache.org/.
 
     You can always checkout the latest source via git using the following
     command:
 
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git flex-falcon
-	 cd flex-falcon
+	 git clone https://github.com/apache/royale-compiler.git royale-compiler
+	 cd royale-compiler
 	 git checkout develop
 
     When working with the sources from Git, the Apache Flex Compiler 
@@ -210,19 +210,19 @@ Using the Binary Distribution
 -----------------------------
 
     The binary distribution is intended to be installed into an existing Apache Flex
-    SDK or Apache FlexJS SDK.
+    SDK or Apache Royale SDK.
 
     There is an Apache Ant script in the binary distribution that will copy the 
     files into the right places.
 
     To run it, use:
-        ant -f installer.xml -DFLEX_HOME=<path to Flex or FlexJS SDK
+        ant -f installer.xml -DFLEX_HOME=<path to Flex or Royale SDK
 
     The script does not check the FLEX_HOME environment variable as that often
     points to your primary Flex SDK.
 
     If you expand the binary distribution into the "in" folder of an Apache Flex or
-    FlexJS SDK, the installer.xml script should find FLEX_HOME automatically.
+    Royale SDK, the installer.xml script should find FLEX_HOME automatically.
 
     Another option is to use the InstallApacheFlex (version 3.0 or higher).
 
@@ -273,7 +273,7 @@ A template is found here compiler/src/main/resources/template-unittest.propertie
 
 
 
-Thanks for using Apache Flex.  Enjoy!
+Thanks for using Apache Royale.  Enjoy!
 
-                                          The Apache Flex Project
-                                          <http://flex.apache.org>
+                                          The Apache Royale Project
+                                          <http://royale.apache.org>
