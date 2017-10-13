@@ -561,7 +561,7 @@
 	
 	<target name="set.falcon.asc.jar.uptodate">
 		<uptodate property="falcon.asc.jar.uptodate"
-		          targetfile="${sdk}/falcon-asc.jar">
+		          targetfile="${sdk}/compiler-asc.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -571,7 +571,7 @@
 	
 	<target name="falcon.asc.jar" depends="compiler.jar, set.falcon.asc.jar.uptodate" unless="falcon.asc.jar.uptodate">
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-asc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
+        <jar file="${sdk}/compiler-asc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -613,7 +613,7 @@
 
 	<target name="set.falcon.compc.jar.uptodate">
 		<uptodate property="falcon.compc.jar.uptodate"
-		          targetfile="${sdk}/falcon-compc.jar">
+		          targetfile="${sdk}/compiler-compc.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -623,7 +623,7 @@
 	
 	<target name="falcon.compc.jar" depends="compiler.jar, set.falcon.compc.jar.uptodate" unless="falcon.compc.jar.uptodate">
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-compc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
+        <jar file="${sdk}/compiler-compc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
