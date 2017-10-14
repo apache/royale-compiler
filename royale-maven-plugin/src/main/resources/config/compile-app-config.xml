@@ -22,7 +22,7 @@
 
 <royale-config>
 
-  <js-output-type>FLEXJS</js-output-type>
+  <js-output-type>ROYALE</js-output-type>
   <!-- Specifies the version of the compiled SWF -->
   <swf-version>14</swf-version>
 

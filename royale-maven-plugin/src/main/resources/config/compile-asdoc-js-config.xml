@@ -93,7 +93,7 @@
   </include-namespaces>
 #end
 
-  <js-output-type>FLEXJS</js-output-type>
+  <js-output-type>ROYALE</js-output-type>
 
   <keep-asdoc>true</keep-asdoc>
 
