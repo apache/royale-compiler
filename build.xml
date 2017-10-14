@@ -42,15 +42,23 @@
         property="ROYALE_TYPEDEFS_HOME"
         value="${env.ROYALE_TYPEDEFS_HOME}" />
         
-        <available file="${basedir}/../royale-typedefs"
-        type="dir"
-        property="ROYALE_TYPEDEFS_HOME"
-        value="${basedir}/../royale-typedefs" />
+        <condition property="ROYALE_TYPEDEFS_HOME" value="${basedir}/../royale-typedefs" >
+            <and>
+                <available file="${basedir}/../royale-typedefs" type="dir" />
+                <not>
+                    <isset property="ROYALE_TYPEDEFS_HOME" />
+                </not>
+            </and>
+        </condition>
         
-        <available file="${basedir}/royale-typedefs"
-        type="dir"
-        property="ROYALE_TYPEDEFS_HOME"
-        value="${basedir}/royale-typedefs" />
+        <condition property="ROYALE_TYPEDEFS_HOME" value="${basedir}/royale-typedefs" >
+            <and>
+                <available file="${basedir}/royale-typedefs" type="dir" />
+                <not>
+                    <isset property="ROYALE_TYPEDEFS_HOME" />
+                </not>
+            </and>
+        </condition>
         
         <fail message="The environment variable ROYALE_TYPEDEFS_HOME is not set to a directory"
         unless="ROYALE_TYPEDEFS_HOME"/>
