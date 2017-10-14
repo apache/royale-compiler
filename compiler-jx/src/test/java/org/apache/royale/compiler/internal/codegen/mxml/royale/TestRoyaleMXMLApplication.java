@@ -830,7 +830,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     {
         MXMLJSC mxmlc = new MXMLJSC();
         String[] args = new String[10];
-        args[0] = "-compiler.targets=SWF,JSFlex";
+        args[0] = "-compiler.targets=SWF,JSRoyale";
         args[1] = "-compiler.allow-subclass-overrides";
         args[2] = "-remove-circulars";
         args[3] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs")).getPath();
@@ -855,7 +855,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     	/* this should error because a Flash APi is used */
         MXMLJSC mxmlc = new MXMLJSC();
         String[] args = new String[18];
-        args[0] = "-compiler.targets=SWF,JSFlex";
+        args[0] = "-compiler.targets=SWF,JSRoyale";
         args[1] = "-remove-circulars";
         args[2] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Core.swc")).getPath();
         args[3] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Binding.swc")).getPath();

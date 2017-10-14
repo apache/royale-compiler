@@ -86,7 +86,7 @@ public class CompileASMojo
     @Override
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
-        args.add("-compiler.targets=SWF,JSFlex");
+        args.add("-compiler.targets=SWF,JSRoyale");
         args.add("-compiler.strict-xml=true");
         return args;
     }

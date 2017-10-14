@@ -52,7 +52,7 @@ public class CompileAppMojo
     protected String htmlTemplate;
 
     @Parameter
-    protected String targets = "SWF,JSFlex";
+    protected String targets = "SWF,JSRoyale";
     
     @Parameter(defaultValue = "false")
     protected boolean removeCirculars;
