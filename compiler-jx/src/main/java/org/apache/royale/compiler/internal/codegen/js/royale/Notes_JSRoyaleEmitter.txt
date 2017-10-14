@@ -18,7 +18,7 @@
  */
 
 //-------------------------------------
-// Removed from JSFlexJSEmitter.java 05-31-2015
+// Removed from JSRoyaleEmitter.java 05-31-2015
 //-------------------------------------
 
 /*
@@ -249,7 +249,7 @@ protected void emitDefaultParameterCodeBlock(IFunctionNode node)
         if (!hasBody(node))
         {
             indentPush();
-            write(JSFlexJSEmitterTokens.INDENT);
+            write(JSRoyaleEmitterTokens.INDENT);
         }
 
         List<IParameterNode> parameters = new ArrayList<IParameterNode>(
@@ -324,16 +324,16 @@ public void emitUnaryOperator(IUnaryOperatorNode node)
         int index = getString.lastIndexOf("get_");
         if (index != -1)
         {
-            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
             write(ASEmitterTokens.MEMBER_ACCESS);
             if (node.getNodeID() == ASTNodeID.Op_PreIncrID)
-                write(JSFlexJSEmitterTokens.PREINCREMENT);
+                write(JSRoyaleEmitterTokens.PREINCREMENT);
             else if (node.getNodeID() == ASTNodeID.Op_PostIncrID)
-                write(JSFlexJSEmitterTokens.POSTINCREMENT);
+                write(JSRoyaleEmitterTokens.POSTINCREMENT);
             else if (node.getNodeID() == ASTNodeID.Op_PreDecrID)
-                write(JSFlexJSEmitterTokens.PREDECREMENT);
+                write(JSRoyaleEmitterTokens.PREDECREMENT);
             else
-                write(JSFlexJSEmitterTokens.POSTDECREMENT);
+                write(JSRoyaleEmitterTokens.POSTDECREMENT);
             write(ASEmitterTokens.PAREN_OPEN);
             String obj = getString.substring(0, index - 1);
             write(obj);
