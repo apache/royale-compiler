@@ -111,12 +111,8 @@ public class EnvProperties {
 	        // Ignore
         }
 		
-        SDK = System.getProperty("FLEX_HOME");
-        if (SDK == null)
-        	SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
-        else
-            System.out.println("system property - FLEX_HOME = " + SDK);
-        System.out.println("environment property - FLEX_HOME = " + SDK);
+		SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
+		System.out.println("environment property - FLEX_HOME = " + SDK);
 		
 		FPSDK = p.getProperty(prefix + "PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
 		System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
@@ -135,11 +131,7 @@ public class EnvProperties {
 		FDBG = p.getProperty(prefix + "FLASHPLAYER_DEBUGGER", System.getenv("FLASHPLAYER_DEBUGGER"));
 		System.out.println("environment property - FLASHPLAYER_DEBUGGER = " + FDBG);
 
-		ASJS = System.getProperty("ASJS_HOME");
-		if (ASJS == null)
-			ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
-		else
-			System.out.println("system property - ASJS_HOME = " + ASJS);
+		ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
 		if (ASJS == null)
 			ASJS = FilenameNormalization.normalize("../../../../royale-asjs");
 		System.out.println("environment property - ASJS_HOME = " + ASJS);
