@@ -75,6 +75,8 @@
     
     <target name="env-properties" depends="check-env" unless="env.available" >
         <echo file="${basedir}/env.properties">env.ASJS_HOME=${env.ASJS_HOME}</echo>
+        <!-- windows needs backslashes escaped -->
+        <replaceregexp file="${basedir}/env.properties" match="\\" replace="\\\\\\\\" flags="g" />
     </target>
 
 </project>
