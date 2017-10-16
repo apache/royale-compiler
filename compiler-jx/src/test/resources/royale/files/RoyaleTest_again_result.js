@@ -12,14 +12,14 @@
  * limitations under the License.
  */
 /**
- * FlexJSTest_again
+ * RoyaleTest_again
  *
  * @fileoverview
  *
  * @suppress {checkTypes|accessControls}
  */
 
-goog.provide('FlexJSTest_again');
+goog.provide('RoyaleTest_again');
 
 goog.require('org.apache.royale.core.Application');
 goog.require('org.apache.royale.core.SimpleCSSValuesImpl');
@@ -38,8 +38,8 @@ goog.require('org.apache.royale.events.Event');
  * @constructor
  * @extends {org.apache.royale.core.Application}
  */
-FlexJSTest_again = function() {
-  FlexJSTest_again.base(this, 'constructor');
+RoyaleTest_again = function() {
+  RoyaleTest_again.base(this, 'constructor');
   
   /**
    * @private
@@ -124,13 +124,13 @@ this.$EH0
   ]);
   
 };
-goog.inherits(FlexJSTest_again, org.apache.royale.core.Application);
+goog.inherits(RoyaleTest_again, org.apache.royale.core.Application);
 
 
 /**
  * Prevent renaming of class. Needed for reflection.
  */
-goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
+goog.exportSymbol('RoyaleTest_again', RoyaleTest_again);
 
 
 
@@ -138,20 +138,20 @@ goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
  * @export
  * @param {org.apache.royale.events.Event} event
  */
-FlexJSTest_again.prototype.$EH0 = function(event)
+RoyaleTest_again.prototype.$EH0 = function(event)
 {
   org.apache.royale.utils.Language.as(this.model, models.MyModel, true).labelText = 'Hello World';
 };
 
 
-Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again.prototype} */ {
+Object.defineProperties(RoyaleTest_again.prototype, /** @lends {RoyaleTest_again.prototype} */ {
 /** @export */
     service: {
-    /** @this {FlexJSTest_again} */
+    /** @this {RoyaleTest_again} */
     get: function() {
       return this.service_;
     },
-    /** @this {FlexJSTest_again} */
+    /** @this {RoyaleTest_again} */
     set: function(value) {
       if (value != this.service_) {
         this.service_ = value;
@@ -161,11 +161,11 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
   },
   /** @export */
     collection: {
-    /** @this {FlexJSTest_again} */
+    /** @this {RoyaleTest_again} */
     get: function() {
       return this.collection_;
     },
-    /** @this {FlexJSTest_again} */
+    /** @this {RoyaleTest_again} */
     set: function(value) {
       if (value != this.collection_) {
         this.collection_ = value;
@@ -179,7 +179,7 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
  *
  * @type {Object.<string, Array.<Object>>}
  */
-FlexJSTest_again.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class'  }] };
+RoyaleTest_again.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'RoyaleTest_again', qName: 'RoyaleTest_again', kind: 'class'  }] };
 
 
 
@@ -188,19 +188,19 @@ FlexJSTest_again.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'FlexJSTest_aga
  *
  * @return {Object.<string, Function>}
  */
-FlexJSTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
+RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {
       return {
-        'service': { type: 'org.apache.royale.net.HTTPService', access: 'readwrite', declaredBy: 'FlexJSTest_again'},
-        'collection': { type: 'org.apache.royale.collections.LazyCollection', access: 'readwrite', declaredBy: 'FlexJSTest_again'}
+        'service': { type: 'org.apache.royale.net.HTTPService', access: 'readwrite', declaredBy: 'RoyaleTest_again'},
+        'collection': { type: 'org.apache.royale.collections.LazyCollection', access: 'readwrite', declaredBy: 'RoyaleTest_again'}
       };
     },
     methods: function () {
       return {
-        'FlexJSTest_again': { type: '', declaredBy: 'FlexJSTest_again'},
-        '$EH0': { type: 'void', declaredBy: 'FlexJSTest_again'}
+        'RoyaleTest_again': { type: '', declaredBy: 'RoyaleTest_again'},
+        '$EH0': { type: 'void', declaredBy: 'RoyaleTest_again'}
       };
     }
   };

@@ -21,8 +21,8 @@
 
 goog.provide('controllers.MyController');
 
-goog.require('FlexJSTest_again');
 goog.require('MyInitialView');
+goog.require('RoyaleTest_again');
 goog.require('models.MyModel');
 goog.require('org.apache.royale.core.IDocument');
 goog.require('org.apache.royale.utils.Language');
@@ -37,7 +37,7 @@ goog.require('org.apache.royale.utils.Language');
 controllers.MyController = function(app) {
   app = typeof app !== 'undefined' ? app : null;
   if (app) {
-    this.app = org.apache.royale.utils.Language.as(app, FlexJSTest_again);
+    this.app = org.apache.royale.utils.Language.as(app, RoyaleTest_again);
     app.addEventListener("viewChanged", org.apache.royale.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
   }
 };
@@ -65,7 +65,7 @@ controllers.MyController.prototype.queryEnd = "%22)%0A%09%09&env=http%3A%2F%2Fda
 
 /**
  * @private
- * @type {FlexJSTest_again}
+ * @type {RoyaleTest_again}
  */
 controllers.MyController.prototype.app;
 
@@ -147,7 +147,7 @@ controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
  */
 controllers.MyController.prototype.setDocument = function(document, id) {
   id = typeof id !== 'undefined' ? id : null;
-  this.app = org.apache.royale.utils.Language.as(document, FlexJSTest_again);
+  this.app = org.apache.royale.utils.Language.as(document, RoyaleTest_again);
   this.app.addEventListener("viewChanged", org.apache.royale.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
 };
 

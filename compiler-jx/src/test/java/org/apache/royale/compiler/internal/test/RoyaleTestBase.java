@@ -72,18 +72,6 @@ public class RoyaleTestBase extends TestBase
     }
 
     @Override
-    protected void addNamespaceMappings(List<IMXMLNamespaceMapping> namespaceMappings)
-    {
-        namespaceMappings
-                .add(new MXMLNamespaceMapping(
-                        "library://ns.apache.org/royale/basic", new File(
-                                env.ASJS + "/frameworks/as/basic-manifest.xml")
-                                .getAbsolutePath()));
-
-        super.addNamespaceMappings(namespaceMappings);
-    }
-
-    @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(env.ASJS + "/examples/RoyaleTest_basic/src"));

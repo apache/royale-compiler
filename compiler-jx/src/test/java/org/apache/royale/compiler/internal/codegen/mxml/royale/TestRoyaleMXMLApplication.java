@@ -834,7 +834,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         args[1] = "-compiler.allow-subclass-overrides";
         args[2] = "-remove-circulars";
         args[3] = "-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs")).getPath();
-        args[4] = "-js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs")).getPath();
+        args[4] = "-js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/libs")).getPath();
         args[5] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
         args[6] = "-js-external-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
         args[7] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/RoyaleTest_again.swf").getPath();
@@ -869,11 +869,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         else
         	args[9] = "-define=COMPILE::temp,false";
         args[10] = "-compiler.allow-subclass-overrides";
-        args[11] = "-compiler.js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/CoreJS.swc")).getPath();
-        args[12] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/BindingJS.swc")).getPath();
-        args[13] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/NetworkJS.swc")).getPath();
-        args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/CollectionsJS.swc")).getPath();
-        args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/Royale/libs/BasicJS.swc")).getPath();
+        args[11] = "-compiler.js-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/libs/CoreJS.swc")).getPath();
+        args[12] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/libs/BindingJS.swc")).getPath();
+        args[13] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/libs/NetworkJS.swc")).getPath();
+        args[14] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/libs/CollectionsJS.swc")).getPath();
+        args[15] = "-compiler.js-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/js/libs/BasicJS.swc")).getPath();
         args[16] = "-compiler.js-external-library-path=" + new File(FilenameNormalization.normalize(env.ASJS + "/js/libs/js.swc")).getPath();
         args[17] = new File(testAdapter.getUnitTestBaseDir(), "royale/files/RoyaleTest_again_Flash.mxml").getPath();
 
