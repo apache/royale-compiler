@@ -27,7 +27,7 @@ import flex2.compiler.config.*;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.ThreadLocalToolkit;
-import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.royale.compiler.clients.MXMLC;
 
 import java.io.BufferedInputStream;
 import java.io.File;

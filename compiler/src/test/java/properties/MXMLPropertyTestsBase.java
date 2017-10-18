@@ -21,7 +21,7 @@ package properties;
 
 import mxml.tags.MXMLFeatureTestsBase;
 
-import org.apache.flex.utils.StringUtils;
+import org.apache.royale.utils.StringUtils;
 
 /**
  * Base class for feature tests for MXML property tags and attributes.

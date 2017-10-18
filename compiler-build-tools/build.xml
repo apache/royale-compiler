@@ -76,7 +76,7 @@
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler-build-tools}/src/main/java"/>
-            <include name="org/apache/flex/compiler/tools/annotate/AnnotateClass.java"/>
+            <include name="org/apache/royale/compiler/tools/annotate/AnnotateClass.java"/>
             <classpath>
                 <pathelement location="${compiler-build-tools}/target/classes"/>
             </classpath>
@@ -90,13 +90,13 @@
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes"
             includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
             <src path="${compiler-build-tools}/src/main/java"/>
-            <include name="org/apache/flex/compiler/tools/unknowntreehandler/UnknownTreePatternInputOutput.java"/>
+            <include name="org/apache/royale/compiler/tools/unknowntreehandler/UnknownTreePatternInputOutput.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
         </javac>
     </target>
 	
 	<!-- The ProblemLocalizer tool is used to create a problems_en.properties file -->
-	<!-- filled with localization strings from classes extending org.apache.flex.compiler.CompilerProblem -->
+	<!-- filled with localization strings from classes extending org.apache.royale.compiler.CompilerProblem -->
 	<target name="problem.localizer"
 	        description="Compiles the ProblemLocalizer build tool">
 	    <mkdir dir="${compiler-build-tools}/target/classes"/>

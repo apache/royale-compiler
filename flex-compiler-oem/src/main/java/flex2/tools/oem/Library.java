@@ -37,12 +37,12 @@ import java.util.TreeSet;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
-import org.apache.flex.compiler.clients.COMPJSC;
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.clients.COMPJSC;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 import flex2.compiler.CompilerException;
 import flex2.compiler.Source;

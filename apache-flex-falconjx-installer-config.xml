@@ -34,7 +34,7 @@
         </string>
         <string id="INFO_ENTER_VALID_FLEX_SDK_PATH">
             <el_GR>Παρακαλώ εισάγετε μια έγκυρη διαδρομή καταλόγου για το Flex SDK</el_GR>
-            <en_US>Please enter valid directory path for a Flex or FlexJS SDK</en_US>
+            <en_US>Please enter valid directory path for a Flex or Royale SDK</en_US>
         </string>
         <string id="INFO_SELECT_DIRECTORY">
             <el_GR>Επιλέξτε τον κατάλογο στον οποίο θέλετε να εγκαταστήσετε το Flex Falcon</el_GR>
@@ -86,7 +86,7 @@
             <en_US>Copy FalconJX SDK files</en_US>
         </step>
     </steps>
-    <component id="STEP_REQUIRED_INSTALL_APACHE_FLEX_FALCON" required="true" property="do.flexjs.install">
+    <component id="STEP_REQUIRED_INSTALL_APACHE_FLEX_FALCON" required="true" property="do.royale.install">
         <el_GR>
             <label>Apache Flex Falcon (Απαιτούμενο)</label>
             <message>Για το Apache Flex FalconJX ισχύει η συμφωνία χρήσης του Apache License V2. Θέλετε να εγκαταστήσετε το Apache Flex FalconJX;</message>

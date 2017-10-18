@@ -19,9 +19,9 @@
 
 package flex2.tools;
 
-import org.apache.flex.compiler.clients.COMPJSC;
-import org.apache.flex.compiler.clients.JSCompilerEntryPoint;
-import org.apache.flex.compiler.driver.IBackend;
+import org.apache.royale.compiler.clients.COMPJSC;
+import org.apache.royale.compiler.clients.JSCompilerEntryPoint;
+import org.apache.royale.compiler.driver.IBackend;
 
 import java.lang.reflect.InvocationTargetException;
 

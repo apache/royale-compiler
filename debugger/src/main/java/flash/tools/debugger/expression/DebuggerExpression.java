@@ -18,15 +18,15 @@ package flash.tools.debugger.expression;
 
 import java.util.HashSet;
 
-import org.apache.flex.compiler.internal.projects.ASCProject;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorLogicalAndNode;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.workspaces.IWorkspace;
+import org.apache.royale.compiler.internal.projects.ASCProject;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalAndNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.workspaces.IWorkspace;
 
 import flash.tools.debugger.PlayerDebugException;
 

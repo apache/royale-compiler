@@ -17,13 +17,13 @@
 
 package flash.tools.debugger.expression;
 
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorLogicalAndAssignmentNode;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorLogicalAndNode;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorLogicalOrAssignmentNode;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorLogicalOrNode;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalAndAssignmentNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalAndNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalOrAssignmentNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalOrNode;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 
 /**
  * The logical operator's right hand operands are folded into

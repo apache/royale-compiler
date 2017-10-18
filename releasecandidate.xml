@@ -18,7 +18,7 @@
 
 -->
 
-<project name="CreateFalconReleaseCandidate" default="main" basedir=".">
+<project name="CreateCompilerReleaseCandidate" default="main" basedir=".">
 
     <!-- use -Dtag=<tag or commit hash> to build from other than the head -->
 
@@ -86,7 +86,7 @@
 		type="dir" 
 		property="site" value="${svn.site}" />
     
-	<fail message="The svn.site property is not set to the working copy for https://flex.apache.org."
+	<fail message="The svn.site property is not set to the working copy for https://royale.apache.org."
         unless="site"/>
 				
 	<available file="${env.AIR_HOME}"
@@ -205,35 +205,35 @@
 		<ant antfile="build.xml" target="release" />
 		<ant antfile="build.xml" target="create-md5" />
 		<ant antfile="build.xml" target="sign" />
-		<mkdir dir="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries" />
-		<copy todir="${dist.dev}/flex/falcon/${release.version}/rc${rc}" >
+		<mkdir dir="${dist.dev}/royale/compiler/${release.version}/rc${rc}/binaries" />
+		<copy todir="${dist.dev}/royale/compiler/${release.version}/rc${rc}" >
 			<fileset dir="${basedir}/out" >
-				<include name="apache-flex-falconjx-${release.version}-src*" />
+				<include name="apache-royale-compiler-${release.version}-src*" />
 			</fileset>
 		</copy>
-		<copy todir="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries" >
+		<copy todir="${dist.dev}/royale/compiler/${release.version}/rc${rc}/binaries" >
 			<fileset dir="${basedir}/out" >
-				<include name="apache-flex-falconjx-${release.version}-bin*" />
+				<include name="apache-royale-compiler-${release.version}-bin*" />
 			</fileset>
 		</copy>
-		<copy file="${basedir}/README" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/READme" />
-		<copy file="${basedir}/ApproveFalcon.xml" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/ApproveFalcon.xml" />
-		<copy file="${basedir}/apache-flex-falconjx-installer-config.xml" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries/apache-flex-falconjx-installer-config.xml" />
-        <exec executable="${svn}" dir="${dist.dev}/flex/falcon" failonerror="true" >
+		<copy file="${basedir}/README" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/READme" />
+		<copy file="${basedir}/ApproveCompiler.xml" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/ApproveCompiler.xml" />
+		<copy file="${basedir}/apache-royale-compiler-installer-config.xml" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/binaries/apache-royale-compiler-installer-config.xml" />
+        <exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
             <arg value="update" />
         </exec>
-		<exec executable="${svn}" dir="${dist.dev}/flex/falcon" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
 			<arg value="add" />
-			<arg value="${dist.dev}/flex/falcon/${release.version}/rc${rc}" />
+			<arg value="${dist.dev}/royale/compiler/${release.version}/rc${rc}" />
 		</exec>
-		<exec executable="${svn}" dir="${dist.dev}/flex/falcon" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
 			<arg value="commit" />
 			<arg value="--username" />
 			<arg value="${apache.username}" />
 			<arg value="--password" />
 			<arg value="${apache.password}" />
 			<arg value="-m" />
-			<arg value="rc${rc} of Apache Flex Falcon ${release.version}" />
+			<arg value="rc${rc} of Apache Royale Compiler ${release.version}" />
 		</exec>
         <antcall target="tag_release" />
 		<antcall target="update-installer-config" />
@@ -244,9 +244,9 @@
         <exec executable="${git}" dir="${basedir}" failonerror="true" >
             <arg value="tag" />
             <arg value="-a" />
-            <arg value="apache-flex-falcon-${release.version}-rc${rc}" />
+            <arg value="apache-royale-compiler-${release.version}-rc${rc}" />
             <arg value="-m" />
-            <arg value="&quot;rc${rc} of apache-flex-falcon-${release.version}&quot;" />
+            <arg value="&quot;rc${rc} of apache-royale-compiler-${release.version}&quot;" />
         </exec>
         <exec executable="${git}" dir="${basedir}" failonerror="true" >
             <arg value="push" />
@@ -302,11 +302,11 @@
 			<arg value="--password" />
 			<arg value="${apache.password}" />
 			<arg value="-m" />
-			<arg value="&quot;update sdk-installer-config-4.0 for falcon ${release.version} rc${rc}&quot;" />
+			<arg value="&quot;update sdk-installer-config-4.0 for Compiler ${release.version} rc${rc}&quot;" />
 		</exec>
 		<!-- pause to give buildbot chance to react -->
 		<sleep seconds="5" />
-		<get src="https://cms.apache.org/flex/publish" username="${apache.username}" password="${apache.password}" dest="${basedir}/getresult.txt" />
+		<get src="https://cms.apache.org/royale/publish" username="${apache.username}" password="${apache.password}" dest="${basedir}/getresult.txt" />
 		<delete file="${basedir}/getresult.txt" />
 	</target>
 
@@ -316,10 +316,10 @@
 			<arg value="trunk/content/installer/sdk-installer-config-4.0.xml" />
 		</exec>
         <xmlproperty file="${site}/trunk/content/installer/sdk-installer-config-4.0.xml" semanticAttributes="true" collapseAttributes="true"/>
-		<property name="latest.release" value="${config.products.ApacheFlexFalconJX.latestVersion}" />
+		<property name="latest.release" value="${config.products.ApacheRoyaleCompiler.latestVersion}" />
         <replaceregexp byline="true" flags="g">
-            <regexp pattern="ApacheFlexFalconJX(.*)latestVersion=&quot;${latest.release}&quot;(.*)"/>
-            <substitution expression="ApacheFlexFalconJX\1latestVersion=&quot;${release.version}&quot;\2"/>
+            <regexp pattern="ApacheRoyaleCompiler(.*)latestVersion=&quot;${latest.release}&quot;(.*)"/>
+            <substitution expression="ApacheRoyaleCompiler\1latestVersion=&quot;${release.version}&quot;\2"/>
             <fileset dir="${site}/trunk/content/installer">
                 <include name="sdk-installer-config-4.0.xml"/>
             </fileset>
@@ -331,18 +331,18 @@
 			<arg value="--password" />
 			<arg value="${apache.password}" />
 			<arg value="-m" />
-			<arg value="&quot;update sdk-installer-config-4.0 and other files for flex sdk ${release.version} rc${rc}&quot;" />
+			<arg value="&quot;update sdk-installer-config-4.0 and other files for royale sdk ${release.version} rc${rc}&quot;" />
 		</exec>
 		<!-- pause to give buildbot chance to react -->
 		<sleep seconds="5" />
-		<get src="https://cms.apache.org/flex/publish" username="${apache.username}" password="${apache.password}" dest="${basedir}/getresult.txt" />
+		<get src="https://cms.apache.org/royale/publish" username="${apache.username}" password="${apache.password}" dest="${basedir}/getresult.txt" />
 		<delete file="${basedir}/getresult.txt" />
 	</target>
 	
 	<target name="check-new-version" description="check if svn folder needs to be added" >
-		<condition property="version.folder" value="${dist.dev}/flex/falcon/${release.version}" >
+		<condition property="version.folder" value="${dist.dev}/royale/compiler/${release.version}" >
 			<not>
-				<available file="${dist.dev}/flex/falcon/${release.version}" />
+				<available file="${dist.dev}/royale/compiler/${release.version}" />
 			</not>
 		</condition>
 		<antcall target="add-version-folder" />
@@ -350,7 +350,7 @@
     
 	<target name="add-version-folder" description="adds svn folder if needed" if="version.folder" >
 		<mkdir dir="${version.folder}" />
-		<exec executable="${svn}" dir="${dist.dev}/flex/falcon" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
 			<arg value="add" />
 			<arg value="${version.folder}" />
 		</exec>
@@ -375,13 +375,12 @@ ${my.name}
         <!-- try to set line breaks before the vertical line            | -->
         <echo file="${basedir}/votethread.properties">vote.thread.body=Hi,\n\
 \n\
-This is vote for the ${release.version} release of the FalconJX (and Falcon)\n\
-compilers.  There is no separate Falcon-only release package at\n\
-this time.  The only purpose of the FalconJX packages are to serve as\n\
-upstream packages for the FlexJS release.\n\
+This is vote for the ${release.version} release of the Royale\n\
+compilers.  The only purpose of the Compiler packages are to serve as\n\
+upstream packages for the Royale release.\n\
 \n\
 The release candidate can be found here;\n\
-https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}/\n\
+https://dist.apache.org/repos/dist/dev/royale/compiler/${release.version}/rc${rc}/\n\
 \n\
 Before voting please review the section, 'What are the ASF requirements on\n\
 approving a release?', at:\n\
@@ -395,14 +394,14 @@ At a minimum you would be expected to check that:\n\
 \n\
 The source package is set up the same way as the repo.  This means that\n\
 the results of the build are not the same as the binary package.  The\n\
-compiled source package can be used to build FlexJS apps via the command\n\
+compiled source package can be used to build Royale apps via the command\n\
 line and Ant, but not in Flash Builder or other IDEs.  You can test the source\n\
 package by building it, then pointing to it from the source package of the\n\
-FlexJS release candidate and building the examples in the FlexJS package.\n\
+Royale release candidate and building the examples in the Royale package.\n\
 \n\
-The binary package is set up as an upstream package for the FlexJS\n\
+The binary package is set up as an upstream package for the Royale\n\
 release.  The most convenient way to use the binary package is to install\n\
-a FlexJS SDK via Ant or the Installer.\n\
+a Royale SDK via Ant or the Installer.\n\
 \n\
 Please vote to approve this release:\n\
 +1 Approve the release\n\
@@ -434,9 +433,9 @@ steps to validate a release.  Instead of individually downloading the\n\
 package and signature files, unzipping, etc, you can instead:\n\
 1) create an empty folder,\n\
 2) download into that folder this file:\n\
-https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}/ApproveFalcon.xml\n\
+https://dist.apache.org/repos/dist/dev/royale/compiler/${release.version}/rc${rc}/ApproveCompiler.xml\n\
 3) run the script:\n\
-   ant -e -f ApproveFalcon.xml -Drelease.version=${release.version} -Drc=${rc}\n\
+   ant -e -f ApproveCompiler.xml -Drelease.version=${release.version} -Drc=${rc}\n\
 \n\
 You are not required to use this script, and more testing of the packages\n\
 and build results are always encouraged.\n\
@@ -449,7 +448,7 @@ ${my.name}
             <replacefilter token="\n" value="${CRLF}" />
         </replace>
         <property file="${basedir}/votethread.properties" />
-        <echo file="${basedir}/votethread.html">&lt;html&gt;&lt;body&gt;&lt;a href=&quot;mailto:dev@flex.apache.org?subject=[DISCUSS]%20Discuss%20Release%20Apache%20Flex%20FalconJX%20${release.version}%20RC${rc}&amp;body=${discuss.thread.body}&quot;&gt;Click here to review discuss thread&lt;/a&gt;&lt;br/&gt;&lt;a href=&quot;mailto:dev@flex.apache.org?subject=[VOTE]%20Release%20Apache%20Flex%20FalconJX%20${release.version}%20RC${rc}&amp;body=${vote.thread.body}&quot;&gt;Click here to review vote thread&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;</echo>
+        <echo file="${basedir}/votethread.html">&lt;html&gt;&lt;body&gt;&lt;a href=&quot;mailto:dev@royale.apache.org?subject=[DISCUSS]%20Discuss%20Release%20Apache%20Royale%20Compiler%20${release.version}%20RC${rc}&amp;body=${discuss.thread.body}&quot;&gt;Click here to review discuss thread&lt;/a&gt;&lt;br/&gt;&lt;a href=&quot;mailto:dev@royale.apache.org?subject=[VOTE]%20Release%20Apache%20Royale%20Compiler%20${release.version}%20RC${rc}&amp;body=${vote.thread.body}&quot;&gt;Click here to review vote thread&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;</echo>
         <makeurl file="${basedir}/votethread.html" property="vote.thread.url" />
         <exec executable="${browser}">
             <arg value="${vote.thread.url}" />
@@ -467,13 +466,13 @@ ${my.name}
 		<fail message="The svn.dist.release property is not set to the working copy for https://dist.apache.org/repos/dist/release."
 			unless="dist.release"/>
 				
-		<exec executable="${svn}" dir="${dist.release}/flex" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.release}/royale" failonerror="true" >
 			<arg value="update" />
 		</exec>
-		<exec executable="${svn}" dir="${dist.release}/flex/falcon" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.release}/royale/compiler" failonerror="true" >
 			<arg value="mv" />
-			<arg value="${dist.dev}/flex/falcon/${release.version}/rc${rc}" />
-            <arg value="${dist.release}/flex/falcon/${release.version}" />
+			<arg value="${dist.dev}/royale/compiler/${release.version}/rc${rc}" />
+            <arg value="${dist.release}/royale/compiler/${release.version}" />
 		</exec>
 		<exec executable="${svn}" dir="${dist.release}/.." failonerror="true" >
 			<arg value="commit" />
@@ -482,7 +481,7 @@ ${my.name}
 			<arg value="--password" />
 			<arg value="${apache.password}" />
 			<arg value="-m" />
-			<arg value="Apache Flex Falcon ${release.version}" />
+			<arg value="Apache Royale Compiler ${release.version}" />
 		</exec>
         <antcall target="release.tag" />
 		<exec executable="${git}" dir="${basedir}" failonerror="true" >
@@ -493,7 +492,7 @@ ${my.name}
 	</target>
 	
     <target name="release.tag" >
-        <condition property="tag" value="apache-flex-falcon-${release.version}-rc${rc}">
+        <condition property="tag" value="apache-royale-compiler-${release.version}-rc${rc}">
             <not>
                 <isset property="tag" />
             </not>
@@ -507,10 +506,10 @@ ${my.name}
         <exec executable="${git}" dir="${basedir}" failonerror="true" >
             <arg value="tag" />
             <arg value="-a" />
-            <arg value="apache-flex-falcon-${release.version}" />
+            <arg value="apache-royale-compiler-${release.version}" />
             <arg value="${releasehash}" />
             <arg value="-m" />
-            <arg value="&quot;Official release of apache-flex-falcon-${release.version}&quot;" />
+            <arg value="&quot;Official release of apache-royale-compiler-${release.version}&quot;" />
         </exec>
     </target>
 </project>

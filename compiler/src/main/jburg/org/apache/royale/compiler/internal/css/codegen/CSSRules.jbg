@@ -1,0 +1,57 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+document = Pattern document : 1
+JBurg.Reduction reducer.reduceDocument(__p, namespaceList, ruleList);
+
+namespaceList = Pattern namespaceList : 1
+JBurg.Reduction reducer.reduceNamespaceList(__p, namespaces);
+
+namespaceDefinition = Pattern namespaceDefinition : 1
+JBurg.Reduction reducer.reduceNamespaceDefinition(__p);
+
+ruleList = Pattern ruleList : 1 
+JBurg.Reduction reducer.reduceRuleList(__p, rules);
+
+rule = Pattern rule : 1 
+JBurg.Reduction reducer.reduceRule(__p, selectorGroup, propertyList);
+
+selectorGroup = Pattern selectorGroup : 1
+JBurg.Reduction reducer.reduceSelectorGroup(__p, selectors);
+
+selector = Pattern selector : 1
+JBurg.Reduction reducer.reduceSelector(__p);
+
+propertyList = Pattern propertyList : 1 
+JBurg.Reduction reducer.reducePropertyList(__p, properties);
+
+property = Pattern property : 1
+JBurg.Reduction reducer.reduceProperty(__p); 
+
+mediaQuery = Pattern mediaQuery : 1
+JBurg.Reduction reducer.reduceMediaQuery(__p, conditions);
+
+mediaQueryCondition = Pattern mediaQueryCondition : 1
+JBurg.Reduction reducer.reduceMediaQueryCondition(__p);
+
+fontFaceList = Pattern fontFaceList : 1
+JBurg.Reduction reducer.reduceFontFaceList(__p, fontFaces);
+
+fontFace = Pattern fontFace : 1
+JBurg.Reduction reducer.reduceFontFace(__p);

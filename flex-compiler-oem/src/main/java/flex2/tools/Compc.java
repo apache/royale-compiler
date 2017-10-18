@@ -19,7 +19,7 @@
 
 package flex2.tools;
 
-import org.apache.flex.compiler.clients.COMPC;
+import org.apache.royale.compiler.clients.COMPC;
 
 import java.lang.reflect.InvocationTargetException;
 

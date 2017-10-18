@@ -33,14 +33,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.clients.problems.ProblemFormatter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.types.RGB;
+import org.apache.royale.compiler.clients.MXMLJSC;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.types.RGB;
 
 import flash.swf.tags.SetBackgroundColor;
 import flex2.compiler.CompilerException;
@@ -794,7 +794,7 @@ public class Application implements Builder
         }
         ISWF swf = mxmljsc.getSWFTarget();
         movie = new SimpleMovie(null);
-        org.apache.flex.swf.types.Rect r = swf.getFrameSize();
+        org.apache.royale.swf.types.Rect r = swf.getFrameSize();
         flash.swf.types.Rect fr = new flash.swf.types.Rect();
         fr.xMin = r.xMin();
         fr.yMin = r.yMin();

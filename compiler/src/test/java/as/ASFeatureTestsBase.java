@@ -19,9 +19,9 @@
 
 package as;
 
-import org.apache.flex.compiler.clients.MXMLC;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.utils.*;
+import org.apache.royale.compiler.clients.MXMLC;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.utils.*;
 import utils.FlashplayerSecurityHandler;
 
 import java.io.BufferedWriter;

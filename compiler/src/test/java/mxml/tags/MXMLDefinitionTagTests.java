@@ -19,7 +19,7 @@
 
 package mxml.tags;
 
-import org.apache.flex.utils.StringUtils;
+import org.apache.royale.utils.StringUtils;
 import org.junit.Test;
 
 /**

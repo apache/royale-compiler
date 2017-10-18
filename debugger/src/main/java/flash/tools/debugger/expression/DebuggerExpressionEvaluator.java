@@ -17,10 +17,10 @@
 
 package flash.tools.debugger.expression;
 
-import org.apache.flex.compiler.internal.projects.ASCProject;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.internal.projects.ASCProject;
+import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * @author ggv

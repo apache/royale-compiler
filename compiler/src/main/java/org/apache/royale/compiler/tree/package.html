@@ -1,0 +1,73 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package and its subpackages contain classes and interfaces related
+to <i>abstract syntax trees</i>.
+
+<p>
+An <i>abstract syntax tree</i> or AST represents almost every detail of
+a source file in a hierarchical structure that reflects the logical
+structure of the source language.
+Each <i>node</i> in an AST is a type of <code>IASNode</code>.
+</p>
+
+<p>
+The information stored in each node is minimal and unimportant, such as
+the name of an identifier or keyword, or the text of a string literal.
+It is the many different node types, and the many ways that the nodes
+can be arranged -- in other words, the <i>tree shape</i> -- that
+contain the semantics of the AST.
+</p>
+
+<p>
+Each AST node stores location information about what source file it was in
+and the offsets where it starts and ends, which is useful for IDEs.
+For command-line error reporting, and for the code generation of debug
+opcodes, nodes also store line and column information. Deriving line
+and column from starting offset is too slow for code generation.
+</p>
+
+<p>
+In order to allow an IDE to efficiently search an AST for the node
+containing a particular offset, the nodes of an AST must obey the following
+rules regarding location information:
+<ul>
+<li>Sibling nodes must not overlap and must be in offset order.</li>
+<li>The start/end of a parent node must contain all its child nodes.</li>
+</ul>
+</p>
+
+<p>
+The immediate contents of this package is <code>ASTNodeID</code>,
+an enum containing a <i>node ID</i> for every kind of AST node.
+The node ID is used to identify nodes in the <code>.jbg</code> files
+that create the code generator's BURM (Bottom-Up Rewrite Machine).
+</p>
+
+<p>
+See the <code>org.apache.royale.compiler.tree.as</code>
+and <code>org.apache.royale.compiler.tree.mxml</code> subpackages
+for more information about AS and MXML trees.
+</p>
+
+</body>
+</html>
