@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 
 import org.apache.royale.compiler.asdoc.IASDocTag;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
@@ -844,6 +845,130 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 			e.printStackTrace();
 		}
     }
+    
+    public boolean hasCommentaryTags(ASDocComment asDoc)
+    {
+    	Map<String, List<IASDocTag>> tags = asDoc.getTags();
+    	if (tags != null)
+    	{
+    		Set<String> tagNames = tags.keySet();
+    		for (String tagName : tagNames)
+    		{
+    			if (tagName.equals("flexcomponent")) {
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
+    }
+    
+    private void writeCommentaryValues(FileWriter commentaryWriter, List<IASDocTag> values) throws IOException
+    {
+    	HashMap<String, String> map = new HashMap<String, String>();
+		boolean firstOne = true;
+		int count = 0;
+		for (IASDocTag value : values) {
+		    String description = value.getDescription().trim();
+			if (map.containsKey(description)) {
+				continue;
+			}
+			
+			if (!firstOne) commentaryWriter.write(", ");
+			firstOne = false;
+			commentaryWriter.write("\"");
+			commentaryWriter.write(description);
+			commentaryWriter.write("\"");
+			
+			map.put(description, "true");
+			count++;
+		}
+    }
+    
+    public void writeCommentaryFile(FileWriter commentaryWriter, String qname, ASDocComment asDoc) throws IOException
+    {
+    	//asDoc.compile();
+    	Map<String, List<IASDocTag>> tags = asDoc.getTags();
+    	
+    	if (tags != null)
+    	{
+    		Set<String> tagNames = tags.keySet();
+    		
+    		commentaryWriter.write("{");
+    		
+    		commentaryWriter.write("\"className\": \"");
+    		commentaryWriter.write(qname);
+    		commentaryWriter.write("\", ");
+    		
+    		commentaryWriter.write("\"description\": \"");
+    		commentaryWriter.write(asDoc.getDescription());
+			commentaryWriter.write("\", ");
+    		
+    		boolean wroteCommentary = false;
+    		boolean wroteExample = false;
+    		boolean firstTag = true;
+    		
+    		for (String tagName : tagNames)
+    		{
+    			tagName = tagName.trim();
+    			List<IASDocTag> values = tags.get(tagName);
+    			
+    			if (tagName.equals("flexcomponent")) {
+					if (!firstTag) commentaryWriter.write(", ");
+					firstTag = false;
+    			    commentaryWriter.write("\"flexcomponent\": ");
+    			    commentaryWriter.write("[");
+    			    if (values != null) {
+    			        writeCommentaryValues(commentaryWriter, values);
+    			    }
+    			    commentaryWriter.write("]");
+    			}
+    			else if (tagName.equals("flexdocurl")) {
+    				if (!firstTag) commentaryWriter.write(", ");
+    				firstTag = false;
+    			    commentaryWriter.write("\"flexdocurl\": ");
+    			    commentaryWriter.write("[");
+    			    if (values != null) {
+    			        writeCommentaryValues(commentaryWriter, values);
+    			    }
+    			    commentaryWriter.write("]");
+    			}
+    			else if (tagName.equals("commentary")) {
+    				if (!firstTag) commentaryWriter.write(", ");
+    				firstTag = false;
+    			    commentaryWriter.write("\"commentary\": ");
+    			    commentaryWriter.write("[");
+    			    if (values != null) {
+    			    	writeCommentaryValues(commentaryWriter, values);
+    			    }
+    			    commentaryWriter.write("]");
+    			    wroteCommentary = true;
+    			}
+    			else if (tagName.equals("example")) {
+    				if (!firstTag) commentaryWriter.write(", ");
+    				firstTag = false;
+    			    commentaryWriter.write("\"example\": ");
+    			    commentaryWriter.write("[");
+    			    if (values != null) {
+    			    	writeCommentaryValues(commentaryWriter, values);
+    			    }
+    			    commentaryWriter.write("]");
+    			    wroteExample = true;
+    			}
+    		}
+    		
+    		if (!wroteCommentary) {
+    			commentaryWriter.write(", ");
+    			commentaryWriter.write("\"commentary\": []");
+    		}
+    		
+    		if (!wroteExample) {
+    			commentaryWriter.write(", ");
+    			commentaryWriter.write("\"example\": []");
+    		}
+    		
+    		commentaryWriter.write("}");
+    	}
+    }
 
     public void outputClasses(File outputFolder, RoyaleASDocProject project) throws IOException
     {
@@ -855,6 +980,10 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
     	boolean firstLine = true;
+    	
+    	List<ASDocComment> commentaryList = new ArrayList<ASDocComment>();
+    	List<String> qnameList = new ArrayList<String>();
+    	    	
     	for (String key : keyList)
     	{
     		if (!firstLine)
@@ -874,6 +1003,11 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
             	writeASDoc(asDoc, project);
             	setBufferWrite(false);
             	out.write(sb.toString());
+            	
+            	if (hasCommentaryTags(asDoc)) {
+            		qnameList.add(key);
+            		commentaryList.add(asDoc);
+            	}
             }
             else
             {
@@ -883,6 +1017,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
             }
         	out.write("}");
     	}
+    	
 		out.write("]}");
         try {
 			out.flush();
@@ -895,6 +1030,38 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		if (commentaryList.size() > 0) {    	
+			final File commentaryFile = new File(outputFolder, "commentary.json");
+			FileWriter commentaryWriter = new FileWriter(commentaryFile);
+			commentaryWriter.write("{ \"list\": [");
+			System.out.println("Building commentary comparison file: "+commentaryFile);
+			
+			firstLine = true;
+			int index = 0;
+			
+			for (ASDocComment asDoc : commentaryList) {
+			    if (!firstLine) commentaryWriter.write(",\n");
+			    firstLine = false;
+			    String qname = qnameList.get(index);
+			    writeCommentaryFile(commentaryWriter, qname, asDoc);
+			    index++;
+			}
+		
+			commentaryWriter.write("]}");
+			try {
+				commentaryWriter.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				commentaryWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
     }
     
