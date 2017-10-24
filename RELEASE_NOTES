@@ -1,68 +1,18 @@
-Apache Flex 'Falcon' Compiler 0.8.0
+Apache Royale Compiler 0.9.0
 =================
-Apache Flex 'Falcon' Compiler 0.8.0 is the sixth release of a next-generation
-compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
-compiler for Apache FlexJS SDKs.
+Apache Royale Compiler 0.9.0 is the first release of a next-generation
+compiler for building Apache Royale applications.
 
-The compiler is now biased towards building Apache FlexJS projects.  The Ant
-tasks now point to the cross-compiler, which can now build both SWFs and
-cross-compiler (transpile) MXML and AS to JS.
-
-Lots of bug fixes and other small improvements are included in this release.
-See the RELEASE_NOTES_JX file for a list of resolved issues.
-
-Apache Flex 'Falcon' Compiler 0.7.0
-=================
-Apache Flex 'Falcon' Compiler 0.7.0 is the fifth release of a next-generation
-compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
-compiler for Apache FlexJS SDKs.
-
-This release includes Maven artifacts.
-
-Lots of bug fixes and other small improvements are included in this release.
-
-Apache Flex 'Falcon' Compiler 0.6.0
-=================
-Apache Flex 'Falcon' Compiler 0.6.0 is the fourth release of a next-generation
-compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
-compiler for Apache FlexJS SDKs.
-
-Lots of bug fixes and other small improvements are included in this release.
-
-Apache Flex 'Falcon' Compiler 0.5.0
-=================
-Apache Flex 'Falcon' Compiler 0.5.0 is the third release of a next-generation
-compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
-compiler for Apache FlexJS SDKs.
-
-Lots of bug fixes and other small improvements are included in this release.
-
-Apache Flex 'Falcon' Compiler 0.0.2
-=================
-Apache Flex 'Falcon' Compiler 0.0.2 is the second release of a next-generation
-compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
-compiler for Apache FlexJS SDKs.
-
-The only changes in this release are for build script dependencies.
-
-Apache Flex 'Falcon' Compiler 0.0.1
-=================
-
-Apache Flex 'Falcon' Compiler 0.0.1 is the initial release of a next-generation
-compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
-compiler for Apache FlexJS SDKs.  It is based on the Adobe ASC2.0 compiler but
-officially supports MXML compilation and includes some bug fixes. This is an
-'alpha' type of release.  Expect to find lots of bugs and missing features, but
-please file bugs and contribute fixes.
+The compiler was previously released by the Apache Flex project.  You can
+see RELEASE_NOTES for earlier releases in the Apache Flex releases.
 
 Known Issues
 _____________
 
 Adobe Flash Builder Integration
 
-The Apache Flex Falcon compiler should work in Adobe Flash Builder 4.7, but does
-not support incremental compilation and may compile the project even if nothing
-has changed.
+The Apache Royale Compiler can be used in Adobe Flash Builder 4.7, but does
+not support incremental compilation or clean non-SWF output.
 
 
 Unit Test results in compiler.tests 
@@ -72,16 +22,6 @@ The jar.tests report "Java Result: 1" which is expected as all these tests do is
 Compilation Warnings
 
 The Java compiler will report warnings for several files in this release.
-
-Files in compiler/src/assembly/scripts
-
-The files in compiler/src/assembly/scripts are templates used to create a 'final' SDK.  You cannot run the files in compiler/src/assembly/scripts.  Instead, the installer.xml script or Apache Flex SDK Installer will create a bin folder with working scripts.
-
-Compiling with the Flex SDK
-
-This compiler has only been tested against the FlexJS SDK which does not exercise all
-of the features of the Flex SDK, so results of compiling against the Flex SDK are
-not guaranteed.
 
 Please report new issues to our bugbase at:
 

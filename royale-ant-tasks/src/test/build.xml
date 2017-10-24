@@ -60,16 +60,16 @@
     <property name="playerglobal.version" value="11.1" />
     
     <property name="royaletasks" value="${royaletasks.tests}/../.."/>
-    <property name="falcon" value="${compiler}"/>
+    <property name="royale" value="${compiler}"/>
 
     <path id="lib.path">
-        <fileset dir="${falcon}/lib" includes="falcon-royaleTasks.jar"/>
-        <fileset dir="${falcon}/lib" includes="jsc.jar"/>
+        <fileset dir="${royale}/lib" includes="royale-royaleTasks.jar"/>
+        <fileset dir="${royale}/lib" includes="jsc.jar"/>
     </path>
     
     <target name="ant.tests">
         <property name="FLEX_HOME" value="${flexsdk}"/>
-        <property name="FALCONJX_HOME" value="${falcon}"/>
+        <property name="FALCONJX_HOME" value="${royale}"/>
         <echo message="GOOG_HOME: ${GOOG_HOME}"/>
         <echo>FLEX_HOME=${flexsdk}</echo>
         <echo>FALCONJX_HOME=${FALCONJX_HOME}</echo>

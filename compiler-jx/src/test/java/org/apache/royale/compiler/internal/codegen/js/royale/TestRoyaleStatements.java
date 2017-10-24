@@ -52,7 +52,7 @@ public class TestRoyaleStatements extends TestGoogStatements
     @Test
     public void testObjectListeral_withPropertyNameMatchingConst()
     {
-        ILiteralNode node = (ILiteralNode) getNode("static const myConst:int; function falconTest_a():Object { return { myConst : myConst } }",
+        ILiteralNode node = (ILiteralNode) getNode("static const myConst:int; function royaleTest_a():Object { return { myConst : myConst } }",
         		ILiteralNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitLiteral(node);
         assertOut("{myConst:FalconTest_A.myConst}");
@@ -516,7 +516,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              " */\n" +
         		              "FalconTest_A = function() {\n" +
         		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
-        		              "FalconTest_A.prototype.falconTest_a = function() {\n" +
+        		              "FalconTest_A.prototype.royaleTest_a = function() {\n" +
         		              "  var self = this;\n" +
         		              "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
             		          "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +

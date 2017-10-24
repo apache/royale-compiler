@@ -18,15 +18,15 @@
 
 -->
 
-<project name="falcon" default="main" basedir=".">
+<project name="royale" default="main" basedir=".">
 
     <property file="${basedir}/env.properties"/>
     <property environment="env"/>
     <property file="${basedir}/local.properties"/>
     <property file="${basedir}/build.properties"/>
 
-    <property name="kit.prefix" value="apache-flex-falcon-${release.version}"/>
-    <property name="kit.jx.prefix" value="apache-flex-falconjx-${release.version}"/>
+    <property name="kit.prefix" value="apache-flex-royale-${release.version}"/>
+    <property name="kit.jx.prefix" value="apache-flex-royalejx-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
     <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
@@ -495,7 +495,7 @@
     </target>
     
     <target name="stage-source-jx"
-        description="Package jx source files with other falcon files required to build in zip file" >
+        description="Package jx source files with other royale files required to build in zip file" >
         
         <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
         <copy todir="${basedir}/temp" >
@@ -667,8 +667,8 @@
         
         <copy todir="${basedir}/out">
             <fileset dir="${basedir}">
-                <include name="apache-flex-falcon-installer-config.xml"/>
-                <include name="apache-flex-falconjx-installer-config.xml"/>
+                <include name="apache-flex-royale-installer-config.xml"/>
+                <include name="apache-flex-royalejx-installer-config.xml"/>
             </fileset>
         </copy>
     </target>

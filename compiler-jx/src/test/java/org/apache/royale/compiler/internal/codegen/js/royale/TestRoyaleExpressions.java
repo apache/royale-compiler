@@ -91,7 +91,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  " * Prevent renaming of class. Needed for reflection.\n" +
         		  " */\n" +
         		  "goog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
-        		  "FalconTest_A.prototype.falconTest_a = function() {\n" +
+        		  "FalconTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  ;\n" +
         		  "  function isDefaultPrevented() {\n" +
@@ -1073,7 +1073,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     	IFunctionNode node = (IFunctionNode) getNode("var a = function(){};",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("FalconTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  var /** @type {Function} */ __localFn0__ = function() {\n" +
         		  "  }\n" +
@@ -1089,7 +1089,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("FalconTest_A.prototype.royaleTest_a = function() {\n" +
       		  "  var self = this;\n" +
       		  "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
       		  "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
@@ -1107,7 +1107,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "addListener('foo', function(event:Object):void{doit();})",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("FalconTest_A.prototype.royaleTest_a = function() {\n" +
       		  "  var self = this;\n" +
       		  "  var /** @type {Function} */ __localFn0__ = function(event) {\n" +
       		  "    doit();\n" +
@@ -1123,7 +1123,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "var a:Object = {}; var b:Function = function(foo:Object) { foo.bar = 10 }; var c:Object = b(a);",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("FalconTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  var /** @type {Function} */ __localFn0__ = function(foo) {\n    foo.bar = 10;\n  }\n" +
         		  "  var /** @type {Object} */ a = {};\n" +
@@ -1138,7 +1138,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "var a:Object = {}; function b(foo:Object) { foo.bar = 10 }; var c:Object = b(a);",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("FalconTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  function b(foo) {\n    foo.bar = 10;\n  };\n" +
         		  "  var /** @type {Object} */ a = {};\n" +

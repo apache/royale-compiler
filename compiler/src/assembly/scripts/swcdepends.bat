@@ -18,7 +18,7 @@ rem limitations under the License.
 rem
 
 rem
-rem swcdepends.bat script to launch falcon-swcdepends.jar in Windows Command Prompt.
+rem swcdepends.bat script to launch royale-swcdepends.jar in Windows Command Prompt.
 rem On OSX, Unix, or Cygwin, use the swcdepends shell script instead.
 rem
 
@@ -28,4 +28,4 @@ if "x%FALCON_HOME%"=="x"  (set FALCON_HOME=%~dp0..) else echo Using Falcon codeb
 
 if "x%FLEX_HOME%"=="x" (set FLEX_HOME=%~dp0..) else echo Using Flex SDK: %FLEX_HOME%
 
-@java -Dsun.io.useCanonCaches=false -Xms32m -Xmx512m -Dflexcompiler="%FALCON_HOME%" -Dflexlib="%FLEX_HOME%\frameworks" -jar "%FALCON_HOME%\lib\falcon-swcdepends.jar" %*
+@java -Dsun.io.useCanonCaches=false -Xms32m -Xmx512m -Dflexcompiler="%FALCON_HOME%" -Dflexlib="%FLEX_HOME%\frameworks" -jar "%FALCON_HOME%\lib\royale-swcdepends.jar" %*

@@ -237,8 +237,8 @@ public abstract class FlexTask extends Java
         if (royaleHomeProperty == null)
             throw new BuildException("FLEX_HOME must be set to use the Flex Ant Tasks");
 		
-        String falconHomeProperty = getProject().getProperty("FALCONJX_HOME");
-        if (falconHomeProperty == null)
+        String royaleHomeProperty = getProject().getProperty("FALCONJX_HOME");
+        if (royaleHomeProperty == null)
             throw new BuildException("FALCONJX_HOME must be set to use the Flex Ant Tasks");
 				
         System.setProperty("FLEX_HOME", royaleHomeProperty);

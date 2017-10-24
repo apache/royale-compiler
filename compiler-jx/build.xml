@@ -47,8 +47,8 @@
     <property name="src" value="${basedir_clean}/src/main/java" />
 	<property name="lib" value="${basedir_clean}/lib" />
 	
-	<property name="falcon.basedir" value="${basedir_clean}/../compiler" />
-    <property name="falcon.lib.dir" value="${falcon.basedir}/lib" />
+	<property name="royale.basedir" value="${basedir_clean}/../compiler" />
+    <property name="royale.lib.dir" value="${royale.basedir}/lib" />
 	
 	<property name="classes.dir" value="${basedir_clean}/target/classes" />
 	
@@ -65,7 +65,7 @@
     <property name="build.number" value="0"/>
 
     <path id="classpath">
-        <filelist dir="${falcon.lib.dir}/external">
+        <filelist dir="${royale.lib.dir}/external">
             <file name="antlr.jar" />
             <file name="commons-lang-2.6.jar" />
         </filelist>
@@ -88,7 +88,7 @@
             source="${javac.src}" target="${javac.src}">
 			<src path="${src}" />
 			<classpath>
-				<pathelement path="${falcon.basedir}/target/classes" />
+				<pathelement path="${royale.basedir}/target/classes" />
 			</classpath>
 		</javac>
 	</target>

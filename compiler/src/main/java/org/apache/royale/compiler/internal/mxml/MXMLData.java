@@ -710,7 +710,7 @@ public class MXMLData implements IMXMLData
      * @param offset test offset
      * @return unit that contains (or immediately follows) the offset A few
      * subtleties: In Falcon we have endeavored to preserve the existing
-     * definition of "nearest", so that for a given MXML file, falcon will find
+     * definition of "nearest", so that for a given MXML file, royale will find
      * the same "nearest" unit.
      */
 
@@ -737,7 +737,7 @@ public class MXMLData implements IMXMLData
             // unit is a match if it "contains" the offset.
             // We are using a somewhat bizarre form of "contains" here, in that we are
             // using getStart() and getConentEnd(). This asymmetric mismatch is for several reasons:
-            //      * it's the only way to match the existing (non-falcon) behavior
+            //      * it's the only way to match the existing (non-royale) behavior
             //      * If our cursor is before the <, we want to match the tag.
             //              example:     |<foo   >  will find "foo" as the nearest tag.
             //      So we need to use start here (not content start)
