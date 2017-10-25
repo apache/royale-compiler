@@ -44,7 +44,7 @@
     <property name="javadoc.params" value="" />
     
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
-    <!-- where a Falcon SDK is built -->
+    <!-- where a Royale SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${royaletasks}/../compiler-jx/lib"/>
     <property name="compiler" value="${royaletasks}/../compiler-jx"/>

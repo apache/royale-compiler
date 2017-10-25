@@ -232,9 +232,13 @@ Building the Source in the Source Distribution
 
     You can build the compiler via Apache Maven or Apache Ant.
 
-    To build the Apache Royale Compiler with Apache Maven, you must first build
-    the utils profile without the main profile and then the main profile.  
-    So, first run:
+    To build the Apache Royale Compiler with Apache Maven, get Maven 
+    (http://maven.apache.org) and unpack it somewhere.
+    This directory is now "MAVEN_HOME". Make sure MAVEN_HOME/bin
+    is on your systems path.
+
+    You must first build the utils profile without the main profile 
+    and then the main profile.  So, first run:
 
         mvn clean install -P -main,utils
 

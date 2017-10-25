@@ -106,7 +106,7 @@ public class ASTestBase extends TestBase
             code = "function royaleTest_a():void {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_CLASS)
-            code = "public class FalconTest_A {" + code + "}";
+            code = "public class RoyaleTest_A {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_PACKAGE)
             code = "package" + ((includePackage) ? " foo.bar" : "") + " {"

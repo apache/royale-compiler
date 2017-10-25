@@ -46,11 +46,11 @@ public class TestRoyaleAccessors extends ASTestBase
                 "public function doStuff():void {label = 'hello, bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
-        		"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
-        		"FalconTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
-        		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";
+        String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label;\n\n\n" +
+        		"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
+        		"RoyaleTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
+        		"label: {\nget: RoyaleTest_A.prototype.get__label,\nset: RoyaleTest_A.prototype.set__label}}\n);";
         assertOut(expected);
     }
 
@@ -76,11 +76,11 @@ public class TestRoyaleAccessors extends ASTestBase
                 "public function doStuff():void {label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
-				"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
-				"FalconTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-				"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nlabel: {\n" +
-				"get: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);"; 
+        String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label;\n\n\n" +
+				"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
+				"RoyaleTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
+				"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nlabel: {\n" +
+				"get: RoyaleTest_A.prototype.get__label,\nset: RoyaleTest_A.prototype.set__label}}\n);"; 
         assertOut(expected);
     }
     
@@ -120,14 +120,14 @@ public class TestRoyaleAccessors extends ASTestBase
                 "public function doStuff():void {label = 'hello, bye'; var theLabel:String = label;}; private var _label:String; [Bindable] public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
-        		"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
-				"FalconTest_A.prototype.bindable__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"FalconTest_A.prototype.set__label = function(value) {\nvar oldValue = this.get__label();\nif (oldValue != value) {\nthis.bindable__set__label(value);\n" +
+        String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label;\n\n\n" +
+        		"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
+				"RoyaleTest_A.prototype.bindable__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
+        		"RoyaleTest_A.prototype.set__label = function(value) {\nvar oldValue = this.get__label();\nif (oldValue != value) {\nthis.bindable__set__label(value);\n" +
         		"    this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(\n" +
         		"         this, \"label\", oldValue, value));\n}\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
-        		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
+        		"label: {\nget: RoyaleTest_A.prototype.get__label,\nset: RoyaleTest_A.prototype.set__label}}\n);";
         assertOut(expected);
     }
 
@@ -138,11 +138,11 @@ public class TestRoyaleAccessors extends ASTestBase
                 "public function doStuff():void {label = 'hello, bye'; var theLabel:String = label;}; private var _label:String; [Bindable(\"change\")] public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n" +
-				"FalconTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
-				"FalconTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
-        		"label: {\nget: FalconTest_A.prototype.get__label,\nset: FalconTest_A.prototype.set__label}}\n);";
+        String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label;\n\n\n" +
+				"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
+				"RoyaleTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
+        		"label: {\nget: RoyaleTest_A.prototype.get__label,\nset: RoyaleTest_A.prototype.set__label}}\n);";
         assertOut(expected);
     }
 

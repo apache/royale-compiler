@@ -669,7 +669,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
 
     /**
-     * Setup {@code -compatibility-version} level. Falcon only support Flex 3+.
+     * Setup {@code -compatibility-version} level. Royale only support Flex 3+.
      * @param project 
      */
     protected void setupCompatibilityVersion(RoyaleProject project)

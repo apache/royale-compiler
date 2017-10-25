@@ -69,10 +69,10 @@
     
     <target name="ant.tests">
         <property name="FLEX_HOME" value="${flexsdk}"/>
-        <property name="FALCONJX_HOME" value="${royale}"/>
+        <property name="ROYALE_COMPILER_HOME" value="${royale}"/>
         <echo message="GOOG_HOME: ${GOOG_HOME}"/>
         <echo>FLEX_HOME=${flexsdk}</echo>
-        <echo>FALCONJX_HOME=${FALCONJX_HOME}</echo>
+        <echo>ROYALE_COMPILER_HOME=${ROYALE_COMPILER_HOME}</echo>
         <taskdef resource="flexTasks.tasks" classpathref="lib.path"/>
         <mxmlc file="${royaletasks.tests}/as/Hello.as"
             output="${royaletasks}/target/junit/Hello.swf"

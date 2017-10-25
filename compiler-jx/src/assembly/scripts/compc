@@ -25,17 +25,17 @@
 # In Windows Command Prompt, use mxmlc.bat instead.
 #
 
-if [ "x${FALCON_HOME}" = "x" ]
+if [ "x${ROYALE_COMPILER_HOME}" = "x" ]
 then
     SCRIPT_HOME=`dirname "$0"`
-    FALCON_HOME=${SCRIPT_HOME}/../../compiler
+    ROYALE_COMPILER_HOME=${SCRIPT_HOME}/../../compiler
 fi
 
-echo Using Falcon codebase: $FALCON_HOME
+echo Using Royale codebase: $ROYALE_COMPILER_HOME
 
 if [ "x${FLEX_HOME}" = "x" ]
 then
-    FLEX_HOME=${FALCON_HOME}/generated/dist/sdk
+    FLEX_HOME=${ROYALE_COMPILER_HOME}/generated/dist/sdk
 fi
 echo Using Flex SDK: $FLEX_HOME
 
@@ -51,7 +51,7 @@ D32=''
 
 if [ $OS = "Windows" ]; then
 
-	FALCON_HOME=`cygpath -m $FALCON_HOME`
+	ROYALE_COMPILER_HOME=`cygpath -m $ROYALE_COMPILER_HOME`
 	FLEX_HOME=`cygpath -m $FLEX_HOME`
 
 elif [ $OS = "Unix" ]; then
@@ -67,4 +67,4 @@ fi
 
 VMARGS="-Xmx384m -Dsun.io.useCanonCaches=false "
 
-java $VMARGS $D32 $SETUP_SH_VMARGS -Droyalecompiler="$FALCON_HOME" -Droyalelib="$FLEX_HOME/frameworks" -jar "$SCRIPT_HOME/../lib/compc.jar" +royalelib="$FLEX_HOME/frameworks" "$@"
+java $VMARGS $D32 $SETUP_SH_VMARGS -Droyalecompiler="$ROYALE_COMPILER_HOME" -Droyalelib="$FLEX_HOME/frameworks" -jar "$SCRIPT_HOME/../lib/compc.jar" +royalelib="$FLEX_HOME/frameworks" "$@"

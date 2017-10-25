@@ -186,7 +186,7 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
      * <p>
      * The distinction between file private namespaces and regular private
      * namespaces is purely for the benefit of code model clients. Once we have
-     * implemented type analysis in Falcon, CM clients may not need this
+     * implemented type analysis in Royale, CM clients may not need this
      * distinction anymore.
      * 
      * @return A new file private namespace definition.

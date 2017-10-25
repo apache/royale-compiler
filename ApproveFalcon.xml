@@ -18,7 +18,7 @@
 
 -->
 
-<project name="ApproveApacheFlexFalcon" default="main" basedir=".">
+<project name="ApproveApacheFlexRoyale" default="main" basedir=".">
 
 
     <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
@@ -405,7 +405,7 @@
     <target name="examine-jars" if="isMac">
         <!-- comma delimited list, no spaces, not one file per line -->
         <copy file="jars.txt" tofile="loop.txt" />
-        <ant antfile="ApproveFalcon.xml" target="loopOnce" inheritAll="false" />
+        <ant antfile="ApproveRoyale.xml" target="loopOnce" inheritAll="false" />
     </target>
     <target name="loopOnce" >
         <!-- make a copy of the list so we can munge it to
@@ -427,7 +427,7 @@
         <loadfile srcFile="loop1.txt" property="thisFile" />
         <antcall target="jar-check" />
         <replaceregexp file="loop.txt" match="^(.*),(.*)" replace="\1" />
-        <ant antfile="ApproveFalcon.xml" target="loopOnce" inheritAll="false"/>
+        <ant antfile="ApproveRoyale.xml" target="loopOnce" inheritAll="false"/>
     </target>
     <target name="lastone" if="islast">
         <loadfile srcFile="loop1.txt" property="thisFile" />

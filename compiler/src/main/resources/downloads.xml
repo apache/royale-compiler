@@ -39,20 +39,20 @@
        risk around caching bad downloads and/or needing to
        clean up the cache -->
 
-  <property name="FALCON_HOME" location="${basedir}/../../.."/>
+  <property name="ROYALE_COMPILER_HOME" location="${basedir}/../../.."/>
 
-  <property name="lib.dir" value="${FALCON_HOME}/lib"/>
-  <property name="external.lib.dir" value="${FALCON_HOME}/lib/external"/>
-  <property name="download.dir" value="${FALCON_HOME}/in"/>
+  <property name="lib.dir" value="${ROYALE_COMPILER_HOME}/lib"/>
+  <property name="external.lib.dir" value="${ROYALE_COMPILER_HOME}/lib/external"/>
+  <property name="download.dir" value="${ROYALE_COMPILER_HOME}/in"/>
 
-  <property file="${FALCON_HOME}/local.properties"/>
+  <property file="${ROYALE_COMPILER_HOME}/local.properties"/>
 
   <property name="maven.search.url" value="https://repo1.maven.org/maven2"/>
 
-  <property file="${FALCON_HOME}/env.properties"/>
+  <property file="${ROYALE_COMPILER_HOME}/env.properties"/>
   <property environment="env"/>
-  <property file="${FALCON_HOME}/local.properties"/>
-  <property file="${FALCON_HOME}/build.properties"/>
+  <property file="${ROYALE_COMPILER_HOME}/local.properties"/>
+  <property file="${ROYALE_COMPILER_HOME}/build.properties"/>
 
 
   <!--
@@ -493,19 +493,19 @@
     </target>
 
     <target name="double-check-file" >
-        <echo>${env.FLEX_DOWNLOAD_CACHE}</echo>
+        <echo>${env.ROYALE_DOWNLOAD_CACHE}</echo>
         <condition property="still-no-file" value="true">
             <and>
                 <not>
                     <available file="${destDir}/${destFile}" />
                 </not>
-                <isset property="env.FLEX_DOWNLOAD_CACHE" />
+                <isset property="env.ROYALE_DOWNLOAD_CACHE" />
             </and>
         </condition>
         <echo>Need file: ${still_no_file}</echo>
     </target>
     <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
-        <copy file="${env.FLEX_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
+        <copy file="${env.ROYALE_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
     </target>
 
 

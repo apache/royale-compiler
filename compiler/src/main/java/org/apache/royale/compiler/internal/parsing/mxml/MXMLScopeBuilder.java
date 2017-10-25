@@ -399,7 +399,7 @@ public class MXMLScopeBuilder
         // actually turns out to be a property/style/event tag
         // once the MXML AST has been built, but in these cases
         // the spurious import will simply cause an ambiguous
-        // identifier problem in Falcon whereas the old compiler
+        // identifier problem in Royale whereas the old compiler
         // would have compiled the code without error.
         String qname = fileScope.resolveTagToQualifiedName(tag);
         if (qname != null)

@@ -19,8 +19,6 @@
 -->
 <project name="compiler-jx" default="main" basedir=".">
 
-    <property name="FALCONJX_HOME" location="${basedir}"/>
-    
     <pathconvert property="basedir_clean" dirsep="/">
 		<path location="${basedir}" />
     </pathconvert>

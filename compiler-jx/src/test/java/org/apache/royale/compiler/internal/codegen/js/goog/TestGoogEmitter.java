@@ -78,7 +78,7 @@ public class TestGoogEmitter extends ASTestBase
     {
         IFunctionNode node = getMethod("function method1():void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.method1 = function() {\n}");
+        assertOut("RoyaleTest_A.prototype.method1 = function() {\n}");
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TestGoogEmitter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(bar:int):int{\n}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} bar\n * @return {number}\n */\n"
-                + "foo.bar.FalconTest_A.prototype.method1 = function(bar) {\n}");
+                + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar) {\n}");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class TestGoogEmitter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
-                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
+                + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TestGoogEmitter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
-                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
+                + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class TestGoogEmitter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
-                + "foo.bar.FalconTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+                + "foo.bar.RoyaleTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tvar self = this;\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n"
@@ -127,7 +127,7 @@ public class TestGoogEmitter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number=} bar\n * @param {number=} bax\n */\n"
-                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, bax) {\n"
+                + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, bax) {\n"
                 + "\tvar self = this;\n"
                 + "\tbar = typeof bar !== 'undefined' ? bar : 42;\n"
                 + "\tbax = typeof bax !== 'undefined' ? bax : 4;\n"
@@ -140,7 +140,7 @@ public class TestGoogEmitter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
-                + "foo.bar.FalconTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+                + "foo.bar.RoyaleTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n}");
     }

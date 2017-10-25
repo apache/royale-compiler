@@ -709,7 +709,7 @@ public class MXMLData implements IMXMLData
      * 
      * @param offset test offset
      * @return unit that contains (or immediately follows) the offset A few
-     * subtleties: In Falcon we have endeavored to preserve the existing
+     * subtleties: In Royale we have endeavored to preserve the existing
      * definition of "nearest", so that for a given MXML file, royale will find
      * the same "nearest" unit.
      */

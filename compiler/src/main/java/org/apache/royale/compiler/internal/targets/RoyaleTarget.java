@@ -338,7 +338,7 @@ public abstract class RoyaleTarget
             infoEntries++;
         }
         
-        // mark this SWF as being built with Falcon
+        // mark this SWF as being built with Royale
         info.addInstruction(ABCConstants.OP_pushstring, "isMXMLC");
         info.addInstruction(ABCConstants.OP_pushfalse);
         infoEntries++;

@@ -203,7 +203,7 @@ public class TestBase implements ITestBase
     			continue;
     		if (problem.toString().equals("No externally-visible definition with the name 'externals.as.classes.uint' was found."))
     			continue;
-    		if (problem.toString().equals("An externally-visible definition with the name 'FalconTest_A' was unexpectedly found."))
+    		if (problem.toString().equals("An externally-visible definition with the name 'RoyaleTest_A' was unexpectedly found."))
     			continue;
     		if (problem.toString().startsWith("No externally-visible definition with the name 'TestRoyaleGlobalFunctions"))
     			continue;

@@ -2016,7 +2016,7 @@ restrictedNamePart returns [IdentifierNode id]
     exception catch [NoViableAltException ex] { id = expectingIdentifier(ex); }
 
 /**
- * Keep legacy rule for Falcon-JS.
+ * Keep legacy rule for transpiling.
  */
 typedNameOrStar returns [ExpressionNodeBase n]
     :    n=type

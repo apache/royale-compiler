@@ -26,8 +26,7 @@
         PROPERTIES
 
     -->
-    <property name="FALCON_HOME" location="${basedir}"/>
-
+    
     <!-- The 'compiler' property is the absolute path, with forward slashes, -->
     <!-- to the 'compiler' directory that contains this file. -->
     <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
@@ -45,7 +44,7 @@
     <property name="javadoc.params" value="" />
     
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
-    <!-- where a Falcon SDK is built -->
+    <!-- where a Royale SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}/lib"/>
 
@@ -698,9 +697,9 @@
 
     -->
 	
-	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
+	<target name="sdk" depends="jar" description="Builds a Royale SDK"/>
 
-    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK">
+    <target name="main" depends="sdk" description="Default target - Builds a Royale SDK">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>

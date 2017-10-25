@@ -85,11 +85,11 @@
         </fileset>
     </path>
 
-    <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
+    <target name="javadoc" description="Builds Royale's Javadoc at generated/javadoc.">
         <!--<ant dir="compiler" target="javadoc"/>-->
     </target>
 
-    <target name="eclipse" description="Prepares or updates Falcon's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
+    <target name="eclipse" description="Prepares or updates Royale's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
         <ant dir="compiler" target="eclipse"/>
         <ant dir="compiler.tests" target="eclipse"/>
     </target>
@@ -101,11 +101,11 @@
         <ant dir="compiler" />
     </target>
 
-    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
+    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Royale SDK, builds Royale Javadoc, and runs tests."/>
 
-    <target name="all" depends="main, jx, typedefs, oem, debugger, anttasks" description="Builds Falcon, then FalconJX"/>
+    <target name="all" depends="main, jx, typedefs, oem, debugger, anttasks" description="Builds Royale, then RoyaleJX"/>
 
-    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
+    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds RoyaleJX" />
     
     <target name="typedefs" depends="check-typedefs-home, typedef.swcs, typedef.tests" description="Build typedefs and run tests"/>
     
@@ -127,7 +127,7 @@
         <ant dir="debugger" target="jar"/>
     </target>
     
-    <target name="compiler.jx" description="Builds FalconJX.">
+    <target name="compiler.jx" description="Builds RoyaleJX.">
         <ant dir="compiler-jx" target="main"/>
     </target>
 
@@ -144,8 +144,7 @@
     </target>
     
     <target name="typedef.swcs">
-        <property name="FALCON_HOME" value="${basedir}/compiler" />
-        <property name="FALCONJX_HOME" value="${basedir}/compiler-jx" />
+        <property name="ROYALE_COMPILER_HOME" value="${basedir}/compiler-jx" />
         <ant dir="${ROYALE_TYPEDEFS_HOME}" />
     </target>
     <target name="typedef.swcs.clean" >
@@ -200,7 +199,7 @@
         <delete dir="${basedir}/externs" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
-    <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
+    <target name="maven-artifacts" description="Installs Royale artifacts to a local maven repository">
         <ant dir="compiler" target="maven-artifacts"/>
     </target>
 
@@ -236,7 +235,7 @@
      -->
     <target name="release"
         depends="source-release,binary-release,rat-check"
-        description="Creates source and binary kits for Apache Falcon and FalconJX."/>
+        description="Creates source and binary kits for Apache Royale and RoyaleJX."/>
         
     <target name="source-release"
         depends="wipe-all,check-flex-home,source-package"

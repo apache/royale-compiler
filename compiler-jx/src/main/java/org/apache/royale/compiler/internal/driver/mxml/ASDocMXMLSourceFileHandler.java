@@ -33,7 +33,7 @@ import org.apache.royale.compiler.units.ICompilationUnit;
  * {@link ASCompilationUnit}'s. MXMLSourceFileHandler is the SourceFileHandler
  * that provides JSCompilationUnit for *.mxml files. JSDriver registers
  * MXMLSourceFileHandler at RoyaleApplicationProject. This implementation is part
- * of FalconJS. For more details on FalconJS see
+ * of RoyaleJS. For more details on RoyaleJS see
  * org.apache.royale.compiler.JSDriver
  */
 public final class ASDocMXMLSourceFileHandler implements ISourceFileHandler

@@ -312,8 +312,8 @@ public class StAXCatalogWriter implements ICatalogXMLConstants
     {
         xmlWriter.writeStartElement(TAG_FEATURES);
         {
-            // Like the pre-Falcon compiler,
-            // Falcon unconditionally writes out script dependencies.
+            // Like the pre-Royale compiler,
+            // Royale unconditionally writes out script dependencies.
             xmlWriter.writeEmptyElement(TAG_FEATURE_SCRIPT_DEPS);
             
             if (!swc.getComponents().isEmpty())
