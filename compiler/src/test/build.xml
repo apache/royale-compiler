@@ -291,6 +291,7 @@
                     <exclude name="mxml/tags/**"/>
                     <exclude name="properties/**"/>
                     <exclude name="**/MXMLComponentTagTests.class"/>
+                    <exclude name="**/MXMLComponentNodeTests.class"/>
                     <exclude name="**/MXMLHTTPServiceTagTests.class"/>
                     <exclude name="**/MXMLModelTagTests.class"/>
                     <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
@@ -329,6 +330,7 @@
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="f/**"/>
                     <include name="**/MXMLComponentTagTests.class"/>
+                    <include name="**/MXMLComponentNodeTests.class"/>
                     <include name="**/MXMLHTTPServiceTagTests.class"/>
                     <include name="**/MXMLModelTagTests.class"/>
                     <include name="**/MXMLRemoteObjectTagTests.class"/>

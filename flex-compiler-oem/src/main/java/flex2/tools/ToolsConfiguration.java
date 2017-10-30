@@ -189,7 +189,7 @@ public abstract class ToolsConfiguration extends Configuration
             ThreadLocalToolkit.log(new Mxmlc.DumpConfig(dumpConfigFile));
             File f = new File(dumpConfigFile);
             // fixme - nuke the private string for the localization prefix...
-            String text = FileConfigurator.formatBuffer(configurationBuffer, "flex-config",
+            String text = FileConfigurator.formatBuffer(configurationBuffer, "royale-config",
                                                         ThreadLocalToolkit.getLocalizationManager(),
                                                         "flex2.configuration");
             try

@@ -101,11 +101,11 @@
         <ant dir="compiler" />
     </target>
 
-    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Royale SDK, builds Royale Javadoc, and runs tests."/>
+    <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="all" depends="main, jx, typedefs, oem, debugger, anttasks" description="Builds Royale, then RoyaleJX"/>
+    <target name="main" depends="swf, jx, typedefs, oem, debugger, anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
-    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds RoyaleJX" />
+    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
     
     <target name="typedefs" depends="check-typedefs-home, typedef.swcs, typedef.tests" description="Build typedefs and run tests"/>
     
@@ -127,7 +127,7 @@
         <ant dir="debugger" target="jar"/>
     </target>
     
-    <target name="compiler.jx" description="Builds RoyaleJX.">
+    <target name="compiler.jx" description="Builds Royale JS Transpiler.">
         <ant dir="compiler-jx" target="main"/>
     </target>
 
@@ -157,12 +157,12 @@
         <ant dir="compiler-jx/src/test" target="extern.tests" />
     </target>
     
-    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
+    <target name="clean-swf" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
     </target>
 
-    <target name="clean-all" description="Cleans the build output but leaves any downloaded JARs.">
+    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
         <ant dir="compiler-jx" target="clean"/>
@@ -235,14 +235,14 @@
      -->
     <target name="release"
         depends="source-release,binary-release,rat-check"
-        description="Creates source and binary kits for Apache Royale and RoyaleJX."/>
+        description="Creates source and binary kits for Apache Royale Compiler."/>
         
     <target name="source-release"
-        depends="wipe-all,check-flex-home,source-package"
+        depends="wipe-all,source-package"
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,all,binary-package,javadoc"
+        depends="setup-binary-release,main,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
@@ -499,8 +499,6 @@
         <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
         <copy todir="${basedir}/temp" >
             <fileset dir="${basedir}">
-                <include name="README_JX"/>
-                <include name="RELEASE_NOTES_JX"/>
                 <include name="LICENSE.jx"/>
                 <include name="LICENSE.jx.bin"/>
                 <include name="NOTICE.jx"/>
@@ -764,9 +762,7 @@
                 <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
-                <exclude name="README_JX"/>
                 <exclude name="README_MAVEN.txt"/>
-                <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
                 <exclude name="NOTICE.fdb"/>

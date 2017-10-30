@@ -207,7 +207,7 @@ public class ApplicationCompilerConfiguration extends ToolsConfiguration
 	// dummy, ignored - pulled out of the buffer
 	public void cfgLoadConfig(ConfigurationValue cv, String filename) throws ConfigurationException
 	{
-		// C: resolve the flex-config.xml path to a VirtualFile so incremental compilation can detect timestamp change.
+		// C: resolve the royale-config.xml path to a VirtualFile so incremental compilation can detect timestamp change.
 		configFile = ConfigurationPathResolver.getVirtualFile(filename,
 		                                                      configResolver,
 		                                                      cv);

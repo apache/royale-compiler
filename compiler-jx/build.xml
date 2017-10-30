@@ -95,7 +95,7 @@
 		<mkdir dir="${classes.dir}" />
         <mkdir dir="${classes.dir}/META-INF" />
         <mkdir dir="${lib}/google/closure-compiler" />
-        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}" />
+        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false"/>
     </target>
 	
 	<target name="main" depends="prebuild,compile">

@@ -18,7 +18,9 @@
 
 -->
 <project name="downloads" default="main" basedir=".">
-
+    <echo>basedir is ${basedir}</echo>
+    <echo>ROYALE_COMPILER_HOME is ${ROYALE_COMPILER_HOME}</echo>
+    
   <!--
       Notes:
           For Apache, the JARS must be removed from the repository.
@@ -40,6 +42,7 @@
        clean up the cache -->
 
   <property name="ROYALE_COMPILER_HOME" location="${basedir}/../../.."/>
+  <echo>ROYALE_COMPILER_HOME is ${ROYALE_COMPILER_HOME}</echo>
 
   <property name="lib.dir" value="${ROYALE_COMPILER_HOME}/lib"/>
   <property name="external.lib.dir" value="${ROYALE_COMPILER_HOME}/lib/external"/>

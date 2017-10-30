@@ -203,7 +203,7 @@
     -->
 	
     <target name="download" description="Downloads third-party JARs">
-        <ant antfile="${compiler}/src/main/resources/downloads.xml" dir="${compiler}"/>
+        <ant antfile="${compiler}/src/main/resources/downloads.xml" dir="${compiler}/src/main/resources" inheritAll="false"/>
     	<delete dir="${compiler}/in"/>
     </target>
 	

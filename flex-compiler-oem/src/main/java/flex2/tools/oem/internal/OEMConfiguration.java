@@ -397,7 +397,7 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
                     
                     /* note '+=': defines from all flex-config.xmls will be collected (just '=' would
                      * always ignore all but the most recent definitions), hopefully in a meaningful
-                     * order (flex-config, user-config, commandline) since we now allow re-definitions.
+                     * order (royale-config, user-config, commandline) since we now allow re-definitions.
                      */
                     buffer.add(COMPILER_DEFINE + "+=" + name + "," + val);
                 }
@@ -1592,7 +1592,7 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	}
 
 	/**
-	 * Loads a file containing configuration options. The file format follows the format of <code>flex-config.xml</code>.
+	 * Loads a file containing configuration options. The file format follows the format of <code>royale-config.xml</code>.
 	 * This is equivalent to using <code>mxmlc/compc --load-config</code>.
 	 * 
 	 * @param file an instance of <code>java.io.File</code>
