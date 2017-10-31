@@ -144,7 +144,6 @@
     </target>
     
     <target name="typedef.swcs">
-        <property name="ROYALE_COMPILER_HOME" value="${basedir}/compiler-jx" />
         <ant dir="${ROYALE_TYPEDEFS_HOME}" />
     </target>
     <target name="typedef.swcs.clean" >
