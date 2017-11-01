@@ -700,10 +700,10 @@ public interface ICompilerSettings extends IWriteOnlyProjectSettings
      * 
      * <pre>
      * Map titles = new HashMap();
-     * titles.put("EN", "Apache Flex 4.8.0 Application");
+     * titles.put("EN", "Apache Royale 1.0.0 Application");
      * 
      * Map descriptions = new HashMap();
-     * descriptions.put("EN", "http://www.adobe.com/products/flex");
+     * descriptions.put("EN", "http://royale.apache.org");
      * 
      * setSWFMetadata(Configuration.LANGUAGE, "EN");
      * setSWFMetadata(Configuration.TITLE, titles);

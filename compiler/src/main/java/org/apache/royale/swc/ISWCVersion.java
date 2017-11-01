@@ -20,8 +20,8 @@
 package org.apache.royale.swc;
 
 /**
- * Version information of a SWC file. Since Flex 3, Flex version is decoupled
- * with SWC library version.
+ * Version information of a SWC file. The Royale version is decoupled
+ * from SWC library version.
  */
 public interface ISWCVersion
 {
@@ -35,8 +35,8 @@ public interface ISWCVersion
     String getRoyaleVersion();
     void setRoyaleVersion(String value);
     
-    String getFlexBuild();
-    void setFlexBuild(String value);
+    String getRoyaleBuild();
+    void setRoyaleBuild(String value);
     
     String getRoyaleMinSupportedVersion();
     void setRoyaleMinSupportedVersion(String value);
@@ -44,7 +44,7 @@ public interface ISWCVersion
     /**
      * Get the royale min supported version as an integer. The bits 24-31 are the
      * royale major version number, bits 16-23 are the royale minor version number,
-     * and bits 0-15 are the flex revision number.
+     * and bits 0-15 are the royale revision number.
      * <p>
      * For example, "4.6.1" becomes (4<<24) | (6<<16) | 1.
      * @return the royale min supported version as an integer

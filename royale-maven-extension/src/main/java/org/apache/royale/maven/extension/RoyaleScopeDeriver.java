@@ -12,15 +12,19 @@
  * limitations under the License.
  */
 
-package org.apache.royale.maven.types;
+package org.apache.royale.maven.extension;
+
+import org.eclipse.aether.RepositoryException;
+import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 
 /**
- * Created by christoferdutz on 18.04.16.
+ * Created by christoferdutz on 18.07.16.
  */
-public enum FlexScope {
+public class RoyaleScopeDeriver extends ConflictResolver.ScopeDeriver {
 
-    COMPILE,
-    TEST,
-    EXTERNAL
+    @Override
+    public void deriveScope(ConflictResolver.ScopeContext scopeContext) throws RepositoryException {
+
+    }
 
 }

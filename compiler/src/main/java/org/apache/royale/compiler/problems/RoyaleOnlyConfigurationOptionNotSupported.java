@@ -22,7 +22,7 @@ package org.apache.royale.compiler.problems;
 import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 
 /**
- * Warn the user that using a "Flex only" configuration option is not fully
+ * Warn the user that using a "Royale only" configuration option is not fully
  * supported.
  */
 @DefaultSeverity(CompilerProblemSeverity.WARNING)

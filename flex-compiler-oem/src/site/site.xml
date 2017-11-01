@@ -27,9 +27,9 @@
     </skin>
 
     <bannerLeft>
-        <name>Apache Flex</name>
-        <src>http://flex.apache.org/images/logo_01_fullcolor-sm.png</src>
-        <href>http://flex.apache.org/</href>
+        <name>Apache Royale</name>
+        <src>http://royale.apache.org/images/logo_01_fullcolor-sm.png</src>
+        <href>http://royale.apache.org/</href>
     </bannerLeft>
 
     <!--bannerRight>
@@ -38,9 +38,8 @@
 
     <body>
         <links>
-            <item name="Apache Flex Homepage" href="http://flex.apache.org/" />
-            <!--item name="Apache Royale Homepage" href="http://flex.apache.org/" /-->
-            <item name="Apache Flex Wiki" href="https://cwiki.apache.org/confluence/display/FLEX/Apache+Flex+Wiki"/>
+            <item name="Apache Royale Homepage" href="http://royale.apache.org/" />
+            <item name="Apache Royale Wiki" href="https://github.com/apache/royale-compiler/wiki"/>
         </links>
 
         <menu ref="reports" />

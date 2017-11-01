@@ -158,7 +158,7 @@ public class SWCTarget extends Target implements ISWCTarget
         if (royaleProject.isRoyale())
         {
             swcVersion.setRoyaleVersion(VersionInfo.getRoyaleVersion());
-            swcVersion.setFlexBuild(VersionInfo.getBuild());
+            swcVersion.setRoyaleBuild(VersionInfo.getBuild());
             swcVersion.setRoyaleMinSupportedVersion(targetSettings.getRoyaleMinimumSupportedVersion());
         }
         swcVersion.setCompilerName(VersionInfo.getCompilerName());

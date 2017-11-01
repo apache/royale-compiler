@@ -51,8 +51,8 @@
     </condition>
 		
     <property name="compiler" value="${royaletasks.tests}/../../../compiler-jx"/>
-    <condition property="flexsdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
-        <isset property="FLEX_HOME" />
+    <condition property="royalesdk" value="${ROYALE_HOME}" else="${env.ROYALE_HOME}">
+        <isset property="ROYALE_HOME" />
     </condition>
     <condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
         <isset property="env.PLAYERGLOBAL_VERSION" />
@@ -68,10 +68,10 @@
     </path>
     
     <target name="ant.tests">
-        <property name="FLEX_HOME" value="${flexsdk}"/>
+        <property name="ROYALE_HOME" value="${royalesdk}"/>
         <property name="ROYALE_COMPILER_HOME" value="${royale}"/>
         <echo message="GOOG_HOME: ${GOOG_HOME}"/>
-        <echo>FLEX_HOME=${flexsdk}</echo>
+        <echo>ROYALE_HOME=${royalesdk}</echo>
         <echo>ROYALE_COMPILER_HOME=${ROYALE_COMPILER_HOME}</echo>
         <taskdef resource="flexTasks.tasks" classpathref="lib.path"/>
         <mxmlc file="${royaletasks.tests}/as/Hello.as"

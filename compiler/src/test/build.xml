@@ -31,8 +31,8 @@
 	<property name="test.timeout" value="3000000" />
 	<property name="maxmem" value="512" />
 	
-	<condition property="sdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
-	    <isset property="FLEX_HOME" />
+	<condition property="sdk" value="${ROYALE_HOME}" else="${env.ROYALE_HOME}">
+	    <isset property="ROYALE_HOME" />
 	</condition>
 	
 	<condition property="fpdbg" value="${FLASHPLAYER_DEBUGGER}" else="${env.FLASHPLAYER_DEBUGGER}">
@@ -48,7 +48,7 @@
     <property name="royale" value="${compiler}"/>
 
     <path id="lib.path">
-        <fileset dir="${royale}/lib" includes="royale-flexTasks.jar"/>
+        <fileset dir="${royale}/lib" includes="compiler-royaleTasks.jar"/>
     </path>
     
     <target name="download" description="Downloads third-party JARs">

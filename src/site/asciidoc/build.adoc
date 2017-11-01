@@ -255,8 +255,7 @@ mvn clean install -P build-distribution
 
 However this doesn't automatically build the directory distribution. It builds
 a zip and a tar.gz version of the Royale SDK, without any of the Adobe dependencies.
-This is the part that is for example used by the Flex Installer to install a
-local FDK.
+This is the part that produces package usable by IDEs.
 
 If you want to have a Royale SDK (including Air, Flash, Fontkit, etc.) you need to
 tell the build where to put it by providing a property to the build:

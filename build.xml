@@ -25,8 +25,8 @@
     <property file="${basedir}/local.properties"/>
     <property file="${basedir}/build.properties"/>
 
-    <property name="kit.prefix" value="apache-flex-royale-${release.version}"/>
-    <property name="kit.jx.prefix" value="apache-flex-royalejx-${release.version}"/>
+    <property name="kit.prefix" value="apache-royale-${release.version}"/>
+    <property name="kit.jx.prefix" value="apache-royalejx-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
     <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
@@ -245,7 +245,7 @@
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
-        Package up the Apache Flex sources.  Do not include empty directories.
+        Package up the Apache Royale sources.  Do not include empty directories.
                                                                                        
         Note: even if cleaned, this will package up unversioned files that happen
         to be in the tree.
@@ -321,7 +321,7 @@
         <!-- flex-compiler-oem and fdb -->
         <antcall target="stage-fb-integration"/>
         
-        <!-- flex ant tasks -->
+        <!-- royale ant tasks -->
         <antcall target="stage-ant-tasks"/>
         
         <!-- typedefs -->
@@ -661,12 +661,6 @@
         <antcall target="binary-package-jx-zip"/>
         <antcall target="binary-package-jx-tgz"/>
         
-        <copy todir="${basedir}/out">
-            <fileset dir="${basedir}">
-                <include name="apache-flex-royale-installer-config.xml"/>
-                <include name="apache-flex-royalejx-installer-config.xml"/>
-            </fileset>
-        </copy>
     </target>
 
     <!--
@@ -756,7 +750,7 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
-                <exclude name="**/org.apache.royale.tools.FlexToolGroup"/>
+                <exclude name="**/org.apache.royale.tools.RoyaleToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>

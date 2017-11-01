@@ -243,7 +243,7 @@ public abstract class FlexTask extends Java
         if (compilerHomeProperty == null)
             throw new BuildException("ROYALE_COMPILER_HOME must be set to use the Flex Ant Tasks");
 				
-        System.setProperty("FLEX_HOME", royaleHomeProperty);
+        System.setProperty("ROYALE_HOME", royaleHomeProperty);
         String royalelibProperty = royaleHomeProperty.concat("/frameworks/");
 		System.setProperty("royalelib", royalelibProperty);
 

@@ -120,7 +120,7 @@ public class COMPC extends MXMLC implements FlexTool
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache Flex SWC Component Compiler (compc)" + NEWLINE + 
+        String message = "Apache Royale SWC Component Compiler (compc)" + NEWLINE +
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }

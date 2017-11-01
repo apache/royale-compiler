@@ -29,7 +29,7 @@ The Royale compiler module contains a `Jenkinsfile` which describes the setup of
 
 The ASF Jenkins is setup to automatically build the `develop` branch of all modules (royale-compiler, royale-typedefs and royale-framework) as soon as something changes in the GIT repo.
 
-Here's a link to that particular job: https://builds.apache.org/view/E-G/view/Flex/job/Royale%20Pipeline/
+Here's a link to that particular job: https://builds.apache.org/job/Royale%20Pipeline/open 
 
 Additionally as soon as Jenkins detects a branch with the prefix of `feature-autobuild/`, it sets up a new Build job for that branch and starts automatically building that branch.
 

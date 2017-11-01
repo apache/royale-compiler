@@ -22,7 +22,7 @@ package org.apache.royale.compiler.problems;
 public final class ClassesMappedToSameRemoteAliasProblem extends CompilerProblem
 {
     public static final String DESCRIPTION =
-        "A mapping for '${existingClassName}' to the remote class alias '${alias}' was found while processing class '${className}'. Flex now generates code to check if an alias has already been registered. When deserializing remote data an alias can only map to a single class.";
+        "A mapping for '${existingClassName}' to the remote class alias '${alias}' was found while processing class '${className}'. Royale now generates code to check if an alias has already been registered. When deserializing remote data an alias can only map to a single class.";
 
     public static final int errorCode = 1316;
     /**

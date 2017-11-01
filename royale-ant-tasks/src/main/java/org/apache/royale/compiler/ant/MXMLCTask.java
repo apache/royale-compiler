@@ -59,7 +59,7 @@ import org.apache.royale.compiler.ant.types.RuntimeSharedLibraryPath;
  *         show-invalid-css-property-warnings="false"
  *         tools-locale="de_DE"
  *         fork="false"&gt;
- *     &lt;source-path path-element="${FLEX_HOME}/frameworks/projects/framework/src"/&gt;
+ *     &lt;source-path path-element="${ROYALE_HOME}/frameworks/projects/framework/src"/&gt;
  * &lt;/mxmlc&gt;
  * </pre>
  *

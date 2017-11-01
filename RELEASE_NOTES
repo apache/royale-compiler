@@ -25,7 +25,7 @@ The Java compiler will report warnings for several files in this release.
 
 Please report new issues to our bugbase at:
 
-    https://issues.apache.org/jira/browse/FLEX
+    https://github.com/apache/royale-compiler/issues
 
-                                          The Apache Flex Project
-                                          <http://flex.apache.org/>
+                                          The Apache Royale Project
+                                          <http://royale.apache.org/>

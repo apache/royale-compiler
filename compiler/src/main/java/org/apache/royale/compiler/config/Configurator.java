@@ -2108,7 +2108,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
 
     /**
-     * Controls if the compiler warns when "Flex only" configuration options 
+     * Controls if the compiler warns when "Royale only" configuration options
      * are used in the compiler.
      * 
      * @param value True to enable warnings, false to disable warnings. The
@@ -2825,8 +2825,8 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * <pre>
      * &lt;script>
      *     &lt;!-- use 'dep', 'pre' or 'dep' to specify a definition to be omitted from linking. -->
-     *     &lt;def id="mx.skins:ProgrammaticSkin"/>
-     *     &lt;pre id="mx.core:IFlexDisplayObject"/>
+     *     &lt;def id="org.apache.royale.core:UIBase"/>
+     *     &lt;pre id="org.apache.royale.core:IUIBase"/>
      *     &lt;dep id="String"/>
      * &lt;/script>
      * </pre>
@@ -2958,10 +2958,10 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * 
      * <pre>
      * Map titles = new HashMap();
-     * titles.put("EN", "Apache Flex 4.8.0 Application");
+     * titles.put("EN", "Apache Royale 1.0.0 Application");
      * 
      * Map descriptions = new HashMap();
-     * descriptions.put("EN", "http://www.adobe.com/products/flex");
+     * descriptions.put("EN", "http://royale.apache.org");
      * 
      * setSWFMetaData(Configuration.LANGUAGE, "EN");
      * setSWFMetaData(Configuration.TITLE, titles);
@@ -3443,7 +3443,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     @Override
     public void setRoyale(boolean value)
     {
-        args.put(FLEX, value ? Boolean.TRUE : Boolean.FALSE);
+        args.put(ROYALE, value ? Boolean.TRUE : Boolean.FALSE);
         
         isConfigurationDirty = true;        
     }

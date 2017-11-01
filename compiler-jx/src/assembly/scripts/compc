@@ -33,11 +33,11 @@ fi
 
 echo Using Royale codebase: $ROYALE_COMPILER_HOME
 
-if [ "x${FLEX_HOME}" = "x" ]
+if [ "x${ROYALE_HOME}" = "x" ]
 then
-    FLEX_HOME=${ROYALE_COMPILER_HOME}/generated/dist/sdk
+    ROYALE_HOME=${ROYALE_COMPILER_HOME}/generated/dist/sdk
 fi
-echo Using Flex SDK: $FLEX_HOME
+echo Using Royale SDK: $ROYALE_HOME
 
 case `uname` in
 		CYGWIN*)
@@ -52,7 +52,7 @@ D32=''
 if [ $OS = "Windows" ]; then
 
 	ROYALE_COMPILER_HOME=`cygpath -m $ROYALE_COMPILER_HOME`
-	FLEX_HOME=`cygpath -m $FLEX_HOME`
+	ROYALE_HOME=`cygpath -m $ROYALE_HOME`
 
 elif [ $OS = "Unix" ]; then
 
@@ -67,4 +67,4 @@ fi
 
 VMARGS="-Xmx384m -Dsun.io.useCanonCaches=false "
 
-java $VMARGS $D32 $SETUP_SH_VMARGS -Droyalecompiler="$ROYALE_COMPILER_HOME" -Droyalelib="$FLEX_HOME/frameworks" -jar "$SCRIPT_HOME/../lib/compc.jar" +royalelib="$FLEX_HOME/frameworks" "$@"
+java $VMARGS $D32 $SETUP_SH_VMARGS -Droyalecompiler="$ROYALE_COMPILER_HOME" -Droyalelib="$ROYALE_HOME/frameworks" -jar "$SCRIPT_HOME/../lib/compc.jar" +royalelib="$ROYALE_HOME/frameworks" "$@"

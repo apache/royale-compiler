@@ -36,7 +36,7 @@ public class DefaultTrustHandler implements TrustHandler {
 
     @Override
     public void trustDirectory(File directory) {
-        File securityTrustFile = new File(getSecuritySettingsDirectory(), "apache-flex-maven-plugin.cfg");
+        File securityTrustFile = new File(getSecuritySettingsDirectory(), "apache-royale-maven-plugin.cfg");
 
         if(!securityTrustFile.exists()) {
             System.out.println(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());

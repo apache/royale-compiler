@@ -341,14 +341,14 @@ public class StAXCatalogWriter implements ICatalogXMLConstants
             xmlWriter.writeAttribute(ATTR_VERSION, swcVersion);
         }
 
-        // Flex version
+        // Royale version
         final String royaleVersion = version.getRoyaleVersion();
         if (royaleVersion != null)
         {
-            xmlWriter.writeEmptyElement(TAG_FLEX);
+            xmlWriter.writeEmptyElement(TAG_ROYALE);
             xmlWriter.writeAttribute(ATTR_VERSION, royaleVersion);
 
-            final String royaleBuild = version.getFlexBuild();
+            final String royaleBuild = version.getRoyaleBuild();
             if (royaleBuild != null)
                 xmlWriter.writeAttribute(ATTR_BUILD, royaleBuild);
 
