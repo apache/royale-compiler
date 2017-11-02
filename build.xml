@@ -25,12 +25,9 @@
     <property file="${basedir}/local.properties"/>
     <property file="${basedir}/build.properties"/>
 
-    <property name="kit.prefix" value="apache-royale-${release.version}"/>
-    <property name="kit.jx.prefix" value="apache-royalejx-${release.version}"/>
+    <property name="kit.prefix" value="apache-royale-compiler-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
-    <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
-    <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
 
     <target name="check-typedefs-home"
         description="Check ROYALE_TYPEDEFS_HOME">
@@ -252,7 +249,7 @@
                                                                                        
         FixMe: clean needs to clean - add code to detect unversioned files
     -->
-    <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz,stage-source-jx,source-package-jx-zip,source-package-jx-tgz"
+    <target name="source-package" depends="stage-source,stage-source-jx,source-package-zip,source-package-tgz"
         description="Package source files required to build in zip and tar-gzip file">
     </target>
         
@@ -269,21 +266,6 @@
      -->
     <target name="source-package-tgz" unless="no.zip">
         <tar-gzip name="${source.kit}" />
-    </target>
-
-    <!--
-     Packages the source distribution with ZIP.
-     -->
-    <target name="source-package-jx-zip" unless="no.zip">
-        <mkdir dir="${basedir}/out"/>
-        <zip destfile="${basedir}/out/${source.jx.kit}.zip" basedir="${basedir}/temp"/>
-    </target>
-
-    <!--
-     Packages the source distribution with TAR-GZIP.
-     -->
-    <target name="source-package-jx-tgz" unless="no.zip">
-        <tar-gzip name="${source.jx.kit}" />
     </target>
 
     <target name="stage-source"
@@ -495,12 +477,9 @@
     <target name="stage-source-jx"
         description="Package jx source files with other royale files required to build in zip file" >
         
-        <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
         <copy todir="${basedir}/temp" >
             <fileset dir="${basedir}">
-                <include name="LICENSE.jx"/>
-                <include name="LICENSE.jx.bin"/>
-                <include name="NOTICE.jx"/>
+                <include name="LICENSE.bin"/>
             </fileset>
         </copy>
         
@@ -593,9 +572,6 @@
             </fileset>
         </copy>
         
-        <antcall target="binary-package-zip"/>
-        <antcall target="binary-package-tgz"/>
-        
         <antcall target="stage-source-jx" />
 
         <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
@@ -605,12 +581,6 @@
             </fileset>
         </copy>
 
-        <!-- concat the license file with the binary license file for the 3rd party deps -->
-        <delete file="${basedir}/temp/LICENSE" />
-        <concat destfile="${basedir}/temp/LICENSE">
-            <filelist dir="${basedir}" files="LICENSE.jx,LICENSE.jx.bin"/>
-        </concat>
-        
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js"/>
         <copy todir="${basedir}/temp/js">
@@ -658,8 +628,8 @@
             </fileset>
         </copy>
         
-        <antcall target="binary-package-jx-zip"/>
-        <antcall target="binary-package-jx-tgz"/>
+        <antcall target="binary-package-zip"/>
+        <antcall target="binary-package-tgz"/>
         
     </target>
 
@@ -676,21 +646,6 @@
      -->
     <target name="binary-package-tgz" unless="no.zip">
         <tar-gzip name="${binary.kit}" />
-    </target>
-
-    <!--
-     Packages the binary distribution with ZIP.
-     -->
-    <target name="binary-package-jx-zip" unless="no.zip">
-        <mkdir dir="${basedir}/out"/>
-        <zip destfile="${basedir}/out/${binary.jx.kit}.zip" basedir="${basedir}/temp"/>
-    </target>
-
-    <!--
-     Packages the binary distribution with TAR-GZIP.
-     -->
-    <target name="binary-package-jx-tgz" unless="no.zip">
-        <tar-gzip name="${binary.jx.kit}" />
     </target>
 
     <!--
@@ -754,9 +709,8 @@
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
-                <exclude name="LICENSE.jx.bin"/>
+                <exclude name="LICENSE.bin"/>
                 <exclude name="README_MAVEN.txt"/>
-                <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
                 <exclude name="NOTICE.fdb"/>
                 <exclude name="NOTICE.oem"/>
@@ -766,7 +720,7 @@
 
     <target name="rat-unzip" unless="no.zip">
         <antcall target="clean-temp" />
-        <unzip src="${basedir}/out/${source.jx.kit}.zip" dest="${rat.dir}"/>
+        <unzip src="${basedir}/out/${source.kit}.zip" dest="${rat.dir}"/>
     </target>
 
     <target name="rat-taskdef" description="Rat taskdef">
@@ -800,10 +754,6 @@
         <checksum algorithm="md5" file="${basedir}/out/${binary.kit}.zip" forceOverwrite="yes"/>
         <checksum algorithm="md5" file="${basedir}/out/${source.kit}.tar.gz" forceOverwrite="yes"/>
         <checksum algorithm="md5" file="${basedir}/out/${source.kit}.zip" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.tar.gz" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.zip" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.tar.gz" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.zip" forceOverwrite="yes"/>
     </target>
 
     <target name="sign" >
@@ -839,37 +789,6 @@
             <arg value="${basedir}/out/${binary.kit}.tar.gz" />
         </exec>
         
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${source.jx.kit}.zip.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${source.jx.kit}.zip" />
-        </exec>
-        
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${source.jx.kit}.tar.gz.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${source.jx.kit}.tar.gz" />
-        </exec>
-        
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${binary.jx.kit}.zip.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${binary.jx.kit}.zip" />
-        </exec>
-        
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${binary.jx.kit}.tar.gz.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${binary.jx.kit}.tar.gz" />
-        </exec>
     </target>
 
     <!-- may not work on windows -->
