@@ -31,7 +31,7 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Apache Royale - Royale: Compiler: Parent</name>
+  <name>Apache Royale: Compiler: Parent</name>
   <description>The Apache Royale Project</description>
 
   <scm>
@@ -75,7 +75,11 @@
   </distributionManagement>
 
   <issueManagement>
+<<<<<<< HEAD
     <system>GitHub</system>
+=======
+    <system>GitHub Issues</system>
+>>>>>>> Change url to the repository in main pom to check whether it influence Maven compiler build
     <url>https://github.com/apache/royale-compiler/issues</url>
   </issueManagement>
 

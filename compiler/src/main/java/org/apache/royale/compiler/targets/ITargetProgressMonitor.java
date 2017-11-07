@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.targets;
 
 /**
- * Interface that clients of Falcon can implement to receive progress
+ * Interface that clients of Royale can implement to receive progress
  * information as an ITarget compiles.
  * <p>
  * The same ITargetProgressMonitor instance may be added to any number of

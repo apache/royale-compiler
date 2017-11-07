@@ -62,7 +62,7 @@
 
         <links>
             <item name="Apache Royale Homepage" href="http://royale.apache.org/" />
-            <item name="Apache Royale Documentation" href="https://cwiki.apache.org/confluence/display/FLEX/Apache+Flex+Wiki"/>
+            <item name="Apache Royale Documentation" href="https://apache.github.io/royale-docs/"/>
         </links>
 
         <menu name="Royale">

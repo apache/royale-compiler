@@ -27,7 +27,7 @@ public abstract class BaseCompileMojo extends BaseMojo {
 
     @Override
     protected String getToolGroupName() {
-        return "Falcon";
+        return "Royale";
     }
 
     @Override

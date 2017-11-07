@@ -34,7 +34,7 @@ import java.util.List;
 public class FlashplayerSecurityHandler {
 
     public void trustFile(File directory) {
-        File securityTrustFile = new File(getSecuritySettingsDirectory(), "apache-flex-maven-plugin.cfg");
+        File securityTrustFile = new File(getSecuritySettingsDirectory(), "apache-royale-maven-plugin.cfg");
 
         if(!securityTrustFile.exists()) {
             System.out.println(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());

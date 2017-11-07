@@ -18,19 +18,16 @@
 
 -->
 
-<project name="falcon" default="main" basedir=".">
+<project name="royale" default="main" basedir=".">
 
     <property file="${basedir}/env.properties"/>
     <property environment="env"/>
     <property file="${basedir}/local.properties"/>
     <property file="${basedir}/build.properties"/>
 
-    <property name="kit.prefix" value="apache-flex-falcon-${release.version}"/>
-    <property name="kit.jx.prefix" value="apache-flex-falconjx-${release.version}"/>
+    <property name="kit.prefix" value="apache-royale-compiler-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
-    <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
-    <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
 
     <target name="check-typedefs-home"
         description="Check ROYALE_TYPEDEFS_HOME">
@@ -85,11 +82,11 @@
         </fileset>
     </path>
 
-    <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
+    <target name="javadoc" description="Builds Royale's Javadoc at generated/javadoc.">
         <!--<ant dir="compiler" target="javadoc"/>-->
     </target>
 
-    <target name="eclipse" description="Prepares or updates Falcon's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
+    <target name="eclipse" description="Prepares or updates Royale's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
         <ant dir="compiler" target="eclipse"/>
         <ant dir="compiler.tests" target="eclipse"/>
     </target>
@@ -101,11 +98,11 @@
         <ant dir="compiler" />
     </target>
 
-    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
+    <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="all" depends="main, jx, typedefs, oem, debugger, anttasks" description="Builds Falcon, then FalconJX"/>
+    <target name="main" depends="swf, jx, typedefs, oem, debugger, anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
-    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
+    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
     
     <target name="typedefs" depends="check-typedefs-home, typedef.swcs, typedef.tests" description="Build typedefs and run tests"/>
     
@@ -127,7 +124,7 @@
         <ant dir="debugger" target="jar"/>
     </target>
     
-    <target name="compiler.jx" description="Builds FalconJX.">
+    <target name="compiler.jx" description="Builds Royale JS Transpiler.">
         <ant dir="compiler-jx" target="main"/>
     </target>
 
@@ -144,8 +141,6 @@
     </target>
     
     <target name="typedef.swcs">
-        <property name="FALCON_HOME" value="${basedir}/compiler" />
-        <property name="FALCONJX_HOME" value="${basedir}/compiler-jx" />
         <ant dir="${ROYALE_TYPEDEFS_HOME}" />
     </target>
     <target name="typedef.swcs.clean" >
@@ -158,12 +153,12 @@
         <ant dir="compiler-jx/src/test" target="extern.tests" />
     </target>
     
-    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
+    <target name="clean-swf" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
     </target>
 
-    <target name="clean-all" description="Cleans the build output but leaves any downloaded JARs.">
+    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
         <ant dir="compiler-jx" target="clean"/>
@@ -200,7 +195,7 @@
         <delete dir="${basedir}/externs" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
-    <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
+    <target name="maven-artifacts" description="Installs Royale artifacts to a local maven repository">
         <ant dir="compiler" target="maven-artifacts"/>
     </target>
 
@@ -236,25 +231,25 @@
      -->
     <target name="release"
         depends="source-release,binary-release,rat-check"
-        description="Creates source and binary kits for Apache Falcon and FalconJX."/>
+        description="Creates source and binary kits for Apache Royale Compiler."/>
         
     <target name="source-release"
-        depends="wipe-all,check-flex-home,source-package"
+        depends="wipe-all,source-package"
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,all,binary-package,javadoc"
+        depends="setup-binary-release,main,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
-        Package up the Apache Flex sources.  Do not include empty directories.
+        Package up the Apache Royale sources.  Do not include empty directories.
                                                                                        
         Note: even if cleaned, this will package up unversioned files that happen
         to be in the tree.
                                                                                        
         FixMe: clean needs to clean - add code to detect unversioned files
     -->
-    <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz,stage-source-jx,source-package-jx-zip,source-package-jx-tgz"
+    <target name="source-package" depends="stage-source,stage-source-jx,source-package-zip,source-package-tgz"
         description="Package source files required to build in zip and tar-gzip file">
     </target>
         
@@ -271,21 +266,6 @@
      -->
     <target name="source-package-tgz" unless="no.zip">
         <tar-gzip name="${source.kit}" />
-    </target>
-
-    <!--
-     Packages the source distribution with ZIP.
-     -->
-    <target name="source-package-jx-zip" unless="no.zip">
-        <mkdir dir="${basedir}/out"/>
-        <zip destfile="${basedir}/out/${source.jx.kit}.zip" basedir="${basedir}/temp"/>
-    </target>
-
-    <!--
-     Packages the source distribution with TAR-GZIP.
-     -->
-    <target name="source-package-jx-tgz" unless="no.zip">
-        <tar-gzip name="${source.jx.kit}" />
     </target>
 
     <target name="stage-source"
@@ -323,7 +303,7 @@
         <!-- flex-compiler-oem and fdb -->
         <antcall target="stage-fb-integration"/>
         
-        <!-- flex ant tasks -->
+        <!-- royale ant tasks -->
         <antcall target="stage-ant-tasks"/>
         
         <!-- typedefs -->
@@ -495,16 +475,11 @@
     </target>
     
     <target name="stage-source-jx"
-        description="Package jx source files with other falcon files required to build in zip file" >
+        description="Package jx source files with other royale files required to build in zip file" >
         
-        <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
         <copy todir="${basedir}/temp" >
             <fileset dir="${basedir}">
-                <include name="README_JX"/>
-                <include name="RELEASE_NOTES_JX"/>
-                <include name="LICENSE.jx"/>
-                <include name="LICENSE.jx.bin"/>
-                <include name="NOTICE.jx"/>
+                <include name="LICENSE.bin"/>
             </fileset>
         </copy>
         
@@ -597,9 +572,6 @@
             </fileset>
         </copy>
         
-        <antcall target="binary-package-zip"/>
-        <antcall target="binary-package-tgz"/>
-        
         <antcall target="stage-source-jx" />
 
         <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
@@ -609,12 +581,6 @@
             </fileset>
         </copy>
 
-        <!-- concat the license file with the binary license file for the 3rd party deps -->
-        <delete file="${basedir}/temp/LICENSE" />
-        <concat destfile="${basedir}/temp/LICENSE">
-            <filelist dir="${basedir}" files="LICENSE.jx,LICENSE.jx.bin"/>
-        </concat>
-        
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js"/>
         <copy todir="${basedir}/temp/js">
@@ -662,15 +628,9 @@
             </fileset>
         </copy>
         
-        <antcall target="binary-package-jx-zip"/>
-        <antcall target="binary-package-jx-tgz"/>
+        <antcall target="binary-package-zip"/>
+        <antcall target="binary-package-tgz"/>
         
-        <copy todir="${basedir}/out">
-            <fileset dir="${basedir}">
-                <include name="apache-flex-falcon-installer-config.xml"/>
-                <include name="apache-flex-falconjx-installer-config.xml"/>
-            </fileset>
-        </copy>
     </target>
 
     <!--
@@ -686,21 +646,6 @@
      -->
     <target name="binary-package-tgz" unless="no.zip">
         <tar-gzip name="${binary.kit}" />
-    </target>
-
-    <!--
-     Packages the binary distribution with ZIP.
-     -->
-    <target name="binary-package-jx-zip" unless="no.zip">
-        <mkdir dir="${basedir}/out"/>
-        <zip destfile="${basedir}/out/${binary.jx.kit}.zip" basedir="${basedir}/temp"/>
-    </target>
-
-    <!--
-     Packages the binary distribution with TAR-GZIP.
-     -->
-    <target name="binary-package-jx-tgz" unless="no.zip">
-        <tar-gzip name="${binary.jx.kit}" />
     </target>
 
     <!--
@@ -760,15 +705,12 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
-                <exclude name="**/org.apache.royale.tools.FlexToolGroup"/>
+                <exclude name="**/org.apache.royale.tools.RoyaleToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
-                <exclude name="LICENSE.jx.bin"/>
-                <exclude name="README_JX"/>
+                <exclude name="LICENSE.bin"/>
                 <exclude name="README_MAVEN.txt"/>
-                <exclude name="RELEASE_NOTES_JX"/>
-                <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
                 <exclude name="NOTICE.fdb"/>
                 <exclude name="NOTICE.oem"/>
@@ -778,7 +720,7 @@
 
     <target name="rat-unzip" unless="no.zip">
         <antcall target="clean-temp" />
-        <unzip src="${basedir}/out/${source.jx.kit}.zip" dest="${rat.dir}"/>
+        <unzip src="${basedir}/out/${source.kit}.zip" dest="${rat.dir}"/>
     </target>
 
     <target name="rat-taskdef" description="Rat taskdef">
@@ -812,10 +754,6 @@
         <checksum algorithm="md5" file="${basedir}/out/${binary.kit}.zip" forceOverwrite="yes"/>
         <checksum algorithm="md5" file="${basedir}/out/${source.kit}.tar.gz" forceOverwrite="yes"/>
         <checksum algorithm="md5" file="${basedir}/out/${source.kit}.zip" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.tar.gz" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.zip" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.tar.gz" forceOverwrite="yes"/>
-        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.zip" forceOverwrite="yes"/>
     </target>
 
     <target name="sign" >
@@ -851,37 +789,6 @@
             <arg value="${basedir}/out/${binary.kit}.tar.gz" />
         </exec>
         
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${source.jx.kit}.zip.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${source.jx.kit}.zip" />
-        </exec>
-        
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${source.jx.kit}.tar.gz.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${source.jx.kit}.tar.gz" />
-        </exec>
-        
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${binary.jx.kit}.zip.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${binary.jx.kit}.zip" />
-        </exec>
-        
-        <exec executable="gpg">
-            <arg value="--armor" />
-            <arg value="--output" />
-            <arg value="${basedir}/out/${binary.jx.kit}.tar.gz.asc" />
-            <arg value="--detach-sig" />
-            <arg value="${basedir}/out/${binary.jx.kit}.tar.gz" />
-        </exec>
     </target>
 
     <!-- may not work on windows -->

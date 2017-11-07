@@ -153,7 +153,7 @@ public final class Mxmlc extends Tool {
                         InputStream in = configFile.getInputStream();
                         if (in != null) {
                             FileConfigurator.load(cfgbuf, new BufferedInputStream(in), configFile.getName(),
-                                    configFile.getParent(), "flex-config", ignoreUnknownItems);
+                                    configFile.getParent(), "royale-config", ignoreUnknownItems);
                         } else {
                             throw new ConfigurationException.ConfigurationIOError(path, cv.getVar(), cv.getSource(), cv.getLine());
                         }
@@ -177,7 +177,7 @@ public final class Mxmlc extends Tool {
                             InputStream in = projectFile.getInputStream();
                             if (in != null) {
                                 FileConfigurator.load(cfgbuf, new BufferedInputStream(in),
-                                        projectFile.getName(), projectFile.getParent(), "flex-config",
+                                        projectFile.getName(), projectFile.getParent(), "royale-config",
                                         ignoreUnknownItems);
                             }
                         }

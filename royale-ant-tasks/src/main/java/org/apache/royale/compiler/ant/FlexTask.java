@@ -232,16 +232,18 @@ public abstract class FlexTask extends Java
      */
     public final void execute() throws BuildException
     {
-        String royaleHomeProperty = getProject().getProperty("FLEX_HOME");
+        String royaleHomeProperty = getProject().getProperty("ROYALE_HOME");
+        if (royaleHomeProperty == null)
+            royaleHomeProperty = getProject().getProperty("FLEX_HOME");
 
         if (royaleHomeProperty == null)
-            throw new BuildException("FLEX_HOME must be set to use the Flex Ant Tasks");
+            throw new BuildException("ROYALE_HOME or FLEX_HOME must be set to use the Flex Ant Tasks");
 		
-        String falconHomeProperty = getProject().getProperty("FALCONJX_HOME");
-        if (falconHomeProperty == null)
-            throw new BuildException("FALCONJX_HOME must be set to use the Flex Ant Tasks");
+        String compilerHomeProperty = getProject().getProperty("ROYALE_COMPILER_HOME");
+        if (compilerHomeProperty == null)
+            throw new BuildException("ROYALE_COMPILER_HOME must be set to use the Flex Ant Tasks");
 				
-        System.setProperty("FLEX_HOME", royaleHomeProperty);
+        System.setProperty("ROYALE_HOME", royaleHomeProperty);
         String royalelibProperty = royaleHomeProperty.concat("/frameworks/");
 		System.setProperty("royalelib", royalelibProperty);
 
@@ -361,7 +363,7 @@ public abstract class FlexTask extends Java
         }
         catch (ClassNotFoundException ignoredClassNotFoundException)
         {
-            String royaleHomeProperty = getProject().getProperty("FALCONJX_HOME");
+            String royaleHomeProperty = getProject().getProperty("ROYALE_COMPILER_HOME");
 
             if (royaleHomeProperty != null)
             {
@@ -402,13 +404,13 @@ public abstract class FlexTask extends Java
                 }
                 else
                 {
-                    throw new BuildException("FALCON_HOME does not exist.", getLocation());
+                    throw new BuildException("ROYALE_COMPILER_HOME does not exist.", getLocation());
                 }
             }
             else
             {
                 throw new BuildException("The class, " + className +
-                                         ", must be in the classpath or the FALCONJX_HOME property must be set.",
+                                         ", must be in the classpath or the ROYALE_COMPILER_HOME property must be set.",
                                          getLocation());
             }
         }

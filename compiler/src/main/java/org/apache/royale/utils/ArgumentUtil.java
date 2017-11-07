@@ -29,7 +29,7 @@ import java.util.Collection;
 
 public class ArgumentUtil {
 
-    // workaround for Falcon bug.
+    // workaround for Royale bug.
     // Input files with relative paths confuse the algorithm that extracts the root class name.
     public static String[] fixArgs(final String[] args) {
         String[] newArgs = args;

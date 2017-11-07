@@ -108,7 +108,7 @@ class MXMLReparentNode extends MXMLNodeBase implements IMXMLReparentNode
     {
         MXMLDialect mxmlDialect = builder.getMXMLDialect();
 
-        // Falcon trims this attribute even though the old compiler didn't.
+        // Royale trims this attribute even though the old compiler didn't.
         String value = attribute.getRawValue();
         value = mxmlDialect.trim(value);
 

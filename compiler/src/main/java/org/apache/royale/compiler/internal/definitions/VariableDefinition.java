@@ -117,7 +117,7 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
         return null;
     }
 
-    // TODO Remove everything below here when Falcon has been integrated into Fb and Fc.
+    // TODO Remove everything below here when Royale has been integrated into Fb and Fc.
 
     /**
      * Gets the {@link DependencyType} that should be used when resolving the

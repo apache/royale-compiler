@@ -386,7 +386,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     /**
      * Returns the {@link PrefixMap} that represents all prefix->namespace
      * mappings are in play on this tag. For example, if a parent tag defines
-     * <code>xmlns:m="falcon"</code> and this tag defines
+     * <code>xmlns:m="royale"</code> and this tag defines
      * <code>xmlns:m="eagle"</code> then in this prefix map, m will equal
      * "eagle"
      * 

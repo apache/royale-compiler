@@ -1025,7 +1025,7 @@ public abstract class ASScope extends ASScopeBase
 
     /**
      * This is the core <code>findproperty()</code> method. It implements the
-     * equivalent of the <code>findprop</code> AVM instruction in Falcon.
+     * equivalent of the <code>findprop</code> AVM instruction in Royale.
      * <p>
      * The algorithm searches up the scope chain, starting with this scope, for
      * definitions with the specified base name and namespace set.
@@ -1063,7 +1063,7 @@ public abstract class ASScope extends ASScopeBase
 
     /**
      * This is the implementation of the various <code>findproperty()</code> methods. It implements the
-     * equivalent of the <code>findprop</code> AVM instruction in Falcon.
+     * equivalent of the <code>findprop</code> AVM instruction in Royale.
      * <p>
      * The algorithm searches up the scope chain, starting with this scope, for
      * definitions with the specified base name.
@@ -1256,7 +1256,7 @@ public abstract class ASScope extends ASScopeBase
 
     /**
      * This is the core findproperty method. This method implements the
-     * equivalent of the findprop AVM instruction in Falcon.
+     * equivalent of the findprop AVM instruction in Royale.
      * 
      * @param project {@link ICompilerProject} whose symbol table is used to
      * resolve namespace references in the "use namespace" set this scope.

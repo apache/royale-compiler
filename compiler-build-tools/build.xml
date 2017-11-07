@@ -34,8 +34,6 @@
         <path location="${basedir}"/>
     </pathconvert>
     
-    <property name="FALCON_HOME" value="${basedir}/../compiler"/>
-    
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler-build-tools}/local.properties"/>
@@ -49,7 +47,7 @@
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
-    <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
     

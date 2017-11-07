@@ -85,25 +85,25 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         // getters and setters don't get output until the class is output so you can't just visit the accessorNode
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\n" + 
-        		  "FalconTest_A = function() {\n" +
+        		  "RoyaleTest_A = function() {\n" +
         		  "};\n\n\n" +
         		  "/**\n" +
         		  " * Prevent renaming of class. Needed for reflection.\n" +
         		  " */\n" +
-        		  "goog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
-        		  "FalconTest_A.prototype.falconTest_a = function() {\n" +
+        		  "goog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
+        		  "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  ;\n" +
         		  "  function isDefaultPrevented() {\n" +
         		  "    return defaultPrevented;\n  };\n" +
         		  "  ;\n  \n" +
         		  "};\n\n\n" +
-        		  "FalconTest_A.prototype.get__defaultPrevented = function() {\n" +
-        		  "  return FalconTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
+        		  "RoyaleTest_A.prototype.get__defaultPrevented = function() {\n" +
+        		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +
-        		  "Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n" +
+        		  "Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n" +
         		  "/**\n  * @export\n  * @type {boolean} */\n" +
-        		  "defaultPrevented: {\nget: FalconTest_A.prototype.get__defaultPrevented}}\n);");
+        		  "defaultPrevented: {\nget: RoyaleTest_A.prototype.get__defaultPrevented}}\n);");
     }
 
     @Override
@@ -112,7 +112,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    FalconTest_A.superClass_.foo.apply(this);\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.foo.apply(this);\n}");
     }
 
     @Override
@@ -121,22 +121,22 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    FalconTest_A.superClass_.foo.apply(this, [ a, b, c] );\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.foo.apply(this, [ a, b, c] );\n}");
     }
     
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodCustomNamespace()
     {
-        IFunctionNode node = (IFunctionNode)getNode("import flash.utils.Proxy;import flash.utils.flash_proxy;use namespace flash_proxy;public class FalconTest_A extends Proxy { flash_proxy function foo(){if (a) super.setProperty(a, b);}}",
+        IFunctionNode node = (IFunctionNode)getNode("import flash.utils.Proxy;import flash.utils.flash_proxy;use namespace flash_proxy;public class RoyaleTest_A extends Proxy { flash_proxy function foo(){if (a) super.setProperty(a, b);}}",
         					IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n */\nFalconTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n  if (a)\n    FalconTest_A.superClass_['http://www.adobe.com/2006/actionscript/flash/proxy::setProperty'].apply(this, [ a, b] );\n}");
+        assertOut("/**\n */\nRoyaleTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n  if (a)\n    RoyaleTest_A.superClass_['http://www.adobe.com/2006/actionscript/flash/proxy::setProperty'].apply(this, [ a, b] );\n}");
     }
 
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodAsFunctionReference()
     {
-        IFileNode node = (IFileNode)getNode("package { public class FalconTest_A extends Base { override public function foo() {var f:Function = super.foo;} } }\n" +
+        IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {var f:Function = super.foo;} } }\n" +
         		"class Base { public function foo(){} }", IFileNode.class, 0, false);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -145,13 +145,13 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(FalconTest_A.superClass_.foo, this, 'foo');\n}");
+        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
     }
     
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodAsVarFunctionReference()
     {
-    	IFileNode node = (IFileNode)getNode("package { public class FalconTest_A extends Base { override public function foo() {var f:Function; f = super.foo;} } }\n" +
+    	IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {var f:Function; f = super.foo;} } }\n" +
         		"class Base { public function foo(){} }", IFileNode.class, 0, false);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -160,13 +160,13 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f;\n  f = org.apache.royale.utils.Language.closure(FalconTest_A.superClass_.foo, this, 'foo');\n}");
+        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f;\n  f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
     }
     
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodInApply()
     {
-    	IFileNode node = (IFileNode)getNode("package { public class FalconTest_A extends Base { override public function foo() {super.foo.apply(this, [a, b, c]);} } }\n" +
+    	IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {super.foo.apply(this, [a, b, c]);} } }\n" +
         		"class Base { public function foo(){} }", IFileNode.class, 0, false);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -175,7 +175,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nFalconTest_A.prototype.foo = function() {\n  FalconTest_A.superClass_.foo.apply(this, [a, b, c]);\n}");
+        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  RoyaleTest_A.superClass_.foo.apply(this, [a, b, c]);\n}");
     }
     
     //----------------------------------
@@ -1025,9 +1025,9 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testClassCastOfGetter()
     {
-        IFunctionNode node = getMethod("function foo(){var foo:Object = FalconTest_A(bar).bar = '';}; public function get bar():Object { return this; };");
+        IFunctionNode node = getMethod("function foo(){var foo:Object = RoyaleTest_A(bar).bar = '';}; public function get bar():Object { return this; };");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = org.apache.royale.utils.Language.as(this.bar, FalconTest_A, true).bar = '';\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = org.apache.royale.utils.Language.as(this.bar, RoyaleTest_A, true).bar = '';\n}");
     }
 
     @Test
@@ -1035,7 +1035,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  bar(b).text = '';\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  bar(b).text = '';\n}");
     }
     
     @Test
@@ -1063,7 +1063,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String; var d:String; if (!(b ? c : d)) { return b;}}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {boolean} b\n * @return {boolean}\n */\nFalconTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c;\n  var /** @type {string} */ d;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
+        assertOut("/**\n * @param {boolean} b\n * @return {boolean}\n */\nRoyaleTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c;\n  var /** @type {string} */ d;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
     }
 
     @Override
@@ -1073,7 +1073,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     	IFunctionNode node = (IFunctionNode) getNode("var a = function(){};",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  var /** @type {Function} */ __localFn0__ = function() {\n" +
         		  "  }\n" +
@@ -1089,7 +1089,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
       		  "  var self = this;\n" +
       		  "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
       		  "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
@@ -1107,7 +1107,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "addListener('foo', function(event:Object):void{doit();})",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
       		  "  var self = this;\n" +
       		  "  var /** @type {Function} */ __localFn0__ = function(event) {\n" +
       		  "    doit();\n" +
@@ -1123,7 +1123,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "var a:Object = {}; var b:Function = function(foo:Object) { foo.bar = 10 }; var c:Object = b(a);",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  var /** @type {Function} */ __localFn0__ = function(foo) {\n    foo.bar = 10;\n  }\n" +
         		  "  var /** @type {Object} */ a = {};\n" +
@@ -1138,7 +1138,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "var a:Object = {}; function b(foo:Object) { foo.bar = 10 }; var c:Object = b(a);",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
         		  "  function b(foo) {\n    foo.bar = 10;\n  };\n" +
         		  "  var /** @type {Object} */ a = {};\n" +
@@ -1153,7 +1153,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\n" + 
-        		  "FalconTest_A.prototype.foo = function() {\n" +
+        		  "RoyaleTest_A.prototype.foo = function() {\n" +
         		  "  var self = this;\n" +
         		  "  function localFunction() {\n    org.apache.royale.utils.Language.trace(self.bar);\n  };\n" +
         		  "  localFunction();\n}");
@@ -1167,7 +1167,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\n" + 
-        		  "FalconTest_A.prototype.foo = function() {\n" +
+        		  "RoyaleTest_A.prototype.foo = function() {\n" +
         		  "  org.apache.royale.utils.Language.trace(this.bar);\n}");
     }
     

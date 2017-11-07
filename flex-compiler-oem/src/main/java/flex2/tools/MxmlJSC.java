@@ -44,7 +44,6 @@ public class MxmlJSC implements ProblemQueryProvider {
         return getCompilerInstance().mainNoExit(args, problems, false);
     }
 
-    @Override
     public ProblemQuery getProblemQuery() {
         return ((ProblemQueryProvider) compiler).getProblemQuery();
     }

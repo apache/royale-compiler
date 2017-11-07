@@ -30,7 +30,7 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>Apache Flex - Royale: Royale Maven Plugin</name>
+  <name>Apache Royale: Royale Maven Plugin</name>
 
   <properties>
     <maven.version>3.3.1</maven.version>

@@ -39,11 +39,11 @@ import macromedia.asc.embedding.WarningConstants;
  * Configuration c2 = lib.getDefaultConfiguration();
  * </pre>
  * 
- * The compiler populates the default <code>Configuration</code> object with the values in <code>flex-config.xml</code>. 
+ * The compiler populates the default <code>Configuration</code> object with the values in <code>royale-config.xml</code>. 
  * If a local configuration file is also available (for example, <code>HelloWorld-config.xml</code>), the compiler also uses 
  * values in that file to populate the <code>Configuration</code> object. The local configuration file's values take precedence
- * over options set in the <code>flex-config.xml</code> file. If you add a configuration file using the <code>addConfiguration()</code>
- * method, that configuration file's options take precedence over those set in flex-config.xml or in a local configuration file; they
+ * over options set in the <code>royale-config.xml</code> file. If you add a configuration file using the <code>addConfiguration()</code>
+ * method, that configuration file's options take precedence over those set in royale-config.xml or in a local configuration file; they
  * do not take precedence over configuration options set using the <code>Configuration</code> interface's methods such as <code>setExterns()</code>.
  * 
  * <p>
@@ -52,7 +52,7 @@ import macromedia.asc.embedding.WarningConstants;
  * 1. Methods of the <code>Configuration</code> interface such as <code>setExterns()</code>.
  * 2. Configuration file loaded with the <code>addConfiguration()</code> method.
  * 3. Local configuration file (such as <em>app_name</em>-config.xml).
- * 4. The flex-config.xml file.
+ * 4. The royale-config.xml file.
  * 5. Default compiler settings.
  * </PRE>
  * 
@@ -945,7 +945,7 @@ public interface Configuration
     void addExterns(String[] definitions);
 
     /**
-     * Loads a file containing configuration options. The file format follows the format of the <code>flex-config.xml</code> file.
+     * Loads a file containing configuration options. The file format follows the format of the <code>royale-config.xml</code> file.
      * This is equivalent to using the <code>load-config</code> option of the mxmlc or compc compilers.
      * 
      * @param file An instance of the <code>java.io.File</code> class.

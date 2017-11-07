@@ -2385,7 +2385,7 @@ public final class SWFDump
     public static void main(String[] args) throws IOException
     {
         // This message should not be localized.
-        System.err.println("Apache Flex SWF Dump Utility");
+        System.err.println("Apache Royale SWF Dump Utility");
         System.err.println(VersionInfo.buildMessage());
         System.err.println("");
 

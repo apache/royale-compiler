@@ -1,19 +1,14 @@
 Apache Royale Compiler
 ====================
 
-    This Apache Flex Compiler is also known as the 'Falcon' compiler.  It is 
-    the next-generation replacement to the MXMLC compiler that is currently 
-    bundled with the Apache Flex SDK and is based on the Adobe ASC2.0 code base
-    donated to Apache by Adobe Systems Inc.
+    This Apache Royale Compiler was formerly known as the 'Falcon' compiler.  It was 
+    originally destined to be the next-generation replacement to the MXMLC compiler
+    that is currently bundled with the Apache Flex SDK.  This compiler is based on the 
+    Adobe ASC2.0 code base donated to Apache by Adobe Systems Inc.
 
-    This Compiler may also be packaged with the Apache Flex Cross-Compiler which
-    has additional information in the README_JX file.
-
-    For detailed information about Apache Flex please visit
-    http://flex.apache.org/
-
-    This compiler may eventually replace MXMLC in the Apache Flex SDK, but is
-    also being used as the compiler for the Apache Royale SDK.  Royale is a
+    The compiler has been modified and extended to transpile MXML and ActionScript
+    to JavaScript and potentially other output definitions and is
+    now being used as the compiler for the Apache Royale SDK.  Royale is a
     next-generation SDK that allows the developer to leverage MXML and ActionScript
     to build applications that not only run as a SWF, but can also be cross-compiled
     to JavaScript and run natively in a browser or anywhere JavaScript runs.
@@ -21,8 +16,9 @@ Apache Royale Compiler
 Getting the latest sources via git
 ==================================
 
-    Getting the source code is the recommended way to get the Apache Flex Compiler.  
-    We also offer an automated installer along with binary distributions on our 
+    Getting the source code is the recommended way to get the Apache Royale Compiler.  
+    The compiler can also be installed by installing an Apache Royale SDK via NPM
+    or by unpacking an Apache Royale binary distributions available from link on our 
     website at http://royale.apache.org/.
 
     You can always checkout the latest source via git using the following
@@ -32,68 +28,65 @@ Getting the latest sources via git
 	 cd royale-compiler
 	 git checkout develop
 
-    When working with the sources from Git, the Apache Flex Compiler 
-    also requires code from other Apache Flex git repositories or an Apache Flex SDK.
-    These Apache Flex SDK source files are bundled in Apache Flex Falcon
+    When working with the sources from Git, the Apache Royale Compiler 
+    also requires code from the Apache Royale Typedefs git repositories.
+    These Apache Royale Typedefs source files are bundled in Apache Royale Compiler
     source code distributions, so this step is optional when using source code
     distributions.
 
-    To get the latest source via git for the Apache Flex SDK use the following command:
+    To get the latest source via git for the Apache Royale Typedefs use the 
+    following command:
 
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-sdk.git flex-sdk
-	 cd flex-sdk
+	 git clone https://github.com/apache/royale-typedefs.git royale-typedefs
+	 cd royale-typedefs
 	 git checkout develop
 
-    The Apache Flex SDK requires the Text Layout Framework repository which
-    you can get as follows:
-
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-tlf.git flex-tlf
-	 cd flex-tlf
-	 git checkout develop
-
-    To use an Apache Flex SDK, install an Apache Flex SDK on your computer and
-    follow the instructions in 'Install Prerequisites'.
-
-Building the Apache Flex Compiler
+Building the Apache Royale Compiler
 =================================
 
-    The Apache Flex Compiler is a large project. It requires some build tools 
+    The Apache Royale Compiler is a large project. It requires some build tools 
     which must be installed prior to building the compiler and it depends on 
     some external software which are downloaded as part of the build process.  
     Some of these have different licenses.  See the Software Dependencies section 
     for more information on the external software dependencies.
 
-    Linux support is currently experimental and while it is possible to compile
-    the SDK it has not been fully tested so you may run into issues.
+    Linux support is currently experimental has not been fully tested so you 
+    may run into issues.
 
 Install Prerequisites
 ---------------------
+    
+    You can build the Apache Royale Compiler with Apache Maven or Apache Ant.
+    See build instructions later in this file.
 
-    Before building the Apache Flex Compiler you must install the following software 
-    and set the corresponding environment variables using absolute file paths.  
-    Relative file paths will result in build errors.
+    Before building the Apache Royale Compiler with Apache Ant you must install 
+    the following software and set the corresponding environment variables using 
+    absolute file paths.  Relative file paths will result in build errors.  If
+    you do not want to set environment variables for the optional settings,
+    you may put the entries in an env.properties file as described in the
+    Running Tests section.
 
     ==================================================================================
     SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
     ==================================================================================
 
-    Java SDK 1.6 or greater (*1)                 JAVA_HOME
+    Java SDK 1.7 or greater (*1)                           JAVA_HOME
         (for Java 1.7 see note at (*2))
 
-    Ant 1.7.1 or greater (*1)                    ANT_HOME
+    Ant 1.7.1 or greater (*1)                              ANT_HOME
         (for Java 1.7 see note at (*2))
 
-    Adobe AIR Integration Kit (*3)               AIR_HOME
+    Optional: Apache Royale SDK or repository (*3)         ASJS_HOME
 
-    Adobe Flash Player Content Debugger (*4)     FLASHPLAYER_DEBUGGER
+    Optional: Adobe AIR Integration Kit (*4)               AIR_HOME
 
-    Adobe Flash Player playerglobal swcs (*5)    PLAYERGLOBAL_HOME
+    Optional: Adobe Flash Player Content Debugger (*5)     FLASHPLAYER_DEBUGGER
 
-    Optional: Apache Flex SDK or repository (*6) FLEX_HOME
+    Optional: Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_HOME
 
-    Optional: Apache Flex TLF source (*7)        TLF_HOME
+    Optional: Apache Flex SDK or repository (*7)           FLEX_HOME
 
-    Optional: Flex Messaging Common (*8)         BLAZEDS_HOME
+    Optional: Apache Flex TLF source (*8)                  TLF_HOME
 
     ==================================================================================
 
@@ -115,7 +108,16 @@ Install Prerequisites
          version as 1.6 so the JVM args for the data model (-d32/-d64) will not
          be set correctly and you will get compile errors.
 
-    *3) The Adobe AIR integration kit for Windows can be downloaded from:
+    *3) This option is only required to run additional tests to verify that the compiler
+        can output Royale applications that use Royale framework SWCs.
+        
+        Set the ASJS_HOME variable to the root of the Apache Royale SDK or 
+        royale-asjs repository.
+
+    *4) This option is only required to run additional tests to verify that the compiler
+        can output SWFs.
+        
+        The Adobe AIR integration kit for Windows can be downloaded from:
            http://airdownload.adobe.com/air/win/download/4.0/AdobeAIRSDK.zip
 
          The Adobe AIR integration kit for Mac can be downloaded from:
@@ -127,7 +129,10 @@ Install Prerequisites
         Download the AIR SDK for your platform and unzip it. Set AIR_HOME to the
         absolute path of the AIR SDK directory.
 
-    *4) The Adobe Flash Player content debuggers can be found here:
+    *5) This option is only required to run additional tests to verify that the compiler
+        can output SWFs.
+        
+        The Adobe Flash Player content debuggers can be found here:
             http://www.adobe.com/support/flashplayer/downloads.html
 
         On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
@@ -141,7 +146,10 @@ Install Prerequisites
         On Linux, set FLASHPLAYER_DEBUGGER to the absolute path of
         flashplayerdebugger
 
-    *5) The Adobe Flash Player playerglobal.swc for 11.1 can be downloaded from:
+    *6) This option is only required to run additional tests to verify that the compiler
+        can output SWFs.
+        
+        The Adobe Flash Player playerglobal.swc for 11.1 can be downloaded from:
             http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc
 
         Use URL above to download playerglobal11_1.swc.
@@ -160,31 +168,29 @@ Install Prerequisites
 
            frameworks/libs/player/<version.major>.<version.minor>/playerglobal.swc
     
-        These can be used with the Apache Flex Compiler but not all have not been fully
+        These can be used with the Apache Royale Compiler but not all have not been fully
         tested.
 
-    *6) The FLEX_HOME variable should point to a folder of the flex-sdk sources.
+    *7) This option is only required to run additional tests to verify that the compiler
+        can output SWFs.
+        
+        The FLEX_HOME variable should point to a folder of the flex-sdk sources.
         If you don’t provide this variable (and TLF_HOME and BLAZEDS_HOME), 
         you may not be able to run all of the tests in the compiler 
         and compiler-jx folders.
 
-    *7) The TLF_HOME variable should point to a folder containing a folder
+    *8) This option is only required to run additional tests to verify that the compiler
+        can output SWFs.
+        
+        The TLF_HOME variable should point to a folder containing a folder
         named textLayout that contains a src folder of the TLF sources.
         This should be the root of the flex-tlf repository, or can be
-        the frameworks/projects folder of an IDE compatible Flex SDK.
-
-    *8) The build scripts assume that the root folder containing the source code 
-        for Apache Flex BlazeDS ('flex-blazeds') is at the same level as the 
-        SDK root folder ('flex-sdk'). See 'Getting the source code', below. If this 
-        is not the case on your system, then you must set the BLAZEDS_HOME environment
-        variable to point to your BLAZEDS root folder. If you are using a released
-        artifact, the source should be included in the artifact, so setting 
-        BLAZEDS_HOME is not required.
+        the frameworks/projects folder of an IDE compatible Royale SDK.
 
 Software Dependencies
 ---------------------
 
-    The Apache Flex Compiler uses third-party code that will be downloaded as 
+    The Apache Royale Compiler uses third-party code that will be downloaded as 
     part of the build.
 
     The Apache Version 2.0 license is in the LICENSE file.
@@ -192,9 +198,10 @@ Software Dependencies
     The following dependencies have licenses which are, or are compatible with,
     the Apache Version 2.0 license.  You will not be prompted to acknowledge the
     download.  Most of the jars are installed in lib/external when installed
-    into an Apache Flex SDK and the lib folder in the repository working copy.
+    into an Apache Royale SDK and the lib folder in the repository working copy.
 
         antlr - https://repo1.maven.org/maven2/org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
+	args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
         commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2-bin.tar.gz
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4.tar.gz
         commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.tar.gz
@@ -204,45 +211,52 @@ Software Dependencies
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - http://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
+        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
 
 
-Using the Binary Distribution
------------------------------
+Running Tests
+-------------
 
-    The binary distribution is intended to be installed into an existing Apache Flex
-    SDK or Apache Royale SDK.
+    The build processes will attempt to run some tests.  Before running some of the
+    functional or feature tests you will need to set the environment variables described
+    earlier, or set up a env.properties file with those settings.
 
-    There is an Apache Ant script in the binary distribution that will copy the 
-    files into the right places.
+    A template is found here: env-template.properties. 
 
-    To run it, use:
-        ant -f installer.xml -DFLEX_HOME=<path to Flex or Royale SDK
-
-    The script does not check the FLEX_HOME environment variable as that often
-    points to your primary Flex SDK.
-
-    If you expand the binary distribution into the "in" folder of an Apache Flex or
-    Royale SDK, the installer.xml script should find FLEX_HOME automatically.
-
-    Another option is to use the InstallApacheFlex (version 3.0 or higher).
+    Some tests of SWF output may use the Adobe Flash Player or Adobe AIR to
+    run a SWF.  If you plan to run those tests, ensure that the folder 
+    containing the source code is in your Flash Player Trust files.
 
 Building the Source in the Source Distribution
 ----------------------------------------------
 
-    When you have all the prerequisites in place and the environment variables
-    set (see Install Prerequisites above), one final thing to check is whether
-    the folder contain the source code is in your Flash Player Trust files as
-    the build script runs the Flash Player Debugger as part of its automated
-    tests.  Once you've done that, use
+    You can build the compiler via Apache Maven or Apache Ant.
 
-        cd <falcon.dir>
+    To build the Apache Royale Compiler with Apache Maven, get Maven 
+    (http://maven.apache.org) and unpack it somewhere.
+    This directory is now "MAVEN_HOME". Make sure MAVEN_HOME/bin
+    is on your systems path.
+
+    You must first build the utils profile without the main profile 
+    and then the main profile.  So, first run:
+
+        mvn clean install -P -main,utils
+
+    Then run
+
+        mvn clean install
+
+    To build the Apache Royale Compiler with Apache Ant, first make sure you
+    have all the prerequisites in place and the environment variables
+    set (see Install Prerequisites above).  Once you've done that, use
+
         ant main        (or just ant since the default target is main)
 
-    to download the thirdparty dependencies and build the source.  Since the
+    to download the third-party dependencies and build the source.  Since the
     third-party dependencies take a little while to download and they don't
     change very often, they are not cleaned with the regular clean target.
 
-    To clean the build, of everything other than the downloaded third-party
+    To clean the build of everything other than the downloaded third-party
     dependencies use
 
         ant clean
@@ -263,14 +277,24 @@ Building the Source in the Source Distribution
 
         ant -projecthelp
 
-Running Tests
--------------
+Using the Binary Distribution
+-----------------------------
 
-Before running unit-, functional- or feature-tests you may need to create a 
-compiler/src/tests/unittest.properties file 
+    The binary artifacts produced by the Maven build are then used by Maven projects
+    to build Apache Royale applications.  See the archetypes in the royale-asjs repo
+    or the examples in the royale-asjs repo.
 
-A template is found here compiler/src/main/resources/template-unittest.properties. 
+    The binaries produced by the Apache Ant build are intended to be packaged into an
+    Apache Royale SDK to create Apache Royale applications via Ant.
 
+    To temporarily use a set of binary artifacts when building Apache Royale
+    applications with Apache Ant, set the ROYALE_COMPILER_HOME property as an 
+    environment variable or property when running Ant to build the Apache Royale
+    application.
+
+    To replace the current Royale Compiler binaries in a Apache Royale SDK, 
+    run the copy-compiler target from the Ant script in the Apache Royale SDK and
+    set ROYALE_COMPILER_HOME when running that target.
 
 
 Thanks for using Apache Royale.  Enjoy!

@@ -52,10 +52,10 @@ public class TestRoyaleStatements extends TestGoogStatements
     @Test
     public void testObjectListeral_withPropertyNameMatchingConst()
     {
-        ILiteralNode node = (ILiteralNode) getNode("static const myConst:int; function falconTest_a():Object { return { myConst : myConst } }",
+        ILiteralNode node = (ILiteralNode) getNode("static const myConst:int; function royaleTest_a():Object { return { myConst : myConst } }",
         		ILiteralNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitLiteral(node);
-        assertOut("{myConst:FalconTest_A.myConst}");
+        assertOut("{myConst:RoyaleTest_A.myConst}");
     }
     
     @Test
@@ -502,21 +502,21 @@ public class TestRoyaleStatements extends TestGoogStatements
                 IFileNode.class);
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		              " * FalconTest_A\n" +
+        		              " * RoyaleTest_A\n" +
         		              " *\n" +
         		              " * @fileoverview\n" +
         		              " *\n" +
         		              " * @suppress {checkTypes|accessControls}\n" +
         		              " */\n" +
         		              "\n" +
-        		              "goog.provide('FalconTest_A');\n" +
+        		              "goog.provide('RoyaleTest_A');\n" +
         		              "\n\n\n" +
         		              "/**\n" +
         		              " * @constructor\n" +
         		              " */\n" +
-        		              "FalconTest_A = function() {\n" +
-        		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n" +
-        		              "FalconTest_A.prototype.falconTest_a = function() {\n" +
+        		              "RoyaleTest_A = function() {\n" +
+        		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
+        		              "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		              "  var self = this;\n" +
         		              "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
             		          "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
@@ -584,7 +584,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              " *\n" +
         		              " * @type {Object.<string, Array.<Object>>}\n" +
         		              " */\n" +
-        		              "FalconTest_A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A', kind: 'class' }] };\n" +
+        		              "RoyaleTest_A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'RoyaleTest_A', qName: 'RoyaleTest_A', kind: 'class' }] };\n" +
         		          		"\n" +
         		        		"\n" +
         		        		"\n" +
@@ -593,7 +593,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		        		" *\n" +
         		        		" * @return {Object.<string, Function>}\n" +
         		        		" */\n" +
-        		        		"FalconTest_A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		        		"RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		        		"return {\n" +
                                 "  variables: function () {return {};},\n" +
                                 "  accessors: function () {return {};},\n" +

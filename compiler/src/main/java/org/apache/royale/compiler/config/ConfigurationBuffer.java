@@ -833,7 +833,7 @@ public final class ConfigurationBuffer
 
                     String newDepvar = car + "." + depvar;
 
-                    // Since in falcon we have collapsed sub-configurations into one
+                    // Since in royale we have collapsed sub-configurations into one
                     // configuration, some options that were in sub-configurations now
                     // have prerequisites on options in the same configuration. We
                     // need to keep the old configuration mappings so old configurations

@@ -44,7 +44,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {*}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:String = null;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {string}\n */\nFalconTest_A.prototype.foo = null");
+        assertOut("/**\n * @export\n * @type {string}\n */\nRoyaleTest_A.prototype.foo = null");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = 0");
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int = -420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = -420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = -420");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("private var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @private\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -106,7 +106,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal var foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -124,7 +124,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -134,7 +134,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Foo = new Foo('bar', 42);",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {Foo}\n */\nRoyaleTest_A.prototype.foo;");
     }
 
     @Test
@@ -142,7 +142,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {*}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @export\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
@@ -150,7 +150,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.foo = 0");
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -167,7 +167,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -176,7 +176,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -185,7 +185,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("import flash.utils.flash_proxy;use namespace flash_proxy;public static var foo:Object = initFoo(); flash_proxy static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nFalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};\n\nFalconTest_A.foo = FalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nRoyaleTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n");
     }
     
     @Test
@@ -194,7 +194,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("static public var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo = {'foo':'bar'};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo = {'foo':'bar'};");
     }
     
     @Test
@@ -203,7 +203,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Number = parseFloat('1E2')",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {number}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -212,7 +212,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("private static var empty:Function = function():void {}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @private\n * @type {Function}\n */\nFalconTest_A.empty = function() {\n};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @type {Function}\n */\nRoyaleTest_A.empty = function() {\n};");
     }
     
     @Override
@@ -221,7 +221,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var a:int = 4, b:int = 11, c:int = 42;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.a = 4;\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.b = 11;\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.c = 42");
+        assertOut("/**\n * @protected\n * @type {number}\n */\nRoyaleTest_A.prototype.a = 4;\n\n/**\n * @protected\n * @type {number}\n */\nRoyaleTest_A.prototype.b = 11;\n\n/**\n * @protected\n * @type {number}\n */\nRoyaleTest_A.prototype.c = 42");
     }
 
     //--------------------------------------------------------------------------
@@ -234,7 +234,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
@@ -242,7 +242,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -251,7 +251,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 0");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
     }
 
     @Test
@@ -259,7 +259,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 0");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
     }
 
     @Override
@@ -268,7 +268,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -276,7 +276,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:Number = parseFloat('1E2');");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = parseFloat('1E2')");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = parseFloat('1E2')");
     }
 
     @Test
@@ -284,7 +284,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Test
@@ -293,7 +293,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Number = parseFloat('1E2');",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -302,7 +302,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -311,7 +311,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('FalconTest_A', FalconTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo;");
     }
 
     @Override
@@ -320,7 +320,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("private static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -328,7 +328,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("private const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -338,7 +338,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -347,6 +347,6 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 }

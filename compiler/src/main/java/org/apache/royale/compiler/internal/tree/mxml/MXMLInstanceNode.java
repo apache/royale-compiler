@@ -215,7 +215,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
         if (value == null)
             value = "";
 
-        // Falcon trims this attribute even though the old compiler didn't.
+        // Royale trims this attribute even though the old compiler didn't.
         MXMLDialect mxmlDialect = builder.getMXMLDialect();
         value = mxmlDialect.trim(value);
 

@@ -74,7 +74,7 @@ import com.google.common.collect.Iterables;
 import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
- * Delegate class used by flex specific targets to generate flex specific code.
+ * Delegate class used by Royale specific targets to generate Royale specific code.
  * If we were writing this compiler in C++ this would be a mix-in class.
  */
 public abstract class RoyaleTarget
@@ -338,7 +338,7 @@ public abstract class RoyaleTarget
             infoEntries++;
         }
         
-        // mark this SWF as being built with Falcon
+        // mark this SWF as being built with Royale
         info.addInstruction(ABCConstants.OP_pushstring, "isMXMLC");
         info.addInstruction(ABCConstants.OP_pushfalse);
         infoEntries++;
@@ -756,7 +756,7 @@ public abstract class RoyaleTarget
     public void addProductInfoToSWF(ISWF swf)
     {
         // Add product info to the swf.
-        ProductInfoTag productInfo = new ProductInfoTag(Product.FLEX,
+        ProductInfoTag productInfo = new ProductInfoTag(Product.ROYALE,
                 Edition.NONE,
                 (byte)Integer.parseInt(VersionInfo.FLEX_MAJOR_VERSION),
                 (byte)Integer.parseInt(VersionInfo.FLEX_MINOR_VERSION),

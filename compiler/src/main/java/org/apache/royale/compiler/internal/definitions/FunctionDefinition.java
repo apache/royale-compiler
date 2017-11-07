@@ -545,7 +545,7 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         return super.isTopLevelDefinition();
     }
 
-    // TODO Remove everything below here when Falcon has been integrated into Fb and Fc.
+    // TODO Remove everything below here when Royale has been integrated into Fb and Fc.
 
     @Override
     public boolean matches(DefinitionBase definition)

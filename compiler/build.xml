@@ -26,8 +26,7 @@
         PROPERTIES
 
     -->
-    <property name="FALCON_HOME" location="${basedir}"/>
-
+    
     <!-- The 'compiler' property is the absolute path, with forward slashes, -->
     <!-- to the 'compiler' directory that contains this file. -->
     <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
@@ -45,7 +44,7 @@
     <property name="javadoc.params" value="" />
     
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
-    <!-- where a Falcon SDK is built -->
+    <!-- where a Royale SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}/lib"/>
 
@@ -204,7 +203,7 @@
     -->
 	
     <target name="download" description="Downloads third-party JARs">
-        <ant antfile="${compiler}/src/main/resources/downloads.xml" dir="${compiler}"/>
+        <ant antfile="${compiler}/src/main/resources/downloads.xml" dir="${compiler}/src/main/resources" inheritAll="false"/>
     	<delete dir="${compiler}/in"/>
     </target>
 	
@@ -222,7 +221,7 @@
        	          targetfile="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.java">
             <srcfiles dir="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as">
                 <include name="RawASTokenizer.lex"/>
-                <include name="skeleton.falcon"/>
+                <include name="skeleton.royale"/>
             </srcfiles>
 		</uptodate>
 	</target>
@@ -231,7 +230,7 @@
 		    description="Generates RawASTokenizer.java">
 		<echo message="Generating RawASTokenizer"/>
         <jflex input="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.lex"
-               skeleton="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.falcon"
+               skeleton="${compiler}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.royale"
                output="${compiler}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as"/>
 	</target>
 	
@@ -559,8 +558,8 @@
         </jar>
 	</target>
 	
-	<target name="set.falcon.asc.jar.uptodate">
-		<uptodate property="falcon.asc.jar.uptodate"
+	<target name="set.royale.asc.jar.uptodate">
+		<uptodate property="royale.asc.jar.uptodate"
 		          targetfile="${sdk}/compiler-asc.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
@@ -569,7 +568,7 @@
 		</uptodate>
 	</target>
 	
-	<target name="falcon.asc.jar" depends="compiler.jar, set.falcon.asc.jar.uptodate" unless="falcon.asc.jar.uptodate">
+	<target name="royale.asc.jar" depends="compiler.jar, set.royale.asc.jar.uptodate" unless="royale.asc.jar.uptodate">
         <mkdir dir="${sdk}"/>
         <jar file="${sdk}/compiler-asc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
@@ -585,8 +584,8 @@
         </jar>
 	</target>
 
-	<target name="set.falcon.mxmlc.jar.uptodate">
-		<uptodate property="falcon.mxmlc.jar.uptodate"
+	<target name="set.royale.mxmlc.jar.uptodate">
+		<uptodate property="royale.mxmlc.jar.uptodate"
 		          targetfile="${sdk}/compiler-mxmlc.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
@@ -595,7 +594,7 @@
 		</uptodate>
 	</target>
 	
-	<target name="falcon.mxmlc.jar" depends="compiler.jar, set.falcon.mxmlc.jar.uptodate" unless="falcon.mxmlc.jar.uptodate">
+	<target name="royale.mxmlc.jar" depends="compiler.jar, set.royale.mxmlc.jar.uptodate" unless="royale.mxmlc.jar.uptodate">
         <mkdir dir="${sdk}"/>
         <jar file="${sdk}/compiler-mxmlc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
@@ -611,8 +610,8 @@
         </jar>
 	</target>
 
-	<target name="set.falcon.compc.jar.uptodate">
-		<uptodate property="falcon.compc.jar.uptodate"
+	<target name="set.royale.compc.jar.uptodate">
+		<uptodate property="royale.compc.jar.uptodate"
 		          targetfile="${sdk}/compiler-compc.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
@@ -621,7 +620,7 @@
 		</uptodate>
 	</target>
 	
-	<target name="falcon.compc.jar" depends="compiler.jar, set.falcon.compc.jar.uptodate" unless="falcon.compc.jar.uptodate">
+	<target name="royale.compc.jar" depends="compiler.jar, set.royale.compc.jar.uptodate" unless="royale.compc.jar.uptodate">
         <mkdir dir="${sdk}"/>
         <jar file="${sdk}/compiler-compc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
@@ -637,8 +636,8 @@
         </jar>
 	</target>
 
-	<target name="set.falcon.optimizer.jar.uptodate">
-		<uptodate property="falcon.optimizer.jar.uptodate"
+	<target name="set.royale.optimizer.jar.uptodate">
+		<uptodate property="royale.optimizer.jar.uptodate"
 		          targetfile="${sdk}/compiler-optimizer.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
@@ -647,7 +646,7 @@
 		</uptodate>
 	</target>
 	
-	<target name="falcon.optimizer.jar" depends="compiler.jar, set.falcon.optimizer.jar.uptodate" unless="falcon.optimizer.jar.uptodate">
+	<target name="royale.optimizer.jar" depends="compiler.jar, set.royale.optimizer.jar.uptodate" unless="royale.optimizer.jar.uptodate">
         <mkdir dir="${sdk}"/>
         <jar file="${sdk}/compiler-optimizer.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
@@ -663,8 +662,8 @@
         </jar>
 	</target>
 
-	<target name="set.falcon.swfdump.jar.uptodate">
-		<uptodate property="falcon.swfdump.jar.uptodate"
+	<target name="set.royale.swfdump.jar.uptodate">
+		<uptodate property="royale.swfdump.jar.uptodate"
 		          targetfile="${sdk}/compiler-swfdump.jar">
 			<srcfiles dir="${compiler}/target/classes">
 				<include name="**/*.class"/>
@@ -673,7 +672,7 @@
 		</uptodate>
 	</target>
 	
-	<target name="falcon.swfdump.jar" depends="compiler.jar, set.falcon.swfdump.jar.uptodate" unless="falcon.swfdump.jar.uptodate">
+	<target name="royale.swfdump.jar" depends="compiler.jar, set.royale.swfdump.jar.uptodate" unless="royale.swfdump.jar.uptodate">
         <mkdir dir="${sdk}"/>
         <jar file="${sdk}/compiler-swfdump.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
@@ -689,7 +688,7 @@
         </jar>
 	</target>
 
-    <target name="jar" depends="compiler.jar, falcon.asc.jar, falcon.mxmlc.jar, falcon.compc.jar, falcon.optimizer.jar, falcon.swfdump.jar"
+    <target name="jar" depends="compiler.jar, royale.asc.jar, royale.mxmlc.jar, royale.compc.jar, royale.optimizer.jar, royale.swfdump.jar"
     	    description="Creates JAR files"/>
 	    
     <!--
@@ -698,9 +697,9 @@
 
     -->
 	
-	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
+	<target name="sdk" depends="jar" description="Builds a Royale SDK"/>
 
-    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK">
+    <target name="main" depends="sdk" description="Default target - Builds a Royale SDK">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>

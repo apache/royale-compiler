@@ -22,7 +22,7 @@ package org.apache.royale.compiler.workspaces;
 import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
- * Interface that clients of Falcon can implement to record profile data about
+ * Interface that clients of Royale can implement to record profile data about
  * what operation are executed on what compilation units and how long those
  * operations took.
  * <p>

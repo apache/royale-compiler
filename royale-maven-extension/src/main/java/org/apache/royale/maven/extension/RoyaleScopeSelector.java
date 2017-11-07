@@ -20,10 +20,10 @@ import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 /**
  * Created by christoferdutz on 18.07.16.
  */
-public class FlexJsScopeDeriver extends ConflictResolver.ScopeDeriver {
+public class RoyaleScopeSelector extends ConflictResolver.ScopeSelector {
 
     @Override
-    public void deriveScope(ConflictResolver.ScopeContext scopeContext) throws RepositoryException {
+    public void selectScope(ConflictResolver.ConflictContext conflictContext) throws RepositoryException {
 
     }
 

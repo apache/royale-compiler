@@ -31,8 +31,8 @@
 	<property name="test.timeout" value="3000000" />
 	<property name="maxmem" value="512" />
 	
-	<condition property="sdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
-	    <isset property="FLEX_HOME" />
+	<condition property="sdk" value="${ROYALE_HOME}" else="${env.ROYALE_HOME}">
+	    <isset property="ROYALE_HOME" />
 	</condition>
 	
 	<condition property="fpdbg" value="${FLASHPLAYER_DEBUGGER}" else="${env.FLASHPLAYER_DEBUGGER}">
@@ -45,10 +45,10 @@
 	<property name="playerglobal.version" value="11.1" />
 	
     <property name="compiler" value="${compiler.tests}/../.."/>
-    <property name="falcon" value="${compiler}"/>
+    <property name="royale" value="${compiler}"/>
 
     <path id="lib.path">
-        <fileset dir="${falcon}/lib" includes="falcon-flexTasks.jar"/>
+        <fileset dir="${royale}/lib" includes="compiler-royaleTasks.jar"/>
     </path>
     
     <target name="download" description="Downloads third-party JARs">
@@ -61,11 +61,11 @@
     </target>
     
     <target name="jar.tests">
-        <java jar="${falcon}/lib/compiler-mxmlc.jar" fork="true"/>
-        <java jar="${falcon}/lib/compiler-compc.jar" fork="true"/>
-        <java jar="${falcon}/lib/compiler-asc.jar" fork="true"/>
-        <java jar="${falcon}/lib/compiler-optimizer.jar" fork="true"/>
-        <java jar="${falcon}/lib/compiler-swfdump.jar" fork="true"/>
+        <java jar="${royale}/lib/compiler-mxmlc.jar" fork="true"/>
+        <java jar="${royale}/lib/compiler-compc.jar" fork="true"/>
+        <java jar="${royale}/lib/compiler-asc.jar" fork="true"/>
+        <java jar="${royale}/lib/compiler-optimizer.jar" fork="true"/>
+        <java jar="${royale}/lib/compiler-swfdump.jar" fork="true"/>
     </target>
     
     <!-- tests used to be divided up like this
@@ -78,7 +78,7 @@
             <compilerarg value="-Xlint:all,-path"/>
             <classpath>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
         </javac>
     </target>
@@ -94,7 +94,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
@@ -124,7 +124,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
@@ -150,7 +150,7 @@
             <classpath>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
         </javac>
     </target>
@@ -167,7 +167,7 @@
                 <pathelement location="${compiler.tests}/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">
@@ -196,7 +196,7 @@
                 <pathelement location="${compiler.tests}/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">
@@ -223,7 +223,7 @@
             <classpath>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
         </javac>
     </target>
@@ -240,7 +240,7 @@
                 <pathelement location="${compiler.tests}/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">
@@ -254,7 +254,7 @@
     end of old test organization -->
     
     <target name="compile.tests">
-        <echo>compiler is ${compiler} falcon is ${falcon}</echo>
+        <echo>compiler is ${compiler} royale is ${royale}</echo>
         <delete dir="${compiler}/target/test-classes"/>
         <mkdir dir="${compiler}/target/test-classes"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/test-classes" includeAntRuntime="true">
@@ -264,7 +264,7 @@
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
         </javac>
     </target>
@@ -282,7 +282,7 @@
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
@@ -291,6 +291,7 @@
                     <exclude name="mxml/tags/**"/>
                     <exclude name="properties/**"/>
                     <exclude name="**/MXMLComponentTagTests.class"/>
+                    <exclude name="**/MXMLComponentNodeTests.class"/>
                     <exclude name="**/MXMLHTTPServiceTagTests.class"/>
                     <exclude name="**/MXMLModelTagTests.class"/>
                     <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
@@ -323,12 +324,13 @@
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
-                <pathelement location="${falcon}/lib/compiler.jar"/>
+                <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="f/**"/>
                     <include name="**/MXMLComponentTagTests.class"/>
+                    <include name="**/MXMLComponentNodeTests.class"/>
                     <include name="**/MXMLHTTPServiceTagTests.class"/>
                     <include name="**/MXMLModelTagTests.class"/>
                     <include name="**/MXMLRemoteObjectTagTests.class"/>
