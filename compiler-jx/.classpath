@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="lib/guava.jar"/>
 	<classpathentry kind="lib" path="lib/flex-tool-api.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/COMMONS_COMPRESS"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/flex/master/flex-falcon/compiler/lib/external/commons-lang-2.6.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons Compress"/>
+	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler/lib/external/commons-lang-2.6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
