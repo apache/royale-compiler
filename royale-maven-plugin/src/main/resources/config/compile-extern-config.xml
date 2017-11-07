@@ -22,6 +22,7 @@
 
         <accessible>false</accessible>
         <debug>$debug</debug>
+        <targets><target>SWF</target></targets>
 
         <library-path>
 #foreach($artifact in $libraries)           <path-element>$artifact.file</path-element>
