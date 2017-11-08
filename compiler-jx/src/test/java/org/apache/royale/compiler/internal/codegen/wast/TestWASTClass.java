@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.wast;
 
 import org.apache.royale.compiler.internal.test.WASTTestBase;
 import org.apache.royale.compiler.tree.as.IClassNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,7 +36,7 @@ public class TestWASTClass extends WASTTestBase {
     {
         IClassNode node = (IClassNode) getNode("public class A{}", IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("Ola!");
+        assertOut("Hoi ");
     }
 
 }
