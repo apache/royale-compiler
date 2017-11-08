@@ -63,7 +63,7 @@
     <property name="royale" value="${compiler}"/>
 
     <path id="lib.path">
-        <fileset dir="${royale}/lib" includes="royale-royaleTasks.jar"/>
+        <fileset dir="${royale}/lib" includes="compiler-royaleTasks.jar"/>
         <fileset dir="${royale}/lib" includes="jsc.jar"/>
     </path>
     
