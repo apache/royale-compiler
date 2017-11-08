@@ -27,7 +27,7 @@ package com.google.javascript.jscomp;
 public class RoyaleDiagnosticGroups {
 
 	/**
-	 * Flex ItemRenderer Factories store the constructor in a variable
+	 * Royale ItemRenderer Factories store the constructor in a variable
 	 * resulting in this warning.
 	 */
 	public static final DiagnosticGroup ROYALE_NOT_A_CONSTRUCTOR =
@@ -35,7 +35,7 @@ public class RoyaleDiagnosticGroups {
                 TypeCheck.NOT_A_CONSTRUCTOR);
 
 	/**
-	 * Flex code calls super.methodName from functions other than
+	 * Royale code calls super.methodName from functions other than
 	 * overrides of the methodName.
 	 */
 	public static final DiagnosticGroup ROYALE_SUPER_CALL_TO_DIFFERENT_NAME =
@@ -48,7 +48,7 @@ public class RoyaleDiagnosticGroups {
     */
 	
 	/**
-	 * Flex code won't always generate a goog.requires for types only used
+	 * Royale code won't always generate a goog.requires for types only used
 	 * in JSDoc annotations, but the compiler complains.
 	 */
 	public static final DiagnosticGroup ROYALE_UNKNOWN_JSDOC_TYPE_NAME =

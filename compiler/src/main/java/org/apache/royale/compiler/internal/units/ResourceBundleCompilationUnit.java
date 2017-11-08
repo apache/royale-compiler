@@ -572,7 +572,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
      *          
      *          override protected function getContent():Object { 
      *              return {
-     *                      "name": "Falcon",
+     *                      "name": "Royale",
      *                      "version": "1.0", 
      *                      "motto": "Awesome '{0}' ever.", 
      *                      "classref": org.apache.royale.foo 

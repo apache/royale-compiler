@@ -29,7 +29,7 @@
   <artifactId>royale-ant-tasks</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - Royale: Royale Ant Tasks</name>
+  <name>Apache Royale: Royale Ant Tasks</name>
 
   <dependencies>
     <dependency>

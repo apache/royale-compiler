@@ -52,7 +52,7 @@
               <lexDefinitions>
                 <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
               </lexDefinitions>
-              <skeleton>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.falcon</skeleton>
+              <skeleton>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.royale</skeleton>
             </configuration>
           </execution>
           <execution>
@@ -236,7 +236,7 @@
       </plugin>
 
       <!--
-              Do all the custom processing with the falcon build tools.
+              Do all the custom processing with the royale build tools.
       -->
       <plugin>
         <groupId>org.apache.royale.compiler</groupId>

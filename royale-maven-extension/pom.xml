@@ -33,7 +33,7 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Apache Flex - Royale: Royale Maven Extension</name>
+  <name>Apache Royale: Royale Maven Extension</name>
   <description>Implementation of a Maven extension which adds resolution of Royale scopes to Maven.</description>
 
   <!--

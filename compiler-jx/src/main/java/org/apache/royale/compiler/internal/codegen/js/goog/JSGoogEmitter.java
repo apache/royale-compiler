@@ -635,7 +635,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
 
         boolean isRunningInTestMode = cnode != null
-                && cnode.getQualifiedName().equalsIgnoreCase("FalconTest_A");
+                && cnode.getQualifiedName().equalsIgnoreCase("RoyaleTest_A");
         if (writeSelf && !isRunningInTestMode)
         {
             write(JSGoogEmitterTokens.SELF);

@@ -20,11 +20,11 @@
 
 <project name="framework" default="main" basedir=".">
 
-    <property name="falcon.jenkins.home" value="${basedir}/jenkins" />
+    <property name="royale.jenkins.home" value="${basedir}/jenkins" />
     
-    <property name="jflex.temp.filename" value="${falcon.jenkins.home}/temp/JFlex.zip" />
+    <property name="jflex.temp.filename" value="${royale.jenkins.home}/temp/JFlex.zip" />
     <property name="jflex.filename" value="jflex-1.4.3" />
-    <property name="jflex.root" value="${falcon.jenkins.home}/JFlex" />
+    <property name="jflex.root" value="${royale.jenkins.home}/JFlex" />
     <property name="jflex.home" value="${jflex.root}/${jflex.filename}/lib" />
 
     <!-- (erikdebruin) Hard coded path for Windows, sorry ;-) -->
@@ -33,8 +33,8 @@
     <target name="main" depends="clean,init,jflex-download,closure-lib-download,env-properties"/>
 
     <target name="init">
-        <mkdir dir="${falcon.jenkins.home}" />
-        <mkdir dir="${falcon.jenkins.home}/temp"/>
+        <mkdir dir="${royale.jenkins.home}" />
+        <mkdir dir="${royale.jenkins.home}/temp"/>
         <mkdir dir="${jflex.root}" />
         
         <mkdir dir="${closure.root}" />
@@ -61,7 +61,7 @@
     </target>
 
     <target name="clean" description="Cleans third party downloaded files.">
-        <delete dir="${falcon.jenkins.home}/temp" />
+        <delete dir="${royale.jenkins.home}/temp" />
 
         <delete dir="${jflex.root}" />
 

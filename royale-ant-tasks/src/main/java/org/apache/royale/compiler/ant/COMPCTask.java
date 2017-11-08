@@ -49,14 +49,14 @@ import org.apache.royale.compiler.ant.types.RuntimeSharedLibraryPath;
  * For example:
  * <pre>
  * &lt;compc fork="true" 
- *         output="${FLEX_HOME}/frameworks/libs/sparkskins.swc"
+ *         output="${ROYALE_HOME}/frameworks/libs/sparkskins.swc"
  *         resource-bundle-list="${basedir}/bundles.properties"&gt;
  *     &lt;target-player&gt;10&lt;/target-player&gt;
  *     &lt;jvmarg line="${compc.jvm.args}"/&gt;
  *     &lt;include-classes&gt;SparkSkinsClasses&lt;/include-classes&gt;
  *     &lt;source-path path-element="${basedir}/src"/&gt;
  *     &lt;library-path/&gt;
- *     &lt;external-library-path dir="${FLEX_HOME}/frameworks/libs"&gt;
+ *     &lt;external-library-path dir="${ROYALE_HOME}/frameworks/libs"&gt;
  *         &lt;include name="player/${local.playerglobal.version}/playerglobal.swc"/&gt;
  *         &lt;include name="framework.swc"/&gt;
  *         &lt;include name="spark.swc" /&gt;

@@ -216,7 +216,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         ArrayList<IMXMLTagAttributeData> attrs = new ArrayList<IMXMLTagAttributeData>();
         attributeMap = new LinkedHashMap<String, IMXMLTagAttributeData>(); //preserve order of attrs
         boolean foundTagEnd = false;
-        boolean putTokenBack = false; // This is a pre-falcon algorithm that helped recover from tag nesting errors
+        boolean putTokenBack = false; // This is a pre-royale algorithm that helped recover from tag nesting errors
                                       // I am bringing it back to life
         while (tokenIterator.hasNext() && !foundTagEnd)
         {

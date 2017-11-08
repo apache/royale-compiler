@@ -73,7 +73,7 @@ public class SWCVersion implements ISWCVersion
      * @return the royaleBuild
      */
     @Override
-    public String getFlexBuild()
+    public String getRoyaleBuild()
     {
         return royaleBuild;
     }
@@ -82,7 +82,7 @@ public class SWCVersion implements ISWCVersion
      * @param royaleBuild the royaleBuild to set
      */
     @Override
-    public void setFlexBuild(String royaleBuild)
+    public void setRoyaleBuild(String royaleBuild)
     {
         this.royaleBuild = royaleBuild;
     }

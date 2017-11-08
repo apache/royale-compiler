@@ -44,7 +44,7 @@
     <property name="javadoc.params" value="" />
     
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
-    <!-- where a Falcon SDK is built -->
+    <!-- where a Royale SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${royaletasks}/../compiler-jx/lib"/>
     <property name="compiler" value="${royaletasks}/../compiler-jx"/>
@@ -93,9 +93,9 @@
         </copy>
     </target>
 	
-	<target name="set.falcon.royaletasks.jar.uptodate">
-		<uptodate property="falcon.royaletasks.jar.uptodate"
-		          targetfile="${sdk}/falcon-royaleTasks.jar">
+	<target name="set.royale.royaletasks.jar.uptodate">
+		<uptodate property="royale.royaletasks.jar.uptodate"
+		          targetfile="${sdk}/compiler-royaleTasks.jar">
 			<srcfiles dir="${royaletasks}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
@@ -103,12 +103,12 @@
 		</uptodate>
 	</target>
 	
-	<target name="falcon.royaletasks.jar" depends="set.falcon.royaletasks.jar.uptodate" unless="falcon.royaletasks.jar.uptodate">
+	<target name="royale.royaletasks.jar" depends="set.royale.royaletasks.jar.uptodate" unless="royale.royaletasks.jar.uptodate">
         <mkdir dir="${royaletasks}/target/classes/META-INF"/>
         <copy file="${basedir}/../LICENSE.base" tofile="${royaletasks}/target/classes/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.base" tofile="${royaletasks}/target/classes/META-INF/NOTICE"/>
         <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-royaleTasks.jar" basedir="${royaletasks}/target/classes" >
+        <jar file="${sdk}/compiler-royaleTasks.jar" basedir="${royaletasks}/target/classes" >
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -123,7 +123,7 @@
         </jar>
 	</target>
 
-    <target name="jar" depends="compile,falcon.royaletasks.jar"
+    <target name="jar" depends="compile,royale.royaletasks.jar"
     	    description="Creates JAR files"/>
 	    
     <!--
@@ -132,9 +132,9 @@
 
     -->
 	
-	<target name="sdk" depends="jar, test" description="Builds the falcon-royaleTasks.jar"/>
+	<target name="sdk" depends="jar, test" description="Builds the compiler-royaleTasks.jar"/>
 
-    <target name="main" depends="sdk" description="Default target - Builds the falcon-royaleTasks.jar">
+    <target name="main" depends="sdk" description="Default target - Builds the compiler-royaleTasks.jar">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>
@@ -153,7 +153,7 @@
 
     <target name="clean" description="clean">
         <delete dir="${royaletasks}/target" failonerror="false"/>
-        <delete file="${sdk}/falcon-royaletasks.jar" failonerror="false"/>
+        <delete file="${sdk}/compiler-royaletasks.jar" failonerror="false"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">

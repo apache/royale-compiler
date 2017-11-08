@@ -40,7 +40,7 @@ public interface ICompilerSettingsConstants
     static final String LICENSES_LICENSE                                     = "--licenses.license";
     static final String INCLUDES                                             = "--includes";
     static final String INCLUDE_RESOURCE_BUNDLES                             = "--include-resource-bundles";
-    static final String FLEX                                                 = "--flex";
+    static final String ROYALE                                               = "--royale";
     static final String FRAMES_FRAME                                         = "--frames.frame";
     static final String LOAD_EXTERNS                                         = "--load-externs";
     static final String LOAD_CONFIG                                          = "--load-config";

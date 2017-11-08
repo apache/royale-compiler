@@ -140,7 +140,7 @@ public class ProductInfoTag extends Tag implements IManagedTag
         UNKNOWN(0, "unknown"),
         J2EE(1, "Macromedia Flex for J2EE"),
         DOTNET(2, "Macromedia Flex for .NET"),
-        FLEX(3, "Apache Flex");
+        ROYALE(3, "Apache Royale");
 
         public static Product fromCode(int code)
         {

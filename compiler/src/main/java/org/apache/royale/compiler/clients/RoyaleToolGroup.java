@@ -22,12 +22,12 @@ package org.apache.royale.compiler.clients;
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
- * FlexToolGroup exposing the implementations of the Falcon compilers tools.
+ * FlexToolGroup exposing the implementations of the Royale compilers tools.
  */
-public class FalconToolGroup extends AbstractFlexToolGroup {
+public class RoyaleToolGroup extends AbstractFlexToolGroup {
 
-    public FalconToolGroup() {
-        super("Falcon");
+    public RoyaleToolGroup() {
+        super("Royale");
         addFlexTool(new COMPC());
         addFlexTool(new MXMLC());
         addFlexTool(new Optimizer());

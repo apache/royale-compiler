@@ -1589,7 +1589,7 @@ public class ABCGeneratingReducer
         currentScope.getMethodBodySemanticChecker().checkCompoundAssignment(iNode, member, assign_opcode);
 
         //  TODO: Depending on the resolution of ASC-4159 and 
-        //  the corresponding Falcon backwards compatibility
+        //  the corresponding Royale backwards compatibility
         //  issue, cache the stem expression in a local to avoid
         //  multiple evaluations.
         result.addAll(replicate(stem));

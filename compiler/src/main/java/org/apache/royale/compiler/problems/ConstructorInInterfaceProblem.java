@@ -24,7 +24,7 @@ import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * Diagnostic emitted when an interface has a constructor.  This defaults
- * to a warning because Flex 4.X asc allows interfaces to have constructors.
+ * to a warning because Royale allows interfaces to have constructors.
  */
 @DefaultSeverity(CompilerProblemSeverity.WARNING)
 public final class ConstructorInInterfaceProblem extends SemanticWarningProblem

@@ -46,7 +46,7 @@ public class CompileTypedefsMojo
 
     @Override
     protected String getToolGroupName() {
-        return "Falcon";
+        return "Royale";
     }
 
     @Override

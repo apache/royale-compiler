@@ -44,7 +44,7 @@ public class TestSourceMapMXMLScript extends RoyaleSourceMapTestBase
         String definitionName = definition.getQualifiedName();
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));
         int endColumn = definitionName.length() + 14;
-        ///**\n * @export\n * @type {*}\n */\nFalconTest_A.prototype.foo
+        ///**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
         assertMapping(node, 0, 4, 48, 0, 48, endColumn);  // foo
     }
 
@@ -62,7 +62,7 @@ public class TestSourceMapMXMLScript extends RoyaleSourceMapTestBase
         String definitionName = definition.getQualifiedName();
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));
         int nameEndColumn = definitionName.length() + 14;
-        ///**\n * @export\n * @type {*}\n */\nFalconTest_A.prototype.foo
+        ///**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
         assertMapping(node, 0, 9, 44, 0, 44, nameEndColumn);  // foo
         assertMapping(node, 0, 0, 44, nameEndColumn, 44, nameEndColumn + 11);  // = function
         assertMapping(node, 0, 12, 44, nameEndColumn + 11, 44, nameEndColumn + 12);  // (

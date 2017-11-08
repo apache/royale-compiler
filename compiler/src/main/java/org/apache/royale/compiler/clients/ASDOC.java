@@ -127,7 +127,7 @@ public class ASDOC extends MXMLC implements FlexTool
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache Flex ASDoc Compiler" + NEWLINE +
+        String message = "Apache Royale ASDoc Compiler" + NEWLINE +
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }

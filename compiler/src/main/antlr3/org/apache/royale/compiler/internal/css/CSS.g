@@ -18,7 +18,7 @@
  */
 
 /**
- * This is a grammar for advanced CSS in Flex. It parses the CSS document and
+ * This is a grammar for advanced CSS in Royale. It parses the CSS document and
  * generate DOM objects.
  */
 grammar CSS;
@@ -211,13 +211,13 @@ mediaQuery
     ;
   
 /**
- * This rule matches the actual Flex media query conditions.
+ * This rule matches the actual Royale media query conditions.
  * For example: (application-dpi: 240) and (os-platform: "Android")
  */
 medium 
     :   mediumCondition    
         (  
-            // Flex only support "and" at the moment.
+            // Royale only support "and" at the moment.
             'and' 
             mediumCondition
             | mediumCondition

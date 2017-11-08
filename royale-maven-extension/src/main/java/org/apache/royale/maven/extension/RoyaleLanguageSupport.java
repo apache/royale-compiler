@@ -27,12 +27,12 @@ import javax.inject.Named;
  */
 @Named
 @Component( role = LanguageSupport.class, hint = "royale" )
-public class FlexJsLanguageSupport implements LanguageSupport {
+public class RoyaleLanguageSupport implements LanguageSupport {
 
-    private static final FlexJsScopeSelector SCOPE_SELECTOR = new FlexJsScopeSelector();
-    private static final FlexJsScopeDeriver SCOPE_DERIVER = new FlexJsScopeDeriver();
+    private static final RoyaleScopeSelector SCOPE_SELECTOR = new RoyaleScopeSelector();
+    private static final RoyaleScopeDeriver SCOPE_DERIVER = new RoyaleScopeDeriver();
 
-    public FlexJsLanguageSupport() {
+    public RoyaleLanguageSupport() {
         System.out.println("Royale Support");
     }
 

@@ -29,7 +29,7 @@
   <artifactId>compiler-test-utils</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 
-  <name>Apache Flex - Royale: Compiler: Test Utils</name>
+  <name>Apache Royale: Compiler: Test Utils</name>
   <description>
     Shared test code, which is needed by the compiler and the compiler-jx test-suites.
   </description>

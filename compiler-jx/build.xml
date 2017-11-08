@@ -19,8 +19,6 @@
 -->
 <project name="compiler-jx" default="main" basedir=".">
 
-    <property name="FALCONJX_HOME" location="${basedir}"/>
-    
     <pathconvert property="basedir_clean" dirsep="/">
 		<path location="${basedir}" />
     </pathconvert>
@@ -40,15 +38,15 @@
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
-    <property name="manifest.Implementation-Title" value="Apache Flex Cross-Compiler"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 
     <property name="src" value="${basedir_clean}/src/main/java" />
 	<property name="lib" value="${basedir_clean}/lib" />
 	
-	<property name="falcon.basedir" value="${basedir_clean}/../compiler" />
-    <property name="falcon.lib.dir" value="${falcon.basedir}/lib" />
+	<property name="royale.basedir" value="${basedir_clean}/../compiler" />
+    <property name="royale.lib.dir" value="${royale.basedir}/lib" />
 	
 	<property name="classes.dir" value="${basedir_clean}/target/classes" />
 	
@@ -65,7 +63,7 @@
     <property name="build.number" value="0"/>
 
     <path id="classpath">
-        <filelist dir="${falcon.lib.dir}/external">
+        <filelist dir="${royale.lib.dir}/external">
             <file name="antlr.jar" />
             <file name="commons-lang-2.6.jar" />
         </filelist>
@@ -88,7 +86,7 @@
             source="${javac.src}" target="${javac.src}">
 			<src path="${src}" />
 			<classpath>
-				<pathelement path="${falcon.basedir}/target/classes" />
+				<pathelement path="${royale.basedir}/target/classes" />
 			</classpath>
 		</javac>
 	</target>
@@ -97,7 +95,7 @@
 		<mkdir dir="${classes.dir}" />
         <mkdir dir="${classes.dir}/META-INF" />
         <mkdir dir="${lib}/google/closure-compiler" />
-        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}" />
+        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false"/>
     </target>
 	
 	<target name="main" depends="prebuild,compile">
@@ -105,12 +103,12 @@
         <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.jx" tofile="${classes.dir}/META-INF/NOTICE"/>
+        <copy file="${basedir}/../NOTICE" tofile="${classes.dir}/META-INF/NOTICE"/>
         
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
             includes="**/*.properties,org/apache/**/*,com/google/**/*,META-INF/**/*"
-			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/flex/compiler/internal/parsing/abc/*" >
+			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/royale/compiler/internal/parsing/abc/*" >
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>

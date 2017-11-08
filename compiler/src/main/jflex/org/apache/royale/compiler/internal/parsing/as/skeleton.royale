@@ -238,7 +238,7 @@
     return zzMarkedPos-zzStartRead;
   }
   
-  //////////////////////Start Falcon additions///////////////////////////////
+  //////////////////////Start Royale additions///////////////////////////////
   
   /**
    * returns the start of the current read
@@ -288,7 +288,7 @@
     zzMarkedPos = zzStartRead + 1;
   }
 
-//////////////////////End Falcon additions///////////////////////////////
+//////////////////////End Royale additions///////////////////////////////
 
   /**
    * Reports an error that occured while scanning.

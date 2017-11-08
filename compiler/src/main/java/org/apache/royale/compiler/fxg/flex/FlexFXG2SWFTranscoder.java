@@ -740,7 +740,7 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
         buf.append("    {\r\n");
         
         //TODO: This line causes a stack overflow, even though the super class has the same setter. 
-        //Bug filed against falcon for this: <will file a bug for this as soon as I come up with a basic repro case>
+        //Bug filed against royale for this: <will file a bug for this as soon as I come up with a basic repro case>
         //Uncomment this when the bug is fixed.
         //buf.append("        super.moduleFactory = factory;\r\n");
         

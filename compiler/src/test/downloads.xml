@@ -209,13 +209,13 @@
                 <not>
                     <available file="${destDir}/${destJarFile}" />
                 </not>
-                <isset property="env.FLEX_DOWNLOAD_CACHE" />
+                <isset property="env.ROYALE_DOWNLOAD_CACHE" />
             </and>
         </condition>
         <echo>Need file: ${still_no_file}</echo>
     </target>
     <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
-        <copy file="${env.FLEX_DOWNLOAD_CACHE}/${srcJarFile}" tofile="${destDir}/${destJarFile}" />
+        <copy file="${env.ROYALE_DOWNLOAD_CACHE}/${srcJarFile}" tofile="${destDir}/${destJarFile}" />
     </target>
 
 

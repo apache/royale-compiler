@@ -349,7 +349,7 @@ public class DefaultDebuggerCallbacks implements IDebuggerCallbacks
 	/**
 	 * This implementation of queryWindowsRegistry() does not make any native
 	 * calls.  I had to do it this way because it is too hard, at this point,
-	 * to add native code to the Flex code tree.
+	 * to add native code to the Royale code tree.
 	 */
 	public String queryWindowsRegistry(String key, String value, int registryBitMode) throws IOException
 	{

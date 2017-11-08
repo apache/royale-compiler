@@ -49,7 +49,7 @@ public interface Builder
     void setConfiguration(Configuration configuration);
     
     /**
-     * Gets the default compiler options. The default values are specified in the <code>flex-config.xml</code>
+     * Gets the default compiler options. The default values are specified in the <code>royale-config.xml</code>
      * file. You can override the default values by using methods of the <code>Configuration</code> interface.
      * 
      * <p>

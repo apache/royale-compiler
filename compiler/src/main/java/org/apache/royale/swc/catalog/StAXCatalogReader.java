@@ -166,7 +166,7 @@ public class StAXCatalogReader implements ICatalogXMLConstants
                     currentLibrary.addScript(currentScript);
                     timeStamps.put(name, mod);
                 }
-                else if (tagName.equals(TAG_FLEX))
+                else if (tagName.equals(TAG_ROYALE))
                 {
                     final String royaleVersion = reader.getAttributeValue(null, ATTR_VERSION);
                     final String minSupportedVersion = reader.getAttributeValue(null, ATTR_MINIMUM_SUPPORTED_VERSION);
@@ -174,7 +174,7 @@ public class StAXCatalogReader implements ICatalogXMLConstants
                     ISWCVersion swcVersion = swc.getVersion();
                     swcVersion.setRoyaleVersion(royaleVersion);
                     swcVersion.setRoyaleMinSupportedVersion(minSupportedVersion);
-                    swcVersion.setFlexBuild(royaleBuild);
+                    swcVersion.setRoyaleBuild(royaleBuild);
                 }
                 else if (tagName.equals(TAG_SWC))
                 {

@@ -31,7 +31,7 @@
   <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Apache Royale - Royale: Compiler: Parent</name>
+  <name>Apache Royale: Compiler: Parent</name>
   <description>The Apache Royale Project</description>
 
   <scm>

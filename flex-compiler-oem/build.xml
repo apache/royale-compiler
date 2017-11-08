@@ -46,7 +46,7 @@
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler directory -->
-    <!-- where a Falcon SDK is built -->
+    <!-- where a Royale SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}"/>
 
@@ -228,9 +228,9 @@
     <target name="jar" depends="downloads, oem.jar, compc.jar"
     	    description="Creates JAR files"/>
 	    	
-	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
+	<target name="sdk" depends="jar" description="Builds a Royale SDK"/>
 
-    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
+    <target name="main" depends="sdk" description="Default target - Builds a Royale SDK and builds Royale Javadoc">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>

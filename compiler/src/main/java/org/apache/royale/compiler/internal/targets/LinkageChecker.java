@@ -127,7 +127,7 @@ public class LinkageChecker
             {
                 // Don't allow embed units to be extern'd. Rely on the class
                 // containing the embed to either pull in or extern the embed.
-                // Falcon is different from the old compiler in that embed
+                // Royale is different from the old compiler in that embed
                 // compilation units generated from files in a SWC have
                 // their qname associated with the SWC. This led to 
                 // externing the embed compilation unit when the SWC was on

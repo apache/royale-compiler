@@ -506,7 +506,7 @@ public class OEMUtil
 	
 	public static final String formatConfigurationBuffer(ConfigurationBuffer cfgbuf)
 	{
-		return FileConfigurator.formatBuffer(cfgbuf, "flex-config",
+		return FileConfigurator.formatBuffer(cfgbuf, "royale-config",
 											 /*OEMUtil.setupLocalizationManager(),*/ "flex2.configuration");
 	}
 

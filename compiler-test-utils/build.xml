@@ -34,8 +34,6 @@
         <path location="${basedir}"/>
     </pathconvert>
     
-    <property name="FALCON_HOME" value="${basedir}/../compiler"/>
-    
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler-test-utils}/local.properties"/>

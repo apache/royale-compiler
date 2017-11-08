@@ -462,13 +462,13 @@ public interface ITargetSettings
     boolean useGPU();
 
     /**
-     * Used when creating a library. Specifies the minimum version of Flex that
-     * is written into the catalog of the created library. Flex uses the minimum
+     * Used when creating a library. Specifies the minimum version of Royale that
+     * is written into the catalog of the created library. Royale uses the minimum
      * version when compiling an application to filter out libraries that have a
      * minimum version that is greater than the specified compatibility
      * version.
      * 
-     * @return the minimum supported version of Flex.
+     * @return the minimum supported version of Royale.
      */
     String getRoyaleMinimumSupportedVersion();
 

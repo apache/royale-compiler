@@ -42,7 +42,7 @@ import org.apache.royale.compiler.targets.ITargetProgressMonitor;
 import org.apache.royale.compiler.targets.ITargetSettings;
 
 /**
- * Base interface for all project types that support all flex source file types
+ * Base interface for all project types that support all Royale source file types
  * ( mxml, fxg, css, etc ).
  */
 public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnlyProjectSettings
@@ -130,7 +130,7 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
 
     /**
      * The absolute path of the services-config.xml file. This file used
-     * to configure a Flex client to talk to a BlazeDS server.
+     * to configure a Royale client to talk to a BlazeDS server.
      * 
      * @return the absolute path of the services-config.xml file. Null
      * if the file has not been configured.
@@ -190,7 +190,7 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
     List<String> getThemeNames();
     
     /**
-     * Option of enable or prevent various Flex compiler behaviors.
+     * Option of enable or prevent various Royale compiler behaviors.
      * This is currently used to enable/disable the generation of a root class for library swfs 
      * and generation of code for application swfs.
      */
@@ -205,7 +205,7 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      * <code>"spark.controls.Button"</code>
      * @return A collection of {@link XMLName}'s representing a MXML tags, such
      * as a <code>"Button"</code> tag in the namespace
-     * <code>"library://ns.adobe.com/flex/spark"</code>.
+     * <code>"library://ns.apache.org/royale/basic"</code>.
      */
     Collection<XMLName> getTagNamesForClass(String className);
     
