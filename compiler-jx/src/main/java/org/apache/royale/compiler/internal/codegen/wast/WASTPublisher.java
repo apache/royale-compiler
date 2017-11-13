@@ -26,17 +26,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.wast.IWASTPublisher;
 import org.apache.royale.compiler.config.Configuration;
-import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
 
 public class WASTPublisher implements IWASTPublisher {
 
-    public WASTPublisher(RoyaleJSProject project, Configuration config)
+    public WASTPublisher(RoyaleWASTProject project, Configuration config)
     {
         this.project = project;
         this.configuration = config;
     }
 
-    protected RoyaleJSProject project;
+    protected RoyaleWASTProject project;
     protected File outputFolder;
     protected File outputParentFolder;
 

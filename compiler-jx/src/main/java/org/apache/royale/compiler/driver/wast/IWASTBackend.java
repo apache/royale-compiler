@@ -19,8 +19,47 @@
 
 package org.apache.royale.compiler.driver.wast;
 
+import java.util.List;
+
+import org.apache.royale.compiler.codegen.as.IASEmitter;
+import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.codegen.wast.IWASTPublisher;
+import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITarget;
+import org.apache.royale.compiler.targets.ITargetProgressMonitor;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.visitor.IBlockWalker;
+import org.apache.royale.compiler.visitor.as.IASBlockWalker;
+import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
 public interface IWASTBackend extends IBackend {
+
+    IMXMLBlockWalker createMXMLWalker(RoyaleWASTProject project,
+            List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
+            IASEmitter asEmitter, IBlockWalker asBlockWalker);
+
+    IASWriter createMXMLWriter(RoyaleWASTProject project,
+            List<ICompilerProblem> errors, ICompilationUnit compilationUnit,
+            boolean enableDebug);
+
+    IWASTPublisher createPublisher(RoyaleWASTProject project,
+            List<ICompilerProblem> errors, Configuration config);
+
+    ITarget createTarget(RoyaleWASTProject project, ITargetSettings settings,
+            ITargetProgressMonitor monitor);
+
+    IASBlockWalker createWalker(RoyaleWASTProject project,
+            List<ICompilerProblem> errors, IASEmitter emitter);
+
+    IASWriter createWriter(RoyaleWASTProject project, List<ICompilerProblem> errors,
+                           ICompilationUnit compilationUnit, boolean enableDebug);
+
+    ASFilterWriter createWriterBuffer(RoyaleWASTProject project);
 
 }

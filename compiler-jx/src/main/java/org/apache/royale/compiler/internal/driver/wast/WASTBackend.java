@@ -28,10 +28,10 @@ import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.royale.compiler.codegen.wast.IWASTPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.driver.IPublisher;
 import org.apache.royale.compiler.driver.wast.IWASTBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASAfterNodeStrategy;
 import org.apache.royale.compiler.internal.codegen.as.ASBeforeNodeStrategy;
@@ -41,8 +41,8 @@ import org.apache.royale.compiler.internal.codegen.wast.WASTEmitter;
 import org.apache.royale.compiler.internal.codegen.wast.WASTPublisher;
 import org.apache.royale.compiler.internal.codegen.wast.WASTWriter;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
-import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
+import org.apache.royale.compiler.internal.targets.RoyaleWASTTarget;
 import org.apache.royale.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.royale.compiler.internal.visitor.as.BeforeAfterStrategy;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -79,8 +79,8 @@ public class WASTBackend implements IWASTBackend {
 	}
 
 	@Override
-	public ITarget createTarget(RoyaleJSProject project, ITargetSettings settings, ITargetProgressMonitor monitor) {
-        return new JSTarget(project, settings, monitor);
+	public ITarget createTarget(RoyaleWASTProject project, ITargetSettings settings, ITargetProgressMonitor monitor) {
+        return new RoyaleWASTTarget(project, settings, monitor);
 	}
 
 	@Override
@@ -99,26 +99,26 @@ public class WASTBackend implements IWASTBackend {
 	}
 
 	@Override
-	public ASFilterWriter createWriterBuffer(RoyaleJSProject project) {
+	public ASFilterWriter createWriterBuffer(RoyaleWASTProject project) {
         StringWriter out = new StringWriter();
         ASFilterWriter writer = new ASFilterWriter(out);
         return writer;
 	}
 
 	@Override
-	public IASWriter createWriter(RoyaleJSProject project, List<ICompilerProblem> errors,
+	public IASWriter createWriter(RoyaleWASTProject project, List<ICompilerProblem> errors,
 			ICompilationUnit compilationUnit, boolean enableDebug) {
         return new WASTWriter(project, errors, compilationUnit, enableDebug);
 	}
 
 	@Override
-	public IASWriter createMXMLWriter(RoyaleJSProject project, List<ICompilerProblem> errors,
+	public IASWriter createMXMLWriter(RoyaleWASTProject project, List<ICompilerProblem> errors,
 			ICompilationUnit compilationUnit, boolean enableDebug) {
         throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public IASBlockWalker createWalker(RoyaleJSProject project, List<ICompilerProblem> errors, IASEmitter emitter) {
+	public IASBlockWalker createWalker(RoyaleWASTProject project, List<ICompilerProblem> errors, IASEmitter emitter) {
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
 
         BeforeAfterStrategy strategy = new BeforeAfterStrategy(
@@ -131,12 +131,12 @@ public class WASTBackend implements IWASTBackend {
 	}
 
 	@Override
-	public IPublisher createPublisher(RoyaleJSProject project, List<ICompilerProblem> errors, Configuration config) {
+	public IWASTPublisher createPublisher(RoyaleWASTProject project, List<ICompilerProblem> errors, Configuration config) {
         return new WASTPublisher(project, config);
 	}
 
 	@Override
-	public IMXMLBlockWalker createMXMLWalker(RoyaleJSProject project, List<ICompilerProblem> errors,
+	public IMXMLBlockWalker createMXMLWalker(RoyaleWASTProject project, List<ICompilerProblem> errors,
 			IMXMLEmitter mxmlEmitter, IASEmitter asEmitter, IBlockWalker asBlockWalker) {
         throw new UnsupportedOperationException();
 	}

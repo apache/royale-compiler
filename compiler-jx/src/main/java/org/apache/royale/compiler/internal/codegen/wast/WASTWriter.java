@@ -28,18 +28,18 @@ import java.util.List;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 
 public class WASTWriter implements IASWriter {
 
-    private RoyaleJSProject project;
+    private RoyaleWASTProject project;
     private List<ICompilerProblem> problems;
     private ICompilationUnit compilationUnit;
 
-    public WASTWriter(RoyaleJSProject project, List<ICompilerProblem> problems,
+    public WASTWriter(RoyaleWASTProject project, List<ICompilerProblem> problems,
             ICompilationUnit compilationUnit, boolean enableDebug)
 	{
 		this.project = project;

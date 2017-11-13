@@ -23,7 +23,9 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.wast.IWASTBackend;
 import org.apache.royale.compiler.internal.driver.wast.WASTBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**
@@ -33,13 +35,15 @@ import org.apache.royale.utils.FilenameNormalization;
  */
 public class WASTTestBase extends ASTestBase {
 
+    protected RoyaleWASTProject project;
+
     @Override
     public void setUp()
     {
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
-        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+        asBlockWalker = ((IWASTBackend) backend).createWalker(project, errors, asEmitter);
     }
 
     @Override

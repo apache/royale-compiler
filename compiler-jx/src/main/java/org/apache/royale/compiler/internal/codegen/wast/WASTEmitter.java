@@ -31,10 +31,10 @@ public class WASTEmitter extends ASEmitter {
         super(out);
     }
 
-    @Override
+    /*@Override
     public void emitClass(IClassNode node)
     {
      	writeToken("Hoi");
-    }
+    }*/
 
 }
