@@ -50,7 +50,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleJSProject(workspace, backend);
+        royaleJSProject = new RoyaleJSProject(workspace, backend);
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	try {
@@ -59,7 +59,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	((RoyaleJSProject)project).config = config;
+    	((RoyaleJSProject)royaleJSProject).config = config;
         super.setUp();
     }
 

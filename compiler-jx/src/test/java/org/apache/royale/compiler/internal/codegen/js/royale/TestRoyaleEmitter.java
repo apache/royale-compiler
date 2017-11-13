@@ -39,7 +39,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     public void setUp()
     {
 		backend = createBackend();
-		project = new RoyaleJSProject(workspace, backend);
+		royaleJSProject = new RoyaleJSProject(workspace, backend);
 
         super.setUp();
     }
@@ -414,10 +414,10 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         super.addDependencies();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
-        if (project.config == null)
-        	project.config = new JSGoogConfiguration();
+        if (royaleJSProject.config == null)
+        	royaleJSProject.config = new JSGoogConfiguration();
         try {
-			project.config.setKeepASDoc(null, true);
+			royaleJSProject.config.setKeepASDoc(null, true);
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

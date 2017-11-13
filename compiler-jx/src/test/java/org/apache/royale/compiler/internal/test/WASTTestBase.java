@@ -35,15 +35,17 @@ import org.apache.royale.utils.FilenameNormalization;
  */
 public class WASTTestBase extends ASTestBase {
 
-    protected RoyaleWASTProject project;
-
     @Override
     public void setUp()
     {
+        backend = createBackend();
+        
+        royaleWASTProject = new RoyaleWASTProject(workspace, (IWASTBackend) backend);
+
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
-        asBlockWalker = ((IWASTBackend) backend).createWalker(project, errors, asEmitter);
+        asBlockWalker = ((IWASTBackend) backend).createWalker(royaleWASTProject, errors, asEmitter);
     }
 
     @Override

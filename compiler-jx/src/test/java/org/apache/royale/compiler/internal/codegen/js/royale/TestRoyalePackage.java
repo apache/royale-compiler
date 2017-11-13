@@ -38,7 +38,7 @@ public class TestRoyalePackage extends TestGoogPackage
     public void setUp()
     {
 		backend = createBackend();
-		project = new RoyaleJSProject(workspace, backend);
+		royaleJSProject = new RoyaleJSProject(workspace, backend);
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	ArrayList<String> values = new ArrayList<String>();
     	values.add("Event");
@@ -47,7 +47,7 @@ public class TestRoyalePackage extends TestGoogPackage
     	ArrayList<String> values2 = new ArrayList<String>();
     	values2.add("Before");
     	config.setCompilerKeepCodeWithMetadata(null, values2);
-    	((RoyaleJSProject)project).config = config;
+    	((RoyaleJSProject)royaleJSProject).config = config;
         super.setUp();
     }
     

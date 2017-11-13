@@ -59,8 +59,8 @@ public class TestRoyaleProject extends TestGoogProject
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleJSProject(workspace, backend);
-        project.config = new JSGoogConfiguration();
+        royaleJSProject = new RoyaleJSProject(workspace, backend);
+        royaleJSProject.config = new JSGoogConfiguration();
         super.setUp();
     }
     
@@ -170,11 +170,11 @@ public class TestRoyaleProject extends TestGoogProject
         String fileName = "Test";
 
         try {
-			((RoyaleJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			((RoyaleJSProject)royaleJSProject).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((RoyaleJSProject)project).config, (RoyaleJSProject)project));
+        royaleJSProject.setTargetSettings(new TargetSettings(((RoyaleJSProject)royaleJSProject).config, (RoyaleJSProject)royaleJSProject));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/overrides").getPath();
@@ -193,11 +193,11 @@ public class TestRoyaleProject extends TestGoogProject
         String fileName = "Test";
 
         try {
-			((RoyaleJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			((RoyaleJSProject)royaleJSProject).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((RoyaleJSProject)project).config, (RoyaleJSProject)project));
+        royaleJSProject.setTargetSettings(new TargetSettings(((RoyaleJSProject)royaleJSProject).config, (RoyaleJSProject)royaleJSProject));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/bad_overrides").getPath();
@@ -344,7 +344,7 @@ public class TestRoyaleProject extends TestGoogProject
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(FilenameNormalization.normalize(sourcePath)));
-        ((RoyaleJSProject)project).unitTestExterns = externs;
+        ((RoyaleJSProject)royaleJSProject).unitTestExterns = externs;
     }
 
     @Override

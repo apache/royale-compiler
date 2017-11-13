@@ -37,8 +37,8 @@ public class TestRoyaleClass extends TestGoogClass
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleJSProject(workspace, backend);
-    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
+        royaleJSProject = new RoyaleJSProject(workspace, backend);
+    	((RoyaleJSProject)royaleJSProject).config = new JSGoogConfiguration();
         super.setUp();
     }
     

@@ -55,7 +55,10 @@ public class ASTestBase extends TestBase
         testAdapter = TestAdapterFactory.getTestAdapter();
 
         asEmitter = backend.createEmitter(writer);
-        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
+        
+        if (backend instanceof IJSBackend) {
+          asBlockWalker = ((IJSBackend) backend).createWalker(royaleJSProject, errors, asEmitter);
+        }
     }
 
     @Override

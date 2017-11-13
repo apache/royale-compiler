@@ -36,7 +36,7 @@ public class TestRoyaleAccessors extends ASTestBase
     public void setUp()
     {
         super.setUp();
-    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
+    	((RoyaleJSProject)royaleJSProject).config = new JSGoogConfiguration();
     }
     
     @Test

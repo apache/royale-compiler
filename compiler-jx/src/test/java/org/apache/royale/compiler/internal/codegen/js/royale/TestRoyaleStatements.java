@@ -45,7 +45,7 @@ public class TestRoyaleStatements extends TestGoogStatements
     public void setUp()
     {
         backend = createBackend();
-        project = new RoyaleJSProject(workspace, backend);
+        royaleJSProject = new RoyaleJSProject(workspace, backend);
         super.setUp();
     }
     

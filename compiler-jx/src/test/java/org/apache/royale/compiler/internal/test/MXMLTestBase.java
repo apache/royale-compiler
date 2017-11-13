@@ -48,8 +48,8 @@ public class MXMLTestBase extends TestBase
         asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
 
-        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
-        mxmlBlockWalker = ((IJSBackend) backend).createMXMLWalker(project, errors,
+        asBlockWalker = ((IJSBackend) backend).createWalker(royaleJSProject, errors, asEmitter);
+        mxmlBlockWalker = ((IJSBackend) backend).createMXMLWalker(royaleJSProject, errors,
                 mxmlEmitter, asEmitter, asBlockWalker);
     }
 

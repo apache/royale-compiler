@@ -47,7 +47,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     public void setUp()
     {
         super.setUp();
-    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
+    	((RoyaleJSProject)royaleJSProject).config = new JSGoogConfiguration();
     }
 
     @Test
@@ -60,7 +60,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 
         mxmlBlockWalker.visitFile(node);
         
-        JSCSSCompilationSession jscss = (JSCSSCompilationSession)project.getCSSCompilationSession();
+        JSCSSCompilationSession jscss = (JSCSSCompilationSession)royaleJSProject.getCSSCompilationSession();
         jscss.setExcludeDefaultsCSSFiles(new ArrayList<String>());
 
         String result = getCodeFromFile("CSSTestSource_result.css", "royale/files");

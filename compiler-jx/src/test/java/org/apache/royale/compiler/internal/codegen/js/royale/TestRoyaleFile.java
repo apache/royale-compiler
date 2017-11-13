@@ -42,7 +42,7 @@ public class TestRoyaleFile extends RoyaleTestBase
     public void setUp()
     {
         super.setUp();
-    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
+    	((RoyaleJSProject)royaleJSProject).config = new JSGoogConfiguration();
     }
 
     @Test

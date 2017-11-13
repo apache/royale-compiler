@@ -45,15 +45,15 @@ public class RoyaleTestBase extends TestBase
     public void setUp()
     {
         backend = createBackend();
-    	project = new RoyaleJSProject(workspace, backend);
+    	royaleJSProject = new RoyaleJSProject(workspace, backend);
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
         asEmitter.setParentEmitter(mxmlEmitter);
 
-        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
-        mxmlBlockWalker = ((IJSBackend) backend).createMXMLWalker(project, errors,
+        asBlockWalker = ((IJSBackend) backend).createWalker(royaleJSProject, errors, asEmitter);
+        mxmlBlockWalker = ((IJSBackend) backend).createMXMLWalker(royaleJSProject, errors,
                 mxmlEmitter, asEmitter, asBlockWalker);
     }
 

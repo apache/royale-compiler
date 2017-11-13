@@ -58,7 +58,7 @@ public abstract class AMDTestBase extends TestBase
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
-        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
+        asBlockWalker = ((IJSBackend) backend).createWalker(royaleJSProject, errors, asEmitter);
 
         projectPath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 "amd/simple-project/src").getPath();
