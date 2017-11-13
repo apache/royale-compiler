@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.BuildCanceledException;
 import org.apache.royale.compiler.internal.driver.js.JSApplication;
-import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.targets.IJSTarget;
 import org.apache.royale.compiler.targets.ITargetProgressMonitor;
@@ -49,7 +49,7 @@ public class JSTarget extends Target implements IJSTarget
      * 
      * @param project the owner project
      */
-    public JSTarget(RoyaleJSProject project, ITargetSettings targetSettings,
+    public JSTarget(RoyaleProject project, ITargetSettings targetSettings,
                     ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);

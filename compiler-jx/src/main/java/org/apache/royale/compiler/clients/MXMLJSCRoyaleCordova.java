@@ -44,6 +44,7 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
@@ -318,7 +319,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
                         return false;
                 }
 
-                jsPublisher = (IJSPublisher) project.getBackend().createPublisher(
+                jsPublisher = (IJSPublisher) ((IJSBackend) project.getBackend()).createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -349,12 +350,12 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
 	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = (IJSWriter) project.getBackend().createWriter(project,
+	                            writer = (IJSWriter) ((IJSBackend) project.getBackend()).createWriter(project,
 	                                    errors, unit, false);
 	                        }
 	                        else
 	                        {
-	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
+	                            writer = (IJSWriter) ((IJSBackend) project.getBackend()).createMXMLWriter(
 	                                    project, errors, unit, false);
 	                        }
 	
@@ -587,7 +588,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
         if (settings != null)
             project.setTargetSettings(settings);
 
-        target = project.getBackend().createTarget(project,
+        target = ((IJSBackend) project.getBackend()).createTarget(project,
                 getTargetSettings(), null);
 
         return true;

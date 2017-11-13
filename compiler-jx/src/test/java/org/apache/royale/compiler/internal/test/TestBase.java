@@ -46,6 +46,7 @@ import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
@@ -127,7 +128,7 @@ public class TestBase implements ITestBase
         {
         }
 
-        writer = backend.createWriterBuffer(project);
+        writer = ((IJSBackend) backend).createWriterBuffer(project);
 
         try
         {
@@ -371,7 +372,7 @@ public class TestBase implements ITestBase
         project.mainCU = mainCU;
         Configurator projectConfigurator = backend.createConfigurator();
 
-        JSTarget target = (JSTarget) backend.createTarget(project,
+        JSTarget target = (JSTarget) ((IJSBackend) backend).createTarget(project,
                 projectConfigurator.getTargetSettings(null), null);
 
         ArrayList<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
@@ -415,9 +416,9 @@ public class TestBase implements ITestBase
                     final File outputClassFile = getOutputClassFile(qname
                             + "_output", outputRootDir);
 
-                    ASFilterWriter writer = backend.createWriterBuffer(project);
+                    ASFilterWriter writer = ((IJSBackend) backend).createWriterBuffer(project);
                     IASEmitter emitter = backend.createEmitter(writer);
-                    IASBlockWalker walker = backend.createWalker(project,
+                    IASBlockWalker walker = ((IJSBackend) backend).createWalker(project,
                             errors, emitter);
 
                     walker.visitCompilationUnit(cu);

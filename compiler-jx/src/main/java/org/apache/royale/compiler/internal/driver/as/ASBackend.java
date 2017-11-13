@@ -24,13 +24,16 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.ISourceMapEmitter;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.driver.IPublisher;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASAfterNodeStrategy;
 import org.apache.royale.compiler.internal.codegen.as.ASBeforeNodeStrategy;
 import org.apache.royale.compiler.internal.codegen.as.ASBlockWalker;
@@ -58,7 +61,7 @@ import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
  * 
  * @author Michael Schmalle
  */
-public class ASBackend implements IBackend
+public class ASBackend implements IJSBackend
 {
     @Override
     public String getOutputExtension()
@@ -68,6 +71,12 @@ public class ASBackend implements IBackend
 
     @Override
     public ISourceFileHandler getSourceFileHandlerInstance()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ISourceMapEmitter createSourceMapEmitter(IMappingEmitter emitter)
     {
         throw new UnsupportedOperationException();
     }

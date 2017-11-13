@@ -46,6 +46,7 @@ import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
@@ -106,7 +107,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         ROYALE_DUAL("royale_dual"),
         ROYALE_DITA("royale_dita"),
         JSC("jsc"),
-        NODE("node");
+        NODE("node"),
+        WAST("wast");
 
         private String text;
 
@@ -144,7 +146,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         //Node.js application
         JS_NODE("JSNode"),
         //Node.js module
-        JS_NODE_MODULE("JSNodeModule");
+        JS_NODE_MODULE("JSNodeModule"),
+        //WebAssembly
+        WAST("WAST");
 
         private String text;
 
@@ -380,6 +384,15 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	break targetloop;
 	                    }
 	                    break;
+	                case WAST:
+	                	MXMLWAST wast = new MXMLWAST();
+	                	lastCompiler = wast;
+	                    result = wast.mainNoExit(removeASArgs(args), problems.getProblems(), false);
+	                    if (result != 0 && result != 2)
+	                    {
+	                    	break targetloop;
+	                    }
+	                    break;
 	                // if you add a new js-output-type here, don't forget to also add it
 	                // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
 	                }
@@ -507,7 +520,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         return false;
                 }
 
-                jsPublisher = (IJSPublisher) project.getBackend().createPublisher(
+                jsPublisher = (IJSPublisher) ((IJSBackend) project.getBackend()).createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -540,12 +553,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = (IJSWriter) project.getBackend().createWriter(project,
+	                            writer = (IJSWriter) ((IJSBackend) project.getBackend()).createWriter(project,
 	                                    errors, unit, false);
 	                        }
 	                        else
 	                        {
-	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
+	                            writer = (IJSWriter) ((IJSBackend) project.getBackend()).createMXMLWriter(
 	                                    project, errors, unit, false);
 	                        }
 	
@@ -778,7 +791,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         if (settings != null)
             project.setTargetSettings(settings);
 
-        target = project.getBackend().createTarget(project,
+        target = ((IJSBackend) project.getBackend()).createTarget(project,
                 getTargetSettings(), null);
 
         return true;

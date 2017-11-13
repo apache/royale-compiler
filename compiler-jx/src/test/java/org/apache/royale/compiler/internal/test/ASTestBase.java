@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.driver.as.ASBackend;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IAccessorNode;
@@ -54,7 +55,7 @@ public class ASTestBase extends TestBase
         testAdapter = TestAdapterFactory.getTestAdapter();
 
         asEmitter = backend.createEmitter(writer);
-        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
     }
 
     @Override

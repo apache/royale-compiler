@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -67,9 +68,9 @@ public class ASWriter implements IASWriter
     @Override
     public void writeTo(OutputStream out)
     {
-        ASFilterWriter writer = project.getBackend().createWriterBuffer(project);
+        ASFilterWriter writer = ((IJSBackend) project.getBackend()).createWriterBuffer(project);
         IASEmitter emitter = project.getBackend().createEmitter(writer);
-        IASBlockWalker walker = project.getBackend().createWalker(project, problems, emitter);
+        IASBlockWalker walker = ((IJSBackend) project.getBackend()).createWalker(project, problems, emitter);
 
         walker.visitCompilationUnit(compilationUnit);
 

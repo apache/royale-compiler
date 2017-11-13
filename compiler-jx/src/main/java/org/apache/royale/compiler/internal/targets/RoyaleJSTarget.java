@@ -56,6 +56,7 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
             ITargetProgressMonitor progressMonitor)
     {
         super(project, targetSettings, progressMonitor);
+        
         royaleProject = project;
     }
     

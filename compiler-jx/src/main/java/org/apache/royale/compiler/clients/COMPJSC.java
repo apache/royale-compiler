@@ -42,6 +42,7 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
 import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
@@ -400,13 +401,13 @@ public class COMPJSC extends MXMLJSC
 	                        IASWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = project.getBackend().createWriter(project,
+	                            writer = ((IJSBackend) project.getBackend()).createWriter(project,
 	                                    (List<ICompilerProblem>) errors, unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
-	                            writer = project.getBackend().createMXMLWriter(
+	                            writer = ((IJSBackend) project.getBackend()).createMXMLWriter(
 	                                    project, (List<ICompilerProblem>) errors,
 	                                    unit, false);
 	                        }
@@ -427,13 +428,13 @@ public class COMPJSC extends MXMLJSC
 	                        IASWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = project.getBackend().createWriter(project,
+	                            writer = ((IJSBackend) project.getBackend()).createWriter(project,
 	                                    (List<ICompilerProblem>) errors, unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
-	                            writer = project.getBackend().createMXMLWriter(
+	                            writer = ((IJSBackend) project.getBackend()).createMXMLWriter(
 	                                    project, (List<ICompilerProblem>) errors,
 	                                    unit, false);
 	                        }
@@ -612,7 +613,7 @@ public class COMPJSC extends MXMLJSC
         else
             return false;
 
-        target = project.getBackend().createTarget(project,
+        target = ((IJSBackend) project.getBackend()).createTarget(project,
                 getTargetSettings(), null);
 
         return true;

@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.driver.mxml.MXMLBackend;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
@@ -47,8 +48,8 @@ public class MXMLTestBase extends TestBase
         asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
 
-        asBlockWalker = backend.createWalker(project, errors, asEmitter);
-        mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
+        mxmlBlockWalker = ((IJSBackend) backend).createMXMLWalker(project, errors,
                 mxmlEmitter, asEmitter, asBlockWalker);
     }
 

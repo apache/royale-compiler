@@ -34,6 +34,7 @@ import org.apache.royale.compiler.codegen.as.IASWriter;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleASDocEmitter;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.driver.js.IJSApplication;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
@@ -246,13 +247,13 @@ public class ASDOCJSC extends MXMLJSCRoyale
                         IASWriter writer;
                         if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                         {
-                            writer = project.getBackend().createWriter(project,
+                            writer = ((IJSBackend) project.getBackend()).createWriter(project,
                                     (List<ICompilerProblem>) errors, unit,
                                     false);
                         }
                         else
                         {
-                            writer = project.getBackend().createMXMLWriter(
+                            writer = ((IJSBackend) project.getBackend()).createMXMLWriter(
                                     project, (List<ICompilerProblem>) errors,
                                     unit, false);
                         }
@@ -408,7 +409,7 @@ public class ASDOCJSC extends MXMLJSCRoyale
         else
             return false;
 
-        target = project.getBackend().createTarget(project,
+        target = ((IJSBackend) project.getBackend()).createTarget(project,
                 getTargetSettings(), null);
 
         return true;

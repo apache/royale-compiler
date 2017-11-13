@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.driver.js.IJSBackend;
 import org.apache.royale.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
@@ -57,7 +58,7 @@ public abstract class AMDTestBase extends TestBase
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
-        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+        asBlockWalker = ((IJSBackend) backend).createWalker(project, errors, asEmitter);
 
         projectPath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 "amd/simple-project/src").getPath();

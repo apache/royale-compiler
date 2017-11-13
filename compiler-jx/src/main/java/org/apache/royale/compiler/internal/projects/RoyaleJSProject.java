@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.royale.compiler.clients.JSConfiguration;
+import org.apache.royale.compiler.clients.WASTConfiguration;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
