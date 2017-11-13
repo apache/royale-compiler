@@ -107,8 +107,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         ROYALE_DUAL("royale_dual"),
         ROYALE_DITA("royale_dita"),
         JSC("jsc"),
-        NODE("node"),
-        WAST("wast");
+        NODE("node");
 
         private String text;
 
@@ -146,9 +145,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         //Node.js application
         JS_NODE("JSNode"),
         //Node.js module
-        JS_NODE_MODULE("JSNodeModule"),
-        //WebAssembly
-        WAST("WAST");
+        JS_NODE_MODULE("JSNodeModule");
 
         private String text;
 
@@ -379,15 +376,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0 && result != 2)
-	                    {
-	                    	break targetloop;
-	                    }
-	                    break;
-	                case WAST:
-	                	MXMLWAST wast = new MXMLWAST();
-	                	lastCompiler = wast;
-	                    result = wast.mainNoExit(removeASArgs(args), problems.getProblems(), false);
 	                    if (result != 0 && result != 2)
 	                    {
 	                    	break targetloop;
