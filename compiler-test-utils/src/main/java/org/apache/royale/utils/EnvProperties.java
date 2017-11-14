@@ -74,6 +74,11 @@ public class EnvProperties {
      */
     public String FPVER;
     
+    /**
+     * WAT2WASM_HOME
+     */
+    public String WAT2WASM;
+    
 	
 	private static EnvProperties env;
 	
@@ -138,7 +143,9 @@ public class EnvProperties {
         
         GOOG = p.getProperty(prefix + "GOOG_HOME", System.getenv("GOOG_HOME"));
         System.out.println("environment property - GOOG_HOME = " + GOOG);
-
+        
+        WAT2WASM = p.getProperty(prefix + "WAT2WASM_HOME", System.getenv("WAT2WASM_HOME"));
+        System.out.println("environment property - WAT2WASM_HOME = " + WAT2WASM);
 	}
 
 }
