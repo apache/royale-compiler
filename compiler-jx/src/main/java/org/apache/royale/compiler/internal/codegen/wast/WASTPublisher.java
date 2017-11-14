@@ -108,10 +108,12 @@ public class WASTPublisher implements IWASTPublisher {
 	    	String flexHomePath = flexHome.getPath();
 	
 	    	if (!flexHomePath.substring(flexHomePath.length() - 4).equals(".jar")) {
-	    		flexHomePath = new File(flexHome, "../../../../royale-asjs/wast/lib").getPath();
+	    		flexHomePath = new File(flexHome, "../../../../royale-asjs/wast/resources").getPath();
 	    	} else {
-	    		flexHomePath = flexHome.getParentFile().getPath();
+	    		flexHomePath = new File(flexHome.getParentFile().getPath(), "../resources").getPath();
 	    	}
+	    	
+	    	System.out.println(flexHomePath);
 	    	
 	    	copyFile(new File(flexHomePath, "glue.js"), new File(getOutputFolder().getPath(), "glue.js"));
     }
