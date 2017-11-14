@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.wast;
 
 import java.io.FilterWriter;
 
+import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
 import org.apache.royale.compiler.tree.as.IClassNode;
 
@@ -31,10 +32,28 @@ public class WASTEmitter extends ASEmitter {
         super(out);
     }
 
-    /*@Override
+    @Override
     public void emitClass(IClassNode node)
     {
-     	writeToken("Hoi");
-    }*/
+     	//
+    }
+
+    @Override
+    public void emitPackageFooter(IPackageDefinition definition)
+    {
+     	//
+    }
+
+    @Override
+    public void emitPackageHeader(IPackageDefinition definition)
+    {
+     	writeToken("(module\n" + 
+     			"  (func $add (param $lhs i32) (param $rhs i32) (result i32)\n" + 
+     			"    get_local $lhs\n" + 
+     			"    get_local $rhs\n" + 
+     			"    i32.add)\n" + 
+     			"  (export \"add\" (func $add))\n" + 
+     			")");
+    }
 
 }

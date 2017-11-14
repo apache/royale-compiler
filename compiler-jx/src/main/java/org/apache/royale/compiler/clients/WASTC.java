@@ -21,9 +21,7 @@ package org.apache.royale.compiler.clients;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,10 +31,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.flex.tools.FlexTool;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
-import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
 import org.apache.royale.compiler.codegen.wast.IWASTPublisher;
@@ -47,14 +43,7 @@ import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.driver.wast.IWASTBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
-import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
-import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
-import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.driver.wast.WASTBackend;
-import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
-import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.targets.RoyaleWASTTarget;
@@ -68,7 +57,6 @@ import org.apache.royale.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITarget;
-import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
@@ -78,19 +66,32 @@ import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
-/**
- * @author Erik de Bruin
- * @author Michael Schmalle
- */
-public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTool {
-	@Override
-	public ProblemQuery getProblemQuery() {
-		return problems;
+public class WASTC {
+	
+	public static void main(final String[] args) {
+		long startTime = System.nanoTime();
+
+		System.out.println("WASTC");
+		
+		for (String arg : args) {
+			System.out.println(arg);
+		}
+		
+		WASTC wastc = new WASTC(new WASTBackend());
+		
+		List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+		
+		int exitCode = wastc.mainNoExit(args, problems);
+
+		long endTime = System.nanoTime();
+		
+		System.out.println((endTime - startTime) / 1e9 + " seconds");
+		
+		System.exit(exitCode);
 	}
 
-	/*
-	 * Exit code enumerations.
-	 */
+	
+	
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_ERRORS(3), FAILED_WITH_EXCEPTIONS(
 				4), FAILED_WITH_CONFIG_PROBLEMS(5);
@@ -101,164 +102,119 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 
 		final int code;
 	}
-
-	public static MXMLJSC.JSOutputType jsOutputType;
-
-	@Override
-	public String getName() {
-		return "WAST";
-	}
-
-	@Override
-	public int execute(String[] args) {
-		final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
-		return mainNoExit(args, problems, true);
-	}
-
-	/**
-	 * Java program entry point.
-	 * 
-	 * @param args
-	 *            command line arguments
-	 */
-	public static void main(final String[] args) {
-		int exitCode = staticMainNoExit(args);
-		System.exit(exitCode);
-	}
-
-	/**
-	 * Entry point for the {@code <compc>} Ant task.
-	 *
-	 * @param args
-	 *            Command line arguments.
-	 * @return An exit code.
-	 */
-	public static int staticMainNoExit(final String[] args) {
-		long startTime = System.nanoTime();
-		System.out.println("WASTC");
-		for (String arg : args)
-			System.out.println(arg);
-		final WASTC mxmlc = new WASTC();
-		final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
-		final int exitCode = mxmlc.mainNoExit(args, problems, true);
-
-		long endTime = System.nanoTime();
-		System.out.println((endTime - startTime) / 1e9 + " seconds");
-
-		return exitCode;
-	}
-
-	protected Workspace workspace;
-	protected RoyaleWASTProject project;
-
-	protected ProblemQuery problems;
-	protected ISourceFileHandler asFileHandler;
-	protected Configuration config;
-	protected Configurator projectConfigurator;
-	private ConfigurationBuffer configBuffer;
-	private ICompilationUnit mainCU;
-	protected ITarget target;
-	protected ITargetSettings targetSettings;
-	protected IJSApplication jsTarget;
-	private IWASTPublisher jsPublisher;
-
-	public WASTC() {
-		this(new WASTBackend());
-	}
+	
+	
 
 	public WASTC(IWASTBackend backend) {
 		workspace = new Workspace();
-		workspace.setASDocDelegate(new RoyaleASDocDelegate());
+
 		project = new RoyaleWASTProject(workspace, backend);
+		
 		problems = new ProblemQuery(); // this gets replaced in configure(). Do we need it here?
-		asFileHandler = backend.getSourceFileHandlerInstance();
 	}
 
-	@Override
-	public int mainNoExit(final String[] args, List<ICompilerProblem> problems, Boolean printProblems) {
-		int exitCode = -1;
+	
+	
+	private Configuration config;
+	private ICompilationUnit mainCU;
+	private ProblemQuery problems;
+	private RoyaleWASTProject project;
+	private Configurator projectConfigurator;
+	private ITarget target;
+	private Workspace workspace;
+
+    
+	
+	public int mainNoExit(final String[] args, List<ICompilerProblem> theProblems) {
+		int result = -1;
+		
 		try {
-			exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
+			ExitCode exitCode = ExitCode.SUCCESS;
+			
+			try {
+				final boolean continueCompilation = configure(ArgumentUtil.fixArgs(args));
+
+				if (continueCompilation) {
+					project.setProblems(problems.getProblems());
+					
+					compile();
+					
+					if (problems.hasFilteredProblems()) {
+						if (problems.hasErrors())
+							exitCode = ExitCode.FAILED_WITH_ERRORS;
+						else
+							exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+					}
+				} else if (problems.hasFilteredProblems()) {
+					exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
+				} else {
+					exitCode = ExitCode.PRINT_HELP;
+				}
+			} catch (Exception e) {
+				if (theProblems == null) {
+					System.err.println(e.getMessage());
+				} else {
+					final ICompilerProblem unexpectedExceptionProblem = new UnexpectedExceptionProblem(e);
+					problems.add(unexpectedExceptionProblem);
+				}
+				exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+			} finally {
+				workspace.startIdleState();
+				
+				try {
+					workspace.close();
+				} finally {
+					workspace.endIdleState(Collections.<ICompilerProject, Set<ICompilationUnit>>emptyMap());
+				}
+
+				if (theProblems != null && problems.hasFilteredProblems()) {
+					for (ICompilerProblem problem : problems.getFilteredProblems()) {
+						theProblems.add(problem);
+					}
+				}
+			}
+			
+			result = exitCode.code;
 		} catch (Exception e) {
 			System.err.println(e.toString());
 		} finally {
-			if (problems != null && !problems.isEmpty()) {
-				if (printProblems) {
-					final WorkspaceProblemFormatter formatter = new WorkspaceProblemFormatter(workspace);
-					final ProblemPrinter printer = new ProblemPrinter(formatter);
-					printer.printProblems(problems);
-				}
+			if (theProblems != null && !theProblems.isEmpty()) {
+				final WorkspaceProblemFormatter formatter = new WorkspaceProblemFormatter(workspace);
+				final ProblemPrinter printer = new ProblemPrinter(formatter);
+				printer.printProblems(theProblems);
 			}
 		}
-		return exitCode;
+		
+		return result;
 	}
 
-	/**
-	 * Entry point that doesn't call <code>System.exit()</code>. This is for unit
-	 * testing.
-	 * 
-	 * @param args
-	 *            command line arguments
-	 * @return exit code
-	 */
-	public int _mainNoExit(final String[] args, List<ICompilerProblem> outProblems) {
-		ExitCode exitCode = ExitCode.SUCCESS;
-		try {
-			final boolean continueCompilation = configure(args);
-
-			if (continueCompilation) {
-				project.setProblems(problems.getProblems());
-				compile();
-				if (problems.hasFilteredProblems()) {
-					if (problems.hasErrors())
-						exitCode = ExitCode.FAILED_WITH_ERRORS;
-					else
-						exitCode = ExitCode.FAILED_WITH_PROBLEMS;
-				}
-			} else if (problems.hasFilteredProblems()) {
-				exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
-			} else {
-				exitCode = ExitCode.PRINT_HELP;
-			}
-		} catch (Exception e) {
-			if (outProblems == null) {
-				System.err.println(e.getMessage());
-			} else {
-				final ICompilerProblem unexpectedExceptionProblem = new UnexpectedExceptionProblem(e);
-				problems.add(unexpectedExceptionProblem);
-			}
-			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
-		} finally {
-			waitAndClose();
-
-			if (outProblems != null && problems.hasFilteredProblems()) {
-				for (ICompilerProblem problem : problems.getFilteredProblems()) {
-					outProblems.add(problem);
-				}
-			}
-		}
-		return exitCode.code;
-	}
-
-	/**
-	 * Main body of this program. This method is called from the public static
-	 * method's for this program.
-	 * 
-	 * @return true if compiler succeeds
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	protected boolean compile() {
+	private boolean compile() {
 		boolean compilationSuccess = false;
 
 		try {
-			project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-
 			if (!setupTargetFile()) {
 				return false;
 			}
 
-			buildArtifact();
+			List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
+
+			project.mainCU = mainCU;
+			
+			IJSApplication jsTarget = null;
+			
+			Collection<ICompilerProblem> fatalProblems = project.getFatalProblems();
+			
+			if (!fatalProblems.isEmpty()) {
+				problemsBuildingSWF.addAll(fatalProblems);
+			} else {
+				jsTarget = ((JSTarget) target).build(mainCU, problemsBuildingSWF);
+				
+				problems.addAll(problemsBuildingSWF);
+				
+				if (jsTarget == null) {
+					problems.add(new UnableToBuildSWFProblem(getOutputFilePath()));
+				}
+			}
 
 			if (jsTarget != null) {
 				List<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
@@ -270,9 +226,9 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 						return false;
 				}
 
-				jsPublisher = project.getBackend().createPublisher(project, errors, config);
+				IWASTPublisher wastPublisher = project.getBackend().createPublisher(project, errors, config);
 
-				File outputFolder = jsPublisher.getOutputFolder();
+				File outputFolder = wastPublisher.getOutputFolder();
 
 				ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
 				roots.add(mainCU);
@@ -304,11 +260,6 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 
 						BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outputClassFile));
 
-						File outputSourceMapFile = null;
-						if (project.config.getSourceMap()) {
-							outputSourceMapFile = getOutputSourceMapFile(cu.getQualifiedNames().get(0), outputFolder);
-						}
-
 						writer.writeTo(out);
 						out.flush();
 						out.close();
@@ -316,11 +267,7 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 					}
 				}
 
-				if (jsPublisher != null) {
-					compilationSuccess = jsPublisher.publish(problems);
-				} else {
-					compilationSuccess = true;
-				}
+      			compilationSuccess = wastPublisher.publish(problems);
 			}
 		} catch (Exception e) {
 			final ICompilerProblem problem = new InternalCompilerProblem(e);
@@ -330,61 +277,6 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 		return compilationSuccess;
 	}
 
-	/**
-	 * Build target artifact.
-	 * 
-	 * @throws InterruptedException
-	 *             threading error
-	 * @throws IOException
-	 *             IO error
-	 * @throws ConfigurationException
-	 */
-	protected void buildArtifact() throws InterruptedException, IOException, ConfigurationException {
-		jsTarget = buildJSTarget();
-	}
-
-	private IJSApplication buildJSTarget() throws InterruptedException, FileNotFoundException, ConfigurationException {
-		final List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
-
-		project.mainCU = mainCU;
-		final IJSApplication app = buildApplication(project, config.getMainDefinition(), mainCU, problemsBuildingSWF);
-		problems.addAll(problemsBuildingSWF);
-		if (app == null) {
-			ICompilerProblem problem = new UnableToBuildSWFProblem(getOutputFilePath());
-			problems.add(problem);
-		}
-
-		return app;
-	}
-
-	/**
-	 * Replaces RoyaleApplicationProject::buildSWF()
-	 * 
-	 * @param applicationProject
-	 * @param rootClassName
-	 * @param problems
-	 * @return
-	 * @throws InterruptedException
-	 */
-
-	private IJSApplication buildApplication(CompilerProject applicationProject, String rootClassName,
-			ICompilationUnit mainCU, Collection<ICompilerProblem> problems)
-			throws InterruptedException, ConfigurationException, FileNotFoundException {
-		Collection<ICompilerProblem> fatalProblems = applicationProject.getFatalProblems();
-		if (!fatalProblems.isEmpty()) {
-			problems.addAll(fatalProblems);
-			return null;
-		}
-
-		return ((JSTarget) target).build(mainCU, problems);
-	}
-
-	/**
-	 * Get the output file path. If {@code -output} is specified, use its value;
-	 * otherwise, use the same base name as the target file.
-	 * 
-	 * @return output file path
-	 */
 	private String getOutputFilePath() {
 		if (config.getOutput() == null) {
 			final String extension = "." + project.getBackend().getOutputExtension();
@@ -393,17 +285,6 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 			return config.getOutput();
 	}
 
-	/**
-	 * @author Erik de Bruin
-	 * 
-	 *         Get the output class file. This includes the (sub)directory in which
-	 *         the original class file lives. If the directory structure doesn't
-	 *         exist, it is created.
-	 * 
-	 * @param qname
-	 * @param outputFolder
-	 * @return output class file path
-	 */
 	private File getOutputClassFile(String qname, File outputFolder) {
 		String[] cname = qname.split("\\.");
 		String sdirPath = outputFolder + File.separator;
@@ -422,37 +303,6 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 		return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
 	}
 
-	/**
-	 * @param qname
-	 * @param outputFolder
-	 * @return output source map file path
-	 */
-	private File getOutputSourceMapFile(String qname, File outputFolder) {
-		String[] cname = qname.split("\\.");
-		String sdirPath = outputFolder + File.separator;
-		if (cname.length > 0) {
-			for (int i = 0, n = cname.length - 1; i < n; i++) {
-				sdirPath += cname[i] + File.separator;
-			}
-
-			File sdir = new File(sdirPath);
-			if (!sdir.exists())
-				sdir.mkdirs();
-
-			qname = cname[cname.length - 1];
-		}
-
-		return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension() + ".map");
-	}
-
-	/**
-	 * Mxmlc uses target file as the main compilation unit and derive the output SWF
-	 * file name from this file.
-	 * 
-	 * @return true if successful, false otherwise.
-	 * @throws OnlyOneSource
-	 * @throws InterruptedException
-	 */
 	protected boolean setupTargetFile() throws InterruptedException {
 		final String mainFileName = config.getTargetFile();
 
@@ -493,57 +343,30 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 
 		Preconditions.checkNotNull(mainCU, "Main compilation unit can't be null");
 
-		ITargetSettings settings = getTargetSettings();
-		if (settings != null)
-			project.setTargetSettings(settings);
+		ITargetSettings targetSettings = projectConfigurator.getTargetSettings(null);
+		if (targetSettings != null)
+			project.setTargetSettings(targetSettings);
 
-		target = project.getBackend().createTarget(project, getTargetSettings(), null);
+		target = project.getBackend().createTarget(project, targetSettings, null);
 
 		return true;
 	}
 
-	private ITargetSettings getTargetSettings() {
-		if (targetSettings == null)
-			targetSettings = projectConfigurator.getTargetSettings(null);
-
-		return targetSettings;
-	}
-
-	/**
-	 * Create a new Configurator. This method may be overridden to allow
-	 * Configurator subclasses to be created that have custom configurations.
-	 * 
-	 * @return a new instance or subclass of {@link Configurator}.
-	 */
-	protected Configurator createConfigurator() {
-		return project.getBackend().createConfigurator();
-	}
-
-	/**
-	 * Load configurations from all the sources.
-	 * 
-	 * @param args
-	 *            command line arguments
-	 * @return True if mxmlc should continue with compilation.
-	 */
 	protected boolean configure(final String[] args) {
-		project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-		project.configurator = projectConfigurator = createConfigurator();
+		IWASTBackend backend = project.getBackend();
+		
+		project.getSourceCompilationUnitFactory().addHandler(backend.getSourceFileHandlerInstance());
+		
+		project.configurator = projectConfigurator = backend.createConfigurator();
 
 		try {
-			if (useFlashBuilderProjectFiles(args)) {
-				projectConfigurator.setConfiguration(
-						FlashBuilderConfigurator.computeFlashBuilderArgs(args, getTargetType().getExtension()),
-						ICompilerSettingsConstants.FILE_SPECS_VAR);
-			} else {
-				projectConfigurator.setConfiguration(args, ICompilerSettingsConstants.FILE_SPECS_VAR);
-			}
+			projectConfigurator.setConfiguration(args, ICompilerSettingsConstants.FILE_SPECS_VAR);
 
 			projectConfigurator.applyToProject(project);
 			project.config = (WASTConfiguration) projectConfigurator.getConfiguration();
 
 			config = projectConfigurator.getConfiguration();
-			configBuffer = projectConfigurator.getConfigurationBuffer();
+			ConfigurationBuffer configBuffer = projectConfigurator.getConfigurationBuffer();
 
 			problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
 			problems.addAll(projectConfigurator.getConfigurationProblems());
@@ -567,29 +390,10 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 		} finally {
 			if (config == null) {
 				config = new Configuration();
-				configBuffer = new ConfigurationBuffer(Configuration.class, Configuration.getAliases());
 			}
 		}
 	}
 
-	private boolean useFlashBuilderProjectFiles(String[] args) {
-		for (String arg : args) {
-			if (arg.equals("-fb") || arg.equals("-use-flashbuilder-project-files"))
-				return true;
-		}
-		return false;
-	}
-
-	protected TargetType getTargetType() {
-		return TargetType.SWF;
-	}
-
-	/**
-	 * Validate target file.
-	 * 
-	 * @throws MustSpecifyTarget
-	 * @throws IOError
-	 */
 	protected void validateTargetFile() throws ConfigurationException {
 		if (mainCU instanceof ResourceModuleCompilationUnit)
 			return; // when compiling a Resource Module, no target file is defined.
@@ -601,25 +405,6 @@ public class WASTC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTo
 		final File file = new File(targetFile);
 		if (!file.exists())
 			throw new ConfigurationException.IOError(targetFile);
-	}
-
-	/**
-	 * Wait till the workspace to finish compilation and close.
-	 */
-	protected void waitAndClose() {
-		workspace.startIdleState();
-		try {
-			workspace.close();
-		} finally {
-			workspace.endIdleState(Collections.<ICompilerProject, Set<ICompilationUnit>>emptyMap());
-		}
-	}
-
-	/**
-	 * Force terminate the compilation process.
-	 */
-	protected void close() {
-		workspace.close();
 	}
 
 	public List<String> getSourceList() {

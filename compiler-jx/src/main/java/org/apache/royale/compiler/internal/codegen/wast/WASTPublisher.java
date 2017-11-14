@@ -36,12 +36,12 @@ public class WASTPublisher implements IWASTPublisher {
         this.configuration = config;
     }
 
-    protected RoyaleWASTProject project;
+    protected Configuration configuration;
+
     protected File outputFolder;
     protected File outputParentFolder;
 
-
-    protected Configuration configuration;
+    protected RoyaleWASTProject project;
 
 	@Override
     public File getOutputFolder()
