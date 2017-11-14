@@ -22,7 +22,6 @@ package org.apache.royale.compiler.internal.codegen.wast;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.wast.IWASTPublisher;
 import org.apache.royale.compiler.config.Configuration;
@@ -30,60 +29,36 @@ import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
 
 public class WASTPublisher implements IWASTPublisher {
 
-    public WASTPublisher(RoyaleWASTProject project, Configuration config)
-    {
-        this.project = project;
-        this.configuration = config;
-    }
+	public WASTPublisher(RoyaleWASTProject project, Configuration config) {
+		this.project = project;
+		this.configuration = config;
+	}
 
-    protected Configuration configuration;
+	protected Configuration configuration;
 
-    protected File outputFolder;
-    protected File outputParentFolder;
+	protected File outputFolder;
+	protected File outputParentFolder;
 
-    protected RoyaleWASTProject project;
-
-	@Override
-    public File getOutputFolder()
-    {
-        outputFolder = new File(getOutputFilePath());
-        if (!outputFolder.isDirectory()) {
-            outputFolder = outputFolder.getParentFile();
-        }
-
-        outputParentFolder = outputFolder;
-
-        setupOutputFolder();
-
-        return outputFolder;
-    }
-
-    protected void setupOutputFolder()
-    {
-        if (!outputFolder.exists()) {
-            outputFolder.mkdirs();
-        }
-    }
-
-    private String getOutputFilePath()
-    {
-        if (configuration.getOutput() == null)
-        {
-            final String extension = "." + project.getBackend().getOutputExtension();
-            return FilenameUtils.removeExtension(configuration.getTargetFile())
-                    .concat(extension);
-        }
-        else {
-            return configuration.getOutput();
-        }
-    }
+	protected RoyaleWASTProject project;
 
 	@Override
-    public boolean publish(ProblemQuery problems) throws IOException
-    {
-        System.out
-                .println("The project has been successfully compiled and optimized.");
-        return true;
-    }
+	public File getOutputFolder() {
+		outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
+		;
+
+		outputFolder = new File(outputParentFolder, "bin");
+
+		if (!outputFolder.exists()) {
+			outputFolder.mkdirs();
+		}
+
+		return outputFolder;
+	}
+
+	@Override
+	public boolean publish(ProblemQuery problems) throws IOException {
+		System.out.println("The project has been successfully compiled and optimized.");
+		return true;
+	}
 
 }
