@@ -67,31 +67,29 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
 public class WASTC {
-	
+
 	public static void main(final String[] args) {
 		long startTime = System.nanoTime();
 
 		System.out.println("WASTC");
-		
+
 		for (String arg : args) {
 			System.out.println(arg);
 		}
-		
+
 		WASTC wastc = new WASTC(new WASTBackend());
-		
+
 		List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
-		
+
 		int exitCode = wastc.mainNoExit(args, problems);
 
 		long endTime = System.nanoTime();
-		
+
 		System.out.println((endTime - startTime) / 1e9 + " seconds");
-		
+
 		System.exit(exitCode);
 	}
 
-	
-	
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_ERRORS(3), FAILED_WITH_EXCEPTIONS(
 				4), FAILED_WITH_CONFIG_PROBLEMS(5);
@@ -102,19 +100,15 @@ public class WASTC {
 
 		final int code;
 	}
-	
-	
 
 	public WASTC(IWASTBackend backend) {
 		workspace = new Workspace();
 
 		project = new RoyaleWASTProject(workspace, backend);
-		
+
 		problems = new ProblemQuery(); // this gets replaced in configure(). Do we need it here?
 	}
 
-	
-	
 	private Configuration config;
 	private ICompilationUnit mainCU;
 	private ProblemQuery problems;
@@ -123,22 +117,20 @@ public class WASTC {
 	private ITarget target;
 	private Workspace workspace;
 
-    
-	
 	public int mainNoExit(final String[] args, List<ICompilerProblem> theProblems) {
 		int result = -1;
-		
+
 		try {
 			ExitCode exitCode = ExitCode.SUCCESS;
-			
+
 			try {
 				final boolean continueCompilation = configure(ArgumentUtil.fixArgs(args));
 
 				if (continueCompilation) {
 					project.setProblems(problems.getProblems());
-					
+
 					compile();
-					
+
 					if (problems.hasFilteredProblems()) {
 						if (problems.hasErrors())
 							exitCode = ExitCode.FAILED_WITH_ERRORS;
@@ -160,7 +152,7 @@ public class WASTC {
 				exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 			} finally {
 				workspace.startIdleState();
-				
+
 				try {
 					workspace.close();
 				} finally {
@@ -173,7 +165,7 @@ public class WASTC {
 					}
 				}
 			}
-			
+
 			result = exitCode.code;
 		} catch (Exception e) {
 			System.err.println(e.toString());
@@ -184,7 +176,7 @@ public class WASTC {
 				printer.printProblems(theProblems);
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -199,18 +191,18 @@ public class WASTC {
 			List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
 
 			project.mainCU = mainCU;
-			
+
 			IJSApplication jsTarget = null;
-			
+
 			Collection<ICompilerProblem> fatalProblems = project.getFatalProblems();
-			
+
 			if (!fatalProblems.isEmpty()) {
 				problemsBuildingSWF.addAll(fatalProblems);
 			} else {
 				jsTarget = ((JSTarget) target).build(mainCU, problemsBuildingSWF);
-				
+
 				problems.addAll(problemsBuildingSWF);
-				
+
 				if (jsTarget == null) {
 					problems.add(new UnableToBuildSWFProblem(getOutputFilePath()));
 				}
@@ -267,7 +259,7 @@ public class WASTC {
 					}
 				}
 
-      			compilationSuccess = wastPublisher.publish(problems);
+				compilationSuccess = wastPublisher.publish(problems);
 			}
 		} catch (Exception e) {
 			final ICompilerProblem problem = new InternalCompilerProblem(e);
@@ -354,9 +346,9 @@ public class WASTC {
 
 	protected boolean configure(final String[] args) {
 		IWASTBackend backend = project.getBackend();
-		
+
 		project.getSourceCompilationUnitFactory().addHandler(backend.getSourceFileHandlerInstance());
-		
+
 		project.configurator = projectConfigurator = backend.createConfigurator();
 
 		try {
