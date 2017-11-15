@@ -31,7 +31,7 @@ import java.util.Set;
 import org.apache.royale.compiler.internal.codegen.externals.pass.AbstractCompilerPass;
 import org.apache.royale.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.royale.compiler.internal.codegen.externals.utils.JSTypeUtils;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.codegen.externals.DummyNode;
 import org.apache.royale.compiler.problems.UnresolvedClassReferenceProblem;
 
 import com.google.javascript.rhino.JSDocInfo;
@@ -536,7 +536,7 @@ public class ClassReference extends BaseReference
             	result.add(interfaceReference);
             else
             {
-            	IdentifierNode node = new IdentifierNode(interfaceName);
+            	DummyNode node = new DummyNode();
             	String externName = AbstractCompilerPass.getSourceFileName(this.getNode().getStaticSourceFile().getName(), getModel());
             	node.setSourcePath(externName);
             	node.setLine(this.getNode().getLineno());

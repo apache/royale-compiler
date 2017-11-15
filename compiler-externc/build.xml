@@ -34,6 +34,13 @@
         <path location="${basedir}"/>
     </pathconvert>
     
+    <!-- The 'compiler' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler' directory that is a sibling of the parent folder of this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-common}. -->
+    <pathconvert property="compiler-jx" dirsep="/">
+        <path location="${basedir}/../compiler-jx"/>
+    </pathconvert>
+    
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler-externc}/local.properties"/>
@@ -98,7 +105,8 @@
             <src path="${compiler-externc}/src/main/java"/>
             <classpath>
                 <pathelement location="${compiler-externc}/target/classes"/>
-                <fileset dir="${compiler-externc}/../compiler/lib/external" includes="**/*.jar"/>
+                <fileset dir="${compiler-externc}/../compiler-jx/lib/google" includes="**/*.jar"/>
+                <fileset dir="${compiler-externc}/../compiler/lib" includes="compiler-common.jar,external/*.jar"/>
             </classpath>
         </javac>
     </target>

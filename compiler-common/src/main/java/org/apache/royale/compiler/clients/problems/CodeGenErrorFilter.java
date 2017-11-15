@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.clients.problems;
 
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.OperandStackUnderflowProblem;
+import org.apache.royale.compiler.problems.IOperandStackUnderflowProblem;
 
 /**
  * A problem filter that implements filtering out certain errors from
@@ -42,7 +42,7 @@ public class CodeGenErrorFilter implements IProblemFilter
     @Override
     public boolean accept(ICompilerProblem p)
     {
-        if (p instanceof OperandStackUnderflowProblem)
+        if (p instanceof IOperandStackUnderflowProblem)
             return false;
         
         // accept it.
@@ -53,7 +53,7 @@ public class CodeGenErrorFilter implements IProblemFilter
     {
         for (ICompilerProblem problem : problems)
         {
-            if (!(problem instanceof OperandStackUnderflowProblem))
+            if (!(problem instanceof IOperandStackUnderflowProblem))
                 return true;
         }
         return false;

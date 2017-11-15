@@ -20,29 +20,11 @@
 package org.apache.royale.compiler.problems;
 
 import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.internal.parsing.TokenBase;
+
 
 /**
- * This error represents a general error that has been encountered during parsing, usually triggered by an exception
+ * Marker interface to break dependencies in ProblemQuery
  */
-public class ParserProblem extends CompilerProblem implements IParserProblem
+public interface IParserProblem extends ICompilerProblem
 {
-    public static final String DESCRIPTION =
-        "Internal parsing problem";
-   
-    public static final int errorCode = 1504;
-    public ParserProblem(ISourceLocation site)
-    {
-        super(site);
-    }
-    
-    public ParserProblem(TokenBase site)
-    {
-        super(site.getSourcePath(), site.getLocalStart(), site.getLocalEnd(), site.getLine(), site.getColumn());
-    }
-    
-    public ParserProblem(String sourcePath)
-    {
-        super(sourcePath);
-    }
 }

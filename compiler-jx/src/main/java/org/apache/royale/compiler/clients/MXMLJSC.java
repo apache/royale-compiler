@@ -811,7 +811,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     public boolean configure(final String[] args)
     {
-    	projectConfigurator = new Configurator(configurationClass);
+    	projectConfigurator = new RoyaleProjectConfigurator(configurationClass);
     	
         try
         {

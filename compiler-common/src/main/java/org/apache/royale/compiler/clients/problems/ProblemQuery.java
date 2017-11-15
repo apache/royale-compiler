@@ -32,7 +32,7 @@ import org.apache.royale.compiler.problems.CodegenInternalProblem;
 import org.apache.royale.compiler.problems.CodegenProblem;
 import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.ParserProblem;
+import org.apache.royale.compiler.problems.IParserProblem;
 import org.apache.royale.compiler.problems.SemanticWarningProblem;
 import org.apache.royale.compiler.problems.StrictSemanticsProblem;
 import org.apache.royale.compiler.problems.UnfoundPropertyProblem;
@@ -360,7 +360,7 @@ public class ProblemQuery
      *  This Comparator compares problems based on three criteria:
      *  <li> file path
      *  <li> line number
-     *  <li> problem class - ParserProblems are "less than" semantic problems.
+     *  <li> problem class - IParserProblems are "less than" semantic problems.
      */
     public static final Comparator<ICompilerProblem> compareByPositionAndPhase =
         new Comparator<ICompilerProblem>()
@@ -388,14 +388,14 @@ public class ProblemQuery
              */
             private int compareProblemClasses(ICompilerProblem p1, ICompilerProblem p2)
             {
-                if ( p1 instanceof ParserProblem )
+                if ( p1 instanceof IParserProblem )
                 {
-                    if ( !(p2 instanceof ParserProblem) )
+                    if ( !(p2 instanceof IParserProblem) )
                         return -1;
                 }
-                else if ( p2 instanceof ParserProblem )
+                else if ( p2 instanceof IParserProblem )
                 {
-                    if ( !(p1 instanceof ParserProblem) )
+                    if ( !(p1 instanceof IParserProblem) )
                         return 1;
                 }
 
@@ -429,7 +429,7 @@ public class ProblemQuery
                 return false;
             }
 
-            this.parserProblemOnLine = problem instanceof ParserProblem;
+            this.parserProblemOnLine = problem instanceof IParserProblem;
             return true;
         }
 

@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.externals.pass;
 
 import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.codegen.externals.DummyNode;
 import org.apache.royale.compiler.problems.VariableHasNoTypeDeclarationProblem;
 
 import com.google.javascript.jscomp.AbstractCompiler;
@@ -94,7 +94,7 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
                         {
                         	StaticSourceFile ssf = first.getStaticSourceFile();
                         	String source = getSourceCode(ssf, first.getLineno());
-                        	IdentifierNode node = new IdentifierNode(source);
+                        	DummyNode node = new DummyNode();
                         	String externName = getSourceFileName(ssf.getName(), model);
                         	node.setSourcePath(externName);
                         	node.setLine(first.getLineno());

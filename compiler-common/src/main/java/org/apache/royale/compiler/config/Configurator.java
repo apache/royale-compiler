@@ -22,7 +22,6 @@ package org.apache.royale.compiler.config;
 import java.io.File;
 import java.util.*;
 
-import org.apache.royale.compiler.clients.MXMLC;
 import org.apache.royale.compiler.common.IPathResolver;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.RSLSettings.RSLAndPolicyFileURLPair;
@@ -39,15 +38,11 @@ import org.apache.royale.compiler.internal.config.SystemPropertyConfigurator;
 import org.apache.royale.compiler.internal.config.TargetSettings;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.config.localization.ResourceBundleLocalizer;
-import org.apache.royale.compiler.internal.projects.RoyaleProject;
-import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
-import org.apache.royale.compiler.internal.projects.SourcePathManager;
-import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.problems.ANELibraryNotAllowedProblem;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.projects.IRoyaleProject;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.workspaces.IWorkspace;
@@ -193,12 +188,12 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * from the given {@code workspace}.
      * 
      * @param paths A list of normalized paths.
-     * @param workspace Workspace.
+     * @param workspace IWorkspace.
      * @return A list of file specifications.
      */
     public static List<IFileSpecification> toFileSpecifications(
             final List<String> paths,
-            final Workspace workspace)
+            final IWorkspace workspace)
     {
         return Lists.transform(paths, new Function<String, IFileSpecification>()
         {
@@ -287,7 +282,8 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     private Collection<ICompilerProblem> configurationProblems;
     private boolean extrasRequireDefaultVariable;
     private IPathResolver configurationPathResolver;
-    private IRoyaleProject project;
+    
+    private ICompilerProject project;
 
     // 
     // IConfigurator related methods
@@ -308,7 +304,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
     
     @Override
-    public boolean applyToProject(IRoyaleProject project)
+    public boolean applyToProject(ICompilerProject project)
     {
     	this.project = project;
         final IWorkspace workspace = project.getWorkspace();
@@ -316,52 +312,24 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         workspace.startIdleState();
         try
         {
-            
-            
             if (configuration == null)
                 return false;
             
-            if (project instanceof RoyaleProject)
-            {
-                RoyaleProject royaleProject = (RoyaleProject)project;
-    
-                RoyaleProjectConfigurator.configure(royaleProject, configuration);
-                setupCompatibilityVersion(royaleProject);
-                setupConfigVariables(royaleProject);
-                setupLocaleSettings(royaleProject);
-                setupServices(royaleProject);
-                setupThemeFiles(royaleProject);
-                setupRoyale(royaleProject);
-                setupCodegenOptions(royaleProject);
-            }
-            
-            project.setRuntimeSharedLibraryPath(getRSLSettingsFromConfiguration(configuration));
-    
-            if (!setupProjectLibraries(project))
-                success = false;
-            
-            setupNamespaces(project);
+            applyConfiguration();
         }
         finally
         {
             workspace.endIdleState(IWorkspace.NIL_COMPILATIONUNITS_TO_UPDATE);
         }
-        if (!setupSources(project))
-            success = false; 
         return success;
     }
-
-    private void setupRoyale(RoyaleProject royaleProject)
+    
+    protected boolean applyConfiguration()
     {
-        royaleProject.setRoyale(configuration.isRoyale());
+        return false; // don't call this, just override it
     }
 
-    private void setupCodegenOptions(RoyaleProject royaleProject)
-    {
-        royaleProject.setEnableInlining(configuration.isInliningEnabled());
-    }
-
-    private String computeQNameForTargetFile()
+    protected String computeQNameForTargetFile()
     {
         List<String> computedSourcePath = new ArrayList<String>();
         applySourcePathRules(computedSourcePath);
@@ -369,16 +337,10 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         if (targetSourceFileName == null)
             return null;
         final File targetSourceFile = FilenameNormalization.normalize(new File(configuration.getTargetFile()));
-        for (final String sourcePathEntry : computedSourcePath)
-        {
-            final String computedQName = SourcePathManager.computeQName(new File(sourcePathEntry), targetSourceFile);
-            if (computedQName != null)
-                return computedQName;
-            
-        }
-        return null;
+        return targetSourceFile.getName();
     }
     
+
     @Override
     public ITargetSettings getTargetSettings(TargetType targetType)
     {
@@ -428,9 +390,14 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             return null;
         }
         
-        return new TargetSettings(configuration, project);
+        return instantiateTargetSettings();
     }
 
+    protected ITargetSettings instantiateTargetSettings()
+    {
+        return new TargetSettings(configuration, project);
+    }
+    
     @Override    
     public ICompilerProblemSettings getCompilerProblemSettings()
     {
@@ -567,88 +534,6 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
 
     /**
-     * Setup theme files.
-     */
-    protected void setupThemeFiles(RoyaleProject project)
-    {
-        project.setThemeFiles(toFileSpecifications(configuration.getCompilerThemeFiles(), 
-                project.getWorkspace()));
-
-    }
-
-    /**
-     * Collect all of the different library paths and set them in the project.
-     * The libraries are ordered with RSL and external libraries having the
-     * highest priority.
-     * 
-     * <p>Libraries are ordered highest to lowest priority:
-     *     <ol>
-     *     <li>External Library Path
-     *     <li>RSL Library Path
-     *     <li>Include Library Path
-     *     <li>Library Path
-     *     </ol>
-     * </p>
-     * @param project
-     * @return true if successful, false if there is an error.
-     */
-    protected boolean setupProjectLibraries(IRoyaleProject project)
-    {
-        LinkedHashSet<File> libraries = new LinkedHashSet<File>();
-        
-        // add External Library Path
-        List<File> externalLibraryFiles = toFileList(project.getCompilerExternalLibraryPath(configuration)); 
-        libraries.addAll(externalLibraryFiles);
-        
-        // add RSLs
-        libraries.addAll(configuration.getRslExcludedLibraries());
-        
-        // add Include Library Path
-        libraries.addAll(toFileList(configuration.getCompilerIncludeLibraries()));
-        
-        // add Library Path
-        libraries.addAll(toFileList(project.getCompilerLibraryPath(configuration)));
-        
-        project.setLibraries(new ArrayList<File>(libraries));
-        
-        // After we set the library path we can check for ANE files more
-        // accurately because the library path manager in the project
-        // will read in all the swc files found in directories on the
-        // paths.
-        return validateNoANEFiles(project, externalLibraryFiles);
-    }
-    
-    /**
-     * Validate all of the ANE files are on the external library path.
-     * 
-     * @param project the project being configured.
-     * @param externalLibraryFiles the external library path.
-     * @return true if successful, false if there is an error.
-     */
-    private boolean validateNoANEFiles(IRoyaleProject project, 
-            List<File>externalLibraryFiles)
-    {
-        // Get all the library files in the project.
-        List<ISWC> libraries = project.getLibraries();
-        for (ISWC library : libraries)
-        {
-            if (library.isANE())
-            {
-                // must be on the external library path
-                if (!isOnExternalLibrayPath(library, externalLibraryFiles))
-                {
-                    configurationProblems.add(
-                            new ANELibraryNotAllowedProblem(
-                                    library.getSWCFile().getAbsolutePath()));
-                    return false;
-                }
-            }
-        }
-        
-        return true;
-    }
-
-    /** 
      * Test if the SWC is explicitly on the external library path.
      * 
      * @param library
@@ -666,59 +551,6 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         }
         
         return false;
-    }
-
-    /**
-     * Setup {@code -compatibility-version} level. Royale only support Flex 3+.
-     * @param project 
-     */
-    protected void setupCompatibilityVersion(RoyaleProject project)
-    {
-        final int compatibilityVersion = configuration.getCompilerMxmlCompatibilityVersion();
-        if (compatibilityVersion < Configuration.MXML_VERSION_3_0)
-            throw new UnsupportedOperationException("Unsupported compatibility version: " + configuration.getCompilerCompatibilityVersionString());
-        project.setCompatibilityVersion(configuration.getCompilerMxmlMajorCompatibilityVersion(),
-                configuration.getCompilerMxmlMinorCompatibilityVersion(),
-                configuration.getCompilerMxmlRevisionCompatibilityVersion());
-    }
-
-    /**
-     * Transfers configuration settings to the project. Handles:
-     *     -services
-     *     -context-root
-     * 
-     */
-    protected void setupServices(RoyaleProject project)
-    {
-        if (configuration.getCompilerServices() != null)
-            project.setServicesXMLPath(configuration.getCompilerServices().getPath(), configuration.getCompilerContextRoot());
-    }
-
-    /**
-     * Setup the source paths.
-     * 
-     * @return true if successful, false otherwise.
-     */
-    protected boolean setupSources(IRoyaleProject project)
-    {
-        // -source-path
-        List<String> sourcePath = new ArrayList<String>();
-        applySourcePathRules(sourcePath);
-        
-        project.setSourcePath(toFiles(sourcePath));
-        
-        // -include-sources
-        try
-        {
-            project.setIncludeSources(toFileList(configuration.getIncludeSources()));
-        }
-        catch (InterruptedException e)
-        {
-            assert false : "InterruptedException should never be thrown here";
-            return false;
-        }
-        
-        return true;
     }
 
     /**
@@ -793,32 +625,6 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         return false;
     }
 
-    protected void setupConfigVariables(IRoyaleProject project)
-    {
-        final Map<String, String> compilerDefine = configuration.getCompilerDefine();
-        if (compilerDefine != null)
-            project.setDefineDirectives(compilerDefine);
-    }
-
-    protected void setupNamespaces(IRoyaleProject project)
-    {
-        final List<? extends IMXMLNamespaceMapping> configManifestMappings =
-                project.getCompilerNamespacesManifestMappings(configuration);
-        if (configManifestMappings != null)
-        {
-            project.setNamespaceMappings(configManifestMappings);
-        }
-    }
-
-    /**
-     * Setups the locale related settings.
-     */
-    protected void setupLocaleSettings(IRoyaleProject project)
-    {
-        project.setLocales(configuration.getCompilerLocales());
-        project.setLocaleDependentResources(configuration.getLocaleDependentSources());
-    }
-    
     public static List<RSLSettings> getRSLSettingsFromConfiguration(Configuration configuration)
     {
         List<RuntimeSharedLibraryPathInfo> infoList = configuration.getRslPathInfo();
@@ -1119,7 +925,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     /**
      * Load a configuration from file. {@code FileConfigurator.load()} is
      * wrapped in this method because we want to print a message after loading
-     * using {@link MXMLC#println(String)}.
+     * using MXMLC#println(String).
      * 
      * @return true if successful, false otherwise.
      */

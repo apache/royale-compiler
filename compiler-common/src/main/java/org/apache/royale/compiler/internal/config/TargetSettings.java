@@ -33,8 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.RSLSettings;
-import org.apache.royale.compiler.internal.projects.LibraryPathManager;
-import org.apache.royale.compiler.projects.IRoyaleProject;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
@@ -47,7 +46,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class TargetSettings implements ITargetSettings
 {
-    public TargetSettings(Configuration configuration, IRoyaleProject project)
+    public TargetSettings(Configuration configuration, ICompilerProject project)
     {
         this.configuration = configuration;
         this.project = project;
@@ -64,7 +63,7 @@ public class TargetSettings implements ITargetSettings
     private Map<String, File> includeFiles;
     
     private final Configuration configuration;
-    private final IRoyaleProject project;
+    private final ICompilerProject project;
     
     private Set<String> externalLinkageLibraries;
     
@@ -377,12 +376,8 @@ public class TargetSettings implements ITargetSettings
     {
         if (externalLibraryPath == null)
         {
-            List<File> files = Configurator.toFileList(project != null ? project.getCompilerExternalLibraryPath(configuration) : 
-            												configuration.getCompilerExternalLibraryPath());
-            Set<File> expandedFiles = LibraryPathManager.discoverSWCFilePathsAsFiles(files.toArray(new File[files.size()]));
-
-            externalLibraryPath = new ArrayList<File>(expandedFiles.size());
-            for (File swcFile : expandedFiles)
+            List<File> files = Configurator.toFileList(configuration.getCompilerExternalLibraryPath());
+            for (File swcFile : files)
                 externalLibraryPath.add(swcFile);
         }
 
