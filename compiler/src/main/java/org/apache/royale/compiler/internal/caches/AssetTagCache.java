@@ -57,7 +57,7 @@ import org.apache.royale.swf.tags.SymbolClassTag;
  * (assets). The cache associate asset tags with QNames by looking into
  * {@link SymbolClassTag} entries.
  */
-public class AssetTagCache extends ConcurrentCacheStoreBase<AssetTagCache.AssetTagCacheValue>
+public class AssetTagCache extends ConcurrentCacheStoreBase<AssetTagCache.AssetTagCacheValue> implements IAssetTagCache
 {
 
     /**

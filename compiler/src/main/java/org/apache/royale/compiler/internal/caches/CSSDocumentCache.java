@@ -51,7 +51,7 @@ import com.google.common.collect.ImmutableList;
  * The cache key is normalized path to the SWC file (optional) and the CSS file
  * name inside the SWC. The cache value is an {@link ICSSDocument}.
  */
-public class CSSDocumentCache extends ConcurrentCacheStoreBase<ICSSDocument>
+public class CSSDocumentCache extends ConcurrentCacheStoreBase<ICSSDocument> implements ICSSDocumentCache
 {
 
     /**

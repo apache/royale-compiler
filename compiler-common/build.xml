@@ -1,0 +1,352 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="compiler-common" default="main" basedir=".">
+
+    <!-- 
+
+        PROPERTIES
+
+    -->
+
+    <!-- The 'compiler-common' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler-common' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-common}. -->
+    <pathconvert property="compiler-common" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    
+    <!-- The 'compiler' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler' directory that is a sibling of the parent folder of this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-common}. -->
+    <pathconvert property="compiler" dirsep="/">
+        <path location="${basedir}/../compiler"/>
+    </pathconvert>
+    
+    <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
+    <property file="${compiler-common}/local.properties"/>
+    
+    <property name="src.depend" value="true"/>
+
+    <!-- Options for <javac> tasks -->
+    <property name="javac.debug" value="true"/>
+    <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
+
+    <!-- JAR manifest entries -->
+    <property name="manifest.sealed" value="false"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
+    <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+    
+    <!-- label is set by CruiseControl script based on P4 label incrementer -->
+    <condition property="build.number" value="${env.BUILD_NUMBER}">
+        <isset property="env.BUILD_NUMBER"/>
+    </condition>
+    
+    <!--
+     
+     MACROS
+     
+     -->
+    
+    <!--
+     Defines a <jflex input="..." skeleton="..." output="..."> macro
+     for using JFlex to generate a Java-based lexer from a .lex file.
+     -->
+    <macrodef name="jflex">
+        <attribute name="input"/>
+        <attribute name="skeleton" default="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.default"/>
+        <attribute name="output"/>
+        <sequential>
+            <java jar="${compiler}/lib/external/jflex.jar" fork="true">
+                <arg value="-d"/>
+                <arg value="@{output}"/>
+                <arg value="-q"/>
+                <arg value="@{input}"/>
+                <arg value="--skel"/>
+                <arg value="@{skeleton}"/>
+            </java>
+        </sequential>
+    </macrodef>
+    
+    <!--
+     Defines an <antlr2 input="..." output="..."> macro
+     for using ANTLR 2 to generate a Java-based parser from a .g file.
+     -->
+    <macrodef name="antlr2">
+        <attribute name="input"/>
+        <attribute name="output"/>
+        <sequential>
+            <mkdir dir="@{output}"/>
+            <dirname property="antlr2.dirname.@{input}" file="@{input}"/>
+            <antlr target="@{input}" outputdirectory="@{output}" dir="${antlr2.dirname.@{input}}">
+                <classpath>
+                    <pathelement path="${compiler}/lib/external/antlr.jar"/>
+                </classpath>
+            </antlr>
+        </sequential>
+    </macrodef>
+    
+    <!--
+     Defines an <antlr3 input="..." output="..."> macro
+     for using ANTLR 3 to generate a Java-based parser from a .g file.
+     -->
+    <macrodef name="antlr3">
+        <attribute name="input"/>
+        <attribute name="output"/>
+        <sequential>
+            <mkdir dir="@{output}"/>
+            <!-- Call antlr3 on command-line because we can't update Ant library path. -->
+            <java jar="${compiler}/lib/external/antlr.jar" fork="yes" failonerror="yes">
+                <arg value="@{input}"/>
+                <arg value="-o"/>
+                <arg value="@{output}"/>
+            </java>
+        </sequential>
+    </macrodef>
+    
+    <!--
+     Defines an <annotate.class file="..." annotation="..."> macro
+     used for inserting @SuppressWarnings(...) into generated Java classes,
+     in order to keep the build warning-free.
+     ANTLR and JBurg generate code that isn't warning-free in Eclipse.
+     -->
+    <macrodef name="annotate.class">
+        <attribute name="file"/>
+        <attribute name="annotation"/>
+        <sequential>
+            <java classname="org.apache.royale.compiler.tools.annotate.AnnotateClass" fork="false">
+                <classpath>
+                    <path refid="classpath"/>
+                    <pathelement location="${compiler-common}/../compiler-build-tools/target/classes"/>
+                    <pathelement location="${compiler-common}/target/classes"/>
+                </classpath>
+                <arg value="@{file}"/>
+                <arg value="@{annotation}"/>
+            </java>
+        </sequential>
+    </macrodef>
+    
+    <!--
+     
+	    GENERATION OF JAVA CODE WITH JFLEX
+	    
+     -->
+    
+    <target name="set.raw.as.tokenizer.uptodate">
+        <uptodate property="raw.as.tokenizer.uptodate"
+            targetfile="${compiler-common}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.java">
+            <srcfiles dir="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as">
+                <include name="RawASTokenizer.lex"/>
+                <include name="skeleton.royale"/>
+            </srcfiles>
+        </uptodate>
+    </target>
+    
+    <target name="raw.as.tokenizer" depends="set.raw.as.tokenizer.uptodate" unless="raw.as.tokenizer.uptodate"
+        description="Generates RawASTokenizer.java">
+        <echo message="Generating RawASTokenizer"/>
+        <jflex input="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.lex"
+        skeleton="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.royale"
+        output="${compiler-common}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as"/>
+    </target>
+    
+    <target name="set.raw.asdoc.tokenizer.uptodate">
+        <uptodate property="raw.asdoc.tokenizer.uptodate"
+            targetfile="${compiler-common}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.java">
+            <srcfiles dir="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as">
+                <include name="RawASDocTokenizer.lex"/>
+                <include name="skeleton.default"/>
+            </srcfiles>
+        </uptodate>
+    </target>
+    
+    <target name="raw.asdoc.tokenizer" depends="set.raw.asdoc.tokenizer.uptodate" unless="raw.asdoc.tokenizer.uptodate"
+        description="Generates RawASDocTokenizer.java">
+        <echo message="Generating RawASDocTokenizer"/>
+        <jflex input="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.lex"
+        output="${compiler-common}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/as"/>
+    </target>
+    
+    <target name="set.raw.mxml.tokenizer.uptodate">
+        <uptodate property="raw.mxml.tokenizer.uptodate"
+            targetfile="${compiler-common}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.java">
+            <srcfiles dir="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/mxml">
+                <include name="RawMXMLTokenizer.lex"/>
+                <include name="skeleton.default"/>
+            </srcfiles>
+        </uptodate>
+    </target>
+    
+    <target name="raw.mxml.tokenizer" depends="set.raw.mxml.tokenizer.uptodate" unless="raw.mxml.tokenizer.uptodate"
+        description="Generates RawMXMLTokenizer.java">
+        <echo message="Generating RawMXMLTokenizer"/>
+        <jflex input="${compiler-common}/src/main/jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
+        output="${compiler-common}/target/generated-sources/jflex/org/apache/royale/compiler/internal/parsing/mxml"/>
+    </target>
+    
+    <target name="jflex" depends="raw.as.tokenizer, raw.asdoc.tokenizer, raw.mxml.tokenizer"
+    description="Generates Java code with JFlex"/>
+    
+    <!--
+     
+     GENERATION OF JAVA CODE WITH ANTLR
+     
+     -->
+    
+    <target name="set.as.parser.uptodate">
+        <uptodate property="as.parser.uptodate"
+        srcfile="${compiler-common}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.g"
+        targetfile="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java"/>
+    </target>
+    
+    <target name="as.parser" depends="set.as.parser.uptodate" unless="as.parser.uptodate">
+        <echo message="Generating ASParser and ASTokenTypes"/>
+        <antlr2 input="${compiler-common}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.g"
+        output="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java"
+        annotation='@SuppressWarnings("unused")'/>
+        <annotate.class file="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASTokenTypes.java"
+        annotation='@SuppressWarnings("unused")'/>
+    </target>
+    
+    <target name="set.metadata.parser.uptodate">
+        <uptodate property="metadata.parser.uptodate"
+            targetfile="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java">
+            <srcfiles dir="${compiler-common}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as">
+                <include name="MetadataParser.g"/>
+                <include name="ImportMetadataTokenTypes.txt"/>
+            </srcfiles>
+        </uptodate>
+    </target>
+    
+    <target name="metadata.parser" depends="set.metadata.parser.uptodate" unless="metadata.parser.uptodate">
+        <echo message="Generating MetadataParser and MetadataTokenTypes"/>
+        <antlr2 input="${compiler-common}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.g"
+        output="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java"
+        annotation='@SuppressWarnings("all")'/>
+        <annotate.class file="${compiler-common}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataTokenTypes.java"
+        annotation='@SuppressWarnings("unused")'/>
+    </target>
+    
+    <target name="set.css.lexer.and.parser.uptodate">
+        <uptodate property="css.lexer.and.parser.uptodate"
+        srcfile="${compiler-common}/src/main/antlr/org/apache/royale/compiler/internal/css/CSS.g"
+        targetfile="${compiler-common}/target/generated-sources/java/org/apache/royale/compiler/internal/css/CSSParser.java"/>
+    </target>
+    
+    <target name="css.lexer.and.parser" depends="set.css.lexer.and.parser.uptodate" unless="css.lexer.and.parser.uptodate">
+        <echo message="Generating CSSLexer and CSSParser"/>
+        <antlr3 input="${compiler-common}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSS.g"
+        output="${compiler-common}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css"/>
+        <!--<annotate.class file="${compiler-common}/generated/src/org/apache/royale/compiler/internal/css/CSSLexer.java"
+         annotation='@SuppressWarnings("unused")'/>-->
+        <!--<annotate.class file="${compiler-common}/generated/src/org/apache/royale/compiler/internal/css/CSSParser.java"
+         annotation='@SuppressWarnings("unused")'/>-->
+    </target>
+    
+    <target name="set.css.tree.uptodate">
+        <uptodate property="css.tree.uptodate"
+        srcfile="${compiler-common}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSSTree.g"
+        targetfile="${compiler-common}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css/CSSTree.java"/>
+    </target>
+    
+    <target name="css.tree" depends="set.css.tree.uptodate" unless="css.tree.uptodate">
+        <echo message="Generating CSSTree"/>
+        <antlr3 input="${compiler-common}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSSTree.g"
+        output="${compiler-common}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css"/>
+        <!--<annotate.class file="${compiler-common}/generated/src/org/apache/royale/compiler/internal/css/CSSTree.java"
+         annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>-->
+    </target>
+    
+    <target name="antlr" depends="as.parser, metadata.parser, css.lexer.and.parser, css.tree"
+    description="Generates Java code with ANTLR"/>
+    
+    <!--
+    <target name="compiler.test.downloads.cache" if="usingDownloadCache">
+        <ant antfile="${compiler-common}/../compiler/src/test/downloads.xml" dir="${compiler-common}/../compiler/src/test" inheritAll="false">
+            <property name="usingDownloadCache" value="${usingDownloadCache}" />
+            <property name="downloadCacheFolder" value="${downloadCacheFolder}" />
+        </ant>
+    </target>
+    <target name="compiler.test.downloads" depends="compiler.test.downloads.cache" unless="usingDownloadCache">
+        <ant antfile="${compiler-common}/../compiler/src/test/downloads.xml" dir="${compiler-common}/../compiler/src/test" inheritAll="false"/>
+    </target>
+    -->
+    
+    <!--
+
+        EXTERNC
+
+    -->
+	
+    <!--
+    <target name="test.classes" depends="compiler.test.downloads">
+        <mkdir dir="${compiler-common}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-common}/target/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler-common}/src/main/java"/>
+            <include name="org/apache/royale/utils/*.java"/>
+            <classpath>
+                <pathelement location="${compiler-common}/target/classes"/>
+                <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+	-->
+    
+    <target name="main" > <!-- depends="jflex, antlr" >-->
+        <mkdir dir="${compiler-common}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-common}/target/classes" includeAntRuntime="true" includes="**/*.java"
+            source="${javac.src}" target="${javac.src}">
+            <src path="${compiler-common}/src/main/java"/>
+            <!--
+            <src path="${compiler-common}/target/generated-sources/jflex"/>
+            <src path="${compiler-common}/target/generated-sources/antlr"/>
+            <src path="${compiler-common}/target/generated-sources/antlr3"/>
+             -->
+            <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
+            <classpath>
+                <pathelement location="${compiler-common}/target/classes"/>
+                <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <!--
+
+        CLEANUP
+
+    -->
+
+    <target name="clean" description="clean">
+        <delete dir="${compiler-common}/target/classes"/>
+    </target>
+
+    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
+        <delete dir="${compiler-common}/target"/>
+    </target>
+
+ </project>

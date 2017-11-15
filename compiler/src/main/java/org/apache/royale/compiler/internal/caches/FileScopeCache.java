@@ -40,7 +40,7 @@ import org.apache.royale.swf.tags.DoABCTag;
  * key-value pairs. The key is a string in the form: {@code swc/library/script}.
  * The value is a {@link SoftReference} to a collection of {@link ASFileScope}s.
  */
-public class FileScopeCache extends ConcurrentCacheStoreBase<Collection<IASScope>>
+public class FileScopeCache extends ConcurrentCacheStoreBase<Collection<IASScope>> implements IFileScopeCache
 {
     
     /**

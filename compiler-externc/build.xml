@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="compiler-externc" default="main" basedir=".">
+
+    <!-- 
+
+        PROPERTIES
+
+    -->
+
+    <!-- The 'compiler' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler-externc' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-externc}. -->
+    <pathconvert property="compiler-externc" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    
+    <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
+    <property file="${compiler-externc}/local.properties"/>
+    
+    <property name="src.depend" value="true"/>
+
+    <!-- Options for <javac> tasks -->
+    <property name="javac.debug" value="true"/>
+    <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
+
+    <!-- JAR manifest entries -->
+    <property name="manifest.sealed" value="false"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
+    <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+    
+    <!-- label is set by CruiseControl script based on P4 label incrementer -->
+    <condition property="build.number" value="${env.BUILD_NUMBER}">
+        <isset property="env.BUILD_NUMBER"/>
+    </condition>
+    
+    <!--
+    <target name="compiler.test.downloads.cache" if="usingDownloadCache">
+        <ant antfile="${compiler-externc}/../compiler/src/test/downloads.xml" dir="${compiler-externc}/../compiler/src/test" inheritAll="false">
+            <property name="usingDownloadCache" value="${usingDownloadCache}" />
+            <property name="downloadCacheFolder" value="${downloadCacheFolder}" />
+        </ant>
+    </target>
+    <target name="compiler.test.downloads" depends="compiler.test.downloads.cache" unless="usingDownloadCache">
+        <ant antfile="${compiler-externc}/../compiler/src/test/downloads.xml" dir="${compiler-externc}/../compiler/src/test" inheritAll="false"/>
+    </target>
+    -->
+    
+    <!--
+
+        EXTERNC
+
+    -->
+	
+    <!--
+    <target name="test.classes" depends="compiler.test.downloads">
+        <mkdir dir="${compiler-externc}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-externc}/target/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler-externc}/src/main/java"/>
+            <include name="org/apache/royale/utils/*.java"/>
+            <classpath>
+                <pathelement location="${compiler-externc}/target/classes"/>
+                <fileset dir="${compiler-externc}/../compiler/lib/external" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+	-->
+    
+    <target name="main" >
+        <mkdir dir="${compiler-externc}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-externc}/target/classes" includeAntRuntime="true" includes="**/*.java"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler-externc}/src/main/java"/>
+            <classpath>
+                <pathelement location="${compiler-externc}/target/classes"/>
+                <fileset dir="${compiler-externc}/../compiler/lib/external" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <!--
+
+        CLEANUP
+
+    -->
+
+    <target name="clean" description="clean">
+        <delete dir="${compiler-externc}/target/classes"/>
+    </target>
+
+    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
+        <delete dir="${compiler-externc}/target"/>
+    </target>
+
+ </project>
