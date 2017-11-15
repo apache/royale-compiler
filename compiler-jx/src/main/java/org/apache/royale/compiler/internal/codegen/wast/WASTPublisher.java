@@ -40,11 +40,14 @@ public class WASTPublisher implements IWASTPublisher {
 	
 	
 	private Configuration configuration;
+	
+	private String mainProjectFileName;
 
 	private File outputFolder;
 	private File outputParentFolder;
 
 	private EnvProperties env;
+	
 	
 	
 	@Override
@@ -65,11 +68,13 @@ public class WASTPublisher implements IWASTPublisher {
 		try {
 			String targetPath = getOutputFolder().getPath();
 			
-			String targetWatFilePath = targetPath + "/HelloWorld.wat";
+			mainProjectFileName = configuration.getMainDefinition();
+			
+			String targetWatFilePath = targetPath + "/" + mainProjectFileName + ".wat";
 			
 			env = EnvProperties.initiate();
 			
-			String[] cmd = { env.WAT2WASM + "/wat2wasm", targetWatFilePath, "-o", targetPath + "/HelloWorld.wasm" };
+			String[] cmd = { env.WAT2WASM + "/wat2wasm", targetWatFilePath, "-o", targetPath + "/" + mainProjectFileName + ".wasm" };
 
 			Process p = new ProcessBuilder(cmd).redirectError(Redirect.INHERIT)
                     .redirectOutput(Redirect.INHERIT)
@@ -138,7 +143,7 @@ public class WASTPublisher implements IWASTPublisher {
 		htmlFile.append("  <meta charset=\"utf-8\">\n");
 		htmlFile.append("  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n");
 		htmlFile.append("\n");
-		htmlFile.append("  <title>Royale WASM</title>\n");
+		htmlFile.append("  <title>" + mainProjectFileName + " - Royale WAST</title>\n");
 		htmlFile.append("\n");
 		htmlFile.append("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n");
 		htmlFile.append("</head>\n");
@@ -150,7 +155,7 @@ public class WASTPublisher implements IWASTPublisher {
 		htmlFile.append("\n");
 		htmlFile.append("<script>\n");
 		htmlFile.append("\n");
-		htmlFile.append("  fetchAndInstantiate('HelloWorld.wasm')\n");
+		htmlFile.append("  fetchAndInstantiate('" + mainProjectFileName + ".wasm')\n");
 		htmlFile.append("  .then(function(instance) {\n");
 		htmlFile.append("    document.getElementById('wasm-output').innerHTML = 'The result from the call to the WASM method is: ' + instance.exports.add(3, 7); // 10\n");
 		htmlFile.append("  });\n");
