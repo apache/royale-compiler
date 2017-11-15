@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.royale.compiler.common.IDefinitionPriority;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.internal.targets.Target;
-import org.apache.royale.compiler.internal.units.CompilationUnitBase;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
@@ -71,7 +69,7 @@ public interface ICompilationUnit
         }
         
         /**
-         * This mask is used by {@link CompilationUnitBase}  to update
+         * This mask is used by CompilationUnitBase  to update
          * a {@link AtomicInteger} that keeps track of which operations have
          * been completed.
          */
@@ -235,7 +233,7 @@ public interface ICompilationUnit
      * 
      * @see ICompilationUnit#startBuildAsync
      * @param problems Problems from executing the requests.
-     * @param targetType type of the active {@link Target}
+     * @param targetType type of the active Target
      * @throws InterruptedException Concurrency error.
      */
     void waitForBuildFinish(Collection<ICompilerProblem> problems, TargetType targetType) throws InterruptedException;
@@ -244,7 +242,7 @@ public interface ICompilationUnit
      * This method starts to build the compilation unit asynchronously. It kicks
      * off all the request methods on the compilation unit.
      * 
-     * @param targetType type of the active {@link Target}
+     * @param targetType type of the active Target
      */
     void startBuildAsync(TargetType targetType);
 

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.embedding;
+package org.apache.royale.compiler.embedding;
 
 /**
  * enum to map all the attributes supported by the Embed directive

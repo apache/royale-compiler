@@ -21,7 +21,7 @@ package org.apache.royale.compiler.definitions.references;
 
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
@@ -66,7 +66,7 @@ public interface IReference
      * <code>with</code> scope.
      * @return The {@link IDefinition} the reference resolves to.
      */
-    IDefinition resolve(ICompilerProject project, ASScope scope,
+    IDefinition resolve(ICompilerProject project, IASScope scope,
                         DependencyType dependencyType,
                         boolean canEscapeWith);
 

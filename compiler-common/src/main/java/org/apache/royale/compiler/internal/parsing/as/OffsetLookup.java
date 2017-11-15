@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -35,7 +34,7 @@ import com.google.common.collect.Ordering;
  * their start and end offsets are absolute offsets.
  * <P>
  * This class can translate an "absolute" offset to a tuple of filename and
- * "local offset" in the file. Each {@link ASFileScope} has an
+ * "local offset" in the file. Each ASFileScope has an
  * {@code OffsetLookup} object.
  */
 public class OffsetLookup

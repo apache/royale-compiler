@@ -71,7 +71,7 @@ import org.apache.royale.utils.StringEncoder;
  * This is the main class which contains all information extracted from embed
  * meta data.
  */
-public class EmbedData
+public class EmbedData implements IEmbedData
 {
     private static final String EMBED_SWC_SEP = "|";
 
@@ -151,7 +151,7 @@ public class EmbedData
      * @param problems any problems with the key or value
      * @return true if there was an error
      */
-    public boolean addAttribute(CompilerProject project, ISourceLocation location, String key, String value, Collection<ICompilerProblem> problems)
+    public boolean addAttribute(ICompilerProject project, ISourceLocation location, String key, String value, Collection<ICompilerProblem> problems)
     {
         boolean hadError = false;
         try
@@ -392,7 +392,7 @@ public class EmbedData
      * @param problems The colleciton of compiler projects to which this method should add problems.
      * @return true if the transcoder was successfully constructed
      */
-    public boolean createTranscoder(CompilerProject project, ISourceLocation location, Collection<ICompilerProblem> problems)
+    public boolean createTranscoder(ICompilerProject project, ISourceLocation location, Collection<ICompilerProblem> problems)
     {
         // there should always be a source, with the exception of skin embedding, so don't
         // create a transcoder in this error state
@@ -547,7 +547,7 @@ public class EmbedData
      * 
      * @return transcoder
      */
-    public final TranscoderBase getTranscoder()
+    public final ITranscoder getTranscoder()
     {
         return transcoder;
     }

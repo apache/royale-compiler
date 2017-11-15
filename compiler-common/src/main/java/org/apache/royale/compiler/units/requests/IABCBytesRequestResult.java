@@ -21,7 +21,7 @@ package org.apache.royale.compiler.units.requests;
 
 import java.util.Collection;
 
-import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
@@ -49,5 +49,5 @@ public interface IABCBytesRequestResult extends IRequestResult
     /**
      * @return any embedded asset generated for the CompilationUnit. This value is guaranteed to be non-null.
      */
-    Collection<EmbedData> getEmbeds();
+    Collection<IEmbedData> getEmbeds();
 }
