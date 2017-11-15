@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.wast;
 
 import org.apache.royale.compiler.internal.test.WASTTestBase;
 import org.apache.royale.compiler.tree.as.IClassNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,7 @@ import org.junit.Test;
  */
 public class TestWASTClass extends WASTTestBase {
 
+    @Ignore
     @Test
     public void testClassSimple()
     {

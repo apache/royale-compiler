@@ -97,6 +97,11 @@
         <mkdir dir="${classes.dir}/META-INF" />
         <mkdir dir="${lib}/google/closure-compiler" />
         <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false"/>
+        <ant dir="../compiler-test-utils">
+          <target name="clean" />
+          <target name="main" />
+        </ant>
+        <copy file="${basedir}/../compiler-test-utils/target/classes/org/apache/royale/utils/EnvProperties.class" tofile="${classes.dir}/org/apache/royale/utils/EnvProperties.class"/>
     </target>
 	
 	<target name="main" depends="prebuild,compile">
@@ -107,6 +112,11 @@
         <copy file="${basedir}/../NOTICE" tofile="${classes.dir}/META-INF/NOTICE"/>
         
 		<echo message="Building ${wastc.jar}" />
+    <ant dir="../compiler-test-utils">
+      <target name="clean" />
+      <target name="main" />
+    </ant>
+    <copy file="${basedir}/../compiler-test-utils/target/classes/org/apache/royale/utils/EnvProperties.class" tofile="${classes.dir}/org/apache/royale/utils/EnvProperties.class"/>
 		<jar file="${wastc.jar}" basedir="${classes.dir}"
          includes="**/*.properties,org/apache/**/*,META-INF/**/*"
          excludes="" >
@@ -223,6 +233,7 @@
                 <include name="mxmlc.jar" />
                 <include name="jsc.jar" />
                 <include name="asdoc.jar" />
+                <include name="wastc.jar" />
             </fileset>
 		</delete>
     </target>
