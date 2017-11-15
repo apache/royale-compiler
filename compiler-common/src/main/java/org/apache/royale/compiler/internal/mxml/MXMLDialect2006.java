@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.royale.compiler.common.XMLName;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.ICompilerProjectWithNamedColor;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 
 /**
@@ -188,7 +189,7 @@ public class MXMLDialect2006 extends MXMLDialect
         
         if (flags != null && flags.contains(TextParsingFlags.ALLOW_COLOR_NAME))
         {
-            value = project.getNamedColor(s);
+            value = ((ICompilerProjectWithNamedColor)project).getNamedColor(s);
             if (value != null)
                 return value;
         }
@@ -223,7 +224,7 @@ public class MXMLDialect2006 extends MXMLDialect
         
         if (flags != null && flags.contains(TextParsingFlags.ALLOW_COLOR_NAME))
         {
-            Integer colorValue = project.getNamedColor(s);
+            Integer colorValue = ((ICompilerProjectWithNamedColor)project).getNamedColor(s);
             if (colorValue != null)
                 return colorValue.longValue();
         }

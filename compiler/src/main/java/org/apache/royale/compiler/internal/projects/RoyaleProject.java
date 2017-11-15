@@ -85,6 +85,7 @@ import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLManifestManager;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.projects.ICompilerProjectWithNamedColor;
 import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.targets.ISWCTarget;
@@ -105,7 +106,7 @@ import com.google.common.collect.ImmutableList;
  * {@code RoyaleProject} extends {@code ASProject} to add support for compiling
  * .mxml, .css, and .properties files.
  */
-public class RoyaleProject extends ASProject implements IRoyaleProject
+public class RoyaleProject extends ASProject implements IRoyaleProject, ICompilerProjectWithNamedColor
 {
     // TODO Remove the redundant fooClass (a qname String) field
     // when we have a fooClassName (an AET Name) field. We can always
