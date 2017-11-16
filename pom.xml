@@ -75,11 +75,8 @@
   </distributionManagement>
 
   <issueManagement>
-<<<<<<< HEAD
-    <system>GitHub</system>
-=======
     <system>GitHub Issues</system>
->>>>>>> Change url to the repository in main pom to check whether it influence Maven compiler build
+     <!--Change url to the repository in main pom to check whether it influence Maven compiler build-->
     <url>https://github.com/apache/royale-compiler/issues</url>
   </issueManagement>
 
