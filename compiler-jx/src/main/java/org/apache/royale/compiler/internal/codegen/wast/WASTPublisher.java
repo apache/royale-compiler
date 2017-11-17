@@ -115,7 +115,7 @@ public class WASTPublisher implements IWASTPublisher {
 	    	if (!flexHomePath.substring(flexHomePath.length() - 4).equals(".jar")) {
 	    		flexHomePath = new File(flexHome, "../../../../royale-asjs/as2wasm/resources").getPath();
 	    	} else {
-	    		flexHomePath = new File(flexHome.getParentFile().getPath(), "../../resources").getAbsolutePath();
+	    		flexHomePath = new File(flexHome.getParentFile().getPath(), "../..").getPath();
 	    	}
 	    	
 	    	System.out.println(flexHomePath);
