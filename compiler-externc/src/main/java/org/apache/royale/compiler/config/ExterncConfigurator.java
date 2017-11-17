@@ -44,7 +44,7 @@ public class ExterncConfigurator extends Configurator
     protected void validateSWCInputs() throws ConfigurationException
     {
         ExternCConfiguration configuration = (ExternCConfiguration) getConfiguration();
-        if (configuration.getExternals().isEmpty())
+        if (configuration.getTypedefs().isEmpty())
         {
             throw new ConfigurationException.NoSwcInputs( null, null, -1 );
         }

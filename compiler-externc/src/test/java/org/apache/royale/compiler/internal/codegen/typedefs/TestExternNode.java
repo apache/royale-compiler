@@ -25,12 +25,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
 
-public class TestExternNode extends ExternalsTestBase
+public class TestExternNode extends TypedefsTestBase
 {
     @Test
     public void test_classes() throws IOException
@@ -51,8 +51,8 @@ public class TestExternNode extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-    	ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+    	TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
         config.addNamedModule("assert");
         config.addNamedModule("buffer");
@@ -86,35 +86,35 @@ public class TestExternNode extends ExternalsTestBase
         config.addExclude("Buffer", "toJSON");
         config.addExclude("osNetworkInterfacesInfo", "internal");
 
-        String coreRoot = ExternalsTestUtils.EXTERNAL_NODE_DIR.getAbsolutePath();
-        config.addExternal(coreRoot + "/assert.js");
-        config.addExternal(coreRoot + "/buffer.js");
-        config.addExternal(coreRoot + "/child_process.js");
-        config.addExternal(coreRoot + "/cluster.js");
-        config.addExternal(coreRoot + "/crypto.js");
-        config.addExternal(coreRoot + "/dgram.js");
-        config.addExternal(coreRoot + "/dns.js");
-        config.addExternal(coreRoot + "/domain.js");
-        config.addExternal(coreRoot + "/events.js");
-        config.addExternal(coreRoot + "/fs.js");
-        config.addExternal(coreRoot + "/globals.js");
-        config.addExternal(coreRoot + "/http.js");
-        config.addExternal(coreRoot + "/https.js");
-        config.addExternal(coreRoot + "/net.js");
-        config.addExternal(coreRoot + "/os.js");
-        config.addExternal(coreRoot + "/path.js");
-        config.addExternal(coreRoot + "/punycode.js");
-        config.addExternal(coreRoot + "/querystring.js");
-        config.addExternal(coreRoot + "/readline.js");
-        config.addExternal(coreRoot + "/repl.js");
-        config.addExternal(coreRoot + "/stream.js");
-        config.addExternal(coreRoot + "/string_decoder.js");
-        config.addExternal(coreRoot + "/tls.js");
-        config.addExternal(coreRoot + "/tty.js");
-        config.addExternal(coreRoot + "/url.js");
-        config.addExternal(coreRoot + "/util.js");
-        config.addExternal(coreRoot + "/vm.js");
-        config.addExternal(coreRoot + "/zlib.js");
+        String coreRoot = TypedefsTestUtils.EXTERNAL_NODE_DIR.getAbsolutePath();
+        config.addTypedef(coreRoot + "/assert.js");
+        config.addTypedef(coreRoot + "/buffer.js");
+        config.addTypedef(coreRoot + "/child_process.js");
+        config.addTypedef(coreRoot + "/cluster.js");
+        config.addTypedef(coreRoot + "/crypto.js");
+        config.addTypedef(coreRoot + "/dgram.js");
+        config.addTypedef(coreRoot + "/dns.js");
+        config.addTypedef(coreRoot + "/domain.js");
+        config.addTypedef(coreRoot + "/events.js");
+        config.addTypedef(coreRoot + "/fs.js");
+        config.addTypedef(coreRoot + "/globals.js");
+        config.addTypedef(coreRoot + "/http.js");
+        config.addTypedef(coreRoot + "/https.js");
+        config.addTypedef(coreRoot + "/net.js");
+        config.addTypedef(coreRoot + "/os.js");
+        config.addTypedef(coreRoot + "/path.js");
+        config.addTypedef(coreRoot + "/punycode.js");
+        config.addTypedef(coreRoot + "/querystring.js");
+        config.addTypedef(coreRoot + "/readline.js");
+        config.addTypedef(coreRoot + "/repl.js");
+        config.addTypedef(coreRoot + "/stream.js");
+        config.addTypedef(coreRoot + "/string_decoder.js");
+        config.addTypedef(coreRoot + "/tls.js");
+        config.addTypedef(coreRoot + "/tty.js");
+        config.addTypedef(coreRoot + "/url.js");
+        config.addTypedef(coreRoot + "/util.js");
+        config.addTypedef(coreRoot + "/vm.js");
+        config.addTypedef(coreRoot + "/zlib.js");
     }
 
 }

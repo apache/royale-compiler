@@ -17,10 +17,10 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.typedefs.pass;
 
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.royale.compiler.internal.codegen.externals.DummyNode;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.DummyNode;
 import org.apache.royale.compiler.problems.VariableHasNoTypeDeclarationProblem;
 
 import com.google.javascript.jscomp.AbstractCompiler;

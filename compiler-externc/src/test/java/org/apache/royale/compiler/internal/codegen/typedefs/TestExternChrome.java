@@ -26,13 +26,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
 
-public class TestExternChrome extends ExternalsTestBase
+public class TestExternChrome extends TypedefsTestBase
 {
     @Test
     public void test_classes() throws IOException
@@ -157,23 +157,23 @@ public class TestExternChrome extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration install) throws IOException
     {
-    	ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+    	TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
-        String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
-        config.addExternal(coreRoot + "/es3.js");
-        config.addExternal(coreRoot + "/es6.js");
-        config.addExternal(coreRoot + "/browser/chrome.js");
-        config.addExternal(coreRoot + "/browser/html5.js");
-        config.addExternal(coreRoot + "/browser/ie_dom.js");
-        config.addExternal(coreRoot + "/browser/gecko_dom.js");
-        config.addExternal(coreRoot + "/browser/w3c_css.js");
-        config.addExternal(coreRoot + "/browser/w3c_event.js");
-        config.addExternal(coreRoot + "/browser/w3c_range.js");
-        config.addExternal(coreRoot + "/browser/w3c_dom1.js");
-        config.addExternal(coreRoot + "/browser/w3c_dom2.js");
-        config.addExternal(coreRoot + "/browser/w3c_dom3.js");
-        config.addExternal(coreRoot + "/browser/w3c_xml.js");
+        String coreRoot = TypedefsTestUtils.TYPEDEFS_JS_DIR.getAbsolutePath();
+        config.addTypedef(coreRoot + "/es3.js");
+        config.addTypedef(coreRoot + "/es6.js");
+        config.addTypedef(coreRoot + "/browser/chrome.js");
+        config.addTypedef(coreRoot + "/browser/html5.js");
+        config.addTypedef(coreRoot + "/browser/ie_dom.js");
+        config.addTypedef(coreRoot + "/browser/gecko_dom.js");
+        config.addTypedef(coreRoot + "/browser/w3c_css.js");
+        config.addTypedef(coreRoot + "/browser/w3c_event.js");
+        config.addTypedef(coreRoot + "/browser/w3c_range.js");
+        config.addTypedef(coreRoot + "/browser/w3c_dom1.js");
+        config.addTypedef(coreRoot + "/browser/w3c_dom2.js");
+        config.addTypedef(coreRoot + "/browser/w3c_dom3.js");
+        config.addTypedef(coreRoot + "/browser/w3c_xml.js");
     }
 
 }

@@ -17,36 +17,43 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.utils;
+package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
 import com.google.javascript.rhino.Node;
 
-public final class DebugLogUtils
+/**
+ * @author: Frederic Thomas Date: 05/07/2015 Time: 19:34
+ */
+public class ParameterReference extends BaseReference
 {
-    private static boolean logEnabled = false;
-    private static boolean errEnabled = false;
 
-    public static void log(Node n)
+    private String name;
+
+    public ParameterReference(final ReferenceModel model, final Node node, final String qualifiedName)
     {
-        log("StringTree -------------------------------------");
-        log(n.toStringTree());
+        super(model, node, qualifiedName, null);
+        name = node.getString();
     }
 
-    public static void log(String message)
+    public ParameterReference(final ReferenceModel model, final String name, final String qualifiedName)
     {
-        if (logEnabled)
-            System.out.println(message);
+        super(model, null, qualifiedName, null);
+        this.name = name;
     }
 
-    public static void err(String message)
+    public ParameterReference(final ReferenceModel model, final Node parameterNode)
     {
-        if (errEnabled)
-            System.err.println(message);
+        this(model, parameterNode, "Object");
     }
 
-    public static void err(Node n)
+    @Override
+    public void emit(final StringBuilder sb)
     {
-        err("StringTree -------------------------------------");
-        err(n.toStringTree());
+        // Emitted by the Method / Function reference.
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }

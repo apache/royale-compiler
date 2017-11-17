@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
-import org.apache.royale.compiler.internal.codegen.externals.utils.FunctionUtils;
+import org.apache.royale.compiler.internal.codegen.typedefs.utils.FunctionUtils;
 
 import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;

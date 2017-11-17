@@ -28,10 +28,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
-public class TestTypeInheritence extends ExternalsTestBase
+public class TestTypeInheritence extends TypedefsTestBase
 {
 
     @Test
@@ -81,8 +81,8 @@ public class TestTypeInheritence extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-    	ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+    	TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
     }
 
 }

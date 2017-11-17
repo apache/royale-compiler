@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.typedefs.pass;
 
 import java.util.Collection;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.royale.compiler.internal.codegen.externals.utils.DebugLogUtils;
+import org.apache.royale.compiler.internal.codegen.typedefs.pass.ReferenceCompiler.TypedefFile;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.utils.DebugLogUtils;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
@@ -92,8 +92,8 @@ public abstract class AbstractCompilerPass implements CompilerPass, Callback
     		externName = externName.replace("[", "");
     		externName = externName.replace("]", "");
         	ExternCConfiguration config = model.getConfiguration();
-        	Collection<ExternalFile> externs = config.getExternals();
-        	for (ExternalFile f : externs)
+        	Collection<TypedefFile> externs = config.getTypedefs();
+        	for (TypedefFile f : externs)
         	{
         		String fn = f.getName();
         		if (fn.equals(externName))

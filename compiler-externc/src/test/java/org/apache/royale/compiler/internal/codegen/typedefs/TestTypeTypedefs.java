@@ -26,9 +26,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.MethodReference;
-import org.apache.royale.compiler.internal.codegen.externals.utils.JSTypeUtils;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.MethodReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.utils.JSTypeUtils;
 
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
 
-public class TestTypeExternals extends ExternalsTestBase
+public class TestTypeTypedefs extends TypedefsTestBase
 {
     @Test
     public void test_constructor() throws IOException

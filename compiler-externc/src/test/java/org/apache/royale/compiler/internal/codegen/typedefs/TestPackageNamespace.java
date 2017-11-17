@@ -25,10 +25,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
-public class TestPackageNamespace extends ExternalsTestBase
+public class TestPackageNamespace extends TypedefsTestBase
 {
     @Test
     public void test_pacakge1() throws IOException

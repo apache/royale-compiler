@@ -17,27 +17,36 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.typedefs.utils;
 
-import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 
-public class NullConstructorReference extends MethodReference
+public final class DebugLogUtils
 {
+    private static boolean logEnabled = false;
+    private static boolean errEnabled = false;
 
-    public NullConstructorReference(ReferenceModel model,
-            ClassReference classReference, Node node, String name,
-            JSDocInfo comment)
+    public static void log(Node n)
     {
-        super(model, classReference, node, name, comment, false);
+        log("StringTree -------------------------------------");
+        log(n.toStringTree());
     }
 
-    @Override
-    protected void emitFunctionCommentBody(StringBuilder sb)
+    public static void log(String message)
     {
-        emitBlockDescription(sb);
-        emitSee(sb);
-        emitSeeSourceFileName(sb);
+        if (logEnabled)
+            System.out.println(message);
     }
 
+    public static void err(String message)
+    {
+        if (errEnabled)
+            System.err.println(message);
+    }
+
+    public static void err(Node n)
+    {
+        err("StringTree -------------------------------------");
+        err(n.toStringTree());
+    }
 }

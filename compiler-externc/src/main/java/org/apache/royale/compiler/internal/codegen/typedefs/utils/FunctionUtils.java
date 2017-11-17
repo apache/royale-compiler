@@ -17,12 +17,12 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.utils;
+package org.apache.royale.compiler.internal.codegen.typedefs.utils;
 
-import org.apache.royale.compiler.internal.codegen.externals.reference.BaseReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.MemberReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.BaseReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.MemberReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
 
 import com.google.common.base.Strings;
 import com.google.javascript.rhino.JSDocInfo;

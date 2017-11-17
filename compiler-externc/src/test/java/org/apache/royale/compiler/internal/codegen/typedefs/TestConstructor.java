@@ -27,10 +27,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
-public class TestConstructor extends ExternalsTestBase
+public class TestConstructor extends TypedefsTestBase
 {
 
     @Test

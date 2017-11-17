@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.utils;
+package org.apache.royale.compiler.internal.codegen.typedefs.utils;
 
 import java.util.HashMap;
 
-import org.apache.royale.compiler.internal.codegen.externals.reference.BaseReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ConstantReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.BaseReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ConstantReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
 
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;

@@ -29,11 +29,11 @@ import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationValue;
 import org.apache.royale.compiler.exceptions.ConfigurationException.CannotOpen;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IncorrectArgumentCount;
-import org.apache.royale.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
-import org.apache.royale.compiler.internal.codegen.externals.reference.BaseReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.FieldReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.MemberReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.pass.ReferenceCompiler.TypedefFile;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.BaseReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.FieldReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.MemberReference;
 import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
@@ -54,8 +54,8 @@ public class ExternCConfiguration extends Configuration
     private File asTypeDefRoot;
     private File asDuplicatesRoot;
 
-    private List<ExternalFile> externals = new ArrayList<ExternalFile>();
-    private List<ExternalFile> externalExterns = new ArrayList<ExternalFile>();
+    private List<TypedefFile> typedefs = new ArrayList<TypedefFile>();
+    private List<TypedefFile> externalTypedefs = new ArrayList<TypedefFile>();
 
     private List<String> namedModules = new ArrayList<String>();
 
@@ -122,14 +122,14 @@ public class ExternCConfiguration extends Configuration
         return asDuplicatesRoot;
     }
 
-    public Collection<ExternalFile> getExternals()
+    public Collection<TypedefFile> getTypedefs()
     {
-        return externals;
+        return typedefs;
     }
 
-    public Collection<ExternalFile> getExternalExterns()
+    public Collection<TypedefFile> getTypedefTypedefs()
     {
-        return externalExterns;
+        return externalTypedefs;
     }
 
     public boolean isClassToFunctions(String className)
@@ -142,28 +142,28 @@ public class ExternCConfiguration extends Configuration
         classToFunctions.add(className);
     }
 
-    public void addExternal(File file) throws IOException
+    public void addTypedef(File file) throws IOException
     {
         if (!file.exists())
             throw new IOException(file.getAbsolutePath() + " does not exist.");
-        externals.add(new ExternalFile(file));
+        typedefs.add(new TypedefFile(file));
     }
 
-    public void addExternal(String externalFile) throws IOException
+    public void addTypedef(String externalFile) throws IOException
     {
-        addExternal(new File(FilenameNormalization.normalize(externalFile)));
+        addTypedef(new File(FilenameNormalization.normalize(externalFile)));
     }
 
-    public void addExternalExtern(File file) throws IOException
+    public void addTypedefTypedef(File file) throws IOException
     {
         if (!file.exists())
             throw new IOException(file.getAbsolutePath() + " does not exist.");
-        externalExterns.add(new ExternalFile(file));
+        externalTypedefs.add(new TypedefFile(file));
     }
 
-    public void addExternalExtern(String externalFile) throws IOException
+    public void addTypedefTypedef(String externalFile) throws IOException
     {
-        addExternalExtern(new File(FilenameNormalization.normalize(externalFile)));
+        addTypedefTypedef(new File(FilenameNormalization.normalize(externalFile)));
     }
 
     @Config(allowMultiple = true)
@@ -178,26 +178,26 @@ public class ExternCConfiguration extends Configuration
     @Mapping("external")
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    public void setExternal(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
+    public void setTypedef(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
     {
         for (String val : vals)
-            addExternal(resolvePathStrict(val, cfgval));
+            addTypedef(resolvePathStrict(val, cfgval));
     }
 
     @Config(allowMultiple = true, isPath = true)
     @Mapping("external-externs")
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    public void setExternalExterns(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
+    public void setTypedefTypedefs(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
     {
         for (String val : vals)
-            addExternalExtern(resolvePathStrict(val, cfgval));
+            addTypedefTypedef(resolvePathStrict(val, cfgval));
     }
 
-    public boolean isExternalExtern(BaseReference reference)
+    public boolean isTypedefTypedef(BaseReference reference)
     {
         String sourceFileName = reference.getNode().getSourceFileName();
-        for (ExternalFile file : externalExterns)
+        for (TypedefFile file : externalTypedefs)
         {
             if (sourceFileName.equals("[" + file.getName() + "]"))
             {

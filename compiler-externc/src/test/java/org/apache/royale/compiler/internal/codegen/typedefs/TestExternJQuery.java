@@ -25,12 +25,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
 
-public class TestExternJQuery extends ExternalsTestBase
+public class TestExternJQuery extends TypedefsTestBase
 {
     @SuppressWarnings("unused")
     @Test
@@ -58,11 +58,11 @@ public class TestExternJQuery extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-    	ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+    	TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
-        String coreRoot = ExternalsTestUtils.EXTERNAL_JQUERY_DIR.getAbsolutePath();
-        config.addExternal(coreRoot + "/jquery-1.9.js");
+        String coreRoot = TypedefsTestUtils.EXTERNAL_JQUERY_DIR.getAbsolutePath();
+        config.addTypedef(coreRoot + "/jquery-1.9.js");
     }
 
 }

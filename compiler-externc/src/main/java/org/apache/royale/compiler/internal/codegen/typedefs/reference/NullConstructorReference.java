@@ -17,43 +17,27 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
+import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 
-/**
- * @author: Frederic Thomas Date: 05/07/2015 Time: 19:34
- */
-public class ParameterReference extends BaseReference
+public class NullConstructorReference extends MethodReference
 {
 
-    private String name;
-
-    public ParameterReference(final ReferenceModel model, final Node node, final String qualifiedName)
+    public NullConstructorReference(ReferenceModel model,
+            ClassReference classReference, Node node, String name,
+            JSDocInfo comment)
     {
-        super(model, node, qualifiedName, null);
-        name = node.getString();
-    }
-
-    public ParameterReference(final ReferenceModel model, final String name, final String qualifiedName)
-    {
-        super(model, null, qualifiedName, null);
-        this.name = name;
-    }
-
-    public ParameterReference(final ReferenceModel model, final Node parameterNode)
-    {
-        this(model, parameterNode, "Object");
+        super(model, classReference, node, name, comment, false);
     }
 
     @Override
-    public void emit(final StringBuilder sb)
+    protected void emitFunctionCommentBody(StringBuilder sb)
     {
-        // Emitted by the Method / Function reference.
+        emitBlockDescription(sb);
+        emitSee(sb);
+        emitSeeSourceFileName(sb);
     }
 
-    public String getName()
-    {
-        return name;
-    }
 }

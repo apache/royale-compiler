@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.royale.compiler.internal.codegen.externals.pass.AbstractCompilerPass;
-import org.apache.royale.compiler.internal.codegen.externals.utils.DebugLogUtils;
-import org.apache.royale.compiler.internal.codegen.externals.utils.JSTypeUtils;
-import org.apache.royale.compiler.internal.codegen.externals.DummyNode;
+import org.apache.royale.compiler.internal.codegen.typedefs.pass.AbstractCompilerPass;
+import org.apache.royale.compiler.internal.codegen.typedefs.utils.DebugLogUtils;
+import org.apache.royale.compiler.internal.codegen.typedefs.utils.JSTypeUtils;
+import org.apache.royale.compiler.internal.codegen.typedefs.DummyNode;
 import org.apache.royale.compiler.problems.UnresolvedClassReferenceProblem;
 
 import com.google.javascript.rhino.JSDocInfo;

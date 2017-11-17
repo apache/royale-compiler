@@ -28,8 +28,8 @@ import java.io.IOException;
 import org.apache.royale.compiler.clients.EXTERNC;
 import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
-import org.apache.royale.compiler.internal.codegen.externals.reference.MethodReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.MethodReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
 import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Assert;
@@ -38,7 +38,7 @@ import org.junit.Before;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.rhino.jstype.JSType;
 
-public abstract class ExternalsTestBase
+public abstract class TypedefsTestBase
 {
     private static File unitTestBaseDir =
             new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), "typedefs/unit_tests");
@@ -74,7 +74,7 @@ public abstract class ExternalsTestBase
 
     protected Result compile(File file) throws IOException
     {
-        config.addExternal(file);
+        config.addTypedef(file);
         return compile();
     }
 

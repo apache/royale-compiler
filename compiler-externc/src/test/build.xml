@@ -90,7 +90,7 @@
                     <include name="**/TestConstructor.class"/>
                     <include name="**/TestPackageNamespace.class"/>
                     <include name="**/TestReferenceModel.class"/>
-                    <include name="**/TestTypeExternals.class"/>
+                    <include name="**/TestTypeTypedefs.class"/>
                     <include name="**/TestTypeInheritance.class"/>
                 </fileset>
             </batchtest>
@@ -123,13 +123,6 @@
                     <include name="**/TestExternJasmine.class"/>
                     <include name="**/TestExternJQuery.class"/>
                     <include name="**/TestExternNode.class"/>
-                    <include name="**/TestAnnotationEnum.class"/>
-                    <include name="**/TestCollectImports.class"/>
-                    <include name="**/TestConstructor.class"/>
-                    <include name="**/TestPackageNamespace.class"/>
-                    <include name="**/TestReferenceModel.class"/>
-                    <include name="**/TestTypeExternals.class"/>
-                    <include name="**/TestTypeInheritance.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>

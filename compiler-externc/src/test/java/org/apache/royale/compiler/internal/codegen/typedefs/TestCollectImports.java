@@ -26,14 +26,14 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.FunctionReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.FunctionReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class TestCollectImports extends ExternalsTestBase
+public class TestCollectImports extends TypedefsTestBase
 {
     private static final String IMPORTS_TEST_DIR = "imports/";
 
@@ -215,7 +215,7 @@ public class TestCollectImports extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-        //config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        //config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
     }
 
 }

@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.emit;
+package org.apache.royale.compiler.internal.codegen.typedefs.emit;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.royale.compiler.internal.codegen.externals.reference.BaseReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ConstantReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.FunctionReference;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.BaseReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ConstantReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.FunctionReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.jstype.JSType;
@@ -65,7 +65,7 @@ public class ReferenceEmitter
             if (!reference.isInterface())
                 continue;
 
-            if (model.getConfiguration().isExternalExtern(reference))
+            if (model.getConfiguration().isTypedefTypedef(reference))
                 continue;
 
             emit(reference, sb);
@@ -92,7 +92,7 @@ public class ReferenceEmitter
             if (reference.isInterface())
                 continue;
 
-            if (model.getConfiguration().isExternalExtern(reference))
+            if (model.getConfiguration().isTypedefTypedef(reference))
                 continue;
             
             emit(reference, sb);
@@ -117,7 +117,7 @@ public class ReferenceEmitter
             if (model.isExcludedClass(reference) != null)
                 continue;
 
-            if (model.getConfiguration().isExternalExtern(reference))
+            if (model.getConfiguration().isTypedefTypedef(reference))
                 continue;
 
             JSDocInfo comment = reference.getComment();
@@ -151,7 +151,7 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (FunctionReference reference : model.getFunctions())
         {
-            if (model.getConfiguration().isExternalExtern(reference))
+            if (model.getConfiguration().isTypedefTypedef(reference))
                 continue;
             
             emit(reference, sb);
@@ -172,7 +172,7 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (ConstantReference reference : model.getConstants())
         {
-            if (model.getConfiguration().isExternalExtern(reference))
+            if (model.getConfiguration().isTypedefTypedef(reference))
                 continue;
             
             emit(reference, sb);

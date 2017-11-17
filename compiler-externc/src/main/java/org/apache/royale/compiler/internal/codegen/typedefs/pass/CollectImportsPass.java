@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.typedefs.pass;
 
 import java.util.List;
 
-import org.apache.royale.compiler.internal.codegen.externals.reference.*;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.*;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.NodeTraversal;

@@ -21,14 +21,14 @@ package org.apache.royale.compiler.internal.codegen.typedefs;
 
 import com.google.javascript.jscomp.Result;
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class TestExternJasmine extends ExternalsTestBase
+public class TestExternJasmine extends TypedefsTestBase
 {
     @Test
     public void test_classes() throws IOException
@@ -74,11 +74,11 @@ public class TestExternJasmine extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration install) throws IOException
     {
-    	ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+    	TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
-        String coreRoot = ExternalsTestUtils.EXTERNAL_JASMINE_DIR.getAbsolutePath();
-        config.addExternal(coreRoot + "/jasmine-2.0.js");
+        String coreRoot = TypedefsTestUtils.EXTERNAL_JASMINE_DIR.getAbsolutePath();
+        config.addTypedef(coreRoot + "/jasmine-2.0.js");
     }
 
 }

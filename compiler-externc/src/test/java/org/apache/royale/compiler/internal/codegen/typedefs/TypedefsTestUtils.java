@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.utils.FilenameNormalization;
 
-public class ExternalsTestUtils
+public class TypedefsTestUtils
 {
     public static File TEMP_DIR = new File(
             FilenameNormalization.normalize("../../target/junit-temp"));
@@ -35,7 +35,7 @@ public class ExternalsTestUtils
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
             "resources/typedefs/unit_tests/missing.js"));
 
-    public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
+    public static File TYPEDEFS_JS_DIR = FilenameNormalization.normalize(new File(
            "../../target/downloads"));
 
     // XXX AS3.as is a namespace needed to override toString in some classes
@@ -47,7 +47,7 @@ public class ExternalsTestUtils
 
     public static File EXTERNAL_NODE_DIR;
 
-    public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
+    public static File AS_ROOT_DIR = new File(TEMP_DIR, "typedefs/as");
 
     // some additional places to look for royale-typedefs files for
     // integration tests that rely on royale-typedefs.
@@ -124,79 +124,79 @@ public class ExternalsTestUtils
         config.addClassExclude("$.deferred");
     }
 
-    public static void addTestExternalsFull(ExternCConfiguration config)
+    public static void addTestTypedefsFull(ExternCConfiguration config)
             throws IOException
     {
-        String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
+        String coreRoot = TypedefsTestUtils.TYPEDEFS_JS_DIR.getAbsolutePath();
 
-        config.addExternal(ExternalsTestUtils.MISSING_JS_FILE);
-        config.addExternal(coreRoot + "/es3.js");
-        config.addExternal(coreRoot + "/es5.js");
-        config.addExternal(coreRoot + "/es6.js");
-        config.addExternal(coreRoot + "/es6_collections.js");
+        config.addTypedef(TypedefsTestUtils.MISSING_JS_FILE);
+        config.addTypedef(coreRoot + "/es3.js");
+        config.addTypedef(coreRoot + "/es5.js");
+        config.addTypedef(coreRoot + "/es6.js");
+        config.addTypedef(coreRoot + "/es6_collections.js");
 
-        config.addExternal(coreRoot + "/browser/w3c_anim_timing.js");
-        config.addExternal(coreRoot + "/browser/w3c_audio.js");
-        config.addExternal(coreRoot + "/browser/w3c_batterystatus.js");
-        config.addExternal(coreRoot + "/browser/w3c_css.js");
-        config.addExternal(coreRoot + "/browser/w3c_css3d.js");
-        config.addExternal(coreRoot + "/browser/w3c_device_sensor_event.js");
-        config.addExternal(coreRoot + "/browser/w3c_dom1.js");
-        config.addExternal(coreRoot + "/browser/w3c_dom2.js");
-        config.addExternal(coreRoot + "/browser/w3c_dom3.js");
-        //config.addExternal(coreRoot + "/browser/w3c_dom4.js");
-        config.addExternal(coreRoot + "/browser/w3c_elementtraversal.js");
-        config.addExternal(coreRoot + "/browser/w3c_event.js");
-        config.addExternal(coreRoot + "/browser/w3c_event3.js");
-        config.addExternal(coreRoot + "/browser/w3c_gamepad.js");
-        config.addExternal(coreRoot + "/browser/w3c_geolocation.js");
-        config.addExternal(coreRoot + "/browser/w3c_indexeddb.js");
-        config.addExternal(coreRoot + "/browser/w3c_midi.js");
-        config.addExternal(coreRoot + "/browser/w3c_navigation_timing.js");
-        config.addExternal(coreRoot + "/browser/w3c_permissions.js");
-        config.addExternal(coreRoot + "/browser/w3c_pointer_events.js");
-        config.addExternal(coreRoot + "/browser/w3c_range.js");
-        config.addExternal(coreRoot + "/browser/w3c_requestidlecallback.js");
-        config.addExternal(coreRoot + "/browser/w3c_rtc.js");
-        config.addExternal(coreRoot + "/browser/w3c_screen_orientation.js");
-        config.addExternal(coreRoot + "/browser/w3c_selectors.js");
-        //config.addExternal(coreRoot + "/browser/w3c_serviceworker.js");
-        config.addExternal(coreRoot + "/browser/w3c_touch_event.js");
-        //config.addExternal(coreRoot + "/browser/w3c_webcrypto.js");
-        config.addExternal(coreRoot + "/browser/w3c_xml.js");
+        config.addTypedef(coreRoot + "/browser/w3c_anim_timing.js");
+        config.addTypedef(coreRoot + "/browser/w3c_audio.js");
+        config.addTypedef(coreRoot + "/browser/w3c_batterystatus.js");
+        config.addTypedef(coreRoot + "/browser/w3c_css.js");
+        config.addTypedef(coreRoot + "/browser/w3c_css3d.js");
+        config.addTypedef(coreRoot + "/browser/w3c_device_sensor_event.js");
+        config.addTypedef(coreRoot + "/browser/w3c_dom1.js");
+        config.addTypedef(coreRoot + "/browser/w3c_dom2.js");
+        config.addTypedef(coreRoot + "/browser/w3c_dom3.js");
+        //config.addTypedef(coreRoot + "/browser/w3c_dom4.js");
+        config.addTypedef(coreRoot + "/browser/w3c_elementtraversal.js");
+        config.addTypedef(coreRoot + "/browser/w3c_event.js");
+        config.addTypedef(coreRoot + "/browser/w3c_event3.js");
+        config.addTypedef(coreRoot + "/browser/w3c_gamepad.js");
+        config.addTypedef(coreRoot + "/browser/w3c_geolocation.js");
+        config.addTypedef(coreRoot + "/browser/w3c_indexeddb.js");
+        config.addTypedef(coreRoot + "/browser/w3c_midi.js");
+        config.addTypedef(coreRoot + "/browser/w3c_navigation_timing.js");
+        config.addTypedef(coreRoot + "/browser/w3c_permissions.js");
+        config.addTypedef(coreRoot + "/browser/w3c_pointer_events.js");
+        config.addTypedef(coreRoot + "/browser/w3c_range.js");
+        config.addTypedef(coreRoot + "/browser/w3c_requestidlecallback.js");
+        config.addTypedef(coreRoot + "/browser/w3c_rtc.js");
+        config.addTypedef(coreRoot + "/browser/w3c_screen_orientation.js");
+        config.addTypedef(coreRoot + "/browser/w3c_selectors.js");
+        //config.addTypedef(coreRoot + "/browser/w3c_serviceworker.js");
+        config.addTypedef(coreRoot + "/browser/w3c_touch_event.js");
+        //config.addTypedef(coreRoot + "/browser/w3c_webcrypto.js");
+        config.addTypedef(coreRoot + "/browser/w3c_xml.js");
 
-        config.addExternal(coreRoot + "/browser/whatwg_encoding.js");
+        config.addTypedef(coreRoot + "/browser/whatwg_encoding.js");
 
-        config.addExternal(coreRoot + "/browser/chrome.js");
-        //config.addExternal(coreRoot + "/browser/fetchapi.js");
-        config.addExternal(coreRoot + "/browser/fileapi.js");
-        config.addExternal(coreRoot + "/browser/flash.js");
-        config.addExternal(coreRoot + "/browser/gecko_css.js");
-        config.addExternal(coreRoot + "/browser/gecko_dom.js");
-        config.addExternal(coreRoot + "/browser/gecko_event.js");
-        config.addExternal(coreRoot + "/browser/gecko_xml.js");
-        config.addExternal(coreRoot + "/browser/html5.js");
-        config.addExternal(coreRoot + "/browser/ie_css.js");
-        config.addExternal(coreRoot + "/browser/ie_dom.js");
-        config.addExternal(coreRoot + "/browser/ie_event.js");
-        config.addExternal(coreRoot + "/browser/ie_vml.js");
-        config.addExternal(coreRoot + "/browser/intl.js");
-        config.addExternal(coreRoot + "/browser/iphone.js");
-        config.addExternal(coreRoot + "/browser/mediasource.js");
-        config.addExternal(coreRoot + "/browser/page_visibility.js");
-        config.addExternal(coreRoot + "/browser/streamsapi.js");
-        config.addExternal(coreRoot + "/browser/url.js");
-        config.addExternal(coreRoot + "/browser/v8.js");
-        config.addExternal(coreRoot + "/browser/webgl.js");
+        config.addTypedef(coreRoot + "/browser/chrome.js");
+        //config.addTypedef(coreRoot + "/browser/fetchapi.js");
+        config.addTypedef(coreRoot + "/browser/fileapi.js");
+        config.addTypedef(coreRoot + "/browser/flash.js");
+        config.addTypedef(coreRoot + "/browser/gecko_css.js");
+        config.addTypedef(coreRoot + "/browser/gecko_dom.js");
+        config.addTypedef(coreRoot + "/browser/gecko_event.js");
+        config.addTypedef(coreRoot + "/browser/gecko_xml.js");
+        config.addTypedef(coreRoot + "/browser/html5.js");
+        config.addTypedef(coreRoot + "/browser/ie_css.js");
+        config.addTypedef(coreRoot + "/browser/ie_dom.js");
+        config.addTypedef(coreRoot + "/browser/ie_event.js");
+        config.addTypedef(coreRoot + "/browser/ie_vml.js");
+        config.addTypedef(coreRoot + "/browser/intl.js");
+        config.addTypedef(coreRoot + "/browser/iphone.js");
+        config.addTypedef(coreRoot + "/browser/mediasource.js");
+        config.addTypedef(coreRoot + "/browser/page_visibility.js");
+        config.addTypedef(coreRoot + "/browser/streamsapi.js");
+        config.addTypedef(coreRoot + "/browser/url.js");
+        config.addTypedef(coreRoot + "/browser/v8.js");
+        config.addTypedef(coreRoot + "/browser/webgl.js");
 
-        config.addExternal(coreRoot + "/browser/webkit_css.js");
-        config.addExternal(coreRoot + "/browser/webkit_dom.js");
-        config.addExternal(coreRoot + "/browser/webkit_event.js");
-        //config.addExternal(coreRoot + "/browser/webkit_notifications.js");
-        config.addExternal(coreRoot + "/browser/webkit_usercontent.js");
-        config.addExternal(coreRoot + "/browser/webstorage.js");
-        config.addExternal(coreRoot + "/browser/window.js");
+        config.addTypedef(coreRoot + "/browser/webkit_css.js");
+        config.addTypedef(coreRoot + "/browser/webkit_dom.js");
+        config.addTypedef(coreRoot + "/browser/webkit_event.js");
+        //config.addTypedef(coreRoot + "/browser/webkit_notifications.js");
+        config.addTypedef(coreRoot + "/browser/webkit_usercontent.js");
+        config.addTypedef(coreRoot + "/browser/webstorage.js");
+        config.addTypedef(coreRoot + "/browser/window.js");
 
-        config.addExternal(coreRoot + "/svg.js");
+        config.addTypedef(coreRoot + "/svg.js");
     }
 }

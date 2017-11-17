@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.reference;
+package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
 import java.io.File;
 import java.util.Set;

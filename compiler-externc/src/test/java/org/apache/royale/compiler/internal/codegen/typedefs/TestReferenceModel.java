@@ -28,7 +28,7 @@ import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class TestReferenceModel extends ExternalsTestBase
+public class TestReferenceModel extends TypedefsTestBase
 {
     @Ignore
     @Test
@@ -37,10 +37,10 @@ public class TestReferenceModel extends ExternalsTestBase
 
         client.cleanOutput();
 
-    	ExternalsTestUtils.init();
+    	TypedefsTestUtils.init();
         // TODO (mschmalle) this root needs to create 'classes' in the root and move 
         // constants and functions up into it aside classes
-        assertFalse(ExternalsTestUtils.AS_ROOT_DIR.exists());
+        assertFalse(TypedefsTestUtils.AS_ROOT_DIR.exists());
 
         // TODO (mschmalle) get warnings and errors from the closure compiler
         client.compile();
@@ -57,9 +57,9 @@ public class TestReferenceModel extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
-        ExternalsTestUtils.addTestExcludesFull(config);
-        ExternalsTestUtils.addTestExternalsFull(config);
+        TypedefsTestUtils.addTestExcludesFull(config);
+        TypedefsTestUtils.addTestTypedefsFull(config);
     }
 }

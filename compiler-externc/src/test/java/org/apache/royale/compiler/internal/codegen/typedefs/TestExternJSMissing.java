@@ -22,14 +22,14 @@ package org.apache.royale.compiler.internal.codegen.typedefs;
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 
 import com.google.javascript.jscomp.Result;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class TestExternJSMissing extends ExternalsTestBase
+public class TestExternJSMissing extends TypedefsTestBase
 {
     @Test
     public void test_classes() throws IOException
@@ -100,11 +100,11 @@ public class TestExternJSMissing extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-        ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
-        String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
-        config.addExternal(coreRoot + "/es3.js");
-        config.addExternal(ExternalsTestUtils.MISSING_JS_FILE);
+        String coreRoot = TypedefsTestUtils.TYPEDEFS_JS_DIR.getAbsolutePath();
+        config.addTypedef(coreRoot + "/es3.js");
+        config.addTypedef(TypedefsTestUtils.MISSING_JS_FILE);
     }
 }

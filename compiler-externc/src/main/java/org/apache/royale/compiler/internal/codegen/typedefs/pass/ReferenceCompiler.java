@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals.pass;
+package org.apache.royale.compiler.internal.codegen.typedefs.pass;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.royale.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
@@ -99,13 +99,13 @@ public class ReferenceCompiler
     public Result compile() throws IOException
     {
         List<SourceFile> externs = new ArrayList<SourceFile>();
-        for (ExternalFile externalFile : model.getConfiguration().getExternals())
+        for (TypedefFile externalFile : model.getConfiguration().getTypedefs())
         {
             String name = externalFile.getName();
             String source = FileUtils.readFileToString(externalFile.getFile());
             externs.add(SourceFile.fromCode("[" + name + "]", source));
         }
-        for (ExternalFile externalFile : model.getConfiguration().getExternalExterns())
+        for (TypedefFile externalFile : model.getConfiguration().getTypedefTypedefs())
         {
             String name = externalFile.getName();
             String source = FileUtils.readFileToString(externalFile.getFile());
@@ -123,7 +123,7 @@ public class ReferenceCompiler
         return result;
     }
 
-    public static class ExternalFile
+    public static class TypedefFile
     {
         private File file;
 
@@ -132,7 +132,7 @@ public class ReferenceCompiler
             return file;
         }
 
-        public ExternalFile(File file)
+        public TypedefFile(File file)
         {
             this.file = file;
         }
