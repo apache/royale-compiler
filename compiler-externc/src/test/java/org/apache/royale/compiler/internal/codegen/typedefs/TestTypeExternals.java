@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.typedefs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

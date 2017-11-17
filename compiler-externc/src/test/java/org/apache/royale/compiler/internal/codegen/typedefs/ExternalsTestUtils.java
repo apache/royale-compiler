@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.typedefs;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,15 +30,17 @@ public class ExternalsTestUtils
     public static File TEMP_DIR = new File(
             FilenameNormalization.normalize("../../target/junit-temp"));
 
-    // XXX missing.js is a temp location until we can figure out where it should placed in the build
+    // This is a copy of the missing.js in royale-typedefs/js.  It doesn't have to
+    // stay in sync.  We just want to prove we can override a few things
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
-            "../../../externs/js/src/main/javascript/missing.js"));
+            "resources/typedefs/unit_tests/missing.js"));
+
+    public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
+           "../../target/downloads"));
 
     // XXX AS3.as is a namespace needed to override toString in some classes
     public static File AS3_NAMESPACE_FILE;
-
-    public static File EXTERNAL_JS_DIR;
-
+    
     public static File EXTERNAL_JQUERY_DIR;
 
     public static File EXTERNAL_JASMINE_DIR;
@@ -47,30 +49,17 @@ public class ExternalsTestUtils
 
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 
+    // some additional places to look for royale-typedefs files for
+    // integration tests that rely on royale-typedefs.
     public static void init()
     {
-    	File f = new File(
-        "../../../royale-typedefs/js/src/main/javascript/missing.js");
-    	if (!f.exists())
-    		 f = new File(
-    	        "../../../../royale-typedefs/js/src/main/javascript/missing.js");
-        // XXX missing.js is a temp location until we can figure out where it should placed in the build
-        MISSING_JS_FILE = FilenameNormalization.normalize(f);
-
-        f = new File(
+        File f = new File(
         "../../../royale-typedefs/js/src/main/royale/AS3.as");
         if (!f.exists())
         	f = new File(
             "../../../../royale-typedefs/js/src/main/royale/AS3.as");
         // XXX AS3.as is a namespace needed to override toString in some classes
         AS3_NAMESPACE_FILE = FilenameNormalization.normalize(f);
-
-        f = new File(
-        "../../../royale-typedefs/js/target/downloads");
-        if (!f.exists())
-        	f = new File(
-            "../../../../royale-typedefs/js/target/downloads");
-        EXTERNAL_JS_DIR = FilenameNormalization.normalize(f);
 
         f = new File(
         "../../../royale-typedefs/jquery/target/downloads");

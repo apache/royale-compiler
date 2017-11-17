@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.typedefs;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -60,11 +60,11 @@ public class TestExternalsJSCompile
 
     private static File tempDir = new File(testAdapter.getTempDir());
 
-    private static File app1ASSrcDir = new File(testAdapter.getUnitTestBaseDir(), "externals/app1/as_src");
+    private static File app1ASSrcDir = new File(testAdapter.getUnitTestBaseDir(), "typedefs/app1/as_src");
 
-    private static File app1AJSSrcDir = new File(testAdapter.getTempDir(), "externals/app1/js_src");
+    private static File app1AJSSrcDir = new File(testAdapter.getTempDir(), "typedefs/app1/js_src");
 
-    private static File jsSWCFile = new File(testAdapter.getTempDir(), "externals/bin/JS.swc");
+    private static File jsSWCFile = new File(testAdapter.getTempDir(), "typedefs/bin/JS.swc");
 
     protected static Workspace workspace = new Workspace();
     protected RoyaleJSProject project;

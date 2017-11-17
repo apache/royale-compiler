@@ -17,49 +17,52 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.typedefs;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
-import org.junit.Ignore;
+import org.apache.royale.compiler.internal.codegen.externals.reference.ClassReference;
 import org.junit.Test;
 
-public class TestReferenceModel extends ExternalsTestBase
+import com.google.javascript.jscomp.Result;
+
+public class TestExternJQuery extends ExternalsTestBase
 {
-    @Ignore
+    @SuppressWarnings("unused")
     @Test
-    public void test_full_compile() throws IOException
+    public void test_classes() throws IOException
     {
+        Result result = compile();
+        assertTrue(result.success);
 
-        client.cleanOutput();
+        //        String[] classes = {};
+        //
+        //        assertEquals(17, model.getClasses().size());
+        //        for (String className : classes)
+        //        {
+        //            assertTrue(model.hasClass(className));
+        //        }
 
-    	ExternalsTestUtils.init();
-        // TODO (mschmalle) this root needs to create 'classes' in the root and move 
-        // constants and functions up into it aside classes
-        assertFalse(ExternalsTestUtils.AS_ROOT_DIR.exists());
+        ClassReference jQuery_Promise = model.getInterfaceReference("jQuery.Promise");
+        assertNotNull(jQuery_Promise);
 
-        // TODO (mschmalle) get warnings and errors from the closure compiler
-        client.compile();
-
-        client.emit();
-
-        assertTrue(config.getAsClassRoot().exists());
-        assertTrue(config.getAsInterfaceRoot().exists());
-        assertTrue(config.getAsFunctionRoot().exists());
-        assertTrue(config.getAsConstantRoot().exists());
-        assertTrue(config.getAsTypeDefRoot().exists());
+        StringBuilder sb = new StringBuilder();
+        jQuery_Promise.emit(sb);
+        String r = sb.toString();
     }
 
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
+    	ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
-        ExternalsTestUtils.addTestExcludesFull(config);
-        ExternalsTestUtils.addTestExternalsFull(config);
+        String coreRoot = ExternalsTestUtils.EXTERNAL_JQUERY_DIR.getAbsolutePath();
+        config.addExternal(coreRoot + "/jquery-1.9.js");
     }
+
 }

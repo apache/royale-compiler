@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.internal.codegen.externals;
+package org.apache.royale.compiler.internal.codegen.typedefs;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +41,7 @@ import com.google.javascript.rhino.jstype.JSType;
 public abstract class ExternalsTestBase
 {
     private static File unitTestBaseDir =
-            new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), "externals_unit_tests");
+            new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), "typedefs/unit_tests");
 
     // Only used for testing, all configuration must happen in configure()
     protected ExternCConfiguration config;
