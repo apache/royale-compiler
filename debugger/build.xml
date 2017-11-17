@@ -26,7 +26,7 @@
 	</condition>
 	<path id="classpath">
 			<fileset dir="${compiler.generated.lib}" includes="${jar.dependencies}" />
-		</path>
+    </path>
 
 <target name="download_check" description="determine if we have downloaded/bundled swfutils source">
     <available file="${basedir}/target/downloads/java/flash/swf/Action.java"

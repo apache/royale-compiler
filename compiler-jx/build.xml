@@ -75,6 +75,7 @@
 			<file name="commons-io.jar" />
             <file name="guava.jar" />
 			<file name="flex-tool-api.jar" />
+            <file name="externc.jar" />
         </filelist>
 		<filelist dir="${lib}/google/closure-compiler">
             <file name="compiler.jar" />
@@ -148,20 +149,6 @@
                 <attribute name="Class-Path" value="jsc.jar" />
 			</manifest>
 		</jar>
-
-        <echo message="Building ${externc.jar}" />
-        <jar file="${externc.jar}" basedir="${classes.dir}">
-            <include name="META-INF/LICENSE"/>
-            <include name="META-INF/NOTICE"/>
-            <manifest>
-                <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
-                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
-                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.EXTERNC" />
-                <attribute name="Class-Path" value="jsc.jar" />
-            </manifest>
-        </jar>
 
         <echo message="Building ${asdoc.jar}" />
         <jar file="${asdoc.jar}" basedir="${classes.dir}">
