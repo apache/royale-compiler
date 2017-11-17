@@ -35,6 +35,7 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.RSLSettings;
 import org.apache.royale.compiler.internal.projects.LibraryPathManager;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.utils.FilenameNormalization;
 import com.google.common.collect.ImmutableList;
@@ -47,6 +48,11 @@ import com.google.common.collect.ImmutableList;
  */
 public class RoyaleTargetSettings extends TargetSettings
 {
+    public RoyaleTargetSettings(Configuration configuration, ICompilerProject project)
+    {
+        super(configuration, project);
+    }
+    
     /**
      * @return the externalLibraryPath
      */
@@ -55,7 +61,7 @@ public class RoyaleTargetSettings extends TargetSettings
     {
         if (externalLibraryPath == null)
         {
-            List<File> files = Configurator.toFileList(project != null ? project.getCompilerExternalLibraryPath(configuration) : 
+            List<File> files = Configurator.toFileList(project != null ? ((IRoyaleProject)project).getCompilerExternalLibraryPath(configuration) :
             												configuration.getCompilerExternalLibraryPath());
             Set<File> expandedFiles = LibraryPathManager.discoverSWCFilePathsAsFiles(files.toArray(new File[files.size()]));
 

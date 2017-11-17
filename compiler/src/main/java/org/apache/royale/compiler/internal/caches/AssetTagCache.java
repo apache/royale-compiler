@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.caches;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.apache.royale.compiler.caches.IAssetTagCache;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCScript;
 import org.apache.royale.swc.SWCManager;
@@ -142,7 +143,7 @@ public class AssetTagCache extends ConcurrentCacheStoreBase<AssetTagCache.AssetT
             throw new IllegalArgumentException("expect AssetTagCacheKey but got " + key.getClass().getSimpleName());
 
         final AssetTagCacheKey assetTagCacheKey = (AssetTagCacheKey)key;
-        final ITagContainer tagContainer = swcManager.getSWFCache().get(SWFCache.createKey(assetTagCacheKey.swc, assetTagCacheKey.swfPath));
+        final ITagContainer tagContainer = ((SWFCache)swcManager.getSWFCache()).get(SWFCache.createKey(assetTagCacheKey.swc, assetTagCacheKey.swfPath));
         final SymbolClassTag symbolClassTag = getSymbolClass(tagContainer);
         if (symbolClassTag == null)
             return new AssetTagCacheValue(null);

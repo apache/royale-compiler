@@ -194,7 +194,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
         Collection<IASScope> scopeList = null;
         try
         {
-            final FileScopeCache fsCache = getProject().getWorkspace().getSWCManager().getFileScopeCache();
+            final FileScopeCache fsCache = (FileScopeCache)getProject().getWorkspace().getSWCManager().getFileScopeCache();
             final CacheStoreKeyBase key = FileScopeCache.createKey(swc, library.getPath(), script);
             scopeList = fsCache.get(key);
             if (scopeList.isEmpty())
@@ -227,7 +227,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
         final ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
 
         final CacheStoreKeyBase key = SWFCache.createKey(swc, library.getPath());
-        final ITagContainer tags = getProject().getWorkspace().getSWCManager().getSWFCache().get(key);
+        final ITagContainer tags = ((SWFCache)getProject().getWorkspace().getSWCManager().getSWFCache()).get(key);
 
         startProfile(Operation.GET_ABC_BYTES);
 
@@ -261,7 +261,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
 
         // link main definition
         final CacheStoreKeyBase key = SWFCache.createKey(swc, library.getPath());
-        final ITagContainer tags = getProject().getWorkspace().getSWCManager().getSWFCache().get(key);
+        final ITagContainer tags = ((SWFCache)getProject().getWorkspace().getSWCManager().getSWFCache()).get(key);
         final DoABCTag doABC = SWFCache.findDoABCTagByName(tags, script.getName());
         if (doABC == null)
             throw new NullPointerException("can not find DoABC tag: " + script.getName());
@@ -275,7 +275,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
         for (final String defQName : script.getDefinitions())
         {
             final CacheStoreKeyBase assetCacheKey = AssetTagCache.createKey(swc, library.getPath(), script, defQName);
-            final AssetTagCache.AssetTagCacheValue assetCacheValue = getProject().getWorkspace().getSWCManager().getAssetTagCache().get(assetCacheKey);
+            final AssetTagCache.AssetTagCacheValue assetCacheValue = ((AssetTagCache)getProject().getWorkspace().getSWCManager().getAssetTagCache()).get(assetCacheKey);
             if (assetCacheValue.assetTag != null)
             {
                 linkingTags.add(assetCacheValue.assetTag);
@@ -375,13 +375,13 @@ public class SWCCompilationUnit extends CompilationUnitBase
     private void addAssetTagDependencies(SetMultimap<String, DependencyType> dependencies)
     {
         final CacheStoreKeyBase key = SWFCache.createKey(swc, library.getPath());
-        final ITagContainer swfTags = getProject().getWorkspace().getSWCManager().getSWFCache().get(key);
+        final ITagContainer swfTags = ((SWFCache)getProject().getWorkspace().getSWCManager().getSWFCache()).get(key);
         final Collection<SymbolClassTag> symbolTags = SWFCache.findAllSymbolClassTags(swfTags);
 
         for (final String defQName : script.getDefinitions())
         {
             final CacheStoreKeyBase assetCacheKey = AssetTagCache.createKey(swc, library.getPath(), script, defQName);
-            final AssetTagCache.AssetTagCacheValue assetCacheValue = getProject().getWorkspace().getSWCManager().getAssetTagCache().get(assetCacheKey);
+            final AssetTagCache.AssetTagCacheValue assetCacheValue = ((AssetTagCache)getProject().getWorkspace().getSWCManager().getAssetTagCache()).get(assetCacheKey);
             if (assetCacheValue.referredTags != null)
             {
                 for (ITag referredTag : assetCacheValue.referredTags)

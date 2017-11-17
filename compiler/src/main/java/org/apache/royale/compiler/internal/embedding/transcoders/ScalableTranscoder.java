@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.EmbedScalingGridProblem;

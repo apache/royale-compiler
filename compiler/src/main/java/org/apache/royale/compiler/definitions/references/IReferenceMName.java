@@ -20,7 +20,8 @@
 package org.apache.royale.compiler.definitions.references;
 
 import org.apache.royale.abc.semantics.Name;
-import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * An <code>IReferenceMName</code> is for IReferences that have MNames
@@ -35,5 +36,5 @@ public interface IReferenceMName extends IReference
      * @param scope The scope where the reference is used from.
      * @return An AET {@link Name} representing this reference
      */
-    Name getMName(ICompilerProject project, ASScope scope);
+    Name getMName(ICompilerProject project, IASScope scope);
 }

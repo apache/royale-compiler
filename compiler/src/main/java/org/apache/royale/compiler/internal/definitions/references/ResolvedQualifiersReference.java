@@ -31,12 +31,13 @@ import org.apache.royale.abc.semantics.Nsset;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.IReferenceMName;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.collect.ImmutableSet;
@@ -46,7 +47,7 @@ import com.google.common.collect.Iterables;
  * Implementation of {@link IReference} representing a reference where all the
  * qualifiers have been resolved to namespace definitions.
  */
-public class ResolvedQualifiersReference implements IResolvedQualifiersReference
+public class ResolvedQualifiersReference implements IResolvedQualifiersReference, IReferenceMName
 {
     /**
      * Constructor.
@@ -69,17 +70,17 @@ public class ResolvedQualifiersReference implements IResolvedQualifiersReference
     }
 
     @Override
-    public IDefinition resolve(ICompilerProject project, ASScope scope,
+    public IDefinition resolve(ICompilerProject project, IASScope scope,
                                DependencyType dependencyType,
                                boolean canEscapeWith)
     {
         if (qualifiers.size() == 1)
         {
             INamespaceDefinition qualifier = Iterables.getOnlyElement(qualifiers);
-            return scope.findPropertyQualified(project, qualifier, getName(), dependencyType, canEscapeWith);
+            return ((ASScope)scope).findPropertyQualified(project, qualifier, getName(), dependencyType, canEscapeWith);
         }
 
-        return ((CompilerProject)project).getCacheForScope(scope).findPropertyMultiname(this, dependencyType);
+        return ((CompilerProject)project).getCacheForScope((ASScope)scope).findPropertyMultiname(this, dependencyType);
     }
 
     @Override
@@ -107,7 +108,7 @@ public class ResolvedQualifiersReference implements IResolvedQualifiersReference
     }
 
     @Override
-    public Name getMName(ICompilerProject project, ASScope scope)
+    public Name getMName(ICompilerProject project, IASScope scope)
     {
         return getMName();
     }

@@ -22,8 +22,8 @@ package org.apache.royale.compiler.internal.definitions.references;
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.references.IReference;
-import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.definitions.references.IReferenceMName;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
@@ -42,7 +42,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
  * something was specified for the base class so we can report the correct error
  * when we try and resolve it.
  */
-public class NotATypeReference implements IReference
+public class NotATypeReference implements IReferenceMName
 {
     /**
      * Constructor.
@@ -61,7 +61,7 @@ public class NotATypeReference implements IReference
     }
 
     @Override
-    public IDefinition resolve(ICompilerProject project, ASScope scope,
+    public IDefinition resolve(ICompilerProject project, IASScope scope,
                                DependencyType dependencyType,
                                boolean canEscapeWith)
     {
@@ -75,7 +75,7 @@ public class NotATypeReference implements IReference
     }
 
     @Override
-    public Name getMName(ICompilerProject project, ASScope scope)
+    public Name getMName(ICompilerProject project, IASScope scope)
     {
         return null;
     }

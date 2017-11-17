@@ -27,12 +27,13 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.royale.compiler.caches.ISWFCache;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.internal.caches.CacheStoreKeyBase;
 import org.apache.royale.compiler.internal.caches.SWFCache;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
@@ -378,7 +379,7 @@ public class MovieTranscoder extends ScalableTranscoder
             final ISWC swc = swcManager.get(new File(super.swcSource.getContainingSWCPath()));
             cacheKey = SWFCache.createKey(swc, source);
         }
-        SWFCache swfCache = workspace.getSWCManager().getSWFCache();
+        SWFCache swfCache = (SWFCache)workspace.getSWCManager().getSWFCache();
         SWFReader swfReader = (SWFReader)swfCache.get(cacheKey);
         return swfReader;
     }

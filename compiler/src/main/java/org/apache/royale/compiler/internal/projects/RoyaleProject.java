@@ -87,6 +87,7 @@ import org.apache.royale.compiler.mxml.IMXMLManifestManager;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.projects.ICompilerProjectWithNamedColor;
 import org.apache.royale.compiler.projects.IRoyaleProject;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.targets.ISWCTarget;
 import org.apache.royale.compiler.targets.ISWFTarget;
@@ -2136,9 +2137,9 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     }
 
     @Override
-    public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
+    public IDefinition doubleCheckAmbiguousDefinition(IASScope scope, String name, IDefinition def1, IDefinition def2)
     {
-        IScopedDefinition scopeDef = scope.getContainingDefinition();
+        IScopedDefinition scopeDef = ((ASScope)scope).getContainingDefinition();
         String thisPackage = null;
         if (scopeDef != null) 
             thisPackage = scopeDef.getPackageName();
@@ -2163,7 +2164,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         if (package1.length() == 0 || package2.length() == 0)
         {
             // now check to see if the class was imported in the window package.
-            ASScope pkgScope = scope;
+            ASScope pkgScope = (ASScope)scope;
             while (!(pkgScope instanceof PackageScope))
                 pkgScope = pkgScope.getContainingScope();
             String[] imports = pkgScope.getImports();
@@ -2283,7 +2284,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     }
 
     @Override
-    public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func)
+    public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, IFunctionDefinition func)
     {
         if (actualDefinition.getBaseName().equals(IASLanguageConstants._int) &&
                 expectedDefinition.getBaseName().equals(IASLanguageConstants.Function))

@@ -50,6 +50,7 @@ import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.common.Counter;
@@ -143,7 +144,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     // "internal" is implied; therefore this field will be a reference to the internal
     // namespace for the package containing the class. However, some types of definitions,
     // such as a for a function parameter, do have a null namespace reference.
-    private INamespaceReference namespaceReference;
+    private INamespaceResolvedReference namespaceReference;
 
     // The name stored for this definition. See getStorageName() for details.
     private final String storageName;
@@ -807,7 +808,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
 
     public void setNamespaceReference(INamespaceReference value)
     {
-        namespaceReference = value;
+        namespaceReference = (INamespaceResolvedReference)value;
 
         NamespaceDefinition.setContainingDefinitionOfReference(value, this);
     }
@@ -1450,12 +1451,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * in DefinitionBase because it is common to VariableDefinition,
      * GetterDefinition, and SetterDefinition.
      */
-    public String getArrayElementType(RoyaleProject project)
+    public String getArrayElementType(ICompilerProject project)
     {
         if (getTypeAsDisplayString().equals(IASLanguageConstants.Array))
         {
             return getPropertyMetaTagValue(
-                    project, IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE);
+                    (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE);
         }
 
         return null;
@@ -1468,12 +1469,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public String getInstanceType(RoyaleProject project)
+    public String getInstanceType(ICompilerProject project)
     {
-        if (getTypeAsDisplayString().equals(project.getDeferredInstanceInterface()))
+        if (getTypeAsDisplayString().equals(((RoyaleProject)project).getDeferredInstanceInterface()))
         {
             return getPropertyMetaTagValue(
-                    project, IMetaAttributeConstants.ATTRIBUTE_INSTANCETYPE);
+                    (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_INSTANCETYPE);
         }
 
         return null;
@@ -1485,10 +1486,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * DefinitionBase because it is common to VariableDefinition,
      * GetterDefinition, and SetterDefinition.
      */
-    public String getPercentProxy(RoyaleProject project)
+    public String getPercentProxy(ICompilerProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
-                project, IMetaAttributeConstants.ATTRIBUTE_PERCENT_PROXY);
+                (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_PERCENT_PROXY);
 
         return metaTag != null ? metaTag.getValue() : null;
     }
@@ -1500,10 +1501,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public boolean hasRichTextContent(RoyaleProject project)
+    public boolean hasRichTextContent(ICompilerProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
-                project, IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT);
+                (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT);
 
         return metaTag != null;
     }
@@ -1515,10 +1516,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public boolean hasCollapseWhiteSpace(RoyaleProject project)
+    public boolean hasCollapseWhiteSpace(ICompilerProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
-                project, IMetaAttributeConstants.ATTRIBUTE_COLLAPSEWHITESPACE);
+                (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_COLLAPSEWHITESPACE);
 
         return metaTag != null;
     }
@@ -1531,10 +1532,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * This method is in DefinitionBase because it is common to
      * VariableDefinition, GetterDefinition, and SetterDefinition.
      */
-    public boolean isColor(RoyaleProject project)
+    public boolean isColor(ICompilerProject project)
     {
         IMetaTag metaTag = getPropertyMetaTag(
-                project, IMetaAttributeConstants.ATTRIBUTE_INSPECTABLE);
+                (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_INSPECTABLE);
 
         if (metaTag == null)
             return false;

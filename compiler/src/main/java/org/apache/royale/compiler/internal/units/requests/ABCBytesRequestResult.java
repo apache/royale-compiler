@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.royale.abc.ABCParser;
 import org.apache.royale.abc.print.ABCDumpVisitor;
-import org.apache.royale.compiler.internal.embedding.EmbedData;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
 
@@ -45,7 +45,7 @@ public class ABCBytesRequestResult implements IABCBytesRequestResult
      * @param problems Collection of problems found by the code generator.
      * @param embeds embedded assets
      */
-	public ABCBytesRequestResult(byte[] bytes, ICompilerProblem problems[], Set<EmbedData> embeds)
+	public ABCBytesRequestResult(byte[] bytes, ICompilerProblem problems[], Set<IEmbedData> embeds)
     {
         assert ((bytes != null) || (problems != null));
         this.bytes = bytes;
@@ -113,14 +113,14 @@ public class ABCBytesRequestResult implements IABCBytesRequestResult
     }
 
     @Override
-    public Collection<EmbedData> getEmbeds()
+    public Collection<IEmbedData> getEmbeds()
     {
         return embeds;
     }
 
     private final byte[] bytes;
     private final ICompilerProblem[] problems;
-    private final Set<EmbedData> embeds;
+    private final Set<IEmbedData> embeds;
     
     
     @Override

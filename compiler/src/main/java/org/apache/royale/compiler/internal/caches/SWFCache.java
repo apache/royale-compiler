@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import org.apache.royale.compiler.caches.ISWFCache;
 import org.apache.royale.compiler.problems.FileInLibraryNotFoundProblem;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.SWC;

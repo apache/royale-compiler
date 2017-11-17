@@ -133,6 +133,7 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.IReferenceMName;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
@@ -373,7 +374,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // This type was stored in the EventDefinition
         // that the MXMLEventSpecifierNode refers to.
         EventDefinition eventDefinition = (EventDefinition)eventNode.getDefinition();
-        Name eventTypeName = eventDefinition.getTypeReference().getMName(
+        Name eventTypeName = ((IReferenceMName)eventDefinition.getTypeReference()).getMName(
             project, (ASScope)eventDefinition.getContainingScope());
         Vector<Name> paramTypes = new Vector<Name>();
         paramTypes.add(eventTypeName);

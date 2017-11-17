@@ -24,6 +24,7 @@ import static org.apache.royale.abc.ABCConstants.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import org.apache.royale.abc.visitors.IMethodBodyVisitor;
 import org.apache.royale.abc.visitors.IMethodVisitor;
 import org.apache.royale.abc.visitors.IScriptVisitor;
 import org.apache.royale.abc.visitors.IVisitor;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.exceptions.BURMAbortException;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
 import org.apache.royale.compiler.exceptions.MissingBuiltinException;
@@ -179,8 +181,11 @@ public class ABCGenerator implements ICodeGenerator
         Set<EmbedData> embeds = global_scope.getEmbeds();
         EmbedCompilationUnitFactory.collectEmbedDatas(project, (IFileNodeAccumulator)root_node, embeds, global_scope.getProblems());
 
+        Set<IEmbedData> iembeds = new HashSet<IEmbedData>();
+        for (EmbedData embed : embeds)
+            iembeds.add(embed);
         ICompilerProblem[] problemsArray = global_scope.getProblems().toArray(IABCBytesRequestResult.ZEROPROBLEMS);
-        return new ABCBytesRequestResult(generatedBytes, problemsArray, embeds);
+        return new ABCBytesRequestResult(generatedBytes, problemsArray, iembeds);
 	}
 
     /**

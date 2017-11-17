@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -51,7 +52,7 @@ public class SWFTagsRequestResult implements ISWFTagsRequestResult
      */
     public SWFTagsRequestResult(final byte[] abcData, final String tagName)
     {
-        this(abcData, tagName, Collections.<EmbedData>emptySet());
+        this(abcData, tagName, Collections.<IEmbedData>emptySet());
     }
 
     /**
@@ -62,7 +63,7 @@ public class SWFTagsRequestResult implements ISWFTagsRequestResult
      * @param embeddedAssets embedded assets
      */
     public SWFTagsRequestResult(final byte[] abcData, final String tagName,
-                         final Collection<EmbedData> embeddedAssets)
+                         final Collection<IEmbedData> embeddedAssets)
     {
         this.abcData = abcData;
         this.tagName = tagName;
@@ -70,9 +71,9 @@ public class SWFTagsRequestResult implements ISWFTagsRequestResult
         this.additionalTags = new LinkedList<ITag>();
         this.assetTags = new LinkedHashMap<String, ICharacterTag>();
 
-        for (EmbedData embedData : embeddedAssets)
+        for (IEmbedData embedData : embeddedAssets)
         {
-            TranscoderBase transcoder = embedData.getTranscoder();
+            TranscoderBase transcoder = (TranscoderBase)embedData.getTranscoder();
             Map<String, ICharacterTag> tags = transcoder.getTags(additionalTags, this.problems);
 
             if (tags != null)

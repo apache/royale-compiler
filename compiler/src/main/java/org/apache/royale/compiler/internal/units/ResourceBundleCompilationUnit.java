@@ -48,6 +48,7 @@ import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.PackageDefinition;
@@ -324,7 +325,10 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
             Set<EmbedData> embeds = new HashSet<EmbedData>();
             EmbedCompilationUnitFactory.collectEmbedDatas(getProject(), (IFileNodeAccumulator)rootNode, embeds, problems);
 
-            return new ABCBytesRequestResult(generatedBytes, problems.toArray(new ICompilerProblem[0]), embeds);
+            Set<IEmbedData> iembeds = new HashSet<IEmbedData>();
+            for (EmbedData embed : embeds)
+                iembeds.add(embed);
+            return new ABCBytesRequestResult(generatedBytes, problems.toArray(new ICompilerProblem[0]), iembeds);
         }
         finally
         {

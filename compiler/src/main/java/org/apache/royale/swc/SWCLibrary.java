@@ -32,6 +32,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.royale.swc.io.SWCReader;
 import org.apache.royale.swf.ISWF;
+import org.apache.royale.swf.io.ISWFReader;
 import org.apache.royale.swf.io.SWFReader;
 
 /**
@@ -105,7 +106,7 @@ public class SWCLibrary implements ISWCLibrary
 
 
     @Override
-    public void readSWFInputStream(SWFReader swfReader, ISWC swc)
+    public void readSWFInputStream(ISWFReader swfReader, ISWC swc)
     {
         ZipFile swcFile = null;
         try

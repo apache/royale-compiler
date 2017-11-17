@@ -52,20 +52,20 @@ public class TargetSettings implements ITargetSettings
         this.project = project;
     }
 
-    private File output;
-    private File defaultCSS;
+    protected File output;
+    protected File defaultCSS;
     
-    private List<File> themes;
-    private Collection<File> externalLibraryPath;
-    private Collection<File> includeLibraries;
-    private List<RSLSettings> rslLibraryPath;
-    private Set<File> includeSources;
-    private Map<String, File> includeFiles;
+    protected List<File> themes;
+    protected Collection<File> externalLibraryPath;
+    protected Collection<File> includeLibraries;
+    protected List<RSLSettings> rslLibraryPath;
+    protected Set<File> includeSources;
+    protected Map<String, File> includeFiles;
     
-    private final Configuration configuration;
-    private final ICompilerProject project;
+    protected final Configuration configuration;
+    protected final ICompilerProject project;
     
-    private Set<String> externalLinkageLibraries;
+    protected Set<String> externalLinkageLibraries;
     
     /**
      * @return the accessible

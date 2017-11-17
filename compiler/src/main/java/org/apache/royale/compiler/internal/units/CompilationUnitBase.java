@@ -51,7 +51,7 @@ import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.graph.LinkReportWriter;
 import org.apache.royale.compiler.internal.projects.ASProject;

@@ -35,6 +35,9 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.IEmbedData;
+import org.apache.royale.compiler.embedding.transcoders.ITranscoder;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.embedding.transcoders.DataTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.ImageTranscoder;
@@ -200,7 +203,7 @@ public class EmbedData implements IEmbedData
                     Collection<ICompilationUnit> referencingCUs = project.getCompilationUnits(containingSourceFilename);
                     for (ICompilationUnit cu : referencingCUs)
                     {
-                        project.addUnfoundReferencedSourceFileDependency(value, cu);
+                        ((RoyaleProject)project).addUnfoundReferencedSourceFileDependency(value, cu);
                     }
                     hadError = true;
                 }
@@ -412,7 +415,7 @@ public class EmbedData implements IEmbedData
             return false;
         }
 
-        Workspace workspace = project.getWorkspace();
+        Workspace workspace = (Workspace)project.getWorkspace();
         switch (mimeType)
         {
             case JPEG:

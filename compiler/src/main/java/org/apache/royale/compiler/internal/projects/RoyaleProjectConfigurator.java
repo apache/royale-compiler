@@ -22,8 +22,8 @@ package org.apache.royale.compiler.internal.projects;
 import static org.apache.royale.abc.ABCConstants.CONSTANT_PackageNs;
 import static org.apache.royale.abc.ABCConstants.CONSTANT_Qname;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.Namespace;
@@ -32,10 +32,18 @@ import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.fxg.flex.FlexFXG2SWFTranscoder;
 import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.config.RoyaleTargetSettings;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.embedding.transcoders.DataTranscoder;
 import org.apache.royale.compiler.internal.units.FXGCompilationUnit;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.problems.ANELibraryNotAllowedProblem;
+import org.apache.royale.compiler.projects.IRoyaleProject;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.targets.ITargetSettings;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.utils.FilenameNormalization;
 
 /**
  * This class applies configuration settings to a RoyaleProject.
@@ -262,7 +270,7 @@ public class RoyaleProjectConfigurator extends Configurator
     public boolean applyToProject(ICompilerProject project)
     {
         boolean success = super.applyToProject(project);
-        if (success && !setupSources(project))
+        if (success && !setupSources((IRoyaleProject)project))
             success = false;
         return success;
     }
@@ -272,6 +280,7 @@ public class RoyaleProjectConfigurator extends Configurator
     {
         boolean success = true;
         
+        RoyaleProject royaleProject = (RoyaleProject)project;
         RoyaleProjectConfigurator.configure(royaleProject, configuration);
         setupCompatibilityVersion(royaleProject);
         setupConfigVariables(royaleProject);
@@ -280,12 +289,12 @@ public class RoyaleProjectConfigurator extends Configurator
         setupThemeFiles(royaleProject);
         setupRoyale(royaleProject);
         setupCodegenOptions(royaleProject);
-        project.setRuntimeSharedLibraryPath(getRSLSettingsFromConfiguration(configuration));
+        royaleProject.setRuntimeSharedLibraryPath(getRSLSettingsFromConfiguration(configuration));
             
-        if (!setupProjectLibraries(project))
+        if (!setupProjectLibraries(royaleProject))
             success = false;
             
-        setupNamespaces(project);
+        setupNamespaces(royaleProject);
         return success;
     }
     
@@ -484,4 +493,26 @@ public class RoyaleProjectConfigurator extends Configurator
         }
         return null;
     }
+    
+    /**
+     * Test if the SWC is explicitly on the external library path.
+     *
+     * @param library
+     * @param externalLibraryFiles
+     * @return true if the library is on the external library path, false otherwise.
+     */
+    private boolean isOnExternalLibrayPath(ISWC library, List<File> externalLibraryFiles)
+    {
+        File aneFile = library.getSWCFile();
+        
+        for (File file : externalLibraryFiles)
+        {
+            if (file.equals(aneFile))
+                return true;
+        }
+        
+        return false;
+    }
+    
+
 }

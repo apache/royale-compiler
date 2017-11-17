@@ -38,7 +38,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.EmbedExceptionWhileTranscodingProblem;

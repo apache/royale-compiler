@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
 
+import org.apache.royale.compiler.caches.IFileScopeCache;
 import org.apache.royale.compiler.internal.abc.ABCScopeBuilder;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.SWCFileScopeProvider;
@@ -103,7 +104,7 @@ public class FileScopeCache extends ConcurrentCacheStoreBase<Collection<IASScope
 
         final FileScopeCacheKey fileScopeCacheKey = (FileScopeCacheKey)key;
         final CacheStoreKeyBase swfCacheKey = SWFCache.createKey(fileScopeCacheKey.swc, fileScopeCacheKey.swfPath);
-        final ITagContainer tags = swcManager.getSWFCache().get(swfCacheKey);
+        final ITagContainer tags = ((SWFCache)swcManager.getSWFCache()).get(swfCacheKey);
 
         final DoABCTag abcTag = SWFCache.findDoABCTagByName(tags, fileScopeCacheKey.scriptName);
         if (abcTag != null)

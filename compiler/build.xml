@@ -77,6 +77,7 @@
 
     <path id="classpath">
         <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
+        <fileset dir="${compiler}/lib" includes="compiler-common.jar"/>
         <fileset dir="${compiler}/../compiler-build-tools/target/classes" includes="**/*.class"/>
     </path>
 

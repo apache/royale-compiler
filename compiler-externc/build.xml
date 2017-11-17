@@ -40,7 +40,9 @@
     <pathconvert property="compiler-jx" dirsep="/">
         <path location="${basedir}/../compiler-jx"/>
     </pathconvert>
-    
+
+    <property name="sdk" value="${compiler-jx}/lib"/>
+
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler-externc}/local.properties"/>
@@ -97,7 +99,7 @@
     </target>
 	-->
     
-    <target name="main" >
+    <target name="compile" >
         <mkdir dir="${compiler-externc}/target/classes"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-externc}/target/classes" includeAntRuntime="true" includes="**/*.java"
             source="${javac.src}" target="${javac.src}">
@@ -111,6 +113,24 @@
         </javac>
     </target>
     
+    <target name="main" depends="compile" >
+        <mkdir dir="${sdk}"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${compiler-externc}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${compiler-externc}/target/classes/META-INF/NOTICE"/>
+        <jar file="${sdk}/externc.jar" basedir="${compiler-externc}/target/classes" includes="**/*.properties,org/apache/**/*,META-INF/**/*">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+                <attribute name="Class-Path" value="external/commons-cli.jar external/commons-io.jar external/guava.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar .."/>
+                <!-- The .. in the line above allows the compiler to load the env.properties file -->
+            </manifest>
+        </jar>
+    </target>
+
     <!--
 
         CLEANUP

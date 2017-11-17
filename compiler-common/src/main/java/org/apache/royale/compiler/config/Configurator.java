@@ -39,7 +39,6 @@ import org.apache.royale.compiler.internal.config.TargetSettings;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.config.localization.ResourceBundleLocalizer;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.royale.compiler.problems.ANELibraryNotAllowedProblem;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -262,7 +261,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     }
 
     private ConfigurationBuffer cfgbuf;
-    private Configuration configuration;
+    protected Configuration configuration;
     private Class<? extends Configuration> configurationClass;
     
     private Map<String, Object> args, more;
@@ -279,11 +278,11 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     
     private boolean isConfigurationDirty;
     private boolean configurationSuccess;
-    private Collection<ICompilerProblem> configurationProblems;
+    protected Collection<ICompilerProblem> configurationProblems;
     private boolean extrasRequireDefaultVariable;
     private IPathResolver configurationPathResolver;
     
-    private ICompilerProject project;
+    protected ICompilerProject project;
 
     // 
     // IConfigurator related methods
@@ -531,26 +530,6 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     {
         return new ConfigurationBuffer(
                 configurationClass, Configuration.getAliases());
-    }
-
-    /**
-     * Test if the SWC is explicitly on the external library path.
-     * 
-     * @param library
-     * @param externalLibraryFiles
-     * @return true if the library is on the external library path, false otherwise.
-     */
-    private boolean isOnExternalLibrayPath(ISWC library, List<File> externalLibraryFiles)
-    {
-        File aneFile = library.getSWCFile();
-        
-        for (File file : externalLibraryFiles)
-        {
-            if (file.equals(aneFile))
-                return true;
-        }
-        
-        return false;
     }
 
     /**

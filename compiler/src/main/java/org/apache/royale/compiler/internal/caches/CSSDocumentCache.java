@@ -30,6 +30,7 @@ import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.ANTLRInputStream;
 import org.apache.commons.io.IOUtils;
 
+import org.apache.royale.compiler.caches.ICSSDocumentCache;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSFontFace;
