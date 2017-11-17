@@ -37,6 +37,7 @@ import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
@@ -957,7 +958,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	if (nodeDef instanceof FunctionDefinition &&
         			isCustomNamespace((FunctionDefinition)nodeDef))
         	{
-            	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getWalker().getProject()).getName();
+            	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getWalker().getProject()).getName();
             	write(ns + "::");
         	}
     		write(((IIdentifierNode)node).getName());

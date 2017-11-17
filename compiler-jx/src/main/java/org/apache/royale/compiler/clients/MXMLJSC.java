@@ -55,6 +55,7 @@ import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -827,7 +828,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 projectConfigurator.setConfiguration(args,
                         ICompilerSettingsConstants.FILE_SPECS_VAR);
             }
-
+            projectConfigurator.applyToProject(project);
+            
             // getCompilerProblemSettings initializes the configuration
             problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
             problems.addAll(projectConfigurator.getConfigurationProblems());

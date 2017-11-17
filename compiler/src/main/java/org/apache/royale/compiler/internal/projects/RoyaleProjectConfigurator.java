@@ -266,6 +266,14 @@ public class RoyaleProjectConfigurator extends Configurator
         }
     }
     
+    /**
+     * Constructor
+     */
+    public RoyaleProjectConfigurator(Class<? extends Configuration> configurationClass)
+    {
+        super(configurationClass);
+    }
+    
     @Override
     public boolean applyToProject(ICompilerProject project)
     {

@@ -63,6 +63,10 @@
     <property name="build.number" value="0"/>
 
     <path id="classpath">
+        <filelist dir="${royale.lib.dir}/">
+            <file name="compiler.jar" />
+            <file name="compiler-common.jar" />
+        </filelist>
         <filelist dir="${royale.lib.dir}/external">
             <file name="antlr.jar" />
             <file name="commons-lang-2.6.jar" />
@@ -85,9 +89,6 @@
             classpathref="classpath"
             source="${javac.src}" target="${javac.src}">
 			<src path="${src}" />
-			<classpath>
-				<pathelement path="${royale.basedir}/target/classes" />
-			</classpath>
 		</javac>
 	</target>
 
@@ -100,7 +101,7 @@
 	
 	<target name="main" depends="prebuild,compile">
         
-        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE" tofile="${classes.dir}/META-INF/NOTICE"/>
