@@ -29,6 +29,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.wast.IWASTPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
+import org.apache.royale.utils.EnvProperties;
 
 public class WASTPublisher implements IWASTPublisher {
 
@@ -44,6 +45,8 @@ public class WASTPublisher implements IWASTPublisher {
 
 	private File outputFolder;
 	private File outputParentFolder;
+
+	private EnvProperties env;
 	
 	
 	
@@ -69,7 +72,9 @@ public class WASTPublisher implements IWASTPublisher {
 			
 			String targetWatFilePath = targetPath + "/" + mainProjectFileName + ".wat";
 			
-			String[] cmd = { "wat2wasm", targetWatFilePath, "-o", targetPath + "/" + mainProjectFileName + ".wasm" };
+			env = EnvProperties.initiate();
+			
+			String[] cmd = { env.WAT2WASM + "/wat2wasm", targetWatFilePath, "-o", targetPath + "/" + mainProjectFileName + ".wasm" };
 
 			Process p = new ProcessBuilder(cmd).redirectError(Redirect.INHERIT)
                     .redirectOutput(Redirect.INHERIT)
