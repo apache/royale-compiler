@@ -20,7 +20,7 @@
 /**
  * @constructor
  */
-Foo = function () {};
+function Foo () {};
 
 /**
  * @const

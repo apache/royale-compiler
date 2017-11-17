@@ -61,7 +61,8 @@ function FooOptVarArgs(arg1, opt_arg2, var_args) {}
  *
  * @constructor
  */
-AssignFooNoArgs = function () {};
+// this pattern results in warnings and may no longer be allowed by Closure Compiler
+// AssignFooNoArgs = function () {};
 
 /**
  * A constructor with no args.

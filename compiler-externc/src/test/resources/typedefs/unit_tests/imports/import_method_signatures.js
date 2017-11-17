@@ -20,7 +20,7 @@
 /**
  * @constructor
  */
-ImportMethodSignature = function() {};
+function ImportMethodSignature() {};
 
 /**
  * @param {foo.Quux|foo.Bar} bar
@@ -44,6 +44,11 @@ ImportMethodSignature.prototype.myMethodWithReturnType = function(bar, value, ba
  * @return {foo.Quuux|foo.Bar}
  */
 ImportMethodSignature.myMethodWithUnionReturnType = function(bar, value, baz) {};
+
+/**
+ * @const
+ */
+var foo = {};
 
 /**
  * @constructor

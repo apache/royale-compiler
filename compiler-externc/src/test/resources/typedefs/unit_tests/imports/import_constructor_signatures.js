@@ -25,7 +25,12 @@
  * @param {number} value
  * @param {foo.Baz?} baz
  */
-ImportConstructorSignature = function(qux, bar, value, baz) {};
+function ImportConstructorSignature(qux, bar, value, baz) {};
+
+/**
+ * @const
+ */
+var foo = {};
 
 /**
  * @constructor

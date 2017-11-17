@@ -21,18 +21,24 @@
  * @constructor
  * @extends {Qux}
  */
-ImportSuperClass1 = function() {};
+function ImportSuperClass1() {};
 
 /**
  * @constructor
  * @extends {BASE.Foo}
  */
-ImportSuperClass2 = function() {};
+function ImportSuperClass2() {};
 
 /**
  * @constructor
  */
-Qux = function() {};
+function Qux () {};
+
+/**
+ * @const
+ */
+var BASE = {};
+
 
 /**
  * @constructor

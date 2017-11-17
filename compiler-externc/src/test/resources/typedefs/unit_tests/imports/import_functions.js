@@ -29,7 +29,12 @@ function ImportFunction(bar, baz, quux) {}
 /**
  * @constructor
  */
-Quux = function() {};
+function Quux() {};
+
+/**
+ * @const
+ */
+var foo = {};
 
 /**
  * @constructor

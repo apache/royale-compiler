@@ -103,6 +103,8 @@ public class TestExternJSMissing extends ExternalsTestBase
         ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
+        String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
+        config.addExternal(coreRoot + "/es3.js");
         config.addExternal(ExternalsTestUtils.MISSING_JS_FILE);
     }
 }

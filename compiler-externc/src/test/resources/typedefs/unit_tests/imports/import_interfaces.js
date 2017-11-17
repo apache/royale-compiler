@@ -22,13 +22,18 @@
  * @implements {Qux}
  * @implements {API.Foo}
  */
-ImportInterfaces = function() {};
+function ImportInterfaces() {};
 
 
 /**
  * @interface
  */
-Qux = function() {};
+function Qux() {};
+
+/**
+ * @const
+ */
+var API = {};
 
 /**
  * @interface

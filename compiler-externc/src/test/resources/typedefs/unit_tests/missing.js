@@ -17,6 +17,7 @@
  *
  */
 
+// this is a subset of the one in royale-typedefs/js.  It is only used to build a test version
 
 // webkit_notifications
 /**
@@ -35,22 +36,6 @@ function HTMLEmbedElement() {};
  * @const
  */
 var window;
-
-/**
- * @type {!HTMLDocument}
- */
-Window.prototype.document;
-
-/**
- * resolveLocalFileSystemURI has been deprecated; this is the replacement.
- * @see http://www.w3.org/TR/file-system-api/#widl-LocalFileSystem-resolveLocalFileSystemURL
- * @param {string} url
- * @param {function(!Entry)} successCallback
- * @param {function(!FileError)=} errorCallback
- */
-Window.prototype.resolveLocalFileSystemURL = function(url, successCallback,
-    errorCallback) {}
-
 
 /**
 * @constructor
@@ -143,12 +128,6 @@ function History() {}
  * @constructor
  */
 function Location() {}
-
-/**
- * @type {number}
- */
-XMLHttpRequest.prototype.timeout;
-
 
 /**
  * @export
