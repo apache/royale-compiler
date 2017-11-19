@@ -65,7 +65,7 @@ public class ReferenceEmitter
             if (!reference.isInterface())
                 continue;
 
-            if (model.getConfiguration().isTypedefTypedef(reference))
+            if (model.getConfiguration().isExternalTypedef(reference))
                 continue;
 
             emit(reference, sb);
@@ -92,7 +92,7 @@ public class ReferenceEmitter
             if (reference.isInterface())
                 continue;
 
-            if (model.getConfiguration().isTypedefTypedef(reference))
+            if (model.getConfiguration().isExternalTypedef(reference))
                 continue;
             
             emit(reference, sb);
@@ -117,7 +117,7 @@ public class ReferenceEmitter
             if (model.isExcludedClass(reference) != null)
                 continue;
 
-            if (model.getConfiguration().isTypedefTypedef(reference))
+            if (model.getConfiguration().isExternalTypedef(reference))
                 continue;
 
             JSDocInfo comment = reference.getComment();
@@ -151,7 +151,7 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (FunctionReference reference : model.getFunctions())
         {
-            if (model.getConfiguration().isTypedefTypedef(reference))
+            if (model.getConfiguration().isExternalTypedef(reference))
                 continue;
             
             emit(reference, sb);
@@ -172,7 +172,7 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (ConstantReference reference : model.getConstants())
         {
-            if (model.getConfiguration().isTypedefTypedef(reference))
+            if (model.getConfiguration().isExternalTypedef(reference))
                 continue;
             
             emit(reference, sb);

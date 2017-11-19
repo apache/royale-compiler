@@ -94,7 +94,7 @@ public class EXTERNC implements FlexTool
     public boolean configure(String[] args)
     {
         projectConfigurator = createConfigurator();
-        projectConfigurator.setConfiguration(args, "external", false);
+        projectConfigurator.setConfiguration(args, "typedefs", false);
         projectConfigurator.getTargetSettings(TargetType.SWC);
         configure((ExternCConfiguration) projectConfigurator.getConfiguration());
         problems = new ProblemQuery(

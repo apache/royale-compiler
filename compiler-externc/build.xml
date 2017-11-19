@@ -108,7 +108,7 @@
             <classpath>
                 <pathelement location="${compiler-externc}/target/classes"/>
                 <fileset dir="${compiler-externc}/../compiler-jx/lib/google" includes="**/*.jar"/>
-                <fileset dir="${compiler-externc}/../compiler/lib" includes="compiler-common.jar,external/*.jar"/>
+                <fileset dir="${compiler-externc}/../compiler/lib" includes="compiler-common.jar,external/flex-tool-api.jar"/>
             </classpath>
         </javac>
     </target>
@@ -120,11 +120,11 @@
         <ant antfile="${compiler-jx}/src/main/resources/downloads.xml" dir="${compiler-jx}/src/main/resources" inheritAll="false"/>
     </target>
     
-    <target name="main" depends="prebuild,compile" >
+    <target name="main" depends="prebuild,compile,test" >
         <mkdir dir="${sdk}"/>
         <copy file="${basedir}/../LICENSE.base" tofile="${compiler-externc}/target/classes/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.base" tofile="${compiler-externc}/target/classes/META-INF/NOTICE"/>
-        <jar file="${sdk}/externc.jar" basedir="${compiler-externc}/target/classes" includes="**/*.properties,org/apache/**/*,META-INF/**/*">
+        <jar file="${sdk}/externc.jar" basedir="${compiler-externc}/target/classes" includes="**/*.properties,org/apache/**/*,com/google/javascript/**/*,META-INF/**/*">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -133,12 +133,25 @@
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="org.apache.royale.compiler.clients.EXTERNC" />
-                <attribute name="Class-Path" value="external/commons-cli.jar external/commons-io.jar external/guava.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar .."/>
+                <attribute name="Class-Path" value="../../compiler/lib/external/commons-cli.jar ../../lib/external/commons-cli.jar ../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler/lib/external/guava.jar ../../lib/external/guava.jar ../../compiler/lib/external/flex-tool-api.jar ../../lib/external/flex-tool-api google/closure-compiler/compiler.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar .."/>
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>
+        <antcall target="jar-test" />
     </target>
 
+    <target name="test" >
+        <ant dir="src/test" />
+    </target>
+    
+    <target name="jar-test" >
+        <echo>using externc.jar from ${sdk}</echo>
+        <java jar="${sdk}/externc.jar" fork="true"
+            failonerror="true">
+            <arg value="-load-config=${basedir}/src/test/config/externc-config.xml" />
+        </java>
+    </target>
+    
     <!--
 
         CLEANUP

@@ -23,7 +23,7 @@
 		<link>
 			<name>COMPILER_TEST_UTILS</name>
 			<type>2</type>
-			<location>/Users/aharui/git/royale/ant/royale-compiler/compiler-test-utils/src/main/java</location>
+			<location>/Users/aharui/git/royale/maven/royale-compiler/compiler-test-utils/src/main/java</location>
 		</link>
 	</linkedResources>
 	<variableList>

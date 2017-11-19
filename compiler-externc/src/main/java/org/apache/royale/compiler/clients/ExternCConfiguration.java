@@ -154,16 +154,16 @@ public class ExternCConfiguration extends Configuration
         addTypedef(new File(FilenameNormalization.normalize(externalFile)));
     }
 
-    public void addTypedefTypedef(File file) throws IOException
+    public void addExternalTypedef(File file) throws IOException
     {
         if (!file.exists())
             throw new IOException(file.getAbsolutePath() + " does not exist.");
         externalTypedefs.add(new TypedefFile(file));
     }
 
-    public void addTypedefTypedef(String externalFile) throws IOException
+    public void addExternalTypedef(String externalFile) throws IOException
     {
-        addTypedefTypedef(new File(FilenameNormalization.normalize(externalFile)));
+        addExternalTypedef(new File(FilenameNormalization.normalize(externalFile)));
     }
 
     @Config(allowMultiple = true)
@@ -175,7 +175,7 @@ public class ExternCConfiguration extends Configuration
     }
 
     @Config(allowMultiple = true, isPath = true)
-    @Mapping("external")
+    @Mapping("typedefs")
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
     public void setTypedef(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
@@ -185,16 +185,16 @@ public class ExternCConfiguration extends Configuration
     }
 
     @Config(allowMultiple = true, isPath = true)
-    @Mapping("external-externs")
+    @Mapping("external-typedefss")
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    public void setTypedefTypedefs(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
+    public void setExternalTypedefs(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
     {
         for (String val : vals)
-            addTypedefTypedef(resolvePathStrict(val, cfgval));
+            addExternalTypedef(resolvePathStrict(val, cfgval));
     }
 
-    public boolean isTypedefTypedef(BaseReference reference)
+    public boolean isExternalTypedef(BaseReference reference)
     {
         String sourceFileName = reference.getNode().getSourceFileName();
         for (TypedefFile file : externalTypedefs)
