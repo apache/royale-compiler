@@ -654,8 +654,14 @@ public class EmbedData implements IEmbedData
             String packagePath = null;
             if((containingSourcePath != null) && !royaleProject.getSourcePath().isEmpty()) {
                 for (File sourcePath : royaleProject.getSourcePath()) {
+                	if (containingSourcePath.equals(sourcePath.getAbsolutePath()))
+                	{
+                		packagePath = "";
+                		break;
+                	}
                     if (containingSourcePath.startsWith(sourcePath.getAbsolutePath())) {
                         packagePath = containingSourcePath.substring(sourcePath.getAbsolutePath().length() + 1);
+                        break;
                     }
                 }
             }
