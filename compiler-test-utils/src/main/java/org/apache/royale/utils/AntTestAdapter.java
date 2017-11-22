@@ -32,12 +32,12 @@ public class AntTestAdapter implements ITestAdapter {
 
     private static EnvProperties env = EnvProperties.initiate();
 
-    private static final File PLAYERGLOBAL_SWC = new File(FilenameNormalization.normalize(env.FPSDK + "\\" + env.FPVER + "\\playerglobal.swc"));
+    private static File PLAYERGLOBAL_SWC;
     // The Ant script for compiler.tests copies a standalone player to the temp directory.
-    private static final File FLASHPLAYER = new File(FilenameNormalization.normalize(env.FDBG));
+    private static File FLASHPLAYER;
 
-    private static final File LIBS_ROOT = new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs"));
-    private static final File RESOURCE_BUNDLES_ROOT = new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US"));
+    private static File LIBS_ROOT;
+    private static File RESOURCE_BUNDLES_ROOT;
 
     @Override
     public String getTempDir() {
@@ -49,12 +49,16 @@ public class AntTestAdapter implements ITestAdapter {
         // Do some checks if all needed environment variables are set.
         if (withFlex) {
             Assert.assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
+	        Assert.assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
+            LIBS_ROOT = new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs"));        	
+            RESOURCE_BUNDLES_ROOT = new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US"));
         }
-        Assert.assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
-
+        
         // Create a list of libs needed to compile.
         List<File> libraries = new ArrayList<File>();
-        libraries.add(getPlayerglobal());
+        File pg = getPlayerglobal();
+        if (pg != null)
+        	libraries.add(getPlayerglobal());
         if (withFlex)
         {
             libraries.add(getFlexArtifact("framework"));
@@ -66,11 +70,15 @@ public class AntTestAdapter implements ITestAdapter {
 
     @Override
     public File getPlayerglobal() {
+        if (PLAYERGLOBAL_SWC == null && env.FPSDK != null)
+	        PLAYERGLOBAL_SWC = new File(FilenameNormalization.normalize(env.FPSDK + "\\" + env.FPVER + "\\playerglobal.swc"));
         return PLAYERGLOBAL_SWC;
     }
 
     @Override
     public File getFlashplayerDebugger() {
+    	if (FLASHPLAYER == null && env.FDBG != null)
+        	FLASHPLAYER = new File(FilenameNormalization.normalize(env.FDBG));
         return FLASHPLAYER;
     }
 
