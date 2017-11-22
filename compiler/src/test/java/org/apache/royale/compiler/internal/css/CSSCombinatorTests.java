@@ -64,7 +64,7 @@ public class CSSCombinatorTests extends CSSBaseTests {
 	@Test
 	public void CSSSelectorConditionTests_descendant_combinator1()
 	{
-		String code = " s|VBox s|Label "; 
+		String code = " custom|VBox custom|Label "; 
 		
 		CSSCombinator combinator = getCSSCombinator(code);
 		//TODO why CSSCombinator doesn't extend CSSNodeBase?? 
@@ -74,14 +74,14 @@ public class CSSCombinatorTests extends CSSBaseTests {
 		
 		ICSSSelector selector = combinator.getSelector();
 		assertThat("selector.getElementName()" , selector.getElementName(), is( "VBox" ) );
-		assertThat("selector.getNamespacePrefix()" , selector.getNamespacePrefix(), is( "s" ) );
+		assertThat("selector.getNamespacePrefix()" , selector.getNamespacePrefix(), is( "custom" ) );
 		assertThat("selector.getCombinator()" , selector.getCombinator(), is( (ICSSCombinator) null) );
 	}
 	
 	@Test
 	public void CSSSelectorConditionTests_descendant_combinator2()
 	{
-		String code = " s|VBox s|HBox s|Label"; 
+		String code = " custom|VBox custom|HBox custom|Label"; 
 		
 		CSSCombinator combinator = getCSSCombinator(code);
 		assertThat("combinator.getOperator()" , combinator.getOperator(), is( CSSModelTreeType.COMBINATOR ) );
@@ -90,14 +90,14 @@ public class CSSCombinatorTests extends CSSBaseTests {
 		
 		ICSSSelector selector1 = combinator.getSelector();
 		assertThat("selector1.getElementName()" , selector1.getElementName(), is( "HBox" ) );
-		assertThat("selector1.getNamespacePrefix()" , selector1.getNamespacePrefix(), is( "s" ) );
+		assertThat("selector1.getNamespacePrefix()" , selector1.getNamespacePrefix(), is( "custom" ) );
 		assertThat("selector1.getCombinator()" , selector1.getCombinator(), not( (ICSSCombinator) null) );
 		assertThat("selector1.getCombinator().getSelector()" , selector1.getCombinator().getSelector(), not( (ICSSSelector) null) );
 		
 
 		ICSSSelector selector2 = selector1.getCombinator().getSelector();
 		assertThat("selector2.getElementName()" , selector2.getElementName(), is( "VBox" ) );
-		assertThat("selector2.getNamespacePrefix()" , selector2.getNamespacePrefix(), is( "s" ) );
+		assertThat("selector2.getNamespacePrefix()" , selector2.getNamespacePrefix(), is( "custom" ) );
 		assertThat("selector2.getCombinator()" , selector2.getCombinator(), is( (ICSSCombinator) null) );
 		
 

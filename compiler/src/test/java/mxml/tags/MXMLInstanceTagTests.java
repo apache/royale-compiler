@@ -33,11 +33,11 @@ public class MXMLInstanceTagTests extends MXMLInstanceTagTestsBase
     {
         String[] declarations = new String[]
         {
-            "<d:Sprite id='b'/>"
+            "<custom:TestInstance id='b'/>"
         };
         String[] asserts = new String[]
         {
-	        "assertEqual('b', b is Sprite, true);"	
+	        "assertEqual('b', b is TestInstance, true);"	
         };
         String mxml = getMXML(declarations, asserts);
         compileAndRun(mxml);

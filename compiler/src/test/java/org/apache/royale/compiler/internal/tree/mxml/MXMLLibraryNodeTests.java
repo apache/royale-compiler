@@ -74,15 +74,15 @@ public class MXMLLibraryNodeTests extends MXMLNodeBaseTests
 		String[] code = new String[]
 		{
 		    "<fx:Library>",
-		    "    <fx:Definition name='MySprite1'>",
-		    "        <d:Sprite/>",
+		    "    <fx:Definition name='MyTestInstance'>",
+		    "        <custom:TestInstance/>",
 		    "    </fx:Definition>",
 		    "</fx:Library>"
 		};
 		IMXMLLibraryNode node = getMXMLLibraryNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getDefinitionNodes", node.getDefinitionNodes().length, is(1));
-		assertThat("getDefinitionNodes[0]", node.getDefinitionNodes()[0].getDefinitionName(), is("MySprite1"));
+		assertThat("getDefinitionNodes[0]", node.getDefinitionNodes()[0].getDefinitionName(), is("MyTestInstance"));
 	}
 	
 	@Test
@@ -90,19 +90,21 @@ public class MXMLLibraryNodeTests extends MXMLNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Library className='MySprite'>",
-		    "    <fx:Definition name='MySprite1'>",
-		    "        <d:Sprite/>",
+		    "<fx:Library className='MyTestInstances'>",
+		    "    <fx:Definition name='MyTestInstance1'>",
+		    "        <custom:TestInstance/>",
 		    "    </fx:Definition>",
-		    "    <fx:Definition name='MySprite2'>",
-		    "        <d:Sprite/>",
+		    "    <fx:Definition name='MyTestInstance2'>",
+		    "        <custom:TestInstance/>",
 		    "    </fx:Definition>",
 		    "</fx:Library>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "This attribute is unexpected";
 		IMXMLLibraryNode node = getMXMLLibraryNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		assertThat("getDeclarationInstanceNodes", node.getDefinitionNodes().length, is(2));
-		assertThat("getDefinitionNodes[0]", node.getDefinitionNodes()[0].getDefinitionName(), is("MySprite1"));
-		assertThat("getDefinitionNodes[1]", node.getDefinitionNodes()[1].getDefinitionName(), is("MySprite2"));
+		assertThat("getDefinitionNodes[0]", node.getDefinitionNodes()[0].getDefinitionName(), is("MyTestInstance1"));
+		assertThat("getDefinitionNodes[1]", node.getDefinitionNodes()[1].getDefinitionName(), is("MyTestInstance2"));
 	}
 }

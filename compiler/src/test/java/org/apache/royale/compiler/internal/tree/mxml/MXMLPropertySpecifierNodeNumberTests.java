@@ -55,7 +55,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' 1 '>"
+		    "<MyComp p=' 1 '/>"
 		};
 		testMXMLPropertySpecifierNode(code, 1);
 	}
@@ -91,7 +91,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' 0xABCDEF '>"
+		    "<MyComp p=' 0xABCDEF '/>"
 		};
 		testMXMLPropertySpecifierNode(code, (double)0xABCDEF);
 	}
@@ -127,7 +127,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' -0Xabcdef '>"
+		    "<MyComp p=' -0Xabcdef '/>"
 		};
 		testMXMLPropertySpecifierNode(code, (double)-0xABCDEF);
 	}
@@ -162,7 +162,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' 0.5 '>"
+		    "<MyComp p=' 0.5 '/>"
 		};
 		testMXMLPropertySpecifierNode(code, 0.5);
 	}
@@ -196,7 +196,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' -1.5e-10 '>"
+		    "<MyComp p=' -1.5e-10 '/>"
 		};
 		testMXMLPropertySpecifierNode(code, -1.5e-10);
 	}
@@ -230,7 +230,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' -1.5E+10 '>"
+		    "<MyComp p=' -1.5E+10 '/>"
 		};
 		testMXMLPropertySpecifierNode(code, -1.5e10);
 	}
@@ -264,7 +264,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' NaN '>"
+		    "<MyComp p=' NaN '/>"
 		};
 		testMXMLPropertySpecifierNode(code, Double.NaN);
 	}
@@ -298,7 +298,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' Infinity '>"
+		    "<MyComp p=' Infinity '/>"
 		};
 		testMXMLPropertySpecifierNode(code, Double.POSITIVE_INFINITY);
 	}
@@ -332,7 +332,7 @@ public class MXMLPropertySpecifierNodeNumberTests extends MXMLPropertySpecifierN
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' -Infinity '>"
+		    "<MyComp p=' -Infinity '/>"
 		};
 		testMXMLPropertySpecifierNode(code, Double.NEGATIVE_INFINITY);
 	}

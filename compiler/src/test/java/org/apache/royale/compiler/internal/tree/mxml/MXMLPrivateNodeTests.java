@@ -79,7 +79,7 @@ public class MXMLPrivateNodeTests extends MXMLNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<fx:Private>abc<fx:Private>"
+			"<fx:Private>abc</fx:Private>"
 		};
 		getMXMLPrivateNode(code);
 	}
@@ -97,7 +97,7 @@ public class MXMLPrivateNodeTests extends MXMLNodeBaseTests
 			"      <b c='1'/>",
 			"   </a>",
 			"",
-			"<fx:Private>"
+			"</fx:Private>"
 		};
 		getMXMLPrivateNode(code);
 	}

@@ -37,14 +37,11 @@ public class MXMLInstanceNodeTests extends MXMLClassReferenceNodeTests
 		// inside a <Declarations> tag, using this template.
 		return new String[] 
 		{
-		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-		    "          xmlns:d='flash.display.*'",
-		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
-		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
+		    "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009'>",
 		    "    <fx:Declarations>",
 			"        %1",
 		    "    </fx:Declarations>",
-		    "</d:Sprite>"
+		    "</fx:Object>"
 	    };
 	}
 	

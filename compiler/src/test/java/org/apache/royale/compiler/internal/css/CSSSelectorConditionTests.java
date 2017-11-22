@@ -66,7 +66,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 	@Test
 	public void CSSSelectorConditionTests_pseudo_condtion()
 	{
-		String code = " s|Button:up "; 
+		String code = " custom|Button:up "; 
 		
 		List<ICSSSelectorCondition> conditions = getCSSSelectorConditions(code);
 		assertThat("conditions.size()" , conditions.size(), is(1) );	
@@ -80,7 +80,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 	@Test
 	public void CSSSelectorConditionTests_class_condtion()
 	{
-		String code = " s|Button.rounded "; 
+		String code = " custom|Button.rounded "; 
 		
 		List<ICSSSelectorCondition> conditions = getCSSSelectorConditions(code);
 		assertThat("conditions.size()" , conditions.size(), is(1) );	
@@ -94,7 +94,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 	@Test
 	public void CSSSelectorConditionTests_id_condtion()
 	{
-		String code = " s|Button#main "; 
+		String code = " custom|Button#main "; 
 		
 		List<ICSSSelectorCondition> conditions = getCSSSelectorConditions(code);
 		assertThat("conditions.size()" , conditions.size(), is(1) );	
@@ -108,7 +108,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 	@Test
 	public void CSSSelectorConditionTests_combined_condtions()
 	{
-		String code = " s|Button.rounded#main:up "; 
+		String code = " custom|Button.rounded#main:up "; 
 		
 		List<ICSSSelectorCondition> conditions = getCSSSelectorConditions(code);
 		assertThat("conditions.size()" , conditions.size(), is(3) );	

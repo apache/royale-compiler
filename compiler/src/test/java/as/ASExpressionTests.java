@@ -29,8 +29,6 @@ public class ASExpressionTests extends ASFeatureTestsBase
     @Test
     public void ASExpressionTests_simpleTernary()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -50,8 +48,6 @@ public class ASExpressionTests extends ASFeatureTestsBase
     @Test
     public void ASExpressionTests_nestedTernary()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -72,8 +68,6 @@ public class ASExpressionTests extends ASFeatureTestsBase
     @Test
     public void ASExpressionTests_returnNestedTernary()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };

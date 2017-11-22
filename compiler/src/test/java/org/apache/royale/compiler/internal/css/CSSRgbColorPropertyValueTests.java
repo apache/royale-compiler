@@ -78,6 +78,9 @@ public class CSSRgbColorPropertyValueTests extends CSSPropertyValueTests {
 	{
 		String code = "	color: rgb(100%, , 100%); ";
 		
+		errorFilters = new String[2];
+		errorFilters[0] = "missing STRING at ';'";
+		errorFilters[1] = "no viable alternative at character";
 		List<CSSRgbColorPropertyValue> rgbColorProperties = getCSSRgbPropertyValues(code);
 		assertThat("rgbColorProperties.size()" , rgbColorProperties.size(), is(0) );	
 	}

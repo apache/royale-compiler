@@ -86,10 +86,10 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<fx:Class>flash.display.Sprite</fx:Class>"
+			"<fx:Class>custom.TestInstance</fx:Class>"
 		};
 		IMXMLClassNode node = getMXMLClassNode(code);
-		assertThat("getValue", node.getValue(project).getQualifiedName(), is("flash.display.Sprite"));
+		assertThat("getValue", node.getValue(project).getQualifiedName(), is("custom.TestInstance"));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 	

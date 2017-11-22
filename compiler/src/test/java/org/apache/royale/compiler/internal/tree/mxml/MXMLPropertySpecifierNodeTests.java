@@ -44,20 +44,23 @@ public abstract class MXMLPropertySpecifierNodeTests extends MXMLSpecifierNodeBa
 		// property on a <MyComp> tag inside the <Declarations> tag.
         return new String[]
         {
-    	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-    	    "          xmlns:d='flash.display.*'",
+    	    "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009'",
+    	    "          xmlns:custom='library://ns.apache.org/royale/test'",
     	    "          xmlns='*'>",
     	    "    <fx:Declarations>",
     		"        <fx:Component className='MyComp'>",
-    		"            <d:Sprite>",
+    		"            <custom:TestInstance>",
     	    "                <fx:Script>",
     		"                    public var p:%1;",
     	    "                </fx:Script>",
-    		"            </d:Sprite>",
+    		"            </custom:TestInstance>",
     		"        </fx:Component>",
     		"        %2",
     	    "    </fx:Declarations>",
-    	    "</d:Sprite>"
+    	    "    <fx:Script><![CDATA[",
+    	    "        import custom.TestInstance;",
+    	    "    ]]></fx:Script>",
+    	    "</fx:Object>"
         };
     }
     

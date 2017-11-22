@@ -52,6 +52,9 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding/>"
 		};
+		errorFilters = new String[2];
+		errorFilters[0] = "requires a 'source' attribute";
+		errorFilters[1] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)null));
@@ -66,6 +69,9 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding></fx:Binding>"
 		};
+		errorFilters = new String[2];
+		errorFilters[0] = "requires a 'source' attribute";
+		errorFilters[1] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)null));
@@ -80,6 +86,9 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding> \t\r\n</fx:Binding>"
 		};
+		errorFilters = new String[2];
+		errorFilters[0] = "requires a 'source' attribute";
+		errorFilters[1] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)null));
@@ -94,6 +103,8 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding source=' a.b '/>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)node.getChild(0)));
@@ -109,6 +120,8 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding destination=' c.d '/>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "requires a 'source' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)null));
@@ -124,6 +137,9 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding twoWay=' false '/>"
 		};
+		errorFilters = new String[2];
+		errorFilters[0] = "requires a 'source' attribute";
+		errorFilters[1] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)null));
@@ -138,6 +154,9 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding twoWay=' true '/>"
 		};
+		errorFilters = new String[2];
+		errorFilters[0] = "requires a 'source' attribute";
+		errorFilters[1] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getSourceAttributeNode", node.getSourceAttributeNode(), is((IMXMLBindingAttributeNode)null));
@@ -185,6 +204,9 @@ public class MXMLBindingNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Binding> a.b </fx:Binding>"
 		};
+		errorFilters = new String[2];
+		errorFilters[0] = "requires a 'source' attribute";
+		errorFilters[1] = "requires a 'destination' attribute";
 		IMXMLBindingNode node = getMXMLBindingNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}

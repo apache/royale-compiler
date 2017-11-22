@@ -29,17 +29,18 @@ public class ASNamespaceTests extends ASFeatureTestsBase
     @Test
     public void ASNamespace_package()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
-            "import flash.utils.getQualifiedClassName;",
+            "import chrome.app",
         };
         String[] testCode = new String[]
         {
-        	"var foo:Event = new Event('foo');",
-        	"var bar:flash.events.Event = new flash.events.Event('bar');",
-            "assertEqual('qualified names', getQualifiedClassName(foo), getQualifiedClassName(bar));",
+        	"var foo:app = new app();",
+        	"var bar:chrome.app = new chrome.app();",
+        	"var b1:Boolean = bar is app;",
+        	"var b2:Boolean = foo is chrome.app;",
+            "assertEqual('package qualifiers', b1, true);",
+            "assertEqual('package qualifiers', b2, true);",
         };
         String source = getAS(imports, new String[0], testCode, new String[0]);
         compileAndRun(source);
@@ -52,17 +53,16 @@ public class ASNamespaceTests extends ASFeatureTestsBase
     	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
-            "import flash.utils.getQualifiedClassName;",
-            "import flash.utils.flash_proxy;",
+            "import custom.custom_namespace;",
         };
         String[] declarations = new String[]
         {
-	       	"flash_proxy var foo:Event = new Event('foo');",
+	       	"custom_namespace var foo:Namespace = new Namespace('foo', 'bar');",
         };
         String[] testCode = new String[]
         {
-        	"var qname:QName = new QName(flash_proxy, 'foo');",
-            "assertEqual('qualified names', getQualifiedClassName(flash_proxy::foo), getQualifiedClassName(this[qname]));",
+        	"var qname:QName = new QName(custom_namespace, 'foo');",
+            "assertEqual('qualified names', custom_namespace::foo, this[qname]);",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
         compileAndRun(source);
@@ -75,12 +75,11 @@ public class ASNamespaceTests extends ASFeatureTestsBase
     	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
-            "import flash.utils.getQualifiedClassName;",
-            "import flash.utils.flash_proxy;",
+            "import custom.custom_namespace;",
         };
         String[] declarations = new String[]
         {
-	       	"flash_proxy var foo:Event = new Event('foo');",
+	       	"custom_namespace var foo:Namespace = new Namespace('foo', 'bar');",
         };
         String[] testCode = new String[]
         {

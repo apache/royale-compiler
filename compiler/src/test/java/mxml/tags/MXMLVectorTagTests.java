@@ -191,9 +191,9 @@ public class MXMLVectorTagTests extends MXMLInstanceTagTestsBase
     {
         String[] declarations = new String[]
         {
-            "<fx:Vector type='flash.display.Sprite' id='v1'>",
-            "    <d:Sprite name='a'/>",
-            "    <d:Sprite name='b'/>",
+            "<fx:Vector type='custom.TestInstance' id='v1'>",
+            "    <custom:TestInstance name='a'/>",
+            "    <custom:TestInstance name='b'/>",
             "</fx:Vector>"
         };
         String[] asserts = new String[]

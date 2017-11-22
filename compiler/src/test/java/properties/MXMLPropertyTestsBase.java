@@ -32,22 +32,60 @@ public abstract class MXMLPropertyTestsBase extends MXMLFeatureTestsBase
 {
     protected String[] getTemplate()
     {
-   	    // Property-node tests use this template, which declares a component
-		// with a property of a particular type. The tests then set the
-		// property on a <MyComp> tag inside the <Declarations> tag.
+    	if (hasFlashPlayerGlobal)
+    	{
+	   	    // Property-node tests use this template, which declares a component
+			// with a property of a particular type. The tests then set the
+			// property on a <MyComp> tag inside the <Declarations> tag.
+	        return new String[]
+	        {
+	    	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
+	    	    "          xmlns:d='flash.display.*'",
+	    	    "          xmlns='*'",
+	            "          enterFrame='enterFrameHandler(event)'>",
+	    	    "    <fx:Declarations>",
+	    		"        <fx:Component className='MyComp'>",
+	    		"            <d:Sprite>",
+	    	    "                <fx:Script>",
+	    		"                    public var p:%1;",
+	    	    "                </fx:Script>",
+	    		"            </d:Sprite>",
+	    		"        </fx:Component>",
+	    		"        %2",
+	    	    "    </fx:Declarations>",
+	            "    <fx:Script>",
+	            "    <![CDATA[",
+	            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
+	            "        {",
+	            "            if (actualValue !== expectedValue)",
+	            "            {",
+	            "                trace(message, actualValue, expectedValue);",
+	            "                System.exit(1);",
+	            "            }",
+	            "        }",
+	            "        private function enterFrameHandler(event:Event):void",
+	            "        {",
+	            "            %3",
+	            "            System.exit(0);",
+	            "        }",
+	            "    ]]>",
+	            "    </fx:Script>",
+	    	    "</d:Sprite>"
+	        };
+    	}
         return new String[]
         {
-    	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-    	    "          xmlns:d='flash.display.*'",
+    	    "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009'",
+    	    "          xmlns:custom='library://ns.apache.org/royale/test'",
     	    "          xmlns='*'",
-            "          enterFrame='enterFrameHandler(event)'>",
+            "          >",
     	    "    <fx:Declarations>",
     		"        <fx:Component className='MyComp'>",
-    		"            <d:Sprite>",
+    		"            <custom:TestInstance>",
     	    "                <fx:Script>",
     		"                    public var p:%1;",
     	    "                </fx:Script>",
-    		"            </d:Sprite>",
+    		"            </custom:TestInstance>",
     		"        </fx:Component>",
     		"        %2",
     	    "    </fx:Declarations>",
@@ -55,16 +93,6 @@ public abstract class MXMLPropertyTestsBase extends MXMLFeatureTestsBase
             "    <![CDATA[",
             "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
             "        {",
-            "            if (actualValue !== expectedValue)",
-            "            {",
-            "                trace(message, actualValue, expectedValue);",
-            "                System.exit(1);",
-            "            }",
-            "        }",
-            "        private function enterFrameHandler(event:Event):void",
-            "        {",
-            "            %3",
-            "            System.exit(0);",
             "        }",
             "    ]]>",
             "    </fx:Script>",

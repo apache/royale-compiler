@@ -29,8 +29,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_stringInitializeEmptyString()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -49,8 +47,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_stringInitializeNull()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -69,8 +65,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_stringInitializeUndefined()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -89,8 +83,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_AnyInitializeUndefined()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -109,8 +101,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_localVarSameNameAsPrivateMethodError()
     {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -136,8 +126,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_constIsClassCastFunction()
     {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -165,8 +153,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_localVarSameNameAsPrivateMethod()
     {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -191,8 +177,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_setter()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -218,8 +202,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_setterBothPrivate()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -245,19 +227,17 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_setterBothCustomNamespace()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
-        	"import flash.utils.flash_proxy;",
-        	"use namespace flash_proxy;"
+        	"import custom.custom_namespace;",
+        	"use namespace custom_namespace;"
         };
         String[] declarations = new String[]
         {
             "private var _hello:String;",
-            "flash_proxy function get hello():String {",
+            "custom_namespace function get hello():String {",
             "  return _hello; }",
-            "flash_proxy function set hello(value:String):void {",
+            "custom_namespace function set hello(value:String):void {",
             "  _hello = value; }",
             "public function test():void {",
             "  this.hello = 'bye'; }",
@@ -274,8 +254,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_setterPrivateGetterPublic()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -301,8 +279,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     @Test
     public void ASVariableTests_setterPrivateGetterPublicWithNamespace()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -328,8 +304,6 @@ public class ASVariableTests extends ASFeatureTestsBase
     /*
     public void ASVariableTests_VectorInitializer()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };

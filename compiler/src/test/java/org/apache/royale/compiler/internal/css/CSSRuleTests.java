@@ -45,7 +45,7 @@ public class CSSRuleTests extends CSSBaseTests {
 	public void CSSRulesTests_properties()
 	{
 		String code = 	     
-			    " s|VBox { " + EOL + 
+			    " custom|VBox { " + EOL + 
 			    "	fontWeight:bold; " + EOL + 
 			    "} ";
 		
@@ -73,7 +73,7 @@ public class CSSRuleTests extends CSSBaseTests {
 	public void CSSRulesTests_multiple_properties()
 	{
 		String code = 	     
-			    " s|VBox { " + EOL + 
+			    " custom|VBox { " + EOL + 
 			    "	fontWeight:bold; " + EOL +
 			    "	fontSize:16; " + EOL +
 			    "} ";
@@ -102,8 +102,8 @@ public class CSSRuleTests extends CSSBaseTests {
 	public void CSSRulesTests_selecterGroup1()
 	{
 		String code = 	     
-				" s|HBox .rounded s|Label.big, " + EOL +
-			    " s|VBox .rounded s|Label.small { " + EOL + 
+				" custom|HBox .rounded custom|Label.big, " + EOL +
+			    " custom|VBox .rounded custom|Label.small { " + EOL + 
 			    "	fontWeight:bold; " + EOL + 
 			    "} ";
 		
@@ -131,8 +131,8 @@ public class CSSRuleTests extends CSSBaseTests {
 	public void CSSRulesTests_selecterGroup2()
 	{
 		String code = 	     
-				" s|HBox, .rounded, s|Label.big, " + EOL +
-			    " s|VBox, .rounded, s|Label.small { " + EOL + 
+				" custom|HBox, .rounded, custom|Label.big, " + EOL +
+			    " custom|VBox, .rounded, custom|Label.small { " + EOL + 
 			    "	fontWeight:bold; " + EOL + 
 			    "} ";
 		
@@ -163,7 +163,7 @@ public class CSSRuleTests extends CSSBaseTests {
 		
 		String code = 
 				"@media all and (application-dpi: 240) and (os-platform: \"Android\") { " + EOL +
-			    "		s|Label { fontWeight:bold; } " + EOL +
+			    "		custom|Label { fontWeight:bold; } " + EOL +
 			    "}";
 		
 		List<ICSSRule> rules = getCSSRules(code);
@@ -192,7 +192,7 @@ public class CSSRuleTests extends CSSBaseTests {
 		
 		String code = 
 				"@media all { " + EOL +
-			    "		s|Label { fontWeight:bold; } " + EOL +
+			    "		custom|Label { fontWeight:bold; } " + EOL +
 			    "}";
 		
 		List<ICSSRule> rules = getCSSRules(code);
