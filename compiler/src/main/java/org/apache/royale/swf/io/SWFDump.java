@@ -2362,7 +2362,7 @@ public final class SWFDump
     }
 
     // options
-    static boolean abcOption = false;
+    public static boolean abcOption = false;
     static boolean encodeOption = false;
     static boolean showActionsOption = true;
     static boolean showOffsetOption = false;
