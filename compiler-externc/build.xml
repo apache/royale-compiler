@@ -120,7 +120,7 @@
         <ant antfile="${compiler-jx}/src/main/resources/downloads.xml" dir="${compiler-jx}/src/main/resources" inheritAll="false"/>
     </target>
     
-    <target name="main" depends="prebuild,compile,test" >
+    <target name="main" depends="prebuild,compile" >
         <mkdir dir="${sdk}"/>
         <copy file="${basedir}/../LICENSE.base" tofile="${compiler-externc}/target/classes/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.base" tofile="${compiler-externc}/target/classes/META-INF/NOTICE"/>
@@ -137,6 +137,7 @@
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>
+        <antcall target="test" />
         <antcall target="jar-test" />
     </target>
 

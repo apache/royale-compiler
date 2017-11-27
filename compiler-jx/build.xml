@@ -178,7 +178,7 @@
     <target name="super-clean" depends="thirdparty-clean,clean" />
 
     <target name="thirdparty-clean">
-        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}" target="clean" />
+        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false" target="clean" />
         <delete dir="${basedir}/target" />
         <delete failonerror="false" includeemptydirs="true">
             <fileset dir="${lib}" />

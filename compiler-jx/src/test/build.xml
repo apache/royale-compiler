@@ -48,6 +48,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
         </javac>
@@ -66,6 +67,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
@@ -99,6 +101,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
@@ -128,6 +131,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
@@ -155,6 +159,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler}/../compiler/lib" includes="**/*.jar"/>
             </classpath>
