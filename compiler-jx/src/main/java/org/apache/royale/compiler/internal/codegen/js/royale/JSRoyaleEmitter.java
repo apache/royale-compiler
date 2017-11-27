@@ -63,6 +63,8 @@ import org.apache.royale.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
+import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
+import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesSetters;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
@@ -1232,7 +1234,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      * @param obj
      * @return
      */
-    public boolean isDateProperty(IExpressionNode obj)
+    public boolean isDateProperty(IExpressionNode obj, boolean writeAccess)
     {
 		RoyaleProject project = (RoyaleProject)getWalker().getProject();
 		if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
@@ -1242,9 +1244,23 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			IExpressionNode rightNode = ((MemberAccessExpressionNode)obj).getRightOperandNode();
 			leftDef = leftNode.resolveType(project);
 			IDefinition rightDef = rightNode.resolve(project);
-			if (leftDef != null && leftDef.getQualifiedName().equals("Date") && rightDef instanceof AccessorDefinition)
+			if (leftDef != null && leftDef.getQualifiedName().equals("Date"))
 			{
-				return true;
+				if (rightDef instanceof AccessorDefinition)
+					return true;
+				else if (rightDef == null && rightNode.getNodeID() == ASTNodeID.IdentifierID)
+				{
+					if (writeAccess)
+					{
+			            DatePropertiesSetters propSetter = DatePropertiesSetters.valueOf(((IIdentifierNode)rightNode).getName().toUpperCase());
+			            if (propSetter != null) return true;
+					}
+					else
+					{
+			            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(((IIdentifierNode)rightNode).getName().toUpperCase());
+			            if (propGetter != null) return true;
+					}
+				}
 			}
 		}
 		return false;

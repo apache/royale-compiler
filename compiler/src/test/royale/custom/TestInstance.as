@@ -20,6 +20,8 @@ package custom {
 
 [Event(name="complete", type="custom.TestEvent")]
 
+[DefaultProperty("mxmlContent")]
+
 /**
  * @constructor
  */
@@ -33,6 +35,25 @@ public class TestInstance {
     public var name:String;
     
     public var value:Number;
+
+    public var label:String;
+
+    public var text:String;
+    
+    public var id:String;
+    
+    public var color:uint;
+    
+    public var visible:Boolean;
+    
+    public var minWidth:Number;
+    public var minHeight:Number;
+    public var x:Number;
+    public var y:Number;
+    public var height:Number;
+    public var width:Number;
+    
+    public var mxmlContent:Array;
     
     public function someFunction():void {
     }

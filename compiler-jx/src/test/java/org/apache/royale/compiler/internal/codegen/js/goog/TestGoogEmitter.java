@@ -19,11 +19,15 @@
 
 package org.apache.royale.compiler.internal.codegen.js.goog;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.utils.FilenameNormalization;
 import org.junit.Test;
 
 /**
@@ -41,8 +45,8 @@ public class TestGoogEmitter extends ASTestBase
     public void testSimple()
     {
         String code = "package com.example.components {"
-                + "import flash.events.EventDispatcher;"
-                + "public class MyEventTarget extends EventDispatcher {"
+                + "import custom.TestImplementation;"
+                + "public class MyEventTarget extends TestImplementation {"
                 + "public function MyEventTarget() {if (foo() != 42) { bar(); } }"
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
@@ -50,7 +54,7 @@ public class TestGoogEmitter extends ASTestBase
                 + "return \"Don't \" + _privateVar + value; }}}";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('com.example.components.MyEventTarget');\n\ngoog.require('flash.events.EventDispatcher');\n\n/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\ncom.example.components.MyEventTarget = function() {\n\tvar self = this;\n\tcom.example.components.MyEventTarget.base(this, 'constructor');\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n};\ngoog.inherits(com.example.components.MyEventTarget, flash.events.EventDispatcher);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n\tvar self = this;\n\treturn \"Don't \" + self._privateVar + value;\n};");
+        assertOut("goog.provide('com.example.components.MyEventTarget');\n\ngoog.require('custom.TestImplementation');\n\n/**\n * @constructor\n * @extends {custom.TestImplementation}\n */\ncom.example.components.MyEventTarget = function() {\n\tvar self = this;\n\tcom.example.components.MyEventTarget.base(this, 'constructor');\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n};\ngoog.inherits(com.example.components.MyEventTarget, custom.TestImplementation);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n\tvar self = this;\n\treturn \"Don't \" + self._privateVar + value;\n};");
     }
 
     @Test
@@ -150,4 +154,5 @@ public class TestGoogEmitter extends ASTestBase
     {
         return new GoogBackend();
     }
+    
 }

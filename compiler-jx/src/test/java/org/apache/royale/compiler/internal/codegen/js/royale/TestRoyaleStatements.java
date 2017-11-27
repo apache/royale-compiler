@@ -479,7 +479,7 @@ public class TestRoyaleStatements extends TestGoogStatements
     @Test
     public void testVisitImport()
     {
-        IImportNode node = (IImportNode) getNode("import flash.events.EventDispatcher;", IImportNode.class);
+        IImportNode node = (IImportNode) getNode("import custom.TestImplementation;", IImportNode.class);
         asBlockWalker.visitImport(node);
         assertOut("");
     }

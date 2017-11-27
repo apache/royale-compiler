@@ -54,7 +54,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
-public class TestExternalsJSCompile
+public class TestTypedefsCompile
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
@@ -62,7 +62,7 @@ public class TestExternalsJSCompile
 
     private static File app1ASSrcDir = new File(testAdapter.getUnitTestBaseDir(), "typedefs/app1/as_src");
 
-    private static File app1AJSSrcDir = new File(testAdapter.getTempDir(), "typedefs/app1/js_src");
+    private static File app1JSSrcDir = new File(testAdapter.getTempDir(), "typedefs/app1/js_src");
 
     private static File jsSWCFile = new File(testAdapter.getTempDir(), "typedefs/bin/JS.swc");
 
@@ -88,10 +88,10 @@ public class TestExternalsJSCompile
         backend = new RoyaleBackend();
 
         config = new ExternCConfiguration();
-        ExternalsTestUtils.init();
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
-        ExternalsTestUtils.addTestExcludesFull(config);
-        ExternalsTestUtils.addTestExternalsFull(config);
+        TypedefsTestUtils.init();
+        config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
+        TypedefsTestUtils.addTestExcludesFull(config);
+        TypedefsTestUtils.addTestTypedefsFull(config);
         
         assertFalse(config.getConfigurationProblems().size() > 0);
 
@@ -110,7 +110,7 @@ public class TestExternalsJSCompile
         libraries = new ArrayList<File>();
 
         FileUtils.deleteQuietly(jsSWCFile);
-        FileUtils.deleteQuietly(app1AJSSrcDir);
+        FileUtils.deleteQuietly(app1JSSrcDir);
     }
 
     @After
@@ -131,7 +131,7 @@ public class TestExternalsJSCompile
 
         compileProject("Main", app1ASSrcDir.getAbsolutePath());
 
-        assertTrue(new File(app1AJSSrcDir, "Main_output.js").exists());
+        assertTrue(new File(app1JSSrcDir, "Main_output.js").exists());
     }
 
     private boolean compileSWC()
@@ -141,7 +141,7 @@ public class TestExternalsJSCompile
 
         File destAS3File = new File(config.getAsClassRoot().getAbsolutePath() + File.separator + "AS3.as");
         try {
-			FileUtils.copyFile(ExternalsTestUtils.AS3_NAMESPACE_FILE, destAS3File);
+			FileUtils.copyFile(TypedefsTestUtils.AS3_NAMESPACE_FILE, destAS3File);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -259,7 +259,7 @@ public class TestExternalsJSCompile
 
     protected File getOutputClassFile(String qname, File outputFolder)
     {
-        File baseDir = app1AJSSrcDir;
+        File baseDir = app1JSSrcDir;
 
         String[] cname = qname.split("\\.");
         String sdirPath = baseDir.getAbsolutePath() + File.separator;

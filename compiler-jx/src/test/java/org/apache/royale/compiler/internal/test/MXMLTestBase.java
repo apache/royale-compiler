@@ -27,6 +27,7 @@ import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.ITestAdapter;
 import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Ignore;
@@ -55,7 +56,7 @@ public class MXMLTestBase extends TestBase
     @Override
     protected void addLibraries(List<File> libraries)
     {
-        libraries.addAll(testAdapter.getLibraries(true));
+        //libraries.addAll(testAdapter.getLibraries(true));
 
         super.addLibraries(libraries);
     }
@@ -66,13 +67,11 @@ public class MXMLTestBase extends TestBase
     {
         namespaceMappings.add(new MXMLNamespaceMapping(
                 "http://ns.adobe.com/mxml/2009",
-                testAdapter.getFlexManifestPath("mxml-2009")));
-        namespaceMappings.add(new MXMLNamespaceMapping(
-                "library://ns.adobe.com/flex/mx",
-                testAdapter.getFlexManifestPath("mx")));
-        namespaceMappings.add(new MXMLNamespaceMapping(
-                "library://ns.adobe.com/flex/spark",
-                testAdapter.getFlexManifestPath("spark")));
+                FilenameNormalization.normalize("../../../compiler/src/test/resources/mxml-2009-manifest.xml")));
+    	String customManifestPath = FilenameNormalization.normalize("../../../compiler/src/test/resources/custom-manifest.xml");
+    	namespaceMappings.add(new MXMLNamespaceMapping(
+    			"library://ns.apache.org/royale/test",
+    			customManifestPath));
 
         super.addNamespaceMappings(namespaceMappings);
     }
@@ -94,14 +93,14 @@ public class MXMLTestBase extends TestBase
             int wrapLevel)
     {
         if (wrapLevel >= WRAP_LEVEL_NODE)
-            code = "<s:Button " + code + "></s:Button>";
+            code = "<custom:Button " + code + "></custom:Button>";
 
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
             code = ""
-                    + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
-                    + " xmlns:s=\"library://ns.adobe.com/flex/spark\""
-                    + " xmlns:mx=\"library://ns.adobe.com/flex/mx\">" + code
-                    + "</s:Application>";
+                    + "<custom:TestInstance xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
+                    + " xmlns:custom=\"library://ns.apache.org/royale/test\">"
+                    + code
+                    + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
 

@@ -16,34 +16,51 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package org.apache.royale
-{
+package custom {
 
-import custom.TestImplementation;
+/**
+ * @constructor
+ */
+public class TestImplementation implements TestInterface {
 
-public class A extends TestImplementation
-{
-	public function A() 
-	{
-		init();
-	}
+	private var _name:String;
 	
-	private var _privateVar:TestImplementation;
-	
-	public function init():void
-	{
-		var btn:TestImplementation = new TestImplementation();
-		
-		_privateVar = new TestImplementation();
-		
-		addEventListener("click", function () {});
-	}
-	
-	public function start():void
-	{
-		var localVar:String = _privateVar.label;
-		init();
-		doIt();
-	}
+    public function get name():String
+    {
+    	return _name;
+    }
+    
+    public function set name(value:String):void
+    {
+    	_name = value;
+    }
+    
+    private var _value:String;
+    
+    public function get value():String
+    {
+    	return _value;
+    }
+    
+    public function set value(value:String):void
+    {
+    	_value = value;
+    }
+    
+    public function someFunction():void
+    {
+    }
+    
+    public function addEventListener(event:TestEvent):void
+    {
+    }
+    
+    public function removeEventListener(event:TestEvent):void
+    {
+    }
+    
+    public function dispatchEvent(event:TestEvent):void
+    {
+    }
 }
 }

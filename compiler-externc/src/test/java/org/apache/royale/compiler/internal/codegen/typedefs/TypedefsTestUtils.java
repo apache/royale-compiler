@@ -33,10 +33,10 @@ public class TypedefsTestUtils
     // This is a copy of the missing.js in royale-typedefs/js.  It doesn't have to
     // stay in sync.  We just want to prove we can override a few things
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
-            "resources/typedefs/unit_tests/missing.js"));
+            "../../../compiler-externc/src/test/resources/typedefs/unit_tests/missing.js"));
 
     public static File TYPEDEFS_JS_DIR = FilenameNormalization.normalize(new File(
-           "../../target/downloads"));
+           "../../../compiler-externc/target/downloads"));
 
     // XXX AS3.as is a namespace needed to override toString in some classes
     public static File AS3_NAMESPACE_FILE;
@@ -197,6 +197,5 @@ public class TypedefsTestUtils
         config.addTypedef(coreRoot + "/browser/webstorage.js");
         config.addTypedef(coreRoot + "/browser/window.js");
 
-        config.addTypedef(coreRoot + "/svg.js");
     }
 }

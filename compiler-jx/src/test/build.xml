@@ -76,16 +76,8 @@
                     <exclude name="**/TestRoyaleMXML*.class"/>
                     <exclude name="**/TestSourceMapMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
-                    <!-- externs tests -->
                     <exclude name="**/TestRoyaleClass.class"/>
-                    <exclude name="**/TestExtern*.class"/>
-                    <exclude name="**/TestAnnotationEnum.class"/>
-                    <exclude name="**/TestCollectImports.class"/>
-                    <exclude name="**/TestConstructor.class"/>
-                    <exclude name="**/TestPackageNamespace.class"/>
-                    <exclude name="**/TestReferenceModel.class"/>
-                    <exclude name="**/TestTypeExternals.class"/>
-                    <exclude name="**/TestTypeInheritance.class"/>
+                    <exclude name="**/TestTypedefsCompile.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
@@ -115,6 +107,7 @@
                     <include name="**/TestRoyaleFile.class"/>
                     <include name="**/TestRoyaleMXML*.class"/>
                     <include name="**/TestSourceMapMXML*.class"/>
+                    <exclude name="**/TestTypedefsCompile.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
@@ -124,7 +117,7 @@
         </junit>
     </target>
     
-    <target name="integration.tests.sdk" depends="download, compile.unit.tests">
+    <target name="integration.tests" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
         <junit dir="${compiler.tests}"
@@ -141,6 +134,7 @@
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/TestMXML*.class"/>
+                    <exclude name="**/TestTypedefsCompile.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
@@ -150,7 +144,7 @@
         </assertions>
     </target>
     
-    <target name="extern.tests" depends="download, compile.unit.tests">
+    <target name="typedef.tests" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
         <junit dir="${compiler.tests}"
@@ -166,16 +160,8 @@
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
-                    <!-- externs tests -->
-                    <exclude name="**/TestRoyaleClass.class"/>
-                    <include name="**/TestExtern*.class"/>
-                    <include name="**/TestAnnotationEnum.class"/>
-                    <include name="**/TestCollectImports.class"/>
-                    <include name="**/TestConstructor.class"/>
-                    <include name="**/TestPackageNamespace.class"/>
-                    <include name="**/TestReferenceModel.class"/>
-                    <include name="**/TestTypeExternals.class"/>
-                    <include name="**/TestTypeInheritance.class"/>
+                    <!-- requires royale-typedefs and compc -->
+                    <include name="**/TestTypedefsCompile.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
@@ -202,8 +188,8 @@
         <delete file="${compiler}/target/junit-temp/royale.zip" />
     </target>
  
-    <target name="main" depends="unit.tests"/>
-    <target name="all" depends="unit.tests, integration.tests.sdk, integration.tests.asjs"/>
+    <target name="main" depends="unit.tests, integration.tests"/>
+    <target name="all" depends="unit.tests, integration.tests, typedef.tests, integration.tests.asjs"/>
 
     <target name="clean">
         <delete dir="${compiler.tests}/bin"/>

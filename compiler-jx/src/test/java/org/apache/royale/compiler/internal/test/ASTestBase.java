@@ -60,8 +60,8 @@ public class ASTestBase extends TestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(FilenameNormalization.normalize(
-                 "../../../externs/GCL/src/main/flex")));
+        //sourcePaths.add(new File(FilenameNormalization.normalize(
+        //         "../../../externs/GCL/src/main/flex")));
         
         super.addSourcePaths(sourcePaths);
     }

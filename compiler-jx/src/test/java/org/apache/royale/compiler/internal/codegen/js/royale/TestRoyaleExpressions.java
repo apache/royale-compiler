@@ -127,10 +127,10 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodCustomNamespace()
     {
-        IFunctionNode node = (IFunctionNode)getNode("import flash.utils.Proxy;import flash.utils.flash_proxy;use namespace flash_proxy;public class RoyaleTest_A extends Proxy { flash_proxy function foo(){if (a) super.setProperty(a, b);}}",
+        IFunctionNode node = (IFunctionNode)getNode("import custom.TestProxy;import custom.custom_namespace;use namespace custom_namespace;public class RoyaleTest_A extends TestProxy { custom_namespace function foo(){if (a) super.setProperty(a, b);}}",
         					IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n */\nRoyaleTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n  if (a)\n    RoyaleTest_A.superClass_['http://www.adobe.com/2006/actionscript/flash/proxy::setProperty'].apply(this, [ a, b] );\n}");
+        assertOut("/**\n */\nRoyaleTest_A.prototype[\"http://ns.apache.org/2017/custom/namespace::foo\"] = function() {\n  if (a)\n    RoyaleTest_A.superClass_['http://ns.apache.org/2017/custom/namespace::setProperty'].apply(this, [ a, b] );\n}");
     }
 
     @Test
@@ -892,20 +892,20 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testCustomNamespaceMethodAsVariable()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.flash_proxy; use namespace flash_proxy;public class B {flash_proxy function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
+                "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n */\nB.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"] = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"], this, 'http://www.adobe.com/2006/actionscript/flash/proxy::b');\n  c(f);\n}");
+        assertOut("/**\n */\nB.prototype[\"http://ns.apache.org/2017/custom/namespace::b\"] = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this[\"http://ns.apache.org/2017/custom/namespace::b\"], this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
     }
     
     @Test
     public void testCustomNamespaceMethodAsVariableViaMemberAccess()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.flash_proxy; use namespace flash_proxy;public class B {flash_proxy function b():int { return this.b(); }}",
+                "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b():int { return this.b(); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @return {number}\n */\nB.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"] = function() {\n  return this[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"]();\n}");
+        assertOut("/**\n * @return {number}\n */\nB.prototype[\"http://ns.apache.org/2017/custom/namespace::b\"] = function() {\n  return this[\"http://ns.apache.org/2017/custom/namespace::b\"]();\n}");
     }
     
     @Test
@@ -1017,9 +1017,9 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testClassCast()
     {
-        IClassNode node = (IClassNode) getNode("import flash.display.IBitmapDrawable; public class B implements IBitmapDrawable { public function B() { IBitmapDrawable(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
+        IClassNode node = (IClassNode) getNode("import custom.TestOtherInterface; public class B implements TestOtherInterface { public function B() { TestOtherInterface(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.display.IBitmapDrawable}\n */\nB = function() {\n  org.apache.royale.utils.Language.as(b, flash.display.IBitmapDrawable, true).type = '';\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestOtherInterface}\n */\nB = function() {\n  org.apache.royale.utils.Language.as(b, custom.TestOtherInterface, true).type = '';\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);");
     }
 
     @Test
@@ -1052,10 +1052,10 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testFunctionMemberFullyQualified()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.clearTimeout; public class B {public function b() { clearTimeout.length; }}",
+                "import custom.TestGlobalFunction; public class B {public function b() { TestGlobalFunction.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  flash.utils.clearTimeout.length;\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  custom.TestGlobalFunction.length;\n}");
     }
 
     @Test

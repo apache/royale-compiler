@@ -26,9 +26,12 @@
 <componentPackage>
 
     <component id="TestInstance" class="custom.TestInstance" />
-    <component id="Button" class="custom.TestInstance" />
+    <component id="Button" class="custom.Button" />
     <component id="HBox" class="custom.TestInstance" />
-    <component id="Label" class="custom.TestInstance" />
+    <component id="Label" class="custom.Label" />
     <component id="VBox" class="custom.TestInstance" />
+    <component id="Group" class="custom.Group" />
+
+    <component id="TestImplementation" class="custom.TestImplementation" />
 
 </componentPackage>
