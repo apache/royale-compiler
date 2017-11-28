@@ -43,15 +43,12 @@
             <include>org/**/Test*.java</include>
           </includes>
           <excludes>
-            <exclude>org/apache/royale/compiler/internal/codegen/externals/**</exclude>
-            <exclude>org/apache/royale/compiler/internal/codegen/js/royale/**</exclude>
-            <exclude>**/TestGoogClass.java</exclude>
-            <exclude>**/TestGoogEmitter.java</exclude>
-            <exclude>**/TestGoogFile.java</exclude>
-            <exclude>**/TestRoyaleMXMLApplication.java</exclude>
-            <exclude>**/TestRoyaleMXMLScript.java</exclude>
-            <exclude>**/TestSourceMapMXMLScript.java</exclude>
-            <exclude>**/TestSourceMapMXMLEvents.java</exclude>
+            <exclude>**/TestRoyaleFile.java</exclude>
+            <exclude>**/TestRoyaleMXML*.java</exclude>
+            <exclude>**/TestSourceMap*.java</exclude>
+            <exclude>**/TestMXML*.java</exclude>
+            <exclude>**/TestRoyaleClass.java</exclude>
+            <exclude>**/TestTypedefsCompile.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -62,14 +59,10 @@
         <version>2.18.1</version>
         <configuration>
           <includes>
-            <include>org/apache/royale/compiler/internal/codegen/js/royale/Test*.java</include>
-            <!-- Disabled for now as these tests require the royale-typedefs repo to be located in a pre-defined location -->
-            <!--include>org/apache/royale/compiler/internal/codegen/externals/Test*.java</include-->
+            <include>**/TestMXML*.java</include>
           </includes>
           <excludes>
-            <!-- This test seems to have issues. -->
-            <exclude>**/TestRoyaleFile.java</exclude>
-            <exclude>**/TestRoyaleProject.java</exclude>
+            <exclude>**/TestTypedefsCompile.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -80,6 +73,11 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-externc</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -126,6 +124,14 @@
       <version>4.10</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-externc</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
 </project>

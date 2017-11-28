@@ -67,8 +67,8 @@ public class MXMLTestBase extends TestBase
     {
         namespaceMappings.add(new MXMLNamespaceMapping(
                 "http://ns.adobe.com/mxml/2009",
-                FilenameNormalization.normalize("../../../compiler/src/test/resources/mxml-2009-manifest.xml")));
-    	String customManifestPath = FilenameNormalization.normalize("../../../compiler/src/test/resources/custom-manifest.xml");
+                FilenameNormalization.normalize("../compiler/src/test/resources/mxml-2009-manifest.xml")));
+    	String customManifestPath = FilenameNormalization.normalize("../compiler/src/test/resources/custom-manifest.xml");
     	namespaceMappings.add(new MXMLNamespaceMapping(
     			"library://ns.apache.org/royale/test",
     			customManifestPath));

@@ -41,7 +41,7 @@ public class AntTestAdapter implements ITestAdapter {
 
     @Override
     public String getTempDir() {
-        return FilenameNormalization.normalize("../../target/junit-temp"); // ensure this exists
+        return FilenameNormalization.normalize("target/junit-temp"); // ensure this exists
     }
 
     @Override

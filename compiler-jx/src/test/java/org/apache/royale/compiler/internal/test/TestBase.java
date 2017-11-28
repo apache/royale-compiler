@@ -681,9 +681,9 @@ public class TestBase implements ITestBase
         addLibraries(libraries);
         if (libraries.size() == 0)
         {
-        	String jsSwcPath = FilenameNormalization.normalize("../../../compiler-externc/target/js.swc");
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
     		libraries.add(new File(jsSwcPath));
-        	String customSwcPath = FilenameNormalization.normalize("../../../compiler/target/custom.swc");
+        	String customSwcPath = FilenameNormalization.normalize("../compiler/target/custom.swc");
     		libraries.add(new File(customSwcPath));        	
         }
         addNamespaceMappings(namespaceMappings);
