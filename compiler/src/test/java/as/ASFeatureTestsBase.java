@@ -125,7 +125,7 @@ public class ASFeatureTestsBase
         if (hasFlashPlayerGlobal)
         	args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
         else {
-        	String jsSwcPath = FilenameNormalization.normalize("../../../compiler-externc/target/js.swc");
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
         	args.add("-external-library-path=" + jsSwcPath);
         }
         if(swcs.size() > 0) {
@@ -305,6 +305,10 @@ public class ASFeatureTestsBase
 						resultLines[i] = resultLines[i].trim();
 					}
 					resultText = StringUtils.join(resultLines, "\n");
+					resultText = resultText.replaceAll("surefire-temp/", "");
+					resultText = resultText.replaceAll("junit-temp/", "");
+					ours = ours.replaceAll("surefire-temp/", "");
+					ours = ours.replaceAll("junit-temp/", "");
 					assertThat(ours, is(resultText));
 					break;
 				}

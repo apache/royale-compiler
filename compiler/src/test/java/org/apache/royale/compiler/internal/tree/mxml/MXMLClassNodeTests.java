@@ -82,7 +82,7 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	}
 
 	@Test
-	public void MXMLClassNode_flashDisplaySprite()
+	public void MXMLClassNode_testInstanceSprite()
 	{
 		String[] code = new String[]
 		{

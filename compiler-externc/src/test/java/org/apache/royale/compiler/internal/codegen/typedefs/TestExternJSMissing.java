@@ -104,6 +104,7 @@ public class TestExternJSMissing extends TypedefsTestBase
         config.setASRoot(TypedefsTestUtils.AS_ROOT_DIR);
 
         String coreRoot = TypedefsTestUtils.TYPEDEFS_JS_DIR.getAbsolutePath();
+        System.out.println(coreRoot);
         config.addTypedef(coreRoot + "/es3.js");
         config.addTypedef(TypedefsTestUtils.MISSING_JS_FILE);
     }

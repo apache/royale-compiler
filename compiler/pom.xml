@@ -313,9 +313,30 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.19</version>
         <configuration>
+          <runOrder>alphabetical</runOrder>
           <includes>
-            <include>org/**/*Tests.java</include>
+            <include>**/AAMavenTestSWCs.java</include>
+            <include>**/*Tests.java</include>
           </includes>
+          <excludes>
+            <exclude>as/**/*Tests.java</exclude>
+            <exclude>f/**</exclude>
+            <exclude>mxml/tags/**</exclude>
+            <exclude>properties/**</exclude>
+            <exclude>**/MXMLComponentTagTests.java</exclude>
+            <exclude>**/MXMLComponentNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceTagTests.java</exclude>
+            <exclude>**/MXMLModelTagTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceNodeTests.java</exclude>
+            <exclude>**/MXMLDesignLayerNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceNodeTests.java</exclude>
+            <exclude>**/MXMLModelNodeTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectTagTests.java</exclude>
+            <exclude>**/MXMLStateNodeTests.java</exclude>
+            <exclude>**/MXMLVectorNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceTagTests.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
 
@@ -326,9 +347,25 @@
         <configuration>
           <includes>
             <include>as/**/*Tests.java</include>
-            <include>mxml/**/*Tests.java</include>
-            <include>properties/**/*Tests.java</include>
           </includes>
+          <excludes>
+            <exclude>f/**</exclude>
+            <exclude>mxml/tags/**</exclude>
+            <exclude>properties/**</exclude>
+            <exclude>**/MXMLComponentTagTests.java</exclude>
+            <exclude>**/MXMLComponentNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceTagTests.java</exclude>
+            <exclude>**/MXMLModelTagTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceNodeTests.java</exclude>
+            <exclude>**/MXMLDesignLayerNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceNodeTests.java</exclude>
+            <exclude>**/MXMLModelNodeTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectTagTests.java</exclude>
+            <exclude>**/MXMLStateNodeTests.java</exclude>
+            <exclude>**/MXMLVectorNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceTagTests.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
@@ -350,6 +387,21 @@
             <configuration>
               <includes combine.children="append">
                 <include>f/**/*Tests.java</include>
+                <include>mxml/**/*Tests.java</include>
+                <include>properties/**/*Tests.java</include>
+                <include>**/MXMLComponentTagTests.java</include>
+                <include>**/MXMLComponentNodeTests.java</include>
+                <include>**/MXMLHTTPServiceTagTests.java</include>
+                <include>**/MXMLModelTagTests.java</include>
+                <include>**/MXMLRemoteObjectNodeTests.java</include>
+                <include>**/MXMLWebServiceNodeTests.java</include>
+                <include>**/MXMLDesignLayerNodeTests.java</include>
+                <include>**/MXMLHTTPServiceNodeTests.java</include>
+                <include>**/MXMLModelNodeTests.java</include>
+                <include>**/MXMLRemoteObjectTagTests.java</include>
+                <include>**/MXMLStateNodeTests.java</include>
+                <include>**/MXMLVectorNodeTests.java</include>
+                <include>**/MXMLWebServiceTagTests.java</include>
               </includes>
             </configuration>
           </plugin>
@@ -363,6 +415,11 @@
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-jburg-types</artifactId>
       <version>${compiler-jburg-types.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-common</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.flex</groupId>
@@ -418,6 +475,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-externc</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.10</version>
@@ -428,55 +491,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.4</version>
-      <scope>test</scope>
-    </dependency>
-    <!--
-
-            Importing SWCs will add them to the test classpath.
-            This might sound strange for a java maven project to
-            have swc files in its classpath, but this way the
-            files are automatically downloaded and eventually
-            even generated/converted by the sdk-converter and we
-            don't have to think about where to get them from.
-
-    -->
-    <!-- Import the playerglobal -->
-    <dependency>
-      <groupId>com.adobe.flash.framework</groupId>
-      <artifactId>playerglobal</artifactId>
-      <version>${flash.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <!-- Import a part of the Flex sdk -->
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>framework</artifactId>
-      <version>${flex.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>rpc</artifactId>
-      <version>${flex.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>spark</artifactId>
-      <version>${flex.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <!-- Make sure the framework config-zip is available -->
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>framework</artifactId>
-      <version>${flex.version}</version>
-      <type>zip</type>
-      <classifier>configs</classifier>
       <scope>test</scope>
     </dependency>
   </dependencies>

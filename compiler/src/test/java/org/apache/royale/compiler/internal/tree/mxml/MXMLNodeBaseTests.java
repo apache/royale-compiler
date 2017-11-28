@@ -144,9 +144,9 @@ public class MXMLNodeBaseTests
 		List<File> libraries = testAdapter.getLibraries(withFlex);
 		if (!withFlex)
 		{
-        	String jsSwcPath = FilenameNormalization.normalize("../../../compiler-externc/target/js.swc");
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
 			libraries.add(new File(jsSwcPath));
-        	String customSwcPath = FilenameNormalization.normalize("../../target/custom.swc");
+        	String customSwcPath = FilenameNormalization.normalize("target/custom.swc");
 			libraries.add(new File(customSwcPath));
 		}
 		project.setLibraries(libraries);
