@@ -40,6 +40,11 @@
     <target name="compile.unit.tests">
     	<delete dir="${compiler}/target/test-classes"/>
         <mkdir dir="${compiler}/target/test-classes"/>
+        <copy todir="${compiler}/target">
+            <fileset dir="${compiler.tests}/resources">
+                <include name="**"/>
+            </fileset>
+        </copy>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
 			   encoding="UTF-8"
 			   destdir="${compiler}/target/test-classes" includeAntRuntime="true">
@@ -58,7 +63,7 @@
         <mkdir dir="${compiler}/target/junit-results"/>
         <delete dir="${compiler}/target/junit-temp"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
                fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
                haltonerror="true" haltonfailure="true"
@@ -92,7 +97,7 @@
     <target name="integration.tests.asjs" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
@@ -123,7 +128,7 @@
     <target name="integration.tests" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
@@ -151,7 +156,7 @@
     <target name="typedef.tests" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"

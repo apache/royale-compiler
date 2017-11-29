@@ -50,6 +50,11 @@
     <target name="compile.unit.tests">
     	<delete dir="${compiler.externc}/target/test-classes"/>
         <mkdir dir="${compiler.externc}/target/test-classes"/>
+        <copy todir="${compiler.externc}/target">
+            <fileset dir="${externc.tests}/resources">
+                <include name="**"/>
+            </fileset>
+        </copy>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
 			   encoding="UTF-8"
 			   destdir="${compiler.externc}/target/test-classes" includeAntRuntime="true">
@@ -67,7 +72,7 @@
         <mkdir dir="${externc.tests}/results"/>
         <mkdir dir="${compiler.externc}/target/junit-temp"/>
         <mkdir dir="${compiler.externc}/target/junit-results"/>
-        <junit dir="${externc.tests}"
+        <junit dir="${compiler.externc}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
@@ -105,7 +110,7 @@
         <mkdir dir="${externc.tests}/results"/>
         <mkdir dir="${compiler.externc}/target/junit-temp"/>
         <mkdir dir="${compiler.externc}/target/junit-results"/>
-        <junit dir="${externc.tests}"
+        <junit dir="${compiler.externc}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"

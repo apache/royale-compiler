@@ -278,6 +278,11 @@
         <echo>compiler is ${compiler} royale is ${royale}</echo>
         <delete dir="${compiler}/target/test-classes"/>
         <mkdir dir="${compiler}/target/test-classes"/>
+        <copy todir="${compiler}/target">
+            <fileset dir="${compiler.tests}/resources">
+                <include name="**"/>
+            </fileset>
+        </copy>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/test-classes" includeAntRuntime="true">
             <src path="${compiler.tests}/java"/>
             <compilerarg value="-Xlint:all,-path"/>
@@ -285,6 +290,7 @@
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/classes"/>
                 <pathelement location="${royale}/lib/compiler-common.jar"/>
                 <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
@@ -294,7 +300,7 @@
     <target name="tests" depends="download, compile.tests">
         <mkdir dir="${compiler}/target/junit-reports"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
@@ -336,7 +342,7 @@
     <target name="tests.sdk" depends="download, compile.tests">
         <mkdir dir="${compiler}/target/junit-reports"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
