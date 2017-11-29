@@ -375,11 +375,7 @@ public class TargetSettings implements ITargetSettings
     public Collection<File> getExternalLibraryPath()
     {
         if (externalLibraryPath == null)
-        {
-            List<File> files = Configurator.toFileList(configuration.getCompilerExternalLibraryPath());
-            for (File swcFile : files)
-                externalLibraryPath.add(swcFile);
-        }
+            externalLibraryPath = Configurator.toFileList(configuration.getCompilerExternalLibraryPath());
 
         return externalLibraryPath;
     }
