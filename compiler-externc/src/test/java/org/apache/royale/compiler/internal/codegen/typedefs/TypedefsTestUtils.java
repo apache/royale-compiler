@@ -28,7 +28,7 @@ import org.apache.royale.utils.FilenameNormalization;
 public class TypedefsTestUtils
 {
     public static File TEMP_DIR = new File(
-            FilenameNormalization.normalize("../../target/junit-temp"));
+            FilenameNormalization.normalize("target/junit-temp"));
 
     // This is a copy of the missing.js in royale-typedefs/js.  It doesn't have to
     // stay in sync.  We just want to prove we can override a few things
