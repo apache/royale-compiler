@@ -266,6 +266,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
+        project = new RoyaleJSProject(workspace, null);
     }
 
     @Override
