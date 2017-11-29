@@ -130,6 +130,7 @@
             <module>compiler</module>
             <module>compiler-jx</module>
             <module>compiler-test-utils</module>
+            <module>swfutils</module>
             <module>debugger</module>
             <module>flex-compiler-oem</module>
             <module>royale-ant-tasks</module>
