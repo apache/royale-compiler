@@ -284,6 +284,13 @@ public class ASFeatureTestsBase
 					c = resultText.indexOf("<asc:compiler");
 					c2 = resultText.indexOf("/>\n", c);
 					resultText = resultText.substring(0, c) + resultText.substring(c2 + 4);
+                    // remove parsing swf comment as it contains local path to swf
+                    c = ours.indexOf("<!-- Parsing swf");
+                    c2 = ours.indexOf("-->\n", c);
+                    ours = ours.substring(0, c) + ours.substring(c2 + 4);
+                    c = resultText.indexOf("<!-- Parsing swf");
+                    c2 = resultText.indexOf("-->\n", c);
+                    resultText = resultText.substring(0, c) + resultText.substring(c2 + 4);
 					// output contains 'succ[...]' which can be in different order
 					ours = ours.replaceAll("succs=\\[.*\\]", "");
 					resultText = resultText.replaceAll("succs=\\[.*\\]", "");
@@ -305,10 +312,6 @@ public class ASFeatureTestsBase
 						resultLines[i] = resultLines[i].trim();
 					}
 					resultText = StringUtils.join(resultLines, "\n");
-					resultText = resultText.replaceAll("surefire-temp/", "");
-					resultText = resultText.replaceAll("junit-temp/", "");
-					ours = ours.replaceAll("surefire-temp/", "");
-					ours = ours.replaceAll("junit-temp/", "");
 					assertThat(ours, is(resultText));
 					break;
 				}
