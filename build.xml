@@ -375,12 +375,6 @@
     </target>
 
     <target name="stage-fb-integration">
-        <ant dir="${basedir}/debugger" target="downloads" />
-        <delete>
-            <fileset dir="${basedir}/debugger/target/downloads">
-                <include name="*.tar.gz"/>
-            </fileset>
-        </delete>
         <copy todir="${basedir}/temp/debugger" includeEmptyDirs="false">
             <fileset dir="${basedir}/debugger">
                 <include name="**"/>
@@ -393,14 +387,17 @@
                 <exclude name="target/META-INF/**"/>
             </fileset>
         </copy>
-        <ant dir="${basedir}/flex-compiler-oem" target="downloads" />
-        <delete>
-            <fileset dir="${basedir}/flex-compiler-oem/target/downloads">
-                <include name="*.tar.gz"/>
-            </fileset>
-        </delete>
         <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
             <fileset dir="${basedir}/flex-compiler-oem">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="target/classes/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/temp/swfutils" includeEmptyDirs="false">
+            <fileset dir="${basedir}/swfutils">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
@@ -540,18 +537,7 @@
                 <exclude name="lib/junit**"/>
             </fileset>
         </copy>
-        
-        <!-- generated -->
-        <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${ROYALE_TYPEDEFS_HOME}/js/target/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${ROYALE_TYPEDEFS_HOME}/cordova/target/cordova.swc" />
-        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${ROYALE_TYPEDEFS_HOME}/createjs/target/createjs.swc" />
-        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${ROYALE_TYPEDEFS_HOME}/google_maps/target/google_maps.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${ROYALE_TYPEDEFS_HOME}/jasmine/target/jasmine.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${ROYALE_TYPEDEFS_HOME}/jquery/target/jquery-1.9.swc" />
-        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${ROYALE_TYPEDEFS_HOME}/GCL/target/GCL.swc" />
-        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${ROYALE_TYPEDEFS_HOME}/node/target/node.swc" />
-        
+                
         <antcall target="binary-package-zip"/>
         <antcall target="binary-package-tgz"/>
         
