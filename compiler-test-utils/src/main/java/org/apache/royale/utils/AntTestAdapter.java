@@ -109,7 +109,7 @@ public class AntTestAdapter implements ITestAdapter {
 
     @Override
     public File getUnitTestBaseDir() {
-        return new File("target");
+        return new File("target/test-classes");
     }
 
     private File getLib(String artifactId) {
