@@ -635,6 +635,8 @@ public class ABCGenerator implements ICodeGenerator
             catch ( Exception cant_reduce)
             {
                 // Can't generate a constant value, just return null
+            	// Do not add a problem for this exception as it could be a non-constant
+            	// initializer like: var foo = new Date();
             }
         }
 
