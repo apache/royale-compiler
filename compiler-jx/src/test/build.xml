@@ -40,7 +40,7 @@
     <target name="compile.unit.tests">
     	<delete dir="${compiler}/target/test-classes"/>
         <mkdir dir="${compiler}/target/test-classes"/>
-        <copy todir="${compiler}/target">
+        <copy todir="${compiler}/target/test-classes">
             <fileset dir="${compiler.tests}/resources">
                 <include name="**"/>
             </fileset>
