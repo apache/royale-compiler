@@ -24,10 +24,10 @@ import org.apache.flex.tools.AbstractFlexToolGroup;
 /**
  * FlexToolGroup exposing the implementations of the Royale compilers tools.
  */
-public class RoyaleToolGroup extends AbstractFlexToolGroup {
+public class RoyaleSWFToolGroup extends AbstractFlexToolGroup {
 
-    public RoyaleToolGroup() {
-        super("Royale");
+    public RoyaleSWFToolGroup() {
+        super("RoyaleSWF");
         addFlexTool(new COMPC());
         addFlexTool(new MXMLC());
         addFlexTool(new Optimizer());
