@@ -85,7 +85,7 @@ public class AAMavenTestSWCs
     }
     
     @Test
-    public void AA_JS_EXTERNC()
+    public void AAMavenTestSWCs_AA_JS_EXTERNC()
     {
         // Write the MXML into a temp file.
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
@@ -108,7 +108,7 @@ public class AAMavenTestSWCs
     }
     
     @Test
-    public void AB_JS_SWC()
+    public void AAMavenTestSWCs_AB_JS_SWC()
     {
         // Write the MXML into a temp file.
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();

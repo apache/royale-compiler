@@ -69,7 +69,7 @@ public class ASTestBase extends TestBase
     @Override
     protected void addLibraries(List<File> libraries)
     {
-        libraries.addAll(testAdapter.getLibraries(false));
+        //libraries.addAll(testAdapter.getLibraries(false));
 
         super.addLibraries(libraries);
     }

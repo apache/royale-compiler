@@ -48,6 +48,7 @@ import static org.junit.Assert.fail;
  * Base class for AS feature tests which compile AS code with MXMLC and run it in the standalone Flash Player.
  * Copied and modified from MXMLFeatureTestsBase.java
  */
+@SuppressWarnings("deprecation")
 public class ASFeatureTestsBase
 {
 	private static boolean generateResultFile = false;
