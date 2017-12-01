@@ -4147,7 +4147,7 @@ public class Configuration
         if (airHome == null)
             airHome = buffer.getToken("env.AIR_HOME");
         if (airHome == null)
-            airHome = "libs/air";
+            airHome = "..";
 
         pathElement = pathElement.replace(PLAYERGLOBAL_HOME_TOKEN, playerglobalHome);
         pathElement = pathElement.replace(AIR_HOME_TOKEN, airHome);
