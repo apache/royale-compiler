@@ -44,14 +44,11 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 		// inside this document template.
 		return new String[]
 		{
-		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-		    "          xmlns:d='flash.display.*'",
-		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
-		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
+		    "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
 			"    <fx:Library>",
 			"        %1",
 			"    </fx:Library>",
-		    "</d:Sprite>"
+		    "</fx:Object>"
 	    };
 	}
 	
@@ -79,6 +76,8 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 		{
 			"<fx:Definition/>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "The <Definition> tag requires a 'name' attribute";
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getName", node.getDefinitionName(), is((String)null));
@@ -94,6 +93,8 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 		    "<fx:Definition>",
 		    "</fx:Definition>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "The <Definition> tag requires a 'name' attribute";
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getDefinitionName", node.getDefinitionName(), is((String)null));
@@ -102,53 +103,55 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 	}
 	
 	@Test
-	public void MXMLDefinitionNode_Sprite()
+	public void MXMLDefinitionNode_TestInstance()
 	{
 		String[] code = new String[]
 		{
 		    "<fx:Definition>",
-		    "    <d:Sprite/>",
+		    "    <custom:TestInstance/>",
 		    "</fx:Definition>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "The <Definition> tag requires a 'name' attribute";
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getDefinitionName", node.getDefinitionName(), is((String)null));
 		assertThat("getContainedClassDefinitionNode", node.getContainedClassDefinitionNode(), is(node.getChild(0)));
-		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("flash.display.Sprite", project), is(true));
+		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("custom.TestInstance", project), is(true));
 	}
 	
 	@Test
-	public void MXMLDefinitionNode_name_Sprite()
+	public void MXMLDefinitionNode_name_TestInstance()
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Definition name='MySprite'>",
-		    "    <d:Sprite/>",
+		    "<fx:Definition name='MyTestInstance'>",
+		    "    <custom:TestInstance/>",
 		    "</fx:Definition>"
 		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
-		assertThat("getDefinitionName", node.getDefinitionName(), is("MySprite"));
+		assertThat("getDefinitionName", node.getDefinitionName(), is("MyTestInstance"));
 		assertThat("getContainedClassDefinitionNode", node.getContainedClassDefinitionNode(), is(node.getChild(0)));
-		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("flash.display.Sprite", project), is(true));
+		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("custom.TestInstance", project), is(true));
 	}
 	
 	@Test
-	public void MXMLDefinitionNode_name_Sprite_width_height()
+	public void MXMLDefinitionNode_name_TestInstance_NestedProperty()
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Definition name='MySprite'>",
-		    "    <d:Sprite width='100'>",
-		    "        <d:height>100</d:height>",
-		    "    </d:Sprite>",
+		    "<fx:Definition name='MyTestInstance'>",
+		    "    <custom:TestInstance name='foo'>",
+		    "        <custom:value>100</custom:value>",
+		    "    </custom:TestInstance>",
 		    "</fx:Definition>"
 		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
-		assertThat("getDefinitionName", node.getDefinitionName(), is("MySprite"));
+		assertThat("getDefinitionName", node.getDefinitionName(), is("MyTestInstance"));
 		assertThat("getContainedClassDefinitionNode", node.getContainedClassDefinitionNode(), is(node.getChild(0)));
-		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("flash.display.Sprite", project), is(true));
+		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("custom.TestInstance", project), is(true));
 		assertThat("getContainedClassDefinitionNode.getChildCount", node.getContainedClassDefinitionNode().getChildCount(), is(2));
 	}
 }

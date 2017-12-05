@@ -29,8 +29,9 @@ import org.apache.commons.io.IOUtils;
 
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.constants.INamespaceConstants;
+import org.apache.royale.compiler.embedding.transcoders.ITranscoder;
 import org.apache.royale.compiler.filespecs.IBinaryFileSpecification;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
@@ -54,7 +55,7 @@ import org.apache.royale.swf.tags.ITag;
 /**
  * Base class for all embed transcoders
  */
-public abstract class TranscoderBase
+public abstract class TranscoderBase implements ITranscoder
 {
     public static final String CORE_PACKAGE = "mx.core";
     protected static final String UTILS_PACKAGE = "mx.utils";

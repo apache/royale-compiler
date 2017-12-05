@@ -48,9 +48,9 @@ public class CSSDocumentTests extends CSSBaseTests {
 		assertThat("cssDoc" , cssDoc, not( (CSSDocument) null ) );	
 		assertThat("cssDoc" , cssDoc.getOperator(), is( CSSModelTreeType.DOCUMENT ) );
 		
-		assertThat("cssDoc.getAtNamespaces().size()" , cssDoc.getAtNamespaces().size(), is( 2 ) );
+		assertThat("cssDoc.getAtNamespaces().size()" , cssDoc.getAtNamespaces().size(), is( 3 ) );
 		CSSNamespaceDefinition defaultNamespaceDefinition = (CSSNamespaceDefinition) cssDoc.getDefaultNamespaceDefinition();
-		assertNull("defaultNamespaceDefinition not null" , defaultNamespaceDefinition );
+		assertNull("defaultNamespaceDefinition is null" , defaultNamespaceDefinition );
 		assertThat("cssDoc.getNamespaceDefinition(\"s\")" , cssDoc.getNamespaceDefinition("s"), not( (ICSSNamespaceDefinition) null ) );
 		assertThat("cssDoc.getNamespaceDefinition(\"mxm\")" , cssDoc.getNamespaceDefinition("mxm"), is( (ICSSNamespaceDefinition) null ) );
 
@@ -65,15 +65,15 @@ public class CSSDocumentTests extends CSSBaseTests {
 		assertThat("cssDoc" , cssDoc, not( (CSSDocument) null ) );	
 		assertThat("cssDoc.getOperator()" , cssDoc.getOperator(), is( CSSModelTreeType.DOCUMENT ) );
 		
-		assertThat("cssDoc.getAtNamespaces().size()" , cssDoc.getAtNamespaces().size(), is( 1 ) );
+		assertThat("cssDoc.getAtNamespaces().size()" , cssDoc.getAtNamespaces().size(), is( 2 ) );
 		CSSNamespaceDefinition defaultNamespaceDefinition = (CSSNamespaceDefinition) cssDoc.getDefaultNamespaceDefinition();
-		assertNotNull("defaultNamespaceDefinition is null" , defaultNamespaceDefinition );
+		assertNotNull("defaultNamespaceDefinition not null" , defaultNamespaceDefinition );
 		assertThat("defaultNamespaceDefinition.getPrefix()" , defaultNamespaceDefinition.getPrefix(), is( (String) null ) );
 		assertThat("defaultNamespaceDefinition.getURI()" , defaultNamespaceDefinition.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
 		
 		CSSTypedNode namespaceList = (CSSTypedNode) cssDoc.children.get(0);
 		assertThat("namespaceList.getOperator()", namespaceList.getOperator(), is( CSSModelTreeType.NAMESPACE_LIST ) );
-		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 1 ) );
+		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 2 ) );
 		CSSTypedNode fontFaceList = (CSSTypedNode) cssDoc.children.get(1);
 		assertThat("fontFaceList.getOperator()", fontFaceList.getOperator(), is( CSSModelTreeType.FONT_FACE_LIST ) );
 		assertThat("fontFaceList.children.size()", fontFaceList.children.size(), is( 0 ) );
@@ -86,11 +86,11 @@ public class CSSDocumentTests extends CSSBaseTests {
 	public void CSSDocumentTests_fontfaces()
 	{
 		String code = 	     
-				"@font-faces { " + EOL +
+				"@font-face { " + EOL +
 				" 	src: url('font.ttf'); " + EOL +
 				"	fontFamily: 'font'; " + EOL +
 				"}" + EOL +
-				"@font-faces { " + EOL +
+				"@font-face { " + EOL +
 				" 	src: url('font1.ttf'); " + EOL +
 				"	fontFamily: 'font1'; " + EOL +
 				"}";
@@ -102,7 +102,7 @@ public class CSSDocumentTests extends CSSBaseTests {
 
 		CSSTypedNode namespaceList = (CSSTypedNode) cssDoc.children.get(0);
 		assertThat("namespaceList.getOperator()", namespaceList.getOperator(), is( CSSModelTreeType.NAMESPACE_LIST ) );
-		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 0 ) );
+		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 1 ) );
 		CSSTypedNode fontFaceList = (CSSTypedNode) cssDoc.children.get(1);
 		assertThat("fontFaceList.getOperator()", fontFaceList.getOperator(), is( CSSModelTreeType.FONT_FACE_LIST ) );
 		assertThat("fontFaceList.children.size()", fontFaceList.children.size(), is( 2 ) );
@@ -115,10 +115,10 @@ public class CSSDocumentTests extends CSSBaseTests {
 	public void CSSDocumentTests_rules()
 	{
 		String code = 	     
-				"s|Label { " + EOL +
+				"custom|Label { " + EOL +
 				"	fontFamily: 'font'; " + EOL +
 				"}" + EOL +
-				"s|Label.test { " + EOL +
+				"custom|Label.test { " + EOL +
 				"	fontFamily: 'font1'; " + EOL +
 				"}";
 		
@@ -129,7 +129,7 @@ public class CSSDocumentTests extends CSSBaseTests {
 		
 		CSSTypedNode namespaceList = (CSSTypedNode) cssDoc.children.get(0);
 		assertThat("namespaceList.getOperator()", namespaceList.getOperator(), is( CSSModelTreeType.NAMESPACE_LIST ) );
-		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 0 ) );
+		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 1 ) );
 		CSSTypedNode fontFaceList = (CSSTypedNode) cssDoc.children.get(1);
 		assertThat("fontFaceList.getOperator()", fontFaceList.getOperator(), is( CSSModelTreeType.FONT_FACE_LIST ) );
 		assertThat("fontFaceList.children.size()", fontFaceList.children.size(), is( 0 ) );
@@ -143,22 +143,20 @@ public class CSSDocumentTests extends CSSBaseTests {
 	public void CSSDocumentTests_combination_namespace_fontface_rules()
 	{
 		String code =
-				" @namespace s \"library://ns.adobe.com/flex/spark\";" + EOL +
-				" @namespace mx \"library://ns.adobe.com/flex/mx\";" + EOL +
 				" " + EOL +
-							"@font-faces { " + EOL +
+				"@font-face { " + EOL +
 				" 	src: url('font.ttf'); " + EOL +
 				"	fontFamily: 'font'; " + EOL +
 				"}" + EOL +
-				"@font-faces { " + EOL +
+				"@font-face { " + EOL +
 				" 	src: url('font1.ttf'); " + EOL +
 				"	fontFamily: 'font1'; " + EOL +
 				"}" + EOL +
 				" " + EOL +
-				"s|Label { " + EOL +
+				"custom|Label { " + EOL +
 				"	fontFamily: 'font'; " + EOL +
 				"}" + EOL +
-				"s|Label.test { " + EOL +
+				"custom|Label.test { " + EOL +
 				"	fontFamily: 'font1'; " + EOL +
 				"}";
 		
@@ -166,18 +164,16 @@ public class CSSDocumentTests extends CSSBaseTests {
 		assertThat("cssDoc" , cssDoc, not( (CSSDocument) null ) );	
 		assertThat("cssDoc.getOperator()" , cssDoc.getOperator(), is( CSSModelTreeType.DOCUMENT ) );
 		
-		assertThat("cssDoc.getAtNamespaces().size()" , cssDoc.getAtNamespaces().size(), is( 2 ) );
+		assertThat("cssDoc.getAtNamespaces().size()" , cssDoc.getAtNamespaces().size(), is( 1 ) );
 		CSSNamespaceDefinition defaultNamespaceDefinition = (CSSNamespaceDefinition) cssDoc.getDefaultNamespaceDefinition();
 		assertNull("defaultNamespaceDefinition not null" , defaultNamespaceDefinition );
-		assertThat("cssDoc.getNamespaceDefinition(\"s\")" , cssDoc.getNamespaceDefinition("s"), not( (ICSSNamespaceDefinition) null ) );
-		assertThat("cssDoc.getNamespaceDefinition(\"mxm\")" , cssDoc.getNamespaceDefinition("mxm"), is( (ICSSNamespaceDefinition) null ) );
 		
 		assertThat("cssDoc.getRules().size())" , cssDoc.getRules().size(), is( 2 ) );
 		assertThat("cssDoc.getFontFaces().size())" , cssDoc.getFontFaces().size(), is( 2 ) );
 		
 		CSSTypedNode namespaceList = (CSSTypedNode) cssDoc.children.get(0);
 		assertThat("namespaceList.getOperator()", namespaceList.getOperator(), is( CSSModelTreeType.NAMESPACE_LIST ) );
-		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 2 ) );
+		assertThat("namespaceList.children.size()", namespaceList.children.size(), is( 1 ) );
 		CSSTypedNode fontFaceList = (CSSTypedNode) cssDoc.children.get(1);
 		assertThat("fontFaceList.getOperator()", fontFaceList.getOperator(), is( CSSModelTreeType.FONT_FACE_LIST ) );
 		assertThat("fontFaceList.children.size()", fontFaceList.children.size(), is( 2 ) );

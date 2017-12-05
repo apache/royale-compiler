@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<!-- Parsing swf file:/Users/aharui/git/royale/maven/royale-compiler/compiler/target/junit-temp/%0.swf -->
+<swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
+  <!-- framecount=1 length=1041 -->
+  <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
+  <Metadata>
+        <![CDATA[<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
+        <dc:format>application/x-shockwave-flash</dc:format>
+        <asc:compiler name="Apache Royale Compiler" version="${release.version}.${build" build="number}"/>
+    </rdf:Description>
+</rdf:RDF>
+]]>
+  </Metadata>
+  <SetBackgroundColor color="#FFFFFF"/>
+  <ScriptLimits scriptRecursionLimit="1000" scriptTimeLimit="60"/>
+  <DoABC>
+// script 0
+
+// class_id=0 slot_id=0
+public class %0 extends Object
+{
+
+  // method_id=4
+  public function %0():*
+  {
+    //  derivedName  %0  
+    //  method_info  4                                  
+    //  max_stack    1                                  
+    //  max_regs     1                                  
+    //  scope_depth  0                                  
+    //  max_scope    1                                  
+    //  code_length  6                                  
+    bb0
+      succs=[]
+      0      getlocal0            
+      1      pushscope            
+      2      getlocal0            
+      3      constructsuper    0  
+      4      returnvoid           
+  }
+
+  private function initHandler(Object):void
+  {
+    //  derivedName  initHandler  
+    //  method_info  1            
+    //  max_stack    4            
+    //  max_regs     3            
+    //  scope_depth  0            
+    //  max_scope    2            
+    //  code_length  48           
+    activation_traits {
+
+      internal var e:Object
+
+      internal var getClass:*
+
+      internal var foo:Inner
+    }
+    bb0
+      succs=[]
+      0       getlocal0                       
+      1       pushscope                       
+      2       newactivation                   
+      3       dup                             
+      4       setlocal2                       
+      5       pushscope                       
+      6       findpropstrict  e               
+      7       getlocal1                       
+      8       setproperty     e               
+      9       findproperty    getClass        
+      10      newfunction                     
+      11      setproperty     getClass        
+      12      getlex          getClass        
+      13      getglobalscope                  
+      14      pushbyte                     0  
+      15      call                         1  
+      16      pushstring      "foo"           
+      17      construct                    1  
+      18      coerce          Inner           
+      19      getlocal2                       
+      20      swap                            
+      21      setslot                      3  
+      22      findpropstrict  assertEqual     
+      23      pushstring      "foo.value"     
+      24      getlex          foo             
+      25      getproperty     value           
+      26      pushstring      "foo"           
+      27      callpropvoid                    
+      28      returnvoid                      
+  }
+
+  private function assertEqual(String,*,*):void
+  {
+    //  derivedName  assertEqual  
+    //  method_info  3            
+    //  max_stack    1            
+    //  max_regs     4            
+    //  scope_depth  0            
+    //  max_scope    1            
+    //  code_length  1            
+    bb0
+      succs=[]
+      0      returnvoid      
+  }
+
+  public static function %0$():*
+  {
+    //  derivedName  null  
+    //  method_info  5     
+    //  max_stack    0     
+    //  max_regs     1     
+    //  scope_depth  0     
+    //  max_scope    0     
+    //  code_length  1     
+    bb0
+      succs=[]
+      0      returnvoid      
+  }
+}
+
+// class_id=1 slot_id=0
+private class Inner extends Object
+{
+
+  // method_id=6
+  public function Inner(String):*
+  {
+    //  derivedName  Inner  
+    //  method_info  6      
+    //  max_stack    2      
+    //  max_regs     2      
+    //  scope_depth  0      
+    //  max_scope    1      
+    //  code_length  10     
+    bb0
+      succs=[]
+      0      getlocal0                 
+      1      pushscope                 
+      2      getlocal0                 
+      3      constructsuper         0  
+      4      getlocal0                 
+      5      getlocal1                 
+      6      setproperty     value     
+      7      returnvoid                
+  }
+
+  public var value:String
+
+  public static function Inner$():*
+  {
+    //  derivedName  null  
+    //  method_info  7     
+    //  max_stack    0     
+    //  max_regs     1     
+    //  scope_depth  0     
+    //  max_scope    0     
+    //  code_length  1     
+    bb0
+      succs=[]
+      0      returnvoid      
+  }
+}
+
+function script0$init():*
+{
+  //  derivedName  null  
+  //  method_info  0     
+  //  max_stack    3     
+  //  max_regs     1     
+  //  scope_depth  0     
+  //  max_scope    2     
+  //  code_length  25    
+  bb0
+    succs=[]
+    0       getlocal0                                             
+    1       pushscope                                             
+    2       getscopeobject                                     0  
+    3       getlex          Object                                
+    4       dup                                                   
+    5       pushscope                                             
+    6       newclass                                              
+    7       popscope                                              
+    8       initproperty    %0     
+    9       getscopeobject                                     0  
+    10      getlex          Object                                
+    11      dup                                                   
+    12      pushscope                                             
+    13      newclass                                              
+    14      popscope                                              
+    15      initproperty    Inner                                 
+    16      returnvoid                                            
+}
+
+
+// 2 getClass
+function  (Number):Class
+{
+  //  derivedName  getClass  
+  //  method_info  2         
+  //  max_stack    2         
+  //  max_regs     2         
+  //  scope_depth  0         
+  //  max_scope    0         
+  //  code_length  13        
+  bb0
+    succs=[bb2,bb1]
+    0      getlocal1          
+    1      pushbyte        0  
+    2      ifne       bb2     
+  bb1
+    succs=[]
+    3      getlex       Inner    
+    4      returnvalue           
+  bb2
+    succs=[]
+    5      getlex       Number    
+    6      returnvalue            
+}
+  </DoABC>
+  <SymbolClass>
+    <Symbol idref="0" className="%0" />
+  </SymbolClass>
+  <ShowFrame/>
+</swf>

@@ -241,7 +241,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
-                else if (((JSRoyaleEmitter)getEmitter()).isDateProperty((MemberAccessExpressionNode)leftSide))
+                else if (((JSRoyaleEmitter)getEmitter()).isDateProperty((MemberAccessExpressionNode)leftSide, true))
                 {
                 	specialCaseDate(node, (MemberAccessExpressionNode)leftSide);
                     return;

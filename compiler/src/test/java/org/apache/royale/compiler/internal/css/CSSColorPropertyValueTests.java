@@ -115,11 +115,14 @@ public class CSSColorPropertyValueTests extends CSSPropertyValueTests {
 	}
 	
 
+	// not sure you can expect exception since compiler catches everything
 	@Test(expected = NumberFormatException.class)
 	public void CSSColorPropertyValue_wrong_hexColor2()
 	{
 		String code = "	color: #FF00FG; ";
 
+		errorFilters = new String[1];
+		errorFilters[0] = "Unexpected exception 'java.lang.NumberFormatException";
 		List<CSSColorPropertyValue> colorProperties = getCSSColorPropertyValues(code);
 		assertThat("colorProperties.size()" , colorProperties.size(), is(0) );	
 	}

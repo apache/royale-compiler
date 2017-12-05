@@ -55,70 +55,70 @@ public class TestRoyaleClass extends TestGoogClass
     @Test
     public void testSimpleExtends()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Test
     public void testSimpleExtendsWithArgs()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher {public function A(arg:String) { super(arg);}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation {public function A(arg:String) { super(arg);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg\n */\norg.apache.royale.A = function(arg) {\n  org.apache.royale.A.base(this, 'constructor', arg);\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @param {string} arg\n */\norg.apache.royale.A = function(arg) {\n  org.apache.royale.A.base(this, 'constructor', arg);\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Test
     public void testSimpleExtendsWithArgsImplicitSuper()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher {public function A(arg:String) {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation {public function A(arg:String) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg\n */\norg.apache.royale.A = function(arg) {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @param {string} arg\n */\norg.apache.royale.A = function(arg) {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplements()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation implements TestInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation implements TestInterface, TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
     @Test
     public void testSimpleFinalExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public final class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public final class A extends TestImplementation implements TestInterface, TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
     @Test
     public void testQualifiedExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher implements flash.events.IEventDispatcher, flash.display.IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends custom.TestImplementation implements custom.TestInterface, custom.TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
     @Test
     public void testExtendsConstructor_super()
     {
-        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher { public function A() { super('foo', 42);}}");
+        IClassNode node = getClassNode("public class A extends custom.TestImplementation { public function A() { super('foo', 42);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var event:Event = new Event(); public function foo():String {return event.type;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n\nthis.event = new flash.events.Event();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n * @type {flash.events.Event}\n */\norg.apache.royale.B.prototype.event;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return this.event.type;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n\nthis.event = new custom.TestEvent();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n * @type {custom.TestEvent}\n */\norg.apache.royale.B.prototype.event;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return this.event.type;\n};";
         assertOut(expected);
     }
 
@@ -196,9 +196,9 @@ public class TestRoyaleClass extends TestGoogClass
     @Test
     public void testMethod_customNamespace()
     {
-        IClassNode node = getClassNode("import flash.utils.flash_proxy; use namespace flash_proxy; public class B {public function B() {}; flash_proxy function foo():void {};}");
+        IClassNode node = getClassNode("import custom.custom_namespace; use namespace custom_namespace; public class B {public function B() {}; custom_namespace function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n */\norg.apache.royale.B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n */\norg.apache.royale.B.prototype[\"http://ns.apache.org/2017/custom/namespace::foo\"] = function() {\n};";
         assertOut(expected);
     }
 
@@ -206,9 +206,9 @@ public class TestRoyaleClass extends TestGoogClass
     @Test
     public void testExtendsConstructor_withArguments()
     {
-        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher {public function A(arg1:String, arg2:int) {}}");
+        IClassNode node = getClassNode("public class A extends custom.TestImplementation {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
@@ -488,7 +488,7 @@ public class TestRoyaleClass extends TestGoogClass
     @Test
     public void testAccessors()
     {
-        IClassNode node = getClassNode("import flash.utils.flash_proxy;public class A {"
+        IClassNode node = getClassNode("import custom.custom_namespace;public class A {"
                 + "public function get foo1():Object{return null;}"
                 + "public function set foo1(value:Object):void{}"
                 + "protected function get foo2():Object{return null;}"
@@ -497,8 +497,8 @@ public class TestRoyaleClass extends TestGoogClass
                 + "private function set foo3(value:Object):void{}"
                 + "internal function get foo5():Object{return null;}"
                 + "internal function set foo5(value:Object):void{}"
-                + "flash_proxy function get foo6():Object{return null;}"
-                + "flash_proxy function set foo6(value:Object):void{}" + "}");
+                + "custom_namespace function get foo6():Object{return null;}"
+                + "custom_namespace function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo1 = function() {\n  return null;\n};\n\n\n" +
@@ -509,33 +509,33 @@ public class TestRoyaleClass extends TestGoogClass
         		"org.apache.royale.A.prototype.set__foo3 = function(value) {\n};\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo5 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.royale.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
-        		"org.apache.royale.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__foo6\"] = function() {\n  return null;\n};\n\n\n" +
-        		"org.apache.royale.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__foo6\"] = function(value) {\n};\n\n\n" +
+        		"org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::get__foo6\"] = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::set__foo6\"] = function(value) {\n};\n\n\n" +
         		"Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo1: {\nget: org.apache.royale.A.prototype.get__foo1,\nset: org.apache.royale.A.prototype.set__foo1},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo2: {\nget: org.apache.royale.A.prototype.get__foo2,\nset: org.apache.royale.A.prototype.set__foo2},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo3: {\nget: org.apache.royale.A.prototype.get__foo3,\nset: org.apache.royale.A.prototype.set__foo3},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo5: {\nget: org.apache.royale.A.prototype.get__foo5,\nset: org.apache.royale.A.prototype.set__foo5},\n/**\n  * @export\n  * @type {Object} */\n" +
-        		    "\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\": {\nget: org.apache.royale.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__foo6\"],\n" +
-        		    																"set: org.apache.royale.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__foo6\"]}}\n);");
+        		    "\"http://ns.apache.org/2017/custom/namespace::foo6\": {\nget: org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::get__foo6\"],\n" +
+        		    																"set: org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::set__foo6\"]}}\n);");
     }
 
     @Override
     @Test
     public void testMethods()
     {
-        IClassNode node = getClassNode("import flash.utils.flash_proxy;public class A {"
+        IClassNode node = getClassNode("import custom.custom_namespace;public class A {"
                 + "public function foo1():Object{return null;}"
                 + "public final function foo1a():Object{return null;}"
                 + "override public function foo1b():Object{return super.foo1b();}"
                 + "protected function foo2(value:Object):void{}"
                 + "private function foo3(value:Object):void{}"
                 + "internal function foo5(value:Object):void{}"
-                + "flash_proxy function foo6(value:Object):void{}"
+                + "custom_namespace function foo6(value:Object):void{}"
                 + "public static function foo7(value:Object):void{}"
-                + "flash_proxy static function foo7(value:Object):void{}" + "}");
+                + "custom_namespace static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A[\"http://ns.apache.org/2017/custom/namespace::foo7\"] = function(value) {\n};");
     }
 
     @Test
@@ -626,18 +626,18 @@ public class TestRoyaleClass extends TestGoogClass
     @Test
     public void testSimpleImplements()
     {
-        IClassNode node = getClassNode("public class A implements IEventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A implements TestInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestInterface}\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
     @Override
     @Test
     public void testSimpleImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public class A implements TestInterface, TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
 
 
@@ -671,9 +671,9 @@ public class TestRoyaleClass extends TestGoogClass
     @Test
     public void testConstructor_withImplicitSuperAndBodyAndComplexInitializer()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
+        IClassNode node = getClassNode("public class A extends TestImplementation {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n  org.apache.royale.A.base(this, 'constructor');\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.royale.A.prototype.foo;");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n  org.apache.royale.A.base(this, 'constructor');\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.royale.A.prototype.foo;");
     }
 
     @Test

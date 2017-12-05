@@ -69,12 +69,16 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=''/>"
+			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'",
+			"    complete='' >",
+			"</custom:TestInstance>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "Event handler is empty";
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(0));
 	}
@@ -84,12 +88,14 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=' '/>"
+				"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'",
+				"    complete=' ' >",
+				"</custom:TestInstance>"
 		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(0));
 	}
@@ -99,12 +105,14 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=' \t\r\n'/>"
+				"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'",
+				"    complete=' \t\r\n' >",
+				"</custom:TestInstance>"
 		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(0));
 	}
@@ -114,12 +122,14 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click='trace(1); trace(2)'/>"
+			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'",
+			"    complete='someFunction();someFunction()' >",
+			"</custom:TestInstance>"
 		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(2));
 		assertThat("child 0", asNodes[0].getNodeID(), is(ASTNodeID.FunctionCallID));
@@ -131,14 +141,14 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
-		    "    <d:click/>",
-			"</d:Sprite>"
+			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
+			"    <custom:complete/>",
+			"</custom:TestInstance>"
 		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(0));
 	}
@@ -148,14 +158,14 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
-		    "    <d:click></d:click>",
-			"</d:Sprite>"
+			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
+			"    <custom:complete></custom:complete>",
+			"</custom:TestInstance>"
 		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(0));
 	}
@@ -164,15 +174,15 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	public void MXMLEventSpecifierNode_emptyEventTag3()
 	{
 		String[] code = new String[]
-		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
-		    "    <d:click> \t\r\n</d:click>",
-			"</d:Sprite>"
-		};
+   		{
+			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
+   			"    <custom:complete> \t\r\n</custom:complete>",
+			"</custom:TestInstance>"
+   		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(0));
 	}
@@ -181,18 +191,18 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	public void MXMLEventSpecifierNode_eventTag_twoFunctionCalls()
 	{
 		String[] code = new String[]
-		{
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
-			"    <d:click>",
-			"        trace(1);",
-			"        trace(2);",
-			"    </d:click>",
-		    "</d:Sprite/>"
-		};
+   		{
+			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
+   			"    <custom:complete>",
+			"          someFunction();",
+			"          someFunction();",
+   			"    </custom:complete>",
+			"</custom:TestInstance>"
+   		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
-		assertThat("getName", node.getName(), is("click"));
+		assertThat("getName", node.getName(), is("complete"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
-		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("click"));
+		assertThat("getDefinition", ((IEventDefinition)node.getDefinition()).getBaseName(), is("complete"));
 		IASNode[] asNodes = node.getASNodes();
 		assertThat("getASNodes", asNodes.length, is(2));
 		assertThat("child 0", asNodes[0].getNodeID(), is(ASTNodeID.FunctionCallID));

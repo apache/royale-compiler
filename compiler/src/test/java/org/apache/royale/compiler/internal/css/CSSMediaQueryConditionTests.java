@@ -47,7 +47,7 @@ public class CSSMediaQueryConditionTests extends CSSBaseTests {
     private String getPostfix()
     {
     	return 	"{ " + EOL + 
-    			"	s|VBox { } " + EOL +
+    			"	custom|VBox { } " + EOL +
 				"}"; 
     }
     

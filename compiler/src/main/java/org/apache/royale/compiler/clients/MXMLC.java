@@ -65,6 +65,7 @@ import org.apache.royale.compiler.internal.config.localization.LocalizationManag
 import org.apache.royale.compiler.internal.graph.GraphMLWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.LinkageChecker;
 import org.apache.royale.compiler.internal.targets.SWFTarget;
 import org.apache.royale.compiler.internal.targets.Target;
@@ -453,7 +454,7 @@ public class MXMLC implements FlexTool
      */
 	protected Configurator createConfigurator()
     {
-        return new Configurator(configurationClass);
+        return new RoyaleProjectConfigurator(configurationClass);
     }
     
     /**

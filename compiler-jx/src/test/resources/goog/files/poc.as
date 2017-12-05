@@ -19,12 +19,11 @@
 package  
 {
 
-import flash.events.MouseEvent;
+import custom.MouseEvent;
+import custom.TestEvent;
+import custom.TestImplementation;
 
-import flash.events.Event;
-import flash.events.EventDispatcher;
-
-public class Example extends EventDispatcher
+public class Example extends TestImplementation
 {
 	private static const BYEBYE:String = "Bye Bye";
 	private static const HELLOWORLD:String = "Hello World";
@@ -36,20 +35,20 @@ public class Example extends EventDispatcher
 		init();
 	}
 	
-	private var _btn1:Event;
-	private var _btn2:Event;
-	private var _btn3:Event;
+	private var _btn1:TestEvent;
+	private var _btn2:TestEvent;
+	private var _btn3:TestEvent;
 	private var _lbl1:MouseEvent;
 	private var _lbl2:MouseEvent;
-	private var _et1:EventDispatcher;
-	private var _et2:EventDispatcher;
-	private var _et3:EventDispatcher;
+	private var _et1:TestImplementation;
+	private var _et2:TestImplementation;
+	private var _et3:TestImplementation;
 	
 	public function init():void
 	{
-		_et1 = new EventDispatcher();
-		_et2 = new EventDispatcher();
-		_et3 = new EventDispatcher();
+		_et1 = new TestImplementation();
+		_et2 = new TestImplementation();
+		_et3 = new TestImplementation();
 		
 		_lbl1 = new MouseEvent();
 		_lbl1.localX = 100;
@@ -65,19 +64,19 @@ public class Example extends EventDispatcher
 		
 		dispatchEvent(_lbl2);
 		
-		_btn1 = new Event();
+		_btn1 = new TestEvent();
 		_btn1.type = "Click me";
 		_et1.addEventListener(MouseEvent.CLICK, btn1clickHandler);
 		
 		_et1.dispatchEvent(_btn1);
 
-		_btn2 = new Event();
+		_btn2 = new TestEvent();
 		_btn2.type = "Add it";
 		_et2.addEventListener(MouseEvent.CLICK, btn2clickHandler);
 		
 		_et2.dispatchEvent(_btn2);
 		
-		_btn3 = new Event();
+		_btn3 = new TestEvent();
 		_btn3.type = "Move it";
 		_et3.addEventListener(MouseEvent.CLICK, btn3clickHandler);
 		

@@ -28,7 +28,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testSimpleNode()
     {
-        String code = "<s:Button />";
+        String code = "<custom:Button />";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -42,7 +42,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testSimpleNodeWithId()
     {
-        String code = "<s:Button id=\"myBtn\"/>";
+        String code = "<custom:Button id=\"myBtn\"/>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -56,7 +56,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testSimpleNodeWithAttribute()
     {
-        String code = "<s:Button label=\"Click me\" />";
+        String code = "<custom:Button label=\"Click me\" />";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -70,7 +70,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testSimpleNodeWithInnerText()
     {
-        String code = "<s:Button>Click me</s:Button>";
+        String code = "<custom:Button>Click me</custom:Button>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -84,7 +84,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testAnotherSimpleNodeWithInnerText()
     {
-        String code = "<s:Label>Hello World!</s:Label>";
+        String code = "<custom:Label>Hello World!</custom:Label>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -98,7 +98,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testSimpleNodeWithMultipleAttributes()
     {
-        String code = "<s:Button visible=\"false\" x=\"100\" width=\"1.5\" label=\"Click me ;-)\" color=\"0xFF0000\"/>";
+        String code = "<custom:Button visible=\"false\" x=\"100\" width=\"1.5\" label=\"Click me ;-)\" color=\"0xFF0000\"/>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -112,7 +112,7 @@ public class TestMXMLNodes extends MXMLTestBase
     @Test
     public void testNodeWithChild()
     {
-        String code = "<s:Group><s:RadioButton /></s:Group>";
+        String code = "<custom:Group><custom:Label /></custom:Group>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -120,13 +120,13 @@ public class TestMXMLNodes extends MXMLTestBase
 
         mxmlBlockWalker.visitPropertySpecifier(node);
 
-        assertOut("<Group><RadioButton></RadioButton></Group>");
+        assertOut("<Group><Label></Label></Group>");
     }
 
     @Test
     public void testNodeWithChildAndAttribute()
     {
-        String code = "<s:Group id=\"myGrp\"><s:RadioButton /></s:Group>";
+        String code = "<custom:Group id=\"myGrp\"><custom:Label /></custom:Group>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -134,14 +134,14 @@ public class TestMXMLNodes extends MXMLTestBase
 
         mxmlBlockWalker.visitPropertySpecifier(node);
 
-        assertOut("<Group id=\"myGrp\"><RadioButton></RadioButton></Group>");
+        assertOut("<Group id=\"myGrp\"><Label></Label></Group>");
     }
 
     @Test
     public void testNodeWithNestedChildren()
     {
-        String code = "<s:Group><s:Group><s:Group>" + "<s:RadioButton />"
-                + "</s:Group></s:Group></s:Group>";
+        String code = "<custom:Group><custom:Group><custom:Group>" + "<custom:Label />"
+                + "</custom:Group></custom:Group></custom:Group>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -149,15 +149,15 @@ public class TestMXMLNodes extends MXMLTestBase
 
         mxmlBlockWalker.visitPropertySpecifier(node);
 
-        assertOut("<Group><Group><Group><RadioButton></RadioButton></Group></Group></Group>");
+        assertOut("<Group><Group><Group><Label></Label></Group></Group></Group>");
     }
 
     @Test
     public void testNodeWithNestedChildrenAndAttribute()
     {
-        String code = "<s:Group><s:Group><s:Group>"
-                + "<s:RadioButton id=\"myRB\"/>"
-                + "</s:Group></s:Group></s:Group>";
+        String code = "<custom:Group><custom:Group><custom:Group>"
+                + "<custom:Label id=\"myRB\"/>"
+                + "</custom:Group></custom:Group></custom:Group>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,
@@ -165,15 +165,15 @@ public class TestMXMLNodes extends MXMLTestBase
 
         mxmlBlockWalker.visitPropertySpecifier(node);
 
-        assertOut("<Group><Group><Group><RadioButton id=\"myRB\"></RadioButton></Group></Group></Group>");
+        assertOut("<Group><Group><Group><Label id=\"myRB\"></Label></Group></Group></Group>");
     }
 
     @Test
     public void testNodeWithNestedChildrenAndInnerText()
     {
-        String code = "<s:Group><s:Group><s:Group>"
-                + "<s:Button>Click me</s:Button>"
-                + "</s:Group></s:Group></s:Group>";
+        String code = "<custom:Group><custom:Group><custom:Group>"
+                + "<custom:Button>Click me</custom:Button>"
+                + "</custom:Group></custom:Group></custom:Group>";
 
         IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
                 code, IMXMLPropertySpecifierNode.class,

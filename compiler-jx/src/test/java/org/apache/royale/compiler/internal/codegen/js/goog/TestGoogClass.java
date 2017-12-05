@@ -19,11 +19,16 @@
 
 package org.apache.royale.compiler.internal.codegen.js.goog;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.TestClass;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.utils.FilenameNormalization;
 import org.junit.Test;
 
 /**
@@ -79,63 +84,63 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleExtends()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
     @Test
     public void testSimpleImplements()
     {
-        IClassNode node = getClassNode("public class A implements IEventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A implements TestInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.royale.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestInterface}\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
     @Test
     public void testSimpleImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public class A implements TestInterface, TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n};");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplements()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation implements TestInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends TestImplementation implements TestInterface, TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
     @Test
     public void testSimpleFinalExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public final class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public final class A extends TestImplementation implements TestInterface, TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
     @Test
     public void testQualifiedExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher implements flash.events.IEventDispatcher, flash.display.IBitmapDrawable {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends custom.TestImplementation implements custom.TestInterface, custom.TestOtherInterface {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n\torg.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
@@ -158,9 +163,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testExtendsConstructor_super()
     {
-        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher { public function A() { super('foo', 42);}}");
+        IClassNode node = getClassNode("public class A extends custom.TestImplementation { public function A() { super('foo', 42);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.royale.A = function() {\n\tvar self = this;\n\torg.apache.royale.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n */\norg.apache.royale.A = function() {\n\tvar self = this;\n\torg.apache.royale.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
@@ -176,9 +181,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testExtendsConstructor_withArguments()
     {
-        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher {public function A(arg1:String, arg2:int) {}}");
+        IClassNode node = getClassNode("public class A extends custom.TestImplementation {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n\torg.apache.royale.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.royale.A, flash.events.EventDispatcher);");
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.royale.A = function(arg1, arg2) {\n\torg.apache.royale.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
     @Override
@@ -244,7 +249,7 @@ public class TestGoogClass extends TestClass
     @Override
     protected IClassNode getClassNode(String code)
     {
-        String source = "package org.apache.royale {import flash.events.IEventDispatcher;import flash.events.EventDispatcher;import flash.events.Event;import flash.display.IBitmapDrawable;"
+        String source = "package org.apache.royale {import custom.TestInterface;import custom.TestImplementation;import custom.TestEvent;import custom.TestOtherInterface;"
                 + code + "}";
         IFileNode node = compileAS(source);
         IClassNode child = (IClassNode) findFirstDescendantOfType(node,

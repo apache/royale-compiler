@@ -45,8 +45,8 @@ public class CSSBaseTests extends MXMLNodeBaseTests {
 	
 	private String getPrefix()
 	{
-		return "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:s='library://ns.adobe.com/flex/spark' xmlns:mx='library://ns.adobe.com/flex/mx'>\n" +
-	           "    <fx:Style>" + EOL +
+		return "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009'>\n" +
+	           "    <fx:Style>" + EOL + "@namespace custom \"library://ns.apache.org/royale/test\";" + EOL + 
 		       "        ";
 	}
 			
@@ -54,7 +54,7 @@ public class CSSBaseTests extends MXMLNodeBaseTests {
     {
     	return EOL +
 		       "    </fx:Style>" + EOL +
-		       "</d:Sprite>";
+		       "</fx:Object>";
     }
 	
 

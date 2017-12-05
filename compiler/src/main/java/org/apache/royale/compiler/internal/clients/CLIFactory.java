@@ -48,7 +48,7 @@ public class CLIFactory
      * 
      * @return Apache Common CLI options
      */
-    @SuppressWarnings("static-access")
+    @SuppressWarnings("static")
     public static Options getOptionsForASC()
     {
         if (ascOptions != null)

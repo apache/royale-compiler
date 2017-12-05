@@ -54,6 +54,8 @@ public class MXMLNodeBaseTests
 	
 	protected RoyaleProject project;
 	
+	protected String[] errorFilters;
+	
  	protected String[] getTemplate()
 	{
  		// Tests of nodes for class-definition-level tags like <Declarations>,
@@ -62,27 +64,22 @@ public class MXMLNodeBaseTests
  		// override getTemplate() and getMXML().
 		return new String[] 
 		{
-		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-		    "          xmlns:d='flash.display.*'>",
+		    "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
 			"    %1",
-		    "</d:Sprite>"
+		    "</fx:Object>"
 		};
     };
 	
  	protected String[] getTemplateWithFlex()
 	{
- 		// Tests of nodes for class-definition-level tags like <Declarations>,
- 		// <Library>,  <Metadata>, <Script>, and <Style> use this document template.
- 		// Tests for nodes produced by tags that appear at other locations
- 		// override getTemplate() and getMXML().
+ 		// Might be used to test backward compatibility with Apache Flex
 		return new String[] 
 		{
-		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-		    "          xmlns:d='flash.display.*'",
+		    "<s:Application xmlns:fx='http://ns.adobe.com/mxml/2009'",
 		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
 		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
 			"    %1",
-		    "</d:Sprite>"
+		    "</s:Application>"
 		};
     };
 	
@@ -145,13 +142,23 @@ public class MXMLNodeBaseTests
 		project.setSourcePath(sourcePath);
 
 		List<File> libraries = testAdapter.getLibraries(withFlex);
+		if (!withFlex)
+		{
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
+			libraries.add(new File(jsSwcPath));
+        	String customSwcPath = FilenameNormalization.normalize("target/custom.swc");
+			libraries.add(new File(customSwcPath));
+		}
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.
 		List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 		IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-		    "http://ns.adobe.com/mxml/2009", testAdapter.getFlexManifestPath("mxml-2009"));
+		    "http://ns.adobe.com/mxml/2009", new File(testAdapter.getUnitTestBaseDir(), "mxml-2009-manifest.xml").getAbsolutePath());
 		namespaceMappings.add(mxml2009);
+		IMXMLNamespaceMapping custom = new MXMLNamespaceMapping(
+			    "library://ns.apache.org/royale/test", new File(testAdapter.getUnitTestBaseDir(), "custom-manifest.xml").getAbsolutePath());
+			namespaceMappings.add(custom);
 		project.setNamespaceMappings(namespaceMappings);
 				
 		ICompilationUnit cu = null;
@@ -179,7 +186,20 @@ public class MXMLNodeBaseTests
 			if (problems != null && problems.length > 0)
 			{
 				for (ICompilerProblem problem : problems)
-					System.out.printf("%s(%d): %s\n", problem.getSourcePath(), problem.getLine(), problem.toString());
+				{
+					String errorString = problem.toString();
+					boolean unexpected = true;
+					if (errorFilters != null)
+					{
+						for (String filter : errorFilters)
+						{
+							if (errorString.contains(filter))
+								unexpected = false;			
+						}
+					}
+					if (unexpected)
+						System.out.printf("%s(%d): %s\n", problem.getSourcePath(), problem.getLine(), errorString);
+				}
 			}
 		}
 		catch (InterruptedException e)
@@ -187,6 +207,7 @@ public class MXMLNodeBaseTests
 			e.printStackTrace();
 		}
 		
+		errorFilters = null;
 		return fileNode;
 	}
     

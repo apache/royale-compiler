@@ -34,6 +34,17 @@ import org.junit.Test;
  */
 public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 {
+	@Override
+	protected String[] getTemplate()
+	{
+		return new String[]
+		{
+   			"<custom:TestInstance xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'>",
+   			"    %1",
+   			"</custom:TestInstance>"
+	    };
+	}
+
 	private IMXMLScriptNode getMXMLScriptNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
@@ -70,7 +81,7 @@ public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 	{
 		String[] code = new String[]
 		{
-			"<fx:Script/> \t\r\n<fx:Script/>"
+			"<fx:Script> \t\r\n</fx:Script>"
 		};
 		IMXMLScriptNode node = getMXMLScriptNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));

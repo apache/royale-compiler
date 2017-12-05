@@ -97,8 +97,9 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 		String[] code = new String[]
 		{
 			"<fx:Style>",
+			"    @namespace \"library://ns.apache.org/royale/test\";",
 			"    Button { font-size: 20; color: red }",
-			"    CheckBox { font-size: 16 }",
+			"    Label { font-size: 16 }",
 			"</fx:Style>"
 		};
 		IMXMLStyleNode node = getMXMLStyleNode(code);
@@ -107,7 +108,7 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 		ImmutableList<ICSSRule> rules = css.getRules();
 		assertThat("rules", rules.size(), is(2));
 		assertThat("rule 0 name", rules.get(0).getSelectorGroup().get(0).getElementName(), is("Button"));
-		assertThat("rule 1 name", rules.get(1).getSelectorGroup().get(0).getElementName(), is("CheckBox"));
+		assertThat("rule 1 name", rules.get(1).getSelectorGroup().get(0).getElementName(), is("Label"));
 	}
 	
 	@Test

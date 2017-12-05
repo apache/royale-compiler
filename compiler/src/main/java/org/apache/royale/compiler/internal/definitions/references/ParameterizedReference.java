@@ -26,27 +26,28 @@ import org.apache.royale.compiler.definitions.AppliedVectorDefinitionFactory;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IReference;
-import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.definitions.references.IReferenceMName;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
- * Implementation of {@link IReference} representing a parameterized type, such
+ * Implementation of {@link IReferenceMName} representing a parameterized type, such
  * as {@code Vector.<Foo>}.
  */
-public class ParameterizedReference implements IReference
+public class ParameterizedReference implements IReferenceMName
 {
     /**
      * Constructor.
      */
     public ParameterizedReference(IReference name, IReference param)
     {
-        this.name = name;
-        this.param = param;
+        this.name = (IReferenceMName)name;
+        this.param = (IReferenceMName)param;
     }
 
-    private final IReference name;
+    private final IReferenceMName name;
 
-    private final IReference param;
+    private final IReferenceMName param;
 
     @Override
     public String getName()
@@ -55,7 +56,7 @@ public class ParameterizedReference implements IReference
     }
 
     @Override
-    public IDefinition resolve(ICompilerProject project, ASScope scope,
+    public IDefinition resolve(ICompilerProject project, IASScope scope,
                                DependencyType dependencyType,
                                boolean canEscapeWith)
     {
@@ -80,7 +81,7 @@ public class ParameterizedReference implements IReference
     }
 
     @Override
-    public Name getMName(ICompilerProject project, ASScope scope)
+    public Name getMName(ICompilerProject project, IASScope scope)
     {
         Name baseName = name.getMName(project, scope);
         Name paramName = param.getMName(project, scope);

@@ -208,13 +208,16 @@ public class TestRoyaleProject extends TestGoogProject
         String out = sb.toString();
         out = out.replace("\\", "/");
 
-        String expected = testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(31:29)\n" +
+        String path = testAdapter.getUnitTestBaseDir().getPath();
+        path = path.replace("\\", "/");
+        
+        String expected = path + "/royale/projects/bad_overrides/Test.as(31:29)\n" +
                 "interface method someFunction in interface IA is implemented with an incompatible signature in class Test\n" +
-                testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(36:26)\n" +
+                path + "/royale/projects/bad_overrides/Test.as(36:26)\n" +
                 "interface method someOtherFunction in interface IA is implemented with an incompatible signature in class Test\n" +
-                testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(31:29)\n" +
+                path + "/royale/projects/bad_overrides/Test.as(31:29)\n" +
                 "Incompatible override.\n" +
-                testAdapter.getUnitTestBaseDir().getPath() + "/royale/projects/bad_overrides/Test.as(36:26)\n" +
+                path + "/royale/projects/bad_overrides/Test.as(36:26)\n" +
                 "Incompatible override.\n";
         assertThat(out, is(expected));
     }
@@ -239,9 +242,12 @@ public class TestRoyaleProject extends TestGoogProject
         String out = sb.toString();
         out = out.replace("\\", "/");
 
-        assertThat(out, is(testAdapter.getUnitTestBaseDir().getPath() +
+        String path = testAdapter.getUnitTestBaseDir().getPath();
+        path = path.replace("\\", "/");
+        
+        assertThat(out, is(path +
                 "/royale/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\n" +
-                testAdapter.getUnitTestBaseDir().getPath() +
+                path +
                 "/royale/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
     }
 

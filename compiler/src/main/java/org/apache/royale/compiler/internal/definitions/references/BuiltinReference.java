@@ -23,9 +23,10 @@ import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.IReferenceMName;
 import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
@@ -37,7 +38,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
  * which should be the global <code>Function</code> type, and not some
  * <code>Function</code> type defined in some other random namespace.
  */
-public class BuiltinReference implements IReference
+public class BuiltinReference implements IReferenceMName
 {
     /**
      * Constructor.
@@ -56,13 +57,13 @@ public class BuiltinReference implements IReference
     }
 
     @Override
-    public IDefinition resolve(ICompilerProject project, ASScope scope,
+    public IDefinition resolve(ICompilerProject project, IASScope scope,
                                DependencyType dependencyType,
                                boolean canEscapeWith)
     {
         IDefinition definition = project.getBuiltinType(builtinType);
 
-        scope.addDependencyOnBuiltinType(project, builtinType, dependencyType);
+        ((ASScope)scope).addDependencyOnBuiltinType(project, builtinType, dependencyType);
 
         return definition;
     }
@@ -74,7 +75,7 @@ public class BuiltinReference implements IReference
     }
 
     @Override
-    public Name getMName(ICompilerProject project, ASScope scope)
+    public Name getMName(ICompilerProject project, IASScope scope)
     {
         IDefinition def = project.getBuiltinType(builtinType);
         if (def == null)

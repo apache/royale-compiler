@@ -648,7 +648,7 @@ public final class LibraryPathManager
             for (ISWCLibrary library : swc.getLibraries())
             {
                 final CacheStoreKeyBase key = SWFCache.createKey(swc, library.getPath());
-                final ITagContainer tags = swcManager.getSWFCache().get(key);
+                final ITagContainer tags = ((SWFCache)swcManager.getSWFCache()).get(key);
                 problems.addAll(tags.getProblems());
             }
         }

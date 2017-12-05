@@ -49,7 +49,11 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 	public void CSSFunctionCallPropertyValue_embed()
 	{
 		String code = "	overSkin: Embed(\"image.gif\");";
-		
+
+		errorFilters = new String[2];
+		errorFilters[0] = "missing STRING at ';'";
+		errorFilters[1] = "image.gif";
+
 		List<CSSFunctionCallPropertyValue> functionCallProperties = getCSSFunctionCallPropertyValues(code);
 		assertThat("functionCallProperties.size()" , functionCallProperties.size(), is(1) );	
 		
@@ -76,7 +80,7 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 	@Test
 	public void CSSFunctionCallPropertyValue_classReference()
 	{
-		String code = "	overSkin: ClassReference('Label');";
+		String code = "	overSkin: ClassReference('custom.TestInstance');";
 		
 		List<CSSFunctionCallPropertyValue> functionCallProperties = getCSSFunctionCallPropertyValues(code);
 		assertThat("functionCallProperties.size()" , functionCallProperties.size(), is(1) );	
@@ -84,7 +88,7 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 		CSSFunctionCallPropertyValue functionCallPropertyValue = functionCallProperties.get(0);
 		assertThat("functionCallPropertyValue.getOperator()" , functionCallPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("functionCallPropertyValue.name" , functionCallPropertyValue.name, is( CSSFunctionCallPropertyValue.CLASS_REFERENCE ) );
-		assertThat("functionCallPropertyValue.rawArguments" , functionCallPropertyValue.rawArguments, is( "'Label'" ) );
+		assertThat("functionCallPropertyValue.rawArguments" , functionCallPropertyValue.rawArguments, is( "'custom.TestInstance'" ) );
 	}
 	
 	@Test

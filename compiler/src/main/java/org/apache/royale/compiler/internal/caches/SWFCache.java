@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import org.apache.royale.compiler.caches.ISWFCache;
 import org.apache.royale.compiler.problems.FileInLibraryNotFoundProblem;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.SWC;
@@ -45,7 +46,7 @@ import org.apache.royale.swf.tags.SymbolClassTag;
  * is the URI to the SWF file. The value is a {@link SoftReference} to a
  * collection of SWF tags.
  */
-public class SWFCache extends ConcurrentCacheStoreBase<ITagContainer>
+public class SWFCache extends ConcurrentCacheStoreBase<ITagContainer> implements ISWFCache
 {
 
     private static abstract class SWFCacheKey extends CacheStoreKeyBase

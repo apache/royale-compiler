@@ -49,8 +49,8 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     public void testSimple()
     {
         String code = "package com.example.components {"
-                + "import flash.events.EventDispatcher;"
-                + "public class MyEventTarget extends EventDispatcher {"
+                + "import custom.TestImplementation;"
+                + "public class MyEventTarget extends TestImplementation {"
                 + "public function MyEventTarget() {if (foo() != 42) { bar(); } }"
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
@@ -68,13 +68,13 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         		"\n" +
         		"goog.provide('com.example.components.MyEventTarget');\n" +
         		"\n" +
-        		"goog.require('flash.events.EventDispatcher');\n" +
+        		"goog.require('custom.TestImplementation');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {flash.events.EventDispatcher}\n" +
+        		" * @extends {custom.TestImplementation}\n" +
         		" */\n" +
         		"com.example.components.MyEventTarget = function() {\n" +
         		"  com.example.components.MyEventTarget.base(this, 'constructor');\n" +
@@ -82,7 +82,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         		"    bar();\n" +
         		"  }\n" +
         		"};\n" +
-        		"goog.inherits(com.example.components.MyEventTarget, flash.events.EventDispatcher);\n" +
+        		"goog.inherits(com.example.components.MyEventTarget, custom.TestImplementation);\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +

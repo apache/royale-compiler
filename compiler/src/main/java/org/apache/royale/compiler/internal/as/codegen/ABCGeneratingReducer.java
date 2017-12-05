@@ -46,6 +46,7 @@ import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
 import org.apache.royale.compiler.exceptions.DuplicateLabelException;
 import org.apache.royale.compiler.exceptions.UnknownControlFlowTargetException;
@@ -3503,8 +3504,8 @@ public class ABCGeneratingReducer
         result.addAll(index);
         // The namespace is ignored by AVM. We choose to use the default 
         // namespace at the current scope.
-        final Namespace ns = NamespaceDefinition
-                .getDefaultNamespaceDefinition(currentScope.getLocalASScope())
+        final Namespace ns = ((INamespaceResolvedReference)NamespaceDefinition
+                .getDefaultNamespaceDefinition(currentScope.getLocalASScope()))
                 .resolveAETNamespace(currentScope.getProject());
         final Name multinameLA = new Name(
                 CONSTANT_MultinameLA,

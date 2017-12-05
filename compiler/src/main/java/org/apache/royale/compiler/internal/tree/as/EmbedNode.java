@@ -28,7 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.common.IEmbedResolver;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;

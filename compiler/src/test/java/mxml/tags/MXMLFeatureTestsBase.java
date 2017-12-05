@@ -21,12 +21,21 @@ package mxml.tags;
 
 import org.apache.royale.compiler.clients.MXMLC;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.swf.io.SWFDump;
 import org.apache.royale.utils.*;
+
+import as.ASFeatureTestsBase;
+
+import utils.FlashplayerSecurityHandler;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,8 +54,27 @@ import static org.junit.Assert.fail;
  */
 public class MXMLFeatureTestsBase
 {
+	private static boolean generateResultFile = false;
+	
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
+	private static final String NAMESPACE_TEST = "library://ns.apache.org/royale/test";
     
+	public MXMLFeatureTestsBase()
+	{
+        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+		File playerExecutable = testAdapter.getFlashplayerDebugger();
+		if(playerExecutable == null || !playerExecutable.isFile() || !playerExecutable.exists()) {
+			hasFlashPlayerExecutable = false;
+		}
+	    File playerGlobal = testAdapter.getPlayerglobal();
+		if(playerGlobal == null || !playerGlobal.isFile() || !playerGlobal.exists()) {
+			hasFlashPlayerGlobal = false;
+		}
+	}
+
+	protected boolean hasFlashPlayerExecutable = true;
+	protected boolean hasFlashPlayerGlobal = true;
+	
 	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{
 		System.out.println("Generating test:");
@@ -72,6 +100,8 @@ public class MXMLFeatureTestsBase
 
 		// Build the list of SWCs to compile against on the library path.
 		List<String> swcs = new ArrayList<String>();
+    	String customSwcPath = FilenameNormalization.normalize("../../target/custom.swc");
+		swcs.add(customSwcPath);
 		if (withFramework)
 		{
 			swcs.add(testAdapter.getFlexArtifact("framework").getPath());
@@ -94,9 +124,16 @@ public class MXMLFeatureTestsBase
 		// the testsuite will only pass on systems with en_US as
 		// locale.
 		args.add("-locale=en_US");
-		args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
+        if (hasFlashPlayerGlobal)
+        	args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
+        else {
+        	String jsSwcPath = FilenameNormalization.normalize("../../../compiler-externc/target/js.swc");
+        	args.add("-external-library-path=" + jsSwcPath);
+        }
 		args.add(libraryPath);
 		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
+    	String customManifestPath = FilenameNormalization.normalize("../../src/test/resources/custom-manifest.xml");
+		args.add("-namespace+=" + NAMESPACE_TEST + "," + customManifestPath);
 		if (otherOptions != null)
 		{
 			Collections.addAll(args, otherOptions);
@@ -122,30 +159,137 @@ public class MXMLFeatureTestsBase
 		}
 		assertThat(sb.toString(), exitCode, is(0));
 
-		// Check the existence of the flashplayer executable
-		File playerExecutable = testAdapter.getFlashplayerDebugger();
-		if(!playerExecutable.isFile() || !playerExecutable.exists()) {
-			fail("The flashplayer executable " + testAdapter.getFlashplayerDebugger().getPath() + " doesn't exist.");
-		}
-
 		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
 		String swf = FilenameNormalization.normalize(tempMXMLFile.getAbsolutePath());
 		swf = swf.replace(".mxml", ".swf");
-		String[] runArgs = new String[] { testAdapter.getFlashplayerDebugger().getPath(), swf };
-		try
+		if (hasFlashPlayerExecutable)
 		{
-			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
-			exitCode = executeCommandWithTimeout(runArgs, 40);
+			File playerExecutable = testAdapter.getFlashplayerDebugger();
+			String[] runArgs = new String[] { playerExecutable.getPath(), swf };
+			try
+			{
+				System.out.println("Executing test:\n" + Arrays.toString(runArgs));
+	
+				// TODO: Hack to add the directory containing the temp swf to the flashplayer trust.
+				new FlashplayerSecurityHandler().trustFile(tempMXMLFile.getParentFile());
+	
+				exitCode = executeCommandWithTimeout(runArgs, 20);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				// If we just print the stacktrace the exitCode is still 0 and the test will pass.
+				fail("Got exception");
+			}
+			
+		    // Check that the runtime exit code was 0, meaning that no asserts failed.
+			assertThat(exitCode, is(0));
 		}
-		catch (Exception e)
+		else
 		{
-			e.printStackTrace();
-			// If we just print the stacktrace the exitCode is still 0 and the test will pass.
-			fail("Got exception");
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			boolean foundUs = false;
+			for (StackTraceElement ste : stackTraceElements)
+			{
+				String className = ste.getClassName();
+				String methodName = ste.getMethodName();
+				if (className.equals("as.ASFeatureTestsBase") &&
+					methodName.equals("compileAndRun"))
+				{
+					foundUs = true;
+					continue;
+				}
+				if (foundUs)
+				{
+				    StringWriter out = new StringWriter();
+				    PrintWriter writer = new PrintWriter(out);
+					try {
+						SWFDump.abcOption = true;
+						SWFDump.dumpSwf(writer, SWFDump.toURL(new File(swf)), null);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					String ours = out.toString();
+					className = className.replace(".", "_");
+					String resultName = className + "_" + methodName + "_swfdump.xml";
+					File resultFile = new File(testAdapter.getUnitTestBaseDir(), "swfdumps/" + resultName);
+					if (!resultFile.exists())
+					{
+						if (generateResultFile)
+							ASFeatureTestsBase.writeResultFile(resultFile, tempMXMLFile.getName(), ours);
+						System.out.println(resultName);
+						System.out.println(ours);
+						fail("result file " + resultFile.getAbsolutePath() + " does not exist");
+					}
+					String resultText = null;
+					try {
+						FileReader fileReader = new FileReader(resultFile);
+						StringBuffer stringBuffer = new StringBuffer();
+						int numCharsRead;
+						char[] charArray = new char[1024];
+						while ((numCharsRead = fileReader.read(charArray)) > 0) {
+							stringBuffer.append(charArray, 0, numCharsRead);
+						}
+						fileReader.close();
+						resultText = stringBuffer.toString();
+						String tempClassName = tempMXMLFile.getName();
+						tempClassName = tempClassName.replace(".as", "");
+						tempClassName = tempClassName.replace(".mxml", "");
+						resultText = resultText.replaceAll("%0", tempClassName);
+						int c = resultText.indexOf("<!--");
+						int c2 = resultText.indexOf("-->\n");
+						if (c != -1)
+						{
+							resultText = resultText.substring(0, c) + resultText.substring(c2 + 4);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					// remove file length because the generated classname could have a different
+					// length and affect the swf length
+					int c = resultText.indexOf("<!-- framecount");
+					int c2 = resultText.indexOf("-->\n", c);
+					resultText = resultText.substring(0, c) + resultText.substring(c2 + 4);
+					c = ours.indexOf("<!-- framecount");
+					c2 = ours.indexOf("-->\n", c);
+					ours = ours.substring(0, c) + ours.substring(c2 + 4);
+					// remove asc:compiler metadata as Eclipse builds don't get the right value
+					c = ours.indexOf("<asc:compiler");
+					c2 = ours.indexOf("/>\n", c);
+					ours = ours.substring(0, c) + ours.substring(c2 + 4);
+					c = resultText.indexOf("<asc:compiler");
+					c2 = resultText.indexOf("/>\n", c);
+					resultText = resultText.substring(0, c) + resultText.substring(c2 + 4);
+					// output contains 'succ[...]' which can be in different order
+					ours = ours.replaceAll("succs=\\[.*\\]", "");
+					resultText = resultText.replaceAll("succs=\\[.*\\]", "");
+					// string padding can be different if classname is longer so collapse spaces
+					ours = ours.replaceAll("[ ]+", " ");
+					resultText = resultText.replaceAll("[ ]+", " ");
+					// trim every line.  For some reason there are different numbers of trailing spaces on some lines.
+					String[] ourlines = ours.split("\n");
+					int n = ourlines.length;
+					for (int i = 0; i < n; i++)
+					{
+						ourlines[i] = ourlines[i].trim();
+					}
+					ours = StringUtils.join(ourlines, "\n");
+					String[] resultLines = resultText.split("\n");
+					n = resultLines.length;
+					for (int i = 0; i < n; i++)
+					{
+						resultLines[i] = resultLines[i].trim();
+					}
+					resultText = StringUtils.join(resultLines, "\n");
+					assertThat(ours, is(resultText));
+					break;
+				}
+			}
 		}
-		
-	    // Check that the runtime exit code was 0, meaning that no asserts failed.
-		assertThat(exitCode, is(0));
 	}
 	
 	protected void compileAndRun(String mxml)

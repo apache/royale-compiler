@@ -26,10 +26,10 @@
 #end
     </compiler>
 
-    <external>
+    <typedefs>
 #foreach($source in $sourcePath)        <path-element>${source.path}</path-element>
 #end
-    </external>
+    </typedefs>
 
     <as-root>${output.path}</as-root>
 

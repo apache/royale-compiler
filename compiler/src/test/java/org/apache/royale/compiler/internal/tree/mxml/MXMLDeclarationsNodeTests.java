@@ -93,6 +93,8 @@ public class MXMLDeclarationsNodeTests extends MXMLNodeBaseTests
 		    "    <fx:uint/>",
 		    "</fx:Declarations>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "This attribute is unexpected";
 		IMXMLDeclarationsNode node = getMXMLDeclarationsNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		assertThat("getDeclarationInstanceNodes", node.getDeclarationInstanceNodes().length, is(2));

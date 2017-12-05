@@ -115,7 +115,7 @@ public class TestBase implements ITestBase
         {
             backend = createBackend();
         	project = new RoyaleJSProject(workspace, backend);
-        	project.setProxyBaseClass("flash.utils.Proxy");
+        	project.setProxyBaseClass("custom.TestProxy");
         }
         project.setProblems(errors);
         RoyaleProjectConfigurator.configure(project);
@@ -679,6 +679,13 @@ public class TestBase implements ITestBase
     {
         addSourcePaths(sourcePaths);
         addLibraries(libraries);
+        if (libraries.size() == 0)
+        {
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
+    		libraries.add(new File(jsSwcPath));
+        	String customSwcPath = FilenameNormalization.normalize("../compiler/target/custom.swc");
+    		libraries.add(new File(customSwcPath));        	
+        }
         addNamespaceMappings(namespaceMappings);
 
         project.setSourcePath(sourcePaths);

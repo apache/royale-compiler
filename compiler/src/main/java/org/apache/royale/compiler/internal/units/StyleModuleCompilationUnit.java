@@ -35,13 +35,13 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.css.CSSDocument;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.css.codegen.CSSModuleGenerator;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
@@ -222,7 +222,7 @@ public class StyleModuleCompilationUnit extends CompilationUnitBase
             final CSSCodeGenProblem problem = new CSSCodeGenProblem(e);
             problems.add(problem);
         }
-        return new ABCBytesRequestResult(bytes, problems.toArray(new ICompilerProblem[0]), Collections.<EmbedData>emptySet());
+        return new ABCBytesRequestResult(bytes, problems.toArray(new ICompilerProblem[0]), Collections.<IEmbedData>emptySet());
     }
 
     /**

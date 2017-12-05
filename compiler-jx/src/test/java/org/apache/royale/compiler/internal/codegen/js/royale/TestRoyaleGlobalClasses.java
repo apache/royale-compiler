@@ -47,7 +47,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         backend = createBackend();
     	project = new RoyaleJSProject(workspace, backend);
     	project.config = new JSGoogConfiguration();
-    	project.setProxyBaseClass("flash.utils.Proxy");
+    	project.setProxyBaseClass("custom.TestProxy");
         super.setUp();
     }
 
@@ -860,47 +860,47 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     public void testProxy()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();a.foo = 'bar'; }}",
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a.foo = 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  a.setProperty('foo', 'bar');\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
     }
     
     @Test
     public void testProxyGet()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();var bar:* = a.foo; }}",
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var bar:* = a.foo; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  var /** @type {*} */ bar = a.getProperty('foo');\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.getProperty('foo');\n}");
     }
     
     @Test
     public void testProxyConcat()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();var baz:String = a.foo + 'bar'; }}",
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var baz:String = a.foo + 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  var /** @type {string} */ baz = a.getProperty('foo') + 'bar';\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {string} */ baz = a.getProperty('foo') + 'bar';\n}");
     }
     
     @Test
     public void testProxyAddAndAssign()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();a.foo += 'bar'; }}",
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a.foo += 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  a.setProperty('foo', a.getProperty('foo') + 'bar');\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', a.getProperty('foo') + 'bar');\n}");
     }
     
     @Test
     public void testProxyForLoop()
     {
     	IForLoopNode node = (IForLoopNode) getNode(
-                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();for (var p:* in a) delete a[p];; }}",
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();for (var p:* in a) delete a[p];; }}",
                 IForLoopNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {*} */ p in a.propertyNames())\n  a.deleteProperty(p);");
@@ -910,7 +910,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     public void testProxyForEachLoop()
     {
     	IForLoopNode node = (IForLoopNode) getNode(
-                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();for each (var p:String in a) var i:int = p.length; }}",
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();for each (var p:String in a) var i:int = p.length; }}",
                 IForLoopNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitForLoop(node);
         assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = p.length;}\n");

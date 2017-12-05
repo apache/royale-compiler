@@ -66,6 +66,17 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         IASNode rightNode = node.getRightOperandNode();
 
     	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
+        if (fjs.isDateProperty(node, false))
+        {
+    		writeLeftSide(node, leftNode, rightNode);
+            String rightName = ((IIdentifierNode)rightNode).getName();
+            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(propGetter.getFunctionName());
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+    		return;
+        }
         IDefinition def = node.resolve(getProject());
         if (def == null)
         {
@@ -167,17 +178,6 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		write(ASEmitterTokens.SQUARE_CLOSE);
         		return;
         	}
-        }
-        else if (fjs.isDateProperty(node))
-        {
-    		writeLeftSide(node, leftNode, rightNode);
-            String rightName = ((IIdentifierNode)rightNode).getName();
-            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(propGetter.getFunctionName());
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.PAREN_CLOSE);
-    		return;
         }
         else if (def.getParent() != null &&
         		def.getParent().getQualifiedName().equals("Array"))

@@ -35,6 +35,9 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.IEmbedData;
+import org.apache.royale.compiler.embedding.transcoders.ITranscoder;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.embedding.transcoders.DataTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.ImageTranscoder;
@@ -71,7 +74,7 @@ import org.apache.royale.utils.StringEncoder;
  * This is the main class which contains all information extracted from embed
  * meta data.
  */
-public class EmbedData
+public class EmbedData implements IEmbedData
 {
     private static final String EMBED_SWC_SEP = "|";
 
@@ -151,7 +154,7 @@ public class EmbedData
      * @param problems any problems with the key or value
      * @return true if there was an error
      */
-    public boolean addAttribute(CompilerProject project, ISourceLocation location, String key, String value, Collection<ICompilerProblem> problems)
+    public boolean addAttribute(ICompilerProject project, ISourceLocation location, String key, String value, Collection<ICompilerProblem> problems)
     {
         boolean hadError = false;
         try
@@ -200,7 +203,7 @@ public class EmbedData
                     Collection<ICompilationUnit> referencingCUs = project.getCompilationUnits(containingSourceFilename);
                     for (ICompilationUnit cu : referencingCUs)
                     {
-                        project.addUnfoundReferencedSourceFileDependency(value, cu);
+                        ((RoyaleProject)project).addUnfoundReferencedSourceFileDependency(value, cu);
                     }
                     hadError = true;
                 }
@@ -392,7 +395,7 @@ public class EmbedData
      * @param problems The colleciton of compiler projects to which this method should add problems.
      * @return true if the transcoder was successfully constructed
      */
-    public boolean createTranscoder(CompilerProject project, ISourceLocation location, Collection<ICompilerProblem> problems)
+    public boolean createTranscoder(ICompilerProject project, ISourceLocation location, Collection<ICompilerProblem> problems)
     {
         // there should always be a source, with the exception of skin embedding, so don't
         // create a transcoder in this error state
@@ -412,7 +415,7 @@ public class EmbedData
             return false;
         }
 
-        Workspace workspace = project.getWorkspace();
+        Workspace workspace = (Workspace)project.getWorkspace();
         switch (mimeType)
         {
             case JPEG:
@@ -547,7 +550,7 @@ public class EmbedData
      * 
      * @return transcoder
      */
-    public final TranscoderBase getTranscoder()
+    public final ITranscoder getTranscoder()
     {
         return transcoder;
     }
@@ -651,8 +654,14 @@ public class EmbedData
             String packagePath = null;
             if((containingSourcePath != null) && !royaleProject.getSourcePath().isEmpty()) {
                 for (File sourcePath : royaleProject.getSourcePath()) {
+                	if (containingSourcePath.equals(sourcePath.getAbsolutePath()))
+                	{
+                		packagePath = "";
+                		break;
+                	}
                     if (containingSourcePath.startsWith(sourcePath.getAbsolutePath())) {
                         packagePath = containingSourcePath.substring(sourcePath.getAbsolutePath().length() + 1);
+                        break;
                     }
                 }
             }

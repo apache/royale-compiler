@@ -177,7 +177,7 @@ public class CSSManager implements ICSSManager
     public ICSSDocument getDefaultCSS(final File swcFile)
     {
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
-        final CSSDocumentCache cache = swcManager.getCSSDocumentCache();
+        final CSSDocumentCache cache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
         final ISWC swc = swcManager.get(swcFile);
         return cache.getDefaultsCSS(swc, royaleProject.getCompatibilityVersion());
     }
@@ -231,7 +231,7 @@ public class CSSManager implements ICSSManager
     {
         final ImmutableList.Builder<ICSSDocument> builder = new ImmutableList.Builder<ICSSDocument>();
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
-        final CSSDocumentCache cssCache = swcManager.getCSSDocumentCache();
+        final CSSDocumentCache cssCache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
         for (final IFileSpecification themeFile : royaleProject.getThemeFiles())
         {
             try
@@ -283,7 +283,7 @@ public class CSSManager implements ICSSManager
     @Override
     public ICSSDocument getCSS(String cssFilename)
     {
-        final CSSDocumentCache cache = royaleProject.getWorkspace().getSWCManager().getCSSDocumentCache();
+        final CSSDocumentCache cache = (CSSDocumentCache)royaleProject.getWorkspace().getSWCManager().getCSSDocumentCache();
         final CacheStoreKeyBase key = CSSDocumentCache.createKey(cssFilename);
         final ICSSDocument css = cache.get(key);
         

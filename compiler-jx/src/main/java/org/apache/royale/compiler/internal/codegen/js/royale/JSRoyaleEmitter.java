@@ -37,6 +37,8 @@ import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
@@ -61,11 +63,12 @@ import org.apache.royale.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
+import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
+import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesSetters;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -957,7 +960,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	if (nodeDef instanceof FunctionDefinition &&
         			isCustomNamespace((FunctionDefinition)nodeDef))
         	{
-            	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getWalker().getProject()).getName();
+            	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getWalker().getProject()).getName();
             	write(ns + "::");
         	}
     		write(((IIdentifierNode)node).getName());
@@ -1231,7 +1234,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      * @param obj
      * @return
      */
-    public boolean isDateProperty(IExpressionNode obj)
+    public boolean isDateProperty(IExpressionNode obj, boolean writeAccess)
     {
 		RoyaleProject project = (RoyaleProject)getWalker().getProject();
 		if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
@@ -1241,9 +1244,23 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			IExpressionNode rightNode = ((MemberAccessExpressionNode)obj).getRightOperandNode();
 			leftDef = leftNode.resolveType(project);
 			IDefinition rightDef = rightNode.resolve(project);
-			if (leftDef != null && leftDef.getQualifiedName().equals("Date") && rightDef instanceof AccessorDefinition)
+			if (leftDef != null && leftDef.getQualifiedName().equals("Date"))
 			{
-				return true;
+				if (rightDef instanceof AccessorDefinition)
+					return true;
+				else if (rightDef == null && rightNode.getNodeID() == ASTNodeID.IdentifierID)
+				{
+					if (writeAccess)
+					{
+			            DatePropertiesSetters propSetter = DatePropertiesSetters.valueOf(((IIdentifierNode)rightNode).getName().toUpperCase());
+			            if (propSetter != null) return true;
+					}
+					else
+					{
+			            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(((IIdentifierNode)rightNode).getName().toUpperCase());
+			            if (propGetter != null) return true;
+					}
+				}
 			}
 		}
 		return false;

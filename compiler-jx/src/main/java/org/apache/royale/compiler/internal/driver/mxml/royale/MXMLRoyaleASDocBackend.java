@@ -38,6 +38,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWa
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.ASDocASSourceFileHandler;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -64,7 +65,7 @@ public class MXMLRoyaleASDocBackend extends MXMLRoyaleSWCBackend
     @Override
     public Configurator createConfigurator()
     {
-        return new Configurator(ASDocConfiguration.class);
+        return new RoyaleProjectConfigurator(ASDocConfiguration.class);
     }
 
     @Override
