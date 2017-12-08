@@ -18,7 +18,7 @@
 
 -->
 
-<project name="royale" default="main" basedir=".">
+<project name="royale-compiler" default="main" basedir=".">
 
     <property file="${basedir}/env.properties"/>
     <property environment="env"/>
@@ -28,7 +28,8 @@
     <property name="kit.prefix" value="apache-royale-compiler-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
-
+    <property name="staging-dir" value="${basedir}/temp" />
+    
     <!--
      Optional jars but should be in place for a real release build.
      
@@ -213,10 +214,12 @@
                                                                                        
         FixMe: clean needs to clean - add code to detect unversioned files
     -->
-    <target name="source-package" depends="stage-source,stage-source-jx,source-package-zip,source-package-tgz"
+    <target name="source-package" depends="stage-all,source-package-zip,source-package-tgz"
         description="Package source files required to build in zip and tar-gzip file">
     </target>
-        
+    
+    <target name="stage-all" depends="stage-source,stage-source-jx" />
+    
     <!--
      Packages the source distribution with ZIP.
      -->
@@ -236,9 +239,9 @@
         description="Package source files required to build in zip file" >
         <antcall target="clean-temp"/>
         <sleep seconds="3" />
-        <mkdir dir="${basedir}/temp"/>
+        <mkdir dir="${staging-dir}"/>
 
-        <copy todir="${basedir}/temp" includeEmptyDirs="false">
+        <copy todir="${staging-dir}" includeEmptyDirs="false">
             <fileset dir="${basedir}">
                 <include name="build.xml"/>
                 <include name="build.properties"/>
@@ -274,7 +277,7 @@
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false">
             <exclude name="compiler/src/assembly/**"/>
             <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="compiler/target/**"/>
@@ -291,20 +294,20 @@
             <exclude name="**/*.swf"/>
             <exclude name="**/*.swc"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
         
         <!-- 
          Unix shell scripts need the correct line endings. 
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">  
+        <fixcrlf srcdir="${staging-dir}" eol="unix" fixlast="false">  
             <include name="**.sh"/>
         </fixcrlf>
     </target>
 
     <target name="stage-compiler">
-        <copy todir="${basedir}/temp/compiler" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -319,7 +322,7 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/compiler-build-tools" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-build-tools" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-build-tools">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -334,7 +337,7 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/compiler-test-utils" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-test-utils" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-test-utils">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -349,7 +352,7 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/compiler-jburg-types" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-jburg-types" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-jburg-types">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -375,7 +378,7 @@
     </target>
 
     <target name="stage-fb-integration">
-        <copy todir="${basedir}/temp/debugger" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/debugger" includeEmptyDirs="false">
             <fileset dir="${basedir}/debugger">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -387,7 +390,7 @@
                 <exclude name="target/META-INF/**"/>
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/flex-compiler-oem" includeEmptyDirs="false">
             <fileset dir="${basedir}/flex-compiler-oem">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -396,7 +399,7 @@
                 <exclude name="target/classes/**"/>
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/swfutils" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/swfutils" includeEmptyDirs="false">
             <fileset dir="${basedir}/swfutils">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -408,7 +411,7 @@
     </target>
 
     <target name="stage-ant-tasks">
-        <copy todir="${basedir}/temp/royale-ant-tasks" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/royale-ant-tasks" includeEmptyDirs="false">
             <fileset dir="${basedir}/royale-ant-tasks">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -426,13 +429,13 @@
     <target name="stage-source-jx"
         description="Package jx source files with other royale files required to build in zip file" >
         
-        <copy todir="${basedir}/temp" >
+        <copy todir="${staging-dir}" >
             <fileset dir="${basedir}">
                 <include name="LICENSE.bin"/>
             </fileset>
         </copy>
         
-        <copy todir="${basedir}/temp/compiler-jx" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-jx" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-jx">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -453,7 +456,7 @@
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false">
             <exclude name="compiler/src/assembly/**"/>
             <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="**/assets/**"/>
@@ -469,27 +472,27 @@
             <exclude name="**/*.swf"/>
             <exclude name="**/*.swc"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler-jx/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="unix" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler/src/assembly" eol="unix" fixlast="false">
             <include name="**"/>
             <exclude name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="unix" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler-jx/src/assembly" eol="unix" fixlast="false">
             <include name="**"/>
             <exclude name="**.bat"/>
         </fixcrlf>
-        <chmod dir="${basedir}/temp/compiler/src/assembly" excludes="**/*.bat" perm="+x" />
-        <chmod dir="${basedir}/temp/compiler-jx/src/assembly" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${staging-dir}/compiler/src/assembly" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${staging-dir}/compiler-jx/src/assembly" excludes="**/*.bat" perm="+x" />
         
         <!--
          Unix shell scripts need the correct line endings.
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="unix" fixlast="false">
             <include name="**.sh"/>
         </fixcrlf>
     </target>
@@ -509,11 +512,18 @@
         description="Package binary files in zip and tar-gzip file.">
         
         <antcall target="stage-source"/>
+        <antcall target="stage-binary"/>
         
+        <antcall target="binary-package-zip"/>
+        <antcall target="binary-package-tgz"/>
+        
+    </target>
+
+    <target name="stage-binary" >
         <!-- these files are in addition to the remaining source files -->
         
         <!-- generated -->
-        <copy todir="${basedir}/temp/compiler/lib">
+        <copy todir="${staging-dir}/compiler/lib">
             <fileset dir="${basedir}/compiler/lib">
                 <include name="**"/>
                 <exclude name="external/**"/>
@@ -522,10 +532,10 @@
         </copy>
         
         <antcall target="stage-source-jx" />
-
+        
         <!-- generated -->
-        <mkdir dir="${basedir}/temp/js"/>
-        <copy todir="${basedir}/temp/js">
+        <mkdir dir="${staging-dir}/js"/>
+        <copy todir="${staging-dir}/js">
             <fileset dir="${basedir}/compiler-jx">
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
@@ -537,12 +547,8 @@
                 <exclude name="lib/junit**"/>
             </fileset>
         </copy>
-                
-        <antcall target="binary-package-zip"/>
-        <antcall target="binary-package-tgz"/>
-        
     </target>
-
+    
     <!--
      Packages the binary distribution with ZIP.
      -->
@@ -706,7 +712,7 @@
             replace="${asfheader}${generated.by.comment}"
             byline="false"
             flags="s">
-            <fileset dir="${basedir}/temp">
+            <fileset dir="${staging-dir}">
                 <include name="**/*.js" />
             </fileset>
         </replaceregexp>

@@ -200,23 +200,3 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
---------------------------------------------------------------------------------
-
-APACHE ROYALE COMPILER SUBCOMPONENTS:
-
-The Apache Royale Compiler includes a number of subcomponents with
-separate copyright notices and license terms. Your use of the source
-code for the these subcomponents is subject to the terms and
-conditions of the following licenses.
-
-The Google Closure Library Externs For Common Libraries are available 
-under Apache License 2.0.  For details see the flex-typedefs folder.
-
-The .as files in flex-typedefs/GCL/src are derived from the .js files in the 
-Google Closure Library which are available under Apache License 2.0.
-
-The createjs.js file in flex-typedefs/createjs/src/main/javascript is
-a non-copyrightable subset of EaselJS and TweenJS from 
-https://github.com/CreateJS 
-

@@ -18,7 +18,7 @@ Getting the latest sources via git
 
     Getting the source code is the recommended way to get the Apache Royale Compiler.  
     The compiler can also be installed by installing an Apache Royale SDK via NPM
-    or by unpacking an Apache Royale binary distributions available from link on our 
+    or by unpacking Apache Royale binary distributions available from link on our 
     website at http://royale.apache.org/.
 
     You can always checkout the latest source via git using the following
