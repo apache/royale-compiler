@@ -31,6 +31,11 @@
 			<location>/Users/erik/Documents/git/royale-compiler/compiler-test-utils/src/main/java</location>
 		</link>
 		<link>
+			<name>compiler-test-utils</name>
+			<type>2</type>
+			<location>/Users/erik/Documents/git/royale-compiler/compiler-test-utils</location>
+		</link>
+		<link>
 			<name>royale-ant-tasks</name>
 			<type>2</type>
 			<location>/Users/aharui/git/royale/ant/royale-compiler/royale-ant-tasks/src/main/java</location>

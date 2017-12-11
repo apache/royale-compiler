@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="COMPILER_TEST_UTILS"/>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry excluding="**/EnvProperties.java" kind="src" path="COMPILER_TEST_UTILS"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler"/>
+	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-test-utils/target/classes"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/google/closure-compiler/compiler.jar"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/commons-io.jar"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/args4j.jar"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/guava.jar"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/flex-tool-api.jar"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/junit-4.10.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons Compress"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/COMMONS_COMPRESS"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler/lib/external/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="/compiler/lib/compiler-common.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-compress-1.10.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
+	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler/lib/external/commons-compress-1.10.jar"/>
+	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-externc/target/classes"/>
+	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-common/target/classes"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

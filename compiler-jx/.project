@@ -26,6 +26,16 @@
 			<type>2</type>
 			<location>/Users/erik/Documents/git/royale-compiler/compiler-test-utils/src/main/java</location>
 		</link>
+		<link>
+			<name>compiler-common</name>
+			<type>2</type>
+			<location>/Users/erik/Documents/git/royale-compiler/compiler-common</location>
+		</link>
+		<link>
+			<name>java</name>
+			<type>2</type>
+			<location>/Users/erik/Documents/git/royale-compiler/compiler-externc/src/test/java</location>
+		</link>
 	</linkedResources>
 	<variableList>
 		<variable>
