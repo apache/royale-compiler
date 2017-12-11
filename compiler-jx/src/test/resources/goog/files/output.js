@@ -13,20 +13,20 @@
  */
 goog.provide('org.apache.royale.A');
 
-goog.require('flash.events.IEventDispatcher');
-goog.require('flash.events.EventDispatcher');
+goog.require('custom.TestInterface');
+goog.require('custom.TestImplementation');
 
 /**
  * @constructor
- * @extends {flash.events.EventDispatcher}
- * @implements {flash.events.IEventDispatcher}
+ * @extends {custom.TestImplementation}
+ * @implements {custom.TestInterface}
  */
 org.apache.royale.A = function() {
 	var self = this;
 	org.apache.royale.A.base(this, 'constructor');
 	self.trace(typeof("a"));
 };
-goog.inherits(org.apache.royale.A, flash.events.EventDispatcher);
+goog.inherits(org.apache.royale.A, custom.TestImplementation);
 
 /**
  * @const

@@ -125,6 +125,9 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             boolean valIsNumber = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants.Number) ||
             										 avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
             										 avdef.getQualifiedName().equals(IASLanguageConstants.uint)));
+            if (!valIsNumber && avdef == null && avnode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
+            		fjs.isDateProperty(avnode, false))
+            	valIsNumber = true;
             if (varIsNumber && !valIsNumber && (avdef == null || avdef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
             {
         		if (avnode.getNodeID() == ASTNodeID.FunctionCallID)

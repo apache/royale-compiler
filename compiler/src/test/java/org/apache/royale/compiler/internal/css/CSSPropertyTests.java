@@ -39,7 +39,7 @@ public class CSSPropertyTests extends CSSBaseTests {
 	
 	protected String getPrefix()
 	{
-		return "s|Label {" + EOL;
+		return "custom|Label {" + EOL;
 	}
 			
     protected String getPostfix()

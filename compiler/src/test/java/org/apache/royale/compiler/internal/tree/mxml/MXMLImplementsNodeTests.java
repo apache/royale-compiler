@@ -45,10 +45,9 @@ public class MXMLImplementsNodeTests extends MXMLNodeBaseTests
  		// override getTemplate() and getMXML().
 		return new String[] 
 		{
-		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
-		    "          xmlns:d='flash.display.*'",
-		    "          %1",
-		    "</d:Sprite>"
+			"<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test'",
+		    "          %1 >",
+			"</fx:Object>"
 		};
     };
 	

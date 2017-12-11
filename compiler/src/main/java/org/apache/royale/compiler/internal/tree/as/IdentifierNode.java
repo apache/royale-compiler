@@ -46,6 +46,7 @@ import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IQualifiers;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
@@ -565,7 +566,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     INamespaceReference qualifier = workspace.getPackageNamespaceDefinitionCache().get(packageName, false);
 
                     return new Name(isAttributeIdentifier() ? CONSTANT_QnameA : CONSTANT_Qname,
-                            new Nsset(qualifier.resolveAETNamespace(project)), getName());
+                            new Nsset(((INamespaceResolvedReference)qualifier).resolveAETNamespace(project)), getName());
                 }
 
                 Set<INamespaceDefinition> namespaceSet = null;

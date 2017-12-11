@@ -14,5 +14,9 @@
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/junit-4.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons Compress"/>
 	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler/lib/external/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/compiler/lib/compiler-common.jar"/>
+	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-compress-1.10.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

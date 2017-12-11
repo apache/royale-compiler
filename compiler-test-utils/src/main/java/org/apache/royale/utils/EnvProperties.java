@@ -94,7 +94,8 @@ public class EnvProperties {
 	{
         String prefix = "";
 		Properties p = new Properties();
-        String envFileName = FilenameNormalization.normalize("../../../env.properties");
+        String envFileName = FilenameNormalization.normalize("../env.properties");
+        System.out.println("looking for " + envFileName);
         try {
             File f = new File(envFileName);
             if (f.exists())
@@ -138,7 +139,7 @@ public class EnvProperties {
 
 		ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
 		if (ASJS == null)
-			ASJS = FilenameNormalization.normalize("../../../../royale-asjs");
+			ASJS = FilenameNormalization.normalize("../../royale-asjs");
 		System.out.println("environment property - ASJS_HOME = " + ASJS);
         
         GOOG = p.getProperty(prefix + "GOOG_HOME", System.getenv("GOOG_HOME"));

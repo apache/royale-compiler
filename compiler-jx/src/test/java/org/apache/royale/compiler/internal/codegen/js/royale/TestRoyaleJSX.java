@@ -341,33 +341,33 @@ public class TestRoyaleJSX extends ASTestBase
     @Test
     public void testImportedClass()
     {
-        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher/>;\n}");
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import custom.TestImplementation;\n  return <TestImplementation/>;\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, null);\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(custom.TestImplementation, null);\n}");
     }
 
     @Test
     public void tesClassWithAttribute()
     {
-        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher id=\"hello\"/>;\n}");
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import custom.TestImplementation;\n  return <TestImplementation id=\"hello\"/>;\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, { id: 'hello' });\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(custom.TestImplementation, { id: 'hello' });\n}");
     }
 
     @Test
     public void tesClassWithRef()
     {
-        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher ref=\"hello\"/>;\n}");
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import custom.TestImplementation;\n  return <TestImplementation ref=\"hello\"/>;\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, { 'ref': 'hello' });\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(custom.TestImplementation, { 'ref': 'hello' });\n}");
     }
 
     @Test
     public void tesClassWithKey()
     {
-        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher key=\"hello\"/>;\n}");
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import custom.TestImplementation;\n  return <TestImplementation key=\"hello\"/>;\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, { 'key': 'hello' });\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  return React.createElement(custom.TestImplementation, { 'key': 'hello' });\n}");
     }
 
     @Override

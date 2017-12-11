@@ -45,9 +45,9 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     public void setUp()
     {
         backend = createBackend();
-    	royaleJSProject = new RoyaleJSProject(workspace, backend);
-    	royaleJSProject.config = new JSGoogConfiguration();
-    	royaleJSProject.setProxyBaseClass("flash.utils.Proxy");
+    	project = new RoyaleJSProject(workspace, backend);
+    	project.config = new JSGoogConfiguration();
+    	project.setProxyBaseClass("custom.TestProxy");
         super.setUp();
     }
 

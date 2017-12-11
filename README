@@ -18,7 +18,7 @@ Getting the latest sources via git
 
     Getting the source code is the recommended way to get the Apache Royale Compiler.  
     The compiler can also be installed by installing an Apache Royale SDK via NPM
-    or by unpacking an Apache Royale binary distributions available from link on our 
+    or by unpacking Apache Royale binary distributions available from link on our 
     website at http://royale.apache.org/.
 
     You can always checkout the latest source via git using the following
@@ -26,19 +26,6 @@ Getting the latest sources via git
 
 	 git clone https://github.com/apache/royale-compiler.git royale-compiler
 	 cd royale-compiler
-	 git checkout develop
-
-    When working with the sources from Git, the Apache Royale Compiler 
-    also requires code from the Apache Royale Typedefs git repositories.
-    These Apache Royale Typedefs source files are bundled in Apache Royale Compiler
-    source code distributions, so this step is optional when using source code
-    distributions.
-
-    To get the latest source via git for the Apache Royale Typedefs use the 
-    following command:
-
-	 git clone https://github.com/apache/royale-typedefs.git royale-typedefs
-	 cd royale-typedefs
 	 git checkout develop
 
 Building the Apache Royale Compiler
@@ -53,18 +40,42 @@ Building the Apache Royale Compiler
     Linux support is currently experimental has not been fully tested so you 
     may run into issues.
 
-Install Prerequisites
----------------------
-    
     You can build the Apache Royale Compiler with Apache Maven or Apache Ant.
-    See build instructions later in this file.
+
+Building the Apache Royale Compiler with Apache Maven
+-----------------------------------------------------
+
+    Before building the Apache Royale Compiler with Apache Maven you must install 
+    the following software.
+
+    ==================================================================================
+    SOFTWARE                                
+    ==================================================================================
+
+    Java SDK 1.7 or greater (*1)            
+
+    Maven 3.3.9 or greater (*1)              
+
+    ==================================================================================
+
+    *1) The bin directories for Maven and Java should be added to your
+        PATH.
+
+    You must first build the utils profile without the main profile 
+    and then the main profile.  So, first run:
+
+        mvn clean install -P -main,utils
+
+    Then run
+
+        mvn clean install
+
+Building the Apache Royale Compiler with Ant
+----------------------------------------------
 
     Before building the Apache Royale Compiler with Apache Ant you must install 
     the following software and set the corresponding environment variables using 
-    absolute file paths.  Relative file paths will result in build errors.  If
-    you do not want to set environment variables for the optional settings,
-    you may put the entries in an env.properties file as described in the
-    Running Tests section.
+    absolute file paths.  Relative file paths will result in build errors.
 
     ==================================================================================
     SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
@@ -76,20 +87,8 @@ Install Prerequisites
     Ant 1.7.1 or greater (*1)                              ANT_HOME
         (for Java 1.7 see note at (*2))
 
-    Optional: Apache Royale SDK or repository (*3)         ASJS_HOME
-
-    Optional: Adobe AIR Integration Kit (*4)               AIR_HOME
-
-    Optional: Adobe Flash Player Content Debugger (*5)     FLASHPLAYER_DEBUGGER
-
-    Optional: Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_HOME
-
-    Optional: Apache Flex SDK or repository (*7)           FLEX_HOME
-
-    Optional: Apache Flex TLF source (*8)                  TLF_HOME
-
     ==================================================================================
-
+    
     *1) The bin directories for ANT_HOME and JAVA_HOME should be added to your
         PATH.
 
@@ -107,6 +106,62 @@ Install Prerequisites
          or greater. If you use Java 1.7 with Ant 1.7, ant reports the java
          version as 1.6 so the JVM args for the data model (-d32/-d64) will not
          be set correctly and you will get compile errors.
+
+    Once you've done that, use
+
+        ant main        (or just ant since the default target is main)
+
+    to download the third-party dependencies and build the source and run
+    some tests.  Since the third-party dependencies take a little while to 
+    download and they don't change very often, they are not cleaned with 
+     the regular clean target.
+
+    To clean the build of everything other than the downloaded third-party
+    dependencies use
+
+        ant clean
+
+    To clean the build, of everything, including the downloaded third-party
+    dependencies use
+
+        ant wipe-all (which is just thirdparty-clean followed by clean)
+
+    To get a brief listing of all the targets type
+
+        ant -projecthelp
+
+
+Running Integration Tests
+-------------------------
+
+    The build process will run some tests.  By default, the build will not
+    run feature or integration tests.  Before running some of the feature or 
+    integration tests you will need to set the environment variables described
+    below, or set up a env.properties file with those settings.
+
+    A template is found here: env-template.properties. 
+
+    Some tests of SWF output may use the Adobe Flash Player or Adobe AIR to
+    run a SWF.  If you plan to run those tests, ensure that the folder 
+    containing the source code is in your Flash Player Trust files.
+
+    ==================================================================================
+    SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
+    ==================================================================================
+
+    Apache Royale SDK or repository (*3)         ASJS_HOME
+
+    Adobe AIR Integration Kit (*4)               AIR_HOME
+
+    Adobe Flash Player Content Debugger (*5)     FLASHPLAYER_DEBUGGER
+
+    Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_HOME
+
+    Apache Flex SDK or repository (*7)           FLEX_HOME
+
+    Apache Flex TLF source (*8)                  TLF_HOME
+
+    ==================================================================================
 
     *3) This option is only required to run additional tests to verify that the compiler
         can output Royale applications that use Royale framework SWCs.
@@ -214,69 +269,6 @@ Software Dependencies
         Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
 
 
-Running Tests
--------------
-
-    The build processes will attempt to run some tests.  Before running some of the
-    functional or feature tests you will need to set the environment variables described
-    earlier, or set up a env.properties file with those settings.
-
-    A template is found here: env-template.properties. 
-
-    Some tests of SWF output may use the Adobe Flash Player or Adobe AIR to
-    run a SWF.  If you plan to run those tests, ensure that the folder 
-    containing the source code is in your Flash Player Trust files.
-
-Building the Source in the Source Distribution
-----------------------------------------------
-
-    You can build the compiler via Apache Maven or Apache Ant.
-
-    To build the Apache Royale Compiler with Apache Maven, get Maven 
-    (http://maven.apache.org) and unpack it somewhere.
-    This directory is now "MAVEN_HOME". Make sure MAVEN_HOME/bin
-    is on your systems path.
-
-    You must first build the utils profile without the main profile 
-    and then the main profile.  So, first run:
-
-        mvn clean install -P -main,utils
-
-    Then run
-
-        mvn clean install
-
-    To build the Apache Royale Compiler with Apache Ant, first make sure you
-    have all the prerequisites in place and the environment variables
-    set (see Install Prerequisites above).  Once you've done that, use
-
-        ant main        (or just ant since the default target is main)
-
-    to download the third-party dependencies and build the source.  Since the
-    third-party dependencies take a little while to download and they don't
-    change very often, they are not cleaned with the regular clean target.
-
-    To clean the build of everything other than the downloaded third-party
-    dependencies use
-
-        ant clean
-
-    To clean the build, of everything, including the downloaded third-party
-    dependencies use
-
-        ant wipe (which is just thirdparty-clean followed by clean)
-
-    To generate a source distribution package and a binary distribution package
-    use
-
-        ant -Dbuild.number=<YYYYMMDD> -Dbuild.noprompt= release
-
-    The packages can be found in the "out" subdirectory.
-
-    To get a brief listing of all the targets type
-
-        ant -projecthelp
-
 Using the Binary Distribution
 -----------------------------
 
@@ -288,14 +280,18 @@ Using the Binary Distribution
     Apache Royale SDK to create Apache Royale applications via Ant.
 
     To temporarily use a set of binary artifacts when building Apache Royale
-    applications with Apache Ant, set the ROYALE_COMPILER_HOME property as an 
+    applications with Apache Ant, set the ROYALE_COMPILER_HOME property to the 
+    compiler-jx folder in the binary distribution and set ROYALE_SWF_COMPILER_HOME
+    to the compiler folder in the binary distribution either via an 
     environment variable or property when running Ant to build the Apache Royale
     application.
 
     To replace the current Royale Compiler binaries in a Apache Royale SDK, 
     run the copy-compiler target from the Ant script in the Apache Royale SDK and
-    set ROYALE_COMPILER_HOME when running that target.
+    set ROYALE_COMPILER_REPO to the root of the binary distribution when running 
+    that target.
 
+       ant -DROYALE_COMPILER_REPO=<path to binary distribution> copy-compiler
 
 Thanks for using Apache Royale.  Enjoy!
 

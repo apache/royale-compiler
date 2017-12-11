@@ -25,8 +25,8 @@ import static org.apache.royale.abc.ABCConstants.OP_getlex;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -217,7 +217,7 @@ public class LexicalScope
     /**
      *  Local variables.
      */
-    private final Map <String,Binding>localBindings = new HashMap<String,Binding>();
+    private final Map <String,Binding>localBindings = new LinkedHashMap<String,Binding>();
 
     /**
      * Inlined functions local variables.

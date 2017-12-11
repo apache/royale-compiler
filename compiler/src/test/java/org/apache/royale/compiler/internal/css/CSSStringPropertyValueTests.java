@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -76,6 +77,10 @@ public class CSSStringPropertyValueTests extends CSSPropertyValueTests {
 	{
 		String code = "	fontFamily: \"Ver'dana\"; ";
 		
+		errorFilters = new String[3];
+		errorFilters[0] = "mismatched character '<EOF>' expecting set null";
+		errorFilters[1] = "unexpected token '<EOF>' expecting CSS property name";
+		errorFilters[2] = "mismatched input '<EOF>' expecting BLOCK_END";
 		List<CSSStringPropertyValue> stringProperties = getCSSStringPropertyValues(code);
 		assertThat("stringProperties.size()" , stringProperties.size(), is(0) );	
 	}

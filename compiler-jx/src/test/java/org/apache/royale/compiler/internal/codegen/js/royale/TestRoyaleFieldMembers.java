@@ -182,10 +182,10 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withTypeValueCustomNamespaceStaticMethodCall()
     {
-    	IClassNode node = (IClassNode) getNode("import flash.utils.flash_proxy;use namespace flash_proxy;public static var foo:Object = initFoo(); flash_proxy static function initFoo():Object { return null; }",
+    	IClassNode node = (IClassNode) getNode("import custom.custom_namespace;use namespace custom_namespace;public static var foo:Object = initFoo(); custom_namespace static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nRoyaleTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nRoyaleTest_A[\"http://ns.apache.org/2017/custom/namespace::initFoo\"] = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A[\"http://ns.apache.org/2017/custom/namespace::initFoo\"]();\n\n");
     }
     
     @Test

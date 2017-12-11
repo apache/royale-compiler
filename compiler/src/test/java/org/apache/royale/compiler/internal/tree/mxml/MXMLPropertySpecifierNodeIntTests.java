@@ -53,7 +53,7 @@ public class MXMLPropertySpecifierNodeIntTests extends MXMLPropertySpecifierNode
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' -1 '>"
+		    "<MyComp p=' -1 '/>"
 		};
 		testMXMLPropertySpecifierNode(code, -1);
 	}

@@ -46,6 +46,7 @@
 	
     <property name="compiler" value="${compiler.tests}/../.."/>
     <property name="royale" value="${compiler}"/>
+    <property name="compiler-externc" value="${compiler}/../compiler-externc"/>
 
     <path id="lib.path">
         <fileset dir="${royale}/lib" includes="compiler-royaleTasks.jar"/>
@@ -68,6 +69,26 @@
         <java jar="${royale}/lib/compiler-swfdump.jar" fork="true"/>
     </target>
     
+    <target name="js.swc">
+        <copy file="${compiler-externc}/src/test/config/compile-as-config.xml"
+        todir="${compiler-externc}/target" />
+        <java jar="${royale}/lib/compiler-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="-load-config=${compiler-externc}/target/compile-as-config.xml" />
+            <arg value="-output=${compiler-externc}/target/js.swc" />
+        </java>
+    </target>
+
+    <target name="custom.swc">
+        <copy file="config/compile-as-config.xml"
+        todir="${royale}/target" />
+        <java jar="${royale}/lib/compiler-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="-load-config=${royale}/target/compile-as-config.xml" />
+            <arg value="-output=${royale}/target/custom.swc" />
+        </java>
+    </target>
+
     <!-- tests used to be divided up like this
  
     <target name="compile.unit.tests">
@@ -257,6 +278,11 @@
         <echo>compiler is ${compiler} royale is ${royale}</echo>
         <delete dir="${compiler}/target/test-classes"/>
         <mkdir dir="${compiler}/target/test-classes"/>
+        <copy todir="${compiler}/target/test-classes">
+            <fileset dir="${compiler.tests}/resources">
+                <include name="**"/>
+            </fileset>
+        </copy>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/test-classes" includeAntRuntime="true">
             <src path="${compiler.tests}/java"/>
             <compilerarg value="-Xlint:all,-path"/>
@@ -264,6 +290,8 @@
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${compiler}/../compiler-externc/target/classes"/>
+                <pathelement location="${royale}/lib/compiler-common.jar"/>
                 <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
         </javac>
@@ -272,7 +300,7 @@
     <target name="tests" depends="download, compile.tests">
         <mkdir dir="${compiler}/target/junit-reports"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
@@ -282,6 +310,7 @@
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${royale}/lib/compiler-common.jar"/>
                 <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
@@ -296,7 +325,6 @@
                     <exclude name="**/MXMLModelTagTests.class"/>
                     <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
                     <exclude name="**/MXMLWebServiceNodeTests.class"/>
-                    <exclude name="**/MXMLProperty*.class"/>
                     <exclude name="**/MXMLDesignLayerNodeTests.class"/>
                     <exclude name="**/MXMLHTTPServiceNodeTests.class"/>
                     <exclude name="**/MXMLModelNodeTests.class"/>
@@ -314,7 +342,7 @@
     <target name="tests.sdk" depends="download, compile.tests">
         <mkdir dir="${compiler}/target/junit-reports"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
-        <junit dir="${compiler.tests}"
+        <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
@@ -324,6 +352,7 @@
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
+                <pathelement location="${royale}/lib/compiler-common.jar"/>
                 <pathelement location="${royale}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
@@ -353,7 +382,7 @@
     
     <!--<target name="main" depends="unit.tests, feature.tests, jar.tests"/>-->
     <!--<target name="sdk.dependent.tests" depends="unit.tests.sdk, feature.tests.sdk, functional.tests" />-->
-    <target name="main" depends="jar.tests, tests"/>
+    <target name="main" depends="jar.tests, js.swc, custom.swc, tests"/>
     <target name="sdk.dependent.tests" depends="tests.sdk" />
     <target name="all" depends="main, sdk.dependent.tests"/>
 

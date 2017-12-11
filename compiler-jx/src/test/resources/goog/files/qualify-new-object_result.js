@@ -13,29 +13,29 @@
  */
 goog.provide('org.apache.royale.A');
 
-goog.require('flash.events.EventDispatcher');
+goog.require('custom.TestImplementation');
 
 /**
  * @constructor
- * @extends {flash.events.EventDispatcher}
+ * @extends {custom.TestImplementation}
  */
 org.apache.royale.A = function() {
 	var self = this;
 	org.apache.royale.A.base(this, 'constructor');
 	self.init();
 };
-goog.inherits(org.apache.royale.A, flash.events.EventDispatcher);
+goog.inherits(org.apache.royale.A, custom.TestImplementation);
 
 /**
  * @private
- * @type {flash.events.EventDispatcher}
+ * @type {custom.TestImplementation}
  */
 org.apache.royale.A.prototype._privateVar;
 
 org.apache.royale.A.prototype.init = function() {
 	var self = this;
-	var /** @type {flash.events.EventDispatcher} */ btn = new flash.events.EventDispatcher();
-	self._privateVar = new flash.events.EventDispatcher();
+	var /** @type {custom.TestImplementation} */ btn = new custom.TestImplementation();
+	self._privateVar = new custom.TestImplementation();
 	self.addEventListener("click", function() {
 	});
 };

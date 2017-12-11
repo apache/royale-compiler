@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<!-- Parsing swf file:/Users/aharui/git/royale/maven/royale-compiler/compiler/target/junit-temp/%0.swf -->
+<swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
+  <!-- framecount=1 length=987 -->
+  <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
+  <Metadata>
+        <![CDATA[<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
+        <dc:format>application/x-shockwave-flash</dc:format>
+        <asc:compiler name="Apache Royale Compiler" version="${release.version}.${build" build="number}"/>
+    </rdf:Description>
+</rdf:RDF>
+]]>
+  </Metadata>
+  <SetBackgroundColor color="#FFFFFF"/>
+  <ScriptLimits scriptRecursionLimit="1000" scriptTimeLimit="60"/>
+  <DoABC>
+// script 0
+
+// class_id=0 slot_id=0
+public class %0 extends Object
+{
+
+  // method_id=4
+  public function %0():*
+  {
+    //  derivedName  %0  
+    //  method_info  4                                  
+    //  max_stack    1                                  
+    //  max_regs     1                                  
+    //  scope_depth  0                                  
+    //  max_scope    1                                  
+    //  code_length  6                                  
+    bb0
+      succs=[]
+      0      getlocal0            
+      1      pushscope            
+      2      getlocal0            
+      3      constructsuper    0  
+      4      returnvoid           
+  }
+
+  public var foo:String
+
+  public function hasSwitch(int):Boolean
+  {
+    //  derivedName  hasSwitch  
+    //  method_info  1          
+    //  max_stack    3          
+    //  max_regs     2          
+    //  scope_depth  0          
+    //  max_scope    1          
+    //  code_length  43         
+    bb0
+      succs=[bb1,bb2]
+      0       getlocal0                                                  
+      1       pushscope                                                  
+      2       getlex          trace                                      
+      3       getglobalscope                                             
+      4       pushstring      "hey, a method named namespace worked"     
+      5       call                                                    1  
+      6       pop                                                        
+      7       getlocal1                                                  
+      8       convert_i                                                  
+      9       pushint                                                    
+      10      subtract_i                                                 
+      11      lookupswitch    default: bb2 maxcase: 1 bb1                
+    bb1
+      succs=[bb3]
+      12      pushstring    "bar"    
+      13      findproperty  foo      
+      14      swap                   
+      15      setproperty   foo      
+      16      jump          bb3      
+    bb2
+      succs=[bb3]
+      17      pushstring    "baz"    
+      18      findproperty  foo      
+      19      swap                   
+      20      setproperty   foo      
+    bb3
+      succs=[]
+      21      pushtrue         
+      22      returnvalue      
+  }
+
+  private function initHandler(Object):void
+  {
+    //  derivedName  initHandler  
+    //  method_info  2            
+    //  max_stack    4            
+    //  max_regs     2            
+    //  scope_depth  0            
+    //  max_scope    1            
+    //  code_length  39           
+    bb0
+      succs=[]
+      0       getlocal0                           
+      1       pushscope                           
+      2       findpropstrict  hasSwitch           
+      3       pushbyte                         1  
+      4       callpropvoid                        
+      5       findpropstrict  assertEqual         
+      6       pushstring      "switch worked"     
+      7       getlex          foo                 
+      8       pushstring      "bar"               
+      9       callpropvoid                        
+      10      findpropstrict  hasSwitch           
+      11      pushbyte                         0  
+      12      callpropvoid                        
+      13      findpropstrict  assertEqual         
+      14      pushstring      "switch worked"     
+      15      getlex          foo                 
+      16      pushstring      "baz"               
+      17      callpropvoid                        
+      18      returnvoid                          
+  }
+
+  private function assertEqual(String,*,*):void
+  {
+    //  derivedName  assertEqual  
+    //  method_info  3            
+    //  max_stack    1            
+    //  max_regs     4            
+    //  scope_depth  0            
+    //  max_scope    1            
+    //  code_length  1            
+    bb0
+      succs=[]
+      0      returnvoid      
+  }
+
+  public static function %0$():*
+  {
+    //  derivedName  null  
+    //  method_info  5     
+    //  max_stack    0     
+    //  max_regs     1     
+    //  scope_depth  0     
+    //  max_scope    0     
+    //  code_length  1     
+    bb0
+      succs=[]
+      0      returnvoid      
+  }
+}
+
+function script0$init():*
+{
+  //  derivedName  null  
+  //  method_info  0     
+  //  max_stack    3     
+  //  max_regs     1     
+  //  scope_depth  0     
+  //  max_scope    2     
+  //  code_length  14    
+  bb0
+    succs=[]
+    0      getlocal0                                             
+    1      pushscope                                             
+    2      getscopeobject                                     0  
+    3      getlex          Object                                
+    4      dup                                                   
+    5      pushscope                                             
+    6      newclass                                              
+    7      popscope                                              
+    8      initproperty    %0     
+    9      returnvoid                                            
+}
+
+  </DoABC>
+  <SymbolClass>
+    <Symbol idref="0" className="%0" />
+  </SymbolClass>
+  <ShowFrame/>
+</swf>

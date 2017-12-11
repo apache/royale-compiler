@@ -64,6 +64,10 @@
     <property name="build.number" value="0"/>
 
     <path id="classpath">
+        <filelist dir="${royale.lib.dir}/">
+            <file name="compiler.jar" />
+            <file name="compiler-common.jar" />
+        </filelist>
         <filelist dir="${royale.lib.dir}/external">
             <file name="antlr.jar" />
             <file name="commons-lang-2.6.jar" />
@@ -72,6 +76,7 @@
 			<file name="commons-io.jar" />
             <file name="guava.jar" />
 			<file name="flex-tool-api.jar" />
+            <file name="externc.jar" />
         </filelist>
 		<filelist dir="${lib}/google/closure-compiler">
             <file name="compiler.jar" />
@@ -86,9 +91,6 @@
             classpathref="classpath"
             source="${javac.src}" target="${javac.src}">
 			<src path="${src}" />
-			<classpath>
-				<pathelement path="${royale.basedir}/target/classes" />
-			</classpath>
 		</javac>
 	</target>
 
@@ -106,7 +108,7 @@
 	
 	<target name="main" depends="prebuild,compile">
         
-        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE" tofile="${classes.dir}/META-INF/NOTICE"/>
@@ -175,20 +177,6 @@
 			</manifest>
 		</jar>
 
-        <echo message="Building ${externc.jar}" />
-        <jar file="${externc.jar}" basedir="${classes.dir}">
-            <include name="META-INF/LICENSE"/>
-            <include name="META-INF/NOTICE"/>
-            <manifest>
-                <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
-                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
-                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.EXTERNC" />
-                <attribute name="Class-Path" value="jsc.jar" />
-            </manifest>
-        </jar>
-
         <echo message="Building ${asdoc.jar}" />
         <jar file="${asdoc.jar}" basedir="${classes.dir}">
             <include name="META-INF/LICENSE"/>
@@ -217,7 +205,7 @@
     <target name="super-clean" depends="thirdparty-clean,clean" />
 
     <target name="thirdparty-clean">
-        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}" target="clean" />
+        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false" target="clean" />
         <delete dir="${basedir}/target" />
         <delete failonerror="false" includeemptydirs="true">
             <fileset dir="${lib}" />

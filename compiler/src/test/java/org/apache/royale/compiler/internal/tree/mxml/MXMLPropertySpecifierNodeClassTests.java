@@ -53,9 +53,9 @@ public class MXMLPropertySpecifierNodeClassTests extends MXMLPropertySpecifierNo
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' Sprite '>"
+		    "<MyComp p=' TestInstance '/>"
 		};
-		testMXMLPropertySpecifierNode(code, "flash.display.Sprite");
+		testMXMLPropertySpecifierNode(code, "custom.TestInstance");
 	}
 	
 	@Test
@@ -64,10 +64,10 @@ public class MXMLPropertySpecifierNodeClassTests extends MXMLPropertySpecifierNo
 		String[] code = new String[]
 		{
 			"<MyComp>",
-			"    <p> Sprite </p>",
+			"    <p> TestInstance </p>",
 			"</MyComp>"
 		};
-		testMXMLPropertySpecifierNode(code, "flash.display.Sprite");
+		testMXMLPropertySpecifierNode(code, "custom.TestInstance");
 	}
 	
 	@Test
@@ -76,10 +76,10 @@ public class MXMLPropertySpecifierNodeClassTests extends MXMLPropertySpecifierNo
 		String[] code = new String[]
 		{
 			"<MyComp>",
-			"    <p><fx:Class> Sprite </fx:Class></p>",
+			"    <p><fx:Class> TestInstance </fx:Class></p>",
 			"</MyComp>"
 		};
-		testMXMLPropertySpecifierNode(code, "flash.display.Sprite");
+		testMXMLPropertySpecifierNode(code, "custom.TestInstance");
 	}
 	
 	@Test
@@ -87,9 +87,9 @@ public class MXMLPropertySpecifierNodeClassTests extends MXMLPropertySpecifierNo
 	{
 		String[] code = new String[]
 		{
-		    "<MyComp p=' flash.display.Sprite '>"
+		    "<MyComp p=' custom.TestInstance '/>"
 		};
-		testMXMLPropertySpecifierNode(code, "flash.display.Sprite");
+		testMXMLPropertySpecifierNode(code, "custom.TestInstance");
 	}
 	
 	@Test
@@ -98,10 +98,10 @@ public class MXMLPropertySpecifierNodeClassTests extends MXMLPropertySpecifierNo
 		String[] code = new String[]
 		{
 			"<MyComp>",
-			"    <p> flash.display.Sprite </p>",
+			"    <p> custom.TestInstance </p>",
 			"</MyComp>"
 		};
-		testMXMLPropertySpecifierNode(code, "flash.display.Sprite");
+		testMXMLPropertySpecifierNode(code, "custom.TestInstance");
 	}
 	
 	@Test
@@ -110,9 +110,9 @@ public class MXMLPropertySpecifierNodeClassTests extends MXMLPropertySpecifierNo
 		String[] code = new String[]
 		{
 			"<MyComp>",
-			"    <p><fx:Class> flash.display.Sprite </fx:Class></p>",
+			"    <p><fx:Class> custom.TestInstance </fx:Class></p>",
 			"</MyComp>"
 		};
-		testMXMLPropertySpecifierNode(code, "flash.display.Sprite");
+		testMXMLPropertySpecifierNode(code, "custom.TestInstance");
 	}
 }

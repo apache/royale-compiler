@@ -31,6 +31,7 @@ import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.SWFTarget;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MissingRequirementConfigurationProblem;
@@ -107,7 +108,7 @@ public class COMPC extends MXMLC implements FlexTool
     @Override
     protected Configurator createConfigurator()
     {
-        return new Configurator(configurationClass);
+        return new RoyaleProjectConfigurator(configurationClass);
     }
 
     @Override

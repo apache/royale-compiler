@@ -21,7 +21,6 @@ package org.apache.royale.compiler.problems;
 
 import org.apache.royale.abc.graph.IBasicBlock;
 import org.apache.royale.abc.graph.IFlowgraph;
-import org.apache.royale.abc.semantics.Block;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
@@ -41,14 +40,14 @@ public abstract class InvalidByteCodeGeneratedProblem extends CompilerProblem
     
     /**
      * Helper method that will use debug op code information to deduce a source
-     * location from an instruction offset in a {@link Block} in a
+     * location from an instruction offset in a Block in a
      * {@link IFlowgraph}.
      * 
      * @param cfg {@link IFlowgraph} containing the specified
-     * {@link Block}.
-     * @param b {@link Block} containing the instruction to deduce a
+     * Block.
+     * @param b Block containing the instruction to deduce a
      * {@link ISourceLocation} for.
-     * @param instructionIndex Offset in the specified {@link Block} of the
+     * @param instructionIndex Offset in the specified Block of the
      * instruction to deduce a {@link ISourceLocation} for.
      * @return The deduced {@link ISourceLocation}.
      */

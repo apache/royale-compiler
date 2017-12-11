@@ -109,14 +109,20 @@ public class LinkageChecker
         
         // next add all of the symbols from external libraries
         IWorkspace w = project.getWorkspace();
+        Collection<File> extLibs = targetSettings.getExternalLibraryPath();
+        List<RSLSettings> rsls = targetSettings.getRuntimeSharedLibraryPath();
         List<File> libraries = new ArrayList<File>(
-                targetSettings.getExternalLibraryPath().size() +
-                targetSettings.getRuntimeSharedLibraryPath().size());
-        libraries.addAll(targetSettings.getExternalLibraryPath());
-        for (RSLSettings settings : targetSettings.getRuntimeSharedLibraryPath())
+                ((extLibs == null) ? 0 : extLibs.size()) +
+                ((rsls == null) ? 0 : rsls.size()));
+        if (extLibs != null)
+        	libraries.addAll(targetSettings.getExternalLibraryPath());
+        if (rsls != null)
         {
-            libraries.add(settings.getLibraryFile());
-        }
+	        for (RSLSettings settings : targetSettings.getRuntimeSharedLibraryPath())
+	        {
+	            libraries.add(settings.getLibraryFile());
+	        }
+        }        
         
         for (File library : libraries)
         {

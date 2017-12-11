@@ -24,6 +24,7 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -53,7 +54,9 @@ public class MavenTestAdapter implements ITestAdapter {
     @Override
     public List<File> getLibraries(boolean withRoyale) {
         List<File> libs = new ArrayList<File>();
-        libs.add(getPlayerglobal());
+        File pg = getPlayerglobal();
+        if (pg != null)
+            libs.add(getPlayerglobal());
         if(withRoyale) {
             String royaleVersion = System.getProperty("royaleVersion");
             libs.add(getDependency("org.apache.royale.framework", "framework", royaleVersion, "swc", null));
@@ -65,8 +68,20 @@ public class MavenTestAdapter implements ITestAdapter {
 
     @Override
     public File getPlayerglobal() {
-        return getDependency("com.adobe.flash.framework", "playerglobal",
+        try {
+            String PLAYERGLOBAL_HOME = System.getProperty("PLAYERGLOBAL_HOME", null);
+            if(PLAYERGLOBAL_HOME == null || PLAYERGLOBAL_HOME.length() == 0) {
+            	PLAYERGLOBAL_HOME = System.getenv("PLAYERGLOBAL_HOME");
+                if(PLAYERGLOBAL_HOME == null || PLAYERGLOBAL_HOME.length() == 0) {
+                    System.out.println("PLAYERGLOBAL_HOME not specified");
+                    return null;
+                }
+            }
+            return getDependency("com.adobe.flash.framework", "playerglobal",
                 System.getProperty("flashVersion"), "swc", null);
+        }
+        catch (RuntimeException e) {};
+        return null;
     }
 
     @Override
@@ -77,7 +92,8 @@ public class MavenTestAdapter implements ITestAdapter {
         if(FLASHPLAYER_DEBUGGER == null || FLASHPLAYER_DEBUGGER.length() == 0) {
             FLASHPLAYER_DEBUGGER = System.getenv("FLASHPLAYER_DEBUGGER");
             if(FLASHPLAYER_DEBUGGER == null || FLASHPLAYER_DEBUGGER.length() == 0) {
-                throw new RuntimeException("You have to specify the location of the flash debug player executable.");
+                System.out.println("FLASHPLAYER_DEBUGGER not specified");
+                return null;
             }
         }
         return new File(FLASHPLAYER_DEBUGGER);

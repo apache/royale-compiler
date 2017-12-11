@@ -19,11 +19,11 @@
 package org.apache.royale
 {
 
-import flash.events.IEventDispatcher;
+import custom.TestInterface;
 
-import flash.events.EventDispatcher;
+import custom.TestImplementation;
 
-public dynamic class A extends flash.events.EventDispatcher implements IEventDispatcher
+public dynamic class A extends custom.TestImplementation implements TestInterface
 {
 	public static const MY_CLASS_CONST:String = "myClassConst";
 	

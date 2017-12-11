@@ -25,7 +25,7 @@ import org.apache.royale.compiler.internal.parsing.TokenBase;
 /**
  * This error represents a general error that has been encountered during parsing, usually triggered by an exception
  */
-public class ParserProblem extends CompilerProblem
+public class ParserProblem extends CompilerProblem implements IParserProblem
 {
     public static final String DESCRIPTION =
         "Internal parsing problem";

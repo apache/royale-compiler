@@ -46,6 +46,8 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
@@ -72,7 +74,7 @@ import org.apache.royale.utils.StringEncoder;
  * After a namespace definition is in the symbol table, it should always be
  * accessed through the read-only <code>INamespaceDefinition</code> interface.
  */
-public abstract class NamespaceDefinition extends DefinitionBase implements INamespaceDefinition, INamespaceReference
+public abstract class NamespaceDefinition extends DefinitionBase implements INamespaceDefinition, INamespaceResolvedReference
 {
     private static PublicNamespaceDefinition PUBLIC = new PublicNamespaceDefinition();
     private static UserDefinedNamespaceDefinition AS3 = new UserDefinedNamespaceDefinition(INamespaceConstants.AS3, INamespaceConstants.AS3URI);
@@ -1481,7 +1483,7 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
         }
     }
 
-    private static class UserDefinedNamespaceReference implements INamespaceReference
+    private static class UserDefinedNamespaceReference implements INamespaceResolvedReference
     {
         private static INamespaceReference getQualifierNamespaceIfExists(ASScope scope, INamespaceDecorationNode node)
         {

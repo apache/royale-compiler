@@ -22,6 +22,10 @@ package org.apache.royale.swc;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.royale.compiler.caches.IAssetTagCache;
+import org.apache.royale.compiler.caches.ICSSDocumentCache;
+import org.apache.royale.compiler.caches.IFileScopeCache;
+import org.apache.royale.compiler.caches.ISWFCache;
 import org.apache.royale.compiler.internal.caches.AssetTagCache;
 import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
 import org.apache.royale.compiler.internal.caches.CacheStoreKeyBase;
@@ -90,7 +94,7 @@ public class SWCManager extends ConcurrentCacheStoreBase<ISWC> implements ISWCMa
      * @return the swcCache
      */
     @Override
-    public SWFCache getSWFCache()
+    public ISWFCache getSWFCache()
     {
         return swfCache;
     }
@@ -99,7 +103,7 @@ public class SWCManager extends ConcurrentCacheStoreBase<ISWC> implements ISWCMa
      * @return the fileScopeCache
      */
     @Override
-    public FileScopeCache getFileScopeCache()
+    public IFileScopeCache getFileScopeCache()
     {
         return fileScopeCache;
     }
@@ -108,7 +112,7 @@ public class SWCManager extends ConcurrentCacheStoreBase<ISWC> implements ISWCMa
      * @return the assetTagCache
      */
     @Override
-    public AssetTagCache getAssetTagCache()
+    public IAssetTagCache getAssetTagCache()
     {
         return assetTagCache;
     }
@@ -170,7 +174,7 @@ public class SWCManager extends ConcurrentCacheStoreBase<ISWC> implements ISWCMa
     }
 
     @Override
-    public CSSDocumentCache getCSSDocumentCache()
+    public ICSSDocumentCache getCSSDocumentCache()
     {
         return cssDocumentCache;
     }

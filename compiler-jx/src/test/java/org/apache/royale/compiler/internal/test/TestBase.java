@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.internal.test;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedOutputStream;
@@ -45,13 +46,10 @@ import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.driver.js.IJSBackend;
-import org.apache.royale.compiler.driver.wast.IWASTBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
-import org.apache.royale.compiler.internal.projects.RoyaleWASTProject;
+import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.ImportNode;
@@ -64,9 +62,9 @@ import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.royale.utils.EnvProperties;
 import org.apache.royale.compiler.visitor.as.IASBlockWalker;
 import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
-import org.apache.royale.utils.EnvProperties;
 import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.ITestAdapter;
 import org.apache.royale.utils.TestAdapterFactory;
@@ -87,9 +85,7 @@ public class TestBase implements ITestBase
     protected static EnvProperties env = EnvProperties.initiate();
 
     protected static Workspace workspace = new Workspace();
-
-    protected RoyaleJSProject royaleJSProject;
-    protected RoyaleWASTProject royaleWASTProject;
+    protected RoyaleJSProject project;
 
     protected IBackend backend;
     protected ASFilterWriter writer;
@@ -115,27 +111,23 @@ public class TestBase implements ITestBase
     {
         errors = new ArrayList<ICompilerProblem>();
 
-        if (royaleJSProject == null)
+        if (project == null)
         {
             backend = createBackend();
-        	    royaleJSProject = new RoyaleJSProject(workspace, backend);
-        	    royaleJSProject.setProxyBaseClass("flash.utils.Proxy");
+        	project = new RoyaleJSProject(workspace, backend);
+        	project.setProxyBaseClass("custom.TestProxy");
         }
-        royaleJSProject.setProblems(errors);
-        RoyaleProjectConfigurator.configure(royaleJSProject);
+        project.setProblems(errors);
+        RoyaleProjectConfigurator.configure(project);
         try {
 	        Configurator projectConfigurator = backend.createConfigurator();
-	        royaleJSProject.setTargetSettings(projectConfigurator.getTargetSettings(null));
+	        project.setTargetSettings(projectConfigurator.getTargetSettings(null));
         }
         catch (UnsupportedOperationException e)
         {
         }
 
-        if (royaleWASTProject != null) {
-            writer = ((IWASTBackend) backend).createWriterBuffer(royaleWASTProject);
-        } else {
-            writer = ((IJSBackend) backend).createWriterBuffer(royaleJSProject);
-        }
+        writer = backend.createWriterBuffer(project);
 
         try
         {
@@ -325,7 +317,7 @@ public class TestBase implements ITestBase
                 .normalize(tempFile.getAbsolutePath());
 
         Collection<ICompilationUnit> mainFileCompilationUnits = workspace
-                .getCompilationUnits(normalizedMainFileName, royaleJSProject);
+                .getCompilationUnits(normalizedMainFileName, project);
 
         ICompilationUnit cu = null;
         for (ICompilationUnit cu2 : mainFileCompilationUnits)
@@ -346,7 +338,7 @@ public class TestBase implements ITestBase
         		return null;
         	}
             fileNode = result.getAST();
-            royaleJSProject.getDependencies(cu);
+            project.getDependencies(cu);
         }
         catch (InterruptedException e)
         {
@@ -374,17 +366,15 @@ public class TestBase implements ITestBase
 
         ICompilationUnit mainCU = Iterables
                 .getOnlyElement(workspace.getCompilationUnits(
-                        FilenameNormalization.normalize(mainFileName), royaleJSProject));
+                        FilenameNormalization.normalize(mainFileName), project));
 
-        royaleJSProject.mainCU = mainCU;
-        
+        project.mainCU = mainCU;
         Configurator projectConfigurator = backend.createConfigurator();
 
-        JSTarget target = (JSTarget) ((IJSBackend) backend).createTarget(royaleJSProject,
+        JSTarget target = (JSTarget) backend.createTarget(project,
                 projectConfigurator.getTargetSettings(null), null);
 
         ArrayList<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
-        
         target.build(mainCU, errors);
 
         if (!ignoreErrors && errors.size() > 0)
@@ -403,7 +393,7 @@ public class TestBase implements ITestBase
         	System.out.println(sb.toString());
         	return compiledFileNames;
         }
-        List<ICompilationUnit> reachableCompilationUnits = royaleJSProject
+        List<ICompilationUnit> reachableCompilationUnits = project
                 .getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
         for (final ICompilationUnit cu : reachableCompilationUnits)
         {
@@ -425,9 +415,9 @@ public class TestBase implements ITestBase
                     final File outputClassFile = getOutputClassFile(qname
                             + "_output", outputRootDir);
 
-                    ASFilterWriter writer = ((IJSBackend) backend).createWriterBuffer(royaleJSProject);
+                    ASFilterWriter writer = backend.createWriterBuffer(project);
                     IASEmitter emitter = backend.createEmitter(writer);
-                    IASBlockWalker walker = ((IJSBackend) backend).createWalker(royaleJSProject,
+                    IASBlockWalker walker = backend.createWalker(project,
                             errors, emitter);
 
                     walker.visitCompilationUnit(cu);
@@ -691,9 +681,9 @@ public class TestBase implements ITestBase
         addLibraries(libraries);
         addNamespaceMappings(namespaceMappings);
 
-        royaleJSProject.setSourcePath(sourcePaths);
-        royaleJSProject.setLibraries(libraries);
-        royaleJSProject.setNamespaceMappings(namespaceMappings);
+        project.setSourcePath(sourcePaths);
+        project.setLibraries(libraries);
+        project.setNamespaceMappings(namespaceMappings);
     }
 
     protected void addLibraries(List<File> libraries)

@@ -125,7 +125,7 @@ abstract class RoyaleFrame1Info
         if (!(compilationUnit instanceof EmbedCompilationUnit))
             return;
 
-        TranscoderBase transcoder = ((EmbedCompilationUnit)compilationUnit).getEmbedData().getTranscoder();
+        TranscoderBase transcoder = (TranscoderBase)((EmbedCompilationUnit)compilationUnit).getEmbedData().getTranscoder();
         if (!(transcoder instanceof MovieTranscoder))
             return;
 

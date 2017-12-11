@@ -122,14 +122,15 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 		{
 			"<fx:XML>",
 		    "    <root>",
-		    "        <a b='xxx'>",
+		    "        <a b='xxx' />",
 		    "    </root>",
 			"</fx:XML>"
 		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
+		// childCount is 0 because we are counting MXML children, not XML children
 		assertThat("getChildCount", node.getChildCount(), is(0));
-		assertThat("getXMLString", node.getXMLString(), is("<root><a b=\"xxx\"></root>")); // should single quote come back as double quote?
+		assertThat("getXMLString", node.getXMLString(), is("<root><a b=\"xxx\"/></root>")); // should single quote come back as double quote?
 	}
 	
 	@Ignore

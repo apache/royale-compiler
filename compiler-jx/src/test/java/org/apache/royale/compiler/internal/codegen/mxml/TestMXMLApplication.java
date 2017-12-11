@@ -29,61 +29,61 @@ public class TestMXMLApplication extends MXMLTestBase
     public void testBasicApp()
     {
         String code = ""
-                + "<s:Application xmlns:s=\"library://ns.adobe.com/flex/spark\">"
-                + "</s:Application>";
+                + "<custom:TestInstance xmlns:custom=\"library://ns.apache.org/royale/test\">"
+                + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application>\n\t\n</Application>");
+        assertOut("<TestInstance>\n\t\n</TestInstance>");
     }
 
     @Test
     public void testBasicAppWithOneComponent()
     {
         String code = ""
-                + "<s:Application xmlns:s=\"library://ns.adobe.com/flex/spark\">"
-                + "    <s:Button id=\"myBtn\" label=\"Hello world\"></s:Button>"
-                + "</s:Application>";
+                + "<custom:TestInstance xmlns:custom=\"library://ns.apache.org/royale/test\">"
+                + "    <custom:Button id=\"myBtn\" label=\"Hello world\"></custom:Button>"
+                + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application>\n\t<Button id=\"myBtn\" label=\"Hello world\"></Button>\n</Application>");
+        assertOut("<TestInstance>\n\t<Button id=\"myBtn\" label=\"Hello world\"></Button>\n</TestInstance>");
     }
 
     @Test
     public void testBasicAppWithTwoComponents()
     {
         String code = ""
-                + "<s:Application xmlns:s=\"library://ns.adobe.com/flex/spark\">"
-                + "    <s:Label id=\"myLbl\" text=\"Bye bye\"></s:Label>"
-                + "    <s:Button id=\"myBtn\" label=\"Hello world\"></s:Button>"
-                + "</s:Application>";
+                + "<custom:TestInstance xmlns:custom=\"library://ns.apache.org/royale/test\">"
+                + "    <custom:Label id=\"myLbl\" text=\"Bye bye\"></custom:Label>"
+                + "    <custom:Button id=\"myBtn\" label=\"Hello world\"></custom:Button>"
+                + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application>\n\t<Label id=\"myLbl\" text=\"Bye bye\"></Label>\n\t<Button id=\"myBtn\" label=\"Hello world\"></Button>\n</Application>");
+        assertOut("<TestInstance>\n\t<Label id=\"myLbl\" text=\"Bye bye\"></Label>\n\t<Button id=\"myBtn\" label=\"Hello world\"></Button>\n</TestInstance>");
     }
 
     @Test
     public void testBasicAppWithSimpleScript()
     {
         String code = ""
-                + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:s=\"library://ns.adobe.com/flex/spark\">"
+                + "<custom:TestInstance xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:custom=\"library://ns.apache.org/royale/test\">"
                 + "    <fx:Script><![CDATA["
                 + "        private const GREETING:String = \"Hello world!\""
-                + "    ]]></fx:Script>" + "</s:Application>";
+                + "    ]]></fx:Script>" + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application>\n\t<script><![CDATA[\n\t\tprivate var GREETING:String = \"Hello world!\";\n\t]]></script>\n</Application>");
+        assertOut("<TestInstance>\n\t<script><![CDATA[\n\t\tprivate var GREETING:String = \"Hello world!\";\n\t]]></script>\n</TestInstance>");
     }
 
     @Test
@@ -91,19 +91,18 @@ public class TestMXMLApplication extends MXMLTestBase
     {
         String code = ""
                 + "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
-                + "               xmlns:s=\"library://ns.adobe.com/flex/spark\" "
-                + "               xmlns:mx=\"library://ns.adobe.com/flex/mx\" "
+                + "<custom:TestInstance xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
+                + "               xmlns:custom=\"library://ns.apache.org/royale/test\" "
                 + "               minWidth=\"955\" minHeight=\"600\">"
                 + "    <fx:Declarations>"
                 + "        <!-- Place non-visual elements (e.g., services, value objects) here -->"
-                + "    </fx:Declarations>" + "</s:Application>";
+                + "    </fx:Declarations>" + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application minWidth=\"955\" minHeight=\"600\">\n\t\n</Application>");
+        assertOut("<TestInstance minWidth=\"955\" minHeight=\"600\">\n\t\n</TestInstance>");
     }
 
 }

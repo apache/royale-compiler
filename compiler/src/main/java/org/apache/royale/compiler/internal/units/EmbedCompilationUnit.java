@@ -21,8 +21,10 @@ package org.apache.royale.compiler.internal.units;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.Multiname;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -30,7 +32,8 @@ import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.abc.ABCScopeBuilder;
 import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.transcoders.SkinTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
@@ -100,7 +103,7 @@ public class EmbedCompilationUnit extends CompilationUnitBase
         try
         {
             getProject().clearScopeCacheForCompilationUnit(this);
-            TranscoderBase transcoder = embedData.getTranscoder();
+            TranscoderBase transcoder = (TranscoderBase)embedData.getTranscoder();
             if (transcoder instanceof SkinTranscoder)
             {
                 List<ICompilerProblem> noProblems = Collections.emptyList();
@@ -133,7 +136,7 @@ public class EmbedCompilationUnit extends CompilationUnitBase
     @Override
     protected IFileScopeRequestResult handleFileScopeRequest() throws InterruptedException
     {
-        TranscoderBase transcoder = embedData.getTranscoder();
+        TranscoderBase transcoder = (TranscoderBase)embedData.getTranscoder();
         // SkinTranscoder generates ABC directly rather than an AST, so handle differently
         // Eventually all transcoders should be updated to go directly to ABC
         if (transcoder instanceof SkinTranscoder)
@@ -200,7 +203,7 @@ public class EmbedCompilationUnit extends CompilationUnitBase
     @Override
     protected IABCBytesRequestResult handleABCBytesRequest() throws InterruptedException
     {
-        TranscoderBase transcoder = embedData.getTranscoder();
+        TranscoderBase transcoder = (TranscoderBase)embedData.getTranscoder();
         // SkinTranscoder generates ABC directly rather than an AST, so handle differently
         // Eventually all transcoders should be updated to go directly to ABC
         if (transcoder instanceof SkinTranscoder)
@@ -211,7 +214,9 @@ public class EmbedCompilationUnit extends CompilationUnitBase
                 List<ICompilerProblem> problems = new LinkedList<ICompilerProblem>();
                 byte[] bytes = transcoder.buildABC(getProject(), problems);
                 ICompilerProblem[] problemsArray = problems.toArray(new ICompilerProblem[problems.size()]);
-                return new ABCBytesRequestResult(bytes, problemsArray, Collections.singleton(embedData));
+                Set<IEmbedData> iembeds = new HashSet<IEmbedData>();
+                iembeds.add(embedData);
+                return new ABCBytesRequestResult(bytes, problemsArray, iembeds);
             }
             finally
             {
@@ -256,9 +261,9 @@ public class EmbedCompilationUnit extends CompilationUnitBase
             else
                 tagName = qname.replace('.', '/');
 
-            Collection<EmbedData> embeds = abc.getEmbeds();
+            Collection<IEmbedData> embeds = abc.getEmbeds();
             if (embeds.size() == 0)
-                embeds = Collections.singleton(embedData);
+                embeds = Collections.singleton((IEmbedData)embedData);
             return new SWFTagsRequestResult(abc.getABCBytes(), tagName, embeds);
         }
         finally

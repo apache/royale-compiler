@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.problems;
 
 import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.internal.embedding.EmbedAttribute;
+import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 
 public final class EmbedUnsupportedAttributeProblem extends CompilerProblem

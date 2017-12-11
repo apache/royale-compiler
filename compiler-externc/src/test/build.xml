@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="compiler.externc.tests" default="main" basedir=".">
+
+    <pathconvert property="externc.tests" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+
+    <property environment="env"/>
+	<property file="unittest.properties" />
+	<property name="test.timeout" value="400000" />
+	<property name="maxmem" value="512" />
+	
+    <property name="compiler.externc" value="${externc.tests}/../.."/>
+    <property name="compiler.jx" value="${compiler.externc}/../compiler-jx"/>
+    <property name="compiler.jx.tests" value="${compiler.jx}/src/test"/>
+
+    <target name="download" description="Downloads third-party JARs">
+        <ant antfile="${compiler.jx.tests}/downloads.xml" dir="${compiler.jx.tests}"/>
+        <mkdir dir="${compiler.externc}/target/junit-temp/externs" />
+        <unjar src="${compiler.jx}/lib/google/closure-compiler/compiler.jar"
+            dest="${compiler.externc}/target/junit-temp/externs">
+            <patternset>
+                <include name="externs.zip"/>
+            </patternset>
+        </unjar>
+        <mkdir dir="${compiler.externc}/target/downloads" />
+        <unzip src="${compiler.externc}/target/junit-temp/externs/externs.zip" dest="${compiler.externc}/target/downloads" />
+    </target>
+
+    <target name="compile.unit.tests">
+    	<delete dir="${compiler.externc}/target/test-classes"/>
+        <mkdir dir="${compiler.externc}/target/test-classes"/>
+        <copy todir="${compiler.externc}/target/test-classes">
+            <fileset dir="${externc.tests}/resources">
+                <include name="**"/>
+            </fileset>
+        </copy>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
+			   encoding="UTF-8"
+			   destdir="${compiler.externc}/target/test-classes" includeAntRuntime="true">
+        	<src path="${externc.tests}/java"/>
+            <compilerarg value="-Xlint:all,-path"/>
+            <classpath>
+                <pathelement location="${compiler.externc}/target/test-classes"/>
+                <pathelement location="${compiler.externc}/../compiler-test-utils/target/classes"/>
+                <fileset dir="${compiler.jx}/lib" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="typedefs.unit.tests" depends="download, compile.unit.tests">
+        <mkdir dir="${externc.tests}/results"/>
+        <mkdir dir="${compiler.externc}/target/junit-temp"/>
+        <mkdir dir="${compiler.externc}/target/junit-results"/>
+        <junit dir="${compiler.externc}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.externc}/target/classes"/>
+                <pathelement location="${compiler.externc}/target/test-classes"/>
+                <pathelement location="${compiler.externc}/../compiler-test-utils/target/classes"/>
+                <fileset dir="${compiler.jx}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.externc}/../compiler/lib" includes="**/*.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.externc}/target/junit-results">
+                <fileset dir="${compiler.externc}/target/test-classes">
+                    <!-- externs tests -->
+                    <include name="**/TestExternES3.class"/>
+                    <include name="**/TestExternChrome.class"/>
+                    <include name="**/TestExternJSMissing.class"/>
+                    <include name="**/TestAnnotationEnum.class"/>
+                    <include name="**/TestCollectImports.class"/>
+                    <include name="**/TestConstructor.class"/>
+                    <include name="**/TestPackageNamespace.class"/>
+                    <include name="**/TestReferenceModel.class"/>
+                    <include name="**/TestTypeTypedefs.class"/>
+                    <include name="**/TestTypeInheritance.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
+        </junit>
+    </target>
+    
+    <target name="typedefs.integration.tests" depends="download, compile.unit.tests">
+        <mkdir dir="${externc.tests}/results"/>
+        <mkdir dir="${compiler.externc}/target/junit-temp"/>
+        <mkdir dir="${compiler.externc}/target/junit-results"/>
+        <junit dir="${compiler.externc}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.externc}/target/classes"/>
+                <pathelement location="${compiler.externc}/target/test-classes"/>
+                <pathelement location="${compiler.externc}/../compiler-test-utils/target/classes"/>
+                <fileset dir="${compiler.jx}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.externc}/../compiler/lib" includes="**/*.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.externc}/target/junit-results">
+                <fileset dir="${compiler.externc}/target/test-classes">
+                    <!-- externs tests -->
+                    <include name="**/TestExternJasmine.class"/>
+                    <include name="**/TestExternJQuery.class"/>
+                    <include name="**/TestExternNode.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
+        </junit>
+    </target>
+    
+    <target name="main" depends="typedefs.unit.tests"/>
+
+    <target name="clean">
+        <delete dir="${externc.tests}/bin"/>
+        <delete dir="${externc.tests}/classes"/>
+        <delete dir="${externc.tests}/results"/>
+    </target>
+
+    <target name="wipe" depends="clean">
+        <delete dir="${compiler.externc}/target"/>
+    </target>
+
+</project>

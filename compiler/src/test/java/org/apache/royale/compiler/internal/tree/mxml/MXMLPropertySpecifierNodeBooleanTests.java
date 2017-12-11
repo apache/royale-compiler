@@ -53,7 +53,7 @@ public class MXMLPropertySpecifierNodeBooleanTests extends MXMLPropertySpecifier
     {
         String[] code = new String[]
         {
-            "<MyComp p=' true '>"
+            "<MyComp p=' true '/>"
         };
         testMXMLPropertySpecifierNode(code, true);
     }

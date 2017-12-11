@@ -34,9 +34,9 @@ import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
@@ -250,7 +250,7 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
                 problems.add(new InternalCompilerProblem(ex));
             }
 
-            return new ABCBytesRequestResult(generatedBytes, problems.toArray(new ICompilerProblem[0]), Collections.<EmbedData>emptySet());
+            return new ABCBytesRequestResult(generatedBytes, problems.toArray(new ICompilerProblem[0]), Collections.<IEmbedData>emptySet());
         }
         finally
         {

@@ -234,6 +234,8 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 		{
 			"<fx:Boolean foo='bar'>true</fx:Boolean>"
 		};
+		errorFilters = new String[1];
+		errorFilters[0] = "This attribute is unexpected";
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 22, 26);

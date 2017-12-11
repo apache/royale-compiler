@@ -28,6 +28,7 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassi
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
+import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
@@ -230,7 +231,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
             {
                 if (isCustomNamespace)
                 {
-                	Namespace ns = (Namespace)((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject());
+                	Namespace ns = (Namespace)((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject());
                 	INamespaceDefinition nsDef = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveNamespaceReference(getProject());
         			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
                 	String nsName = ns.getName();
@@ -298,7 +299,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	}
                     else if (isCustomNamespace)
                     {
-                    	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject()).getName();
+                    	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
                     	write("[\"" + ns + "::" + qname + "\"]");
                     }
                     else if (identifierIsAccessorFunction && isStatic)
@@ -316,7 +317,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     write(getEmitter().formatQualifiedName(qname));
                 else if (isCustomNamespace)
                 {
-                	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject()).getName();
+                	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
                 	write("[\"" + ns + "::" + qname + "\"]");
                 }
                 else if (identifierIsAccessorFunction && isStatic)

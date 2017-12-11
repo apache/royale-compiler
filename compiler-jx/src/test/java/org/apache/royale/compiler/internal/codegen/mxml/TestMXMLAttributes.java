@@ -42,7 +42,11 @@ public class TestMXMLAttributes extends MXMLTestBase
         
         mxmlBlockWalker.visitInstance(node);
 
-        assertThat(((IMXMLInstanceNode) node.getChild(0)).getID(), is("myBtn"));
+        // this was getChild() before removing dependency on Flash
+        // not sure why Button would have a child, but also, in MXMLTestBase
+        // there are two calls to findFirstDescendant, which doesn't make sense
+        // assertThat(((IMXMLInstanceNode) node.getChild(0)).getID(), is("myBtn"));
+        assertThat(((IMXMLInstanceNode) node).getID(), is("myBtn"));
     }
 
     @Test

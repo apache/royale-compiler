@@ -43,7 +43,6 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.parsing.as.IProjectConfigVariables;
@@ -978,7 +977,7 @@ public abstract class CompilerProject implements ICompilerProject
      * @param def2 The other possibility.
      * @return null if still ambiguous or else def1 or def2.
      */
-    public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
+    public IDefinition doubleCheckAmbiguousDefinition(IASScope scope, String name, IDefinition def1, IDefinition def2)
     {
         return null;
     }
@@ -1004,7 +1003,7 @@ public abstract class CompilerProject implements ICompilerProject
         return (baseDefinition == overrideDefinition);
     }
     
-    public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func)
+    public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, IFunctionDefinition func)
     {
         return false;
     }

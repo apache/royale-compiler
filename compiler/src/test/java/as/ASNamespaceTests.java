@@ -29,18 +29,45 @@ public class ASNamespaceTests extends ASFeatureTestsBase
     @Test
     public void ASNamespace_package()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
-        String[] imports = new String[]
+        String[] imports;
+        if (hasFlashPlayerGlobal)
         {
-            "import flash.utils.getQualifiedClassName;",
-        };
-        String[] testCode = new String[]
+        	imports = new String[]
+	        {
+	            "import flash.net.NetConnection;",
+	        };
+        }
+        else
         {
-        	"var foo:Event = new Event('foo');",
-        	"var bar:flash.events.Event = new flash.events.Event('bar');",
-            "assertEqual('qualified names', getQualifiedClassName(foo), getQualifiedClassName(bar));",
-        };
+        	imports = new String[]
+ 	        {
+ 	            "import chrome.app;",
+ 	        };        	
+        }
+        String[] testCode;
+        if (hasFlashPlayerGlobal)
+        {
+            testCode = new String[]{
+                	"var foo:NetConnection = new NetConnection();",
+                	"var bar:flash.net.NetConnection = new flash.net.NetConnection();",
+                	"var b1:Boolean = bar is NetConnection;",
+                	"var b2:Boolean = foo is flash.net.NetConnection;",
+                    "assertEqual('package qualifiers', b1, true);",
+                    "assertEqual('package qualifiers', b2, true);",
+                };
+
+        }
+        else
+        {
+            testCode = new String[]{
+                	"var foo:app = new app();",
+                	"var bar:chrome.app = new chrome.app();",
+                	"var b1:Boolean = bar is app;",
+                	"var b2:Boolean = foo is chrome.app;",
+                    "assertEqual('package qualifiers', b1, true);",
+                    "assertEqual('package qualifiers', b2, true);",
+                };        	
+        }
         String source = getAS(imports, new String[0], testCode, new String[0]);
         compileAndRun(source);
     }
@@ -50,20 +77,53 @@ public class ASNamespaceTests extends ASFeatureTestsBase
     {
     	// all tests can assume that flash.display.Sprite
     	// flash.system.System and flash.events.Event have been imported
-        String[] imports = new String[]
+        String[] imports;
+        if (hasFlashPlayerGlobal)
         {
-            "import flash.utils.getQualifiedClassName;",
-            "import flash.utils.flash_proxy;",
-        };
-        String[] declarations = new String[]
+        	imports = new String[]
+    	    {
+                "import flash.utils.flash_proxy",
+            };
+        }
+        else
         {
-	       	"flash_proxy var foo:Event = new Event('foo');",
-        };
-        String[] testCode = new String[]
+        	imports = new String[]
+     	    {
+                "import custom.custom_namespace",
+            };
+        }
+        String[] declarations;
+        if (hasFlashPlayerGlobal)
         {
-        	"var qname:QName = new QName(flash_proxy, 'foo');",
-            "assertEqual('qualified names', getQualifiedClassName(flash_proxy::foo), getQualifiedClassName(this[qname]));",
-        };
+        	declarations = new String[]
+        	{
+        	    "flash_proxy var foo:Namespace = new Namespace('foo', 'bar');",
+            };
+        }
+        else
+        {
+        	declarations = new String[]
+        	{
+        	    "custom_namespace var foo:Namespace = new Namespace('foo', 'bar');",
+            };
+        }
+        String[] testCode;
+        if (hasFlashPlayerGlobal)
+        {
+        	testCode = new String[]
+        	{
+                "var qname:QName = new QName(flash_proxy, 'foo');",
+                "assertEqual('qualified names', flash_proxy::foo, this[qname]);",
+            };
+        }
+        else
+        {
+        	testCode = new String[]
+          	{
+                "var qname:QName = new QName(custom_namespace, 'foo');",
+                "assertEqual('qualified names', custom_namespace::foo, this[qname]);",
+            };        	
+        }
         String source = getAS(imports, declarations, testCode, new String[0]);
         compileAndRun(source);
     }
@@ -73,15 +133,36 @@ public class ASNamespaceTests extends ASFeatureTestsBase
     {
     	// all tests can assume that flash.display.Sprite
     	// flash.system.System and flash.events.Event have been imported
-        String[] imports = new String[]
+        String[] imports;
+        if (hasFlashPlayerGlobal)
         {
-            "import flash.utils.getQualifiedClassName;",
-            "import flash.utils.flash_proxy;",
-        };
-        String[] declarations = new String[]
+        	imports = new String[]
+    	    {
+                "import flash.utils.flash_proxy;",
+            };
+        }
+        else
         {
-	       	"flash_proxy var foo:Event = new Event('foo');",
-        };
+        	imports = new String[]
+     	    {
+                "import custom.custom_namespace;",
+            };
+        }
+        String[] declarations;
+        if (hasFlashPlayerGlobal)
+        {
+        	declarations = new String[]
+        	{
+        	    "flash_proxy var foo:Namespace = new Namespace('foo', 'bar');",
+            };
+        }
+        else
+        {
+        	declarations = new String[]
+        	{
+        	    "custom_namespace var foo:Namespace = new Namespace('foo', 'bar');",
+            };
+        }
         String[] testCode = new String[]
         {
         	"var ns:Namespace = new Namespace('baz', 'bar');",

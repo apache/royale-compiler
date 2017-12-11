@@ -18,7 +18,7 @@
 
 -->
 
-<project name="royale" default="main" basedir=".">
+<project name="royale-compiler" default="main" basedir=".">
 
     <property file="${basedir}/env.properties"/>
     <property environment="env"/>
@@ -28,40 +28,8 @@
     <property name="kit.prefix" value="apache-royale-compiler-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
-
-    <target name="check-typedefs-home"
-        description="Check ROYALE_TYPEDEFS_HOME">
-        
-        <echo message="ROYALE_TYPEDEFS_HOME is ${env.ROYALE_TYPEDEFS_HOME}"/>
-        
-        <available file="${env.ROYALE_TYPEDEFS_HOME}"
-        type="dir"
-        property="ROYALE_TYPEDEFS_HOME"
-        value="${env.ROYALE_TYPEDEFS_HOME}" />
-        
-        <condition property="ROYALE_TYPEDEFS_HOME" value="${basedir}/../royale-typedefs" >
-            <and>
-                <available file="${basedir}/../royale-typedefs" type="dir" />
-                <not>
-                    <isset property="ROYALE_TYPEDEFS_HOME" />
-                </not>
-            </and>
-        </condition>
-        
-        <condition property="ROYALE_TYPEDEFS_HOME" value="${basedir}/royale-typedefs" >
-            <and>
-                <available file="${basedir}/royale-typedefs" type="dir" />
-                <not>
-                    <isset property="ROYALE_TYPEDEFS_HOME" />
-                </not>
-            </and>
-        </condition>
-        
-        <fail message="The environment variable ROYALE_TYPEDEFS_HOME is not set to a directory"
-        unless="ROYALE_TYPEDEFS_HOME"/>
-        
-    </target>
-
+    <property name="staging-dir" value="${basedir}/temp" />
+    
     <!--
      Optional jars but should be in place for a real release build.
      
@@ -95,16 +63,16 @@
         <ant dir="compiler-build-tools" />
         <ant dir="compiler-jburg-types" />
         <ant dir="compiler-test-utils" />
+        <ant dir="compiler-common" />
+        <ant dir="compiler-externc" />
         <ant dir="compiler" />
     </target>
 
     <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="main" depends="swf, jx, typedefs, oem, debugger, anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
+    <target name="main" depends="swf, jx, oem, debugger, anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
-    
-    <target name="typedefs" depends="check-typedefs-home, typedef.swcs, typedef.tests" description="Build typedefs and run tests"/>
     
     <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
@@ -112,15 +80,19 @@
         <ant dir="compiler" target="test"/>
     </target>
 
-    <target name="compiler.oem" depends="compiler.jx" description="Builds FB Integration JAR">
+    <target name="compiler.oem" depends="swfutils,compiler.jx" description="Builds FB Integration JAR">
         <ant dir="flex-compiler-oem" target="main"/>
+    </target>
+
+    <target name="swfutils" description="Builds SWFUtils for debugger and compiler.oem">
+        <ant dir="swfutils" target="main"/>
     </target>
 
     <target name="anttasks" description="Builds ant tasks JAR">
         <ant dir="royale-ant-tasks" target="jar"/>
     </target>
 
-    <target name="debugger" description="Builds FDB JAR">
+    <target name="debugger" depends="swfutils" description="Builds FDB JAR">
         <ant dir="debugger" target="jar"/>
     </target>
     
@@ -140,19 +112,6 @@
         <ant dir="compiler-jx/src/test" target="copyLastSuccessfulBuild"/>
     </target>
     
-    <target name="typedef.swcs">
-        <ant dir="${ROYALE_TYPEDEFS_HOME}" />
-    </target>
-    <target name="typedef.swcs.clean" >
-        <ant dir="${ROYALE_TYPEDEFS_HOME}" target="clean"/>
-    </target>
-    <target name="typedef.swcs.wipe" >
-        <ant dir="${ROYALE_TYPEDEFS_HOME}" target="wipe"/>
-    </target>
-    <target name="typedef.tests">
-        <ant dir="compiler-jx/src/test" target="extern.tests" />
-    </target>
-    
     <target name="clean-swf" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
@@ -164,6 +123,7 @@
         <ant dir="compiler-jx" target="clean"/>
         <ant dir="compiler-jx/src/test" target="clean"/>
         <ant dir="flex-compiler-oem" target="clean"/>
+        <ant dir="swfutils" target="clean"/>
         <ant dir="royale-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
     </target>
@@ -172,6 +132,8 @@
         <ant dir="compiler-build-tools" target="wipe"/>
         <ant dir="compiler-test-utils" target="wipe"/>
         <ant dir="compiler-jburg-types" target="wipe"/>
+        <ant dir="compiler-common" target="wipe"/>
+        <ant dir="compiler-externc" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/tests" target="wipe"/>
     </target>
@@ -180,11 +142,14 @@
         <ant dir="compiler-build-tools" target="wipe"/>
         <ant dir="compiler-jburg-types" target="wipe"/>
         <ant dir="compiler-test-utils" target="wipe"/>
+        <ant dir="compiler-common" target="wipe"/>
+        <ant dir="compiler-externc" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/test" target="wipe"/>
 		<ant dir="compiler-jx" target="super-clean"/>
         <ant dir="compiler-jx/src/test" target="wipe"/>
         <ant dir="flex-compiler-oem" target="wipe"/>
+        <ant dir="swfutils" target="wipe"/>
         <ant dir="royale-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
@@ -249,10 +214,12 @@
                                                                                        
         FixMe: clean needs to clean - add code to detect unversioned files
     -->
-    <target name="source-package" depends="stage-source,stage-source-jx,source-package-zip,source-package-tgz"
+    <target name="source-package" depends="stage-all,source-package-zip,source-package-tgz"
         description="Package source files required to build in zip and tar-gzip file">
     </target>
-        
+    
+    <target name="stage-all" depends="stage-source,stage-source-jx" />
+    
     <!--
      Packages the source distribution with ZIP.
      -->
@@ -272,9 +239,9 @@
         description="Package source files required to build in zip file" >
         <antcall target="clean-temp"/>
         <sleep seconds="3" />
-        <mkdir dir="${basedir}/temp"/>
+        <mkdir dir="${staging-dir}"/>
 
-        <copy todir="${basedir}/temp" includeEmptyDirs="false">
+        <copy todir="${staging-dir}" includeEmptyDirs="false">
             <fileset dir="${basedir}">
                 <include name="build.xml"/>
                 <include name="build.properties"/>
@@ -306,14 +273,11 @@
         <!-- royale ant tasks -->
         <antcall target="stage-ant-tasks"/>
         
-        <!-- typedefs -->
-        <antcall target="stage-typedefs"/>
-        
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false">
             <exclude name="compiler/src/assembly/**"/>
             <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="compiler/target/**"/>
@@ -330,20 +294,20 @@
             <exclude name="**/*.swf"/>
             <exclude name="**/*.swc"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
         
         <!-- 
          Unix shell scripts need the correct line endings. 
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">  
+        <fixcrlf srcdir="${staging-dir}" eol="unix" fixlast="false">  
             <include name="**.sh"/>
         </fixcrlf>
     </target>
 
     <target name="stage-compiler">
-        <copy todir="${basedir}/temp/compiler" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -358,7 +322,7 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/compiler-build-tools" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-build-tools" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-build-tools">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -373,7 +337,7 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/compiler-test-utils" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-test-utils" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-test-utils">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -388,7 +352,7 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        <copy todir="${basedir}/temp/compiler-jburg-types" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-jburg-types" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-jburg-types">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -414,13 +378,7 @@
     </target>
 
     <target name="stage-fb-integration">
-        <ant dir="${basedir}/debugger" target="downloads" />
-        <delete>
-            <fileset dir="${basedir}/debugger/target/downloads">
-                <include name="*.tar.gz"/>
-            </fileset>
-        </delete>
-        <copy todir="${basedir}/temp/debugger" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/debugger" includeEmptyDirs="false">
             <fileset dir="${basedir}/debugger">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -432,14 +390,17 @@
                 <exclude name="target/META-INF/**"/>
             </fileset>
         </copy>
-        <ant dir="${basedir}/flex-compiler-oem" target="downloads" />
-        <delete>
-            <fileset dir="${basedir}/flex-compiler-oem/target/downloads">
-                <include name="*.tar.gz"/>
-            </fileset>
-        </delete>
-        <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/flex-compiler-oem" includeEmptyDirs="false">
             <fileset dir="${basedir}/flex-compiler-oem">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="target/classes/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${staging-dir}/swfutils" includeEmptyDirs="false">
+            <fileset dir="${basedir}/swfutils">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
@@ -450,7 +411,7 @@
     </target>
 
     <target name="stage-ant-tasks">
-        <copy todir="${basedir}/temp/royale-ant-tasks" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/royale-ant-tasks" includeEmptyDirs="false">
             <fileset dir="${basedir}/royale-ant-tasks">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -465,25 +426,16 @@
         </copy>
     </target>
 
-    <target name="stage-typedefs" depends="check-typedefs-home">
-        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
-                <include name="**"/>
-                <exclude name="**/target/**" />
-            </fileset>
-        </copy>
-    </target>
-    
     <target name="stage-source-jx"
         description="Package jx source files with other royale files required to build in zip file" >
         
-        <copy todir="${basedir}/temp" >
+        <copy todir="${staging-dir}" >
             <fileset dir="${basedir}">
                 <include name="LICENSE.bin"/>
             </fileset>
         </copy>
         
-        <copy todir="${basedir}/temp/compiler-jx" includeEmptyDirs="false">
+        <copy todir="${staging-dir}/compiler-jx" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-jx">
                 <include name="**"/>
                 <exclude name=".classpath" />
@@ -504,7 +456,7 @@
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false">
             <exclude name="compiler/src/assembly/**"/>
             <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="**/assets/**"/>
@@ -520,27 +472,27 @@
             <exclude name="**/*.swf"/>
             <exclude name="**/*.swc"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler-jx/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="unix" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler/src/assembly" eol="unix" fixlast="false">
             <include name="**"/>
             <exclude name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="unix" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}/compiler-jx/src/assembly" eol="unix" fixlast="false">
             <include name="**"/>
             <exclude name="**.bat"/>
         </fixcrlf>
-        <chmod dir="${basedir}/temp/compiler/src/assembly" excludes="**/*.bat" perm="+x" />
-        <chmod dir="${basedir}/temp/compiler-jx/src/assembly" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${staging-dir}/compiler/src/assembly" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${staging-dir}/compiler-jx/src/assembly" excludes="**/*.bat" perm="+x" />
         
         <!--
          Unix shell scripts need the correct line endings.
          -->
-        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="unix" fixlast="false">
             <include name="**.sh"/>
         </fixcrlf>
     </target>
@@ -560,11 +512,18 @@
         description="Package binary files in zip and tar-gzip file.">
         
         <antcall target="stage-source"/>
+        <antcall target="stage-binary"/>
         
+        <antcall target="binary-package-zip"/>
+        <antcall target="binary-package-tgz"/>
+        
+    </target>
+
+    <target name="stage-binary" >
         <!-- these files are in addition to the remaining source files -->
         
         <!-- generated -->
-        <copy todir="${basedir}/temp/compiler/lib">
+        <copy todir="${staging-dir}/compiler/lib">
             <fileset dir="${basedir}/compiler/lib">
                 <include name="**"/>
                 <exclude name="external/**"/>
@@ -573,17 +532,10 @@
         </copy>
         
         <antcall target="stage-source-jx" />
-
-        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
-                <include name="createjs/target/downloads/EaselJS-0.8.0/LICENSE.txt" />
-                <include name="createjs/target/downloads/TweenJS-0.6.2/LICENSE.txt" />
-            </fileset>
-        </copy>
-
+        
         <!-- generated -->
-        <mkdir dir="${basedir}/temp/js"/>
-        <copy todir="${basedir}/temp/js">
+        <mkdir dir="${staging-dir}/js"/>
+        <copy todir="${staging-dir}/js">
             <fileset dir="${basedir}/compiler-jx">
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
@@ -595,44 +547,8 @@
                 <exclude name="lib/junit**"/>
             </fileset>
         </copy>
-        
-        <!-- generated -->
-        <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${ROYALE_TYPEDEFS_HOME}/js/target/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${ROYALE_TYPEDEFS_HOME}/cordova/target/cordova.swc" />
-        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${ROYALE_TYPEDEFS_HOME}/createjs/target/createjs.swc" />
-        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${ROYALE_TYPEDEFS_HOME}/google_maps/target/google_maps.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${ROYALE_TYPEDEFS_HOME}/jasmine/target/jasmine.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${ROYALE_TYPEDEFS_HOME}/jquery/target/jquery-1.9.swc" />
-        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${ROYALE_TYPEDEFS_HOME}/GCL/target/GCL.swc" />
-        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${ROYALE_TYPEDEFS_HOME}/node/target/node.swc" />
-        
-        <!-- generated -->
-        <mkdir dir="${basedir}/temp/royale-typedefs"/>
-        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
-                <include name="**/**"/>
-                <exclude name="**/externs.zip" />
-                <exclude name="**/target/.plxarc" />
-                <exclude name="**/target/failsafe-reports/**" />
-                <exclude name="**/*.swc"/>
-                <exclude name="**/*.as"/>
-                <exclude name="createjs/target/**"/>
-            </fileset>
-        </copy>
-        <echo>copy easel and tween</echo>
-        <copy todir="${basedir}/temp/royale-typedefs" includeEmptyDirs="false">
-            <fileset dir="${ROYALE_TYPEDEFS_HOME}">
-                <include name="createjs/target/downloads/Easel*/src/**"/>
-                <include name="createjs/target/downloads/Tween*/src/**"/>
-            </fileset>
-        </copy>
-        
-        <antcall target="binary-package-zip"/>
-        <antcall target="binary-package-tgz"/>
-        
     </target>
-
+    
     <!--
      Packages the binary distribution with ZIP.
      -->
@@ -707,7 +623,6 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.royale.tools.RoyaleToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
-                <exclude name="royale-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.bin"/>
                 <exclude name="README_MAVEN.txt"/>
@@ -797,7 +712,7 @@
             replace="${asfheader}${generated.by.comment}"
             byline="false"
             flags="s">
-            <fileset dir="${basedir}/temp">
+            <fileset dir="${staging-dir}">
                 <include name="**/*.js" />
             </fileset>
         </replaceregexp>
