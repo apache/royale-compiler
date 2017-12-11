@@ -81,6 +81,8 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${args4j.name}.jar"/>
     </antcall>
+    <!-- the download-dependency copies ALv2, but args4j seems to be under MIT so overwrite it -->
+    <get src="https://raw.githubusercontent.com/kohsuke/args4j/master/LICENSE" dest="${lib.dir}/args4j-LICENSE.txt" ignoreerrors="true"/>
 
     <!--  closure -->
     <property name="closure.version" value="20170626"/>
