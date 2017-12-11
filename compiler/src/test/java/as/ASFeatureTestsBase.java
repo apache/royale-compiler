@@ -235,6 +235,7 @@ public class ASFeatureTestsBase
 						e.printStackTrace();
 					}
 					String ours = out.toString();
+					ours = ours.replaceAll("\r\n", "\n");
 					className = className.replace(".", "_");
 					String resultName = className + "_" + methodName + "_swfdump.xml";
 					File resultFile = new File(testAdapter.getUnitTestBaseDir(), "swfdumps/" + resultName);
@@ -257,6 +258,7 @@ public class ASFeatureTestsBase
 						}
 						fileReader.close();
 						resultText = stringBuffer.toString();
+						resultText = resultText.replaceAll("\r\n", "\n");
 						String tempClassName = tempASFile.getName();
 						tempClassName = tempClassName.replace(".as", "");
 						tempClassName = tempClassName.replace(".mxml", "");
@@ -270,8 +272,6 @@ public class ASFeatureTestsBase
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					ours = ours.replaceAll("\r\n", "\n");
-					resultText = resultText.replaceAll("\r\n", "\n");
 					// remove file length because the generated classname could have a different
 					// length and affect the swf length
 					int c = resultText.indexOf("<!-- framecount");
