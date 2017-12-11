@@ -268,6 +268,11 @@ Software Dependencies
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
         Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
 
+    The Google Closure Compiler includes files originally from Rhino under MPL 1.1.  For
+    details see:
+       https://github.com/google/closure-compiler/blob/master/README.md.  
+    Rhino is available at:
+       https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino
 
 Using the Binary Distribution
 -----------------------------
