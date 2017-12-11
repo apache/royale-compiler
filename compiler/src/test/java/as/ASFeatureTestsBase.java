@@ -270,6 +270,8 @@ public class ASFeatureTestsBase
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					ours = ours.replaceAll("\r\n", "\n");
+					resultText = resultText.replaceAll("\r\n", "\n");
 					// remove file length because the generated classname could have a different
 					// length and affect the swf length
 					int c = resultText.indexOf("<!-- framecount");
