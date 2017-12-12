@@ -594,13 +594,12 @@
         <tar-gzip name="${binary.kit}" />
     </target>
 
-    <!--
+    <!-- was colliding with the one in royale-asjs?  we aren't packaging up compiler artifacts for now anyway.
      tar with gzip compression, the temp directory and put it in the out directory.
      The shell scripts in the bin directory (no extension) and other .sh files have
      mode set to execute.
      
      name - the basename name of the kit in out directory, without the .tar.gz extension
-     -->
     <macrodef name="tar-gzip">
         <attribute name="name"/>
         <sequential>
@@ -622,6 +621,7 @@
             </tar>
         </sequential>
     </macrodef>
+     -->
 
     <!--
      Run the Apache Rat audit tool against the source in the source kit.
