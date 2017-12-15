@@ -367,7 +367,37 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
-        
+        <copy todir="${staging-dir}/compiler-common" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler-common">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
+        <copy todir="${staging-dir}/compiler-externc" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler-externc">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
+
         <tstamp>
             <format property="build.number.date" pattern="yyyyMMdd" />
         </tstamp>
@@ -564,13 +594,12 @@
         <tar-gzip name="${binary.kit}" />
     </target>
 
-    <!--
+    <!-- was colliding with the one in royale-asjs?  we aren't packaging up compiler artifacts for now anyway.
      tar with gzip compression, the temp directory and put it in the out directory.
      The shell scripts in the bin directory (no extension) and other .sh files have
      mode set to execute.
      
      name - the basename name of the kit in out directory, without the .tar.gz extension
-     -->
     <macrodef name="tar-gzip">
         <attribute name="name"/>
         <sequential>
@@ -592,6 +621,7 @@
             </tar>
         </sequential>
     </macrodef>
+     -->
 
     <!--
      Run the Apache Rat audit tool against the source in the source kit.
