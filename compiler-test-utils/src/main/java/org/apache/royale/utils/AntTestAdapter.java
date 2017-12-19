@@ -113,10 +113,14 @@ public class AntTestAdapter implements ITestAdapter {
     }
 
     private File getLib(String artifactId) {
+    	if (LIBS_ROOT == null)
+    		LIBS_ROOT = new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs"));        	
         return new File(LIBS_ROOT, artifactId + ".swc");
     }
 
     private File getResourceBundle(String artifactId) {
+    	if (RESOURCE_BUNDLES_ROOT == null)
+    		RESOURCE_BUNDLES_ROOT = new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US"));
         return new File(RESOURCE_BUNDLES_ROOT, artifactId + "_rb.swc");
     }
 
