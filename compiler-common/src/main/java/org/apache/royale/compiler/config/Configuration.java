@@ -5823,7 +5823,27 @@ public class Configuration
     @Arguments("filename")
     public void setLoadConfig(ConfigurationValue cv, String filename) throws ConfigurationException
     {
-        configFile = resolvePathStrict(filename, cv);
+    	try {
+            configFile = resolvePathStrict(filename, cv);    		
+    	} 
+    	catch (ConfigurationException.CannotOpen e)
+    	{
+    		if (filename.contains("royale-config"))
+    		{
+    			try {
+    				filename = filename.replace("royale-config", "flex-config");
+        			configFile = resolvePathStrict(filename, cv);
+        			cv.getArgs().remove(0);
+        			cv.getArgs().add(filename);
+    			}
+    			catch (ConfigurationException.CannotOpen e2)
+    			{
+    				throw e;
+    			}
+    		}
+    		else
+    			throw e;
+    	}
     }
 
     //
