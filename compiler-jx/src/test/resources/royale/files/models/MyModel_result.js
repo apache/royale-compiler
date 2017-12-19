@@ -22,13 +22,13 @@
 goog.provide('models.MyModel');
 
 goog.require('org.apache.royale.events.Event');
-goog.require('org.apache.royale.events.TestImplementation');
+goog.require('org.apache.royale.events.EventDispatcher');
 
 
 
 /**
  * @constructor
- * @extends {org.apache.royale.events.TestImplementation}
+ * @extends {org.apache.royale.events.EventDispatcher}
  */
 models.MyModel = function() {
   models.MyModel.base(this, 'constructor');
@@ -36,7 +36,7 @@ models.MyModel = function() {
 this._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
 this._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
 };
-goog.inherits(models.MyModel, org.apache.royale.events.TestImplementation);
+goog.inherits(models.MyModel, org.apache.royale.events.EventDispatcher);
 
 
 /**
