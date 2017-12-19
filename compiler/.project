@@ -16,43 +16,55 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>COMPILER_BUILD_TOOLS</name>
+			<name>COMPILER_COMMON</name>
 			<type>2</type>
-			<locationURI>COMPILER_BUILD_TOOLS</locationURI>
+			<locationURI>COMPILER_COMMON</locationURI>
+		</link>
+		<link>
+			<name>COMPILER_EXTERNC</name>
+			<type>2</type>
+			<locationURI>COMPILER_EXTERNC</locationURI>
 		</link>
 		<link>
 			<name>COMPILER_JBURG_TYPES</name>
 			<type>2</type>
-			<location>/Users/erik/Documents/git/royale-compiler/compiler-jburg-types/src/main/java</location>
+			<locationURI>COMPILER_JBURG_TYPES</locationURI>
 		</link>
 		<link>
 			<name>COMPILER_TEST_UTILS</name>
 			<type>2</type>
-			<location>/Users/erik/Documents/git/royale-compiler/compiler-test-utils/src/main/java</location>
+			<locationURI>COMPILER_TEST_UTILS</locationURI>
 		</link>
 		<link>
-			<name>compiler-test-utils</name>
+			<name>ROYALE_ANT_TASKS</name>
 			<type>2</type>
-			<location>/Users/erik/Documents/git/royale-compiler/compiler-test-utils</location>
-		</link>
-		<link>
-			<name>royale-ant-tasks</name>
-			<type>2</type>
-			<location>/Users/aharui/git/royale/ant/royale-compiler/royale-ant-tasks/src/main/java</location>
+			<locationURI>ROYALE_ANT_TASKS</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
 		<variable>
-			<name>COMPILER_BUILD_TOOLS</name>
-			<value>file:/Users/aharui/git/royale/ant/royale-compiler/compiler-build-tools/src/main/java</value>
+			<name>CLOSURE_COMPILER</name>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/google/closure-compiler/compiler.jar</value>
+		</variable>
+		<variable>
+			<name>COMPILER_COMMON</name>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-common/src/main/java</value>
+		</variable>
+		<variable>
+			<name>COMPILER_EXTERNC</name>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-externc/src/main/java</value>
 		</variable>
 		<variable>
 			<name>COMPILER_JBURG_TYPES</name>
-			<value>file:/Users/aharui/git/royale/ant/royale-compiler/compiler-jx/src/main/java</value>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-jburg-types/src/main/java</value>
 		</variable>
 		<variable>
 			<name>COMPILER_TEST_UTILS</name>
-			<value>file:/Users/aharui/git/royale/ant/royale-compiler/compiler-test-utils/src/main/java</value>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-test-utils/src/main/java</value>
+		</variable>
+		<variable>
+			<name>ROYALE_ANT_TASKS</name>
+			<value>file:/Users/erik/Documents/git/royale-compiler/royale-ant-tasks/src/main/java</value>
 		</variable>
 	</variableList>
 </projectDescription>

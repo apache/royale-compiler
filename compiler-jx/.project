@@ -17,30 +17,24 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>COMPILER_BUILD_TOOLS</name>
+			<name>COMPILER_COMMON</name>
 			<type>2</type>
-			<locationURI>COMPILER_BUILD_TOOLS</locationURI>
+			<locationURI>COMPILER_COMMON</locationURI>
 		</link>
 		<link>
-			<name>COMPILER_TEST_UTILS</name>
+			<name>COMPILER_EXTERNC</name>
 			<type>2</type>
-			<location>/Users/erik/Documents/git/royale-compiler/compiler-test-utils/src/main/java</location>
-		</link>
-		<link>
-			<name>compiler-common</name>
-			<type>2</type>
-			<location>/Users/erik/Documents/git/royale-compiler/compiler-common</location>
-		</link>
-		<link>
-			<name>java</name>
-			<type>2</type>
-			<location>/Users/erik/Documents/git/royale-compiler/compiler-externc/src/test/java</location>
+			<locationURI>COMPILER_EXTERNC</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
 		<variable>
-			<name>COMPILER_BUILD_TOOLS</name>
-			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-build-tools/src/main/java</value>
+			<name>COMPILER_COMMON</name>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-common/src/main/java</value>
+		</variable>
+		<variable>
+			<name>COMPILER_EXTERNC</name>
+			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-externc/src/test/java</value>
 		</variable>
 		<variable>
 			<name>COMPILER_TEST_UTILS</name>
