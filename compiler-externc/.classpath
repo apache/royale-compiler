@@ -2,16 +2,16 @@
 <classpath>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-cli.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-io.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/guava.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-cli.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-io.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/guava.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/flex-tool-api.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/junit-4.10.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/flex-tool-api.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-lang3-3.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-compress-1.10.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler-jx/lib/google/closure-compiler/compiler.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-compress-1.10.jar"/>
+	<classpathentry kind="lib" path="../compiler-jx/lib/google/closure-compiler/compiler.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
