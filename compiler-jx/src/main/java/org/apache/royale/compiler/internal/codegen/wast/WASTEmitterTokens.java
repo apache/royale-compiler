@@ -16,26 +16,23 @@
  *  limitations under the License.
  *
  */
-
 package org.apache.royale.compiler.internal.codegen.wast;
 
-import org.apache.royale.compiler.internal.test.WASTTestBase;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.junit.Test;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 
-/**
- * This class tests the production of WebAssembly Text Format code for Classes.
- * 
- * @author Erik de Bruin
- */
-public class TestWASTClass extends WASTTestBase {
+public enum WASTEmitterTokens implements IEmitterTokens
+{
+    MODULE("module");
 
-    @Test
-    public void testClassSimple()
+    private String token;
+
+    private WASTEmitterTokens(String value)
     {
-        IClassNode node = (IClassNode) getNode("public class A{}", IClassNode.class, WRAP_LEVEL_PACKAGE);
-        asBlockWalker.visitClass(node);
-        assertOut("(module\n \n )");
+        token = value;
     }
 
+    public String getToken()
+    {
+        return token;
+    }
 }
