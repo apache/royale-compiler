@@ -103,6 +103,10 @@
           <target name="clean" />
           <target name="main" />
         </ant>
+        <ant dir="../compiler-externc">
+          <target name="clean" />
+          <target name="main" />
+        </ant>
         <copy file="${basedir}/../compiler-test-utils/target/classes/org/apache/royale/utils/EnvProperties.class" tofile="${classes.dir}/org/apache/royale/utils/EnvProperties.class"/>
     </target>
 	
@@ -114,10 +118,6 @@
         <copy file="${basedir}/../NOTICE.base" tofile="${classes.dir}/META-INF/NOTICE"/>
         
 		<echo message="Building ${wastc.jar}" />
-    <ant dir="../compiler-test-utils">
-      <target name="clean" />
-      <target name="main" />
-    </ant>
     <copy file="${basedir}/../compiler-test-utils/target/classes/org/apache/royale/utils/EnvProperties.class" tofile="${classes.dir}/org/apache/royale/utils/EnvProperties.class"/>
 		<jar file="${wastc.jar}" basedir="${classes.dir}"
          includes="**/*.properties,org/apache/**/*,META-INF/**/*"
