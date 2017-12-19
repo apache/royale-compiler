@@ -57,7 +57,7 @@ public class TypedefsTestUtils
         "../../../royale-typedefs/js/src/main/royale/AS3.as");
         if (!f.exists())
         	f = new File(
-            "../../../../royale-typedefs/js/src/main/royale/AS3.as");
+            "../../royale-typedefs/js/src/main/royale/AS3.as");
         // XXX AS3.as is a namespace needed to override toString in some classes
         AS3_NAMESPACE_FILE = FilenameNormalization.normalize(f);
 
@@ -65,7 +65,7 @@ public class TypedefsTestUtils
         "../../../royale-typedefs/jquery/target/downloads");
         if (!f.exists())
         	f = new File(
-            "../../../../royale-typedefs/jquery/target/downloads");
+            "../../royale-typedefs/jquery/target/downloads");
         
         EXTERNAL_JQUERY_DIR = FilenameNormalization.normalize(f);
 
@@ -73,14 +73,14 @@ public class TypedefsTestUtils
                 "../../../royale-typedefs/jasmine/target/downloads");
         if (!f.exists())
         	f = new File(
-                    "../../../../royale-typedefs/jasmine/target/downloads");
+                    "../../royale-typedefs/jasmine/target/downloads");
         EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(f);
 
         f = new File(
         "../../../royale-typedefs/node/target/downloads/closure-compiler-master/contrib/nodejs");
         if (!f.exists())
         	f = new File(
-            "../../../../royale-typedefs/node/target/downloads/closure-compiler-master/contrib/nodejs");
+            "../../royale-typedefs/node/target/downloads/closure-compiler-master/contrib/nodejs");
         EXTERNAL_NODE_DIR = FilenameNormalization.normalize(f);
     	
     }
