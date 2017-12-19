@@ -100,7 +100,7 @@ public class MXMLFeatureTestsBase
 
 		// Build the list of SWCs to compile against on the library path.
 		List<String> swcs = new ArrayList<String>();
-    	String customSwcPath = FilenameNormalization.normalize("../../target/custom.swc");
+    	String customSwcPath = FilenameNormalization.normalize("target/custom.swc");
 		swcs.add(customSwcPath);
 		if (withFramework)
 		{
@@ -120,6 +120,7 @@ public class MXMLFeatureTestsBase
 		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
 		
 		List<String> args = new ArrayList<String>();
+		args.add("-debug=true");
 		// Force the testsuite to use en_US as locale, otherwise
 		// the testsuite will only pass on systems with en_US as
 		// locale.
@@ -127,12 +128,12 @@ public class MXMLFeatureTestsBase
         if (hasFlashPlayerGlobal)
         	args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
         else {
-        	String jsSwcPath = FilenameNormalization.normalize("../../../compiler-externc/target/js.swc");
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
         	args.add("-external-library-path=" + jsSwcPath);
         }
 		args.add(libraryPath);
 		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
-    	String customManifestPath = FilenameNormalization.normalize("../../src/test/resources/custom-manifest.xml");
+    	String customManifestPath = FilenameNormalization.normalize("src/test/resources/custom-manifest.xml");
 		args.add("-namespace+=" + NAMESPACE_TEST + "," + customManifestPath);
 		if (otherOptions != null)
 		{

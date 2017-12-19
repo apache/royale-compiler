@@ -105,8 +105,8 @@ public class MXMLDesignLayerNodeTests extends MXMLInstanceNodeTests
 		String[] code = new String[]
 		{
 			"<fx:DesignLayer>",
-			"    <d:Sprite/>",
-			"    <d:Sprite/>",
+			"    <s:Group/>",
+			"    <s:Group/>",
 			"</fx:DesignLayer>"
 		};
 		IMXMLDesignLayerNode node = getMXMLDesignLayerNode(code);

@@ -52,7 +52,7 @@ public class MXMLComponentTagTests extends MXMLInstanceTagTestsBase
         String[] declarations = new String[]
         {
             "<fx:Component id='c1' className='MyTestInstance'>",
-            "    <custom:TestInstance name='s1'/>",
+            "    <d:Sprite name='s1'/>",
             "</fx:Component>"
         };
         String[] asserts = new String[]
@@ -64,7 +64,7 @@ public class MXMLComponentTagTests extends MXMLInstanceTagTestsBase
             "var properties:Object = ClassFactory(c1).properties;",
             "assertEqual('countProperties(properties)', countProperties(properties), 1);",
             "assertEqual('properties.outerDocument', properties.outerDocument, this);",
-            "assertEqual('c1.newInstance() is TestInstance', c1.newInstance() is TestInstance, true);",
+            "assertEqual('c1.newInstance() is Sprite', c1.newInstance() is Sprite, true);",
             "assertEqual('c1.newInstance().name', c1.newInstance().name, 's1');",
             "assertEqual('c1.newInstance().outerDocument', c1.newInstance().outerDocument, this);",
         };
