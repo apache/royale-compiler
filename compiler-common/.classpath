@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/FilenameNormalization.java" kind="src" path="COMPILER_TEST_UTILS"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-cli.jar"/>
 	<classpathentry kind="lib" path="/Users/aharui/git/royale/ant/royale-compiler/compiler/lib/external/commons-io.jar"/>

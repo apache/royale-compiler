@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="target/generated-sources/jburg"/>
-	<classpathentry excluding="**/FilenameNormalization.java" kind="src" path="COMPILER_TEST_UTILS"/>
-	<classpathentry kind="src" path="COMPILER_JBURG_TYPES"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="target/generated-sources/antlr"/>
 	<classpathentry kind="src" path="target/generated-sources/jflex"/>
 	<classpathentry kind="src" path="target/generated-sources/unknowntreehandler"/>
@@ -23,7 +21,7 @@
 	<classpathentry kind="lib" path="lib/external/jburg.jar"/>
 	<classpathentry kind="lib" path="lib/external/commons-compress-1.10.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
-	<classpathentry kind="lib" path="lib/compiler-common.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

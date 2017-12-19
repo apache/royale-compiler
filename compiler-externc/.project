@@ -15,39 +15,7 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>COMPILER_BUILD_TOOLS</name>
-			<type>2</type>
-			<locationURI>COMPILER_BUILD_TOOLS</locationURI>
-		</link>
-		<link>
-			<name>COMPILER_JBURG_TYPES</name>
-			<type>2</type>
-			<location>/Users/aharui/git/royale/ant/royale-compiler/compiler-jburg-types/src/main/java</location>
-		</link>
-		<link>
-			<name>COMPILER_TEST_UTILS</name>
-			<type>2</type>
-			<location>/Users/aharui/git/royale/ant/royale-compiler/compiler-test-utils/src/main/java</location>
-		</link>
-		<link>
-			<name>royale-ant-tasks</name>
-			<type>2</type>
-			<location>/Users/aharui/git/royale/ant/royale-compiler/royale-ant-tasks/src/main/java</location>
-		</link>
 	</linkedResources>
 	<variableList>
-		<variable>
-			<name>COMPILER_BUILD_TOOLS</name>
-			<value>file:/Users/aharui/git/royale/ant/royale-compiler/compiler-build-tools/src/main/java</value>
-		</variable>
-		<variable>
-			<name>COMPILER_JBURG_TYPES</name>
-			<value>file:/Users/aharui/git/royale/ant/royale-compiler/compiler-jx/src/main/java</value>
-		</variable>
-		<variable>
-			<name>COMPILER_TEST_UTILS</name>
-			<value>file:/Users/aharui/git/royale/ant/royale-compiler/compiler-test-utils/src/main/java</value>
-		</variable>
 	</variableList>
 </projectDescription>
