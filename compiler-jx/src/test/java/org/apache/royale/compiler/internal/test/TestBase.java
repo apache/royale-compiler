@@ -130,7 +130,9 @@ public class TestBase implements ITestBase
         {
         }
 
-        writer = ((IJSBackend) backend).createWriterBuffer(royaleJSProject);
+        if (backend instanceof IJSBackend) {
+          writer = ((IJSBackend) backend).createWriterBuffer(royaleJSProject);
+        }
 
         try
         {

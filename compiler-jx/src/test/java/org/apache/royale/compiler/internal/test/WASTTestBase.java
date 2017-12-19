@@ -44,6 +44,8 @@ public class WASTTestBase extends ASTestBase {
 
         super.setUp();
 
+        writer = ((IWASTBackend) backend).createWriterBuffer(royaleWASTProject);
+        
         asEmitter = backend.createEmitter(writer);
         asBlockWalker = ((IWASTBackend) backend).createWalker(royaleWASTProject, errors, asEmitter);
     }
