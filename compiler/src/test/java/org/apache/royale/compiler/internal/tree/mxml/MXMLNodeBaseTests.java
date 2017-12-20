@@ -153,8 +153,15 @@ public class MXMLNodeBaseTests
 		
 		// Use the MXML 2009 manifest.
 		List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
+		File mxml2009File = new File(testAdapter.getUnitTestBaseDir(), "mxml-2009-manifest.xml");
+		if (!mxml2009File.exists())
+			mxml2009File = new File(FilenameNormalization.normalize("src/test/resources/mxml-2009-manifest.xml"));
+		if (withFlex)
+			mxml2009File = new File(testAdapter.getFlexManifestPath("mxml-2009"));
+		if (!mxml2009File.exists())
+			System.out.println("could not find mxml-2009-manifest.xml");
 		IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-		    "http://ns.adobe.com/mxml/2009", new File(testAdapter.getUnitTestBaseDir(), "mxml-2009-manifest.xml").getAbsolutePath());
+		    "http://ns.adobe.com/mxml/2009", mxml2009File.getAbsolutePath());
 		namespaceMappings.add(mxml2009);
 		IMXMLNamespaceMapping custom = new MXMLNamespaceMapping(
 			    "library://ns.apache.org/royale/test", new File(testAdapter.getUnitTestBaseDir(), "custom-manifest.xml").getAbsolutePath());

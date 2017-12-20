@@ -19,9 +19,9 @@
 package models
 {
 	import org.apache.royale.events.Event;
-	import org.apache.royale.events.TestImplementation;
+	import org.apache.royale.events.EventDispatcher;
 	
-	public class MyModel extends TestImplementation
+	public class MyModel extends EventDispatcher
 	{
 		public function MyModel()
 		{

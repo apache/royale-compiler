@@ -868,6 +868,12 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
                     for (String path : cv.getArgs())
                     {
                         File configFile = configurationPathResolver.resolve(path);
+                        if (!configFile.exists() && path.contains("royale-config"))
+                        {
+                        	File configFile2 = configurationPathResolver.resolve(path.replace("royale-config", "flex-config"));
+                        	if (configFile2.exists())
+                        		configFile = configFile2;
+                        }
                         if (!configFile.exists())
                         {
                             success = false;

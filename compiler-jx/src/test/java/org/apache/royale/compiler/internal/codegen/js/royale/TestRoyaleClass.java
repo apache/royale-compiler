@@ -135,7 +135,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var event:Event = new Event(); public function foo():String {return event.type;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n\nthis.event = new custom.TestEvent();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n * @type {custom.TestEvent}\n */\norg.apache.royale.B.prototype.event;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return this.event.type;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n\nthis.event = new Event();\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n * @type {Event}\n */\norg.apache.royale.B.prototype.event;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return this.event.type;\n};";
         assertOut(expected);
     }
 
@@ -468,7 +468,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         FileNode node = (FileNode)getNode("package org.apache.royale {\npublic class A {\nimport flash.display.Sprite; Sprite;\n}}", FileNode.class, 0);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * org.apache.royale.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.royale.A');\n\ngoog.require('flash.display.Sprite');\n\n\n\n/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
+        assertOut("/**\n * org.apache.royale.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.royale.A');\n\n\n\n/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);");
     }
     
     @Override

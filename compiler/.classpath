@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="target/generated-sources/antlr3"/>
-	<classpathentry kind="src" path="target/generated-sources/antlr"/>
 	<classpathentry kind="src" path="target/generated-sources/jburg"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="src" path="target/generated-sources/antlr"/>
 	<classpathentry kind="src" path="target/generated-sources/jflex"/>
 	<classpathentry kind="src" path="target/generated-sources/unknowntreehandler"/>
+	<classpathentry kind="src" path="target/generated-sources/antlr3"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry exported="true" kind="lib" path="lib/external/antlr.jar"/>
 	<classpathentry kind="lib" path="lib/external/commons-cli.jar"/>
-	<classpathentry kind="lib" path="lib/external/commons-compress-1.10.jar"/>
 	<classpathentry kind="lib" path="lib/external/commons-io.jar"/>
-	<classpathentry kind="lib" path="lib/external/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="lib/external/flex-tool-api.jar"/>
 	<classpathentry kind="lib" path="lib/external/guava.jar"/>
-	<classpathentry kind="lib" path="lib/external/jburg.jar"/>
-	<classpathentry kind="lib" path="lib/external/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="lib/external/lzma-sdk.jar"/>
-	<classpathentry kind="src" path="COMPILER_COMMON"/>
-	<classpathentry kind="src" path="COMPILER_EXTERNC"/>
-	<classpathentry kind="src" path="COMPILER_JBURG_TYPES"/>
-	<classpathentry excluding="**/FilenameNormalization.java" kind="src" path="COMPILER_TEST_UTILS"/>
-	<classpathentry kind="src" path="ROYALE_ANT_TASKS"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ANT_JAR"/>
-	<classpathentry kind="lib" path="/Users/erik/Documents/git/royale-compiler/compiler-jx/lib/google/closure-compiler/compiler.jar"/>
+	<classpathentry kind="lib" path="lib/external/flex-tool-api.jar"/>
+	<classpathentry kind="lib" path="lib/external/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="lib/external/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="lib/external/jburg.jar"/>
+	<classpathentry kind="lib" path="lib/external/commons-compress-1.10.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

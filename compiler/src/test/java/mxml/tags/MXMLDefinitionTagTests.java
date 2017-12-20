@@ -49,6 +49,7 @@ public class MXMLDefinitionTagTests extends MXMLInstanceTagTestsBase
 	            "    </fx:Declarations>",
 	            "    <fx:Script>",
 	            "    <![CDATA[",
+	            "        import custom.TestInstance;",	            
 	            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
 	            "        {",
 	            "            if (actualValue !== expectedValue)",
@@ -106,7 +107,7 @@ public class MXMLDefinitionTagTests extends MXMLInstanceTagTestsBase
         };
         String[] declarations = new String[]
         {
-            "<fx:MyDefinitions name='s1'/>"
+            "<fx:MyDefinition id='s1'/>"
         };
         String[] asserts = new String[]
         {

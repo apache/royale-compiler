@@ -3,7 +3,6 @@
 	<name>compiler-jx</name>
 	<comment></comment>
 	<projects>
-		<project>compiler</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -16,29 +15,7 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>COMPILER_COMMON</name>
-			<type>2</type>
-			<locationURI>COMPILER_COMMON</locationURI>
-		</link>
-		<link>
-			<name>COMPILER_EXTERNC</name>
-			<type>2</type>
-			<locationURI>COMPILER_EXTERNC</locationURI>
-		</link>
 	</linkedResources>
 	<variableList>
-		<variable>
-			<name>COMPILER_COMMON</name>
-			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-common/src/main/java</value>
-		</variable>
-		<variable>
-			<name>COMPILER_EXTERNC</name>
-			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-externc/src/test/java</value>
-		</variable>
-		<variable>
-			<name>COMPILER_TEST_UTILS</name>
-			<value>file:/Users/erik/Documents/git/royale-compiler/compiler-test-utils/src/main/java</value>
-		</variable>
 	</variableList>
 </projectDescription>
