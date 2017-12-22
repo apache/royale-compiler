@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMXMLCoreConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IEffectDefinition;
@@ -35,6 +36,9 @@ import org.apache.royale.compiler.definitions.IStyleDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
+import org.apache.royale.compiler.internal.mxml.MXMLTagData;
+import org.apache.royale.compiler.internal.mxml.MXMLTextData;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
@@ -42,9 +46,11 @@ import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDuplicateChildTagProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassReferenceNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
@@ -152,6 +158,12 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      */
     private IVariableDefinition defaultPropertyDefinition;
 
+    /**
+     * The definition of an alternate default property. This gets lazily initialized by
+     * {@code getDefaultPropertyDefinition()} if we need to know it.
+     */
+    private IVariableDefinition altDefaultPropertyDefinition;
+    
     /**
      * A flag that keeps track of whether the {@code defaultPropertyDefinition}
      * field has been initialized. Simply checking whether it is
@@ -518,6 +530,59 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                         }
                 	}
                 }
+                else if (altDefaultPropertyDefinition != null && !processedDefaultProperty && altDefaultPropertyDefinition.getBaseName().equals("textContent"))
+                {
+                	String uri = childTag.getURI();
+                	if (uri.equals("library://ns.apache.org/royale/html"))
+                	{
+                        IVariableDefinition textDef = (IVariableDefinition)project.resolveSpecifier(classReference, "textContent");
+                        if (textDef != null)
+                        {
+                        	List<IMXMLNode> nodes = info.getChildNodeList();
+                        	if (nodes.size() > 0)
+                        	{
+                        		IMXMLNode lastNode = nodes.get(nodes.size() - 1);
+                        		if (lastNode.getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+                        		{
+                        			MXMLPropertySpecifierNode propNode = (MXMLPropertySpecifierNode)lastNode;
+                        			String name = propNode.getName();
+                        			if (name.equals("textContent"))
+                        			{
+                        				MXMLStringNode stringNode = (MXMLStringNode)propNode.getChild(0);
+                        				MXMLLiteralNode valueNode = (MXMLLiteralNode)stringNode.getChild(0);
+                        				String tagAsString = ((MXMLTagData)childTag).stringify();
+                        				String currentString = (String)valueNode.getValue();
+                        				MXMLLiteralNode newValueNode = new MXMLLiteralNode(stringNode, 
+                        						currentString + tagAsString);
+                        				IMXMLNode[] newChildren = new IMXMLNode[1];
+                        				newChildren[0] = newValueNode;
+                        				stringNode.setChildren(newChildren);
+                        				stringNode.setExpressionNode(newValueNode);
+                        			}
+                        		}
+                        	}
+                        	else
+                        	{
+                                childNode = createSpecifierNode(builder, "textContent");
+                                if (childNode != null)
+                                {
+                                    childNode.setSuffix(builder, childTag.getStateName());
+                    				String tagAsString = ((MXMLTagData)childTag).stringify();
+                    				String tagAsCData = IMXMLCoreConstants.cDataStart + tagAsString + IMXMLCoreConstants.cDataEnd;
+                    				MXMLToken token = new MXMLToken(MXMLTokenTypes.TOKEN_CDATA,
+                    						childTag.getStart(), childTag.getEnd(),
+                    						childTag.getLine(), childTag.getColumn(),
+                    						tagAsCData);
+                    				MXMLTextData text = new MXMLTextData(token);
+                    				text.setSourceLocation(childTag.getLocationOfChildUnits());
+                    				childNode.initializeFromText(builder, text, info);
+                                    info.addChildNode(childNode);
+                                }
+                        	}
+	                        return;
+                        }
+                	}
+                }
                 // Handle child tags that are something other than property/style/event tags
                 // or instance tags.
 
@@ -541,6 +606,13 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             String defaultPropertyName = classReference.getDefaultPropertyName(project);
             if (defaultPropertyName != null)
             {
+            	if (defaultPropertyName.contains("|"))
+            	{
+            		int c = defaultPropertyName.indexOf("|");
+            		String alt = defaultPropertyName.substring(c + 1);
+            		defaultPropertyName = defaultPropertyName.substring(0, c);
+            		altDefaultPropertyDefinition = (IVariableDefinition)project.resolveSpecifier(classReference, alt);
+            	}
                 defaultPropertyDefinition =
                         (IVariableDefinition)project.resolveSpecifier(classReference, defaultPropertyName);
             }
@@ -645,6 +717,16 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         {
             MXMLSpecifierNodeBase childNode =
                     createSpecifierNode(builder, defaultPropertyDefinition.getBaseName());
+            if (childNode != null)
+            {
+                childNode.initializeFromText(builder, text, info);
+                info.addChildNode(childNode);
+            }
+        }
+        else if (altDefaultPropertyDefinition != null && altDefaultPropertyDefinition.getTypeAsDisplayString().equals(IASLanguageConstants.String))
+        {
+            MXMLSpecifierNodeBase childNode =
+                    createSpecifierNode(builder, altDefaultPropertyDefinition.getBaseName());
             if (childNode != null)
             {
                 childNode.initializeFromText(builder, text, info);

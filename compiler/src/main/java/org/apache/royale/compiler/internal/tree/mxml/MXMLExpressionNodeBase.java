@@ -90,7 +90,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
         return expressionNode;
     }
 
-    void setExpressionNode(NodeBase value)
+    public void setExpressionNode(NodeBase value)
     {
         this.expressionNode = value;
         if (value != null)
