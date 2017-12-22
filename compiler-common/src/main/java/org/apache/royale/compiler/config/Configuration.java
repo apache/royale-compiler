@@ -3153,8 +3153,7 @@ public class Configuration
     @RoyaleOnly
     public void setExcludeDefaultsCSSFiles(ConfigurationValue cv, List<String> paths) throws CannotOpen
     {
-        final ImmutableList<String> resolved = resolvePathsStrict(ImmutableList.copyOf(paths), cv, true);
-        for (final String path : resolved)
+        for (final String path : paths)
         {
             excludeDefaultsCSSFiles.addFirst(path);
         }
