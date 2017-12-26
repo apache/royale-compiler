@@ -38,6 +38,7 @@ import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.mxml.MXMLTagData;
 import org.apache.royale.compiler.internal.mxml.MXMLTextData;
+import org.apache.royale.compiler.internal.parsing.SourceFragment;
 import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
@@ -530,12 +531,12 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                         }
                 	}
                 }
-                else if (altDefaultPropertyDefinition != null && !processedDefaultProperty && altDefaultPropertyDefinition.getBaseName().equals("textContent"))
+                else if (altDefaultPropertyDefinition != null && !processedDefaultProperty && altDefaultPropertyDefinition.getBaseName().equals("innerHTML"))
                 {
                 	String uri = childTag.getURI();
                 	if (uri.equals("library://ns.apache.org/royale/html"))
                 	{
-                        IVariableDefinition textDef = (IVariableDefinition)project.resolveSpecifier(classReference, "textContent");
+                        IVariableDefinition textDef = (IVariableDefinition)project.resolveSpecifier(classReference, "innerHTML");
                         if (textDef != null)
                         {
                         	List<IMXMLNode> nodes = info.getChildNodeList();
@@ -546,8 +547,9 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                         		{
                         			MXMLPropertySpecifierNode propNode = (MXMLPropertySpecifierNode)lastNode;
                         			String name = propNode.getName();
-                        			if (name.equals("textContent"))
+                        			if (name.equals("innerHTML"))
                         			{
+                        				/*
                         				MXMLStringNode stringNode = (MXMLStringNode)propNode.getChild(0);
                         				MXMLLiteralNode valueNode = (MXMLLiteralNode)stringNode.getChild(0);
                         				String tagAsString = ((MXMLTagData)childTag).stringify();
@@ -558,12 +560,18 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                         				newChildren[0] = newValueNode;
                         				stringNode.setChildren(newChildren);
                         				stringNode.setExpressionNode(newValueNode);
+                        				*/
+                        				SourceFragment[] sourceFragments = new SourceFragment[1];
+                        				String tagAsString = ((MXMLTagData)childTag).stringify();
+                        				SourceFragment sourceFragment = new SourceFragment(tagAsString, tagAsString, childTag.getLocationOfChildUnits());
+                        				sourceFragments[0] = sourceFragment;
+                        				info.addSourceFragments(childTag.getSourcePath(), sourceFragments);
                         			}
                         		}
                         	}
                         	else
                         	{
-                                childNode = createSpecifierNode(builder, "textContent");
+                                childNode = createSpecifierNode(builder, "innerHTML");
                                 if (childNode != null)
                                 {
                                     childNode.setSuffix(builder, childTag.getStateName());

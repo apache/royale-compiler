@@ -457,6 +457,8 @@ public class MXMLTreeBuilder
                                               Object defaultValue)
     {
         String text = SourceFragmentsReader.concatLogicalText(fragments);
+        if (propertyNode != null && propertyNode.getName().equals("innerHTML"))
+        	text = SourceFragmentsReader.concatPhysicalText(fragments);
 
         Object value = mxmlDialect.isWhitespace(text) ?
                        defaultValue :

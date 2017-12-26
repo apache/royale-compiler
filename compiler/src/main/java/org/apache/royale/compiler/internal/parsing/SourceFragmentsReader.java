@@ -21,6 +21,8 @@ package org.apache.royale.compiler.internal.parsing;
 
 import java.io.StringReader;
 
+import org.apache.royale.compiler.constants.IMXMLCoreConstants;
+
 public class SourceFragmentsReader extends StringReader
 {
     /**
@@ -32,6 +34,28 @@ public class SourceFragmentsReader extends StringReader
         for (ISourceFragment sourceFragment : sourceFragments)
         {
             sb.append(sourceFragment.getLogicalText());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Concatenates the physical text of multiple source fragments.
+     */
+    public static String concatPhysicalText(ISourceFragment[] sourceFragments)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (ISourceFragment sourceFragment : sourceFragments)
+        {
+        	String physicalText = sourceFragment.getPhysicalText();
+        	if (physicalText.startsWith(IMXMLCoreConstants.cDataStart))
+        	{
+        		physicalText = physicalText.substring(IMXMLCoreConstants.cDataStart.length());
+        		if (physicalText.endsWith(IMXMLCoreConstants.cDataEnd))
+        		{
+        			physicalText = physicalText.substring(0, physicalText.length() - IMXMLCoreConstants.cDataEnd.length());
+        		}
+        	}
+            sb.append(physicalText);
         }
         return sb.toString();
     }
