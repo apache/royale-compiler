@@ -35,9 +35,9 @@
   <description>The Apache Royale Project</description>
 
   <scm>
-    <connection>scm:https://github.com/apache/royale-compiler.git</connection>
-    <developerConnection>scm:https://github.com/apache/royale-compiler.git</developerConnection>
-    <url>https://github.com/apache/royale-compiler</url>
+    <connection>scm:git:git@github.com:apache/royale-compiler.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/royale-compiler.git</developerConnection>
+    <url>scm:git:git@github.com:apache/royale-compiler.git</url>
     <tag>HEAD</tag>
   </scm>
 
