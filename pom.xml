@@ -141,6 +141,7 @@
             <plugin>
               <groupId>net.sourceforge.jburg</groupId>
               <artifactId>jburg-maven-plugin</artifactId>
+              <version>1.10.4</version>
               <dependencies>
                 <dependency>
                   <groupId>org.apache.royale.compiler</groupId>
