@@ -315,6 +315,7 @@
         <configuration>
           <runOrder>alphabetical</runOrder>
           <includes>
+            <include>**/AAAMavenTestExternc.java</include>
             <include>**/AAMavenTestSWCs.java</include>
             <include>**/*Tests.java</include>
           </includes>
