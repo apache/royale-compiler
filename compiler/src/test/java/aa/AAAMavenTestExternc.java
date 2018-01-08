@@ -50,77 +50,35 @@ import org.junit.Test;
  * Base class for AS feature tests which compile AS code with MXMLC and run it in the standalone Flash Player.
  * Copied and modified from MXMLFeatureTestsBase.java
  */
-public class AAMavenTestSWCs
+public class AAAMavenTestExternc
 {
 	private static boolean generateResultFile = false;
 	
-	public AAMavenTestSWCs()
+	public AAAMavenTestExternc()
 	{
 	}
 	
-    private void compileSWC(File outputFile, File configFile)
-    {
-        // Write the MXML into a temp file.
-        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
-        
-        String output = outputFile.getAbsolutePath();
-                
-        String[] args = new String[]
-        {
-            "-load-config+=" + configFile.getAbsolutePath(),
-            "-output=" + output
-        };
-        
-        // Run the COMPC client with the specified command line.
-        COMPC compc = new COMPC();
-        compc.mainNoExit(args);
-        
-        // Check that the SWC compiled cleanly.
-        List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
-        for (ICompilerProblem problem : compc.getProblems().getFilteredProblems())
-        {
-            problems.add(problem);
-        }
-        assertThat(problems.size(), is(0));
-    }
-    
     @Test
-    public void AAMavenTestSWCs_AB_JS_SWC()
+    public void AAMavenTestSWCs_AA_JS_EXTERNC()
     {
         // Write the MXML into a temp file.
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     	File externcDir = new File(testAdapter.getUnitTestBaseDir(), "../../../compiler-externc");
-    	File outputFile = new File(externcDir, "target/js.swc");
-    	try {
-    	FileUtils.copyFile(new File(externcDir, "src/test/config/compile-as-config.xml"), 
-						new File(externcDir, "target/compile-as-config.xml"));
-    	}
-		catch (IOException e)
-		{
-		}
 
-    	compileSWC(outputFile, new File(externcDir, "target/compile-as-config.xml"));
-        assertThat(outputFile.exists(), is(true));
-    }
-    
-    @Test
-    public void AC_Custom_SWC()
-    {
-        // Write the MXML into a temp file.
-        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
-
-    	File baseDir = new File(testAdapter.getUnitTestBaseDir(), "../../../compiler");
-    	File outputFile = new File(baseDir, "target/custom.swc");
-    	try {
-    	FileUtils.copyFile(new File(baseDir, "src/test/config/compile-as-config.xml"), 
-						new File(baseDir, "target/compile-as-config.xml"));
-    	}
-		catch (IOException e)
-		{
-		}
-    	compileSWC(outputFile, new File(baseDir, "target/compile-as-config.xml"));
-        assertThat(outputFile.exists(), is(true));
-    }
+		String[] args = new String[1];
+		args[0] = "-load-config+=" + new File(externcDir, "src/test/config/externc-config.xml").getAbsolutePath();
+        // Run the COMPC client with the specified command line.
+        EXTERNC externc = new EXTERNC();
+        externc._mainNoExit(args);
+        
+        // Check that the SWC compiled cleanly.
+        List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+        for (ICompilerProblem problem : externc.problems.getFilteredProblems())
+        {
+            problems.add(problem);
+        }
+        assertThat(problems.size(), is(0));
+    }    
 }
 
