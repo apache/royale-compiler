@@ -84,7 +84,7 @@ public class AntTestAdapter implements ITestAdapter {
 
     @Override
     public String getFlexManifestPath(String type) {
-        return env.SDK + "\\frameworks\\" + type + "-manifest.xml";
+        return FilenameNormalization.normalize(env.SDK + "\\frameworks\\" + type + "-manifest.xml");
     }
 
     @Override
