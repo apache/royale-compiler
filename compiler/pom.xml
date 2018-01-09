@@ -34,6 +34,42 @@
 
   <build>
     <plugins>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+          <executions>
+            <execution>
+              <id>copy-externc-resources</id>
+              <phase>process-test-resources</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+            <configuration>
+            <outputDirectory>${basedir}/../compiler-externc/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/../compiler-externc/src/test/config</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-custom-resources</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/test/config</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!--
               Do all the JFlex code generation
       -->
@@ -140,6 +176,56 @@
               <workingDirectory>src/main/antlr/org/apache/royale/compiler/internal/parsing/as</workingDirectory>
               <sourceRoot>target/generated-sources/antlr</sourceRoot>
             </configuration>
+          </execution>
+          <execution>
+              <id>generate-test-js-typedefs</id>
+              <phase>test-compile</phase>
+              <goals>
+                  <goal>exec</goal>
+              </goals>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <arguments>org.apache.royale.compiler.clients.EXTERNC</arguments>
+                      <argument>-load-config+=../compiler-externc/src/test/config/externc-config.xml</argument>
+                  </arguments>
+              </configuration>
+          </execution>
+          <execution>
+              <id>generate-test-js-swc</id>
+              <phase>test-compile</phase>
+              <goals>
+                  <goal>exec</goal>
+              </goals>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <arguments>org.apache.royale.compiler.clients.COMPC</arguments>
+                      <argument>-load-config+=../compiler-externc/target/compile-as-config.xml</argument>
+                      <argument>-output=../compiler-externc/target/js.swc</argument>
+                  </arguments>
+              </configuration>
+          </execution>
+          <execution>
+              <id>generate-test-custom-swc</id>
+              <phase>test-compile</phase>
+              <goals>
+                  <goal>exec</goal>
+              </goals>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <arguments>org.apache.royale.compiler.clients.COMPC</arguments>
+                      <argument>-load-config+=target/compile-as-config.xml</argument>
+                      <argument>-output=target/custom.swc</argument>
+                  </arguments>
+              </configuration>
           </execution>
         </executions>
       </plugin>
@@ -313,10 +399,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.19</version>
         <configuration>
-          <runOrder>alphabetical</runOrder>
           <includes>
-            <include>**/AAAMavenTestExternc.java</include>
-            <include>**/AAMavenTestSWCs.java</include>
             <include>**/*Tests.java</include>
           </includes>
           <excludes>
@@ -479,7 +562,7 @@
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
       <version>0.9.1-SNAPSHOT</version>
-      <scope>test</scope>
+      <!--<scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>junit</groupId>
