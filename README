@@ -157,6 +157,8 @@ Running Integration Tests
 
     Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_HOME
 
+    Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_VERSION
+
     Apache Flex SDK or repository (*7)           FLEX_HOME
 
     Apache Flex TLF source (*8)                  TLF_HOME
@@ -225,6 +227,8 @@ Running Integration Tests
     
         These can be used with the Apache Royale Compiler but not all have not been fully
         tested.
+
+        Set PLAYERGLOBAL_VERSION to the version you chose.  The default is 11.1.
 
     *7) This option is only required to run additional tests to verify that the compiler
         can output SWFs.
