@@ -52,8 +52,8 @@
     <air.version>20.0</air.version>
 
     <jburgTypesRequired>true</jburgTypesRequired>
-    <compiler-build-tools.version>1.0.0-SNAPSHOT</compiler-build-tools.version>
-    <compiler-jburg-types.version>1.0.0-SNAPSHOT</compiler-jburg-types.version>
+    <compiler-build-tools.version>1.0.0</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.0.0</compiler-jburg-types.version>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
