@@ -11,37 +11,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-goog.provide('org.apache.flex.A');
+goog.provide('org.apache.royale.A');
 
-goog.require('flash.events.IEventDispatcher');
-goog.require('flash.events.EventDispatcher');
+goog.require('custom.TestInterface');
+goog.require('custom.TestImplementation');
 
 /**
  * @constructor
- * @extends {flash.events.EventDispatcher}
- * @implements {flash.events.IEventDispatcher}
+ * @extends {custom.TestImplementation}
+ * @implements {custom.TestInterface}
  */
-org.apache.flex.A = function() {
+org.apache.royale.A = function() {
 	var self = this;
-	org.apache.flex.A.base(this, 'constructor');
+	org.apache.royale.A.base(this, 'constructor');
 	self.trace(typeof("a"));
 };
-goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
+goog.inherits(org.apache.royale.A, custom.TestImplementation);
 
 /**
  * @const
  * @type {string}
  */
-org.apache.flex.A.MY_CLASS_CONST = "myClassConst";
+org.apache.royale.A.MY_CLASS_CONST = "myClassConst";
 
 /**
  * @private
  * @type {ArgumentError}
  */
-org.apache.flex.A.prototype._a = new ArgumentError();
+org.apache.royale.A.prototype._a = new ArgumentError();
 
 /**
  * @const
  * @type {string}
  */
-org.apache.flex.A.prototype.MY_INSTANCE_CONST = "myInstanceConst";
+org.apache.royale.A.prototype.MY_INSTANCE_CONST = "myInstanceConst";

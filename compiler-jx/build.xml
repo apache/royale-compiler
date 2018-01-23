@@ -19,8 +19,6 @@
 -->
 <project name="compiler-jx" default="main" basedir=".">
 
-    <property name="FALCONJX_HOME" location="${basedir}"/>
-    
     <pathconvert property="basedir_clean" dirsep="/">
 		<path location="${basedir}" />
     </pathconvert>
@@ -40,15 +38,15 @@
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
-    <property name="manifest.Implementation-Title" value="Apache Flex Cross-Compiler"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 
     <property name="src" value="${basedir_clean}/src/main/java" />
 	<property name="lib" value="${basedir_clean}/lib" />
 	
-	<property name="falcon.basedir" value="${basedir_clean}/../compiler" />
-    <property name="falcon.lib.dir" value="${falcon.basedir}/lib" />
+	<property name="royale.basedir" value="${basedir_clean}/../compiler" />
+    <property name="royale.lib.dir" value="${royale.basedir}/lib" />
 	
 	<property name="classes.dir" value="${basedir_clean}/target/classes" />
 	
@@ -65,13 +63,19 @@
     <property name="build.number" value="0"/>
 
     <path id="classpath">
-        <filelist dir="${falcon.lib.dir}/external">
+        <filelist dir="${royale.lib.dir}/">
+            <file name="compiler.jar" />
+            <file name="compiler-common.jar" />
+        </filelist>
+        <filelist dir="${royale.lib.dir}/external">
             <file name="antlr.jar" />
+            <file name="commons-lang-2.6.jar" />
         </filelist>
 		<filelist dir="${lib}">
 			<file name="commons-io.jar" />
             <file name="guava.jar" />
 			<file name="flex-tool-api.jar" />
+            <file name="externc.jar" />
         </filelist>
 		<filelist dir="${lib}/google/closure-compiler">
             <file name="compiler.jar" />
@@ -86,9 +90,6 @@
             classpathref="classpath"
             source="${javac.src}" target="${javac.src}">
 			<src path="${src}" />
-			<classpath>
-				<pathelement path="${falcon.basedir}/target/classes" />
-			</classpath>
 		</javac>
 	</target>
 
@@ -96,20 +97,20 @@
 		<mkdir dir="${classes.dir}" />
         <mkdir dir="${classes.dir}/META-INF" />
         <mkdir dir="${lib}/google/closure-compiler" />
-        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}" />
+        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false"/>
     </target>
 	
 	<target name="main" depends="prebuild,compile">
         
-        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.jx" tofile="${classes.dir}/META-INF/NOTICE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${classes.dir}/META-INF/NOTICE"/>
         
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
             includes="**/*.properties,org/apache/**/*,com/google/**/*,META-INF/**/*"
-			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/flex/compiler/internal/parsing/abc/*" >
+			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/royale/compiler/internal/parsing/abc/*" >
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -130,7 +131,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLJSC" />
+				<attribute name="Main-Class" value="org.apache.royale.compiler.clients.MXMLJSC" />
                 <attribute name="Class-Path" value="args4j.jar org.json.jar jsc.jar" />
 			</manifest>
 		</jar>
@@ -144,24 +145,10 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPJSC" />
+				<attribute name="Main-Class" value="org.apache.royale.compiler.clients.COMPJSC" />
                 <attribute name="Class-Path" value="jsc.jar" />
 			</manifest>
 		</jar>
-
-        <echo message="Building ${externc.jar}" />
-        <jar file="${externc.jar}" basedir="${classes.dir}">
-            <include name="META-INF/LICENSE"/>
-            <include name="META-INF/NOTICE"/>
-            <manifest>
-                <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
-                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
-                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.EXTERNC" />
-                <attribute name="Class-Path" value="jsc.jar" />
-            </manifest>
-        </jar>
 
         <echo message="Building ${asdoc.jar}" />
         <jar file="${asdoc.jar}" basedir="${classes.dir}">
@@ -172,7 +159,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.ASDOCJSC" />
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.ASDOCJSC" />
                 <attribute name="Class-Path" value="jsc.jar" />
             </manifest>
         </jar>
@@ -191,7 +178,7 @@
     <target name="super-clean" depends="thirdparty-clean,clean" />
 
     <target name="thirdparty-clean">
-        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}" target="clean" />
+        <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false" target="clean" />
         <delete dir="${basedir}/target" />
         <delete failonerror="false" includeemptydirs="true">
             <fileset dir="${lib}" />

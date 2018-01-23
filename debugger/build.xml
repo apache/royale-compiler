@@ -17,7 +17,7 @@
   limitations under the License.
 
 -->
-<project basedir="." default="jar" name="org.apache.flex.fdb" >
+<project basedir="." default="jar" name="org.apache.royale.fdb" >
 	<property file="build.properties" />
     <property file="../build.properties" />
 	<!-- label is set by CruiseControl script based on P4 label incrementer -->
@@ -26,67 +26,7 @@
 	</condition>
 	<path id="classpath">
 			<fileset dir="${compiler.generated.lib}" includes="${jar.dependencies}" />
-		</path>
-
-<target name="download_check" description="determine if we have downloaded/bundled swfutils source">
-    <available file="${basedir}/target/downloads/java/flash/swf/Action.java"
-    type="file"
-    property="swfutils.bundled"
-    value="true" />
-</target>
-
-    <target name="downloads" depends="download_check" unless="swfutils.bundled">
-        <mkdir dir="${basedir}/target/downloads/java/flash" />
-        <get src="https://git-wip-us.apache.org/repos/asf/flex-sdk/repo?p=flex-sdk.git;a=snapshot;h=2cfbdd592ef87b40704d3d7145f4da9a369429eb;sf=tgz"
-        dest="${basedir}/target/downloads/flex-sdk-modules-swfutils.tar.gz" ignoreerrors="true"/>
-        <antcall target="get-from-cache-if-needed" >
-            <param name="srcFile" value="flex-sdk-modules-swfutils.tar.gz" />
-            <param name="destFile" value="flex-sdk-modules-swfutils.tar.gz" />
-            <param name="destDir" value="${basedir}/target/downloads" />
-        </antcall>
-        <antcall target="fail-if-not-found" >
-            <param name="destFile" value="flex-sdk-modules-swfutils.tar.gz" />
-            <param name="destDir" value="${basedir}/target/downloads" />
-        </antcall>
-        <untar src="${basedir}/target/downloads/flex-sdk-modules-swfutils.tar.gz" dest="${basedir}/target/downloads/java/flash" compression="gzip">
-            <patternset>
-                <include name="**/localization/**"/>
-                <include name="**/swf/Movie.java"/>
-                <include name="**/swf/actions/**"/>
-                <include name="**/swf/Action.java"/>
-                <include name="**/swf/ActionConstants.java"/>
-                <include name="**/swf/ActionDecoder.java"/>
-                <include name="**/swf/ActionFactory.java"/>
-                <include name="**/swf/ActionHandler.java"/>
-                <include name="**/swf/CompressionLevel.java"/>
-                <include name="**/swf/debug/**"/>
-                <include name="**/swf/DebugDecoder.java"/>
-                <include name="**/swf/DebugHandler.java"/>
-                <include name="**/swf/DebugTags.java"/>
-                <include name="**/swf/Dictionary.java"/>
-                <include name="**/swf/Frame.java"/>
-                <include name="**/swf/Header.java"/>
-                <include name="**/swf/MovieMetaData.java"/>
-                <include name="**/swf/RandomAccessBuffer.java"/>
-                <include name="**/swf/SwfDecoder.java"/>
-                <include name="**/swf/SwfEncoder.java"/>
-                <include name="**/swf/SwfFormatException.java"/>
-                <include name="**/swf/Tag.java"/>
-                <include name="**/swf/TagDecoder.java"/>
-                <include name="**/swf/TagHandler.java"/>
-                <include name="**/swf/TagValues.java"/>
-                <include name="**/swf/tags/**"/>
-                <include name="**/swf/tools/Disassembler.java"/>
-                <include name="**/swf/types/**"/>
-                <include name="**/util/ExceptionUtil.java"/>
-                <include name="**/util/FieldFormat.java"/>
-                <include name="**/util/FileUtils.java"/>
-                <include name="**/util/IntMap.java"/>
-                <include name="**/util/Trace.java"/>
-            </patternset>
-            <cutdirsmapper dirs="1"/>
-        </untar>
-    </target>
+    </path>
 
     <target name="jar" depends="compile">
         <mkdir dir="${dist}" />
@@ -106,12 +46,11 @@
         </jar>
     </target>
 
-    <target name="compile" depends="downloads, generate-burm" description="compile">
+    <target name="compile" depends="generate-burm" description="compile">
         <mkdir dir="${basedir.bin}" />
         <javac includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}">
             <src path="${basedir.generated.src}" />
             <src path="${basedir.src}" />
-            <src path="${basedir}/target/downloads/java" />
         </javac>
         <echo file="${basedir.bin}/flex/tools/debugger/cli/version.properties" append="false">build=${build.number.date}</echo>
         <copy todir="${basedir.bin}">
@@ -137,29 +76,4 @@
         </delete>
     </target>
 
-    <target name="fail-if-not-found">
-        <fail message="${destDir}/${destFile} could not be downloaded or found in cache">
-            <condition>
-                <not>
-                    <available file="${destDir}/${destFile}" />
-                </not>
-            </condition>
-        </fail>
-    </target>
-
-    <target name="double-check-file" >
-        <echo>${env.FLEX_DOWNLOAD_CACHE}</echo>
-        <condition property="still-no-file" value="true">
-            <and>
-                <not>
-                    <available file="${destDir}/${destFile}" />
-                </not>
-                <isset property="env.FLEX_DOWNLOAD_CACHE" />
-            </and>
-        </condition>
-        <echo>Need file: ${still_no_file}</echo>
-    </target>
-    <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
-        <copy file="${env.FLEX_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
-    </target>
 </project>

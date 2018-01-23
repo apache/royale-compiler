@@ -11,31 +11,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-goog.provide('org.apache.flex.A');
+goog.provide('org.apache.royale.A');
 
-goog.require('flash.events.IEventDispatcher');
-goog.require('flash.events.EventDispatcher');
+goog.require('custom.TestInterface');
+goog.require('custom.TestImplementation');
 
 /**
  * @constructor
- * @extends {flash.events.EventDispatcher}
- * @implements {flash.events.IEventDispatcher}
+ * @extends {custom.TestImplementation}
+ * @implements {custom.TestInterface}
  * @param {string} z
  */
-org.apache.flex.A = function(z) {
+org.apache.royale.A = function(z) {
 	var self = this;
-	org.apache.flex.A.base(this, 'constructor', z);
+	org.apache.royale.A.base(this, 'constructor', z);
 };
-goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
+goog.inherits(org.apache.royale.A, custom.TestImplementation);
 
 /**
  * @param {string} a
  * @param {number} b
  * @return {string}
  */
-org.apache.flex.A.prototype.hasSuperCall = function(a, b) {
+org.apache.royale.A.prototype.hasSuperCall = function(a, b) {
 	var self = this;
-	org.apache.flex.A.base(this, 'hasSuperCall', a, b, 100);
+	org.apache.royale.A.base(this, 'hasSuperCall', a, b, 100);
 	var /** @type {string} */ result = myRegularFunctionCall(-1);
 	return result;
 };

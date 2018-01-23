@@ -160,8 +160,8 @@ public class MXMLArrayTagTests extends MXMLInstanceTagTestsBase
         String[] declarations = new String[]
         {
             "<fx:Array id='a1'>",
-            "    <d:Sprite name='a'/>",
-            "    <d:Sprite name='b'/>",
+            "    <custom:TestInstance name='a'/>",
+            "    <custom:TestInstance name='b'/>",
             "</fx:Array>"
         };
         String[] asserts = new String[]

@@ -16,14 +16,14 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package org.apache.flex
+package org.apache.royale
 {
 
-import flash.events.IEventDispatcher;
+import custom.TestInterface;
 
-import flash.events.EventDispatcher;
+import custom.TestImplementation;
 
-public dynamic class A extends EventDispatcher implements IEventDispatcher
+public dynamic class A extends TestImplementation implements TestInterface
 {
 	public function A(z:String)
 	{

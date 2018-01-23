@@ -27,7 +27,7 @@ import flex2.compiler.config.*;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.ThreadLocalToolkit;
-import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.royale.compiler.clients.MXMLC;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -153,7 +153,7 @@ public final class Mxmlc extends Tool {
                         InputStream in = configFile.getInputStream();
                         if (in != null) {
                             FileConfigurator.load(cfgbuf, new BufferedInputStream(in), configFile.getName(),
-                                    configFile.getParent(), "flex-config", ignoreUnknownItems);
+                                    configFile.getParent(), "royale-config", ignoreUnknownItems);
                         } else {
                             throw new ConfigurationException.ConfigurationIOError(path, cv.getVar(), cv.getSource(), cv.getLine());
                         }
@@ -177,7 +177,7 @@ public final class Mxmlc extends Tool {
                             InputStream in = projectFile.getInputStream();
                             if (in != null) {
                                 FileConfigurator.load(cfgbuf, new BufferedInputStream(in),
-                                        projectFile.getName(), projectFile.getParent(), "flex-config",
+                                        projectFile.getName(), projectFile.getParent(), "royale-config",
                                         ignoreUnknownItems);
                             }
                         }

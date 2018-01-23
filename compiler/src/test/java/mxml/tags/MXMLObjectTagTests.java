@@ -277,14 +277,14 @@ public class MXMLObjectTagTests extends MXMLInstanceTagTestsBase
         {
             "<fx:Object id='o1'>",
             "    <fx:a>",
-            "        <d:Sprite name='abc'/>",
+            "        <custom:TestInstance name='abc'/>",
             "    </fx:a>",
             "</fx:Object>"
         };
         String[] asserts = new String[]
         {
             //"assertEqual('count(o1)', countProperties(o1), 1);",
-            "assertEqual('o1.a is Sprite', o1.a is Sprite, true);",
+            "assertEqual('o1.a is TestInstance', o1.a is TestInstance, true);",
             "assertEqual('o1.a.name', o1.a.name, 'abc');",
         };
         String mxml = getMXML(declarations, asserts);

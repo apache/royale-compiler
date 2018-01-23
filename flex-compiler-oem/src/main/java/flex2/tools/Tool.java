@@ -19,8 +19,6 @@
 
 package flex2.tools;
 
-import static org.apache.flex.compiler.clients.MXMLJSC.JSOutputType.FLEXJS_DUAL;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,20 +26,20 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import org.apache.flex.compiler.clients.COMPC;
-import org.apache.flex.compiler.clients.MXMLC;
-import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.filespecs.FileSpecification;
-import org.apache.flex.compiler.internal.config.FileConfigurator;
-import org.apache.flex.compiler.problems.CompilerProblemSeverity;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
-import org.apache.flex.utils.ArgumentUtil;
+import org.apache.royale.compiler.clients.COMPC;
+import org.apache.royale.compiler.clients.MXMLC;
+import org.apache.royale.compiler.clients.MXMLJSC.JSOutputType;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.config.ConfigurationValue;
+import org.apache.royale.compiler.filespecs.FileSpecification;
+import org.apache.royale.compiler.internal.config.FileConfigurator;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.utils.ArgumentUtil;
 
 import flash.localization.LocalizationManager;
 import flex2.compiler.Logger;

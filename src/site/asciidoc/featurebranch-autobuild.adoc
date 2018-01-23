@@ -21,15 +21,15 @@
 
 When working on a feature it is a great benefit to have this automatically quality asured by a CI server.
 
-Manually setting up build-jobs for every feature branch for FlexJS is usually quite a lot of work. For that reason a lot of feature development is done on the `develop` branch.
+Manually setting up build-jobs for every feature branch for Royale is usually quite a lot of work. For that reason a lot of feature development is done on the `develop` branch.
 
 In order to encourage people to implement new features on a feature-branch and merge it back to `develop` as soon as it's finished we have setup a system to automate the creation and execution of CI builds.
 
-The FlexJS compiler module contains a `Jenkinsfile` which describes the setup of a Jenkins build pipeline to build the entire FlexJS stack of tools.
+The Royale compiler module contains a `Jenkinsfile` which describes the setup of a Jenkins build pipeline to build the entire Royale stack of tools.
 
-The ASF Jenkins is setup to automatically build the `develop` branch of all modules (flexjs-compiler, flexjs-typedefs and flexjs-framework) as soon as something changes in the GIT repo.
+The ASF Jenkins is setup to automatically build the `develop` branch of all modules (royale-compiler, royale-typedefs and royale-framework) as soon as something changes in the GIT repo.
 
-Here's a link to that particular job: https://builds.apache.org/view/E-G/view/Flex/job/FlexJS%20Pipeline/
+Here's a link to that particular job: https://builds.apache.org/job/Royale%20Pipeline/open 
 
 Additionally as soon as Jenkins detects a branch with the prefix of `feature-autobuild/`, it sets up a new Build job for that branch and starts automatically building that branch.
 

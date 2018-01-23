@@ -19,7 +19,7 @@
 
 package mxml.tags;
 
-import org.apache.flex.utils.StringUtils;
+import org.apache.royale.utils.StringUtils;
 import org.junit.Test;
 
 /**
@@ -34,35 +34,61 @@ public class MXMLDefinitionTagTests extends MXMLInstanceTagTestsBase
 	 */
     protected String getMXML(String[] definitions, String[] declarations, String[] asserts)
     {
-        String[] template = new String[]
-        {
-            "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' ",
-            "          enterFrame='enterFrameHandler(event)'>",
-            "    <fx:Library>",
-            "        %1",
-            "    </fx:Library>",
-            "    <fx:Declarations>",
-            "        %2",
-            "    </fx:Declarations>",
-            "    <fx:Script>",
-            "    <![CDATA[",
-            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
-            "        {",
-            "            if (actualValue !== expectedValue)",
-            "            {",
-            "                trace(message, actualValue, expectedValue);",
-            "                System.exit(1);",
-            "            }",
-            "        }",
-            "        private function enterFrameHandler(event:Event):void",
-            "        {",
-            "            %3",
-            "            System.exit(0);",
-            "        }",
-            "    ]]>",
-            "    </fx:Script>",
-            "</d:Sprite>"
-        };
+    	String[] template;
+    	if (hasFlashPlayerGlobal)
+    	{
+	        template = new String[]
+	        {
+	            "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:custom='library://ns.apache.org/royale/test' ",
+	            "          enterFrame='enterFrameHandler(event)'>",
+	            "    <fx:Library>",
+	            "        %1",
+	            "    </fx:Library>",
+	            "    <fx:Declarations>",
+	            "        %2",
+	            "    </fx:Declarations>",
+	            "    <fx:Script>",
+	            "    <![CDATA[",
+	            "        import custom.TestInstance;",	            
+	            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
+	            "        {",
+	            "            if (actualValue !== expectedValue)",
+	            "            {",
+	            "                trace(message, actualValue, expectedValue);",
+	            "                System.exit(1);",
+	            "            }",
+	            "        }",
+	            "        private function enterFrameHandler(event:Event):void",
+	            "        {",
+	            "            %3",
+	            "            System.exit(0);",
+	            "        }",
+	            "    ]]>",
+	            "    </fx:Script>",
+	            "</d:Sprite>"
+	        };
+    	}
+    	else
+    	{
+	        template = new String[]
+  	        {
+  	            "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test' >",
+  	            "    <fx:Library>",
+  	            "        %1",
+  	            "    </fx:Library>",
+  	            "    <fx:Declarations>",
+  	            "        %2",
+  	            "    </fx:Declarations>",
+  	            "    <fx:Script>",
+  	            "    <![CDATA[",
+  	            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
+  	            "        {",
+  	            "        }",
+  	            "    ]]>",
+  	            "    </fx:Script>",
+  	            "</fx:Object>"
+  	        };
+    	}
         String mxml = StringUtils.join(template, "\n");
         mxml = mxml.replace("%1", StringUtils.join(definitions, "\n        "));
         mxml = mxml.replace("%2", StringUtils.join(declarations, "\n        "));
@@ -75,17 +101,17 @@ public class MXMLDefinitionTagTests extends MXMLInstanceTagTestsBase
     {
         String[] definitions = new String[]
         {
-            "<fx:Definition name='MySprite'>",
-            "    <d:Sprite/>",
-            "</fx:Definition>"
+            "<fx:Definition name='MyDefinition'>",
+            "    <custom:TestInstance/>",
+            "</fx:Definition>",
         };
         String[] declarations = new String[]
         {
-            "<fx:MySprite id='s1'/>"
+            "<fx:MyDefinition id='s1'/>"
         };
         String[] asserts = new String[]
         {
-            "assertEqual('s1 is Sprite', s1 is Sprite, true);",
+            "assertEqual('s1 is TestInstance', s1 is TestInstance, true);",
         };
         String mxml = getMXML(definitions, declarations, asserts);
         compileAndRun(mxml);

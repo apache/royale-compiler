@@ -1,0 +1,245 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package org.apache.royale.compiler.internal.as.codegen;
+
+header
+{
+    import org.apache.royale.compiler.problems.ICompilerProblem;
+    import org.apache.royale.compiler.problems.*;
+    import org.apache.royale.compiler.exceptions.BURMAbortException;
+
+    import static org.apache.royale.abc.ABCConstants.*;
+
+//    import org.apache.royale.abc.semantics.Label;
+    import org.apache.royale.abc.semantics.Name;
+    import org.apache.royale.abc.semantics.Namespace;
+    import org.apache.royale.abc.semantics.ECMASupport;
+    import org.apache.royale.abc.instructionlist.InstructionList;
+
+//    import org.apache.royale.compiler.constants.IASLanguageConstants;
+
+    import org.apache.royale.compiler.tree.ASTNodeID;
+    import static org.apache.royale.compiler.tree.ASTNodeID.*;
+
+    import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+
+    import org.apache.royale.compiler.tree.as.IASNode;
+//    import org.apache.royale.compiler.tree.as.ITryNode;
+
+}
+
+INodeType IASNode;
+OpcodeType ASTNodeID;
+
+/*
+ *  The I-node type is IASNode, and it has its own adapter.
+ */
+INodeAdapter org.apache.royale.compiler.internal.as.codegen.IASNodeAdapter;
+
+//  Generate Java output.
+Language java;
+
+ReturnType InstructionList;
+
+/*
+ *  A Name built for a declaration, such as the name for 'x' in:
+ *      var x : Foo;
+ *  A declaration name can just be a simple AET Name, as there is no need to resolve
+ *  it or do anything else to figure out what Name to use.
+ */
+ReturnType decl_name = Name;
+
+/**
+ *  This is a name to use in an expression context.  It is a Binding
+ *  as the Binding will also hold additional information like did the expression
+ *  resolve to anything, and if so what did it resolve to.  In an expression context
+ *  we will always need that information.
+ */
+ReturnType name = Binding;
+
+/**
+ *  Qualified name - this acts the same as a name above, but is built a little differently.
+ */
+ReturnType qualifiedName = Binding;
+ReturnType qualifiedNamePart = String;
+
+/**
+ *  This is a name used in a type annotation context, such as 'Foo' in:
+ *      var x : Foo;
+ *  It is a Binding, as type annotations must always be resolved.
+ *  A type_name also allows '*', which can't happen in a general expression context.
+ */
+ReturnType type_name = Binding;
+
+/**
+ *  Name of a return type from a function signature.
+ *  It is the same as a type_name, above, except it also allows 'void', which is not usually allowed as a type_name
+ */
+ReturnType return_type_name = Binding;
+
+/**
+ *  This is a name used in a new context, such as 'Foo' in:
+ *      new Foo();
+ *  We can do additional analysis when the new expression resolves to a Type, which
+ *  is why we have a special name for the new expression.
+ */
+ReturnType new_type_name = Binding;
+
+ReturnType dottedNamePart = String;
+
+ReturnType conditionalElements = ABCGeneratingReducer.ConditionalFragment;
+
+ReturnType ifElseIf = ABCGeneratingReducer.ConditionalFragment;
+
+ReturnType catch_block = ABCGeneratingReducer.CatchPrototype;
+
+ReturnType integer_constant = Integer;
+ReturnType uint_constant = Long;
+ReturnType double_constant = Double;
+ReturnType string_constant = String;
+ReturnType boolean_constant = Boolean;
+
+ReturnType numeric_constant = Number;
+
+ReturnType constant_value = Object;
+ReturnType required_constant_value = Object;
+
+ReturnType non_resolving_identifier = String;
+
+ReturnType runtime_name_expression = ABCGeneratingReducer.RuntimeMultiname;
+ReturnType multinameL = Name;
+ReturnType stmt_label = String;
+ReturnType e4x_literal = String;
+
+JBurg.Constant ERROR_TRAP = 268435456;
+
+{
+    static final boolean NEED_VALUE = true;
+    static final boolean DISCARD_VALUE = false;
+
+
+    /**
+     *  The reducer has all the implementation
+     *  logic for the rewrite; the BURM constructed
+     *  by this specification drives that logic.
+     */
+    ABCGeneratingReducer reducer;
+
+    /**
+     *  Delegate calls to pushNumericConstant to the reducer.
+     *  This routine is called from other parts of the code generator,
+     *  so it's necessary to keep this layer of indirection.
+     */
+    public static void pushNumericConstant(long value, InstructionList result_list)
+    {
+        ABCGeneratingReducer.pushNumericConstant(value, result_list);
+    }
+
+    /*
+     *  **  Cost functions  **
+     */
+
+
+    /**
+     *  @return "feasible" if the reducer can reduce this to a dotted name.
+     */
+    int isDottedName(IASNode iNode)
+    {
+       return reducer.isDottedName(iNode);
+    }
+
+    /**
+     *  @return "feasible" if the reducer can reduce this to a package name.
+     */
+    int isPackageName(IASNode iNode)
+    {
+       return reducer.isPackageName(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node's qualifier is a compile-time constant.
+     */
+    int qualifierIsCompileTimeConstant(IASNode iNode)
+    {
+       return reducer.qualifierIsCompileTimeConstant(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node can be resolved to a compile-time constant.
+     */
+    int isCompileTimeConstant(IASNode iNode)
+    {
+       return reducer.isCompileTimeConstant(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node is for 'new Array()'.
+     */
+    int isEmptyArrayConstructor(IASNode iNode)
+    {
+        return reducer.isEmptyArrayConstructor(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node is for 'new Object()'.
+     */
+    int isEmptyObjectConstructor(IASNode iNode)
+    {
+        return reducer.isEmptyObjectConstructor(iNode);
+    }
+    
+    /**
+     *  @return "feasible" if this node is "super(this)".
+     */
+    int isSuperThisForFieldAccess(IASNode iNode)
+    {
+        return SemanticUtils.isSuperThisForFieldAccess(iNode);
+    }
+
+    /**
+     *  recordError is a convenience method for error reductions;
+     *  it adds a problem to the current set of problems and
+     *  returns an empty InstructionList.
+     *  @return an empty InstructionList.
+     */
+    InstructionList recordError(ICompilerProblem problem)
+    {
+        reducer.getProblems().add(problem);
+        return new InstructionList();
+    }
+}
+
+/*
+ *  Error recovery routine: deduce what we can from the problem
+ *  tree, then abort this BURM with an exception that the caller
+ *  can catch and ignore.
+ */
+DefaultErrorHandler
+{
+    new UnknownTreeHandler(reducer.getProblems()).analyze(p);
+    BURMAbortException.abort();
+}
+
+/*
+ *  Patterns and rules are stored in their own, shareable file.
+ */
+JBurg.include "CmcPatterns.jbg"
+JBurg.include "CmcRules.jbg"
+JBurg.include "SemanticErrors.jbg"

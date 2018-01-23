@@ -51,7 +51,7 @@ public class MXMLComponentTagTests extends MXMLInstanceTagTestsBase
     {
         String[] declarations = new String[]
         {
-            "<fx:Component id='c1' className='MySprite'>",
+            "<fx:Component id='c1' className='MyTestInstance'>",
             "    <d:Sprite name='s1'/>",
             "</fx:Component>"
         };

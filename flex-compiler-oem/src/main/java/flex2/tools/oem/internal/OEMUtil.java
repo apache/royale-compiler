@@ -40,8 +40,8 @@ import flex2.tools.CompcConfiguration;
 import flex2.tools.ToolsConfiguration;
 import flex2.tools.oem.*;
 
-import org.apache.flex.compiler.clients.COMPJSC;
-import org.apache.flex.compiler.clients.MXMLJSC;
+import org.apache.royale.compiler.clients.COMPJSC;
+import org.apache.royale.compiler.clients.MXMLJSC;
 
 /**
  * A collection of utility methods used by classes in flex2.tools.oem.
@@ -185,7 +185,7 @@ public class OEMUtil
 		}
 	}
 
-	private static ApplicationCompilerConfiguration processMXMLCConfiguration(org.apache.flex.compiler.config.Configuration config)
+	private static ApplicationCompilerConfiguration processMXMLCConfiguration(org.apache.royale.compiler.config.Configuration config)
 	{
 	    ApplicationCompilerConfiguration acc = new ApplicationCompilerConfiguration();
         ConfigurationPathResolver resolver = new ConfigurationPathResolver(); 
@@ -240,7 +240,7 @@ public class OEMUtil
 	    return acc;
 	}
 	
-    private static LibraryCompilerConfiguration processCOMPCCConfiguration(org.apache.flex.compiler.config.Configuration config)
+    private static LibraryCompilerConfiguration processCOMPCCConfiguration(org.apache.royale.compiler.config.Configuration config)
     {
         LibraryCompilerConfiguration acc = new LibraryCompilerConfiguration();
         ConfigurationPathResolver resolver = new ConfigurationPathResolver(); 
@@ -506,7 +506,7 @@ public class OEMUtil
 	
 	public static final String formatConfigurationBuffer(ConfigurationBuffer cfgbuf)
 	{
-		return FileConfigurator.formatBuffer(cfgbuf, "flex-config",
+		return FileConfigurator.formatBuffer(cfgbuf, "royale-config",
 											 /*OEMUtil.setupLocalizationManager(),*/ "flex2.configuration");
 	}
 

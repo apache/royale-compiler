@@ -21,16 +21,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>flexjs-compiler-parent</artifactId>
-    <version>0.8.0</version>
+    <groupId>org.apache.royale.compiler</groupId>
+    <artifactId>royale-compiler-parent</artifactId>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>compiler</artifactId>
-  <version>0.8.0</version>
+  <version>0.9.0</version>
 
-  <name>Apache Flex - FlexJS: Compiler: Compiler</name>
-  <description>The Apache Flex Falcon Compiler</description>
+  <name>Apache Royale: Compiler: Compiler</name>
+  <description>The Apache Royale Compiler</description>
 
   <build>
     <plugins>
@@ -50,9 +50,9 @@
             <configuration>
               <outputDirectory>target/generated-sources/jflex</outputDirectory>
               <lexDefinitions>
-                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
+                <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
               </lexDefinitions>
-              <skeleton>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
+              <skeleton>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.royale</skeleton>
             </configuration>
           </execution>
           <execution>
@@ -63,9 +63,9 @@
             <configuration>
               <outputDirectory>target/generated-sources/jflex</outputDirectory>
               <lexDefinitions>
-                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
+                <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
               </lexDefinitions>
-              <skeleton>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
+              <skeleton>src/main/jflex/org/apache/royale/compiler/internal/parsing/as/skeleton.default</skeleton>
             </configuration>
           </execution>
           <execution>
@@ -76,7 +76,7 @@
             <configuration>
               <outputDirectory>target/generated-sources/jflex</outputDirectory>
               <lexDefinitions>
-                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
+                <lexDefinition>src/main/jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
               </lexDefinitions>
             </configuration>
           </execution>
@@ -96,7 +96,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <grammars>org/apache/flex/compiler/internal/parsing/as/ASParser.g</grammars>
+              <grammars>org/apache/royale/compiler/internal/parsing/as/ASParser.g</grammars>
             </configuration>
           </execution>
         </executions>
@@ -134,10 +134,10 @@
                 <classpath />
                 <arguments>antlr.Tool</arguments>
                 <argument>-o</argument>
-                <argument>../../../../../../../../../../target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as</argument>
+                <argument>../../../../../../../../../../target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as</argument>
                 <argument>MetadataParser.g</argument>
               </arguments>
-              <workingDirectory>src/main/antlr/org/apache/flex/compiler/internal/parsing/as</workingDirectory>
+              <workingDirectory>src/main/antlr/org/apache/royale/compiler/internal/parsing/as</workingDirectory>
               <sourceRoot>target/generated-sources/antlr</sourceRoot>
             </configuration>
           </execution>
@@ -162,8 +162,8 @@
               <includes>
                 <include>CSSEmitter.jbg</include>
               </includes>
-              <sourceDirectory>src/main/jburg/org/apache/flex/compiler/internal/css/codegen</sourceDirectory>
-              <outputDirectory>target/generated-sources/jburg/org/apache/flex/compiler/internal/css/codegen</outputDirectory>
+              <sourceDirectory>src/main/jburg/org/apache/royale/compiler/internal/css/codegen</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -175,8 +175,8 @@
               <includes>
                 <include>CmcEmitter.jbg</include>
               </includes>
-              <sourceDirectory>src/main/jburg/org/apache/flex/compiler/internal/as/codegen</sourceDirectory>
-              <outputDirectory>target/generated-sources/jburg/org/apache/flex/compiler/internal/as/codegen</outputDirectory>
+              <sourceDirectory>src/main/jburg/org/apache/royale/compiler/internal/as/codegen</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -191,7 +191,7 @@
             <version>1.10.3</version>
           </dependency>
           <dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
             <version>${compiler-jburg-types.version}</version>
           </dependency>
@@ -215,8 +215,8 @@
               <includes>
                 <include>CSS.g</include>
               </includes>
-              <sourceDirectory>src/main/antlr3/org/apache/flex/compiler/internal/css</sourceDirectory>
-              <outputDirectory>target/generated-sources/antlr3/org/apache/flex/compiler/internal/css</outputDirectory>
+              <sourceDirectory>src/main/antlr3/org/apache/royale/compiler/internal/css</sourceDirectory>
+              <outputDirectory>target/generated-sources/antlr3/org/apache/royale/compiler/internal/css</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -228,18 +228,18 @@
               <includes>
                 <include>CSSTree.g</include>
               </includes>
-              <sourceDirectory>src/main/antlr3/org/apache/flex/compiler/internal/css</sourceDirectory>
-              <outputDirectory>target/generated-sources/antlr3/org/apache/flex/compiler/internal/css</outputDirectory>
+              <sourceDirectory>src/main/antlr3/org/apache/royale/compiler/internal/css</sourceDirectory>
+              <outputDirectory>target/generated-sources/antlr3/org/apache/royale/compiler/internal/css</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
       <!--
-              Do all the custom processing with the falcon build tools.
+              Do all the custom processing with the royale build tools.
       -->
       <plugin>
-        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <groupId>org.apache.royale.compiler</groupId>
         <artifactId>compiler-build-tools</artifactId>
         <version>${compiler-build-tools.version}</version>
         <executions>
@@ -249,8 +249,8 @@
               <goal>generate-unknown-tree-handler</goal>
             </goals>
             <configuration>
-              <inputFile>org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml</inputFile>
-              <outputFile>org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java</outputFile>
+              <inputFile>org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml</inputFile>
+              <outputFile>org/apache/royale/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java</outputFile>
             </configuration>
           </execution>
           <execution>
@@ -260,9 +260,9 @@
             </goals>
             <configuration>
               <includes>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.java</include>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/ASTokenTypes.java</include>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/ASTokenTypes.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/MetadataTokenTypes.java</include>
               </includes>
               <annotation>@SuppressWarnings("unused")</annotation>
             </configuration>
@@ -274,7 +274,7 @@
             </goals>
             <configuration>
               <includes>
-                <include>antlr/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java</include>
+                <include>antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java</include>
               </includes>
               <annotation>@SuppressWarnings("all")</annotation>
             </configuration>
@@ -286,8 +286,8 @@
             </goals>
             <configuration>
               <includes>
-                <include>jburg/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java</include>
-                <include>jburg/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java</include>
+                <include>jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java</include>
+                <include>jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java</include>
               </includes>
               <annotation>@SuppressWarnings({"rawtypes", "unchecked", "unused"})</annotation>
             </configuration>
@@ -313,9 +313,31 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.19</version>
         <configuration>
+          <runOrder>alphabetical</runOrder>
           <includes>
-            <include>org/**/*Tests.java</include>
+            <include>**/AAAMavenTestExternc.java</include>
+            <include>**/AAMavenTestSWCs.java</include>
+            <include>**/*Tests.java</include>
           </includes>
+          <excludes>
+            <exclude>as/**/*Tests.java</exclude>
+            <exclude>f/**</exclude>
+            <exclude>mxml/tags/**</exclude>
+            <exclude>properties/**</exclude>
+            <exclude>**/MXMLComponentTagTests.java</exclude>
+            <exclude>**/MXMLComponentNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceTagTests.java</exclude>
+            <exclude>**/MXMLModelTagTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceNodeTests.java</exclude>
+            <exclude>**/MXMLDesignLayerNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceNodeTests.java</exclude>
+            <exclude>**/MXMLModelNodeTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectTagTests.java</exclude>
+            <exclude>**/MXMLStateNodeTests.java</exclude>
+            <exclude>**/MXMLVectorNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceTagTests.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
 
@@ -326,9 +348,25 @@
         <configuration>
           <includes>
             <include>as/**/*Tests.java</include>
-            <include>mxml/**/*Tests.java</include>
-            <include>properties/**/*Tests.java</include>
           </includes>
+          <excludes>
+            <exclude>f/**</exclude>
+            <exclude>mxml/tags/**</exclude>
+            <exclude>properties/**</exclude>
+            <exclude>**/MXMLComponentTagTests.java</exclude>
+            <exclude>**/MXMLComponentNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceTagTests.java</exclude>
+            <exclude>**/MXMLModelTagTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceNodeTests.java</exclude>
+            <exclude>**/MXMLDesignLayerNodeTests.java</exclude>
+            <exclude>**/MXMLHTTPServiceNodeTests.java</exclude>
+            <exclude>**/MXMLModelNodeTests.java</exclude>
+            <exclude>**/MXMLRemoteObjectTagTests.java</exclude>
+            <exclude>**/MXMLStateNodeTests.java</exclude>
+            <exclude>**/MXMLVectorNodeTests.java</exclude>
+            <exclude>**/MXMLWebServiceTagTests.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
@@ -350,6 +388,21 @@
             <configuration>
               <includes combine.children="append">
                 <include>f/**/*Tests.java</include>
+                <include>mxml/**/*Tests.java</include>
+                <include>properties/**/*Tests.java</include>
+                <include>**/MXMLComponentTagTests.java</include>
+                <include>**/MXMLComponentNodeTests.java</include>
+                <include>**/MXMLHTTPServiceTagTests.java</include>
+                <include>**/MXMLModelTagTests.java</include>
+                <include>**/MXMLRemoteObjectNodeTests.java</include>
+                <include>**/MXMLWebServiceNodeTests.java</include>
+                <include>**/MXMLDesignLayerNodeTests.java</include>
+                <include>**/MXMLHTTPServiceNodeTests.java</include>
+                <include>**/MXMLModelNodeTests.java</include>
+                <include>**/MXMLRemoteObjectTagTests.java</include>
+                <include>**/MXMLStateNodeTests.java</include>
+                <include>**/MXMLVectorNodeTests.java</include>
+                <include>**/MXMLWebServiceTagTests.java</include>
               </includes>
             </configuration>
           </plugin>
@@ -360,9 +413,14 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-jburg-types</artifactId>
       <version>${compiler-jburg-types.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-common</artifactId>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.flex</groupId>
@@ -412,9 +470,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-externc</artifactId>
+      <version>0.9.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -428,55 +492,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.4</version>
-      <scope>test</scope>
-    </dependency>
-    <!--
-
-            Importing SWCs will add them to the test classpath.
-            This might sound strange for a java maven project to
-            have swc files in its classpath, but this way the
-            files are automatically downloaded and eventually
-            even generated/converted by the sdk-converter and we
-            don't have to think about where to get them from.
-
-    -->
-    <!-- Import the playerglobal -->
-    <dependency>
-      <groupId>com.adobe.flash.framework</groupId>
-      <artifactId>playerglobal</artifactId>
-      <version>${flash.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <!-- Import a part of the Flex sdk -->
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>framework</artifactId>
-      <version>${flex.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>rpc</artifactId>
-      <version>${flex.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>spark</artifactId>
-      <version>${flex.version}</version>
-      <type>swc</type>
-      <scope>test</scope>
-    </dependency>
-    <!-- Make sure the framework config-zip is available -->
-    <dependency>
-      <groupId>org.apache.flex.framework</groupId>
-      <artifactId>framework</artifactId>
-      <version>${flex.version}</version>
-      <type>zip</type>
-      <classifier>configs</classifier>
       <scope>test</scope>
     </dependency>
   </dependencies>

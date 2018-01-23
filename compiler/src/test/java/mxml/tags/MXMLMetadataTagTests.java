@@ -19,7 +19,7 @@
 
 package mxml.tags;
 
-import org.apache.flex.utils.StringUtils;
+import org.apache.royale.utils.StringUtils;
 import org.junit.Test;
 
 /**
@@ -34,31 +34,54 @@ public class MXMLMetadataTagTests extends MXMLFeatureTestsBase
 	 */
     protected String getMXML(String[] metadata, String[] moreMetadata, String[] asserts)
     {
-        String[] template = new String[]
+        String[] template;
+        if (hasFlashPlayerGlobal)
         {
-            "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'",
-            "          enterFrame='enterFrameHandler(event)'>",
-            "    %1",
-            "    <fx:Script>",
-            "    <![CDATA[",
-            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
-            "        {",
-            "            if (actualValue !== expectedValue)",
-            "            {",
-            "                trace(message, actualValue, expectedValue);",
-            "                System.exit(1);",
-            "            }",
-            "        }",
-            "        private function enterFrameHandler(event:Event):void",
-            "        {",
-            "            %3",
-            "            System.exit(0);",
-            "        }",
-            "    ]]>",
-            "    </fx:Script>",
-            "    %2",
-            "</d:Sprite>"
-        };
+        	template = new String[]
+	        {
+	            "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:custom='library://ns.apache.org/royale/test'",
+	            "          enterFrame='enterFrameHandler(event)'>",
+	            "    %1",
+	            "    <fx:Script>",
+	            "    <![CDATA[",
+	            "        import custom.TestInstance;",
+	            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
+	            "        {",
+	            "            if (actualValue !== expectedValue)",
+	            "            {",
+	            "                trace(message, actualValue, expectedValue);",
+	            "                System.exit(1);",
+	            "            }",
+	            "        }",
+	            "        private function enterFrameHandler(event:Event):void",
+	            "        {",
+	            "            %3",
+	            "            System.exit(0);",
+	            "        }",
+	            "    ]]>",
+	            "    </fx:Script>",
+	            "    %2",
+	            "</d:Sprite>"
+	        };
+        }
+        else
+        {
+        	template = new String[]
+  	        {
+  	            "<fx:Object xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:custom='library://ns.apache.org/royale/test' >",
+  	            "    %1",
+  	            "    <fx:Script>",
+  	            "    <![CDATA[",
+	            "        import custom.TestInstance;",
+  	            "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
+  	            "        {",
+  	            "        }",
+  	            "    ]]>",
+  	            "    </fx:Script>",
+  	            "    %2",
+  	            "</fx:Object>"
+  	        };        	
+        }
         String mxml = StringUtils.join(template, "\n");
         mxml = mxml.replace("%1", StringUtils.join(metadata, "\n    "));
         mxml = mxml.replace("%2", StringUtils.join(moreMetadata, "\n    "));

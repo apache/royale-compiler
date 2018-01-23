@@ -1,0 +1,137 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package and its subpackages contain the Royale compiler.
+
+<p>
+The Royale compiler compiles Royale code consisting of <code>.mxml</code>
+<code>.as</code>, <code>.css</code>, <code>.fxg</code>, and
+<code>.properties</code> files into SWF and SWC files.
+<p>
+
+<p>
+The main entry point for compiling a SWF is in the <code>MXMLC</code> class
+in the package <code>org.apache.royale.compiler.clients</code>.
+The main entry point for compiling a SWC is in the <code>COMPC</code> class
+in the same package.
+The corresponding Ant tasks are in the package <code>org.apache.royale.compiler.ant</code>.
+</p>
+
+<p>
+The <code>org.apache.royale.compiler</code> package makes use of the libraries
+in the <code>org.apache.royale.abc</code>, <code>org.apache.royale.swf</code>,
+and <code>org.apache.royale.swc</code> packages to read and write the ABC, SWF,
+and SWC formats. However, these support libraries are independent of the compiler.
+</p>
+
+<p>
+The Royale Compiler is a large body of code but it is organized around ten core 
+concepts, with a subpackage for each one:
+</p>
+
+<table border="1" cellspacing="0" cellpadding="3">
+	<tr>
+		<td>Workspace</td>
+		<td><code>org.apache.royale.compiler.workspaces</code></td>
+		<td>The root object of the compiler's data structures. Owns projects to be compiled.</td>
+	</tr>
+	<tr>
+		<td>Project</td>
+		<td><code>org.apache.royale.compiler.projects</code></td>
+		<td>Owns compilation units to be compiled into one or more targets.</td>
+	</tr>
+	<tr>
+		<td>Target</td>
+		<td><code>org.apache.royale.compiler.targets</code></td>
+		<td>Manages the compilation of a set of compilation units into a SWF or SWC.</td>
+	</tr>
+	<tr>
+		<td>Compilation Unit</td>
+		<td><code>org.apache.royale.compiler.units</code></td>
+		<td>Manages the compilation of a single file.
+		This typically involves building an AST and a file scope,
+		performing semantic analysis to discover problems,
+		and code-generating ABC for a <code>DoABC</code> SWF tag.</td>
+	</tr>
+	<tr>
+		<td>AST</td>
+		<td><code>org.apache.royale.compiler.tree</code></td>
+		<td>Represents almost every detail of a source file as a tree of nodes.</td>
+	</tr>
+	<tr>
+		<td>Scope</td>
+		<td><code>org.apache.royale.compiler.scopes</code></td>
+		<td>Organizes definitions -- named things declared in source code --
+		in a hierarchy that reflects the block structure of the source file.
+		Scopes and definitions comprise a symbol table that allow
+		AST nodes representing identifiers in the source code
+	    to be resolved to definitions (i.e., what they mean).
+		A file scope contains the definitions defined with a single file.
+		A project scope contains definitions that are visible between files.
+	</tr>
+	<tr>
+		<td>Definition</td>
+		<td><code>org.apache.royale.compiler.definitions</code></td>
+		<td>Represents a named object in a scope,
+		such as a class, interface, function, variable, etc.</td>
+	</tr>
+	<tr>
+		<td>Semantic Analysis</td>
+		<td><code>org.apache.royale.compiler.analysis</code></td>
+		<td>Resolves identifier nodes in an AST to definitions in a scope
+		(and quite a bit more.)</td>
+	</tr>
+	<tr>
+		<td>Problem</td>
+		<td><code>org.apache.royale.compiler.problems</code></td>
+		<td>Represents an error or warning.
+		Most problems are found during semantic analysis.</td>
+	</tr>
+	<tr>
+		<td>Code Generation</td>
+		<td><code>org.apache.royale.compiler.codegen</code></td>
+		<td>Reduces an AST to ABC, using scopes and definitions
+		to understand what each node means.
+		The bulk of code generation is handled by a BURM (Bottom-Up Rewrite Machine).</td>
+	</tr>
+</table>
+
+<p>
+For more information, see the description of each of these packages.
+</p>
+
+<p>
+The compiler code is organized into "external" and "internal" packages.
+The internal packages are all within <code>org.apache.royale.compiler.internal</code>.
+For example, <code>org.apache.royale.compiler.definitions</code> is an external package
+that contains the definition interfaces for clients of the compiler to use;
+<code>org.apache.royale.compiler.internal.definitions</code> is its internal counterpart
+that contains the definition classes that the compiler itself creates.
+Clients should never use code in an internal package; if it becomes necessary to do so,
+the code should be moved to an external package.
+The distinction can be important: in the case of definitions, for example,
+the methods in the interfaces are guaranteed to be safe to call
+from multiple threads, while the methods in the classes are not.
+</p>
+
+</body>
+</html>

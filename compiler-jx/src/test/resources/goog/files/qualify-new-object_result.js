@@ -11,36 +11,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-goog.provide('org.apache.flex.A');
+goog.provide('org.apache.royale.A');
 
-goog.require('flash.events.EventDispatcher');
+goog.require('custom.TestImplementation');
 
 /**
  * @constructor
- * @extends {flash.events.EventDispatcher}
+ * @extends {custom.TestImplementation}
  */
-org.apache.flex.A = function() {
+org.apache.royale.A = function() {
 	var self = this;
-	org.apache.flex.A.base(this, 'constructor');
+	org.apache.royale.A.base(this, 'constructor');
 	self.init();
 };
-goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
+goog.inherits(org.apache.royale.A, custom.TestImplementation);
 
 /**
  * @private
- * @type {flash.events.EventDispatcher}
+ * @type {custom.TestImplementation}
  */
-org.apache.flex.A.prototype._privateVar;
+org.apache.royale.A.prototype._privateVar;
 
-org.apache.flex.A.prototype.init = function() {
+org.apache.royale.A.prototype.init = function() {
 	var self = this;
-	var /** @type {flash.events.EventDispatcher} */ btn = new flash.events.EventDispatcher();
-	self._privateVar = new flash.events.EventDispatcher();
+	var /** @type {custom.TestImplementation} */ btn = new custom.TestImplementation();
+	self._privateVar = new custom.TestImplementation();
 	self.addEventListener("click", function() {
 	});
 };
 
-org.apache.flex.A.prototype.start = function() {
+org.apache.royale.A.prototype.start = function() {
 	var self = this;
 	var /** @type {string} */ localVar = self._privateVar.label;
 	self.init();

@@ -28,9 +28,6 @@ out/
 temp/
 rat.report
 
-# files copied from flex-sdk
-swfutils/
-
 # files copied from google closure compiler
 externs/js/externs
 externs/jquery/externs

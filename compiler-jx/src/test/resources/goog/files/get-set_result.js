@@ -11,27 +11,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-goog.provide('org.apache.flex.A');
+goog.provide('org.apache.royale.A');
 
 /**
  * @constructor
  */
-org.apache.flex.A = function() {
+org.apache.royale.A = function() {
 };
 
 /**
  * @private
  * @type {number}
  */
-org.apache.flex.A.prototype._a = -1;
+org.apache.royale.A.prototype._a = -1;
 
 /**
  * @type {number}
  */
-org.apache.flex.A.prototype.a;
+org.apache.royale.A.prototype.a;
 
 Object.defineProperty(
-	org.apache.flex.A.prototype, 
+	org.apache.royale.A.prototype, 
 	'a', 
 	{get:function() {
 		var self = this;
@@ -40,7 +40,7 @@ Object.defineProperty(
 );
 
 Object.defineProperty(
-	org.apache.flex.A.prototype, 
+	org.apache.royale.A.prototype, 
 	'a', 
 	{set:function(value) {
 		var self = this;

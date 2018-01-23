@@ -46,7 +46,7 @@
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler directory -->
-    <!-- where a Falcon SDK is built -->
+    <!-- where a Royale SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}"/>
 
@@ -70,66 +70,6 @@
     <condition property="build.number" value="${label}">
         <isset property="label"/>
     </condition>
-    
-    <target name="download_check" description="determine if we have downloaded/bundled swfutils source">
-        <available file="${oem}/target/downloads/java/flash/swf/Action.java"
-            type="file"
-            property="swfutils.bundled"
-            value="true" />
-    </target>
-        
-    <target name="downloads" depends="download_check" unless="swfutils.bundled">
-        <mkdir dir="${oem}/target/downloads/java/flash" />
-        <get src="https://git-wip-us.apache.org/repos/asf/flex-sdk/repo?p=flex-sdk.git;a=snapshot;h=2cfbdd592ef87b40704d3d7145f4da9a369429eb;sf=tgz"
-            dest="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz" ignoreerrors="true"/>
-        <antcall target="get-from-cache-if-needed" >
-            <param name="srcFile" value="flex-sdk-modules-swfutils.tar.gz" />
-            <param name="destFile" value="flex-sdk-modules-swfutils.tar.gz" />
-            <param name="destDir" value="${oem}/target/downloads" />
-        </antcall>
-        <antcall target="fail-if-not-found" >
-            <param name="destFile" value="flex-sdk-modules-swfutils.tar.gz" />
-            <param name="destDir" value="${oem}/target/downloads" />
-        </antcall>
-        <untar src="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz" dest="${oem}/target/downloads/java/flash" compression="gzip">
-            <patternset>
-                 <include name="**/localization/**"/>
-                 <include name="**/swf/Movie.java"/>
-                 <include name="**/swf/actions/**"/>
-                 <include name="**/swf/Action.java"/>
-                 <include name="**/swf/ActionConstants.java"/>
-                 <include name="**/swf/ActionDecoder.java"/>
-                 <include name="**/swf/ActionFactory.java"/>
-                 <include name="**/swf/ActionHandler.java"/>
-                 <include name="**/swf/CompressionLevel.java"/>
-                 <include name="**/swf/debug/**"/>
-                 <include name="**/swf/DebugDecoder.java"/>
-                 <include name="**/swf/DebugHandler.java"/>
-                 <include name="**/swf/DebugTags.java"/>
-                 <include name="**/swf/Dictionary.java"/>
-                 <include name="**/swf/Frame.java"/>
-                 <include name="**/swf/Header.java"/>
-                 <include name="**/swf/MovieMetaData.java"/>
-                 <include name="**/swf/RandomAccessBuffer.java"/>
-                 <include name="**/swf/SwfDecoder.java"/>
-                 <include name="**/swf/SwfEncoder.java"/>
-                 <include name="**/swf/SwfFormatException.java"/>
-                 <include name="**/swf/Tag.java"/>
-                 <include name="**/swf/TagDecoder.java"/>
-                 <include name="**/swf/TagHandler.java"/>
-                 <include name="**/swf/TagValues.java"/>
-                 <include name="**/swf/tags/**"/>
-                 <include name="**/swf/tools/Disassembler.java"/>
-                 <include name="**/swf/types/**"/>
-                 <include name="**/util/ExceptionUtil.java"/>
-                 <include name="**/util/FieldFormat.java"/>
-                 <include name="**/util/FileUtils.java"/>
-                 <include name="**/util/IntMap.java"/>
-                 <include name="**/util/Trace.java"/>
-            </patternset>
-            <cutdirsmapper dirs="1"/>
-        </untar>
-    </target>
     
     <!--
 
@@ -159,7 +99,6 @@
                source="${javac.src}" target="${javac.src}"
         	   includes="**/*.java" destdir="${oem}/target/classes" classpathref="classpath" includeAntRuntime="true">
             <src path="${oem}/src/main/java"/>
-            <src path="${oem}/target/downloads/java"/>
         </javac>
         <!--
         <copy todir="${compiler}/generated/classes">
@@ -180,6 +119,7 @@
     </target>
 
     <target name="compc.jar" depends="oem.jar,set.compc.jar.uptodate" unless="compc.jar.uptodate">
+        <!-- do we need this
         <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
@@ -190,9 +130,10 @@
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="flex2.tools.Compc"/>
-                <attribute name="Class-Path" value="flex-compiler-oem.jar"/>
+                <attribute name="Class-Path" value="flex-compiler-oem.jar swfutils.jar"/>
             </manifest>
         </jar>
+         -->
     </target>
 		
 	<target name="set.oem.jar.uptodate">
@@ -220,17 +161,17 @@
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="flex2.tools.Mxmlc"/>
-                <attribute name="Class-Path" value="compiler.jar ../js/lib/jsc.jar"/>
+                <attribute name="Class-Path" value="compiler.jar swfutils.jar ../js/lib/jsc.jar"/>
             </manifest>
         </jar>
 	</target>
 	
-    <target name="jar" depends="downloads, oem.jar, compc.jar"
+    <target name="jar" depends="oem.jar, compc.jar"
     	    description="Creates JAR files"/>
 	    	
-	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
+	<target name="sdk" depends="jar" description="Builds a Royale SDK"/>
 
-    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
+    <target name="main" depends="sdk" description="Default target - Builds a Royale SDK and builds Royale Javadoc">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>

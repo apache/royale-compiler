@@ -21,15 +21,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>flexjs-compiler-parent</artifactId>
-    <version>0.8.0</version>
+    <groupId>org.apache.royale.compiler</groupId>
+    <artifactId>royale-compiler-parent</artifactId>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>compiler-jx</artifactId>
-  <version>0.8.0</version>
+  <version>0.9.0</version>
 
-  <name>Apache Flex - FlexJS: Compiler: Compiler-JX</name>
+  <name>Apache Royale: Compiler: Compiler-JX</name>
 
   <build>
     <plugins>
@@ -43,15 +43,12 @@
             <include>org/**/Test*.java</include>
           </includes>
           <excludes>
-            <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
-            <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**</exclude>
-            <exclude>**/TestGoogClass.java</exclude>
-            <exclude>**/TestGoogEmitter.java</exclude>
-            <exclude>**/TestGoogFile.java</exclude>
-            <exclude>**/TestFlexJSMXMLApplication.java</exclude>
-            <exclude>**/TestFlexJSMXMLScript.java</exclude>
-            <exclude>**/TestSourceMapMXMLScript.java</exclude>
-            <exclude>**/TestSourceMapMXMLEvents.java</exclude>
+            <exclude>**/TestRoyaleFile.java</exclude>
+            <exclude>**/TestRoyaleMXML*.java</exclude>
+            <exclude>**/TestSourceMap*.java</exclude>
+            <exclude>**/TestMXML*.java</exclude>
+            <exclude>**/TestRoyaleClass.java</exclude>
+            <exclude>**/TestTypedefsCompile.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -62,14 +59,10 @@
         <version>2.18.1</version>
         <configuration>
           <includes>
-            <include>org/apache/flex/compiler/internal/codegen/js/flexjs/Test*.java</include>
-            <!-- Disabled for now as these tests require the flex-typedefs repo to be located in a pre-defined location -->
-            <!--include>org/apache/flex/compiler/internal/codegen/externals/Test*.java</include-->
+            <include>**/TestMXML*.java</include>
           </includes>
           <excludes>
-            <!-- This test seems to have issues. -->
-            <exclude>**/TestFlexJSFile.java</exclude>
-            <exclude>**/TestFlexJSProject.java</exclude>
+            <exclude>**/TestTypedefsCompile.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -78,14 +71,29 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-common</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-externc</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>1.11</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
     </dependency>
 
     <dependency>
@@ -94,25 +102,20 @@
       <version>2.0.28</version>
     </dependency>
     <dependency>
-      <groupId>org.codeartisans</groupId>
-      <artifactId>org.json</artifactId>
-      <version>20131017</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>v20161201</version>
+      <version>v20170626</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>google-closure-library</artifactId>
-      <version>0.0-20150902-b129bb9e</version>
+      <version>0.0-20170809-b9c14c6b</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -121,6 +124,14 @@
       <version>4.10</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-externc</artifactId>
+      <version>0.9.0</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
 </project>

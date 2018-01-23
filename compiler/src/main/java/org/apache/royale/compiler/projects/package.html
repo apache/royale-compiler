@@ -1,0 +1,170 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package contains interfaces representing <i>projects</i>.
+
+<p>
+A <i>project</i> is a compilation environment for compiling
+<i>compilation units</i> into <i>targets</i>.
+It is a "steady-state" environment in which the intermediate results
+of the compilation process -- abstract syntax trees, file scopes,
+ABC bytecode, and so on -- are kept in memory in order to support
+efficient incremental compilation when files are added, changed,
+or removed, or when compilation options are changed.
+</p>
+
+<p>
+The data structures maintained by the project and its compilation
+units also support code intelligence features -- code completion,
+the display of API documentation, "goto definition", outlining,
+refactoring, and so on -- in compiler clients such as integrated
+developement environments.
+To support these use cases, it it not necessary for a project to
+actually produce bytecode or build a SWF or SWC.
+Instead, a compilation unit can simply be asked to produce
+an intermediate result such as an abstract syntax tree.
+</p>
+
+<p>
+A project belongs to a <i>workspace</i>, which stores
+data shared by multiple projects (such as a SWC cache).
+A project holds a strong reference to its workspace,
+but the workspace holds only a weak reference to its project.
+</p>
+
+<p>
+A <i>compilation unit</i> manages a five-stage compilation process
+for a single file or ABC script.
+Compilation units are created by a project by enumerating all of the
+files on its source path and library path.
+Which compilation units actually get compiled is determined by the
+target driving the compilation.
+See the <code>org.apache.royale.compiler.units</code> package
+for more information about compilation units.
+</p>
+
+<p>
+A project can create multiple <i>targets</i> to build multiple
+SWF and/or SWC files.
+Each target drives one or more (but not necessarily all) of the
+project's compilation units through their compilation phases,
+and assembles the resulting ABC or SWF tags into a SWF or SWC.
+See the <code>org.apache.royale.compiler.targets</code> package
+for more information about targets.
+</p>
+
+<p>
+Some configuration options become project settings, while others
+become target settings.
+For example, the source path and library path are project settings,
+but whether a particular SWC is to be linked internally or externally
+(that is, whether is "on the external library path") is a target setting.
+</p>
+
+<p>
+In addition to managing compilation units and targets,
+a project owns other important data structures shared
+by all the compilation units in the project:
+<ul>
+<li>a <i>project scope</i></li>
+<li>a <i>dependency graph</i></li>
+<li>thread-local <i>scope caches</i></li>
+</ul>
+</p>
+
+<p>
+The <i>project scope</i> supports <i>name resolution</i>
+between compilation units.
+It is always memory-resident.
+See the <code>org.apache.royale.compiler.scopes</code> package
+for more information about scopes.
+</p>
+
+<p>
+The <i>dependency graph</i> tracks bidrectional dependencies between
+compilation units, in order to support incremental compilation.
+For example, when <code>class B</code> in one file extends <code>class A</code>
+in another file, that introduces a dependency of type <code>INHERITANCE</code>
+between the compilation unit representing the first file and the compilation
+unit representing the second file.
+There are four types of dependency, as described in the
+<code>DependencyType</code> enum.
+The dependency graph is always memory-resident.
+</p>
+
+<p>
+Each thread-local <i>scope cache</i> optimizes <i>name resolution</i>
+within a single scope. Once an identifier in a scope has been resolved,
+the definition to which it resolved is stored in a scope cache for that
+scope. Subsequent identifiers with the same base name in the same scope
+must resolve identically, so the definition can be retrieved from the
+scope cache rather than re-resolved according to the name resolution
+algorithm. Weak references are used so that the scope caches
+can be garbage-collected.
+</p>
+
+<p>
+A project also keeps track of all <i>embeddings</i> in all compilation units,
+and creates an <code>EmbedCompilationUnit</code> to create the class
+representing the embedded asset.
+This means that if a single file embeds the same asset with the same
+embedding attributes in multiple places, or if multiple files in a project
+embed the same asset with the same embedding attributes, then only one embed
+class will be created in the final SWF or SWC to represent the asset.
+The transcoded asset data is cached in the workspace, so that
+assets are not re-transcoded by each project that uses them.
+</p>
+
+<p>
+The base interface for all projects is <code>ICompilerProject</code>.
+There are four different kinds of projects, each with its own subinterface:
+</p>
+
+<table border="1" cellspacing="0" cellpadding="3">
+	<tr>
+		<td><code>IRoyaleProject</code></td>
+		<td>Can create a SWF target to build a Royale application or module,
+		or a SWC target to build a Royale library or resource bundle.
+		Supports <code>.mxml</code>, <code>.fxg</code>, <code>.css</code>,
+		and <code>.properties</code> files as well as <code>.as</code>
+		files.</td>
+	</tr>
+	<tr>
+		<td><code>IFlashProject</code></td>
+		<td>Can create a SWF target to compile a set of <code>.as</code>
+		files.</td>
+	</tr>
+	<tr>
+		<td><code>IFlashLibraryProject</code></td>
+		<td>Can cratea a SWF or SWC target to compile a set of <code>.as</code>
+		files.</td>
+	</tr>
+	<tr>
+		<td><code>IASProject</code></td>
+		<td>Can create a SWF target that builds a SWF from <code>.as</code> files
+		in the manner of <code>asc</code> rather than in the manner of <code>mxmlc</code>.
+		That is, it uses a source list rather than a source path.</td>
+	</tr>
+</table>
+
+</body>
+</html>

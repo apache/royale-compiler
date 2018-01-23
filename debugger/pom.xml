@@ -21,15 +21,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>flexjs-compiler-parent</artifactId>
-    <version>0.8.0</version>
+    <groupId>org.apache.royale.compiler</groupId>
+    <artifactId>royale-compiler-parent</artifactId>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>debugger</artifactId>
-  <version>0.8.0</version>
+  <version>0.9.0</version>
 
-  <name>Apache Flex - FlexJS: Compiler: Debugger</name>
+  <name>Apache Royale: Compiler: Debugger</name>
 
   <build>
     <plugins>
@@ -69,7 +69,7 @@ Do all the JBurg code generation.
             <version>1.10.3</version>
           </dependency>
           <dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
             <version>${compiler-build-tools.version}</version>
           </dependency>
@@ -80,14 +80,14 @@ Do all the JBurg code generation.
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.flex.compiler</groupId>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>swfutils</artifactId>
-      <version>4.15.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -116,12 +116,12 @@ Do all the JBurg code generation.
       <version>0.0-20150902-b129bb9e</version>
     </dependency>
 
-    <!--dependency>
-      <groupId>org.apache.flex.flexjs.compiler</groupId>
+   <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-build-tools</artifactId>
       <version>${compiler-build-tools.version}</version>
       <scope>test</scope>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

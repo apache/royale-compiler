@@ -29,8 +29,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_SwitchStatement()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -64,8 +62,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_Namespace_as_method_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -90,8 +86,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_Default_as_method_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -116,8 +110,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_for_as_method_name()
     {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -142,8 +134,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_Get_as_method_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -168,8 +158,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_Get_as_getter_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -194,8 +182,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_Get_as_member_expression_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -220,8 +206,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_as_method_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -246,8 +230,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_as_property_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -273,8 +255,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_as_variable_name()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -294,8 +274,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_default_as_variable_name()
     {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -315,8 +293,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_include_as_variable_name()
     {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -336,8 +312,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void ASKeyword_as_member_expression()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };
@@ -357,8 +331,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     @Test
     public void AS_new_function_returned_from_function()
     {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
         String[] imports = new String[]
         {
         };

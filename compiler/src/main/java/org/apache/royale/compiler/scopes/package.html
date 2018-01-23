@@ -1,0 +1,62 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package contains interfaces representing <i>scopes</i>.
+
+<p>
+A <i>scope</i> is a container for <i>definitions</i>.
+See the <code>org.apache.royale.compiler.definition</code> package
+for more information about definitions.
+A can loosely be thought of as representing either an entire file
+(for a <i>file scope</i>) or a block of code delimited by curly braces
+(for a <i>package scope</i>, <i>class scope</i>, <i>interface scope</i>,
+<i>function/getter/setter scope</i>, <i>catch scope</i>, or <i>with scope</i>).
+Curly braces within some statements, such as those of a <code>for</code> loop,
+do not produce produce scopes, due to the "hoisting" rules of ActionScript.
+</p>
+
+<p>
+In addition to being contained in a scope, some definitions contain an inner scope.
+Therefore a file scope is the root of a hierarchical data structure
+containing scopes and definitions.
+(Think of it as the <i>symbol table</i> for the file.)
+Definitions which are visible to other files are copied into a
+<i>project scope</i> for cross-file name resolution.
+</p>
+
+<p>
+ActionScript's <i>name resolution</i> algorithm resolves an identifier in a scope
+to the definition to which it refers. That definition might be in the same
+scope, an enclosing scope, in the scope of a superclass, or in the project scope.
+</p>
+
+<p>
+After being produced, scopes and definitions that are visible to other files
+are always resident in memory, so that the other files can perform name resolution.
+(In fact, they persist even after all other files have performed
+named resolution, in order to support subsequent incremental compilation.)
+Scopes and definitions that are internal to a particular file need
+to exist only when the AST for that file is in memory.
+</p>
+
+</body>
+</html>

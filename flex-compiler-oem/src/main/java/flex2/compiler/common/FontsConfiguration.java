@@ -32,7 +32,7 @@ import java.util.Properties;
 
 /**
  * This class defines the fonts related configuration options.  These
- * options are typically set via flex-config.xml.
+ * options are typically set via royale-config.xml.
  *
  * @author Kyle Quevillon
  * @author Peter Farland

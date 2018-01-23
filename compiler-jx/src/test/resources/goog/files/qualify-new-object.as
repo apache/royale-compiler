@@ -16,25 +16,25 @@
 //  limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package org.apache.flex
+package org.apache.royale
 {
 
-import flash.events.EventDispatcher;
+import custom.TestImplementation;
 
-public class A extends EventDispatcher
+public class A extends TestImplementation
 {
 	public function A() 
 	{
 		init();
 	}
 	
-	private var _privateVar:EventDispatcher;
+	private var _privateVar:TestImplementation;
 	
 	public function init():void
 	{
-		var btn:EventDispatcher = new EventDispatcher();
+		var btn:TestImplementation = new TestImplementation();
 		
-		_privateVar = new EventDispatcher();
+		_privateVar = new TestImplementation();
 		
 		addEventListener("click", function () {});
 	}

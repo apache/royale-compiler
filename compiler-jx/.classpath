@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry excluding="**/EnvProperties.java" kind="src" path="COMPILER_TEST_UTILS"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -13,5 +12,10 @@
 	<classpathentry kind="lib" path="lib/flex-tool-api.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/COMMONS_COMPRESS"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-compress-1.10.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

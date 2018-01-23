@@ -42,7 +42,7 @@ public class ConfigurationPathResolver implements SinglePathResolver
     /**
      * Set default root file.  For mxmlc, we only want the root to ever be the context of
      * a ConfigurationValue.  For example, if a ConfigurationValue comes from
-     * "C:/flex/flex-config.xml", the root should be "C:/flex".  If a ConfigurationValue
+     * "C:/flex/royale-config.xml", the root should be "C:/flex".  If a ConfigurationValue
      * comes from the command line, the root should be null.
      *
      * This method is public, because it's used by Flex Builder.

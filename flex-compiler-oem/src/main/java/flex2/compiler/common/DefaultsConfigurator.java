@@ -121,8 +121,8 @@ public class DefaultsConfigurator
 	
 	private static void loadCommonDefaults( ConfigurationBuffer cfgbuf ) throws ConfigurationException
 	{
-        // specified in case people are using older flex-config.xml
-        // also specified in flex-config.xml
+        // specified in case people are using older royale-config.xml
+        // also specified in royale-config.xml
         set( cfgbuf, "target-player", "11.1" );
         set( cfgbuf, "swf-version", "14");
 

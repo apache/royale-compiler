@@ -17,7 +17,7 @@
 
 package flash.tools.debugger.expression;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
  * @author ggv

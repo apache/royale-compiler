@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<!--
+ 
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ -->
+<component-set>
+    <components>
+        <component>
+            <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+            <role-hint>swc</role-hint>
+            <implementation>
+                org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+            </implementation>
+            <configuration>
+                <lifecycles>
+                    <lifecycle>
+                        <id>default</id>
+                        <phases>
+                            <!-- Generate ActionScript from JavaScript -->
+                            <generate-sources>
+                                org.apache.royale.compiler:royale-maven-plugin:generate-extern
+                            </generate-sources>
+                            <!--
+                                Generate JavaScript sources from the ActionScript sources.
+                                Moved to the process-sources phase as we might want to generate
+                                JavaScript from generated sources.
+                            -->
+                            <process-resources>
+                                org.apache.maven.plugins:maven-resources-plugin:resources
+                            </process-resources>
+                            <!-- Compile the ActionScript to Flash (SWC) -->
+                            <compile>
+                                org.apache.royale.compiler:royale-maven-plugin:compile-as,
+                                org.apache.royale.compiler:royale-maven-plugin:compile-js,
+                                org.apache.royale.compiler:royale-maven-plugin:compile-extern,
+                            </compile>
+                            <process-test-resources>
+                                org.apache.maven.plugins:maven-resources-plugin:testResources
+                            </process-test-resources>
+                            <!--generate-test-sources>
+
+                            </generate-test-sources-->
+                            <!--generate-test-resources>
+
+                            </generate-test-resources-->
+                            <!--test-compile>
+                                org.apache.royale.compiler:royale-maven-plugin:testCompile
+                            </test-compile-->
+                            <process-test-classes>
+                                org.apache.royale.compiler:royale-maven-plugin:trust
+                            </process-test-classes>
+                            <!--test>
+                                org.apache.maven.plugins:maven-surefire-plugin:test
+                            </test-->
+                            <!--package>
+                                org.apache.royale.compiler:royale-maven-plugin:package
+                            </package-->
+                            <install>
+                                org.apache.maven.plugins:maven-install-plugin:install
+                            </install>
+                            <deploy>
+                                org.apache.maven.plugins:maven-deploy-plugin:deploy
+                            </deploy>
+                        </phases>
+                    </lifecycle>
+                </lifecycles>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+            <role-hint>swf</role-hint>
+            <implementation>
+                org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+            </implementation>
+            <configuration>
+                <lifecycles>
+                    <lifecycle>
+                        <id>default</id>
+                        <phases>
+                            <process-resources>
+                                org.apache.maven.plugins:maven-resources-plugin:resources
+                            </process-resources>
+                            <!-- Compile the ActionScript to Flash (SWF) -->
+                            <compile>
+                                org.apache.royale.compiler:royale-maven-plugin:compile-app
+                            </compile>
+                            <process-test-resources>
+                                org.apache.maven.plugins:maven-resources-plugin:testResources
+                            </process-test-resources>
+                            <!--generate-test-sources>
+
+                            </generate-test-sources-->
+                            <!--generate-test-resources>
+
+                            </generate-test-resources-->
+                            <!--test-compile>
+                                org.apache.royale.compiler:royale-maven-plugin:testCompile
+                            </test-compile-->
+                            <process-test-classes>
+                                org.apache.royale.compiler:royale-maven-plugin:trust
+                            </process-test-classes>
+                            <!--test>
+                                org.apache.maven.plugins:maven-surefire-plugin:test
+                            </test-->
+                            <package>
+                                org.apache.royale.compiler:royale-maven-plugin:package-js
+                            </package>
+                            <install>
+                                org.apache.maven.plugins:maven-install-plugin:install
+                            </install>
+                            <deploy>
+                                org.apache.maven.plugins:maven-deploy-plugin:deploy
+                            </deploy>
+                        </phases>
+                    </lifecycle>
+                </lifecycles>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>swc</role-hint>
+            <implementation>
+                org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <type>swc</type>
+                <extension>swc</extension>
+                <language>royale</language>
+                <addedToClasspath>true</addedToClasspath>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>js</role-hint>
+            <implementation>
+                org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <type>js</type>
+                <extension>js</extension>
+                <language>royale</language>
+                <addedToClasspath>true</addedToClasspath>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>jswc</role-hint>
+            <implementation>
+                org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <type>jswc</type>
+                <extension>jswc</extension>
+                <language>royale</language>
+                <addedToClasspath>true</addedToClasspath>
+            </configuration>
+        </component>
+        <!-- Add other artifact handlers for different types of libraries -->
+
+        <!--
+
+        FlexMojosCompatibleModelValidator:
+        https://github.com/doublefx/flexmojos-compatible-model-validator/blob/master/src/main/java/com/doublefx/maven/utils/flexmojos/mavenValidator/FlexMojosCompatibleModelValidator.java
+
+
+        -->
+    </components>
+</component-set>

@@ -18,7 +18,7 @@
 
 -->
 
-<project name="ApproveApacheFlexFalcon" default="main" basedir=".">
+<project name="ApproveApacheFlexRoyale" default="main" basedir=".">
 
 
     <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
@@ -59,7 +59,7 @@
     <property name="apache.rat.url" value="http://search.maven.org/remotecontent?filepath=org/apache/rat/apache-rat/0.11" />
     <property name="apache.rat.tasks.url" value="http://search.maven.org/remotecontent?filepath=org/apache/rat/apache-rat-tasks/0.11" />
 	   
-    <property file="${basedir}/approvefalcon.properties"/>
+    <property file="${basedir}/approveroyale.properties"/>
     
 	<property name="mac.text.display" value="cat" />
 	<property name="win.text.display" value="type" />
@@ -111,7 +111,7 @@
     unless="release.version"/>
 
     <condition property="package.url.path"
-        value="http://apacheflexbuild.cloudapp.net:8080/job/flex-falcon%20release%20branch/lastSuccessfulBuild/artifact/out">
+        value="http://apacheflexbuild.cloudapp.net:8080/job/flex-royale%20release%20branch/lastSuccessfulBuild/artifact/out">
         <not>
             <isset property="rc" />
         </not>
@@ -123,11 +123,11 @@
         </not>
     </condition>
 
-	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}" />
+	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/royale/${release.version}/rc${rc}" />
 	<property name="src.package.url.path" value="${package.url.path}" />
     <property name="bin.package.url.path" value="${package.url.path}/binaries" />
-    <property name="src.package.url.name" value="apache-flex-falconjx-${release.version}-src" />
-    <property name="bin.package.url.name" value="apache-flex-falconjx-${release.version}-bin" />
+    <property name="src.package.url.name" value="apache-flex-royalejx-${release.version}-src" />
+    <property name="bin.package.url.name" value="apache-flex-royalejx-${release.version}-bin" />
 	
     <condition property="zip.package">
         <equals arg1="zip" arg2="${package.suffix}" />
@@ -189,7 +189,7 @@
         <delete file="jars.txt" />
         <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
          to skip in the rat-check of the binaries and which jars to examine before approval -->
-        <property name="jars-list" value="compiler/lib/compc.jar,compiler/lib/compiler.jar,compiler/lib/falcon-asc.jar,compiler/lib/falcon-compc.jar,compiler/lib/falcon-mxmlc.jar,compiler/lib/falcon-optimizer.jar,compiler/lib/falcon-swfdump.jar,compiler/lib/fdb.jar,compiler/lib/flex-compiler-oem.jar,js/lib/asdoc.jar,js/lib/falcon-flexTasks.jar,js/lib/compc.jar,js/lib/externc.jar,js/lib/jsc.jar,js/lib/mxmlc.jar"/>
+        <property name="jars-list" value="compiler/lib/compc.jar,compiler/lib/compiler.jar,compiler/lib/compiler-asc.jar,compiler/lib/compiler-compc.jar,compiler/lib/compiler-mxmlc.jar,compiler/lib/compiler-optimizer.jar,compiler/lib/compiler-swfdump.jar,compiler/lib/fdb.jar,compiler/lib/flex-compiler-oem.jar,js/lib/asdoc.jar,js/lib/royale-flexTasks.jar,js/lib/compc.jar,js/lib/externc.jar,js/lib/jsc.jar,js/lib/mxmlc.jar"/>
         <echo file="${basedir}/jars.txt" message="${jars-list}"/>
         <echo file="${basedir}/jarexcludes.txt" message="${jars-list}"/>
         <replaceregexp file="${basedir}/jarexcludes.txt" match="," flags="g" replace="${line.separator}" />
@@ -296,7 +296,7 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
-                <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="**/org.apache.royale.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
@@ -368,7 +368,7 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
-                <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="**/org.apache.royale.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
@@ -405,7 +405,7 @@
     <target name="examine-jars" if="isMac">
         <!-- comma delimited list, no spaces, not one file per line -->
         <copy file="jars.txt" tofile="loop.txt" />
-        <ant antfile="ApproveFalcon.xml" target="loopOnce" inheritAll="false" />
+        <ant antfile="ApproveRoyale.xml" target="loopOnce" inheritAll="false" />
     </target>
     <target name="loopOnce" >
         <!-- make a copy of the list so we can munge it to
@@ -427,7 +427,7 @@
         <loadfile srcFile="loop1.txt" property="thisFile" />
         <antcall target="jar-check" />
         <replaceregexp file="loop.txt" match="^(.*),(.*)" replace="\1" />
-        <ant antfile="ApproveFalcon.xml" target="loopOnce" inheritAll="false"/>
+        <ant antfile="ApproveRoyale.xml" target="loopOnce" inheritAll="false"/>
     </target>
     <target name="lastone" if="islast">
         <loadfile srcFile="loop1.txt" property="thisFile" />

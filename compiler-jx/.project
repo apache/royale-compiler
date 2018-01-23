@@ -15,25 +15,7 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>COMPILER_BUILD_TOOLS</name>
-			<type>2</type>
-			<locationURI>COMPILER_BUILD_TOOLS</locationURI>
-		</link>
-		<link>
-			<name>COMPILER_TEST_UTILS</name>
-			<type>2</type>
-			<locationURI>COMPILER_TEST_UTILS</locationURI>
-		</link>
 	</linkedResources>
 	<variableList>
-		<variable>
-			<name>COMPILER_BUILD_TOOLS</name>
-			<value>file:/Users/aharui/git/flex/master/flex-falcon/compiler-build-tools/src/main/java</value>
-		</variable>
-		<variable>
-			<name>COMPILER_TEST_UTILS</name>
-			<value>file:/Users/aharui/git/flex/master/flex-falcon/compiler-test-utils/src/main/java</value>
-		</variable>
 	</variableList>
 </projectDescription>
