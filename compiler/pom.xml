@@ -562,7 +562,6 @@
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
       <version>0.9.1-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
