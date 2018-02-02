@@ -1032,6 +1032,37 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 			e.printStackTrace();
 		}
 		
+	    final File listFile = new File(outputFolder, "classlist.json");
+	    out = new FileWriter(listFile);
+		out.write("{  \"classnames\": [");
+	    System.out.println("Compiling file: " + listFile);
+    	firstLine = true;
+    	
+    	for (String key : keyList)
+    	{
+    		if (!firstLine)
+    			out.write(",\n");
+    		firstLine = false;
+        	RoyaleASDocProject.ASDocRecord record = project.classes.get(key);
+        	out.write("\"");
+        	out.write(key);
+        	out.write("\"");
+    	}
+    	
+		out.write("]}");
+        try {
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (commentaryList.size() > 0) {    	
 			final File commentaryFile = new File(outputFolder, "commentary.json");
 			FileWriter commentaryWriter = new FileWriter(commentaryFile);
