@@ -4833,7 +4833,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             inDecl = true;
             context = context.parentContext;    // up-level to parent context's properties list
             context.startUsing(IL.PROPERTIES);
-            context.addInstruction(OP_pushstring, node.getID());
+            String id = node.getID();
+            if (id == null)
+            	id = node.getClassName();
+            assert (id != null) : "id should never be null, as always added";
+        	context.addInstruction(OP_pushstring, id);
         }
         // Resolve the outer document, and if it doesn't resolve to the contingent
         // definition, that means there is already an existing definition declared
