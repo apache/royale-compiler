@@ -473,6 +473,9 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
         writeNewline("\",");
+        write("  \"return\": \"");
+        write(formatQualifiedName(node.getVariableTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
+        writeNewline("\",");
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
         if (asDoc != null)
