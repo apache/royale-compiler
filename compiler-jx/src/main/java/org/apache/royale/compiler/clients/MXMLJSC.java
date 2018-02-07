@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
@@ -44,6 +45,7 @@ import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.config.ICompilerProblemSettings;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
@@ -289,7 +291,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 if (printProblems)
                 {
                     final WorkspaceProblemFormatter formatter = new WorkspaceProblemFormatter(
-                            workspace);
+                            workspace, createProblemCategorizer());
                     final ProblemPrinter printer = new ProblemPrinter(formatter);
                     printer.printProblems(problems);
                 }
@@ -982,6 +984,25 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         return code == ExitCode.FAILED_WITH_ERRORS.getCode() ||
                code == ExitCode.FAILED_WITH_EXCEPTIONS.getCode() ||
                code == ExitCode.FAILED_WITH_CONFIG_PROBLEMS.getCode();
+    }
+
+    /**
+     * Set up any user defines customization of the problem severities.
+     * 
+     */
+    private CompilerProblemCategorizer createProblemCategorizer()
+    {
+        ICompilerProblemSettings problemSettings = null;
+        try
+        {
+            problemSettings = projectConfigurator.getCompilerProblemSettings();
+        }
+        catch (Exception e)
+        {
+            // Create a categorizer that will only use default settings.
+        }
+
+        return new CompilerProblemCategorizer(problemSettings);
     }
 
 }
