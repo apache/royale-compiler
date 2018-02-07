@@ -1,3 +1,11 @@
+Apache Royale Compiler 0.9.1
+=================
+
+Fixed Issues:
+
+#21: Different results for failed compilation between JS and SWF compilation
+
+
 Apache Royale Compiler 0.9.0
 =================
 Apache Royale Compiler 0.9.0 is the first release of a next-generation
