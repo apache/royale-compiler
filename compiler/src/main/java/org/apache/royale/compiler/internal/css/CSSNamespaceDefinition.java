@@ -43,7 +43,9 @@ public class CSSNamespaceDefinition extends CSSNodeBase implements ICSSNamespace
     {
         super(tree, tokenStream, CSSModelTreeType.NAMESPACE_DEFINITION);
         assert uri != null : "@namespace URI can't be null.";
-        assert CSSStringPropertyValue.isQuoted(uri) : "Do not strip namespace quotes in parser.";
+        if (!uri.equals("<missing STRING>")) {
+            assert CSSStringPropertyValue.isQuoted(uri) : "Do not strip namespace quotes in parser.";
+        }
 
         this.prefix = prefix;
         this.uri = CSSStringPropertyValue.stripQuotes(uri);

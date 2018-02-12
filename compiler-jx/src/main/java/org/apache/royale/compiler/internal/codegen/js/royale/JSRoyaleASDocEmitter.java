@@ -34,6 +34,7 @@ import org.apache.royale.compiler.asdoc.IASDocTag;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleASDocEmitter;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
+import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -388,7 +389,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     	else
             writeNewline("  \"access\": \"read-only\",");
         write("  \"return\": \"");
-        write(formatQualifiedName(node.getReturnType()));
+        write(formatQualifiedName(node.getReturnTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
         writeNewline("\",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc == null || asDoc.commentNoEnd().contains("@private"))
@@ -434,7 +435,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     	else
             writeNewline("  \"access\": \"write-only\",");
         write("  \"return\": \"");
-        write(formatQualifiedName(node.getParameterNodes()[0].getQualifiedName()));
+        write(formatQualifiedName(node.getParameterNodes()[0].getVariableTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
         writeNewline("\",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc == null || asDoc.commentNoEnd().contains("@private"))
@@ -471,6 +472,9 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         writeNewline("{ \"type\": \"field\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
+        writeNewline("\",");
+        write("  \"return\": \"");
+        write(formatQualifiedName(node.getVariableTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
         writeNewline("\",");
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
@@ -583,7 +587,10 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
             writeNewline(",");
         }
         write("  \"return\": \"");
-        write(formatQualifiedName(node.getReturnType()));
+        if (node.getReturnType().equals("void"))
+        	write("void");
+        else if (node.getReturnTypeNode() != null)
+        	write(formatQualifiedName(node.getReturnTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
         writeNewline("\",");
         write("  \"params\": [");
         boolean firstParam = true;
@@ -596,7 +603,9 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     		write("{ \"name\": \"");
     		write(param.getBaseName());
     		write("\", \"type\": \"");
-            write(formatQualifiedName(param.getTypeAsDisplayString()));
+    		if (param.getTypeReference() != null)
+    			write(formatQualifiedName(param.getTypeReference().resolve(getWalker().getProject(), 
+    					node.getContainingScope().getScope(), DependencyType.SIGNATURE, false).getQualifiedName()));
             write("\"}");    		
     	}
     	write("]");
@@ -1016,6 +1025,37 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 	        	out.write("\"");
             }
         	out.write("}");
+    	}
+    	
+		out.write("]}");
+        try {
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	    final File listFile = new File(outputFolder, "classlist.json");
+	    out = new FileWriter(listFile);
+		out.write("{  \"classnames\": [");
+	    System.out.println("Compiling file: " + listFile);
+    	firstLine = true;
+    	
+    	for (String key : keyList)
+    	{
+    		if (!firstLine)
+    			out.write(",\n");
+    		firstLine = false;
+        	RoyaleASDocProject.ASDocRecord record = project.classes.get(key);
+        	out.write("\"");
+        	out.write(key);
+        	out.write("\"");
     	}
     	
 		out.write("]}");
