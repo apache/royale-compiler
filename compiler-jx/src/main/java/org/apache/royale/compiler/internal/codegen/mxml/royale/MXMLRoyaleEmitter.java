@@ -316,6 +316,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            		String alias = aliases.get(className);
 		            		aliasInject += "\"" + alias + "\"";
 		            		firstOne = false;
+		                    StringBuilder appendString = new StringBuilder();
+		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(className);
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+	                        finalLines.add(endRequires, appendString.toString());
+	                        addLineToMappings(endRequires);
+                            endRequires++;
 		            	}
 		            	aliasInject += "}";
 		            	infoInject += aliasInject;
