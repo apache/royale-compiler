@@ -681,9 +681,9 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         	INamespaceReference nsRef = def.getNamespaceReference();
         	write("\"" + nsRef.getBaseName() + "\"");
         }
+    	writeNewline(",");
         if (def.isBindable())
         {
-        	writeNewline(",");
         	List<String> events = def.getBindableEventNames();
             write("  \"bindable\": [");
             boolean firstEvent = true;
@@ -696,26 +696,32 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
             }
             write("]");
         }
+        else
+            write("  \"bindable\": []");
+    	writeNewline(",");
+        write("  \"details\": [");
+        String sep = "";
         if (def.isOverride())
         {
-        	writeNewline(",");
-            write("  \"override\": true");
+            write(sep + "\"override\"");
+            sep = ",";
         }
         if (def.isStatic())
         {
-        	writeNewline(",");
-            write("  \"static\": true");
+            write(sep + "\"static\"");
+            sep = ",";
         }
         if (def.isDynamic())
         {
-        	writeNewline(",");
-            write("  \"dynamic\": true");
+            write(sep + "\"dynamic\"");
+            sep = ",";
         }
         if (def.isFinal())
         {
-        	writeNewline(",");
-            write("  \"final\": true");
+            write(sep + "\"final\"");
         }
+        write("]");
+    	writeNewline(",");
         if (def.isDeprecated())
         {
         	writeNewline(",");
@@ -731,6 +737,10 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
             write("  \"since\":  \"");
             write(dep.getSince());
             writeNewline("\"}");
+        }
+        else
+        {
+            write("  \"deprecated\": {}");
         }
     }
     
