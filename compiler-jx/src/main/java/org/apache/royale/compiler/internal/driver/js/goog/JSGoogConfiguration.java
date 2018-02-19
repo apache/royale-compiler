@@ -246,7 +246,7 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'remove-circulars'
     //
 
-    private boolean removeCirculars = false;
+    private boolean removeCirculars = true;
 
     public boolean getRemoveCirculars()
     {
