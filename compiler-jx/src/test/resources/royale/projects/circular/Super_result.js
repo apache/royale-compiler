@@ -21,6 +21,7 @@
 
 goog.provide('Super');
 
+goog.require('Base');
 
 
 

@@ -24,6 +24,8 @@ goog.provide('controllers.MyController');
 goog.require('MyInitialView');
 goog.require('RoyaleTest_again');
 goog.require('models.MyModel');
+goog.require('org.apache.royale.core.Application');
+goog.require('org.apache.royale.events.Event');
 goog.require('org.apache.royale.core.IDocument');
 goog.require('org.apache.royale.utils.Language');
 
