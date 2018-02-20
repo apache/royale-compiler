@@ -45,6 +45,7 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     IGNORE_COERCION("@royaleignorecoercion"),
     IGNORE_IMPORT("@royaleignoreimport"),
     IGNORE_STRING_COERCION("@royalenoimplicitstringconversion"),
+    SUPPRESS_PUBLIC_VAR_WARNING("@royalesuppresspublicvarwarning"),
     PREINCREMENT("preincrement"),
     PREDECREMENT("predecrement"),
     POSTINCREMENT("postincrement"),
