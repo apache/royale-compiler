@@ -500,6 +500,28 @@ public class Configuration
         this.sizeReportFileName = getOutputPath(cv, filename);
     }
 
+    // 'api-report' option
+    //
+
+    private String apiReportFileName = null;
+
+    public File getApiReport()
+    {
+        return apiReportFileName != null ? new File(apiReportFileName) : null;
+    }
+
+    /**
+     * Prints api usage information to the specified output file. This file is an text file that contains every method and property
+     * resolved by the compiler.
+     */
+    @Config(advanced = true)
+    @Mapping("api-report")
+    @Arguments("filename")
+    public void setApiReport(ConfigurationValue cv, String filename)
+    {
+        this.apiReportFileName = getOutputPath(cv, filename);
+    }
+
     //
     // 'load-externs' option
     //

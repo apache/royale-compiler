@@ -503,6 +503,7 @@ public class MXMLC implements FlexTool
             // Get the configuration and configBuffer which are now initialized.
             config = projectConfigurator.getConfiguration();
             Messages.setLocale(config.getToolsLocale());
+            project.apiReportFile = config.getApiReport();
             configBuffer = projectConfigurator.getConfigurationBuffer();
             problems.addAll(projectConfigurator.getConfigurationProblems());
 
@@ -649,7 +650,7 @@ public class MXMLC implements FlexTool
             swfOutputMessage = Messages.getString("MXMLC.bytes_written_to_file_in_seconds_format",
                     params);
             dumpDependencyGraphIfNeeded();
-
+            project.generateAPIReport();
             compilationSuccess = true;
         }
         catch (IOException e)

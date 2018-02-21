@@ -418,6 +418,45 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             }
         }
 
+        if (((RoyaleProject)project).apiReportFile != null)
+        {
+        	if (isMemberRef())
+        	{
+        		// if member ref, try to resolve the left side, because otherwise the parent definition
+        		// will be the class that defined this property like ListCollectionView.sort instead
+        		// of the subclass the developer was using on, like ArrayCollection.  We want to log
+        		// ArrayCollection.sort in case we don't need to implement full class hierarchy.
+        		// A Royale ArrayCollection might not have to subclass ListCollectionView
+        		if (parent.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+        		{
+        			MemberAccessExpressionNode mae = (MemberAccessExpressionNode)parent;
+        			if (mae.getRightOperandNode() == this && mae.getLeftOperandNode().getNodeID() == ASTNodeID.IdentifierID)
+        			{
+        				// if the member access expression left side is not an identifier
+        				IDefinition parentDef = mae.getLeftOperandNode().resolveType(project);
+        				if (parentDef instanceof IClassDefinition)
+        				{
+        	        		((RoyaleProject)project).addToAPIReport((IClassDefinition)parentDef, result);        					
+        				}
+        				else
+        				{
+        	        		((RoyaleProject)project).addToAPIReport(result);        					
+        				}
+        			}
+        			else
+    				{
+    	        		((RoyaleProject)project).addToAPIReport(result);        					
+    				}
+        		}
+    			else
+				{
+	        		((RoyaleProject)project).addToAPIReport(result);        					
+				}
+        	}
+        	else
+        		((RoyaleProject)project).addToAPIReport(result);
+        }
+        
         return result;
     }
 
