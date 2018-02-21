@@ -418,7 +418,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             }
         }
 
-        if (((RoyaleProject)project).apiReportFile != null)
+        if (project instanceof RoyaleProject && ((RoyaleProject)project).apiReportFile != null)
         {
         	if (isMemberRef())
         	{
