@@ -51,6 +51,8 @@ import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 {
@@ -427,7 +429,15 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
         	RoyaleJSProject fjp =  (RoyaleJSProject)project;
             boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars();
-            if (warnPublicVars && !node.isConst() && !def.isBindable())
+            IMetaTagsNode meta = node.getMetaTags();
+            boolean bindable = false;
+            if (meta != null)
+            {
+            	IMetaTagNode tag = meta.getTagByName("Bindable");
+            	if (tag != null)
+            		bindable = true;
+            }
+            if (warnPublicVars && !node.isConst() && !(def.isBindable() || bindable))
             {
                 if (!suppressedWarning(node, fjp))
                 	fjp.getProblems().add(new PublicVarWarningProblem(node));
