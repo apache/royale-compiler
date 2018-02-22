@@ -181,8 +181,6 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         	String s = cssRuleToString(rule);
         	if (s.startsWith("@media -royale-swf"))
         		continue;
-        	if (s.startsWith(".global {"))
-        		s = s.replace(".global {", "* {");
             sb.append(s);
             sb.append("\n\n");
         }
