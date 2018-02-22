@@ -452,7 +452,7 @@ public class GoogDepsWriter {
             {
             	if (fi.suppressLine > 0)
             	{
-            		if (fi.suppressLine < fi.constructorLine) 
+            		if (fi.suppressLine < fi.constructorLine || fi.constructorLine == -1) 
             		{
                 		String line = finalLines.get(fi.suppressLine);
                 		int c = line.indexOf("@suppress {");
