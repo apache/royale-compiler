@@ -37,8 +37,14 @@ interfaces.IA = function() {
  * Prevent renaming of class. Needed for reflection.
  */
 goog.exportSymbol('interfaces.IA', interfaces.IA);
+/**
+ * @return {classes.B}
+ */
 interfaces.IA.prototype.someFunction = function() {
 };
+/**
+ * @return {interfaces.IB}
+ */
 interfaces.IA.prototype.someOtherFunction = function() {
 };
 
