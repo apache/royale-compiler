@@ -128,8 +128,12 @@ public class AsIsEmitter extends JSSubEmitter
             	{
             		write(" /** @type {Function} */ (");
             	}
+            	else if (dnode.getQualifiedName().equals(IASLanguageConstants.Class))
+            	{
+            		write(" /** @type {Object|null} */ (");
+            	}
                 getWalker().walk(left);
-            	if (dnode.getQualifiedName().equals(IASLanguageConstants.Function))
+            	if (dnode.getQualifiedName().equals(IASLanguageConstants.Function) || dnode.getQualifiedName().equals(IASLanguageConstants.Class))
             	{
             		write(")");
             	}
