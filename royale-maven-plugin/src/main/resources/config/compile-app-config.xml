@@ -178,6 +178,8 @@
 
     <!-- List of CSS or SWC files to apply as a theme. -->
     <theme>
+        #foreach($theme in $themeLibraries)      <filename>$theme.file</filename>
+        #end
     </theme>
 
     <!-- Turns on the display of stack traces for uncaught runtime errors. -->
