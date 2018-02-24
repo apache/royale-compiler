@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
@@ -211,7 +212,16 @@ public class ASDOCJSC extends MXMLJSCRoyale
                     if (errors.size() > 0)
                         return false;
                 }
-
+                
+            	Map<String, String> defs = config.getCompilerDefine();
+            	String swf = defs.get("COMPILE::SWF");
+            	if (swf != null)
+            	{
+		        	if (swf.equals("true"))
+		        		middle = ".swf";
+		        	else
+		        		middle = ".js";
+            	}
                 String outputFolderName = getOutputFilePath();
 
                 File outputFolder = null;
@@ -359,6 +369,8 @@ public class ASDOCJSC extends MXMLJSCRoyale
         }
     }
 
+    String middle = "";
+    
     /**
      * Get the output class file. This includes the (sub)directory in which the
      * original class file lives. If the directory structure doesn't exist, it
@@ -387,7 +399,7 @@ public class ASDOCJSC extends MXMLJSCRoyale
             qname = cname[cname.length - 1];
         }
 
-        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
+        return new File(sdirPath + qname + middle + "." + project.getBackend().getOutputExtension());
     }
 
     /**

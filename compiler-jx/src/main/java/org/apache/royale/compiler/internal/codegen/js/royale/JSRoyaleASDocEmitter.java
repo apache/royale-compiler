@@ -795,10 +795,25 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     		return description.substring(0, c + 1);
     	return description;
     }
+    
+    private String getMiddle(RoyaleASDocProject project)
+    {
+    	Map<String, String> defs = project.config.getCompilerDefine();
+    	String swf = defs.get("COMPILE::SWF");
+    	String middle = "";
+    	if (swf != null)
+    	{
+        	if (swf.equals("true"))
+        		middle = ".swf";
+        	else
+        		middle = ".js";
+    	}
+    	return middle;
+    }
 
     public void outputIndex(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	    final File indexFile = new File(outputFolder, "index.json");
+	    final File indexFile = new File(outputFolder, "index" + getMiddle(project) + ".json");
 	    FileWriter out = new FileWriter(indexFile);
 		out.write("{  \"index\": [");
 	    System.out.println("Compiling file: " + indexFile);
@@ -991,7 +1006,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 
     public void outputClasses(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	    final File indexFile = new File(outputFolder, "classes.json");
+	    final File indexFile = new File(outputFolder, "classes" + getMiddle(project) + ".json");
 	    FileWriter out = new FileWriter(indexFile);
 		out.write("{  \"classes\": [");
 	    System.out.println("Compiling file: " + indexFile);
@@ -1051,7 +1066,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 			e.printStackTrace();
 		}
 		
-	    final File listFile = new File(outputFolder, "classlist.json");
+	    final File listFile = new File(outputFolder, "classlist" + getMiddle(project) + ".json");
 	    out = new FileWriter(listFile);
 		out.write("{  \"classnames\": [");
 	    System.out.println("Compiling file: " + listFile);
@@ -1083,7 +1098,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 		}
 		
 		if (commentaryList.size() > 0) {    	
-			final File commentaryFile = new File(outputFolder, "commentary.json");
+			final File commentaryFile = new File(outputFolder, "commentary" + getMiddle(project) + ".json");
 			FileWriter commentaryWriter = new FileWriter(commentaryFile);
 			commentaryWriter.write("{ \"list\": [");
 			System.out.println("Building commentary comparison file: "+commentaryFile);
@@ -1117,7 +1132,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     
     public void outputTags(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	    final File indexFile = new File(outputFolder, "tags.json");
+	    final File indexFile = new File(outputFolder, "tags" + getMiddle(project) + ".json");
 	    FileWriter out = new FileWriter(indexFile);
 		out.write("{  \"tags\": [");
 	    System.out.println("Compiling file: " + indexFile);
