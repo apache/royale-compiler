@@ -29,7 +29,9 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
 import org.apache.royale.compiler.internal.css.CSSArrayPropertyValue;
@@ -43,6 +45,7 @@ import org.apache.royale.compiler.internal.targets.ITargetAttributes;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.ISWCManager;
 
 import java.io.*;
 import java.net.URL;
@@ -57,6 +60,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     public static final String ROYALE_RELEASE_DIR_NAME = "js-release";
 
     private static final String ROYALE_EXTERNS = "externs";
+    private static final String ROYALE_THEME_ASSETS = "assets/";
 
     class DependencyRecord
     {
@@ -184,13 +188,46 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         File imageSrcDir = new File(configuration.getTargetFile()).getAbsoluteFile().getParentFile();
         // FIXME: All images need to be located relative to the Main class ... for Maven this is a problem.
         FileUtils.copyDirectory(imageSrcDir, intermediateDir, resourceFilter);
+        
+        // Iterate over all themes SWCs and add the contents of any included files in
+        // an assets folder to an assets folder in the destination folder.
+        final ISWCManager swcManager = project.getWorkspace().getSWCManager();
+        List<IFileSpecification> themes = project.getThemeFiles();
+        for (final IFileSpecification themeFile : themes)
+        {
+            final String extension = FilenameUtils.getExtension(themeFile.getPath());
+            if ("swc".equalsIgnoreCase(extension))
+            {
+                final ISWC swc = swcManager.get(new File(themeFile.getPath()));
+	            Map<String, ISWCFileEntry> files = swc.getFiles();
+	            for (String key : files.keySet())
+	            {
+	                if (key.startsWith(ROYALE_THEME_ASSETS))
+	                {
+	                    ISWCFileEntry fileEntry = swc.getFile(key);
+	                    if (fileEntry != null)
+	                    {
+	                        InputStream is = fileEntry.createInputStream();
+	                        int n = is.available();
+	                        int total = 0;
+                        	byte[] data = new byte[n];
+	                        while (total < n)
+	                        {
+	                        	total += is.read(data, total, n - total);
+	                        }
+	                        FileUtils.writeByteArrayToFile(new File(intermediateDir, key), data);
+	                    }
+	                }
+	            }
+	        }
+        }
+        
         // If we are doing a release build, we need to copy them to the release dir too.
         if (configuration.release()) {
             FileUtils.copyDirectory(imageSrcDir, releaseDir, resourceFilter);
             // The copy-directory contains a lot of empty directories ... clean them up.
             clearEmptyDirectoryTrees(releaseDir);
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////
         // Copy / Dump the closure files into the intermediate directory.
