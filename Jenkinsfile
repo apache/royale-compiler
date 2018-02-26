@@ -87,7 +87,7 @@ node('windows-2012-1') {
                 echo 'Building Royale Framework'
                 // It seems the distribution needs a little more perm-gen space.
                 withEnv(["MAVEN_OPTS=-XX:MaxPermSize=256m"]) {
-                    bat "mvn -U -X clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e -Dhttps.protocols=TLSv1.2"
+                    bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e -Dhttps.protocols=TLSv1.2"
                 }
             }
 
