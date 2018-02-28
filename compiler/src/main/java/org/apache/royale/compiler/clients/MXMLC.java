@@ -628,6 +628,7 @@ public class MXMLC implements FlexTool
                 dumpAST();
 
             buildArtifact();
+            project.generateAPIReport();
 
             if (swfTarget == null)
                 return false;
@@ -650,7 +651,6 @@ public class MXMLC implements FlexTool
             swfOutputMessage = Messages.getString("MXMLC.bytes_written_to_file_in_seconds_format",
                     params);
             dumpDependencyGraphIfNeeded();
-            project.generateAPIReport();
             compilationSuccess = true;
         }
         catch (IOException e)
