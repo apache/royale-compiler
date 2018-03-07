@@ -6702,54 +6702,7 @@ public class ABCGeneratingReducer
 
     public InstructionList transform_name_to_expression(IASNode iNode, Binding name)
     {
-    	// hack to allow override as a separate keyword in a conditional compile block.
-    	// the AST thinks it is a property on the class named override.
-    	// This allows less coding when in SWF the base class has a method that needs
-    	// overriding but the JS base class does not.  Instead of writing
-    	// COMPILE::SWF
-    	// override public function foo() {
-    	//   method body
-    	// }
-    	// COMPILE::JS
-    	// public function foo() {
-    	//   an exact copy of method body
-    	// }
-    	// we want to allow:
-    	// COMPILE::SWF { override }
-        // public function foo() {
-    	//   method body
-    	// }
-    	if (iNode.getNodeID() == ASTNodeID.IdentifierID)
-    	{
-    		IdentifierNode node = (IdentifierNode)iNode;
-    		if (node.getName().equals("override"))
-    		{
-    			IASNode parent = node.getParent();
-    			if (parent.getNodeID() == ASTNodeID.ConfigBlockID)
-    			{
-    				IASNode parentOfMethods = parent.getParent();
-    				int functionCount = parentOfMethods.getChildCount();
-    				for (int i = 0; i < functionCount; i++)
-    				{
-    					IASNode child = parentOfMethods.getChild(i);
-    					if (child == parent)
-    					{
-    						// examine the next node
-    						child = parentOfMethods.getChild(i + 1);
-    						if (child instanceof IFunctionNode)
-    						{
-    							// convince the compiler that this is now an override
-    							IFunctionNode fnode = (IFunctionNode)child;
-    							FunctionDefinition fdef = (FunctionDefinition)fnode.getDefinition();
-    							fdef.setOverride();
-    							// return no instructions
-    							return new InstructionList();
-    						}    						
-    					}
-    				}
-    			}
-    		}
-    	}
+
         return generateAccess(name, determineAccessType(iNode));
     }
 

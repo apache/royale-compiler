@@ -23,8 +23,11 @@ import java.util.Collection;
 
 
 
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.ImportNode;
 import org.apache.royale.compiler.internal.tree.as.InterfaceNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
@@ -37,7 +40,9 @@ import static org.apache.royale.abc.ABCConstants.TRAIT_Setter;
 import org.apache.royale.compiler.problems.BURMDiagnosticNotAllowedHereProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 
 
@@ -237,6 +242,53 @@ class DirectiveProcessor
                 processConfigBlock(n);
                 break;
             default:
+            	// hack to allow override as a separate keyword in a conditional compile block.
+            	// the AST thinks it is a property on the class named override.
+            	// This allows less coding when in SWF the base class has a method that needs
+            	// overriding but the JS base class does not.  Instead of writing
+            	// COMPILE::SWF
+            	// override public function foo() {
+            	//   method body
+            	// }
+            	// COMPILE::JS
+            	// public function foo() {
+            	//   an exact copy of method body
+            	// }
+            	// we want to allow:
+            	// COMPILE::SWF { override }
+                // public function foo() {
+            	//   method body
+            	// }
+            	if (n.getNodeID() == ASTNodeID.IdentifierID)
+            	{
+            		IdentifierNode node = (IdentifierNode)n;
+            		if (node.getName().equals("override"))
+            		{
+            			IASNode parent = node.getParent();
+            			if (parent.getNodeID() == ASTNodeID.ConfigBlockID)
+            			{
+            				IASNode parentOfMethods = parent.getParent();
+            				int functionCount = parentOfMethods.getChildCount();
+            				for (int i = 0; i < functionCount; i++)
+            				{
+            					IASNode child = parentOfMethods.getChild(i);
+            					if (child == parent)
+            					{
+            						// examine the next node
+            						child = parentOfMethods.getChild(i + 1);
+            						if (child instanceof IFunctionNode)
+            						{
+            							// convince the compiler that this is now an override
+            							IFunctionNode fnode = (IFunctionNode)child;
+            							FunctionDefinition fdef = (FunctionDefinition)fnode.getDefinition();
+            							fdef.setOverride();
+            							return;
+            						}    						
+            					}
+            				}
+            			}
+            		}
+            	}
                 processDirective(n);
         }
     }
