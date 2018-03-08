@@ -334,7 +334,7 @@ public class RoyaleProjectConfigurator extends Configurator
     
     protected void setupConfigVariables(IRoyaleProject project)
     {
-        final Map<String, String> compilerDefine = configuration.getCompilerDefine();
+        final Map<String, String> compilerDefine = project.getCompilerDefine(configuration);
         if (compilerDefine != null)
             project.setDefineDirectives(compilerDefine);
     }

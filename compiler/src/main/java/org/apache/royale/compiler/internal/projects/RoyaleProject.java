@@ -2378,6 +2378,15 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	return config.getCompilerNamespacesManifestMappings();
     }
 
+    /**
+     * List of compiler defines so it can be overridden
+     */
+    public Map<String,String> getCompilerDefine(Configuration config)
+    {
+    	Map<String,String> list = config.getCompilerDefine();
+        return list;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;

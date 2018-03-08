@@ -45,11 +45,13 @@ import org.apache.royale.compiler.internal.tree.as.ConfigExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.ConfigNamespaceNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CannotResolveConfigExpressionProblem;
 import org.apache.royale.compiler.problems.CannotResolveProjectLevelConfigExpressionProblem;
 import org.apache.royale.compiler.problems.ConflictingNameInNamespaceProblem;
@@ -58,7 +60,9 @@ import org.apache.royale.compiler.problems.InternalCompilerProblem2;
 import org.apache.royale.compiler.problems.NonConstantConfigInitProblem;
 import org.apache.royale.compiler.problems.UndefinedConfigNamespaceProblem;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -373,16 +377,24 @@ public class ConfigProcessor
             Object value = def.resolveValue(backingProject);
             if (value == ConfigConstNode.UNKNOWN_VALUE)
             {
-                // Get the real source node for the problem.
-                // If there isn't one, then don't make a problem - assume 
-                // someone else already found the cause and logged it.
-                IASNode problemLocationNode = node.getAssignedValueNode();
-                if (problemLocationNode != null)
+                if (def instanceof ConfigConstNode.ConfigDefinition)
                 {
-                    ICompilerProblem problem = new NonConstantConfigInitProblem(
-                            problemLocationNode);
-                    addProblem(problem);
-                }
+                	ConfigConstNode.ConfigDefinition cdef = (ConfigConstNode.ConfigDefinition)def;
+    	        	IExpressionNode initializer = cdef.getInitializer();
+    	        	if (initializer.getNodeID() != ASTNodeID.MemberAccessExpressionID)
+    	        	{
+    	                // Get the real source node for the problem.
+    	                // If there isn't one, then don't make a problem - assume 
+    	                // someone else already found the cause and logged it.
+    	                IASNode problemLocationNode = node.getAssignedValueNode();
+    	                if (problemLocationNode != null)
+    	                {
+    	                    ICompilerProblem problem = new NonConstantConfigInitProblem(
+    	                            problemLocationNode);
+    	                    addProblem(problem);
+    	                }
+    	        	}
+            	}
             }
         }
         // Check for redeclaration
@@ -423,6 +435,16 @@ public class ConfigProcessor
         Object result = node.resolveConfigValue(backingProject);
         if (result == null || result == ConfigConstNode.UNKNOWN_VALUE)
         {
+        	// try to allow simple memberaccessexpressions as well (a.b)
+            IDefinition definition = node.resolve(backingProject);
+            if (definition instanceof ConfigConstNode.ConfigDefinition)
+            {
+            	ConfigConstNode.ConfigDefinition def = (ConfigConstNode.ConfigDefinition)definition;
+	        	IExpressionNode initializer = def.getInitializer();
+	        	if (initializer.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	        		return initializer;
+        	}
+        	
             // If we can't get a value, log an error. If we are are processing System variables, then don't
             // use the problem type that requires a "site", as we don't know what it is
             ICompilerProblem problem = isFromProjectConfigVariables() ?
@@ -445,7 +467,7 @@ public class ConfigProcessor
     /**
      * turns a config expression into a synthesize LiteralNode
      */
-    protected LiteralNode evaluateConstNodeExpression(ConfigExpressionNode node)
+    protected IASNode evaluateConstNodeExpression(ConfigExpressionNode node)
     {
 
         final Object result = evaluateConstNodeExpressionToJavaObject(node);
@@ -476,6 +498,11 @@ public class ConfigProcessor
             LiteralNode literalNode = new LiteralNode(LiteralType.NULL, IASLanguageConstants.Null);
             literalNode.setSynthetic(true);
             return literalNode;
+        }
+        else if (result instanceof MemberAccessExpressionNode)
+        {
+        	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)result;
+        	return mae;
         }
         return null;
     }

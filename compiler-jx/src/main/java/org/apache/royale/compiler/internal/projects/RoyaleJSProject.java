@@ -463,4 +463,15 @@ public class RoyaleJSProject extends RoyaleProject
         }
         return false;
 	}
+	
+    /**
+     * List of compiler defines so it can be overridden
+     */
+	@Override
+    public Map<String,String> getCompilerDefine(Configuration config)
+    {
+    	Map<String,String> list = ((JSConfiguration)config).getJsCompilerDefine();
+        return list;
+    }
+
 }

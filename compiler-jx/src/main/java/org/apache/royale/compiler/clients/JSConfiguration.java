@@ -263,8 +263,7 @@ public class JSConfiguration extends Configuration
     /**
      * @return A list of ConfigVars
      */
-    @Override
-    public Map<String, String> getCompilerDefine()
+    public Map<String, String> getJsCompilerDefine()
     {
     	if (jsconfigVars != null)
     		return jsconfigVars;

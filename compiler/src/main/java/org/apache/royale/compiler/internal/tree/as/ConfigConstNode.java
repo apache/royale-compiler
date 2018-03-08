@@ -93,7 +93,7 @@ public class ConfigConstNode extends VariableNode
     /**
      * Internal implementation of ConstantDefinition that caches its value.
      */
-    private static class ConfigDefinition extends ConstantDefinition
+    public static class ConfigDefinition extends ConstantDefinition
     {
         /**
          * Constructor.

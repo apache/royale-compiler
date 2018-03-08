@@ -229,4 +229,8 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      */
     boolean isPlatformRule(ICSSRule rule);
 
+    /**
+     * List of defined variables so it can be overridden
+     */
+    Map<String, String> getCompilerDefine(Configuration config);
 }

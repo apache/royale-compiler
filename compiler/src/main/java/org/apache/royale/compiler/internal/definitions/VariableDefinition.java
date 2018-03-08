@@ -217,6 +217,10 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
         }
     }
 
+    public IExpressionNode getInitializer() {
+    	return initializer;
+	}
+    
     public void setInitializer(IExpressionNode initExpr)
     {
         if( initExpr != null )
