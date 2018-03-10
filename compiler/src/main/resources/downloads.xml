@@ -208,7 +208,7 @@
       <param name="dest.jarPath" value="${external.lib.dir}/${lzma.name}-sdk.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
-      <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
+      <param name="license.use.url" value="https://www.7-zip.org/sdk.html"/>
       <param name="license.cacheName" value="lzma-sdk-LICENSE.html"/>
     </antcall>
 
