@@ -55,7 +55,7 @@ public class CSSRgbaColorPropertyValue extends CSSPropertyValue
      * @param rgb definition - rgba(100, 0, 0)
      * @return int value bit color.
      */
-    protected static int getIntValue(String rgb)
+    protected static long getIntValue(String rgb)
     {        
         rgb = rgb.substring(5, rgb.length() - 1);
         
@@ -85,22 +85,22 @@ public class CSSRgbaColorPropertyValue extends CSSPropertyValue
                     Float alpha = Float.valueOf(t);
                     alpha *= 255;
                     digit = alpha.intValue();
-                    sb.append(Character.forDigit((digit >> 4) & 15, 16));
-                    sb.append(Character.forDigit(digit & 15, 16));
+                    sb.insert(0, Character.forDigit((digit >> 4) & 15, 16));
+                    sb.insert(1, Character.forDigit(digit & 15, 16));
                 }
             }            
         }
-        return Integer.parseInt( sb.substring(0, 6).toString(), 16 );
+        return Long.parseLong( sb.substring(0, 8), 16 );
     }
 
     private final Token token;
-    private final int colorInt;
+    private final long colorInt;
     private final String rawRgb;
  
     /**
      * @return Integer value bit color.
      */
-    public int getColorAsInt()
+    public long getColorAsLong()
     {
         return colorInt;
     }

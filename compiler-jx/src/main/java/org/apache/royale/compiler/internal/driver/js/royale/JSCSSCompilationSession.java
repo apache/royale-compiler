@@ -291,7 +291,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     else if (value instanceof CSSRgbaColorPropertyValue)
                     {
                         //todo: handle alpha in the RGBA ?
-                        result.append(new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+                        result.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
                     }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
@@ -346,10 +346,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     {
                         result.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
                     }
-                    else if (value instanceof CSSRgbaColorPropertyValue)
+                    else if (val instanceof CSSRgbaColorPropertyValue)
                     {
                         //todo: handle alpha in the RGBA ?
-                        result.append(new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+                        result.append(new Long(((CSSRgbaColorPropertyValue)val).getColorAsLong()));
                     }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
@@ -396,7 +396,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             else if (value instanceof CSSRgbaColorPropertyValue)
             {
                 //todo: handle alpha in the RGBA ?
-                result.append(new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+                result.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
             }
             else if (value instanceof CSSKeywordPropertyValue)
             {
