@@ -462,7 +462,7 @@ public class CSSReducer implements ICSSCodeGenResult
         }
         else if (value instanceof CSSRgbaColorPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushint, new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
+            valueInstructions.addInstruction(ABCConstants.OP_pushuint, new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
         }
         else if (value instanceof CSSKeywordPropertyValue)
         {
