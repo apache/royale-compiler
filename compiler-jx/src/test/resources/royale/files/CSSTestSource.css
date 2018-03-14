@@ -22,6 +22,11 @@
 @namespace basic "library://ns.apache.org/royale/basic";
 @namespace "http://www.w3.org/1999/xhtml";
 
+@font-face {
+    font-family: error;
+    src: url(helvetica_bold.woff);
+}
+
 /*
 //----------------------------
 // Named styles
