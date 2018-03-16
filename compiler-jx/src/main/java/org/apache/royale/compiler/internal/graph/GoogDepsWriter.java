@@ -131,10 +131,23 @@ public class GoogDepsWriter {
 			if (!isGoogClass(gd.className)) 
 			{
 				if (removeCirculars)
+				{
+					ArrayList <String> deps = new ArrayList<String>();
+					if (gd.fileInfo.impls != null)
+						deps.addAll(gd.fileInfo.impls);
+					if (gd.fileInfo.staticDeps != null)
+					{
+						for (String dep : gd.fileInfo.staticDeps)
+						{
+							if (!deps.contains(dep))
+								deps.add(dep);
+						}
+					}
 					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 						.append(gd.className).append("'], [")
-						.append((gd.fileInfo.impls != null) ? getDependencies(gd.fileInfo.impls) : "")
+						.append(getDependencies(deps))
 						.append("]);\n");
+				}
 				else
 					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 					.append(gd.className).append("'], [")
@@ -452,7 +465,7 @@ public class GoogDepsWriter {
             {
             	if (fi.suppressLine > 0)
             	{
-            		if (fi.suppressLine < fi.constructorLine) 
+            		if (fi.suppressLine < fi.constructorLine || fi.constructorLine == -1) 
             		{
                 		String line = finalLines.get(fi.suppressLine);
                 		int c = line.indexOf("@suppress {");

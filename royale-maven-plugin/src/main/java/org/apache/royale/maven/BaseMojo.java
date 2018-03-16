@@ -397,7 +397,7 @@ public abstract class BaseMojo
     private List<Artifact> internalGetLibraries(List<Artifact> artifacts) {
         List<Artifact> libraries = new LinkedList<Artifact>();
         for (Artifact artifact : artifacts) {
-            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()) || "theme".equalsIgnoreCase(artifact.getScope()))
                     && includeLibrary(artifact)) {
                 if(!"pom".equals(artifact.getType())) {
                     libraries.add(artifact);

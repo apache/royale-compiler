@@ -246,7 +246,7 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'remove-circulars'
     //
 
-    private boolean removeCirculars = false;
+    private boolean removeCirculars = true;
 
     public boolean getRemoveCirculars()
     {
@@ -422,6 +422,25 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     
+    //
+    // 'warn-public-vars'
+    //
+
+    private boolean warnPublicVars = true;
+
+    public boolean getWarnPublicVars()
+    {
+        return warnPublicVars;
+    }
+
+    @Config
+    @Mapping("warn-public-vars")
+    public void setWarnPublicVars(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	warnPublicVars = value;
+    }
+
     
 
 }

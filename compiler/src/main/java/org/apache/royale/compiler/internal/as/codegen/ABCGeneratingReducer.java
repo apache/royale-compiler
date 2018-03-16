@@ -71,6 +71,7 @@ import org.apache.royale.compiler.problems.UnknownBreakTargetProblem;
 import org.apache.royale.compiler.problems.UnknownContinueTargetProblem;
 import org.apache.royale.compiler.problems.VoidTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -6701,6 +6702,7 @@ public class ABCGeneratingReducer
 
     public InstructionList transform_name_to_expression(IASNode iNode, Binding name)
     {
+
         return generateAccess(name, determineAccessType(iNode));
     }
 

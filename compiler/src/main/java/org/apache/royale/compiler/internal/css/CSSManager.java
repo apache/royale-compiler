@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
@@ -46,6 +47,7 @@ import org.apache.royale.compiler.problems.CSSUnresolvedClassReferenceProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
 import org.apache.royale.swc.ISWCManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -258,6 +260,24 @@ public class CSSManager implements ICSSManager
                 // Ignore theme file without a defaults CSS.
                 if (css != null && css != CSSDocumentCache.EMPTY_CSS_DOCUMENT)
                     builder.add(css);
+                
+                if ("swc".equalsIgnoreCase(extension))
+                {
+                    final ISWC swc = swcManager.get(new File(themeFile.getPath()));
+                    // add other css files.
+                    Map<String, ISWCFileEntry> files = swc.getFiles();
+                    Set<String> fileNames = files.keySet();
+                    for (String fileName : fileNames)
+                    {
+                    	String suffix = FilenameUtils.getExtension(fileName);
+                    	if ("css".equalsIgnoreCase(suffix) && !fileName.contains("default"))
+                    	{
+                            final CacheStoreKeyBase key = CSSDocumentCache.createKey(swc, fileName);
+                            final ICSSDocument extracss = cssCache.get(key);
+                            builder.add(extracss);
+                    	}
+                    }
+                }
             }
             catch (CSSDocumentCache.ProblemParsingCSSRuntimeException cssError)
             {

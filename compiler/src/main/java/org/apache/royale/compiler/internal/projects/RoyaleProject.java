@@ -22,6 +22,8 @@ package org.apache.royale.compiler.internal.projects;
 import static com.google.common.collect.Lists.transform;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1349,7 +1351,11 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
                     }
                 }
                 if (winner != null)
+                {
+                	if (apiReportFile != null)
+                		addToAPIReport(classDefinition, winner);
                     return winner;
+                }
             }
         }
     
@@ -1372,7 +1378,11 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
             IClassDefinition c = classIterator.next();
             IEventDefinition eventDefinition = c.getEventDefinition(getWorkspace(), eventName);
             if (eventDefinition != null)
+            {
+            	if (apiReportFile != null)
+            		addToAPIReport(classDefinition, eventDefinition);
                 return eventDefinition;
+            }
         }
 
         return null;
@@ -1396,7 +1406,11 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
             IClassDefinition c = classIterator.next();
             IStyleDefinition styleDefinition = c.getStyleDefinition(w, styleName);
             if (styleDefinition != null)
+            {
+            	if (apiReportFile != null)
+            		addToAPIReport(classDefinition, styleDefinition);
                 return styleDefinition;
+            }
         }
 
         return null;
@@ -2364,9 +2378,91 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	return config.getCompilerNamespacesManifestMappings();
     }
 
+    /**
+     * List of compiler defines so it can be overridden
+     */
+    public Map<String,String> getCompilerDefine(Configuration config)
+    {
+    	Map<String,String> list = config.getCompilerDefine();
+        return list;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;
 	}
 
+	public File apiReportFile;
+	
+	HashMap<String, Integer> apiMap = new HashMap<String, Integer>();
+	
+	public void generateAPIReport() throws IOException
+	{
+		if (apiReportFile == null)
+			return;
+		
+		StringBuilder sb = new StringBuilder();
+		Set<String> keys = apiMap.keySet();
+		ArrayList<String> list = new ArrayList<String>();
+		list.addAll(keys);
+		Collections.sort(list);
+		for (String key : list)
+		{
+			sb.append(key);
+			sb.append(",");
+			sb.append(apiMap.get(key).toString());
+			sb.append("\n");
+		}
+		
+        if (!apiReportFile.exists()) {
+        	apiReportFile.createNewFile();
+        }
+
+        FileWriter fw = new FileWriter(apiReportFile, false);
+        fw.write(sb.toString());
+        fw.close();
+	}
+
+	public void addToAPIReport(IClassDefinition c, IDefinition def)
+	{
+		String cqname = c.getQualifiedName();
+		String qname = cqname + ":" + def.getQualifiedName();
+		if (!apiMap.containsKey(qname))
+		{
+			apiMap.put(qname, new Integer(1));
+			return;
+		}
+		else
+		{
+			Integer counter = apiMap.get(qname);
+			int newCounter = counter.intValue() + 1;
+			apiMap.put(qname, new Integer(newCounter));
+		}
+	}
+	
+	public void addToAPIReport(IDefinition def)
+	{
+		IDefinition parentDef = def.getParent();
+		if (parentDef instanceof IClassDefinition)
+			addToAPIReport((IClassDefinition)parentDef, def);
+		else if (parentDef instanceof IFunctionDefinition)
+		{
+			// do nothing, local variable?
+		}
+		else
+		{
+			String qname = def.getQualifiedName();
+			if (!apiMap.containsKey(qname))
+			{
+				apiMap.put(qname, new Integer(1));
+				return;
+			}
+			else
+			{
+				Integer counter = apiMap.get(qname);
+				int newCounter = counter.intValue() + 1;
+				apiMap.put(qname, new Integer(newCounter));
+			}
+		}
+	}
 }

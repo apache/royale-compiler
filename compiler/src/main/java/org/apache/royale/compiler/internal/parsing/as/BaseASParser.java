@@ -1032,7 +1032,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         return new IASNode[0];
     }
 
-    protected final LiteralNode evaluateConstNodeExpression(final ConfigExpressionNode node)
+    protected final IASNode evaluateConstNodeExpression(final ConfigExpressionNode node)
     {
         return configProcessor.evaluateConstNodeExpression(node);
     }
@@ -1511,7 +1511,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                     (NamespaceIdentifierNode)left,
                     (ASToken)op,
                     (IdentifierNode)right);
-            result = evaluateConstNodeExpression(cn);
+            result = (ExpressionNodeBase) evaluateConstNodeExpression(cn);
         }
         else
         {

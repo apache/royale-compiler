@@ -72,10 +72,10 @@ public class InterfaceEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SEMICOLON);
         }
 
+        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
+        .getDocEmitter();
   	    if (!getEmitter().getModel().isExterns)
   	    {
-  	        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
-  	        .getDocEmitter();
   		    writeNewline();
   		    writeNewline();
   		    writeNewline();
@@ -100,8 +100,9 @@ public class InterfaceEmitter extends JSSubEmitter implements
             boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID
                     || mnode.getNodeID() == ASTNodeID.SetterID;
 
+            String memberName = mnode.getQualifiedName();
             if (!isAccessor
-                    || !getModel().getInterfacePropertyMap().contains(qname))
+                    || !getModel().getInterfacePropertyMap().contains(memberName))
             {
                 writeNewline();
 
@@ -119,17 +120,21 @@ public class InterfaceEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.SPACE);
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
                 }
+                else
+                {
+                	doc.emitMethodDoc((IFunctionNode)mnode, project);
+                }
                 write(getEmitter().formatQualifiedName(qname));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.PROTOTYPE);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(mnode.getQualifiedName());
+                write(memberName);
 
                 if (isAccessor
                         && !getModel().getInterfacePropertyMap()
-                                .contains(qname))
+                                .contains(memberName))
                 {
-                    getModel().getInterfacePropertyMap().add(qname);
+                    getModel().getInterfacePropertyMap().add(memberName);
                 }
                 else
                 {

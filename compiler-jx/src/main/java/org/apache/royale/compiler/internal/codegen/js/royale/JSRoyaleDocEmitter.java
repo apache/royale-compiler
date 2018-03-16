@@ -41,13 +41,18 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterToken
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.problems.PublicVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
 public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 {
@@ -422,6 +427,21 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
         else
         {
+        	RoyaleJSProject fjp =  (RoyaleJSProject)project;
+            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars();
+            IMetaTagsNode meta = node.getMetaTags();
+            boolean bindable = false;
+            if (meta != null)
+            {
+            	IMetaTagNode tag = meta.getTagByName("Bindable");
+            	if (tag != null)
+            		bindable = true;
+            }
+            if (warnPublicVars && !node.isConst() && !bindable)
+            {
+                if (!suppressedWarning(node, fjp))
+                	fjp.getProblems().add(new PublicVarWarningProblem(node));
+            }
             emitPublic(node);
         }
 
@@ -442,6 +462,38 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
     	if (emitExports)
     		super.emitPublic(node);
+    }
+    
+    private boolean suppressedWarning(IVariableNode node, RoyaleJSProject fjp)
+    {
+    	boolean suppressed = false;
+        ASDocComment asDoc = (ASDocComment) node.getASDocComment();
+        boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
+        String suppressToken = JSRoyaleEmitterTokens.SUPPRESS_PUBLIC_VAR_WARNING
+        .getToken();
+        if (asDoc != null && keepASDoc)
+        {
+            String docText = asDoc.commentNoEnd();
+            if (docText.contains(suppressToken))
+                return true;
+        }
+    	IASNode classNode = node.getParent().getParent();
+    	if (classNode == null)
+    		return false;
+    	if (classNode.getNodeID() == ASTNodeID.ClassID)
+    	{
+    		asDoc = (ASDocComment) ((IClassNode)classNode).getASDocComment();
+            if (asDoc != null && keepASDoc)
+            {
+                String docText = asDoc.commentNoEnd();
+                if (docText.contains(suppressToken))
+                    return true;
+            }
+            IClassDefinition cdef = ((IClassNode)classNode).getDefinition();
+            if (cdef.isBindable())
+            	return true;
+    	}
+    	return false;
     }
 
 }

@@ -28,7 +28,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.1</version>
+  <version>0.9.2</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -38,7 +38,7 @@
     <connection>scm:git:git@github.com:apache/royale-compiler.git</connection>
     <developerConnection>scm:git:git@github.com:apache/royale-compiler.git</developerConnection>
     <url>scm:git:git@github.com:apache/royale-compiler.git</url>
-    <tag>org.apache.royale.compiler-0.9.1-rc1</tag>
+    <tag>org.apache.royale.compiler-0.9.2-rc2</tag>
   </scm>
 
   <properties>

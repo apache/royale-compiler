@@ -110,6 +110,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private IClassDefinition classDefinition;
     private IClassDefinition documentDefinition;
     private ArrayList<String> usedNames = new ArrayList<String>();
+    private ArrayList<String> staticUsedNames = new ArrayList<String>();
     private ArrayList<IMXMLMetadataNode> metadataNodes = new ArrayList<IMXMLMetadataNode>();
     
     private int eventCounter;
@@ -119,6 +120,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private boolean inMXMLContent;
     private boolean inStatesOverride;
     private boolean makingSimpleArray;
+    private boolean inStaticInitializer;
     
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
@@ -182,6 +184,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	int endRequires = -1;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
+        int provideIndex = -1;
         ArrayList<String> namesToAdd = new ArrayList<String>();
         ArrayList<String> foundRequires = new ArrayList<String>();
         int len = lines.length;
@@ -190,7 +193,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             String line = lines[i];
     		if (stillSearching)
     		{
-	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+                if (c != -1)
+                {
+                    // if zero requires are found, require Language after the
+                    // call to goog.provide
+                    provideIndex = i + 1;
+                }
+	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 	            if (c > -1)
 	            {
 	                int c2 = line.indexOf(")");
@@ -316,6 +326,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            		String alias = aliases.get(className);
 		            		aliasInject += "\"" + alias + "\"";
 		            		firstOne = false;
+		                    StringBuilder appendString = new StringBuilder();
+		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(className);
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+	                        finalLines.add(endRequires, appendString.toString());
+	                        addLineToMappings(endRequires);
+                            endRequires++;
 		            	}
 		            	aliasInject += "}";
 		            	infoInject += aliasInject;
@@ -389,6 +410,21 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            }
             }
         }
+		if (staticUsedNames.size() > 0)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
+			boolean firstDependency = true;
+			for (String staticName : staticUsedNames)
+			{
+				if (!firstDependency)
+					sb.append(",");
+				firstDependency = false;
+				sb.append(staticName);
+			}
+			sb.append("*/");
+			finalLines.add(provideIndex, sb.toString());
+		}
 
     	return Joiner.on("\n").join(finalLines);
     }
@@ -1156,7 +1192,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         if (bd.getBindingInfo().isEmpty())
             return;
 
+        inStaticInitializer = true;
         outputBindingInfoAsData(cname, bd);
+        inStaticInitializer = false;
     }
 
     private void outputBindingInfoAsData(String cname, BindingDatabase bindingDataBase)
@@ -1222,6 +1260,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
 	                        bi.classDef.getQualifiedName() + ASEmitterTokens.DOUBLE_QUOTE.getToken());
 	                usedNames.add(bi.classDef.getQualifiedName());
+	                staticUsedNames.add(bi.classDef.getQualifiedName());
 	                int n = parts.length;
 	                for (int i = 1; i < n; i++)
 	                {
@@ -2781,6 +2820,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
+    	if (inStaticInitializer)
+    		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name))
+    			staticUsedNames.add(name);
+
 		if (useName && !usedNames.contains(name) && !isExternal(name))
 			usedNames.add(name);
      	return name;

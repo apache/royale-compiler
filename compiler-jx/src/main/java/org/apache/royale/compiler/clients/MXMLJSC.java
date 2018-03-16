@@ -445,6 +445,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     			  arg.startsWith("-compiler.js-define") ||
     			  arg.startsWith("-js-output") ||
     			  arg.startsWith("-js-load-config") ||
+    			  arg.startsWith("-warn-public-vars") ||
     			  arg.startsWith("-source-map")))
     			list.add(arg);						
     	}

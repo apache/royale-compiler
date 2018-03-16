@@ -54,7 +54,7 @@ public class CompileAppMojo
     @Parameter
     protected String targets = "SWF,JSRoyale";
     
-    @Parameter(defaultValue = "false")
+    @Parameter(defaultValue = "true")
     protected boolean removeCirculars;
 
     @Override

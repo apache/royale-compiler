@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -123,7 +124,19 @@ public class AsIsEmitter extends JSSubEmitter
             }
             if (!emit)
             {
+            	if (dnode.getQualifiedName().equals(IASLanguageConstants.Function))
+            	{
+            		write(" /** @type {Function} */ (");
+            	}
+            	else if (dnode.getQualifiedName().equals(IASLanguageConstants.Class))
+            	{
+            		write(" /** @type {Object|null} */ (");
+            	}
                 getWalker().walk(left);
+            	if (dnode.getQualifiedName().equals(IASLanguageConstants.Function) || dnode.getQualifiedName().equals(IASLanguageConstants.Class))
+            	{
+            		write(")");
+            	}
                 return;
             }
         }

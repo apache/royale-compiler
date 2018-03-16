@@ -200,11 +200,13 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                         foundNamespace = true;
                     }
 	    			sawRequires = true;
+	    			/*
 	    			if (!usedNames.contains(s))
                     {
                         removeLineFromMappings(i);
                         continue;
                     }
+                    */
 	    		}
 	    		else if (sawRequires || i == len - 1)
                 {
