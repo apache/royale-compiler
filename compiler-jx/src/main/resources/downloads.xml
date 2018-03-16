@@ -47,7 +47,10 @@
 
   <property name="maven.search.url" value="https://repo1.maven.org/maven2"/>
 
-
+  <property file="${ROYALE_COMPILER_HOME}/env.properties"/>
+  <property environment="env"/>
+  <property file="${ROYALE_COMPILER_HOME}/local.properties"/>
+  <property file="${ROYALE_COMPILER_HOME}/build.properties"/>
 
   <!-- 
       Because the downloads requires a network connection and the JARs don't change very often, 
