@@ -353,12 +353,12 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    errors, unit, false);
+	                                    problems.getProblems(), unit, false);
 	                        }
 	                        else
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, errors, unit, false);
+	                                    project, problems.getProblems(), unit, false);
 	                        }
 	
 	                        BufferedOutputStream out = new BufferedOutputStream(
@@ -394,8 +394,11 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             final ICompilerProblem problem = new InternalCompilerProblem(e);
             problems.add(problem);
         }
+        List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
+        List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
+        problems.getErrorsAndWarnings(errs, warns);
 
-        return compilationSuccess;
+        return compilationSuccess && (errs.size() == 0);
     }
 
     /**

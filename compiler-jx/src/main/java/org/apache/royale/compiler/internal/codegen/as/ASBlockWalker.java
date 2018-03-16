@@ -26,6 +26,7 @@ import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
 import org.apache.royale.compiler.projects.IASProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -154,7 +155,20 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     @Override
     public void walk(IASNode node)
     {
-        getStrategy().handle(node);
+    	try {
+    		getStrategy().handle(node);
+    	}
+    	catch (Exception e)
+    	{
+    		String sp = String.format("%s line %d column %d", node.getSourcePath(), node.getLine() + 1, node.getColumn());
+    		if (node.getSourcePath() == null)
+    		{
+    			IASNode parent = node.getParent();
+    			sp = String.format("%s line %d column %d", parent.getSourcePath(), parent.getLine() + 1, parent.getColumn());
+    		}
+    		InternalCompilerProblem2 problem = new InternalCompilerProblem2(sp, e, "ASBlockWalker");
+    		errors.add(problem);
+    	}
     }
 
     @Override
