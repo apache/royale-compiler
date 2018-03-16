@@ -154,7 +154,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
             s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
             s = s.replaceAll("__NEWLINE_PLACEHOLDER__", newlineReplacement);
-            if (node.getLiteralType() == LiteralType.STRING)
+            if (node.getLiteralType() == LiteralType.STRING && s.length() > 0)
             {
                 char c = s.charAt(0);
                 if (c == '"')
