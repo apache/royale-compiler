@@ -37,7 +37,7 @@ public class NodePublisher extends JSCPublisher
     }
 
     @Override
-    protected String getTemplateDependencies(String type, String projectName, String deps)
+    protected String getTemplateDependencies(String type, String projectName, String mainClassQName, String deps)
     {
         StringBuilder depsJS = new StringBuilder();
         if ("intermediate".equals(type))
@@ -62,31 +62,31 @@ public class NodePublisher extends JSCPublisher
     }
 
     @Override
-    protected String getTemplateBody(String projectName)
+    protected String getTemplateBody(String mainClassQName)
     {
         StringBuilder bodyJS = new StringBuilder();
         if (exportModule)
         {
             bodyJS.append("module.exports = ");
-            bodyJS.append(projectName);
+            bodyJS.append(mainClassQName);
             bodyJS.append(";");
         }
         else
         {
             bodyJS.append("new ");
-            bodyJS.append(projectName);
+            bodyJS.append(mainClassQName);
             bodyJS.append("();");
         }
         return bodyJS.toString();
     }
 
     @Override
-    protected void writeHTML(String type, String projectName, File targetDir,
+    protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir,
                              String deps, List<String> additionalHTML) throws IOException
     {
         StringBuilder contents = new StringBuilder();
-        contents.append(getTemplateDependencies(type, projectName, deps));
-        contents.append(getTemplateBody(projectName));
+        contents.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
+        contents.append(getTemplateBody(mainClassQName));
         writeFile(new File(targetDir, "index.js"), contents.toString(), false);
     }
 }
