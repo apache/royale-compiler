@@ -2528,13 +2528,16 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @Override
     public void emitFactory(IMXMLFactoryNode node)
     {
+        IASNode cnode = node.getChild(0);
+    	ITypeDefinition type = ((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject());
+    	if (type == null) return;
+    	
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
         ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
 
-        IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
         {
-            ps.value += formatQualifiedName(((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject()).getQualifiedName());
+            ps.value += formatQualifiedName(type.getQualifiedName());
         }
         ps.value += ")";
     }
