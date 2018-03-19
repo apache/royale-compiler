@@ -125,7 +125,9 @@ final class SourceListManager
             for (File file : newSourcesToCreate)
             {
             	File sourcePath = sourcePathManager.getSourcePath(file);
-            	String qname = sourcePathManager.computeQName(sourcePath, file);
+            	String qname = null;
+            	if (sourcePath != null)
+            		qname = SourcePathManager.computeQName(sourcePath, file);
                 ICompilationUnit unit = project.getSourceCompilationUnitFactory().createCompilationUnit(
                     file, DefinitionPriority.BasePriority.SOURCE_LIST, 0, qname, null);
                 
