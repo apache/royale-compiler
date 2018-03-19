@@ -40,6 +40,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -840,7 +841,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			write("type");
 			writeToken(ASEmitterTokens.COLON);
 			write(ASEmitterTokens.SINGLE_QUOTE);
-			write(parameterDefinition.resolveType(getProject()).getQualifiedName());
+			ITypeDefinition pd = parameterDefinition.resolveType(getProject());
+			if (pd == null)
+			{
+				UnknownTypeProblem problem = new UnknownTypeProblem(parameterDefinition.getNode(), parameterDefinition.getQualifiedName());
+				getProject().getProblems().add(problem);
+				write("not found");
+			}
+			else
+				write(pd.getQualifiedName());
 			write(ASEmitterTokens.SINGLE_QUOTE);
 
 			write(ASEmitterTokens.COMMA);
