@@ -162,7 +162,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // The source directory is the source path entry containing the Main class.
         List<File> sourcePaths = project.getSourcePath();
         String targetFile = configuration.getTargetFile().toLowerCase();
-    	System.out.println("find project folder...");
+    	System.out.println("find project folder for " + targetFile);
         File imageSrcDir = null;
         for (File sp : sourcePaths)
         {
