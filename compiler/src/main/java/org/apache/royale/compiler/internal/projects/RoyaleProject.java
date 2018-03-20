@@ -170,6 +170,11 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     private String stateClass;
     
     /**
+     * The resolved stateClass 
+     */
+    public ITypeDefinition stateClassType = null;
+    
+    /**
      * The fully-qualified name of the runtime interface 
      * for a component with a <code>currentState</code> property.
      * Currently this is "mx.core.IStateClient".

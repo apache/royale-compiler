@@ -34,7 +34,10 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -56,6 +59,31 @@ import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
 
 class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstanceNode
 {
+	private static boolean isStateClass(String instanceType, RoyaleProject project)
+	{
+		// we are going to require that all subclasses are also named State
+		// but just in different packages.  That way we don't have to keep resolving
+		// instanceType
+		if (!instanceType.endsWith(".State"))
+			return false;
+		
+		if (instanceType.equals(project.getStateClass()))
+			return true;
+		
+        IResolvedQualifiersReference instanceRef = ReferenceFactory.packageQualifiedReference(
+                project.getWorkspace(), instanceType);
+        ITypeDefinition instanceTypeDef = (ITypeDefinition)instanceRef.resolve(project);
+        
+        if (project.stateClassType == null)
+        {
+            IResolvedQualifiersReference stateRef = ReferenceFactory.packageQualifiedReference(
+                    project.getWorkspace(), project.getStateClass());
+            project.stateClassType = (ITypeDefinition)stateRef.resolve(project);
+        }
+
+        return (instanceTypeDef.isInstanceOf(project.stateClassType, project));
+	}
+	
     protected static MXMLInstanceNode createInstanceNode(MXMLTreeBuilder builder,
                                                          String instanceType,
                                                          NodeBase parent)
@@ -89,7 +117,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
         else if (instanceType.equals(IASLanguageConstants.Vector_qname))
             return new MXMLVectorNode(parent);
 
-        else if (instanceType.equals(builder.getProject().getStateClass()) && mxmlDialect != MXMLDialect.MXML_2006)
+        else if (isStateClass(instanceType, builder.getProject()) && mxmlDialect != MXMLDialect.MXML_2006)
             return new MXMLStateNode(parent);
 
         else if (instanceType.equals(builder.getProject().getWebServiceQName()))
