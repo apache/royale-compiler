@@ -391,6 +391,7 @@ public final class SWFDump
     private Integer swfVersion = null;
 
     private boolean abc = false;
+    private boolean verbose = false;
     private boolean showActions = true;
     private boolean showOffset = false;
     @SuppressWarnings("unused")
@@ -2283,7 +2284,11 @@ public final class SWFDump
             open(tag);
             end();
             ABCParser parser = new ABCParser(tag.getABCData());
+            parser.verbose = verbose;
+            parser.output = out;
             PoolingABCVisitor printer = new ABCDumpVisitor(out, sortOption);
+            if (verbose)
+            	out.println("doABC for " + tag.getName());
             parser.parseABC(printer);
             close(tag);
         }
@@ -2363,6 +2368,7 @@ public final class SWFDump
 
     // options
     public static boolean abcOption = false;
+    public static boolean verboseOption = false;
     static boolean encodeOption = false;
     static boolean showActionsOption = true;
     static boolean showOffsetOption = false;
@@ -2407,6 +2413,11 @@ public final class SWFDump
             {
                 encodeOption = true;
                 ++index;
+            }
+            else if (args[index].equals("-verbose"))
+            {
+                ++index;
+                verboseOption = true;
             }
             else if (args[index].equals("-save"))
             {
@@ -2636,6 +2647,7 @@ public final class SWFDump
         //        swfDump.setExternal(externalOption, outfile);
         //        swfDump.decompile = decompileOption;
         swfDump.abc = abcOption;
+        swfDump.verbose = verboseOption;
         //        swfDump.defunc = defuncOption;
         //        swfDump.tabbedGlyphs = tabbedGlyphsOption;
 
