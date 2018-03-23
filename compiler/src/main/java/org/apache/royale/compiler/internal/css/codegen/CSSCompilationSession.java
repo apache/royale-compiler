@@ -36,6 +36,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.apache.royale.abc.visitors.IABCVisitor;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
 import org.apache.royale.compiler.css.ICSSProperty;
 import org.apache.royale.compiler.css.ICSSRule;
 import org.apache.royale.compiler.css.ICSSSelector;
@@ -231,7 +232,8 @@ public class CSSCompilationSession
      */
     private void addRuleToCodeGeneration(final ICSSRule newRule)
     {
-        if (newRule.getMediaQueryConditions().isEmpty())
+    	ImmutableList<ICSSMediaQueryCondition> mq = newRule.getMediaQueryConditions();
+        if (mq.isEmpty() || (mq.size() == 1 && mq.get(0).getValue().toString().equals("-royale-swf")))
         {
             // Normalize the rule and clobber properties if the rule has no media query.
             final ImmutableList<CSSProperty> properties = ImmutableList.copyOf(
