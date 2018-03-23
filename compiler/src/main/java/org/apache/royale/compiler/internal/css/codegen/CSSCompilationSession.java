@@ -188,7 +188,7 @@ public class CSSCompilationSession
      * 
      * @return A synthesized CSS model from normalized CSS model.
      */
-    protected ICSSDocument synthesisNormalizedCSS()
+    protected ICSSDocument synthesisNormalizedCSS(boolean isSWF)
     {
         fontFaces = new ArrayList<CSSFontFace>();
         
@@ -201,7 +201,7 @@ public class CSSCompilationSession
             {
                 if (keepRule(newRule))
                 {
-                    addRuleToCodeGeneration(newRule);
+                    addRuleToCodeGeneration(newRule, isSWF);
                 }
             }
             for (final ICSSFontFace fontFace : cssDocument.getFontFaces())
@@ -230,10 +230,10 @@ public class CSSCompilationSession
      * 
      * @param newRule A CSS rule to be added to the synthesized CSS document.
      */
-    private void addRuleToCodeGeneration(final ICSSRule newRule)
+    private void addRuleToCodeGeneration(final ICSSRule newRule, boolean isSWF)
     {
     	ImmutableList<ICSSMediaQueryCondition> mq = newRule.getMediaQueryConditions();
-        if (mq.isEmpty() || (mq.size() == 1 && mq.get(0).getValue().toString().equals("-royale-swf")))
+        if (mq.isEmpty() || (isSWF && mq.size() == 1 && mq.get(0).getValue().toString().equals("-royale-swf")))
         {
             // Normalize the rule and clobber properties if the rule has no media query.
             final ImmutableList<CSSProperty> properties = ImmutableList.copyOf(
@@ -282,7 +282,7 @@ public class CSSCompilationSession
      */
     public ICSSCodeGenResult emitStyleDataClass(final IRoyaleProject project, final IABCVisitor abcVisitor) throws Exception
     {
-        final ICSSDocument css = synthesisNormalizedCSS();
+        final ICSSDocument css = synthesisNormalizedCSS(true);
         //LoggingProfiler.onSynthesisCSS(css);
         final CSSReducer reducer = new CSSReducer(project, css, abcVisitor, this, true, 0);
         final CSSEmitter emitter = new CSSEmitter(reducer);
