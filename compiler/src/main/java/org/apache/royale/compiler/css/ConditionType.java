@@ -40,6 +40,11 @@ public enum ConditionType
     PSEUDO(":"),
 
     /**
+     * For example: <code>s|Label:loadingState</code>
+     */
+    PSEUDO_ELEMENT("::"),
+
+    /**
      * For example: <code>s|Panel:not(:first-child)</code>
      */
     NOT("not"),

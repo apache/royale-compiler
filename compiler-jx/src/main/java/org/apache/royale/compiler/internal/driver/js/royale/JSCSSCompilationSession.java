@@ -132,6 +132,15 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	        		condition = s.substring(colon);
 	        		s = s.substring(0, colon);
 	        	}
+	        	else
+	        	{
+	        		int brace = s.indexOf("[");
+	        		if (brace != -1)
+	        		{
+		        		condition = s.substring(brace);
+		        		s = s.substring(0, brace);	        			
+	        		}
+	        	}
 	        	if (!htmlElementNames.contains(s.toLowerCase()))
 	        	{
 	        		int pipe = s.indexOf("|");
@@ -207,6 +216,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     List<String> htmlElementNames = Arrays.asList(
     		"body",
     		"button",
+    		"input",
     		"span"
     );
     
@@ -248,7 +258,12 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             	selName = formatQualifiedName(selName);
                 ImmutableList<ICSSSelectorCondition> conds = sel.getConditions();
                 for (ICSSSelectorCondition cond : conds)
-                    selName += cond.toString();
+                {
+                	String condString = cond.toString();
+                	if (condString.contains("\""))
+                		condString = condString.replace("\"", "\\\"");
+                    selName += condString;
+                }
                 result.append("\"" + selName + "\"");
             }
         }

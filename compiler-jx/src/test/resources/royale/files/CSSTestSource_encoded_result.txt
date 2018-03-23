@@ -33,5 +33,6 @@ this["left"] = 0.0;
 this["padding"] = 0.0;
 this["border"] = 0.0;
 this["WebkitTransform"] = null;
-this["top"] = 50.0}];
+this["top"] = 50.0},
+0,1,"input",function() {this["padding"] = 0.0},0,1,"input[type=\"checkbox\"]",function() {this["padding"] = 0.0},0,1,".slider::-webkit-slider-thumb",function() {this["padding"] = 0.0},0,1,"input[type=\"range\"]",function() {this["padding"] = 0.0},0,1,"input[type=\"range\"]",function() {this["padding"] = 0.0}];
 

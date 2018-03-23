@@ -296,7 +296,7 @@ conditionSelector
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
     |   ^(COLON NOT arg=ARGUMENTS) { type = ConditionType.NOT; name = $arg.text; }
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
-    |   ^(DOUBLE_COLON dc=ID) { type = ConditionType.PSEUDO; name = $dc.text; } 
+    |   ^(DOUBLE_COLON dc=ID) { type = ConditionType.PSEUDO_ELEMENT; name = $dc.text; } 
     |   attributeSelector { type = ConditionType.ATTRIBUTE; name = curAttribute.substring(1); }
     ;
   

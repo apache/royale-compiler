@@ -136,4 +136,29 @@
 }
 
 
+.jewel.textfield>input {
+        padding: 0;
+}
+
+
+.jewel.checkbox>input[type="checkbox"] {
+        padding: 0;
+}
+
+
+.slider::-webkit-slider-thumb {
+        padding: 0;
+}
+
+
+.jewel.slider input[type="range"] {
+        padding: 0;
+}
+
+
+input[type="range"] {
+        padding: 0;
+}
+
+
 
