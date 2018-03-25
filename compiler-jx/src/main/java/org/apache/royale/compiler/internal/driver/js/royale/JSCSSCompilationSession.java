@@ -217,7 +217,14 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     		"body",
     		"button",
     		"input",
-    		"span"
+    		"span",
+            "div",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6"
     );
     
     private String encodeRule(ICSSRule rule)
