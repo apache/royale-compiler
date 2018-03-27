@@ -227,6 +227,13 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             "h6"
     );
     
+    private String escapeDoubleQuotes(String s)
+    {
+    	if (s.contains("\""))
+    		s = s.replace("\"", "\\\"");
+    	return s;
+    }
+    
     private String encodeRule(ICSSRule rule)
     {
         final StringBuilder result = new StringBuilder();
@@ -266,9 +273,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 ImmutableList<ICSSSelectorCondition> conds = sel.getConditions();
                 for (ICSSSelectorCondition cond : conds)
                 {
-                	String condString = cond.toString();
-                	if (condString.contains("\""))
-                		condString = condString.replace("\"", "\\\"");
+                	String condString = escapeDoubleQuotes(cond.toString());
                     selName += condString;
                 }
                 result.append("\"" + selName + "\"");
@@ -300,7 +305,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                         result.append(", ");
                     if (val instanceof CSSStringPropertyValue)
                     {
-                        result.append("\"" + ((CSSStringPropertyValue)val).getValue() + "\"");
+                        result.append("\"" + escapeDoubleQuotes(((CSSStringPropertyValue)val).getValue()) + "\"");
                     }
                     else if (val instanceof CSSColorPropertyValue)
                     {
@@ -332,7 +337,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
-                        result.append("\"" + ((CSSURLAndFormatPropertyValue)val).toString() + "\"");
+                        result.append("\"" + escapeDoubleQuotes(((CSSURLAndFormatPropertyValue)val).toString()) + "\"");
                     }
                     else if (val instanceof CSSMultiValuePropertyValue)
                     {
@@ -358,7 +363,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                         result.append(", ");
                     if (val instanceof CSSStringPropertyValue)
                     {
-                        result.append("\"" + ((CSSStringPropertyValue)val).getValue() + "\"");
+                        result.append("\"" + escapeDoubleQuotes(((CSSStringPropertyValue)val).getValue()) + "\"");
                     }
                     else if (val instanceof CSSColorPropertyValue)
                     {
@@ -390,7 +395,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
-                        result.append("\"" + ((CSSURLAndFormatPropertyValue)val).toString() + "\"");
+                        result.append("\"" + escapeDoubleQuotes(((CSSURLAndFormatPropertyValue)val).toString()) + "\"");
                     }
                     else if (val instanceof CSSMultiValuePropertyValue)
                     {
