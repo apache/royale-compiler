@@ -152,11 +152,13 @@
 
 
 .jewel.slider input[type="range"] {
+        content: url(assets/checkbox-tick.svg);
         padding: 0;
 }
 
 
 input[type="range"] {
+        content: "\2714";
         padding: 0;
 }
 

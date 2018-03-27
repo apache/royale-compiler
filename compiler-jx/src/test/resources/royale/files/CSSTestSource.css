@@ -140,10 +140,12 @@
 
 .jewel.slider input[type="range"] {
   padding: 0;
+  content: url(assets/checkbox-tick.svg);
 }
 
 input[type="range"] {
   padding: 0;
+  content: '\2714';
 }
 
 .complex {
