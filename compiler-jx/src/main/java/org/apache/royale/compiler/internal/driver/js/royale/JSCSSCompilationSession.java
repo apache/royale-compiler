@@ -506,6 +506,14 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     	if (!sp.contains("defaults.css"))
     		return true;
     	
+    	// might need to loop over all selectors in selector group
+    	if (newRule.getSelectorGroup().size() > 0)
+    	{
+	    	String elementName = newRule.getSelectorGroup().get(0).getElementName();
+	    	if (elementName != null)
+	    		if (htmlElementNames.contains(elementName))
+	    			return true;
+    	}
         return false;
     }
 
