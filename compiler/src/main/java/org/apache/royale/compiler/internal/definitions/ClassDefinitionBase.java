@@ -415,6 +415,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
     }
 
     private ArrayList<IDefinition> baseDefinitions = null;
+    private ArrayList<IDefinition> implDefinitions = null;
     
     @Override
     public boolean isInstanceOf(final ITypeDefinition type, ICompilerProject project)
@@ -439,12 +440,13 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 	                baseDefinitions.add(cls);
 	            }
         	}
+            return baseDefinitions.contains(type);
         }
         else if (type instanceof IInterfaceDefinition)
         {
-        	if (baseDefinitions == null)
+        	if (implDefinitions == null)
         	{
-        		baseDefinitions = new ArrayList<IDefinition>();
+        		implDefinitions = new ArrayList<IDefinition>();
         		
 	            // We're trying to determine whether this class
 	            // implements a specified interface ('type').
@@ -454,12 +456,13 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 	            while (iter.hasNext())
 	            {
 	                IInterfaceDefinition intf = iter.next();
-	                baseDefinitions.add(intf);
+	                implDefinitions.add(intf);
 	            }
-        	}
+	        }
+            return implDefinitions.contains(type);
         }
 
-    	return baseDefinitions.contains(type);
+    	return false;
     }
 
     @Override
