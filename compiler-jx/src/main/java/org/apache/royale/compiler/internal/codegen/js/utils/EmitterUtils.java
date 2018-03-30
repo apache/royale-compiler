@@ -414,53 +414,22 @@ public class EmitterUtils
     public static boolean isClassMember(ICompilerProject project,
             IDefinition nodeDef, IClassNode classNode)
     {
-    	if (nodeDef.isInternal() && (!(nodeDef.getParent() instanceof ClassDefinition)))
+        IDefinition parentDef = nodeDef.getParent();
+    	if (nodeDef.isInternal() && (!(parentDef instanceof ClassDefinition)))
     		return false;
     	
-        TypeScope cscope = (TypeScope) classNode.getDefinition()
-                .getContainedScope();
-
-        Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);
-        Collection<IDefinition> defs = new HashSet<IDefinition>();
-
-        cscope.getAllPropertiesForMemberAccess((CompilerProject) project, defs,
-                nsSet);
-
-        Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
-        while (visiblePropertiesIterator.hasNext())
-        {
-            if (nodeDef.getQualifiedName().equals(
-                    visiblePropertiesIterator.next().getQualifiedName()))
-                return true;
-        }
-
-        return false;
+        IClassDefinition cdef = classNode.getDefinition();
+        return parentDef == cdef || (parentDef instanceof ClassDefinition && cdef.isInstanceOf((ClassDefinition)parentDef, project));
     }
     
     public static boolean isClassMember(ICompilerProject project,
             IDefinition nodeDef, IClassDefinition classDef)
     {
-    	if (nodeDef.isInternal() && (!(nodeDef.getParent() instanceof ClassDefinition)))
+        IDefinition parentDef = nodeDef.getParent();
+    	if (nodeDef.isInternal() && (!(parentDef instanceof ClassDefinition)))
     		return false;
     	
-        TypeScope cscope = (TypeScope) classDef
-                .getContainedScope();
-
-        Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);
-        Collection<IDefinition> defs = new HashSet<IDefinition>();
-
-        cscope.getAllPropertiesForMemberAccess((CompilerProject) project, defs,
-                nsSet);
-
-        Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
-        while (visiblePropertiesIterator.hasNext())
-        {
-            if (nodeDef.getQualifiedName().equals(
-                    visiblePropertiesIterator.next().getQualifiedName()))
-                return true;
-        }
-
-        return false;
+        return parentDef == classDef || (parentDef instanceof ClassDefinition && ((ClassDefinition)parentDef).isInstanceOf(classDef, project));
     }
     
     public static boolean isScalar(IExpressionNode node)
