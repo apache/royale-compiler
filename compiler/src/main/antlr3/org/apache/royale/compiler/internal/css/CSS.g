@@ -140,6 +140,19 @@ private final int endOfSimpleSelector()
 
     // Check if there's white space between the previous token and the next token.
     final CommonToken lastToken = (CommonToken) getTokenStream().LT(-1);
+    final int lastType = lastToken.getType();
+    if (lastType == CHILD) 
+    { 
+        return 1;
+    }
+    if (lastType == PRECEDED)
+    {
+        return 2;
+    }
+    if (lastType == TILDE)
+    {
+        return 3;
+    }
     if (lastToken != null && nextToken != null)
     {
         final int lastStop = lastToken.getStopIndex();
@@ -288,7 +301,7 @@ compoundSelector
 	for(final Object simpleSelectorNode : simpleSelectorNodeList)
 		adaptor.addChild($compoundSelector.tree, simpleSelectorNode);
 }
-    :   (   l=simpleSelectorFraction 
+    :   (   l=simpleSelectorFraction ( '+' | '>'  )?
 			{ 
 			    // expand token range of the current simple selector
 				if (simpleSelectorStartToken == null)

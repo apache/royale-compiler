@@ -148,6 +148,10 @@ input[type="range"] {
   content: '\2714';
 }
 
+input + .innerMenu {
+  color: #fff;
+}
+
 .complex {
   background: url("data:image/svg+xml;utf8,<svg viewBox='0 0 16 13' version='1.1' xmlns='http://www.w3.org/2000/svg'><g transform='translate(-763, -290)'><g transform='translate(760, 285)'><g><polygon fill='#ffffff' points='3 13 9 18 19 7 16 5 9 13 6 10'></polygon></g></g></g></svg>"), #b3dffa;
 }

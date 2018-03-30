@@ -150,6 +150,24 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 		        		condition = s.substring(brace);
 		        		s = s.substring(0, brace);	        			
 	        		}
+	        		else
+	        		{
+	        			int child = s.indexOf(">");
+	        			if (child != -1)
+	        			{
+			        		condition = s.substring(child);
+			        		s = s.substring(0, child);	        			
+	        			}
+	        			else
+	        			{
+	        				int preceded = s.indexOf("+");
+		        			if (preceded != -1)
+		        			{
+				        		condition = s.substring(preceded);
+				        		s = s.substring(0, preceded);	        			
+		        			}
+	        			}
+	        		}
 	        	}
 	        	if (!htmlElementNames.contains(s.toLowerCase()))
 	        	{

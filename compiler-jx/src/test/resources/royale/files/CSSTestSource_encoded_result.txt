@@ -35,5 +35,6 @@ this["border"] = 0.0;
 this["WebkitTransform"] = null;
 this["top"] = 50.0},
 0,1,"input",function() {this["padding"] = 0.0},0,1,"input[type=\"checkbox\"]",function() {this["padding"] = 0.0},0,1,".slider::-webkit-slider-thumb",function() {this["padding"] = 0.0},0,1,"input[type=\"range\"]",function() {this["content"] = "assets/checkbox-tick.svg";
-this["padding"] = 0.0},0,1,"input[type=\"range\"]",function() {this["content"] = "✔";this["padding"] = 0.0},0,1,".complex",function() {this["background"] = ["url(\"data:image/svg+xml;utf8,<svg viewBox='0 0 16 13' version='1.1' xmlns='http://www.w3.org/2000/svg'><g transform='translate(-763, -290)'><g transform='translate(760, 285)'><g><polygon fill='#ffffff' points='3 13 9 18 19 7 16 5 9 13 6 10'></polygon></g></g></g></svg>\")", 11788282]}];
+this["padding"] = 0.0},0,1,"input[type=\"range\"]",function() {this["content"] = "✔";this["padding"] = 0.0},0,1,"input+.innerMenu",function() {this["color"] = 16777215},0,1,
+".complex",function() {this["background"] = ["url(\"data:image/svg+xml;utf8,<svg viewBox='0 0 16 13' version='1.1' xmlns='http://www.w3.org/2000/svg'><g transform='translate(-763, -290)'><g transform='translate(760, 285)'><g><polygon fill='#ffffff' points='3 13 9 18 19 7 16 5 9 13 6 10'></polygon></g></g></g></svg>\")", 11788282]}];
 
