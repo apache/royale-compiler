@@ -166,6 +166,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
 
     private int absoluteNameStart = 0;
     private int absoluteNameEnd = 0;
+    
+    private IDefinition parentDef = null;
 
     /**
      * Called by {@code MXMLScopeBuilder} when building definitions from
@@ -240,6 +242,9 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public IDefinition getParent()
     {
+    	if (parentDef != null)
+    		return parentDef;
+    	
         IASScope scope = getContainingScope();
 
         // Walk up the scope chain until we find a scope that has
@@ -251,7 +256,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         while ((scope != null) && (scope.getDefinition() == null))
             scope = scope.getContainingScope();
 
-        return scope != null ? scope.getDefinition() : null;
+        parentDef = scope != null ? scope.getDefinition() : null;
+        return parentDef;
     }
 
     @Override

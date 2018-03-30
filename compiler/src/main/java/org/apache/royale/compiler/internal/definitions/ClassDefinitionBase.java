@@ -414,6 +414,8 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
         return new InterfaceDefinition.InterfaceIterator(this, project, null);
     }
 
+    private ArrayList<IDefinition> baseDefinitions = null;
+    
     @Override
     public boolean isInstanceOf(final ITypeDefinition type, ICompilerProject project)
     {
@@ -423,35 +425,41 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 
         if (type instanceof IClassDefinition)
         {
-            // We're trying to determine whether this class
-            // is derived from a specified class ('type').
-            // Iterate the superclass chain looking for 'type'.
-            Iterator<IClassDefinition> iter = classIterator(project, false);
-            while (iter.hasNext())
-            {
-                IClassDefinition cls = iter.next();
-                if (cls == type)
-                    return true;
-            }
-            return false;
+        	if (baseDefinitions == null)
+        	{
+        		baseDefinitions = new ArrayList<IDefinition>();
+        		
+	            // We're trying to determine whether this class
+	            // is derived from a specified class ('type').
+	            // Iterate the superclass chain looking for 'type'.
+	            Iterator<IClassDefinition> iter = classIterator(project, false);
+	            while (iter.hasNext())
+	            {
+	                IClassDefinition cls = iter.next();
+	                baseDefinitions.add(cls);
+	            }
+        	}
         }
         else if (type instanceof IInterfaceDefinition)
         {
-            // We're trying to determine whether this class
-            // implements a specified interface ('type').
-            // Iterate all of the interfaces that this class implements,
-            // looking for 'type'.
-            Iterator<IInterfaceDefinition> iter = interfaceIterator(project);
-            while (iter.hasNext())
-            {
-                IInterfaceDefinition intf = iter.next();
-                if (intf == type)
-                    return true;
-            }
-            return false;
+        	if (baseDefinitions == null)
+        	{
+        		baseDefinitions = new ArrayList<IDefinition>();
+        		
+	            // We're trying to determine whether this class
+	            // implements a specified interface ('type').
+	            // Iterate all of the interfaces that this class implements,
+	            // looking for 'type'.
+	            Iterator<IInterfaceDefinition> iter = interfaceIterator(project);
+	            while (iter.hasNext())
+	            {
+	                IInterfaceDefinition intf = iter.next();
+	                baseDefinitions.add(intf);
+	            }
+        	}
         }
 
-        return false;
+    	return baseDefinitions.contains(type);
     }
 
     @Override
