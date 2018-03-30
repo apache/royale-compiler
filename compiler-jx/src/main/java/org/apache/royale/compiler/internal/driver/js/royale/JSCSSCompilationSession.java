@@ -46,7 +46,17 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	         "progid:DXImageTransform.Microsoft.gradient",
 	         "translateX",
 	         "translateY",
-	         "translate"	
+	         "translate",
+             "blur",
+             "brightness",
+             "contrast",
+             "drop-shadow",
+             "grayscale",
+             "hue-rotate",
+             "invert",
+             "opacity",
+             "saturate",
+             "sepia"
 	);
 	
     private ArrayList<String> requires;
