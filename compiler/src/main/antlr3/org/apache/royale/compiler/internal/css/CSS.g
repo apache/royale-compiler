@@ -575,7 +575,6 @@ FUNCTIONS : '-moz-linear-gradient'
           | 'grayscale'
           | 'hue-rotate'
           | 'invert'
-          | 'opacity'
           | 'saturate'
           | 'sepia'
           ;

@@ -54,7 +54,6 @@ public class JSCSSCompilationSession extends CSSCompilationSession
              "grayscale",
              "hue-rotate",
              "invert",
-             "opacity",
              "saturate",
              "sepia"
 	);
