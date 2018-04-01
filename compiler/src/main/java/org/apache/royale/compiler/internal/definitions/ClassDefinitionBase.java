@@ -418,7 +418,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
     private ArrayList<IDefinition> implDefinitions = null;
     
     @Override
-    public boolean isInstanceOf(final ITypeDefinition type, ICompilerProject project)
+    public synchronized boolean isInstanceOf(final ITypeDefinition type, ICompilerProject project)
     {
         // A class is considered an instance of itself.
         if (type == this)
