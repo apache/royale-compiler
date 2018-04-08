@@ -424,11 +424,11 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         project.needCSS = gdw.needCSS;
         if (project.needCSS || googConfiguration.getSkipTranspile()) {
             if (!googConfiguration.getSkipTranspile()) {
-                writeCSS(projectName, intermediateDir);
+                writeCSS(projectName, intermediateDir, false);
             }
             if (project.needCSS && configuration.release()) {
-                FileUtils.copyFile(new File(intermediateDir, projectName + ".css"),
-                        new File(releaseDir, projectName + ".css"));
+                // if release version minify css string
+                writeCSS(projectName, releaseDir, true);
             }
         }
 
@@ -651,7 +651,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             bgcolor = ta.getBackgroundColor();
             pageTitle = ta.getPageTitle();
         }
-        String result = input.replaceAll("\\$\\{application\\}", mainClassQName);
+
+        String result = null;
+        if (type.equals("release")) {
+            result = input.replaceAll("\\$\\{application\\}", mainClassQName + ".min");
+        } else {
+            result = input.replaceAll("\\$\\{application\\}", mainClassQName);
+        }
         if (bgcolor != null)
             result = result.replaceAll("\\$\\{bgcolor\\}", bgcolor);
         //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
@@ -730,7 +736,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+        
+        // if release version want to call minified css file, while in debug the non minified one
+        if (type.equals("release")) {
+            htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".min.css\">\n");
+        } else {
+            htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+        }
 
         htmlFile.append(getTemplateAdditionalHTML(additionalHTML));
         htmlFile.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
@@ -746,10 +758,20 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), htmlFile.toString(), false);
     }
 
-    private void writeCSS(String projectName, File targetDir) throws IOException
+    private void writeCSS(String projectName, File targetDir, Boolean minify) throws IOException
     {
         JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
-        writeFile(new File(targetDir, projectName + ".css"), cssSession.emitCSS(), false);
+        String cssString = cssSession.emitCSS();
+
+        if (minify)
+        {
+            //remove \r\n, \n for now this needs more work at this point
+            cssString = cssString.replaceAll("\\r\\n|\\n", "");
+            writeFile(new File(targetDir, projectName + ".min.css"), cssString, false);
+        } else {
+            writeFile(new File(targetDir, projectName + ".css"), cssString, false);
+        }
+
         for (CSSFontFace fontFace : cssSession.fontFaces)
         {
         	// check frameworks/fonts folder
