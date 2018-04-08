@@ -51,13 +51,15 @@ public class JSCSSCompilationSession extends CSSCompilationSession
              "brightness",
              "contrast",
              "drop-shadow",
-             "grayscale",
              "hue-rotate",
              "invert",
              "saturate",
              "sepia"
-	);
-	
+    );
+    //  this two conflicts with other css functions with the same name - comment for now
+    //  "grayscale",
+    //  "opacity",
+
     private ArrayList<String> requires;
     
     public String getEncodedCSS()
