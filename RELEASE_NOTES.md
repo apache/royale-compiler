@@ -1,3 +1,22 @@
+Apache Royale Compiler 0.9.3
+=================
+ 
+#38 filter CSS property makes compiler crash bug
+#36 Slow Compiler Build Time enhancement
+#34 content: url fails to compile bug
+#35 Multiple properties in CSS fails in a particular case bug
+#32 selectors without initial dot are removed from final css bug
+#30 CSS element > element selector is ignored bug
+#31 selector::pseudo-element is compiled into selector:pseudo-element (removes one ":") bug
+#29 Compiler Internal Error on Empty Binding bug
+#25 [CSS] rgba is not valid in text-shadow bug
+#26 [CSS] using linear-gradient make SWF not compile bug
+
+
+Apache Royale Compiler 0.9.2
+=================
+
+
 Apache Royale Compiler 0.9.1
 =================
 
