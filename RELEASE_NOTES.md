@@ -11,7 +11,7 @@ Apache Royale Compiler 0.9.3
  - [selector::pseudo-element is compiled into selector:pseudo-element (removes one ":") bug](https://github.com/apache/royale-compiler/issues/31)
  - [CSS element > element selector is ignored bug](https://github.com/apache/royale-compiler/issues/30)
  - [Compiler Internal Error on Empty Binding bug](https://github.com/apache/royale-compiler/issues/29)
- - [CSS] using linear-gradient make SWF not compile bug](https://github.com/apache/royale-compiler/issues/26)
+ - [[CSS] using linear-gradient make SWF not compile bug](https://github.com/apache/royale-compiler/issues/26)
  - [[CSS] rgba is not valid in text-shadow bug](https://github.com/apache/royale-compiler/issues/25)
 
 
