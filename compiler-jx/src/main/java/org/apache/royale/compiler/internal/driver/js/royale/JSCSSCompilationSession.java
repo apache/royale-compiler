@@ -134,7 +134,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	        // add "." to type selectors that don't map cleanly
 	        // to CSS type selectors to convert them to class
 	    	// selectors.
-	        if (!s.startsWith(".") && !s.startsWith("*") && !s.startsWith("#"))
+	        if (!s.startsWith(".") && !s.startsWith("*") && !s.startsWith("#") && !s.startsWith("::"))
 	        {
 	        	String condition = null;
         		int colon = s.indexOf(":");
