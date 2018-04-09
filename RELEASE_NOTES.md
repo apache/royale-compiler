@@ -1,16 +1,18 @@
 Apache Royale Compiler 0.9.3
 =================
  
-	#38 filter CSS property makes compiler crash bug
-	#36 Slow Compiler Build Time enhancement
-	#34 content: url fails to compile bug
-	#35 Multiple properties in CSS fails in a particular case bug
-	#32 selectors without initial dot are removed from final css bug
-	#30 CSS element > element selector is ignored bug
-	#31 selector::pseudo-element is compiled into selector:pseudo-element (removes one ":") bug
-	#29 Compiler Internal Error on Empty Binding bug
-	#25 [CSS] rgba is not valid in text-shadow bug
-	#26 [CSS] using linear-gradient make SWF not compile bug
+ - [CSS selectors can start with "::" and compiler adds "."](https://github.com/apache/royale-compiler/issues/40)
+ - [filter CSS property makes compiler crash bug](https://github.com/apache/royale-compiler/issues/38)
+ - [Selector element with "+" crash](https://github.com/apache/royale-compiler/issues/37)
+ - [Slow Compiler Build Time enhancement](https://github.com/apache/royale-compiler/issues/36)
+ - [Multiple properties in CSS fails in a particular case bug](https://github.com/apache/royale-compiler/issues/35)
+ - [content: url fails to compile bug](https://github.com/apache/royale-compiler/issues/34)
+ - [selectors without initial dot are removed from final css bug](https://github.com/apache/royale-compiler/issues/32)
+ - [selector::pseudo-element is compiled into selector:pseudo-element (removes one ":") bug](https://github.com/apache/royale-compiler/issues/31)
+ - [CSS element > element selector is ignored bug](https://github.com/apache/royale-compiler/issues/30)
+ - [Compiler Internal Error on Empty Binding bug](https://github.com/apache/royale-compiler/issues/29)
+ - [CSS] using linear-gradient make SWF not compile bug](https://github.com/apache/royale-compiler/issues/26)
+ - [[CSS] rgba is not valid in text-shadow bug](https://github.com/apache/royale-compiler/issues/25)
 
 
 Apache Royale Compiler 0.9.2
