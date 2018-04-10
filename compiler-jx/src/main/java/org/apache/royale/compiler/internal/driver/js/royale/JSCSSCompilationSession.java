@@ -87,6 +87,22 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         walkCSS(css, sb);
         return sb.toString();
     }
+
+    /**
+     * used to minify the CSS for release mode
+     */
+    public static String minifyCSSString(String cssString)
+    {
+        cssString = cssString.replaceAll("/\\*[\\d\\D]*?\\*/", "");
+        cssString = cssString.replace(";}", "}");
+        cssString = cssString.replaceAll("[a-zA-Z]+#", "#");
+        cssString = cssString.replaceAll("[\\n\\r]+\\s*", "");
+        cssString = cssString.replaceAll("\\s+", " ");
+        cssString = cssString.replaceAll("\\s?([:,;{}])\\s?", "$1");
+        cssString = cssString.replaceAll("([\\s:]0)(px|pt|%|em)", "$1");
+
+        return cssString;
+    }
     
     private String fontFaceToString(CSSFontFace fontFace)
     {

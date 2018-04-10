@@ -765,9 +765,8 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         if (minify)
         {
-            //remove \r\n, \n for now this needs more work at this point
-            cssString = cssString.replaceAll("\\r\\n|\\n", "");
-            writeFile(new File(targetDir, projectName + ".min.css"), cssString, false);
+            //minify CSS for release
+            writeFile(new File(targetDir, projectName + ".min.css"), JSCSSCompilationSession.minifyCSSString(cssString), false);
         } else {
             writeFile(new File(targetDir, projectName + ".css"), cssString, false);
         }
