@@ -2,6 +2,7 @@ Apache Royale Compiler 0.9.3
 =================
  
  - [CSS selectors can start with "::" and compiler adds "."](https://github.com/apache/royale-compiler/issues/40)
+ - [CSS file must be minified in js-release](https://github.com/apache/royale-compiler/issues/39)
  - [filter CSS property makes compiler crash bug](https://github.com/apache/royale-compiler/issues/38)
  - [Selector element with "+" crash](https://github.com/apache/royale-compiler/issues/37)
  - [Slow Compiler Build Time enhancement](https://github.com/apache/royale-compiler/issues/36)
