@@ -572,12 +572,17 @@ FUNCTIONS : '-moz-linear-gradient'
           | 'brightness'
           | 'contrast'
           | 'drop-shadow'
-          | 'grayscale'
           | 'hue-rotate'
           | 'invert'
           | 'saturate'
           | 'sepia'
           ;
+/**
+ * Removed for now this two since conflicts with same keywords in old fucntion
+ * This will be fixed later  
+ *        | 'grayscale'
+ *        | 'opacity'
+ */
 NOT
     :  'not'
     ;
