@@ -151,6 +151,16 @@ public class SourceFragmentsReader extends StringReader
         int logicalColumn = token.getColumn();
         int physicalColumn = logicalColumn + sourceFragments[i].getPhysicalColumn();
         token.setColumn(physicalColumn);
+        
+        // Convert token's 'end line' from logical to physical.
+        int logicalEndLine = token.getEndLine();
+        int physicalEndLine = logicalEndLine + sourceFragments[i].getPhysicalLine();
+        token.setEndLine(physicalEndLine);
+        
+        // Convert token's 'end column' from logical to physical.
+        int logicalEndColumn = token.getEndColumn();
+        int physicalEndColumn = logicalEndColumn + sourceFragments[i].getPhysicalColumn();
+        token.setEndColumn(physicalEndColumn);
     }
     
     private int getFragmentIndexForStart(int start)

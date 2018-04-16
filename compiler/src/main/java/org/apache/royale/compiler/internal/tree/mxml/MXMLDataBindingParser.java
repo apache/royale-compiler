@@ -282,7 +282,8 @@ class MXMLDataBindingParser
 
         node.setLocation(sourceLocation.getSourcePath(),
                          sourceLocation.getAbsoluteStart(), sourceLocation.getAbsoluteEnd(),
-                         sourceLocation.getLine(), sourceLocation.getColumn());
+                         sourceLocation.getLine(), sourceLocation.getColumn(),
+                         sourceLocation.getEndLine(), sourceLocation.getEndColumn());
 
         // Build a list of children for the MXMLConcatenatedDataBindingNode.
         List<IASNode> children = new ArrayList<IASNode>();
