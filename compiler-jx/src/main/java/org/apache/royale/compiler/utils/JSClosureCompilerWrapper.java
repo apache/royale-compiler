@@ -394,7 +394,7 @@ public class JSClosureCompilerWrapper
         String[] asdocTags = new String[] {"productversion", 
         		"playerversion", "langversion", "copy", 
         		"asparam", "asreturn", "asprivate",
-        		"royaleignoreimport", "royaleignorecoercion", "royalenoimplicitstringconversion"};
+        		"royaleignoreimport", "royaleignorecoercion", "royaleemitcoercion", "royalenoimplicitstringconversion"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
