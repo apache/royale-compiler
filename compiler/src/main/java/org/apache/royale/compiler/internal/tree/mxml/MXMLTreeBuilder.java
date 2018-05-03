@@ -468,10 +468,17 @@ public class MXMLTreeBuilder
         {
             String typeName = type.getQualifiedName();
             if (typeName.equals(IASLanguageConstants.String) ||
-                typeName.equals(IASLanguageConstants.Object)||
+                typeName.equals(IASLanguageConstants.Object) ||
                 typeName.equals(IASLanguageConstants.ANY_TYPE))
             {
                 value = "";
+            }
+            if (typeName.equals(IASLanguageConstants.Number) ||
+                typeName.equals(IASLanguageConstants._int) ||
+                typeName.equals(IASLanguageConstants.uint) ||
+                typeName.equals(IASLanguageConstants.Boolean))
+            {
+                return null;
             }
         }
         
