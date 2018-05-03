@@ -1745,6 +1745,12 @@ public class MethodBodySemanticChecker
                 );
         }
 
+        while (iNode.getSourcePath().contains("compiler-jx") &&
+        		iNode.getSourcePath().contains("config.as"))
+		{
+        	iNode = iNode.getParent();
+		}
+        	
         return new AccessUndefinedPropertyProblem(iNode, unknown_name);
     }
     
