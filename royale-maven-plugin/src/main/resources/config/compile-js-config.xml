@@ -99,6 +99,9 @@
         <component-factory-class>org.apache.royale.core.ClassFactory</component-factory-class>
         <component-factory-interface>org.apache.royale.core.IFactory</component-factory-interface>
 
+        <locale>
+        </locale>
+        
         <show-deprecation-warnings>false</show-deprecation-warnings>
 
 #foreach($define in $defines)        <define>
