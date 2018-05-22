@@ -549,14 +549,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     {
     	if (super.keepRule(newRule))
     		return true;
-    	
-    	// include all rules not found in defaults.css
-    	// theoretically, defaults.css rules were
-    	// properly added in the super call.
-    	String sp = newRule.getSourcePath();
-    	if (!sp.contains("defaults.css"))
-    		return true;
-    	
+    	    	
     	// might need to loop over all selectors in selector group
     	if (newRule.getSelectorGroup().size() > 0)
     	{
