@@ -143,34 +143,60 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline(" */");
         writeNewline();
 
-        /* goog.provide('x');\n\n */
-        write(JSGoogEmitterTokens.GOOG_PROVIDE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(qname, true));
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        writeNewline(ASEmitterTokens.SEMICOLON);
-        
-        HashMap<String, String> internalClasses = getEmitter().getModel().getInternalClasses();
-        if (internalClasses.size() > 0)
+        if (!isExterns)
         {
-        	ArrayList<String> classesInOrder = new ArrayList<String>();
-        	for (String internalClass : internalClasses.keySet())
+	        /* goog.provide('x');\n\n */
+	        write(JSGoogEmitterTokens.GOOG_PROVIDE);
+	        write(ASEmitterTokens.PAREN_OPEN);
+	        write(ASEmitterTokens.SINGLE_QUOTE);
+	        write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(qname, true));
+	        write(ASEmitterTokens.SINGLE_QUOTE);
+	        write(ASEmitterTokens.PAREN_CLOSE);
+	        writeNewline(ASEmitterTokens.SEMICOLON);
+	        
+	        HashMap<String, String> internalClasses = getEmitter().getModel().getInternalClasses();
+	        if (internalClasses.size() > 0)
+	        {
+	        	ArrayList<String> classesInOrder = new ArrayList<String>();
+	        	for (String internalClass : internalClasses.keySet())
+	        	{
+	        		classesInOrder.add(internalClass);
+	        	}
+	        	Collections.sort(classesInOrder);
+	        	for (String internalClass : classesInOrder)
+	        	{
+	        	       /* goog.provide('x');\n\n */
+	                write(JSGoogEmitterTokens.GOOG_PROVIDE);
+	                write(ASEmitterTokens.PAREN_OPEN);
+	                write(ASEmitterTokens.SINGLE_QUOTE);
+	                write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(internalClass, true));
+	                write(ASEmitterTokens.SINGLE_QUOTE);
+	                write(ASEmitterTokens.PAREN_CLOSE);
+	                writeNewline(ASEmitterTokens.SEMICOLON);
+	        	}
+	        }
+        }
+        else
+        {
+        	String pkgName = definition.getQualifiedName();
+        	if (pkgName.length() > 0)
         	{
-        		classesInOrder.add(internalClass);
-        	}
-        	Collections.sort(classesInOrder);
-        	for (String internalClass : classesInOrder)
-        	{
-        	       /* goog.provide('x');\n\n */
-                write(JSGoogEmitterTokens.GOOG_PROVIDE);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(((JSRoyaleEmitter)getEmitter()).formatQualifiedName(internalClass, true));
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                writeNewline(ASEmitterTokens.SEMICOLON);
+        		String[] parts = pkgName.split("\\.");
+        		String current = "";
+        		boolean firstOne = true;
+        		for (String part : parts)
+        		{
+        			current += part;
+        			if (firstOne)
+        			{
+        				write("var ");
+        				firstOne = false;
+        			}
+        			write(current);
+        			write(" = {}");
+	                writeNewline(ASEmitterTokens.SEMICOLON);
+	                current += ".";
+        		}
         	}
         }
         writeNewline();
