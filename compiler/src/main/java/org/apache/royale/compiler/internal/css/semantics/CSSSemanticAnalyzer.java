@@ -349,6 +349,11 @@ public class CSSSemanticAnalyzer
     private static class MatchedCSSRulePredicate implements Predicate<ICSSRule>
     {
         /**
+         * The project
+         */
+        private final IRoyaleProject project;
+
+        /**
          * QNames of the definitions to be matched by the CSS rules.
          */
         private final ImmutableSet<String> qnames;
@@ -366,13 +371,14 @@ public class CSSSemanticAnalyzer
          * @param resolvedSelectors A map of selectors resolved to class
          * definitions.
          */
-        public MatchedCSSRulePredicate(final ImmutableSet<String> qnames,
+        public MatchedCSSRulePredicate(final ImmutableSet<String> qnames, IRoyaleProject project,
                                        final ImmutableMap<ICSSSelector, String> resolvedSelectors)
         {
             assert qnames != null : "Expected a set of definition for the CSS rules to match.";
             assert resolvedSelectors != null : "Expected a map of selectors resolved to class definitions.";
             this.qnames = qnames;
             this.resolvedSelectors = resolvedSelectors;
+            this.project = project;
         }
 
         /**
@@ -383,6 +389,9 @@ public class CSSSemanticAnalyzer
         @Override
         public boolean apply(final ICSSRule rule)
         {
+        	if (!project.isPlatformRule(rule))
+        		return false;
+        	
             for (final ICSSSelector selector : rule.getSelectorGroup())
             {
                 if (isWildcardSelector(selector))
@@ -487,7 +496,7 @@ public class CSSSemanticAnalyzer
         }
         else
         {
-            predicate = new MatchedCSSRulePredicate(qnames, resolvedSelectors);
+            predicate = new MatchedCSSRulePredicate(qnames, royaleProject, resolvedSelectors);
         }
 
         // Cache the result of selector resolution on the session. 
