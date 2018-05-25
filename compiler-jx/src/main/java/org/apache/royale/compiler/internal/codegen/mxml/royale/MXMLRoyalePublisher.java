@@ -374,6 +374,8 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // compiled js files created by the sources of the current project plus the
         // js files of used dependencies.
         ArrayList<String> fileList = gdw.getListOfFiles(project, problems);
+        if (fileList == null)
+        	return false; // some error occurred
         for (String file : fileList) {
             compilerWrapper.addJSSourceFile(file);
         }

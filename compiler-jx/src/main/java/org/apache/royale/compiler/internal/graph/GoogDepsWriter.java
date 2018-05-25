@@ -44,6 +44,7 @@ import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.problems.MainDefinitionQNameProblem;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
@@ -90,7 +91,8 @@ public class GoogDepsWriter {
 
 		if (dps == null)
 		{
-			buildDB();
+			if (!buildDB())
+				return null;
 			dps = sort();
 		}
 		visited.clear();
@@ -120,7 +122,8 @@ public class GoogDepsWriter {
 	    this.problems = problems;
 	    if (dps == null)
 	    {
-	    	buildDB();
+	    	if (!buildDB())
+	    		return "";
 	    	dps = sort();
 	    }
 	    StringBuilder sb = new StringBuilder();
@@ -213,10 +216,21 @@ public class GoogDepsWriter {
 	    return className.startsWith("goog.");
 	}
 	
-	private void buildDB()
+	private boolean buildDB()
 	{
 		graph = new DependencyGraph();
+		if (isGoogClass(mainName))
+		{
+			problems.add(new MainDefinitionQNameProblem("Google Closure Library", mainName));
+			return false;
+		}
+		if (isExternal(mainName))
+		{
+			problems.add(new MainDefinitionQNameProblem("External Libraries", mainName));
+			return false;
+		}
 		addDeps(mainName);
+		return true;
 	}
 	
     public ArrayList<String> additionalHTML = new ArrayList<String>();
