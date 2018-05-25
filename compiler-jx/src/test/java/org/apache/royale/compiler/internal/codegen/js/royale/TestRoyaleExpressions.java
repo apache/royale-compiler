@@ -195,6 +195,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         assertOut("a = a && b");
     }
 
+    @Test
+    public void testVisitBinaryOperatorNode_LogicalAndAssignmentInClass()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("public var foo:Boolean;private function test(target:RoyaleTest_A):void { target.foo &&= foo }", IBinaryOperatorNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("target.foo = target.foo && this.foo");
+    }
+
     @Override
     @Test
     public void testVisitBinaryOperatorNode_LogicalOrAssignment()

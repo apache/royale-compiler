@@ -1095,11 +1095,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             if (id == ASTNodeID.Op_LogicalAndAssignID
                     || id == ASTNodeID.Op_LogicalOrAssignID)
             {
-                IIdentifierNode lnode = (IIdentifierNode) node
+                IExpressionNode lnode = node
                         .getLeftOperandNode();
 
                 writeToken(ASEmitterTokens.EQUAL);
-                writeToken(lnode.getName());
+                getWalker().walk(lnode);
+                write(ASEmitterTokens.SPACE);
                 write((id == ASTNodeID.Op_LogicalAndAssignID) ? ASEmitterTokens.LOGICAL_AND
                         : ASEmitterTokens.LOGICAL_OR);
             }
