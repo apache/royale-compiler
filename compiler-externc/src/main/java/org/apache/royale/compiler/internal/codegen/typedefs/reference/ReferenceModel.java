@@ -337,7 +337,7 @@ public class ReferenceModel
 
     //--------------------------------------------------------------------------
 
-    public ExcludedMember isExcludedClass(ClassReference classReference)
+    public ExcludedMember isExcludedClass(BaseReference classReference)
     {
         return getConfiguration().isExcludedClass(classReference);
     }

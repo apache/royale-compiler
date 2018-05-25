@@ -151,6 +151,9 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (FunctionReference reference : model.getFunctions())
         {
+            if (model.isExcludedClass(reference) != null)
+                continue;
+            
             if (model.getConfiguration().isExternalTypedef(reference))
                 continue;
             

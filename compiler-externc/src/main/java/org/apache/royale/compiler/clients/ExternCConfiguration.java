@@ -207,7 +207,7 @@ public class ExternCConfiguration extends Configuration
         return false;
     }
 
-    public ExcludedMember isExcludedClass(ClassReference classReference)
+    public ExcludedMember isExcludedClass(BaseReference classReference)
     {
         for (ExcludedMember memeber : excludesClass)
         {
@@ -389,7 +389,7 @@ public class ExternCConfiguration extends Configuration
             this.description = description;
         }
 
-        public boolean isExcluded(ClassReference classReference,
+        public boolean isExcluded(BaseReference classReference,
                                   MemberReference memberReference)
         {
             if (memberReference == null)
