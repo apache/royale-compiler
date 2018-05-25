@@ -76,6 +76,7 @@ import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.mxml.MXMLManifestManager;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.internal.projects.DependencyGraph.Edge;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
@@ -2184,7 +2185,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         {
             // now check to see if the class was imported in the window package.
             ASScope pkgScope = (ASScope)scope;
-            while (!(pkgScope instanceof PackageScope))
+            while (!(pkgScope instanceof PackageScope || pkgScope instanceof ASFileScope))
                 pkgScope = pkgScope.getContainingScope();
             String[] imports = pkgScope.getImports();
             String windowName = "window." + name;
