@@ -29,6 +29,7 @@ import org.apache.royale.compiler.tree.as.IForLoopNode;
 import org.apache.royale.compiler.tree.as.IIfNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.INamespaceNode;
 import org.apache.royale.compiler.tree.as.ISwitchNode;
 import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
@@ -47,6 +48,24 @@ public class TestRoyaleStatements extends TestGoogStatements
         backend = createBackend();
         project = new RoyaleJSProject(workspace, backend);
         super.setUp();
+    }
+    
+    @Test
+    public void testNamespaceStatement()
+    {
+        INamespaceNode node = (INamespaceNode) getNode("public namespace foo;",
+        		INamespaceNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitNamespace(node);
+        assertOut("foo = new Namespace('foo');");
+    }
+    
+    @Test
+    public void testNamespaceStatementWithURI()
+    {
+        INamespaceNode node = (INamespaceNode) getNode("public namespace foo = 'bar';",
+        		INamespaceNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitNamespace(node);
+        assertOut("foo = new Namespace('bar');");
     }
     
     @Test

@@ -476,7 +476,15 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         writeToken(ASEmitterTokens.NEW);
         write(IASLanguageConstants.Namespace);
         write(ASEmitterTokens.PAREN_OPEN);
-        getWalker().walk(node.getNamespaceURINode());
+        IExpressionNode uriNode = node.getNamespaceURINode();
+        if (uriNode == null)
+        {
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(node.getName());
+            write(ASEmitterTokens.SINGLE_QUOTE);
+        }
+        else
+        	getWalker().walk(uriNode);
         write(ASEmitterTokens.PAREN_CLOSE);
         write(ASEmitterTokens.SEMICOLON);
     }
