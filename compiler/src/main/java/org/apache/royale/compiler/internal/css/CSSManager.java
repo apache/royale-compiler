@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -181,6 +182,10 @@ public class CSSManager implements ICSSManager
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
         final ISWC swc = swcManager.get(swcFile);
+        List<String> excludedCSSFiles = royaleProject.getTargetSettings().getExcludeDefaultsCSSFiles();
+        String defaultsCSS = swcFile.getName() + ":" + "defaults.css";
+        if (excludedCSSFiles.contains(defaultsCSS)) 
+        	return null;
         return cache.getDefaultsCSS(swc, royaleProject.getCompatibilityVersion());
     }
     
@@ -234,8 +239,11 @@ public class CSSManager implements ICSSManager
         final ImmutableList.Builder<ICSSDocument> builder = new ImmutableList.Builder<ICSSDocument>();
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cssCache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
+        List<String> excludedCSSFiles = royaleProject.getTargetSettings().getExcludeDefaultsCSSFiles();
         for (final IFileSpecification themeFile : royaleProject.getThemeFiles())
         {
+        	if (excludedCSSFiles.contains(themeFile.getPath()))
+        		continue;
             try
             {
                 final ICSSDocument css;

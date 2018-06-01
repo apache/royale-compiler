@@ -193,10 +193,7 @@ public class CSSCompilationSession
         fontFaces = new ArrayList<CSSFontFace>();
         
         for (final ICSSDocument cssDocument : cssDocuments)
-        {
-        	if (excludedCSSFiles.contains(cssDocument.getSourcePath()))
-        		continue;
-        			
+        {        			
             for (final ICSSRule newRule : cssDocument.getRules())
             {
                 if (keepRule(newRule))
