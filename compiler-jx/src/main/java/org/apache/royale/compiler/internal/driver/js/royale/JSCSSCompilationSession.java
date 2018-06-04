@@ -188,10 +188,33 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	        	}
 	        	if (!htmlElementNames.contains(s.toLowerCase()))
 	        	{
-	        		int pipe = s.indexOf("|");
-	        		if (pipe != -1)
-	        			s = s.substring(pipe + 1);
-	        		s = "." + s;
+	        		if (s.indexOf(" ") > 0)
+	        		{
+	        			String parts[] = s.split(" ");
+	        			int n = parts.length;
+	        			s = "";
+	        			for (int i = 0; i < n; i++)
+	        			{
+	        				if (i != 0)
+	        					s += " ";
+	        				String part = parts[i];
+	        				if (!part.startsWith(".") && !part.startsWith("*") && !part.startsWith("#") && !part.startsWith("::"))
+	        				{
+	        					int pipe = part.indexOf("|");
+				        		if (pipe != -1)
+				        			part = part.substring(pipe + 1);
+				        		part = "." + part;
+	        				}
+			        		s += part;
+	        			}
+	        		}
+	        		else
+	        		{
+		        		int pipe = s.indexOf("|");
+		        		if (pipe != -1)
+		        			s = s.substring(pipe + 1);
+		        		s = "." + s;
+	        		}
 	        	}
 	        	if (condition != null)
 	        		s = s + condition;
