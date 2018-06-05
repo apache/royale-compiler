@@ -576,10 +576,17 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     	// might need to loop over all selectors in selector group
     	if (newRule.getSelectorGroup().size() > 0)
     	{
-	    	String elementName = newRule.getSelectorGroup().get(0).getElementName();
+    		ICSSSelector selector = newRule.getSelectorGroup().get(0);
+	    	String elementName = selector.getElementName();
 	    	if (elementName != null)
+	    	{
 	    		if (htmlElementNames.contains(elementName))
 	    			return true;
+	    	}
+	    	else
+	    	{
+	    		return true;
+	    	}
     	}
         return false;
     }
