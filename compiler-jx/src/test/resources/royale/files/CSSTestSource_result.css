@@ -173,4 +173,9 @@ input+.innerMenu {
 }
 
 
+.blurfilter {
+        filter: blur(5px);
+}
+
+
 
