@@ -46,6 +46,7 @@ import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.problems.CSSUnresolvedClassReferenceProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -182,9 +183,10 @@ public class CSSManager implements ICSSManager
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
         final ISWC swc = swcManager.get(swcFile);
-        List<String> excludedCSSFiles = royaleProject.getTargetSettings().getExcludeDefaultsCSSFiles();
+        ITargetSettings ts = royaleProject.getTargetSettings();
+        List<String> excludedCSSFiles = (ts != null) ? ts.getExcludeDefaultsCSSFiles() : null;
         String defaultsCSS = swcFile.getName() + ":" + "defaults.css";
-        if (excludedCSSFiles.contains(defaultsCSS)) 
+        if (excludedCSSFiles != null && excludedCSSFiles.contains(defaultsCSS)) 
         	return null;
         return cache.getDefaultsCSS(swc, royaleProject.getCompatibilityVersion());
     }
@@ -239,10 +241,11 @@ public class CSSManager implements ICSSManager
         final ImmutableList.Builder<ICSSDocument> builder = new ImmutableList.Builder<ICSSDocument>();
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cssCache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
-        List<String> excludedCSSFiles = royaleProject.getTargetSettings().getExcludeDefaultsCSSFiles();
+        ITargetSettings ts = royaleProject.getTargetSettings();
+        List<String> excludedCSSFiles = (ts != null) ? ts.getExcludeDefaultsCSSFiles() : null;
         for (final IFileSpecification themeFile : royaleProject.getThemeFiles())
         {
-        	if (excludedCSSFiles.contains(themeFile.getPath()))
+        	if (excludedCSSFiles != null && excludedCSSFiles.contains(themeFile.getPath()))
         		continue;
             try
             {
