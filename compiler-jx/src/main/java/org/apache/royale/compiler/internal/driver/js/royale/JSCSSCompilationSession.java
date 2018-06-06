@@ -93,9 +93,9 @@ public class JSCSSCompilationSession extends CSSCompilationSession
      */
     public static String minifyCSSString(String cssString)
     {
+        // Remove comments
         cssString = cssString.replaceAll("/\\*[\\d\\D]*?\\*/", "");
         cssString = cssString.replace(";}", "}");
-        cssString = cssString.replaceAll("[a-zA-Z]+#", "#");
         cssString = cssString.replaceAll("[\\n\\r]+\\s*", "");
         cssString = cssString.replaceAll("\\s+", " ");
         cssString = cssString.replaceAll("\\s?([:,;{}])\\s?", "$1");
