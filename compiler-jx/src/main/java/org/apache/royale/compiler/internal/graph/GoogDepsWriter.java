@@ -72,6 +72,7 @@ public class GoogDepsWriter {
 	private String outputFolderPath;
 	private String mainName;
 	private List<String> otherPaths;
+	private List<String> sourceExternFiles;
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
 	private ArrayList<GoogDep> dps;
@@ -84,10 +85,11 @@ public class GoogDepsWriter {
 	
 	public boolean needCSS = false;
 	
-	public ArrayList<String> getListOfFiles(CompilerProject project, ProblemQuery problems)
+	public ArrayList<String> getListOfFiles(CompilerProject project, List<String> sourceExternFiles, ProblemQuery problems)
 	{
 		this.project = project;
 		this.problems = problems;
+		this.sourceExternFiles = sourceExternFiles;
 
 		if (dps == null)
 		{
@@ -99,7 +101,10 @@ public class GoogDepsWriter {
 		ArrayList<String> files = new ArrayList<String>();
 		for (GoogDep gd : dps)
 		{
-			files.add(gd.filePath);
+			if (gd.fileInfo.isExtern)
+				sourceExternFiles.add(gd.filePath);
+			else
+				files.add(gd.filePath);
 			visited.put(gd.className, gd);
 		}
 		if (removeCirculars)
@@ -109,7 +114,12 @@ public class GoogDepsWriter {
 			for (GoogDep gd : depMap.values())
 			{
 				if (!visited.containsKey(gd.className))
-					files.add(gd.filePath);			
+				{
+					if (gd.fileInfo.isExtern)
+						sourceExternFiles.add(gd.filePath);
+					else
+						files.add(gd.filePath);
+				}
 			}
 			files.add(mainDep.filePath);
 		}
@@ -175,7 +185,7 @@ public class GoogDepsWriter {
 					{
 						for (String d : gd.fileInfo.impls)
 						{
-							if (!restOfDeps.contains(d))
+							if (!restOfDeps.contains(d) && !gd.fileInfo.isExtern)
 								restOfDeps.add(d);
 						}
 					}
@@ -184,14 +194,14 @@ public class GoogDepsWriter {
 				ICompilationUnit unit = requireMap.get(gd.className);
 				if (unit == null)
 				{
-					if (!restOfDeps.contains(gd.className))
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern)
 						restOfDeps.add(gd.className);
 					continue;
 				}
 				Set<ICompilationUnit> deps = graph.getDirectReverseDependencies(unit, dependencyTypes);
 				if (deps.size() == 0)
 				{
-					if (!restOfDeps.contains(gd.className))
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern)
 						restOfDeps.add(gd.className);
 				}
 			}
@@ -673,30 +683,38 @@ public class GoogDepsWriter {
 						    				}
 						    				else
 						    				{
-							        			token = JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken();
-							    				c = line.indexOf(token);
-							    				if (c > -1)
-							    				{
-							    					c2 = line.indexOf("*/");
-							    					line = line.substring(c + token.length(), c2);
-								        			fi.deps = new ArrayList<String>();
-								        			if (line.length() > 2) // don't add blank or space if no deps
-								        				fi.deps.addAll(Arrays.asList(line.split(",")));
-							    					fi.depsLine = i;
-							    				}
-							    				else if (fi.depsLine == 0)
-							    				{
-							    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
-							    					c = line.indexOf(token);
-							    					if (c > -1)
-							    					{
-							                            c2 = line.indexOf(")");
-							                            String s = line.substring(c + 14, c2 - 1);
-							                            if (fi.deps == null)
-							                            	fi.deps = new ArrayList<String>();
-							                            fi.deps.add(s);
-							    					}
-							    				}
+						    					c = line.indexOf("@externs");
+						    					if (c > -1)
+						    					{
+						    						fi.isExtern = true;
+						    					}
+						    					else
+						    					{
+								        			token = JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken();
+								    				c = line.indexOf(token);
+								    				if (c > -1)
+								    				{
+								    					c2 = line.indexOf("*/");
+								    					line = line.substring(c + token.length(), c2);
+									        			fi.deps = new ArrayList<String>();
+									        			if (line.length() > 2) // don't add blank or space if no deps
+									        				fi.deps.addAll(Arrays.asList(line.split(",")));
+								    					fi.depsLine = i;
+								    				}
+								    				else if (fi.depsLine == 0)
+								    				{
+								    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
+								    					c = line.indexOf(token);
+								    					if (c > -1)
+								    					{
+								                            c2 = line.indexOf(")");
+								                            String s = line.substring(c + 14, c2 - 1);
+								                            if (fi.deps == null)
+								                            	fi.deps = new ArrayList<String>();
+								                            fi.deps.add(s);
+								    					}
+								    				}
+						    					}
 							        		}
 						        		}
 					        		}
@@ -976,5 +994,6 @@ public class GoogDepsWriter {
 		public int suppressLine;
 		public int fileoverviewLine;
 		public int googProvideLine;
+		public boolean isExtern;
 	}
 }
