@@ -676,9 +676,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 && !EmitterUtils.hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
 
-        emitRestParameterCodeBlock(node);
+        if (!getModel().isExterns)
+        	emitRestParameterCodeBlock(node);
 
-        emitDefaultParameterCodeBlock(node);
+        if (!getModel().isExterns)
+        	emitDefaultParameterCodeBlock(node);
     }
 
     // XXX Dead
