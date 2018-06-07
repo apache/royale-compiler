@@ -45,6 +45,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
+import org.apache.royale.compiler.internal.tree.as.InterfaceNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
@@ -65,6 +66,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
     @Override
     public void emit(IPackageDefinition definition)
     {
+        RoyaleJSProject project = (RoyaleJSProject) getProject();
         IASScope containedScope = definition.getContainedScope();
         ITypeDefinition type = EmitterUtils.findType(containedScope
                 .getAllLocalDefinitions());
@@ -78,6 +80,17 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             {
                 ClassNode classNode = (ClassNode) typeNode;
                 ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
+                if (asDoc != null)
+                {
+                    String asDocString = asDoc.commentNoEnd();
+                    isExterns = asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken());
+                    getEmitter().getModel().isExterns = isExterns;
+                }
+            }
+            else if (typeNode instanceof InterfaceNode)
+            {
+            	InterfaceNode interfaceNode = (InterfaceNode) typeNode;
+                ASDocComment asDoc = (ASDocComment) interfaceNode.getASDocComment();
                 if (asDoc != null)
                 {
                     String asDocString = asDoc.commentNoEnd();
@@ -118,7 +131,6 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             return;
         }
 
-        RoyaleJSProject project = (RoyaleJSProject) getProject();
         List<File> sourcePaths = project.getSourcePath();
         String sourceName = definition.getSourcePath();
         for (File sourcePath : sourcePaths)
@@ -187,6 +199,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         		for (String part : parts)
         		{
         			current += part;
+    				writeNewline("/** @const */");
         			if (firstOne)
         			{
         				write("var ");
@@ -205,6 +218,8 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
     public void emitContents(IPackageDefinition definition)
     {
+        if (getEmitter().getModel().isExterns) return;
+
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
@@ -309,7 +324,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         }
 
-        boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname);
+        boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname, royaleProject);
         boolean emitsInterfaces = emitInterfaces(interfacesList, writtenRequires);
 
         // erikdebruin: Add missing language feature support, with e.g. 'is' and
@@ -349,7 +364,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline();
     }
 
-    private boolean emitRequires(List<String> requiresList, List<String> writtenRequires, String cname)
+    private boolean emitRequires(List<String> requiresList, List<String> writtenRequires, String cname, RoyaleJSProject project)
     {
         boolean emitsRequires = false;
         if (requiresList != null)
@@ -366,6 +381,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 if (imp.equals(cname))
                     continue;
 
+                if (project.sourceExterns.contains(imp))
+                	continue;
+                
                 if (NativeUtils.isNative(imp))
                 {
                     if (!(imp.equals("QName") || imp.equals("Namespace") || imp.equals("XML") || imp.equals("XMLList")))
