@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.clients.JSConfiguration;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.config.Configuration;
@@ -41,6 +42,7 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
@@ -57,8 +59,11 @@ import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 
 import com.google.common.collect.ImmutableList;
 
@@ -93,7 +98,7 @@ public class RoyaleJSProject extends RoyaleProject
     public ICompilationUnit mainCU;
 
     @Override
-    public synchronized void addDependency(ICompilationUnit from, ICompilationUnit to,
+    public void addDependency(ICompilationUnit from, ICompilationUnit to,
                               DependencyType dt, String qname)
     {
         List<IDefinition> dp = to.getDefinitionPromises();
@@ -102,86 +107,120 @@ public class RoyaleJSProject extends RoyaleProject
             return;
 
         IDefinition def = dp.get(0);
-        // IDefinition def = to.getDefinitionPromises().get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
+        IDefinitionNode defNode = actualDef != null ? actualDef.getNode() : null;
+        if (to.getCompilationUnitType() == UnitType.AS_UNIT && (defNode instanceof IClassNode || defNode instanceof IInterfaceNode))
+        {
+        	String defname = def.getQualifiedName();
+	        ASDocComment asDoc = (defNode instanceof IClassNode) ? 
+	        						(ASDocComment) ((IClassNode)defNode).getASDocComment() :
+	        						(ASDocComment) ((IInterfaceNode)defNode).getASDocComment();
+	        if (asDoc != null)
+	        {
+	            String asDocString = asDoc.commentNoEnd();
+	            if (asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken()))
+	            {
+	            	if (!sourceExterns.contains(defname))
+	            		sourceExterns.add(defname);
+	            }
+	        }
+        }
+        // IDefinition def = to.getDefinitionPromises().get(0);
         boolean isInterface = (actualDef instanceof InterfaceDefinition) && (dt == DependencyType.INHERITANCE);
         if (!isInterface)
         {
             if (from != to)
             {
-                HashMap<String, DependencyType> reqs;
-                if (requires.containsKey(from))
-                    reqs = requires.get(from);
-                else
-                {
-                    reqs = new HashMap<String, DependencyType>();
-                    requires.put(from, reqs);
-                }
-                if (reqs.containsKey(qname))
-                {
-                    // inheritance is important so remember it
-                    if (reqs.get(qname) != DependencyType.INHERITANCE)
-                    {
-                        if (!isExternalLinkage(to))
-                            reqs.put(qname, dt);
-                    }
-                }
-                else if (!isExternalLinkage(to) || qname.equals("Namespace"))
-                {
-                    if (qname.equals("XML"))
-                        needXML = true;
-                    reqs.put(qname, dt);
-                }
-                if (jsModules.containsKey(from))
-                {
-                    reqs = jsModules.get(from);
-                }
-                else
-                {
-                    reqs = new HashMap<String, DependencyType>();
-                    jsModules.put(from, reqs);
-                }
-                IMetaTag tag = getJSModuleMetadata(to);
-                if (tag != null)
-                {
-                    IMetaTagAttribute nameAttribute = tag.getAttribute("name");
-                    if (nameAttribute != null)
-                    {
-                        reqs.put(nameAttribute.getValue(), dt);
-                    }
-                    else
-                    {
-                        reqs.put(qname, dt);
-                    }
-                }
+            	updateRequiresMap(from, to, dt, qname);
+            	updateJSModulesMap(from, to, dt, qname);
             }
         }
         else
         {
             if (from != to)
             {
-                HashMap<String, String> interfacesArr;
-
-                if (interfaces.containsKey(from))
-                {
-                    interfacesArr = interfaces.get(from);
-                }
-                else
-                {
-                    interfacesArr = new HashMap<String, String>();
-                    interfaces.put(from, interfacesArr);
-                }
-
-                if (!interfacesArr.containsKey(qname))
-                {
-                    interfacesArr.put(qname, qname);
-                }
+            	updateInterfacesMap(from, to, dt, qname);
             }
         }
 
         super.addDependency(from, to, dt, qname);
     }
+    
+    private synchronized void updateRequiresMap(ICompilationUnit from, ICompilationUnit to, 
+    																		DependencyType dt, String qname)
+    {
+        HashMap<String, DependencyType> reqs;
+        if (requires.containsKey(from))
+            reqs = requires.get(from);
+        else
+        {
+            reqs = new HashMap<String, DependencyType>();
+            requires.put(from, reqs);
+        }
+        if (reqs.containsKey(qname))
+        {
+            // inheritance is important so remember it
+            if (reqs.get(qname) != DependencyType.INHERITANCE)
+            {
+                if (!isExternalLinkage(to))
+                    reqs.put(qname, dt);
+            }
+        }
+        else if (!isExternalLinkage(to) || qname.equals("Namespace"))
+        {
+            if (qname.equals("XML"))
+                needXML = true;
+            reqs.put(qname, dt);
+        }    	
+    }
 
+    private synchronized void updateJSModulesMap(ICompilationUnit from, ICompilationUnit to, 
+			DependencyType dt, String qname)
+    {
+        HashMap<String, DependencyType> reqs;
+        if (jsModules.containsKey(from))
+        {
+            reqs = jsModules.get(from);
+        }
+        else
+        {
+            reqs = new HashMap<String, DependencyType>();
+            jsModules.put(from, reqs);
+        }
+        IMetaTag tag = getJSModuleMetadata(to);
+        if (tag != null)
+        {
+            IMetaTagAttribute nameAttribute = tag.getAttribute("name");
+            if (nameAttribute != null)
+            {
+                reqs.put(nameAttribute.getValue(), dt);
+            }
+            else
+            {
+                reqs.put(qname, dt);
+            }
+        }
+    }
+    
+    private synchronized void updateInterfacesMap(ICompilationUnit from, ICompilationUnit to, 
+			DependencyType dt, String qname)
+    {
+        HashMap<String, String> interfacesArr;
+        if (interfaces.containsKey(from))
+        {
+            interfacesArr = interfaces.get(from);
+        }
+        else
+        {
+            interfacesArr = new HashMap<String, String>();
+            interfaces.put(from, interfacesArr);
+        }
+
+        if (!interfacesArr.containsKey(qname))
+        {
+            interfacesArr.put(qname, qname);
+        }
+    }
     public boolean needLanguage;
     public boolean needCSS;
     public boolean needXML;
@@ -189,6 +228,9 @@ public class RoyaleJSProject extends RoyaleProject
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
 
+    // definitions that had @externs in the source
+    public ArrayList<String> sourceExterns = new ArrayList<String>();
+    
     // definitions that should be considered external linkage
     public Collection<String> unitTestExterns;
 
