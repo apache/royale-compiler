@@ -25,6 +25,7 @@ import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.tree.as.ILiteralContainerNode;
 import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.junit.Test;
 
@@ -67,5 +68,14 @@ public class TestDynamicAccessUnknownMembers extends ASTestBase
                 "public dynamic class KnownMember { public function UnknownMember() { this.unknownMember = 4; } public var knownMember:Number; }", IMemberAccessExpressionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitMemberAccessExpression(node);
         assertOut("this[\"unknownMember\"]");
+    }
+
+    @Test
+	public void testVisitObjectLiteral()
+    {
+        ILiteralContainerNode node = (ILiteralContainerNode) getNode(
+                "var obj:Object = { one: 1, \"two\": 2 }", ILiteralContainerNode.class, WRAP_LEVEL_MEMBER);
+        asBlockWalker.visitLiteral(node);
+        assertOut("{\"one\":1, \"two\":2}");
     }
 }

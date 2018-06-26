@@ -24,7 +24,10 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.IObjectLiteralValuePairNode;
 
 public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
@@ -39,9 +42,32 @@ public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
     public void emit(IObjectLiteralValuePairNode node)
     {
         ISourceLocation location = (ISourceLocation) node;
+        
+        boolean dynamicAccessUnknownMembers = false;
+        ICompilerProject project = getProject();
+        if(project instanceof RoyaleJSProject)
+        {
+            RoyaleJSProject fjsProject = (RoyaleJSProject) project;
+            if(fjsProject.config != null)
+            {
+                dynamicAccessUnknownMembers = fjsProject.config.getJsDynamicAccessUnknownMembers();
+            }
+        }
 
         IExpressionNode nameNode = node.getNameNode();
-        getWalker().walk(nameNode);
+        if(dynamicAccessUnknownMembers && nameNode instanceof IIdentifierNode)
+        {
+            IIdentifierNode identifierNode = (IIdentifierNode) nameNode;
+            startMapping(location, nameNode);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(identifierNode.getName());
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            endMapping(location);
+        }
+        else
+        {
+            getWalker().walk(nameNode);
+        }
 
         startMapping(location, nameNode);
         write(ASEmitterTokens.COLON);
