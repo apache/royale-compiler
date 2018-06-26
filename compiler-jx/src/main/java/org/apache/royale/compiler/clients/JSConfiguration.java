@@ -137,6 +137,32 @@ public class JSConfiguration extends Configuration
     }
 
     //
+    // 'js-dynamic-access-unknown-members'
+    //
+
+    private boolean jsDynamicAccessUnknownMembers = false;
+
+    public boolean getJsDynamicAccessUnknownMembers()
+    {
+        return jsDynamicAccessUnknownMembers;
+    }
+
+    /**
+     * If the definition of a member cannot be resolved, emit dynamic access
+     * instead of normal member access. Ensures that dynamic members aren't
+     * renamed.
+     * 
+     * <code>myObject.memberAccess</code> becomes <code>myObject["memberAccess"]</code>
+     */
+    @Config
+    @Mapping("js-dynamic-access-unknown-members")
+    public void setJsDynamicAccessUnknownMembers(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsDynamicAccessUnknownMembers = value;
+    }
+
+    //
     // 'compiler.js-external-library-path' option
     //
 
