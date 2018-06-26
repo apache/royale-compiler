@@ -167,39 +167,42 @@ public class FieldEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.SPACE);
                 writeToken(ASEmitterTokens.EQUAL);
                 write("0");
-        	}
-            boolean defaultInitializers = false;
-            ICompilerProject project = getProject();
-            if(project instanceof RoyaleJSProject)
-            {
-                RoyaleJSProject fjsProject = (RoyaleJSProject) project;
-                if(fjsProject.config != null)
-                {
-                    defaultInitializers = fjsProject.config.getJsDefaultInitializers();
-                }
             }
-            if (defaultInitializers)
+            else
             {
-                if (defName.equals("Number"))
+                boolean defaultInitializers = false;
+                ICompilerProject project = getProject();
+                if(project instanceof RoyaleJSProject)
                 {
-                    write(ASEmitterTokens.SPACE);
-                    writeToken(ASEmitterTokens.EQUAL);
-                    write(IASKeywordConstants.NA_N);
+                    RoyaleJSProject fjsProject = (RoyaleJSProject) project;
+                    if(fjsProject.config != null)
+                    {
+                        defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+                    }
                 }
-                else if (defName.equals("Boolean"))
+                if (defaultInitializers)
                 {
-                    write(ASEmitterTokens.SPACE);
-                    writeToken(ASEmitterTokens.EQUAL);
-                    write(IASKeywordConstants.FALSE);
-                }
-                else if (!defName.equals("*"))
-                {
-                    //type * is meant to default to undefined, so it
-                    //doesn't need to be initialized, but everything
-                    //else should default to null
-                    write(ASEmitterTokens.SPACE);
-                    writeToken(ASEmitterTokens.EQUAL);
-                    write(IASKeywordConstants.NULL);
+                    if (defName.equals("Number"))
+                    {
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.NA_N);
+                    }
+                    else if (defName.equals("Boolean"))
+                    {
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.FALSE);
+                    }
+                    else if (!defName.equals("*"))
+                    {
+                        //type * is meant to default to undefined, so it
+                        //doesn't need to be initialized, but everything
+                        //else should default to null
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.NULL);
+                    }
                 }
             }
         }
