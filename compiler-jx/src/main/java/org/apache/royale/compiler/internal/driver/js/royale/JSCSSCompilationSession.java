@@ -283,6 +283,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     
     List<String> htmlElementNames = Arrays.asList(
         "a",
+        "aside",
         "b",
         "br",
         "body",
@@ -310,6 +311,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         "label",
         "li",
         "menu",
+        "nav",
         "ol",
         "option",
         "p",
