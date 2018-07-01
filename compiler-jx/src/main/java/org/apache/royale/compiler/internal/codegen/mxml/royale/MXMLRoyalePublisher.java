@@ -192,10 +192,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 		DefinitionPromise cpromise = (DefinitionPromise)project.mainCU.getDefinitionPromises().get(0);
 		ClassDefinition cdef = (ClassDefinition)(cpromise.getActualDefinition());
 		ClassDefinition baseDef = (ClassDefinition)(project.resolveQNameToDefinition(cdef.getBaseClassAsDisplayString()));
-		String factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
-		if (factoryClassName != null)
+		if (baseDef != null)
 		{
-			mainClassQName = generateFactoryClass(factoryClassName, projectName, mainClassQName, intermediateDir);
+			String factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
+			if (factoryClassName != null)
+			{
+				mainClassQName = generateFactoryClass(factoryClassName, projectName, mainClassQName, intermediateDir);
+			}
 		}
         final String outputFileName = projectName + "." + project.getBackend().getOutputExtension();
 

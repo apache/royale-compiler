@@ -231,8 +231,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                             if (usedName.equals(classDefinition.getQualifiedName())) continue;
                             if (((JSRoyaleEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
                             if (subDocumentNames.contains(usedName)) continue;
-                            if (royaleProject != null && royaleProject.isExternalLinkage(royaleProject.resolveQNameToCompilationUnit(usedName)))
-                            	continue;
+                            if (royaleProject != null)
+                            {
+                            	ICompilationUnit cu = royaleProject.resolveQNameToCompilationUnit(usedName);
+                            	if (cu != null && royaleProject.isExternalLinkage(cu))
+                            		continue;
+                            	if (cu == null)
+                            		System.out.println("didn't find CompilationUnit for " + usedName);
+                            }
                             namesToAdd.add(usedName);
                         }
                     }
