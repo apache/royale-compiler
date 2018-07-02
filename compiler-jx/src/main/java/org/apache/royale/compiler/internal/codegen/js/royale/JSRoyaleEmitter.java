@@ -69,6 +69,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -1257,6 +1258,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			if (leftDef != null && leftDef.getQualifiedName().equals("Date"))
 			{
 				if (rightDef instanceof AccessorDefinition)
+					return true;
+				else if (rightDef instanceof VariableDefinition)
 					return true;
 				else if (rightDef == null && rightNode.getNodeID() == ASTNodeID.IdentifierID)
 				{

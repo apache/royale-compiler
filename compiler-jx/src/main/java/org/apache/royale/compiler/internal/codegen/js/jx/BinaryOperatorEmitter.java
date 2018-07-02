@@ -516,9 +516,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	FULLYEAR("fullYear", "getFullYear"),
     	MONTH("month", "getMonth"),
     	DATE("date", "getDate"),
+    	DAY("day", "getDay"),
     	FULLYEARUTC("fullYearUTC", "getUTCFullYear"),
     	MONTHUTC("monthUTC", "getUTCMonth"),
     	DATEUTC("dateUTC", "getUTCDate"),
+    	DAYUTC("dayUTC", "getUTCDay"),
     	HOURS("hours", "getHours"),
     	MINUTES("minutes", "getMinutes"),
     	SECONDS("seconds", "getSeconds"),
@@ -526,7 +528,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	HOURSUTC("hoursUTC", "getUTCHours"),
     	MINUTESUTC("minutesUTC", "getUTCMinutes"),
     	SECONDSUTC("secondsUTC", "getUTCSeconds"),
-    	MILLISECONDSUTC("millisecondsUTC", "getUTCMilliseconds");
+    	MILLISECONDSUTC("millisecondsUTC", "getUTCMilliseconds"),
+    	TIMEZONEOFFSET("timezoneOffset", "getTimezoneOffset");
     	
     	DatePropertiesGetters(String value, String functionName)
     	{
@@ -554,9 +557,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	FULLYEAR("fullYear", "setFullYear"),
     	MONTH("month", "setMonth"),
     	DATE("date", "setDate"),
+    	DAY("day", "setDay"),
     	FULLYEARUTC("fullYearUTC", "setUTCFullYear"),
     	MONTHUTC("monthUTC", "setUTCMonth"),
     	DATEUTC("dateUTC", "setUTCDate"),
+    	DAYUTC("day", "setUTCDay"),
     	HOURS("hours", "setHours"),
     	MINUTES("minutes", "setMinutes"),
     	SECONDS("seconds", "setSeconds"),
