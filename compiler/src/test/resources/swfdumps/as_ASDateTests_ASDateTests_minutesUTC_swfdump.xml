@@ -88,7 +88,7 @@ public class %0 extends Object
       15      pushstring      "date.minutesUTC"                       
       16      getlocal2                                               
       17      getproperty     minutesUTC                              
-      18      pushbyte                                             1  
+      18      pushbyte                                             0
       19      callpropvoid                                            
       20      returnvoid                                              
   }

@@ -123,6 +123,7 @@ public class ASFeatureTestsBase
         }
 
         List<String> args = new ArrayList<String>();
+        //args.add("-debug");
         if (hasFlashPlayerGlobal)
         	args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
         else {

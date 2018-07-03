@@ -139,5 +139,13 @@
         <class>Date</class>
         <name>timezoneOffset</name>
     </field-readonly>
+    <field-readonly>
+        <class>Date</class>
+        <name>day</name>
+    </field-readonly>
+    <field-readonly>
+        <class>Date</class>
+        <name>dayUTC</name>
+    </field-readonly>
 
 </royale-config>
