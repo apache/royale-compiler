@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.FunctionUtils;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.JSTypeUtils;
 
@@ -105,19 +106,22 @@ public class FieldReference extends MemberReference
             excluded.print(sb);
             return; // XXX (mschmalle) accessors are not treated right, need to exclude get/set
         }
+        
+        ReadOnlyMember readOnly = isReadOnly();
 
         if (!getClassReference().isInterface() && !getComment().isOverride()
-                && !getClassReference().isPropertyInterfaceImplementation(getBaseName()))
+                && !getClassReference().isPropertyInterfaceImplementation(getBaseName())
+                && (null == readOnly))
         {
             emitVar(sb);
         }
         else
         {
-            emitAccessor(sb);
+            emitAccessor(sb, (null != readOnly));
         }
     }
 
-    private void emitAccessor(StringBuilder sb)
+    private void emitAccessor(StringBuilder sb, boolean isReadOnly)
     {
         boolean isInterface = getClassReference().isInterface();
 
@@ -153,17 +157,20 @@ public class FieldReference extends MemberReference
         sb.append(getBody);
         sb.append(";\n");
 
-        // setter
-        sb.append(indent);
-        sb.append(isPublic);
-        sb.append(staticValue);
-        sb.append("function set ");
-        sb.append(getBaseName());
-        sb.append("(value:");
-        sb.append(type);
-        sb.append("):void");
-        sb.append(setBody);
-        sb.append(";\n");
+        if (!isReadOnly)
+        {
+	        // setter
+	        sb.append(indent);
+	        sb.append(isPublic);
+	        sb.append(staticValue);
+	        sb.append("function set ");
+	        sb.append(getBaseName());
+	        sb.append("(value:");
+	        sb.append(type);
+	        sb.append("):void");
+	        sb.append(setBody);
+	        sb.append(";\n");
+        }
     }
 
     private void emitVar(StringBuilder sb)

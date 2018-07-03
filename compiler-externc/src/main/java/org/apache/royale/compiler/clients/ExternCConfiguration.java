@@ -63,6 +63,7 @@ public class ExternCConfiguration extends Configuration
     private List<ExcludedMember> excludesClass = new ArrayList<ExcludedMember>();
     private List<ExcludedMember> excludesField = new ArrayList<ExcludedMember>();
     private List<ExcludedMember> excludes = new ArrayList<ExcludedMember>();
+    private List<ReadOnlyMember> readonly = new ArrayList<ReadOnlyMember>();
 
     public ExternCConfiguration()
     {
@@ -354,6 +355,35 @@ public class ExternCConfiguration extends Configuration
         this.jsRoot = new File(filename);
     }
 
+    @Config(allowMultiple = true)
+    @Mapping("field-readonly")
+    @Arguments({"class", "name"})
+    public void setFieldReadOnly(ConfigurationValue cfgval, List<String> values) throws IncorrectArgumentCount
+    {
+        final int size = values.size();
+        if (size % 2 != 0)
+            throw new IncorrectArgumentCount(size + 1, size, cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+
+        for (int nameIndex = 0; nameIndex < size - 1; nameIndex += 2)
+        {
+            final String className = values.get(nameIndex);
+            final String name = values.get(nameIndex + 1);
+            readonly.add(new ReadOnlyMember(className, name));
+        }
+    }
+    
+    public ReadOnlyMember isReadOnlyMember(ClassReference classReference,
+    									   MemberReference memberReference)
+	{
+
+    	for (ReadOnlyMember member : readonly)
+    	{
+    		if ( member.isReadOnly(classReference, memberReference) )
+    			return member;
+    	}
+    	return null;
+	}
+
 
     public static class ExcludedMember
     {
@@ -405,6 +435,35 @@ public class ExternCConfiguration extends Configuration
             if (description != null)
                 sb.append("// " + description + "\n");
             sb.append("//");
+        }
+    }
+    
+    public static class ReadOnlyMember
+    {
+        private String className;
+        private String name;
+
+        public String getClassName()
+        {
+            return className;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public ReadOnlyMember(String className, String name)
+        {
+            this.className = className;
+            this.name = name;
+        }
+
+        public boolean isReadOnly(BaseReference classReference,
+                                  MemberReference memberReference)
+        {
+            return classReference.getQualifiedName().equals(className)
+                    && memberReference.getQualifiedName().equals(name);
         }
     }
 

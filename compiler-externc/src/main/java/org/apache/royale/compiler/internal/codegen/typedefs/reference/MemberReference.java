@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
@@ -46,6 +47,13 @@ public abstract class MemberReference extends BaseReference
     {
         return getClassReference().getModel().isExcludedMember(
                 getClassReference(), this);
+    }
+    
+    @Override
+    public ReadOnlyMember isReadOnly()
+    {
+    	return getClassReference().getModel().isReadOnlyMember(
+    			getClassReference(), this);
     }
 
 }

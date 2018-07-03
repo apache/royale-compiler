@@ -134,4 +134,10 @@
     <exclude><class>SVGLocatable</class><name>farthestViewportElement</name></exclude>
     <exclude><class>SVGLocatable</class><name>nearestViewportElement</name></exclude>
 
+    <!-- read-only properties where we only emit a 'get' accessor method -->
+    <field-readonly>
+        <class>Date</class>
+        <name>timezoneOffset</name>
+    </field-readonly>
+
 </royale-config>
