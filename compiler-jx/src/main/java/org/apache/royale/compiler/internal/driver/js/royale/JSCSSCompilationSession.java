@@ -306,6 +306,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         "h6",
         "header",
         "hr",
+        "html",
         "i",
         "img",
         "input",
