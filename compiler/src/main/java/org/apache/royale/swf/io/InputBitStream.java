@@ -28,6 +28,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.io.IOUtils;
 
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.swf.Header;
 import org.apache.royale.utils.DAByteArrayOutputStream;
 
@@ -287,7 +288,12 @@ public class InputBitStream extends InputStream implements IInputBitStream
 
         try
         {
-            return new String(buffer.getDirectByteArray(), 0, buffer.size(), "UTF-8");
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+        		System.out.println("InputBitStream waiting for lock in readString");
+            String ret = new String(buffer.getDirectByteArray(), 0, buffer.size(), "UTF-8");
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+        		System.out.println("InputBitStream done with lock in readString");
+            return ret;
         }
         catch (UnsupportedEncodingException e)
         {

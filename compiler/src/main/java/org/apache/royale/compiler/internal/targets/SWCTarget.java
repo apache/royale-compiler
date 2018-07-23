@@ -46,6 +46,7 @@ import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -344,7 +345,11 @@ public class SWCTarget extends Target implements ISWCTarget
             IOUtils.copy(fileInputStream, buffer);
             IOUtils.closeQuietly(buffer);
             IOUtils.closeQuietly(fileInputStream);
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+        		System.out.println("SWCTarget waiting for lock in getContents");
             contents = buffer.getDirectByteArray();
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+        		System.out.println("SWCTarget waiting for lock in getContents");
         }
         catch (IOException e)
         {
@@ -862,7 +867,11 @@ public class SWCTarget extends Target implements ISWCTarget
                 for (File file : files)
                 {
                     String path = file.getAbsolutePath();
+                	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+                		System.out.println("SWCTarget waiting for lock in getLatestBinaryFileSpecification");
                     IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
+                	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+                		System.out.println("SWCTarget done with lock in getLatestBinaryFileSpecification");
 
                     if (filename != null && fileSpec != null)
                     {
@@ -876,7 +885,11 @@ public class SWCTarget extends Target implements ISWCTarget
             else
             {
                 String path = entry.getValue().getAbsolutePath();
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("SWCTarget waiting for lock in getLatestBinaryFileSpecification");
                 IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("SWCTarget done with lock in getLatestBinaryFileSpecification");
     
                 if (filename != null && fileSpec != null)
                 {
@@ -978,7 +991,11 @@ public class SWCTarget extends Target implements ISWCTarget
                 {
                     String sourcePath = classDefinition.getSourcePath();
                     iconFilePath = FilenameUtils.getFullPath(sourcePath) + iconFilePath;
+                	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+                		System.out.println("SWCTarget waiting for lock in getLatestBinaryFileSpecification");
                     fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(iconFilePath);
+                	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+                		System.out.println("SWCTarget done with lock in getLatestBinaryFileSpecification");
                 }
 
                 FileEntryValue value = new FileEntryValue(fileSpec, iconFileMetaTag);

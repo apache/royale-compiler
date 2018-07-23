@@ -36,6 +36,7 @@ import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.common.NodeReference;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
@@ -1687,9 +1688,13 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      */
     private void countDefinitions()
     {
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
+    		System.out.println("DefinitionBase incrementing Counter for " + getClass().getSimpleName());
         Counter counter = Counter.getInstance();
         counter.incrementCount(getClass().getSimpleName());
         counter.incrementCount("definitions");
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
+    		System.out.println("DefinitionBase done incrementing Counter for " + getClass().getSimpleName());
     }
     
     //

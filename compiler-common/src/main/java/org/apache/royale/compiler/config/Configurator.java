@@ -199,7 +199,12 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             @Override
             public IFileSpecification apply(final String path)
             {
-                return workspace.getFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("Configurator waiting for lock in toFileSpecifications");
+            	IFileSpecification fs = workspace.getFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("Configurator done with lock in toFileSpecifications");
+            	return fs;
             }
         });
     }

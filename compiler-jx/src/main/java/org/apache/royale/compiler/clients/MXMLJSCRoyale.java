@@ -39,6 +39,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -236,6 +237,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 
             if (continueCompilation)
             {
+            	CompilerDiagnosticsConstants.diagnostics = config.getDiagnosticsLevel();
                 project.setProblems(problems.getProblems());
                	compile();
                 if (problems.hasFilteredProblems())

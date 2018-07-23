@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.clients.JSConfiguration;
 import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
@@ -131,15 +132,27 @@ public class RoyaleJSProject extends RoyaleProject
         {
             if (from != to)
             {
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ROYALEJSPROJECT) == CompilerDiagnosticsConstants.ROYALEJSPROJECT)
+            		System.out.println("RoyaleJSProject waiting for lock in updateRequiresMap from addDependency");
             	updateRequiresMap(from, to, dt, qname);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ROYALEJSPROJECT) == CompilerDiagnosticsConstants.ROYALEJSPROJECT)
+            		System.out.println("RoyaleJSProject done with lock in updateRequiresMap from addDependency");
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ROYALEJSPROJECT) == CompilerDiagnosticsConstants.ROYALEJSPROJECT)
+            		System.out.println("RoyaleJSProject waiting for lock in updateJSModulesMap from addDependency");
             	updateJSModulesMap(from, to, dt, qname);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ROYALEJSPROJECT) == CompilerDiagnosticsConstants.ROYALEJSPROJECT)
+            		System.out.println("RoyaleJSProject done with lock in updateJSModulesMap from addDependency");
             }
         }
         else
         {
             if (from != to)
             {
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ROYALEJSPROJECT) == CompilerDiagnosticsConstants.ROYALEJSPROJECT)
+            		System.out.println("RoyaleJSProject waiting for lock in updateInterfacesMap from addDependency");
             	updateInterfacesMap(from, to, dt, qname);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ROYALEJSPROJECT) == CompilerDiagnosticsConstants.ROYALEJSPROJECT)
+            		System.out.println("RoyaleJSProject done with lock in updateInterfacesMap from addDependency");
             }
         }
 

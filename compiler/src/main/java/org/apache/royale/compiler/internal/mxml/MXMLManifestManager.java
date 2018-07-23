@@ -42,6 +42,7 @@ import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.ManifestProblem;
 import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.swc.ISWCComponent;
@@ -216,7 +217,11 @@ public class MXMLManifestManager implements IMXMLManifestManager
     {
         Document manifestDocument = null;
         
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("MXMLManifestManager waiting for lock in addManifest");
         IFileSpecification manifestFileSpec = project.getWorkspace().getFileSpecification(manifestFileName);
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("MXMLManifestManager done with lock in addManifest");
         
         try
         {

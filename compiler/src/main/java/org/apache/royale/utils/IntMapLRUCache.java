@@ -19,6 +19,8 @@
 
 package org.apache.royale.utils;
 
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
+
 /**
  * Caching data structure that uses a Least Recently Used (LRU)
  * algorithm.  This cache has a max size associated with it that is
@@ -75,6 +77,8 @@ public abstract class IntMapLRUCache
     {
         Object value = null;
 
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache waiting for lock in get");
         synchronized (this)
         {
             //use a fast compare to see if this key matches the head object.
@@ -97,12 +101,16 @@ public abstract class IntMapLRUCache
             }
             // else not in cache, go fetch it
         }
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache done with lock in get");
 
         try
         {
             // don't hold the lock while fetching
             value = fetch(key);
 
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+        		System.out.println("IntMapLRUCache waiting for lock in get (2nd half)");
             synchronized (this)
             {
                 ListEntry entry = new ListEntry();
@@ -111,6 +119,8 @@ public abstract class IntMapLRUCache
 
                 map.put(key, entry);
             }
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+        		System.out.println("IntMapLRUCache done with lock in get (2nd half)");
         }
         catch (UnsupportedOperationException ex)
         {
@@ -121,12 +131,16 @@ public abstract class IntMapLRUCache
 
     public int firstKey()
     {
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache waiting for lock in firstKey");
         synchronized (this)
         {
+        	int ret = 0;
             if (head != null)
-                return head.key;
-            else
-                return 0;
+                ret = head.key;
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+        		System.out.println("IntMapLRUCache done with lock in firstKey");
+            return ret;
         }
     }
 
@@ -142,6 +156,8 @@ public abstract class IntMapLRUCache
         entry.value = value;
         entry.key = key;
 
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache waiting for lock in put");
         synchronized (this)
         {
             //insert the entry into the table
@@ -161,6 +177,8 @@ public abstract class IntMapLRUCache
                 purgeLRUElements();
             }
         }
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache done with lock in put");
 
         return value;
     }
@@ -170,6 +188,8 @@ public abstract class IntMapLRUCache
      */
     public void remove(int key)
     {
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache waiting for lock in remove");
         synchronized (this)
         {
             ListEntry entry = (ListEntry)map.remove(key);
@@ -193,6 +213,8 @@ public abstract class IntMapLRUCache
                 }
             }
         }
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.INT_MAP) == CompilerDiagnosticsConstants.INT_MAP)
+    		System.out.println("IntMapLRUCache done with lock in remove");
     }
 
     public void setSize(int size)
