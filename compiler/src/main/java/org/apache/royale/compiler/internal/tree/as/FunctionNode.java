@@ -34,6 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.royale.compiler.common.ASImportTarget;
 import org.apache.royale.compiler.common.IImportTarget;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -800,7 +801,11 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                 else
                 {
                     // from file using offset
+                	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+                		System.out.println("FunctionNode waiting for lock in parseFunctionBody");
                     sourceReader = workspace.getFileSpecification(sourcePath).createReader();
+                	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+                		System.out.println("FunctionNode done with lock in parseFunctionBody");
                     sourceReader.skip(openT.getLocalEnd());
                 }
 

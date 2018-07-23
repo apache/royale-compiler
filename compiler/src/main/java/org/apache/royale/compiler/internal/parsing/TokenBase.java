@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.parsing;
 import antlr.Token;
 
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.internal.common.Counter;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
 import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
@@ -540,9 +541,13 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
      */
     private void countTokens()
     {
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
+    		System.out.println("TokenBase incrementing counter for " + getClass().getSimpleName());
         Counter counter = Counter.getInstance();
         counter.incrementCount(getClass().getSimpleName());
         counter.incrementCount("tokens");
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
+    		System.out.println("TokenBase done incrementing counter for " + getClass().getSimpleName());
     }
 
     @Override

@@ -62,6 +62,7 @@ import org.apache.royale.compiler.asdoc.IASParserASDocDelegate;
 import org.apache.royale.compiler.common.IFileSpecificationGetter;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
@@ -933,8 +934,12 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             if (!new File(sourcePath).isFile())
                 return null;
 
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+        		System.out.println("BaseASParser waiting for lock in tryGetSecondaryReader");
             // try to create a reader from file specification
             final IFileSpecification fileSpec = workspace.getFileSpecification(sourcePath);
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+        		System.out.println("BaseASParser done with lock in tryGetSecondaryReader");
             if (fileSpec != null)
             {
                 try
@@ -1183,7 +1188,11 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             final int column,
             final Collection<ICompilerProblem> problems)
     {
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("BaseASParser waiting for lock in parseMetadata");
         final long lastModified = workspace.getFileSpecification(sourcePath).getLastModified();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("BaseASParser done with lock in parseMetadata");
         final IFileSpecification fileSpec = new StringFileSpecification(sourcePath, metadataContent, lastModified);
         final IncludeHandler includeHandler = new IncludeHandler(workspace);
         final ASParser parser = new ASParser(workspace, (IRepairingTokenBuffer)null);
@@ -1583,12 +1592,20 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         final ICompilerProblem syntaxProblem;
         if (ex instanceof MismatchedTokenException)
         {
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASTOKEN) == CompilerDiagnosticsConstants.ASTOKEN)
+        		System.out.println("BaseASParser waiting for lock for typeToKind");
             final ASTokenKind expectedKind = ASToken.typeToKind(((MismatchedTokenException)ex).expecting);
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASTOKEN) == CompilerDiagnosticsConstants.ASTOKEN)
+        		System.out.println("BaseASParser done with lock for typeToKind");
             syntaxProblem = unexpectedTokenProblem(current, expectedKind);
         }
         else if (endToken != NO_END_TOKEN)
         {
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASTOKEN) == CompilerDiagnosticsConstants.ASTOKEN)
+        		System.out.println("BaseASParser waiting for lock for typeToKind");
             final ASTokenKind expectedKind = ASToken.typeToKind(endToken);
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASTOKEN) == CompilerDiagnosticsConstants.ASTOKEN)
+        		System.out.println("BaseASParser done with lock for typeToKind");
             syntaxProblem = unexpectedTokenProblem(current, expectedKind);
         }
         else
