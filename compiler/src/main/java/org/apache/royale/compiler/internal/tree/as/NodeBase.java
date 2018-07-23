@@ -28,7 +28,6 @@ import antlr.Token;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.common.Counter;
@@ -128,12 +127,7 @@ public abstract class NodeBase extends SourceLocation implements IASNode
         // TODO Make sure this works with include processing!!!
         ASFileScope fileScope = getFileScope();
         IWorkspace w = fileScope.getWorkspace();
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-    		System.out.println("NodeBase waiting for lock in getFileSpecification");
-        IFileSpecification fs = w.getFileSpecification(fileScope.getContainingPath());
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-    		System.out.println("NodeBase done with lock in getFileSpecification");
-        return fs;
+        return w.getFileSpecification(fileScope.getContainingPath());
     }
 
     @Override
@@ -1048,12 +1042,8 @@ public abstract class NodeBase extends SourceLocation implements IASNode
      */
     private void countNodes()
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
-    		System.out.println("ASScopeBase incrementing counter for " + getClass().getSimpleName());
         Counter counter = Counter.getInstance();
         counter.incrementCount(getClass().getSimpleName());
         counter.incrementCount("nodes");
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
-    		System.out.println("ASScopeBase done incrementing counter for " + getClass().getSimpleName());
     }
 }

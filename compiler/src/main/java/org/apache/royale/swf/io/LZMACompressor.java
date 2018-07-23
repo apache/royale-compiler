@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.utils.DAByteArrayOutputStream;
 
 import SevenZip.Compression.LZMA.Encoder;
@@ -153,11 +152,7 @@ public class LZMACompressor
      */
     public void writeDataAndEnd(OutputStream outputStream) throws IOException
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
-    		System.out.println("LZMACompressor waiting for lock in writeDataAndEnd");
         byte[] data = byteArrayOutputStream.getDirectByteArray();
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
-    		System.out.println("LZMACompressor waiting for lock in writeDataAndEnd");
         outputStream.write(data, 0, data.length);
         outputStream.flush();
     }

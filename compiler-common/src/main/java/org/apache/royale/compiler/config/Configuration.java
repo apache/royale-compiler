@@ -5897,23 +5897,6 @@ public class Configuration
     }
 
     //
-    // 'verbose' option from CommandLineConfiguration
-    //
-
-    private int diagnostics = 0;
-
-    public int getDiagnosticsLevel()
-    {
-        return diagnostics;
-    }
-
-    @Config(hidden = true)
-    public void setDiagnostics(ConfigurationValue cfgval, int b)
-    {
-        diagnostics = b;
-    }
-
-    //
     // 'dump-ast' option from CommandLineConfiguration
     //
 

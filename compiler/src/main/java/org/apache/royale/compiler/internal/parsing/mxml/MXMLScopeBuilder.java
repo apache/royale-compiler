@@ -33,7 +33,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.common.IFileSpecificationGetter;
 import org.apache.royale.compiler.common.Multiname;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
@@ -559,11 +558,7 @@ public class MXMLScopeBuilder
                             mxmlTextData.getCompilableTextColumn(), problems);
                     if (metaTagNodes != null)
                     {
-                    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-                    		System.out.println("MXMLScopeBuilder waiting for lock in processMetadataTag");
                         IFileSpecification containingFileSpec = fileScope.getWorkspace().getFileSpecification(fileScope.getContainingPath());
-                    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-                    		System.out.println("MXMLScopeBuilder done with lock in processMetadataTag");
                         IMetaTag[] newMetaTags = metaTagNodes.buildMetaTags(containingFileSpec, currentClassDefinition);
                         if( newMetaTags != null )
                         {

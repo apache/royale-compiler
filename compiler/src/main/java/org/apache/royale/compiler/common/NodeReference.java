@@ -19,7 +19,6 @@
 
 package org.apache.royale.compiler.common;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -180,8 +179,6 @@ public class NodeReference
             }
             if( fileScope != null) {
 
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.NODE_REFERENCES) == CompilerDiagnosticsConstants.NODE_REFERENCES)
-            		System.out.println("NodeReference getting lock for " + fileSpec.getPath());
                 // Grab the lock
                 synchronized (this)
                 {
@@ -203,8 +200,6 @@ public class NodeReference
                         nodeRef = new WeakReference<IASNode>(node);
                     }
                 }
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.NODE_REFERENCES) == CompilerDiagnosticsConstants.NODE_REFERENCES)
-            		System.out.println("NodeReference done with lock for " + fileSpec.getPath());
             }
         }
         return node;

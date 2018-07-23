@@ -48,7 +48,6 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.CommandLineConfigurator;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.ConfigurationPathResolver;
@@ -733,11 +732,7 @@ public class MXMLC implements FlexTool
             final IASNode ast = compilationUnit.getSyntaxTreeRequest().get().getAST();
             if (ast != null)
             {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
-            		System.out.println("MXMLC waiting for lock in populateFunctionNodes");
                 ((IFileNode)ast).populateFunctionNodes();
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
-            		System.out.println("MXMLC done with lock in populateFunctionNodes");
                 astDump.add(ast.toString());
             }
         }
@@ -1027,12 +1022,7 @@ public class MXMLC implements FlexTool
             @Override
             public IFileSpecification apply(final String path)
             {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-            		System.out.println("MXMLC waiting for lock in toFileSpecifications");
-                IFileSpecification ret = workspace.getFileSpecification(path);
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-            		System.out.println("MXMLC waiting for lock in toFileSpecifications");
-            	return ret;
+                return workspace.getFileSpecification(path);
             }
         });
     }

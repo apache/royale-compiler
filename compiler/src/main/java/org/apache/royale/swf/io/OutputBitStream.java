@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.DeflaterOutputStream;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.utils.DAByteArrayOutputStream;
 
 /**
@@ -128,12 +127,7 @@ public class OutputBitStream implements IOutputBitStream
     public byte[] getBytes()
     {
         flush();
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
-    		System.out.println("OutputBitStream waiting for lock in getBytes");
-        byte[] b = flatOutputBuffer.getDirectByteArray();
-	   	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
-			System.out.println("OutputBitStream waiting for lock in getBytes");
-		return b;
+        return flatOutputBuffer.getDirectByteArray();
     }
 
     @Override

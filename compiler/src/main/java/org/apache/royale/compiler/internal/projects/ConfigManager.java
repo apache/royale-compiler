@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -157,13 +156,7 @@ public final class ConfigManager
         public List<ConfigConstNode> getConfigVariables()
         {
             if(constNodes == null)
-            {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager waiting for lock for loadConfigData");
                 loadConfigData();
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager done with lock for loadConfigData");
-            }
             return constNodes;
         }
 
@@ -171,13 +164,7 @@ public final class ConfigManager
         public List<ConfigNamespaceNode> getConfigNamespaces()
         {
             if(configNamespaces == null)
-            {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager waiting for lock for loadConfigData");
                 loadConfigData();
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager done with lock for loadConfigData");
-            }
             return configNamespaces;
         }
 
@@ -185,13 +172,7 @@ public final class ConfigManager
         public List<String> getConfigNamespaceNames()
         {
             if(nsNames == null)
-            {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager waiting for lock for loadConfigData");
                 loadConfigData();
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager done with lock for loadConfigData");
-            }
             return nsNames;
         }
 
@@ -199,13 +180,7 @@ public final class ConfigManager
         public Collection<ICompilerProblem> getProblems()
         {
             if(problems == null)
-            {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager waiting for lock for loadConfigData");
                 loadConfigData();
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CONFIG_MANAGER) == CompilerDiagnosticsConstants.CONFIG_MANAGER)
-            		System.out.println("ConfigManager done with lock for loadConfigData");
-            }
             return problems;
         }
 

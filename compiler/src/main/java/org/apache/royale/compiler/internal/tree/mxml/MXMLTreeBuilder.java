@@ -35,7 +35,6 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.IFileSpecificationGetter;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
@@ -848,12 +847,8 @@ public class MXMLTreeBuilder
         }
 
         Workspace workspace = getWorkspace();
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-    		System.out.println("MXMLTreeBuilder waiting for lock in getExternalMXMLData");
         IFileSpecification sourceFileSpec =
                 workspace.getFileSpecification(resolvedSourcePath);
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-    		System.out.println("MXMLTreeBuilder done with lock in getExternalMXMLData");
         IMXMLDataManager mxmlDataManager = workspace.getMXMLDataManager();
 
         return mxmlDataManager.get(sourceFileSpec);

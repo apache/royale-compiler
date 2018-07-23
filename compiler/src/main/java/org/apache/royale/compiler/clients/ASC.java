@@ -60,7 +60,6 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.RSLSettings;
 import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
@@ -821,11 +820,7 @@ public class ASC
                         final FileNode fileNode = (FileNode)ast;
                         final ImmutableSet<ICompilerProblem> skeletonProblems = 
                                 ImmutableSet.copyOf(fileNode.getProblems());
-                    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
-                    		System.out.println("ASC waiting for lock in populateFunctionNodes");
                         fileNode.populateFunctionNodes();
-                    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
-                    		System.out.println("ASC done with lock in populateFunctionNodes");
                         final ImmutableSet<ICompilerProblem> allProblems = 
                                 ImmutableSet.copyOf(fileNode.getProblems());
                         

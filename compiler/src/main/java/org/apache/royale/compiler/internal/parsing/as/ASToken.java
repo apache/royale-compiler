@@ -21,7 +21,6 @@ package org.apache.royale.compiler.internal.parsing.as;
 
 import java.lang.reflect.Field;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.internal.parsing.TokenBase;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.parsing.ICMToken;
@@ -893,11 +892,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
     @Override
     protected String getTypeString()
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASTOKEN) == CompilerDiagnosticsConstants.ASTOKEN)
-    		System.out.println("ASToken waiting for lock for " + getSourcePath() + ":" + getLine() + ":" + getColumn());
         initializeTokenNames();
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASTOKEN) == CompilerDiagnosticsConstants.ASTOKEN)
-    		System.out.println("ASToken done with lock for " + getSourcePath() + ":" + getLine() + ":" + getColumn());
         return tokenNames.get(getType());
     }
 

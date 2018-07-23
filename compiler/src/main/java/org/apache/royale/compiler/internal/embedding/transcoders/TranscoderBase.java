@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.embedding.transcoders.ITranscoder;
 import org.apache.royale.compiler.filespecs.IBinaryFileSpecification;
@@ -195,11 +194,7 @@ public abstract class TranscoderBase implements ITranscoder
         }
         else
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-        		System.out.println("TranscodeBase waiting for lock in getLatestBinaryFileSpecification");
             IBinaryFileSpecification fileSpec = workspace.getLatestBinaryFileSpecification(source);
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
-        		System.out.println("TranscodeBase done with lock in getLatestBinaryFileSpecification");
             inStrm = getDataStream(fileSpec, problems);
         }
 

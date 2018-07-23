@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IScopedDefinition;
@@ -513,12 +512,8 @@ public abstract class ASScopeBase implements IASScope
      */
     private void countScopes()
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
-    		System.out.println("ASScopeBase incrementing counter for " + getClass().getSimpleName());
         Counter counter = Counter.getInstance();
         counter.incrementCount(getClass().getSimpleName());
         counter.incrementCount("scopes");
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COUNTER) == CompilerDiagnosticsConstants.COUNTER)
-    		System.out.println("ASScopeBase done incrementing counter for " + getClass().getSimpleName());
     }
 }

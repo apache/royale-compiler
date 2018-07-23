@@ -20,7 +20,6 @@
 package org.apache.royale.compiler.internal.scopes;
 
 import org.apache.royale.compiler.common.DependencyType;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
@@ -206,8 +205,6 @@ public class ASScopeCache
         ConcurrentMap<String, IDefinition> map = findPropCache != null ? findPropCache.get() : null;
         if (map == null)
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache waiting for lock in getScopeChainMap");
             synchronized (this)
             {
                 // Check again, in case another thread updated the map first
@@ -218,8 +215,6 @@ public class ASScopeCache
                     findPropCache = new SoftReference<ConcurrentMap<String, IDefinition>>(map);
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in getScopeChainMap");
         }
         return map;
     }
@@ -229,8 +224,6 @@ public class ASScopeCache
         ConcurrentMap<QName, IDefinition> map = findPropQualifiedCache != null ? findPropQualifiedCache.get() : null;
         if (map == null)
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache waiting for lock in getQualifiedScopeChainMap");
             synchronized (this)
             {
                 // Check again, in case another thread updated the map first
@@ -241,8 +234,6 @@ public class ASScopeCache
                     findPropQualifiedCache = new SoftReference<ConcurrentMap<QName, IDefinition>>(map);
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in getQualifiedScopeChainMap");
         }
         return map;
     }
@@ -411,8 +402,6 @@ public class ASScopeCache
         ConcurrentMap<String, Set<INamespaceDefinition>> map = namespacesForNameCache != null ? namespacesForNameCache.get() : null;
         if (map == null)
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache waiting for lock in getNamespacesForNameMap");
             synchronized (this)
             {
                 // Check again, in case another thread updated the map first
@@ -423,8 +412,6 @@ public class ASScopeCache
                     namespacesForNameCache = new SoftReference<ConcurrentMap<String, Set<INamespaceDefinition>>>(map);
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in getNamespacesForNameMap");
         }
         return map;
     }
@@ -434,8 +421,6 @@ public class ASScopeCache
         ConcurrentMap<IResolvedQualifiersReference, IDefinition> map = multinameLookupCache != null ? multinameLookupCache.get() : null;
         if (map == null)
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache waiting for lock in getMultinameLookupMap");
             synchronized (this)
             {
                 // Check again, in case another thread updated the map first
@@ -446,8 +431,6 @@ public class ASScopeCache
                     multinameLookupCache = new SoftReference<ConcurrentMap<IResolvedQualifiersReference, IDefinition>>(map);
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in getMultinameLookupMap");
         }
         return map;
     }
@@ -457,8 +440,6 @@ public class ASScopeCache
         ConcurrentMap<IDefinition, Object> map = constValueLookupCache != null ? constValueLookupCache.get() : null;
         if (map == null)
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache waiting for lock in getConstantValueLookupMap");
             synchronized (this)
             {
                 // Check again, in case another thread updated the map first
@@ -469,8 +450,6 @@ public class ASScopeCache
                     constValueLookupCache = new SoftReference<ConcurrentMap<IDefinition, Object>>(map);
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in getConstantValueLookupMap");
         }
         return map;
     }
@@ -480,8 +459,6 @@ public class ASScopeCache
         Set<IASLanguageConstants.BuiltinType> set = builtinTypeDependencyCache != null ? builtinTypeDependencyCache.get() : null;
         if (set == null)
         {
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache waiting for lock in getBuiltinTypeMap");
             synchronized (this)
             {
                 // Check again, in case another thread updated the set first
@@ -492,8 +469,6 @@ public class ASScopeCache
                     builtinTypeDependencyCache = new SoftReference<Set<IASLanguageConstants.BuiltinType>>(set);
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in getBuiltinTypeMap");
         }
         return set;
     }
@@ -519,22 +494,14 @@ public class ASScopeCache
         Boolean valueObject = needsEventDispatcherCache;
         if (valueObject != null)
             return valueObject.booleanValue();
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-    		System.out.println("ASScopeCache waiting for lock in needsEventDispatcher");
         synchronized (this)
         {
             // Check again, in case another thread updated the value first
             valueObject = needsEventDispatcherCache;
             if (valueObject != null)
-            {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-            		System.out.println("ASScopeCache done with lock in needsEventDispatcher");
                 return valueObject.booleanValue();
-            }
             boolean computedValue = ((ClassDefinitionBase)scope.getDefinition()).computeNeedsEventDispatcher(project);
             needsEventDispatcherCache = computedValue;
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in needsEventDispatcher");
             return computedValue;
         }
     }
@@ -549,23 +516,15 @@ public class ASScopeCache
         if( interfs != null )
             return interfs;
 
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-    		System.out.println("ASScopeCache waiting for lock in resolveInterfaces");
         synchronized (this)
         {
             // check again in case another thread updated the value first
             interfs = interfacesCache != null ? interfacesCache.get() : null;
             if( interfs != null )
-            {
-            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-            		System.out.println("ASScopeCache done with lock in resolveInterfaces");
                 return interfs;
-            }
 
             interfs = ((TypeDefinitionBase)scope.getDefinition()).resolveInterfacesImpl(project);
             interfacesCache = new SoftReference<IInterfaceDefinition[]>(interfs);
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.ASSCOPECACHE) == CompilerDiagnosticsConstants.ASSCOPECACHE)
-        		System.out.println("ASScopeCache done with lock in resolveInterfaces");
             return interfs;
         }
     }

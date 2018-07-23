@@ -26,8 +26,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
-
 /**
  * Thread safe implementation of IGraph. While the graph will always be in a
  * consistent state, the graph may change between method calls, so clients
@@ -48,8 +46,6 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
     @Override
     public boolean addVertex(V vertex)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.addVertex waiting for lock for " + getClass().getSimpleName());
         lock.writeLock().lock();
         try
         {
@@ -58,16 +54,12 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.writeLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.addVertex dpne with lock for " + getClass().getSimpleName());
         }
     }
     
     @Override
     public void removeVertex(V vertex)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.removeVertex waiting for lock for " + getClass().getSimpleName());
         lock.writeLock().lock();
         try
         {
@@ -76,15 +68,11 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.writeLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.removeVertex dpne with lock for " + getClass().getSimpleName());
         }
     }
 
     public E setEdge(V from, V to, E e)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.setEdge waiting for lock for " + getClass().getSimpleName());
         lock.writeLock().lock();
         try
         {
@@ -93,16 +81,12 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.writeLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.setEdge dpne with lock for " + getClass().getSimpleName());
         }
     }
     
     @Override
     public E getEdge(V from, V to)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.getEdge waiting for lock for " + getClass().getSimpleName());
         lock.writeLock().lock();
         try
         {
@@ -111,16 +95,12 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.writeLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.getEdge dpne with lock for " + getClass().getSimpleName());
         }
     }
 
     @Override
     public Set<E> getOutgoingEdges(V vertex)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.getOutgoingEdges waiting for lock for " + getClass().getSimpleName());
         lock.readLock().lock();
         try
         {
@@ -130,16 +110,12 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.readLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.getOutgoingEdges dpne with lock for " + getClass().getSimpleName());
         }
     }
 
     @Override
     public Set<E> getIncomingEdges(V vertex)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.getIncomingEdges waiting for lock for " + getClass().getSimpleName());
         lock.readLock().lock();
         try
         {
@@ -149,16 +125,12 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.readLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.getIncomingEdges dpne with lock for " + getClass().getSimpleName());
         }
     }
 
     @Override
     public E removeEdge(E edge)
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.removeEdge waiting for lock for " + getClass().getSimpleName());
         lock.writeLock().lock();
         try
         {
@@ -167,16 +139,12 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.writeLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.removeEdge dpne with lock for " + getClass().getSimpleName());
         }
     }
 
     @Override
     public Set<V> getVertices()
     {
-    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-    		System.out.println("SynchronizedGraph.getVertices waiting for lock for " + getClass().getSimpleName());
         lock.readLock().lock();
         try
         {
@@ -186,8 +154,6 @@ public class SynchronizedGraph<V, E extends IGraphEdge<V>> extends Graph<V, E>
         finally
         {
             lock.readLock().unlock();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH) == CompilerDiagnosticsConstants.SYNCHRONIZED_GRAPH)
-        		System.out.println("SynchronizedGraph.getVertices dpne with lock for " + getClass().getSimpleName());
         }
     }
     

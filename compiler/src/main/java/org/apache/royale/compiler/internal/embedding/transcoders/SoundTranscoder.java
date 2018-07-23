@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.EmbedCouldNotDetermineSampleFrameCountProblem;
@@ -254,12 +253,7 @@ public class SoundTranscoder extends TranscoderBase
                     // assert false;
                 }
             }
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
-        		System.out.println("SoundTranscoder waiting for lock in readFully");
-            byte[] bb = baos.getDirectByteArray();
-        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
-        		System.out.println("SoundTranscoder waiting for lock in readFully");
-        	return bb;
+            return baos.getDirectByteArray();
         }
         catch (IOException e)
         {
