@@ -435,7 +435,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 	        	{
 		        	if (baseDefinitions == null)
 		        	{
-		        		baseDefinitions = new ArrayList<IDefinition>();
+		        		ArrayList<IDefinition> bases = new ArrayList<IDefinition>();
 		        		
 			            // We're trying to determine whether this class
 			            // is derived from a specified class ('type').
@@ -444,8 +444,9 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 			            while (iter.hasNext())
 			            {
 			                IClassDefinition cls = iter.next();
-			                baseDefinitions.add(cls);
+			                bases.add(cls);
 			            }
+			            baseDefinitions = bases;
 		        	}
 	        	}
             	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
@@ -463,7 +464,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 	        	{
 	            	if (implDefinitions == null)
 	            	{
-		        		implDefinitions = new ArrayList<IDefinition>();
+		        		ArrayList<IDefinition> impls = new ArrayList<IDefinition>();
 		        		
 			            // We're trying to determine whether this class
 			            // implements a specified interface ('type').
@@ -473,8 +474,9 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 			            while (iter.hasNext())
 			            {
 			                IInterfaceDefinition intf = iter.next();
-			                implDefinitions.add(intf);
+			                impls.add(intf);
 			            }
+			            implDefinitions = impls;
 	            	}
 	        	}
             	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
