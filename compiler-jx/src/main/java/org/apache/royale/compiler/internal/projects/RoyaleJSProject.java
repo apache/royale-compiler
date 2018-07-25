@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.royale.compiler.asdoc.IASDocComment;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.clients.JSConfiguration;
 import org.apache.royale.compiler.common.DependencyType;
@@ -113,12 +114,12 @@ public class RoyaleJSProject extends RoyaleProject
         if (to.getCompilationUnitType() == UnitType.AS_UNIT && (defNode instanceof IClassNode || defNode instanceof IInterfaceNode))
         {
         	String defname = def.getQualifiedName();
-	        ASDocComment asDoc = (defNode instanceof IClassNode) ? 
-	        						(ASDocComment) ((IClassNode)defNode).getASDocComment() :
-	        						(ASDocComment) ((IInterfaceNode)defNode).getASDocComment();
-	        if (asDoc != null)
+	        IASDocComment asDoc = (defNode instanceof IClassNode) ? 
+	        						(IASDocComment) ((IClassNode)defNode).getASDocComment() :
+	        						(IASDocComment) ((IInterfaceNode)defNode).getASDocComment();
+	        if (asDoc != null && (asDoc instanceof ASDocComment))
 	        {
-	            String asDocString = asDoc.commentNoEnd();
+	            String asDocString = ((ASDocComment)asDoc).commentNoEnd();
 	            if (asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken()))
 	            {
 	            	if (!sourceExterns.contains(defname))
