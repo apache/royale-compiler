@@ -529,7 +529,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 	}
 
 	/**
-	 * A seperate thread collects our input so that we can
+	 * A separate thread collects our input so that we can
 	 * block in the doContinue on the main thread and then
 	 * allow the user to interrupt us via keyboard input
 	 * on this thread.
@@ -2448,7 +2448,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 				/**
 				 * Now before we do this see, if we have a valid break reason, since
 				 * we could be still receiving incoming messages, even though we have halted.
-				 * This is definately the case with loading of multiple SWFs.  After the load
+				 * This is definitely the case with loading of multiple SWFs.  After the load
 				 * we get info on the swf.
 				 */
 				if (m_breakIsolates.size() > 0) {
