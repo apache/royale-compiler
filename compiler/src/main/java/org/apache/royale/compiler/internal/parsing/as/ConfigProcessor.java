@@ -381,7 +381,8 @@ public class ConfigProcessor
                 {
                 	ConfigConstNode.ConfigDefinition cdef = (ConfigConstNode.ConfigDefinition)def;
     	        	IExpressionNode initializer = cdef.getInitializer();
-    	        	if (initializer.getNodeID() != ASTNodeID.MemberAccessExpressionID)
+    	        	if (initializer.getNodeID() != ASTNodeID.MemberAccessExpressionID &&
+    	        			initializer.getNodeID() != ASTNodeID.IdentifierID)
     	        	{
     	                // Get the real source node for the problem.
     	                // If there isn't one, then don't make a problem - assume 
@@ -441,7 +442,8 @@ public class ConfigProcessor
             {
             	ConfigConstNode.ConfigDefinition def = (ConfigConstNode.ConfigDefinition)definition;
 	        	IExpressionNode initializer = def.getInitializer();
-	        	if (initializer.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	        	if (initializer.getNodeID() == ASTNodeID.MemberAccessExpressionID ||
+		        	initializer.getNodeID() == ASTNodeID.IdentifierID)
 	        		return initializer;
         	}
         	
@@ -503,6 +505,11 @@ public class ConfigProcessor
         {
         	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)result;
         	return mae;
+        }
+        else if (result instanceof IdentifierNode)
+        {
+        	IdentifierNode id = (IdentifierNode)result;
+        	return id;
         }
         return null;
     }

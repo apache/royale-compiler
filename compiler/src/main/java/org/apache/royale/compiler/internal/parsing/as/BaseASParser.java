@@ -826,7 +826,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
     /**
      * Config processor used to handle config namespace expressions
      */
-    private ConfigProcessor configProcessor;
+    protected ConfigProcessor configProcessor;
 
     /**
      * Determines if we should allowe errors. Used in conditional compilation to
