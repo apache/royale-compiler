@@ -149,6 +149,10 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLObjectID:
             visitor.visitObject((IMXMLObjectNode) node);
         	break;
+        case MXMLHTTPServiceID:
+        case MXMLXMLID:
+            visitor.visitInstance((IMXMLInstanceNode) node);
+            break;
         case MXMLApplicationID:
         case MXMLBindingAttributeID:
         case MXMLClassID:
@@ -160,7 +164,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLDesignLayerID:
         case MXMLEffectSpecifierID:
         case MXMLFunctionID:
-        case MXMLHTTPServiceID:
         case MXMLHTTPServiceRequestID:
         case MXMLLibraryID:
         case MXMLModelID:
@@ -175,7 +178,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLResourceID:
         case MXMLWebServiceID:
         case MXMLWebServiceOperationID:
-        case MXMLXMLID:
         case MXMLXMLListID:
         default:
             throw new IllegalArgumentException(
