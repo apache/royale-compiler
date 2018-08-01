@@ -71,8 +71,13 @@ public class JSGoogConfiguration extends JSConfiguration
         {
             if (closureLib.equals(""))
             {
-                return getAbsolutePathFromPathRelativeToMXMLC(
+            	if (System.getenv("GOOG_HOME") != null)
+            		closureLib = System.getenv("GOOG_HOME");
+            	if (closureLib.equals(""))
+            	{
+            		return getAbsolutePathFromPathRelativeToMXMLC(
                         "../../js/lib/google/closure-library");
+            	}
             }
         }
         catch (Exception e) { /* better to try and fail... */ }
