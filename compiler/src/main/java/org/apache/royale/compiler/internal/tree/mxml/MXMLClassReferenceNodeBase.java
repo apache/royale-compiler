@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMXMLCoreConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IEffectDefinition;
@@ -721,7 +722,9 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     {
         // Non-whitespace may be the value of a default property.
         IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
-        if (defaultPropertyDefinition != null && defaultPropertyDefinition.getTypeAsDisplayString().equals(IASLanguageConstants.String))
+        if (defaultPropertyDefinition != null && 
+        		(defaultPropertyDefinition.getTypeAsDisplayString().equals(IASLanguageConstants.String) ||
+        		 defaultPropertyDefinition.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null))
         {
             MXMLSpecifierNodeBase childNode =
                     createSpecifierNode(builder, defaultPropertyDefinition.getBaseName());
