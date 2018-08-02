@@ -724,7 +724,9 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
         if (defaultPropertyDefinition != null && 
         		(defaultPropertyDefinition.getTypeAsDisplayString().equals(IASLanguageConstants.String) ||
-        		 defaultPropertyDefinition.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null))
+        		 (defaultPropertyDefinition.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null) ||
+        		 (defaultPropertyDefinition instanceof ISetterDefinition && 
+        		     ((ISetterDefinition)defaultPropertyDefinition).resolveCorrespondingAccessor(builder.getProject()).getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null)))
         {
             MXMLSpecifierNodeBase childNode =
                     createSpecifierNode(builder, defaultPropertyDefinition.getBaseName());

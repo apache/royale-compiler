@@ -359,8 +359,9 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLDeferredInstanceNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if (propertyTypeName.equals(IASLanguageConstants.Array) && 
-                oneChildIsNotArray(builder, contentUnits))
+        else if ((propertyTypeName.equals(IASLanguageConstants.Array) && 
+                oneChildIsNotArray(builder, contentUnits)) ||
+                (propertyTypeName.equals(IASLanguageConstants.Object) && contentUnits.size() > 1))
         {
             // Create an implicit array node.
             instanceNode = new MXMLArrayNode(this);
