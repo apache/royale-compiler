@@ -4910,7 +4910,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         String xmlString = node.getXMLString();
         if (xmlString == null)
         {
-            context.addInstruction(OP_pushnull);
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            	context.addInstruction(OP_pushnull);
         }
         else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.E4X)
         {
