@@ -830,9 +830,9 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
-    	getModel().inE4xFilter = true;
     	getWalker().walk(node.getLeftOperandNode());
-    	write(".filter(function(node){return (node.");
+    	getModel().inE4xFilter = true;
+    	write(".filter(function(node){return (");
     	String s = stringifyNode(node.getRightOperandNode());
     	if (s.startsWith("(") && s.endsWith(")"))
     		s = s.substring(1, s.length() - 1);
@@ -1094,6 +1094,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	IASNode op = node.getOperandNode();
         	if (op != null)
         	{
+        		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
+        			write("node.");
             	write("attribute('");
         		getWalker().walk(node.getOperandNode());
             	write("')");
@@ -1101,6 +1103,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	else if (node.getParent().getNodeID() == ASTNodeID.ArrayIndexExpressionID)
         	{
         		DynamicAccessNode parentNode = (DynamicAccessNode)node.getParent();
+        		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
+        			write("node.");
             	write("attribute(");
         		getWalker().walk(parentNode.getRightOperandNode());        		
             	write(")");

@@ -226,6 +226,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	write(ASEmitterTokens.MEMBER_ACCESS);
                 endMapping(node);
             }
+            else if (EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node))
+            {
+            	write("node.");
+            }
 
             if (generateClosure)
             {

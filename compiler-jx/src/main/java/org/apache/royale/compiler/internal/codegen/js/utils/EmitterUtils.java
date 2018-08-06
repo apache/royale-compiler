@@ -63,6 +63,7 @@ import org.apache.royale.compiler.tree.as.IPackageNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.utils.NativeUtils;
 
@@ -432,6 +433,37 @@ public class EmitterUtils
         return parentDef == classDef || (parentDef instanceof ClassDefinition && ((ClassDefinition)parentDef).isInstanceOf(classDef, project));
     }
     
+    public static boolean writeE4xFilterNode(ICompilerProject project,
+            JSSessionModel model, IExpressionNode node)
+    {
+    	if (!model.inE4xFilter) return false;
+    	
+        IDefinition nodeDef = node.resolve(project);
+
+        IASNode parentNode = node.getParent();
+        ASTNodeID parentNodeId = parentNode.getNodeID();
+
+        IASNode firstChild = parentNode.getChild(0);
+
+        final IClassDefinition thisClass = model.getCurrentClass();
+
+        boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
+
+        if (parentNode instanceof IUnaryOperatorNode)
+        	return false;
+        if (nodeDef instanceof ParameterDefinition)
+            return false;
+        if (nodeDef instanceof InterfaceDefinition)
+            return false;
+        if (nodeDef instanceof ClassDefinition)
+            return false;
+        
+        if (node == firstChild) 
+        	return true;
+
+        return false;
+    }
+
     public static boolean isScalar(IExpressionNode node)
     {
     	ASTNodeID id = node.getNodeID();
