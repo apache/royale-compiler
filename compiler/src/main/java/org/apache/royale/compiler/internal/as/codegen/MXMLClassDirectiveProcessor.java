@@ -159,6 +159,7 @@ import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.problems.AccessUndefinedPropertyProblem;
 import org.apache.royale.compiler.problems.CSSCodeGenProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLExecutableStatementsInScriptBlockProblem;
@@ -3669,6 +3670,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                         traverse(propertyNode, context);
                         
                         context.stopUsing(IL.PROPERTIES, 1);                        
+                    }
+                    else if (propDef == null)
+                    {
+                    	getProblems().add(new AccessUndefinedPropertyProblem(propertyNode, propertyName));
                     }
                     else if (propDef.isPublic())
                     {
