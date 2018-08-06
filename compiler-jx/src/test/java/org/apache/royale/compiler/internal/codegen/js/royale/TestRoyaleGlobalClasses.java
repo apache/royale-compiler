@@ -523,7 +523,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete XML(b.xml).child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("XML(b.xml).child('child').removeChild('grandchild')");
+        assertOut("XML.conversion(b.xml).child('child').removeChild('grandchild')");
     }
     
     @Test
@@ -564,7 +564,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete XML(b.xml).child.grandchild[0];");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("XML(b.xml).child('child').child('grandchild').removeChildAt(0)");
+        assertOut("XML.conversion(b.xml).child('child').child('grandchild').removeChildAt(0)");
     }
     
     @Test

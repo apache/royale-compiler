@@ -263,6 +263,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         }
                         return;
                     }
+                    else if (def.getBaseName().equals(IASLanguageConstants.XML))
+                    {
+                    	write("XML.conversion");
+                        getEmitter().emitArguments(node.getArgumentsNode());
+                    	return;
+                    }
                 }
             	getWalker().walk(node.getNameNode());
 
