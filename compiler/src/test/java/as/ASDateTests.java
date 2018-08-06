@@ -36,6 +36,8 @@ public class ASDateTests extends ASFeatureTestsBase
         String offsetString = new Integer(tz.getOffset(new Date().getTime()) / 3600000).toString();
         if (offsetString.length() == 2)
             offsetString = offsetString.substring(0,1) + 0 + offsetString.substring(1, 2);
+        if(offsetString.charAt(0) != '-')
+            offsetString = "+" + offsetString;
         offsetString = "GMT" + offsetString + "00";
         if (!hasFlashPlayerGlobal)
             offsetString = "GMT-0800";
@@ -146,7 +148,7 @@ public class ASDateTests extends ASFeatureTestsBase
         };
         String[] testCode = new String[]
         {
-            "var date : Date = new Date('Mon Dec 31 23:59:59 GMT-0800 2018');",
+            setTimeZone("var date : Date = new Date('Mon Dec 31 23:59:59 TZ 2018');"),
             "date.fullYear += 1;",
             "assertEqual('date.fullYear', date.fullYear, 2019);",
         };
