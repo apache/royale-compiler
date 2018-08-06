@@ -2458,6 +2458,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @Override
     public void emitArray(IMXMLArrayNode node)
     {
+    	if (node.getParent() instanceof IMXMLDeclarationsNode)
+    	{
+    		// treat this like an instance.  fx:Array at the top level of a Declaration defines a new property with a structure
+    		emitInstance(node);
+    		return;
+    	}
         moveDown(false, null, null);
 
         boolean isSimple = true;
