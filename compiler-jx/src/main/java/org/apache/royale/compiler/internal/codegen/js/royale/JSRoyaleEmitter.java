@@ -1321,6 +1321,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitTypedExpression(ITypedExpressionNode node)
     {
         write(JSRoyaleEmitterTokens.VECTOR);
+        if (getModel().inStaticInitializer)
+        	staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
         if (project instanceof RoyaleJSProject)
         	((RoyaleJSProject)project).needLanguage = true;
         getModel().needLanguage = true;
