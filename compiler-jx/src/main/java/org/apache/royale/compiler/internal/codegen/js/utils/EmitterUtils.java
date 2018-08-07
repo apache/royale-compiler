@@ -441,13 +441,13 @@ public class EmitterUtils
         IDefinition nodeDef = node.resolve(project);
 
         IASNode parentNode = node.getParent();
-        ASTNodeID parentNodeId = parentNode.getNodeID();
+//        ASTNodeID parentNodeId = parentNode.getNodeID();
 
         IASNode firstChild = parentNode.getChild(0);
 
-        final IClassDefinition thisClass = model.getCurrentClass();
+//        final IClassDefinition thisClass = model.getCurrentClass();
 
-        boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
+//        boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
 
         if (parentNode instanceof IUnaryOperatorNode)
         	return false;
@@ -457,6 +457,14 @@ public class EmitterUtils
             return false;
         if (nodeDef instanceof ClassDefinition)
             return false;
+        if (nodeDef instanceof VariableDefinition)
+        {
+        		List<IVariableNode> list = model.getVars();
+        		for (IVariableNode element : list) {
+        		    if(element.getQualifiedName().equals(((IIdentifierNode)node).getName()))
+        		    		return false;
+        		}
+        }
         
         if (node == firstChild) 
         	return true;
