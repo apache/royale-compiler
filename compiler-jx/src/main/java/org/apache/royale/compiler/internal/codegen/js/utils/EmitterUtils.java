@@ -467,7 +467,7 @@ public class EmitterUtils
         }
         
         if (node == firstChild) 
-        	return true;
+        		return true;
 
         return false;
     }
