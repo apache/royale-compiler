@@ -75,67 +75,79 @@ public class LiteralEmitter extends JSSubEmitter implements
                         }
                     }
                 }
-                XMLLiteralNode xmlNode = (XMLLiteralNode) node;
-                if (jsx)
+                if (node instanceof XMLLiteralNode)
                 {
-                    emitJSX(xmlNode);
-                    return;
+                    XMLLiteralNode xmlNode = (XMLLiteralNode) node;
+	                if (jsx)
+	                {
+	                    emitJSX(xmlNode);
+	                    return;
+	                }
+	                else
+	                {
+	                    newlineReplacement = "\\\\\n";
+	                    if (xmlNode.getContentsNode().getChildCount() == 1)
+	                    {
+	                        if (s.contains("'"))
+	                            s = "\"" + s + "\"";
+	                        else
+	                            s = "'" + s + "'";
+	                    }
+	                    else
+	                    {
+	                        StringBuilder sb = new StringBuilder();
+	                        // probably contains {initializers}
+	                        boolean inAttribute = false;
+	                        int n = xmlNode.getContentsNode().getChildCount();
+	                        for (int i = 0; i < n; i++)
+	                        {
+	                            if (i > 0)
+	                                sb.append(" + ");
+	                            IASNode child = xmlNode.getContentsNode().getChild(i);
+	                            if (child instanceof LiteralNode)
+	                            {
+	                                s = ((LiteralNode)child).getValue(true);
+	                                if (s.contains("'"))
+	                                    sb.append("\"" + s + "\"");
+	                                else
+	                                    sb.append("'" + s + "'");
+	                            }
+	                            else
+	                            {
+	                                s = getEmitter().stringifyNode(child);
+	                                if (inAttribute)
+	                                {
+	                                    sb.append("'\"' + ");
+	
+	                                    sb.append(s);
+	
+	                                    sb.append(" + '\"'");
+	                                }
+	                                else
+	                                    sb.append(s);
+	                            }
+	                            inAttribute = s.endsWith("=");
+	                        }
+	                        s = sb.toString();
+	                    }
+	                    char c = s.charAt(0);
+	                    if (c == '"')
+	                    {
+	                        s = s.substring(1, s.length() - 1);
+	                        s = s.replace("\"", "__QUOTE_PLACEHOLDER__");
+	                        s = "\"" + s + "\"";
+	                    }
+	                    // use formatQualifiedName to get XML in the usedNames dependencies
+	                    s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
+	                }
                 }
                 else
                 {
-                    newlineReplacement = "\\\\\n";
-                    if (xmlNode.getContentsNode().getChildCount() == 1)
-                    {
-                        if (s.contains("'"))
-                            s = "\"" + s + "\"";
-                        else
-                            s = "'" + s + "'";
-                    }
-                    else
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        // probably contains {initializers}
-                        boolean inAttribute = false;
-                        int n = xmlNode.getContentsNode().getChildCount();
-                        for (int i = 0; i < n; i++)
-                        {
-                            if (i > 0)
-                                sb.append(" + ");
-                            IASNode child = xmlNode.getContentsNode().getChild(i);
-                            if (child instanceof LiteralNode)
-                            {
-                                s = ((LiteralNode)child).getValue(true);
-                                if (s.contains("'"))
-                                    sb.append("\"" + s + "\"");
-                                else
-                                    sb.append("'" + s + "'");
-                            }
-                            else
-                            {
-                                s = getEmitter().stringifyNode(child);
-                                if (inAttribute)
-                                {
-                                    sb.append("'\"' + ");
-
-                                    sb.append(s);
-
-                                    sb.append(" + '\"'");
-                                }
-                                else
-                                    sb.append(s);
-                            }
-                            inAttribute = s.endsWith("=");
-                        }
-                        s = sb.toString();
-                    }
-                    char c = s.charAt(0);
-                    if (c == '"')
-                    {
-                        s = s.substring(1, s.length() - 1);
-                        s = s.replace("\"", "__QUOTE_PLACEHOLDER__");
+                	s = node.getValue();
+                    if (s.contains("'"))
                         s = "\"" + s + "\"";
-                    }
-                    // use formatQualifiedName to get XML in the usedNames dependencies
+                    else
+                        s = "'" + s + "'";
                     s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
                 }
             }
