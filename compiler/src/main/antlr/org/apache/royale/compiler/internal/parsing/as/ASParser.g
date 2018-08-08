@@ -222,6 +222,7 @@ attributedDefinition[ContainerNode c]
 attribute [List<ModifierNode> modifiers, List<INamespaceDecorationNode> namespaceAttributes] 
 {
     ExpressionNodeBase namespaceNode = null; 
+    ExpressionNodeBase configAsNamespaceNode = null; 
     ModifierNode modifierNode = null;
 }
     :   modifierNode=modifierAttribute
@@ -234,8 +235,33 @@ attribute [List<ModifierNode> modifiers, List<INamespaceDecorationNode> namespac
             if (namespaceNode instanceof INamespaceDecorationNode)
                 namespaceAttributes.add((INamespaceDecorationNode) namespaceNode); 
         }
+    |   configAsNamespaceNode=configConditionAsNamespaceModifier
+        {
+            if (configAsNamespaceNode instanceof INamespaceDecorationNode)
+                namespaceAttributes.add((INamespaceDecorationNode) configAsNamespaceNode); 
+        }
     ;
 	
+configConditionAsNamespaceModifier returns [ExpressionNodeBase n]
+{
+    n = null; 
+}
+    :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_NAMESPACE_ANNOTATION
+        { final NamespaceIdentifierNode nsNode = new NamespaceIdentifierNode((ASToken)ns); 
+          nsNode.setIsConfigNamespace(isConfigNamespace(nsNode));
+	  final IdentifierNode idNode = new IdentifierNode((ASToken)id);
+	  final IdentifierNode idNode2 = (IdentifierNode)transformToNSAccessExpression(nsNode, (ASToken) op, idNode);
+          n = new NamespaceIdentifierNode(idNode2.getName());
+          n = n.copyForInitializer(null);
+	  n.setSourcePath(nsNode.getSourcePath());
+	  n.setLine(nsNode.getLine());
+	  n.setColumn(nsNode.getColumn());
+	  n.setEndLine(idNode.getEndLine());
+	  n.setEndColumn(idNode.getEndColumn());
+	  n.setStart(nsNode.getStart());
+	  n.setEnd(idNode.getEnd());
+        }
+    ;
 	
 /**
  * Matches a definition of variable, function, namespace, class or interface.

@@ -29,6 +29,7 @@ import java.util.List;
 import antlr.Token;
 
 import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
@@ -510,6 +511,15 @@ public class ConfigProcessor
         {
         	IdentifierNode id = (IdentifierNode)result;
         	return id;
+        }
+        else if (result instanceof Namespace)
+        {
+        	Namespace ns = (Namespace)result;
+        	String nsName = ns.getName();
+        	if (nsName.length() == 0)
+        		nsName = "public";
+        	
+        	return new IdentifierNode(nsName);
         }
         return null;
     }
