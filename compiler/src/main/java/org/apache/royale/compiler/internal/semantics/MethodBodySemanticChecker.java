@@ -742,6 +742,8 @@ public class MethodBodySemanticChecker
 
         if ( actuals.size() > formals.length && !last_is_rest )
         {
+        	if (project.isParameterCountMismatchAllowed(func, formals.length, actuals.size()))
+        		return;
             addProblem(new TooManyFunctionParametersProblem(iNode, formals.length));
         }
 

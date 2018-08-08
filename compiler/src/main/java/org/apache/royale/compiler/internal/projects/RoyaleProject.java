@@ -1792,6 +1792,8 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         return actionScriptFileEncoding;
     }
 
+    private boolean isTranspiling;
+    
     @Override
     public void setDefineDirectives(Map<String, String> defines)
     {
@@ -1799,6 +1801,10 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         // TODO: This seems strange. Each call to the setter
         // adds new defines. How do you get rid of the old ones?
         addConfigVariables(defines);
+        if (defines.containsKey("COMPILE::SWF"))
+        {
+        	isTranspiling = defines.get("COMPILE::SWF").equalsIgnoreCase("false");
+        }
         clean();
     }
 
@@ -2471,4 +2477,16 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 			}
 		}
 	}
+	
+	@Override
+	public boolean isParameterCountMismatchAllowed(IFunctionDefinition func,
+			int formalCount, int actualCount) {
+		if (!isTranspiling) return false;
+		if (func.getBaseName().equals("sort") &&
+				func.getParent().getQualifiedName().equals("Array") &&
+				formalCount == 1 && actualCount == 2)
+			return true;
+        return false;
+	}
+
 }

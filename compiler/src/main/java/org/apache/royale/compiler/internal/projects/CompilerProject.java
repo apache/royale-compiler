@@ -1014,4 +1014,8 @@ public abstract class CompilerProject implements ICompilerProject
         return (baseDefinition == overrideDefinition);
 	}
 
+	public boolean isParameterCountMismatchAllowed(IFunctionDefinition func,
+			int formalCount, int actualCount) {
+        return false;
+	}
 }
