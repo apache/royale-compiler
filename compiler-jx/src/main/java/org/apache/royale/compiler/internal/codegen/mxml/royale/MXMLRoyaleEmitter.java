@@ -320,7 +320,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            	Map<String, String> aliases = royaleProject.remoteClassAliasMap;
 	            	if (aliases != null && aliases.size() > 0)
 	            	{
-		            	String aliasInject = "remoteClassAliases: {";
+		            	String aliasInject = sep + "remoteClassAliases: {";
 		            	boolean firstOne = true;
 		            	for (String className : aliases.keySet())
 		            	{
