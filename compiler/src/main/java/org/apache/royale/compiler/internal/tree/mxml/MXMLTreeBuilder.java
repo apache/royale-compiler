@@ -381,6 +381,8 @@ public class MXMLTreeBuilder
         else if (typeName.equals(IASLanguageConstants.Array))
         {
             result = mxmlDialect.parseArray(project, text, flags);
+            if (result == null && flags.contains(TextParsingFlags.RICH_TEXT_CONTENT))
+                result = mxmlDialect.parseString(project, text, flags);            	
         }
         else if (typeName.equals(IASLanguageConstants.Object) ||
                  typeName.equals(IASLanguageConstants.ANY_TYPE))
