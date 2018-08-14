@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -382,7 +383,15 @@ public class MXMLTreeBuilder
         {
             result = mxmlDialect.parseArray(project, text, flags);
             if (result == null && flags.contains(TextParsingFlags.RICH_TEXT_CONTENT))
-                result = mxmlDialect.parseString(project, text, flags);            	
+            {
+                result = mxmlDialect.parseString(project, text, flags);
+                if (result != null)
+                {
+                	ArrayList<Object> arr = new ArrayList<Object>();
+                	arr.add(result);
+                	result = arr;
+                }
+            }
         }
         else if (typeName.equals(IASLanguageConstants.Object) ||
                  typeName.equals(IASLanguageConstants.ANY_TYPE))
