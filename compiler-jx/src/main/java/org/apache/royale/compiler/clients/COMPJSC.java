@@ -41,6 +41,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
@@ -176,6 +177,7 @@ public class COMPJSC extends MXMLJSC
         try
         {
             final boolean continueCompilation = configure(args);
+        	CompilerDiagnosticsConstants.diagnostics = config.getDiagnosticsLevel();
 
 /*            if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;*/

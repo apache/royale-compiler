@@ -237,7 +237,6 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 
             if (continueCompilation)
             {
-            	CompilerDiagnosticsConstants.diagnostics = config.getDiagnosticsLevel();
                 project.setProblems(problems.getProblems());
                	compile();
                 if (problems.hasFilteredProblems())

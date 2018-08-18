@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.royale.compiler.Messages;
 import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
@@ -146,12 +147,17 @@ public class COMPC extends MXMLC implements FlexTool
         ISWCTarget swcTarget;
         ITargetSettings targetSettings = projectConfigurator.getTargetSettings(TargetType.SWC);
         if (targetSettings == null)
+        {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("target settings is null");
             return;
-        
+        }        
         swcTarget = project.createSWCTarget(targetSettings, null);
         target = (SWFTarget)swcTarget.getLibrarySWFTarget();
 
         Collection<ICompilerProblem> swcProblems = new ArrayList<ICompilerProblem>();
+        if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+        	System.out.println("attempting to build SWC");
         final ISWC swc = swcTarget.build(swcProblems);
 
         problems.addAll(swcProblems);
@@ -159,16 +165,26 @@ public class COMPC extends MXMLC implements FlexTool
         // Don't create a SWC if there are errors unless a 
         // developer requested otherwise.
         if (!config.getCreateTargetWithErrors() && problems.hasErrors())
+        {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("got errors creating target in compc");
             return;
+        }
         
         boolean useCompression = targetSettings.useCompression();
         if (config.getOutputSwcAsDirectory())
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("output swc as directory");
             final String path = FilenameNormalization.normalize(outputOptionValue);
             final ISWCWriter swcWriter = new SWCDirectoryWriter(path, useCompression,
                     targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
                     SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("attempting to write swc");
             swcWriter.write(swc);
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("returned from writing swc");
             long endTime = System.nanoTime();
             String seconds = String.format("%5.3f", (endTime - startTime) / 1e9);
             Map<String, Object> params = new HashMap<String, Object>();
@@ -180,10 +196,16 @@ public class COMPC extends MXMLC implements FlexTool
         }
         else
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("output swc as file");
             final ISWCWriter swcWriter = new SWCWriter(outputOptionValue, useCompression,
                     targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
                     SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("attempting to write swc");
             swcWriter.write(swc);
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("returned from writing swc");
             final File outputFile = new File(outputOptionValue);
             long endTime = System.nanoTime();
             String seconds = String.format("%5.3f", (endTime - startTime) / 1e9);

@@ -44,6 +44,7 @@ import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.CommandLineConfigurator;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.ConfigurationValue;
@@ -332,6 +333,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         try
         {
             final boolean continueCompilation = configure(args);
+        	CompilerDiagnosticsConstants.diagnostics = config.getDiagnosticsLevel();
 
 /*            if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;*/

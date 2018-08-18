@@ -39,5 +39,6 @@ public class CompilerDiagnosticsConstants
     public static final int DA_BYTEARRAY = 2048;
     public static final int FILE_UTILS = 4096;
     public static final int ROYALEJSPROJECT = 8192;
+    public static final int COMPC_PHASES = 16384;
 
 }

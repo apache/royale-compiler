@@ -227,9 +227,11 @@ public class MXMLC implements FlexTool
             ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer); 
             
             ProblemPrinter printer = new ProblemPrinter(formatter, err);
-
+            
             if (continueCompilation)
             {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("Configuration is ok");
                 project.setProblems(problems.getProblems());
                 compile();
                 exitCode = printProblems(printer, legacyOutput);
@@ -237,6 +239,8 @@ public class MXMLC implements FlexTool
             }
             else if (problems.hasFilteredProblems())
             {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("Failed with config errors");
                 printer.printProblems(problems.getFilteredProblems());
                 exitCode = ExitCode.FAILED_WITH_CONFIG_ERRORS;
             }
@@ -247,6 +251,8 @@ public class MXMLC implements FlexTool
         }
         catch (Exception e)
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("Failed with exceptions");
             (new PrintStream(err)).println(e.getMessage());
             exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
         }
@@ -622,9 +628,15 @@ public class MXMLC implements FlexTool
         boolean compilationSuccess = false;
         try
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("Setting up target file");
             if (!setupTargetFile())
+            {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("Could not set up target file");
                 return false;
-
+            }
+            
             if (config.isDumpAst())
                 dumpAST();
 
@@ -632,15 +644,25 @@ public class MXMLC implements FlexTool
             project.generateAPIReport();
 
             if (swfTarget == null)
+            {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("No swftarget");
                 return false;
-
+            }
+            
             // Don't create a swf if there are errors unless a 
             // developer requested otherwise.
             if (!config.getCreateTargetWithErrors() && problems.hasErrors())
+            {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("got errors creating target");
                 return false;
+            }
 
             if (skipLinking)
                 return true;
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("attempting to write output");
             final File outputFile = new File(getOutputFilePath());
             final int swfSize = writeSWF(swfTarget, outputFile);
             long endTime = System.nanoTime();
@@ -656,11 +678,15 @@ public class MXMLC implements FlexTool
         }
         catch (IOException e)
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("got IOException in compile()");
             final FileIOProblem problem = new FileIOProblem(e);
             problems.add(problem);
         }
         catch (Exception e)
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("got Exception in compile()");
             final ICompilerProblem problem = new InternalCompilerProblem(e);
             problems.add(problem);
         }
