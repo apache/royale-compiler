@@ -1356,6 +1356,9 @@ public class ASProjectScope extends ASScopeBase
      */
     public ICompilationUnit getCompilationUnitForDefinition(IDefinition def)
     {
+        if (def == null)
+            return null;
+
         // This check is really important because this method is called by other methods
         // in this class that do not want to cause compilation units to do work.
         if (def instanceof DefinitionPromise)
