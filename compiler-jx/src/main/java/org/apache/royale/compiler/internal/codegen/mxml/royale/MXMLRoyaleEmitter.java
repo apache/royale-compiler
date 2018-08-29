@@ -2836,7 +2836,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
     	if (inStaticInitializer)
-    		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name))
+    		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && !isExternal(name))
     			staticUsedNames.add(name);
 
 		if (useName && !usedNames.contains(name) && !isExternal(name))

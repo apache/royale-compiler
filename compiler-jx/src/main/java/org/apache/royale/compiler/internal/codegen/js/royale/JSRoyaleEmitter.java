@@ -564,7 +564,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	else if (!isDoc)
     	{
         	if (getModel().inStaticInitializer)
-        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name))
+        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && !isExternal(name))
         			staticUsedNames.add(name);
     		
     		if (!usedNames.contains(name) && !isExternal(name))
