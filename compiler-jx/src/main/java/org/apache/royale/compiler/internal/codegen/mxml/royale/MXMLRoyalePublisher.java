@@ -255,7 +255,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 	                        	total += is.read(data, total, n - total);
 	                        }
 	                        FileUtils.writeByteArrayToFile(new File(intermediateDir, key), data);
-	                        FileUtils.writeByteArrayToFile(new File(releaseDir, key), data);
+                            if (configuration.release())
+                            {
+	                            FileUtils.writeByteArrayToFile(new File(releaseDir, key), data);
+                            }
 	                    }
 	                }
 	            }
