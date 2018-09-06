@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants.BuiltinType;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogEmitter;
@@ -37,6 +38,7 @@ import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitter;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
@@ -661,6 +663,20 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
+        ASDocComment asDoc = (ASDocComment) node
+                .getASDocComment();
+        if (asDoc != null)
+        {
+            String asDocString = asDoc.commentNoEnd();
+            String coercionToken = JSRoyaleEmitterTokens.DEBUG_COMMENT
+                    .getToken();
+            int emitIndex = asDocString.indexOf(coercionToken);
+            if(emitIndex != -1)
+            {
+                write(JSRoyaleEmitterTokens.DEBUG_RETURN);
+                writeNewline();
+            }
+        }
         IDefinition def = node.getDefinition();
         boolean isStatic = false;
         if (def != null && def.isStatic())
