@@ -46,7 +46,7 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     IGNORE_IMPORT("@royaleignoreimport"),
     IGNORE_STRING_COERCION("@royalenoimplicitstringconversion"),
     SUPPRESS_PUBLIC_VAR_WARNING("@royalesuppresspublicvarwarning"),
-    DEBUG_COMMENT("@debug"),
+    DEBUG_COMMENT("@royaledebug"),
     DEBUG_RETURN("if(!goog.DEBUG)return;"),
     PREINCREMENT("preincrement"),
     PREDECREMENT("predecrement"),
