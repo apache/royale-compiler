@@ -98,6 +98,7 @@ public abstract class MXMLDialect
                     .put("gt", '>')
                     .put("lt", '<')
                     .put("quot", '"')
+                    .put("nbsp", ' ')
                     .build();
 
     /**
