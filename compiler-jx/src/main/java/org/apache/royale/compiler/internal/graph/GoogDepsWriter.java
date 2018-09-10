@@ -211,6 +211,13 @@ public class GoogDepsWriter {
 			for (String dep : restOfDeps)
 			{
 				GoogDep gd = depMap.get(dep);
+				if (gd == null)
+				{
+					//added this to prevent a NullPointerException when the
+					//GoogDep is null. -JT
+					problems.add(new FileNotFoundProblem(dep));
+					continue;
+				}
 				sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 				.append(gd.className).append("'], [")
 				.append((gd.fileInfo.impls != null) ? getDependencies(gd.fileInfo.impls) : "")
