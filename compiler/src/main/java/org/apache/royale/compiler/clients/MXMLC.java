@@ -121,9 +121,10 @@ public class MXMLC implements FlexTool
         // Therefore the following enum values must be non-negative.
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_ERRORS(2),
-        FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_ERRORS(4);
+        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_ERRORS(3),
+        FAILED_WITH_EXCEPTIONS(4),
+        FAILED_WITH_CONFIG_ERRORS(5);
 
         ExitCode(int code)
         {
