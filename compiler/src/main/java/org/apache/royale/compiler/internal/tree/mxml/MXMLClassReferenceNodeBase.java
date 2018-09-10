@@ -722,11 +722,13 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     {
         // Non-whitespace may be the value of a default property.
         IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
+        IVariableDefinition getterDefinition = (defaultPropertyDefinition instanceof ISetterDefinition) ? 
+        		((ISetterDefinition)defaultPropertyDefinition).resolveCorrespondingAccessor(builder.getProject()) :null;
         if (defaultPropertyDefinition != null && 
         		(defaultPropertyDefinition.getTypeAsDisplayString().equals(IASLanguageConstants.String) ||
         		 (defaultPropertyDefinition.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null) ||
-        		 (defaultPropertyDefinition instanceof ISetterDefinition && 
-        		     ((ISetterDefinition)defaultPropertyDefinition).resolveCorrespondingAccessor(builder.getProject()).getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null)))
+        		 (getterDefinition != null && 
+        		     (getterDefinition.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_RICHTEXTCONTENT) != null))))
         {
             MXMLSpecifierNodeBase childNode =
                     createSpecifierNode(builder, defaultPropertyDefinition.getBaseName());
