@@ -274,7 +274,13 @@ public class GoogDepsWriter {
 				if (isGoogClass(name)) continue;
 				GoogDep dep = depMap.get(name);
 				if (dep == null)
+				{
 					System.out.println("No GoogDep for " + name);
+					//added this to prevent a NullPointerException when the
+					//GoogDep is null. -JT
+					problems.add(new FileNotFoundProblem(name));
+					continue;
+				}
 				depsInOrder.add(dep);
 			}
 			return depsInOrder;
