@@ -1,3 +1,8 @@
+Apache Royale Compiler 0.9.4
+=================
+ 
+ - @royaledebug comment on method will make the method go away in a js release build.
+
 Apache Royale Compiler 0.9.3
 =================
  
