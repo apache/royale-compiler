@@ -668,11 +668,25 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (asDoc != null)
         {
             String asDocString = asDoc.commentNoEnd();
-            String coercionToken = JSRoyaleEmitterTokens.DEBUG_COMMENT
+            String debugToken = JSRoyaleEmitterTokens.DEBUG_COMMENT
                     .getToken();
-            int emitIndex = asDocString.indexOf(coercionToken);
+            int emitIndex = asDocString.indexOf(debugToken);
             if(emitIndex != -1)
             {
+                IParameterNode[] pnodes = node.getParameterNodes();
+
+                IParameterNode rest = EmitterUtils.getRest(pnodes);
+                if (rest != null)
+                {
+                    final StringBuilder code = new StringBuilder();
+                    code.append(rest.getName());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.EQUAL.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(rest.getName());
+                    code.append(ASEmitterTokens.SEMICOLON.getToken());
+                    write(code.toString());
+                }
                 write(JSRoyaleEmitterTokens.DEBUG_RETURN);
                 writeNewline();
             }

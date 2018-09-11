@@ -305,7 +305,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         String paramType = "";
         if (node.isRest())
         {
-            paramType = "*";
+            paramType = ASEmitterTokens.ELLIPSIS.getToken();
         }
         else
         {

@@ -94,7 +94,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {*} rest\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar, rest) {\n\tvar self = this;\n\trest = Array.prototype.slice.call(arguments, 1);\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {...} rest\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar, rest) {\n\tvar self = this;\n\trest = Array.prototype.slice.call(arguments, 1);\n\treturn -1;\n}");
     }
 
     @Override
