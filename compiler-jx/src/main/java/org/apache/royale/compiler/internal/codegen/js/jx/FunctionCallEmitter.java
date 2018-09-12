@@ -185,7 +185,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 if (def != null)
                 {
                     boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
-                    if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.trace)
+                    boolean isTrace = def.getParent() == null && def.getBaseName().equals(IASGlobalFunctionConstants.trace);
+                    if (isInt || isTrace
                             || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
