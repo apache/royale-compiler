@@ -85,6 +85,7 @@ public class ProblemResourceBundleGeneratorMojo
                     }
                 }
             }
+            sourceFileReader.close();
             if(sb != null) {
                 line = sb.toString();
                 return line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""));

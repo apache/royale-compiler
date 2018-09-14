@@ -45,7 +45,6 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.workspaces.IWorkspace;
-import org.apache.royale.swc.ISWC;
 import org.apache.royale.utils.FileUtils;
 import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.Trace;

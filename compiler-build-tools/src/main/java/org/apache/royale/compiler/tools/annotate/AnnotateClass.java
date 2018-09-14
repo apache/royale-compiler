@@ -15,14 +15,13 @@
 package org.apache.royale.compiler.tools.annotate;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class AnnotateClass
 {
     public static class AnnotateClassDeleteException extends Exception
     {
+        private static final long serialVersionUID = 1L;
+
         public AnnotateClassDeleteException(String s)
         {
             super(s);
@@ -31,6 +30,8 @@ public class AnnotateClass
     
     public static class AnnotateClassRenameException extends Exception
     {
+        private static final long serialVersionUID = 1L;
+
         public AnnotateClassRenameException(String s)
         {
             super(s);

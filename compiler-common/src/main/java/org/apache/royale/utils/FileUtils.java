@@ -167,7 +167,8 @@ public final class FileUtils
             }
         	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
         		System.out.println("FileUtils waiting for lock in toByteArray");
-            byte[] b = baos.getDirectByteArray();
+            //byte[] b = 
+            baos.getDirectByteArray();
         	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
         		System.out.println("FileUtils waiting for lock in toByteArray");
         }
