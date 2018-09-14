@@ -82,7 +82,7 @@ public class DefineFont3 extends DefineFont2
 
         if (object instanceof DefineFont3 && super.equals(object))
         {
-            DefineFont3 defineFont = (DefineFont3)object;
+            // DefineFont3 defineFont = (DefineFont3)object;
 
             // DefineFontAlignZones already checks if its font is equal, so we
             // don't check here to avoid circular equality checking...

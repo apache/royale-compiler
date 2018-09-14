@@ -123,7 +123,8 @@ public class GenerateManifestsMojo
                     break;
                 }
             }
-
+            zin.close();
+            
             // Read the catalog.xml file inside.
             if(catalogBytes != null) {
                 try {
