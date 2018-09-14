@@ -175,6 +175,7 @@ public class GoogDepsWriter {
 			mainDeps.append("goog.addDependency('").append(relativePath(mainDep.filePath)).append("', ['")
 								.append(mainDep.className).append("'], [");
 			ArrayList<String> restOfDeps = new ArrayList<String>();
+			restOfDeps.addAll(mainDep.deps);
 	        DependencyTypeSet dependencyTypes = DependencyTypeSet.allOf();
 			// get the list of all units not referenced by other units
 			for (GoogDep gd : depMap.values())
