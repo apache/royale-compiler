@@ -19,8 +19,6 @@
 
 package org.apache.royale.compiler.internal.codegen.typedefs;
 
-import java.util.HashMap;
-
 import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
