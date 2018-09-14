@@ -62,7 +62,10 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
             if (node instanceof IMXMLDocumentNode)
             {
                 IMXMLDocumentNode mxmlNode = (IMXMLDocumentNode) node;
-                name = mxmlNode.getFileNode().getName() + EXTENSION_JS;
+                String pname = mxmlNode.getFileNode().getName();
+                // in MXML inside packages getName brings the whole package. We need to strip packages and get only the Class name for sourceMaps
+                String lastToken = pname.substring(pname.lastIndexOf(".") + 1);
+                name = lastToken + EXTENSION_JS;
             }
             writeNewline();
             write(SOURCE_MAP_PREFIX + name + EXTENSION_MAP);
