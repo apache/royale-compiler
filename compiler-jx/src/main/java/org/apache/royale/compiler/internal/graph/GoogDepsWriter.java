@@ -57,6 +57,7 @@ public class GoogDepsWriter {
     public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
+		this.moduleOutput = config.getModuleOutput();
 		this.mainName = mainClassName;
 		removeCirculars = config.getRemoveCirculars();
 		otherPaths = config.getSDKJSLib();
@@ -69,6 +70,7 @@ public class GoogDepsWriter {
 	}
 	
 	private ProblemQuery problems;
+	private String moduleOutput;
 	private String outputFolderPath;
 	private String mainName;
 	private List<String> otherPaths;
@@ -960,9 +962,16 @@ public class GoogDepsWriter {
 
 	String relativePath(String path)
 	{
+		String replacement = "../../..";
         if (path.indexOf(outputFolderPath) == 0)
         {
-            path = path.replace(outputFolderPath, "../../..");
+            if (moduleOutput != null)
+            {
+            	replacement += moduleOutput;
+            	if (replacement.endsWith("/"))
+            		replacement = replacement.substring(0, replacement.length() - 1);
+            }
+        	path = path.replace(outputFolderPath, replacement);
         }
         else
         {

@@ -335,6 +335,43 @@ public class JSConfiguration extends Configuration
     	return null;
     }
 
+    //
+    // 'module-output' option
+    //
+
+    private String moduleoutput;
+
+    /**
+     * if used, the js-debug and js-release folders are calculated by removing
+     * the folders specified from the output folder.  This is useful in some
+     * cases when using module that are in the same source path as the main app
+     * as opposed to being in separate projects.  For example in TourDeFlex,
+     * the main app is in the src folder, and a module example may be in
+     * src/mx/controls/ such as mx/controls/ButtonExample.mxml.
+     * Without this options, the output might end up in
+     * src/mx/controls/bin/js-debug and src/mx/controls/bin/js-release when
+     * it would be better if the output was relative to the main app and go
+     * in bin/js-debug/mx/controls and bin/js-release/mx/controls.  Even
+     * specifying js-output doesn't work as setting it to the main app's
+     * bin folder would result in the output .JS going in the same folder
+     * as the main app instead of being nested in mx/controls.  So, by
+     * setting this option to mx/controls, the compiler will calculate the desired
+     * folder structure.
+     */
+    public String getModuleOutput()
+    {
+    	if (moduleoutput != null && moduleoutput.equals("/"))
+    		return null;
+    	return moduleoutput;
+    }
+
+    @Config
+    @Arguments("filename")
+    public void setModuleOutput(ConfigurationValue val, String output) throws ConfigurationException
+    {
+        this.moduleoutput = output;
+    }
+
     /**
      * Placeholder.  MXMLJSC picks off these values and changes them to load-config for the JS compilers
      */

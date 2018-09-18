@@ -88,6 +88,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         super(project, config);
         this.isMarmotinniRun = googConfiguration.getMarmotinni() != null;
         this.outputPathParameter = configuration.getOutput();
+        this.moduleOutput = googConfiguration.getModuleOutput();
         this.useStrictPublishing = googConfiguration.getStrictPublish();
 
         this.project = project;
@@ -97,6 +98,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
     private boolean isMarmotinniRun;
     private String outputPathParameter;
+    private String moduleOutput;
     private boolean useStrictPublishing;
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
@@ -128,7 +130,18 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             if (outputPathParameter.contains(".swf")) {
             	if (outputParentFolder == null)
             		outputParentFolder = new File(outputPathParameter);
-                outputParentFolder = outputParentFolder.getParentFile().getParentFile();
+                if (moduleOutput != null && outputPathParameter.contains(moduleOutput))
+                {
+                	String rootFolder = outputPathParameter.substring(0, outputPathParameter.indexOf(moduleOutput));
+                    if (rootFolder.endsWith("src"))
+                        outputParentFolder = new File(rootFolder).getParentFile();
+                    else if (rootFolder.endsWith("src/main/royale") || rootFolder.endsWith("src\\main\\royale"))
+                        outputParentFolder = new File(rootFolder).getParentFile().getParentFile().getParentFile();
+                    else
+                        outputParentFolder = new File(rootFolder).getParentFile();
+                }
+                else
+                	outputParentFolder = outputParentFolder.getParentFile().getParentFile();
             } else {
                 outputParentFolder = new File(outputPathParameter);
             }
@@ -140,6 +153,14 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
             else if (mainClassFolder.endsWith("src/main/royale") || mainClassFolder.endsWith("src\\main\\royale"))
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile().getParentFile().getParentFile();
+            else if (moduleOutput != null && mainClassFolder.endsWith(moduleOutput))
+            {
+            	String rootFolder = mainClassFolder.replace(mainClassFolder, "");
+                if (rootFolder.endsWith("src"))
+                    outputParentFolder = new File(rootFolder).getParentFile();
+                else if (rootFolder.endsWith("src/main/royale") || rootFolder.endsWith("src\\main\\royale"))
+                    outputParentFolder = new File(rootFolder).getParentFile().getParentFile().getParentFile();            	
+            }
             else
                 outputParentFolder = new File(configuration.getTargetFileDirectory());
         }
@@ -147,6 +168,8 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         outputParentFolder = new File(outputParentFolder, ROYALE_OUTPUT_DIR_NAME);
 
         outputFolder = new File(outputParentFolder, File.separator + ROYALE_INTERMEDIATE_DIR_NAME);
+        if (moduleOutput != null)
+        	outputFolder = new File(outputFolder, File.separator + moduleOutput);
 
         // (erikdebruin) Marmotinni handles file management, so we
         // bypass the setup.
@@ -204,6 +227,8 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         // The "release" is the "js-release" directory.
         File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
+        if (moduleOutput != null)
+        	releaseDir = new File(releaseDir, File.separator + moduleOutput);
 
         /////////////////////////////////////////////////////////////////////////////////
         // Copy static resources to the intermediate (and release) directory.
