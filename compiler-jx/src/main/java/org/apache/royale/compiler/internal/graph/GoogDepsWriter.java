@@ -80,6 +80,7 @@ public class GoogDepsWriter {
 	private ArrayList<GoogDep> dps;
 	private DependencyGraph graph;
 	private CompilerProject project;
+	private ArrayList<String> staticInitializers;
 	
 	private HashMap<String, GoogDep> depMap = new HashMap<String,GoogDep>();
 	private HashMap<String, ICompilationUnit> requireMap = new HashMap<String, ICompilationUnit>();
@@ -238,6 +239,8 @@ public class GoogDepsWriter {
 	
 	private boolean buildDB()
 	{
+		staticInitializers = new ArrayList<String>();
+		
 		graph = new DependencyGraph();
 		if (isGoogClass(mainName))
 		{
@@ -259,6 +262,24 @@ public class GoogDepsWriter {
     
 	private ArrayList<GoogDep> sort()
 	{
+		// first, promote all dependencies of classes used in static initializers to
+		// the level of static dependencies since their constructors will be
+		// run early
+		for (String staticClass: staticInitializers)
+		{
+			GoogDep info = depMap.get(staticClass);
+			if (info != null && info.fileInfo != null && info.fileInfo.deps != null)
+			{
+				if (info.fileInfo.staticDeps == null)
+					info.fileInfo.staticDeps = new ArrayList<String>();
+				for (String dep : info.fileInfo.deps)
+				{
+					if (!info.fileInfo.staticDeps.contains(dep))
+						info.fileInfo.staticDeps.add(dep);
+				}
+			}
+		}
+		
 		ArrayList<GoogDep> arr = new ArrayList<GoogDep>();
 		GoogDep current = depMap.get(mainName);
 		sortFunction(current, arr);
@@ -696,6 +717,7 @@ public class GoogDepsWriter {
 						    					line = line.substring(c + token.length(), c2);
 							        			fi.staticDeps = new ArrayList<String>();
 						    					fi.staticDeps.addAll(Arrays.asList(line.split(",")));
+						    					staticInitializers.addAll(Arrays.asList(line.split(",")));
 						    				}
 						    				else
 						    				{
