@@ -177,24 +177,30 @@ public class JSClosureCompilerWrapper
         {
         	File outputFile = new File(outputFolder, variableMapOutputPath);
         	VariableMap map = CompilerMapFetcher.getVariableMap(compiler_);
-        	try {
-				map.save(outputFile.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	if (map != null)
+        	{
+	        	try {
+					map.save(outputFile.getAbsolutePath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         }
         
         if (propertyMapOutputPath != null)
         {
         	File outputFile = new File(outputFolder, propertyMapOutputPath);
         	VariableMap map = CompilerMapFetcher.getPropertyMap(compiler_);
-        	try {
-				map.save(outputFile.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	if (map != null)
+        	{
+	        	try {
+					map.save(outputFile.getAbsolutePath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         }
         
         /*
