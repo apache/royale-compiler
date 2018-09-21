@@ -715,9 +715,15 @@ public class GoogDepsWriter {
 						    				{
 						    					c2 = line.indexOf("*/");
 						    					line = line.substring(c + token.length(), c2);
+						    					List<String> staticDeps = Arrays.asList(line.split(","));
 							        			fi.staticDeps = new ArrayList<String>();
-						    					fi.staticDeps.addAll(Arrays.asList(line.split(",")));
-						    					staticInitializers.addAll(Arrays.asList(line.split(",")));
+						    					fi.staticDeps.addAll(staticDeps);
+						    					for (String staticDep : staticDeps)
+						    					{
+						    						if (staticDep.equals(className))
+						    							continue;
+						    						staticInitializers.add(staticDep);
+						    					}
 						    				}
 						    				else
 						    				{
