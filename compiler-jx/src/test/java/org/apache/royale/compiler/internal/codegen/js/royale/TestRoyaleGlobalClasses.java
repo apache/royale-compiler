@@ -482,7 +482,17 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XMLList} */ b = a.child('child')");
     }
-    
+
+    @Test
+    public void testXMLSingleDotBracket()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a[\"child\"];");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.child(\"child\")");
+    }
+
     @Test
     public void testXMLSingleDotChain()
     {
@@ -636,6 +646,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLAttributeBracket2()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a[\"@attr1\"];");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.attribute(\"attr1\")");
+    }
+    
+    @Test
     public void testXMLAttributeToString()
     {
         IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String = a.@attr1;");
@@ -723,6 +743,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a[1].@bar = 'foo'");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a[1].setAttribute('bar', 'foo')");
+    }
+    
+    @Test
+    public void testXMLListSetAttributeIndex()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var n:int = 1;var a:XMLList;a[n].@bar = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a[n].setAttribute('bar', 'foo')");
     }
     
     @Test
