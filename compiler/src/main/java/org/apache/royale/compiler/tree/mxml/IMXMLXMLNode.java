@@ -28,7 +28,7 @@ import org.apache.royale.compiler.mxml.IMXMLTagData;
  * {@link IMXMLTagData} object which represents the single XML tag inside the
  * <code>&lt;XML&gt;</code> tag.
  */
-public interface IMXMLXMLNode extends IMXMLNode
+public interface IMXMLXMLNode extends IMXMLInstanceNode
 {
     // name used to lookup type for format="xml"
     String XML_NODE_NAME = "flash.xml.XMLNode";
