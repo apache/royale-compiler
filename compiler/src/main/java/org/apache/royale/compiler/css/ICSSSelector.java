@@ -91,6 +91,17 @@ public interface ICSSSelector extends ICSSNode
     /**
      * This API is explicitly added so that no CSS compilation logic will depend
      * on {@code toString()} value of an {@link ICSSNode}.
+     * This version is used so that Basic|SomeClass in one css file 
+     * will match SomeClass in another css file.  The code that uses this has already resolved
+     * the namespace prefix to an actual uri.
+     * 
+     * @return The CSS text from which this selector is generated without any namespace prefixes
+     */
+    String getCSSSyntaxNoNamespaces();
+
+    /**
+     * This API is explicitly added so that no CSS compilation logic will depend
+     * on {@code toString()} value of an {@link ICSSNode}.
      * 
      * @return The CSS text from which this selector is generated.
      */

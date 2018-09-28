@@ -310,7 +310,7 @@ public class CSSCompilationSession
                 selectorQname = qname;
         }
         final String resolvedSelectorName = selectorQname.concat(
-                selector.getCSSSyntax());
+                selector.getCSSSyntaxNoNamespaces());
         return resolvedSelectorName;
     }
 

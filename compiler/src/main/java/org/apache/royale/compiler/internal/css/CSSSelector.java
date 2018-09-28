@@ -105,6 +105,17 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
         return result.toString();
     }
 
+    public String getCSSSyntaxNoNamespaces()
+    {
+        final StringBuilder result = new StringBuilder();
+        if (combinator != null)
+            result.append(combinator.getSelector().toString()).append(combinator.getCombinatorType().text);
+        if (elementName != null)
+            result.append(elementName);
+        result.append(stringifyConditions(conditions));
+        return result.toString();
+    }
+
     @Override
     public String stringifyConditions(List<ICSSSelectorCondition> conditions)
     {
