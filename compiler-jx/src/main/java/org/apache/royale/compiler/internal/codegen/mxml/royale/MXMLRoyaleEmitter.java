@@ -1695,7 +1695,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     }
 
     //--------------------------------------------------------------------------    
-
+    private boolean skippedDefineProps;
+    
     protected void emitPropertyGetterSetters(String cname)
     {
     	int n = 0;
@@ -1708,7 +1709,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
     	if (n == 0 && (descriptorTree.size() == 0 ||
     			       descriptorTree.size() == 1 && descriptorTree.get(0).propertySpecifiers.size() == 0))
+    	{
+    		skippedDefineProps = true;
     		return;
+    	}
     	
     	String formattedCName = formatQualifiedName(cname);
     	
@@ -1767,7 +1771,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
             project.needLanguage = true;
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
-            if (root.propertySpecifiers.size() == 0) 
+            if (root.propertySpecifiers.size() == 0 && skippedDefineProps) 
             	return; // all declarations were primitives
             root.isTopNode = false;
     
