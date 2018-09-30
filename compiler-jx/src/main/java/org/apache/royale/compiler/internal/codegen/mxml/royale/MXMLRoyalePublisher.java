@@ -505,7 +505,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
 
-            compilerWrapper.compile();
+            compilerWrapper.compile(false);
 
             //we don't want sourceMap file in release build since it's only needed in debug
             //appendSourceMapLocation(projectReleaseMainFile, projectName);

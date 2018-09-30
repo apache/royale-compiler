@@ -122,7 +122,8 @@ public class JSClosureCompilerWrapper
     	provideds = set;
     }
     
-    public void compile()
+    // isDebug is used to avoid sourceMaps on release build
+    public void compile(Boolean isDebug)
     {
     	System.out.println("list of source files");
     	for (SourceFile file : jsSourceFiles_)
@@ -164,9 +165,12 @@ public class JSClosureCompilerWrapper
             targetFile.write(compiler_.toSource());
             targetFile.close();
 
-            FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
-            compiler_.getSourceMap().appendTo(sourceMapFile, "");
-            sourceMapFile.close();
+            if(isDebug)
+            {
+                FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
+                compiler_.getSourceMap().appendTo(sourceMapFile, "");
+                sourceMapFile.close();
+            }
         }
         catch (IOException error)
         {
