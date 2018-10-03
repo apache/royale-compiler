@@ -586,6 +586,34 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLListAccess()
+    {
+    		IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var child:XML = a.child[0]");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+    		asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ child = a.child('child')[0]");
+    }
+    
+    @Test
+    public void testXMLListAccessComplex()
+    {
+    		IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var child:XML = a.child[a.child.length()-1]");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+    		asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ child = a.child('child')[a.child('child').length() - 1]");
+    }
+    @Ignore
+    @Test
+    public void testXMLListAssignment()
+    {
+    		IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XMLList = new XMLList();a[a.length()] = <foo/>;a[a.length()] = <baz/>;", IBinaryOperatorNode.class);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a[a.length()] = new XML( '<foo/>')");
+    }
+
+    @Test
     public void testXMLNameFunction()
     {
     	IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String = a.name();");
