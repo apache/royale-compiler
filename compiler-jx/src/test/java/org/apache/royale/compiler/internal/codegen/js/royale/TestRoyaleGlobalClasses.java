@@ -604,7 +604,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     		asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XML} */ child = a.child('child')[a.child('child').length() - 1]");
     }
-    @Ignore
+    
     @Test
     public void testXMLListAssignment()
     {

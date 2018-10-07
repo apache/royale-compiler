@@ -61,7 +61,7 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 	    	if (isXML)
 	    	{
 	    		ITypeDefinition type = rightOperandNode.resolveType(getProject());
-				if (!type.isInstanceOf("int", getProject()) && !type.isInstanceOf("uint", getProject()) && !type.isInstanceOf("Number", getProject()) )
+				if (type.isInstanceOf("String", getProject()))
 				{
 					String field = fjs.stringifyNode(rightOperandNode);
 					if (field.startsWith("\"@"))
