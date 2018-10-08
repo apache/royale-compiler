@@ -439,7 +439,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         if (childNode != null)
         {
             // This tag is not part of the default property value.
-            processNonDefaultPropertyContentUnit(builder, info);
+            processNonDefaultPropertyContentUnit(builder, info, tag);
 
             childNode.setSuffix(builder, childTag.getStateName());
             childNode.initializeFromTag(builder, childTag);
@@ -503,7 +503,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                 else
                 {
                     // This tag is not part of the default property value.
-                    processNonDefaultPropertyContentUnit(builder, info);
+                    processNonDefaultPropertyContentUnit(builder, info, tag);
 
                     MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
                             builder, definition.getQualifiedName(), this);
@@ -527,7 +527,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
 	                        processDefaultPropertyContentUnit(builder, childTag, info);
 	                        // seems strange we have to finish default property processing
 	                        // by calling nonDefaultProperty code
-	                        processNonDefaultPropertyContentUnit(builder, info);
+	                        processNonDefaultPropertyContentUnit(builder, info, tag);
 	                        return;
                         }
                 	}
@@ -596,7 +596,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                 // or instance tags.
 
                 // This tag is not part of the default property value.
-                processNonDefaultPropertyContentUnit(builder, info);
+                processNonDefaultPropertyContentUnit(builder, info, tag);
 
                 super.processChildTag(builder, tag, childTag, info);
             }
@@ -663,7 +663,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     /**
      * Called on each content unit that is not part of the default value.
      */
-    private void processNonDefaultPropertyContentUnit(MXMLTreeBuilder builder, MXMLNodeInfo info)
+    private void processNonDefaultPropertyContentUnit(MXMLTreeBuilder builder, MXMLNodeInfo info, IMXMLTagData parentTag)
     {
         // If this gets called and we're processing the default property,
         // then childTag is the first child tag after the default property value tags.
@@ -702,7 +702,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             IVariableDefinition defaultPropertyDefinition =
                     getDefaultPropertyDefinition(builder);
             defaultPropertyNode.initializeDefaultProperty(
-                    builder, defaultPropertyDefinition, defaultPropertyContentUnitsWithoutTrailingScriptTags);
+                    builder, defaultPropertyDefinition, parentTag, defaultPropertyContentUnitsWithoutTrailingScriptTags);
 
             // Now create MXMLScriptNode's for all the trailing script tags.
             for (IMXMLUnitData scriptTagData : trailingScriptTags)
@@ -812,7 +812,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         // If the last child unit was part of the default property,
         // we don't know to process the default property units
         // until we get here.
-        processNonDefaultPropertyContentUnit(builder, info);
+        processNonDefaultPropertyContentUnit(builder, info, tag);
 
         setChildren(info.getChildNodeList().toArray(new IMXMLNode[0]));
 

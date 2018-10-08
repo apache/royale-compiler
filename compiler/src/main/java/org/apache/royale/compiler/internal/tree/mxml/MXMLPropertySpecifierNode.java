@@ -289,16 +289,29 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                             !definition.getQualifiedName().contains(IASLanguageConstants.Vector + ".<"))
                     {
                         initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
-                                getListOfUnits(tag));
+                                tag, getListOfUnits(tag));
                         return;
                     }
                     else if (propertyTypeName.equals(IASLanguageConstants.Array) && (definition != null) &&
                             !definition.getQualifiedName().equals(IASLanguageConstants.Array))
                     {
                         initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
-                                getListOfUnits(tag));
+                                tag, getListOfUnits(tag));
                         return;                        
                     }
+                }
+            }
+        }
+        else if (propertyTypeName.contains(IASLanguageConstants.Object))
+        {
+            // Process each content unit.
+            for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+            {
+                if (unit instanceof IMXMLTagData)
+                {
+                    initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
+                                tag, getListOfUnits(tag));
+                    return;                        
                 }
             }
         }
@@ -334,7 +347,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     }
 
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
-                                   List<IMXMLUnitData> contentUnits)
+                                   IMXMLTagData parentTag, List<IMXMLUnitData> contentUnits)
     {
         RoyaleProject project = builder.getProject();
 
@@ -359,14 +372,20 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLDeferredInstanceNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if ((propertyTypeName.equals(IASLanguageConstants.Array) && 
-                oneChildIsNotArray(builder, contentUnits)) ||
-                (propertyTypeName.equals(IASLanguageConstants.Object) && contentUnits.size() > 1))
+        else if (propertyTypeName.equals(IASLanguageConstants.Array) && 
+                oneChildIsNotArray(builder, contentUnits))
         {
             // Create an implicit array node.
             instanceNode = new MXMLArrayNode(this);
             ((MXMLArrayNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
+        }
+        else if (propertyTypeName.equals(IASLanguageConstants.Object))
+        {
+            // Create an implicit Object node.
+            instanceNode = new MXMLObjectNode(this);
+            ((MXMLObjectNode)instanceNode).initialize(
+                    builder, parentTag, contentUnits, createNodeInfo(builder));
         }
         else if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<") && 
                 oneChildIsNotVector(builder, contentUnits))
