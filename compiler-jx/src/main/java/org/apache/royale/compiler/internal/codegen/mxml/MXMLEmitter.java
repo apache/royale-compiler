@@ -48,6 +48,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
@@ -421,5 +423,17 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     {
     	// ToDo (erikdebruin): implement databinding output
     }
+
+	@Override
+	public void emitRemoteObjectMethod(IMXMLRemoteObjectMethodNode node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void emitRemoteObject(IMXMLRemoteObjectNode node) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

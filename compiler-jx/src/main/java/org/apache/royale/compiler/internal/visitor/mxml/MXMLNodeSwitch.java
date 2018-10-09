@@ -40,6 +40,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
@@ -156,6 +158,12 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLFunctionID:
             visitor.visitInstance((IMXMLInstanceNode) node);
             break;
+        case MXMLRemoteObjectID:
+            visitor.visitRemoteObject((IMXMLRemoteObjectNode) node);
+            break;
+        case MXMLRemoteObjectMethodID:
+            visitor.visitRemoteObjectMethod((IMXMLRemoteObjectMethodNode) node);
+            break;
         case MXMLApplicationID:
         case MXMLBindingAttributeID:
         case MXMLClassID:
@@ -172,8 +180,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLModelRootID:
         case MXMLPrivateID:
         case MXMLRegExpID:
-        case MXMLRemoteObjectID:
-        case MXMLRemoteObjectMethodID:
         case MXMLReparentID:
         //case MXMLRepeaterID:
         case MXMLResourceID:
