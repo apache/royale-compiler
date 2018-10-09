@@ -362,6 +362,24 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         setLocation(builder, contentUnits);
 
         String propertyTypeName = getPropertyTypeName(builder);
+        
+        int numChildTags = 0;
+        IMXMLTagData oneAndOnlyChildTag = null;
+    	for (IMXMLUnitData unit : contentUnits)
+    	{
+    		if (unit instanceof IMXMLTagData)
+    		{
+    			oneAndOnlyChildTag = (IMXMLTagData)unit;
+    			numChildTags++;
+    		}
+    	}
+    	boolean oneAndOnlyChildIsClass = false;
+    	if (numChildTags == 1)
+    	{
+            IDefinition definition = builder.getFileScope().resolveTagToDefinition(oneAndOnlyChildTag);
+            if (definition instanceof ClassDefinition)
+                oneAndOnlyChildIsClass = true;    		
+    	}
 
         // If the property is of type IDeferredInstance or ITransientDeferredInstance,
         // create an implicit MXMLDeferredInstanceNode.
@@ -380,7 +398,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLArrayNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if (propertyTypeName.equals(IASLanguageConstants.Object))
+        else if (propertyTypeName.equals(IASLanguageConstants.Object) && !oneAndOnlyChildIsClass)
         {
             // Create an implicit Object node.
             instanceNode = new MXMLObjectNode(this);
@@ -395,9 +413,9 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLVectorNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if (contentUnits.size() == 1 && contentUnits.get(0) instanceof IMXMLTagData)
+        else if (oneAndOnlyChildTag != null)
         {
-            IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);
+            IMXMLTagData tag = oneAndOnlyChildTag;
             IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
             if (definition instanceof ClassDefinition)
             {
