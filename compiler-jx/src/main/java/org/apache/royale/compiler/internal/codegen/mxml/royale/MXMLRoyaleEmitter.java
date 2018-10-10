@@ -1916,7 +1916,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         {
         	effectiveId = node.getEffectiveID();
         	if (effectiveId == null)
-        		effectiveId = MXMLRoyaleEmitterTokens.ID_PREFIX.getToken() + idCounter++;
+        		effectiveId = node.getClassDefinitionNode().getGeneratedID(node);
         }
 
         MXMLDescriptorSpecifier currentInstance = new MXMLDescriptorSpecifier();
@@ -3186,7 +3186,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     			        MXMLDescriptorSpecifier argListSpecifier = new MXMLDescriptorSpecifier();
     			        argListSpecifier.isProperty = true;
-    			        argListSpecifier.name = "argumentList";
+    			        argListSpecifier.name = "argumentNames";
     			        argListSpecifier.parent = operationInstance;
     			        argListSpecifier.value = list.toString();
 				        if (operationInstance != null)
