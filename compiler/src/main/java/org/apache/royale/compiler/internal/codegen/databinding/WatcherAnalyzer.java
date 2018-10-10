@@ -217,17 +217,27 @@ public class WatcherAnalyzer
                 ITypeDefinition leftType= leftDef.resolveType(project);  
                 RoyaleProject project = (RoyaleProject)this.project;
                 String objectProxyClass = project.getObjectProxyClass();
-                boolean isProxy = leftType==null ? false : leftType.isInstanceOf(objectProxyClass, project);
+                boolean isObjectProxy = leftType==null ? false : leftType.isInstanceOf(objectProxyClass, project);
     
                 // If we are proxy.prop, we set this info into the parse state. This does two things:
                 //      1) tells downstream properties that they can be dynamic, and hence don't need
                 //          to be resolvable.
                 //      2) Stores off the event names from the proxy so that the chained property watchers
                 //          can use the info
-                if (isProxy)
+                if (isObjectProxy)
                 {
                     state.isObjectProxyExpression = true;
                     state.objectProxyEventNames = leftType.getBindableEventNames();
+                }
+                else
+                {
+                    String proxyClass = project.getProxyBaseClass();
+                    boolean isProxy = leftType==null ? false : leftType.isInstanceOf(proxyClass, project);
+                    if (isProxy)
+                    {
+                        state.isObjectProxyExpression = true;
+                        state.objectProxyEventNames = leftType.getBindableEventNames();
+                    }
                 }
             }
             doAnalyze(left, state);
