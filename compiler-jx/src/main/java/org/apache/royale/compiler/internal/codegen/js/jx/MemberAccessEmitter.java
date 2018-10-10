@@ -170,7 +170,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		write(ASEmitterTokens.SPACE);
         		write(IASLanguageConstants.QName);
         		write(ASEmitterTokens.PAREN_OPEN);
-        		write(d.getBaseName());
+	    		write(fjs.formatQualifiedName(d.getQualifiedName()));
         		write(ASEmitterTokens.COMMA);
         		write(ASEmitterTokens.SPACE);
         		write(ASEmitterTokens.SINGLE_QUOTE);
@@ -211,7 +211,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	    		write(ASEmitterTokens.SPACE);
 	    		write(IASLanguageConstants.QName);
 	    		write(ASEmitterTokens.PAREN_OPEN);
-	    		write(fjs.formatQualifiedName(d.getBaseName()));
+	    		write(fjs.formatQualifiedName(d.getQualifiedName()));
 	    		write(ASEmitterTokens.COMMA);
 	    		write(ASEmitterTokens.SPACE);
 	    		write(ASEmitterTokens.SINGLE_QUOTE);
