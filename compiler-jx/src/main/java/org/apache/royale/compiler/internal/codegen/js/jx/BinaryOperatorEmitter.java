@@ -208,7 +208,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
-                else if (((JSRoyaleEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)leftSide))
+                else if (((JSRoyaleEmitter)getEmitter()).isProxy(((MemberAccessExpressionNode)leftSide).getLeftOperandNode()) && leftDef == null)
                 {
                 	MemberAccessExpressionNode proxyNode = (MemberAccessExpressionNode)leftSide;
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)
