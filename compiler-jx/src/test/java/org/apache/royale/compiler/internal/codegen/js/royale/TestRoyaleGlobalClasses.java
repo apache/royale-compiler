@@ -766,6 +766,30 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLSetAttributeBracket()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@[\"bar\"] = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setAttribute(\"bar\", 'foo')");
+    }
+    
+    @Test
+    public void testXMLSetAttributeBracketProp()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var z:String = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@[z] = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setAttribute(z, 'foo')");
+    }
+    
+    @Test
+    public void testXMLSetAttributeBracketPropObject()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var z:Object = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@[z] = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setAttribute(z, 'foo')");
+    }
+    
+    @Test
     public void testXMLListSetAttribute()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a[1].@bar = 'foo'");
@@ -793,6 +817,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     public void testXMLSetChild()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo = a.child");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setChild('foo', a.child('child'))");
+    }
+    
+    @Test
+    public void testXMLSetChildBracket()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a[\"foo\"] = a.child");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a.setChild('foo', a.child('child'))");
     }

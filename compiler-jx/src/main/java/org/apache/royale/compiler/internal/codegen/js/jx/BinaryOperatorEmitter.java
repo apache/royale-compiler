@@ -23,6 +23,7 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -107,6 +108,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 IDefinition rnodeDef = (rnode instanceof IIdentifierNode) ? 
                 		((IIdentifierNode) rnode).resolve(getWalker().getProject()) :
                 		null;
+                boolean isDynamicAccess = rnode instanceof DynamicAccessNode;
                 if (lnode.getNodeID() == ASTNodeID.SuperID
                         && rnodeDef instanceof AccessorDefinition)
                 {
@@ -208,6 +210,72 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
+                else if (isDynamicAccess && ((JSRoyaleEmitter)getEmitter()).isXML((IExpressionNode)lnode))
+                {
+                	DynamicAccessNode dyn = (DynamicAccessNode)rnode;
+                	ITypeDefinition type = dyn.getRightOperandNode().resolveType(getProject());
+                	if (type.isInstanceOf("String", getProject()) || type.isInstanceOf("Object", getProject()))
+        			{
+                		String field;
+                    	if (node.getNodeID() == ASTNodeID.Op_AssignId)
+                    	{
+    	                    getWalker().walk(lnode);
+    	                    IExpressionNode dynLeft = dyn.getLeftOperandNode();
+    	                    IExpressionNode dynRight = dyn.getRightOperandNode();
+    	                    if (dynLeft instanceof UnaryOperatorAtNode)
+    	                    {
+    		                    write(".setAttribute(");
+    							field = fjs.stringifyNode(dyn.getRightOperandNode());
+    	                    }
+    	                    else if (dynRight instanceof UnaryOperatorAtNode)
+    	                    {
+    		                    write(".setAttribute(");
+    							field = fjs.stringifyNode(dynRight.getChild(0));
+    	                    }
+    	                    else
+    	                    {
+    		                    write(".setChild(");
+    							field = fjs.stringifyNode(dynLeft);
+    	                    }
+    	                    write(field + ", ");
+    	                    getWalker().walk(node.getRightOperandNode());
+    	                    write(ASEmitterTokens.PAREN_CLOSE);
+    	                    return;
+                    	}
+                    	else if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
+                    	{
+    	                    getWalker().walk(lnode);
+    	                    IExpressionNode rightSide = dyn.getRightOperandNode();
+    	                    if (rightSide instanceof UnaryOperatorAtNode)
+    	                    {
+    		                    write(".setAttribute('");
+    							field = fjs.stringifyNode(((UnaryOperatorAtNode)rightSide).getChild(0));
+    							field = field.replace("\"", ""); // remove wrapping double-quotes
+    	                    }
+    	                    else
+    	                    {
+    		                    write(".setChild('");
+    							field = fjs.stringifyNode(rightSide);
+    							field = field.replace("\"", ""); // remove wrapping double-quotes
+    	                    }
+    	                    write(field + "', ");
+                            getWalker().walk(node.getLeftOperandNode());
+    	                    write(".plus(");
+    	                    getWalker().walk(node.getRightOperandNode());
+    	                    write(ASEmitterTokens.PAREN_CLOSE);
+    	                    write(ASEmitterTokens.PAREN_CLOSE);
+    	                    return;
+                    	}
+                    	else if (node.getNodeID() == ASTNodeID.Op_AddID)
+                    	{
+    	                    getWalker().walk(dyn);
+    	                    write(".plus(");
+    	                    getWalker().walk(node.getRightOperandNode());
+    	                    write(ASEmitterTokens.PAREN_CLOSE);
+    	                    return;
+                    	}
+        			}
+                }
                 else if (((JSRoyaleEmitter)getEmitter()).isProxy(((MemberAccessExpressionNode)leftSide).getLeftOperandNode()) && leftDef == null)
                 {
                 	MemberAccessExpressionNode proxyNode = (MemberAccessExpressionNode)leftSide;
@@ -263,6 +331,70 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
+            }
+            else if (leftSide.getNodeID() == ASTNodeID.ArrayIndexExpressionID) // dynamic access
+            {
+            	DynamicAccessNode dyn = (DynamicAccessNode)leftSide;
+            	IExpressionNode dynLeft = dyn.getLeftOperandNode();
+            	ITypeDefinition type = dyn.getRightOperandNode().resolveType(getProject());
+            	if (((JSRoyaleEmitter)getEmitter()).isXML(dynLeft) && type.isInstanceOf("String", getProject()))
+    			{
+            		String field;
+                	if (node.getNodeID() == ASTNodeID.Op_AssignId)
+                	{
+	                    getWalker().walk(dynLeft);
+	                    IExpressionNode rightSide = dyn.getRightOperandNode();
+	                    if (rightSide instanceof UnaryOperatorAtNode)
+	                    {
+		                    write(".setAttribute('");
+							field = fjs.stringifyNode(((UnaryOperatorAtNode)rightSide).getChild(0));
+							field = field.replace("\"", ""); // remove wrapping double-quotes
+	                    }
+	                    else
+	                    {
+		                    write(".setChild('");
+							field = fjs.stringifyNode(rightSide);
+							field = field.replace("\"", ""); // remove wrapping double-quotes
+	                    }
+	                    write(field + "', ");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+                	else if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
+                	{
+	                    getWalker().walk(dynLeft);
+	                    IExpressionNode rightSide = dyn.getRightOperandNode();
+	                    if (rightSide instanceof UnaryOperatorAtNode)
+	                    {
+		                    write(".setAttribute('");
+							field = fjs.stringifyNode(((UnaryOperatorAtNode)rightSide).getChild(0));
+							field = field.replace("\"", ""); // remove wrapping double-quotes
+	                    }
+	                    else
+	                    {
+		                    write(".setChild('");
+							field = fjs.stringifyNode(rightSide);
+							field = field.replace("\"", ""); // remove wrapping double-quotes
+	                    }
+	                    write(field + "', ");
+                        getWalker().walk(node.getLeftOperandNode());
+	                    write(".plus(");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+                	else if (node.getNodeID() == ASTNodeID.Op_AddID)
+                	{
+	                    getWalker().walk(dyn);
+	                    write(".plus(");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+
+    			}
             }
 
             boolean leftIsNumber = (leftDef != null && (leftDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
