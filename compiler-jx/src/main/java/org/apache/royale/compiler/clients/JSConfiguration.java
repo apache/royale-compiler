@@ -35,6 +35,7 @@ import org.apache.royale.compiler.internal.config.annotations.Config;
 import org.apache.royale.compiler.internal.config.annotations.RoyaleOnly;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 
 import com.google.common.collect.ImmutableList;
@@ -204,6 +205,7 @@ public class JSConfiguration extends Configuration
     @Mapping({ "compiler", "js-library-path" })
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
+    @SoftPrerequisites({ "locale", "target-player", "exclude-native-js-libraries" })
     public void setCompilerJsLibraryPath(ConfigurationValue cv, String[] pathlist) throws CannotOpen
     {
         final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
