@@ -718,9 +718,9 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         String result = null;
         if (type.equals("release")) {
-            result = input.replaceAll("\\$\\{application\\}", mainClassQName + ".min");
+            result = input.replaceAll("\\$\\{application\\}", projectName + ".min");
         } else {
-            result = input.replaceAll("\\$\\{application\\}", mainClassQName);
+            result = input.replaceAll("\\$\\{application\\}", projectName);
         }
         if (bgcolor != null)
             result = result.replaceAll("\\$\\{bgcolor\\}", bgcolor);
