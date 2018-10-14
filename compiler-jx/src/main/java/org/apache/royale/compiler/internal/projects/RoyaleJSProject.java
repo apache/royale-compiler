@@ -494,6 +494,9 @@ public class RoyaleJSProject extends RoyaleProject
 
 	private HashSet<String> exportedNames = new HashSet<String>();
 	
+	public List<String> compiledResourceBundleNames = new ArrayList<String>();
+	public List<String> compiledResourceBundleClasses = new ArrayList<String>();
+	
 	public void addExportedName(String name)
 	{
 		exportedNames.add(name);

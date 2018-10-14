@@ -27,6 +27,7 @@ import static org.apache.royale.abc.ABCConstants.OP_pushtrue;
 import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -357,6 +358,60 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	infoInject += aliasInject;
 		            	sep = ",\n";
 	            	}
+	                Collection<String> locales = royaleProject.getLocales();
+	                if (locales.size() > 0)
+	                {
+		            	String localeInject = sep + "compiledLocales: [";
+		            	boolean firstOne = true;
+		            	String[] localeNames = new String[locales.size()];
+		            	locales.toArray(localeNames);
+		            	for (String locale : localeNames)
+		            	{
+		            		if (!firstOne)
+		            			localeInject += ", "; 
+		            		localeInject += "\"" + locale + "\"";
+		            		firstOne = false;
+		            	}
+		            	localeInject += "]";
+		            	infoInject += localeInject;
+		            	sep = ",\n";
+	                	
+	                }
+	                List<String> bundles = royaleProject.compiledResourceBundleNames;
+	                if (bundles.size() > 0)
+	                {
+		            	String bundleInject = sep + "compiledResourceBundleNames: [";
+		            	boolean firstOne = true;
+		            	for (String bundle : bundles)
+		            	{
+		            		if (!firstOne)
+		            			bundleInject += ", "; 
+		            		bundleInject += "\"" + bundle + "\"";
+		            		firstOne = false;
+		            	}
+		            	bundleInject += "]";
+		            	infoInject += bundleInject;
+		            	sep = ",\n";
+	                	
+	                }
+	                List<String> bundleClasses = royaleProject.compiledResourceBundleClasses;
+	                if (bundles.size() > 0)
+	                {
+		            	for (String bundleClass : bundleClasses)
+		            	{
+		                    StringBuilder appendString = new StringBuilder();
+		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(bundleClass);
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+	                        finalLines.add(endRequires, appendString.toString());
+	                        addLineToMappings(endRequires);
+                            endRequires++;
+		            	}
+	                }
 	            	boolean isMX = false;
 	            	List<ISWC> swcs = royaleProject.getLibraries();
 	            	for (ISWC swc : swcs)
