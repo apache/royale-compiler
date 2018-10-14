@@ -157,6 +157,16 @@ public class TestRoyaleStatements extends TestGoogStatements
 
     @Override
     @Test
+    public void testVisitFor_1c()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int = 0, len:int = 10; i < len; i++) break;", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {number} */ i = 0, /** @type {number} */ len = 10; i < len; i++)\n  break;");
+    }
+    
+    @Override
+    @Test
     public void testVisitForIn_1()
     {
         IForLoopNode node = (IForLoopNode) getNode(

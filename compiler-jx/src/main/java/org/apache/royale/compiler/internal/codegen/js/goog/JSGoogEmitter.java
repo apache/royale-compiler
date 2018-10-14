@@ -1160,4 +1160,28 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         write(ASEmitterTokens.PAREN_CLOSE);
     }
+    
+    @Override
+    public void emitContainer(IContainerNode node)
+    {
+    	// saw this in a for loop with multiple initializer statements: for (var i = 0, j = 0; ...
+        int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode child = node.getChild(i);
+            if (i == 0)
+            	getWalker().walk(child);
+            else
+            {
+            	String s = stringifyNode(child);
+            	if (s.startsWith("var "))
+            	{
+            		s = s.substring(4);
+            		write(s);
+            	}
+            }
+            if (i < len - 1)
+            	write(", ");
+        }    	
+    }
 }
