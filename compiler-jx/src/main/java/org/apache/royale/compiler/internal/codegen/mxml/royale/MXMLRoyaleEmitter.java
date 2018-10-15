@@ -494,6 +494,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 			}
 			sb.append("*/");
 			finalLines.add(provideIndex, sb.toString());
+            addLineToMappings(provideIndex);
 		}
 
     	return Joiner.on("\n").join(finalLines);

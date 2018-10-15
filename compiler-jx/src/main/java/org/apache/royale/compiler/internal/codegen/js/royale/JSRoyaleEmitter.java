@@ -310,7 +310,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 				sb.append(staticName);
 			}
 			sb.append("*/");
-			finalLines.add(provideIndex, sb.toString());
+            finalLines.add(provideIndex, sb.toString());
+            addLineToMappings(provideIndex);
 		}
 
     	return Joiner.on("\n").join(finalLines);
