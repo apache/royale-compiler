@@ -965,6 +965,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testProxyFunctionCall()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var bar:* = a.foo(10,\"ten\"); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.callProperty('foo', 10, \"ten\");\n}");
+    }
+    
+    @Test
     public void testProxyConcat()
     {
         IFunctionNode node = (IFunctionNode) getNode(

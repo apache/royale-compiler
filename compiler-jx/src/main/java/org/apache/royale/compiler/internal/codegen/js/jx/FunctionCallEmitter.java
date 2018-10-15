@@ -35,6 +35,7 @@ import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
@@ -270,6 +271,26 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         getEmitter().emitArguments(node.getArgumentsNode());
                     	return;
                     }
+                }
+                else if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID && ((JSRoyaleEmitter)getEmitter()).isProxy(((MemberAccessExpressionNode)nameNode).getLeftOperandNode()) && def == null)
+                {
+                	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)nameNode;
+                	getWalker().walk(mae.getLeftOperandNode());
+                    write(".callProperty('");
+                    getWalker().walk(mae.getRightOperandNode());
+                    write("'");
+                    IExpressionNode[] args = node.getArgumentNodes();
+                    int n = args.length;
+                    if (n > 0)
+                    {
+	                    for (int i = 0; i < n; i++)
+	                    {
+		                    write(", ");
+	                        getWalker().walk(args[i]);	                    	
+	                    }
+                    }
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    return;
                 }
             	getWalker().walk(node.getNameNode());
 
