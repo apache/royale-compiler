@@ -2506,11 +2506,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         currentPropertySpecifier.hasArray = valueIsArray;
         currentPropertySpecifier.hasObject = valueIsObject;
 
-        moveDown(valueIsArray || valueIsObject, null, currentPropertySpecifier);
+        moveDown(false, null, currentPropertySpecifier);
 
         getMXMLWalker().walk(cnode); // Array or Instance
 
-        moveUp(valueIsArray || valueIsObject, false);
+        moveUp(false, false);
         
         inMXMLContent = oldInMXMLContent;
     }
@@ -2574,7 +2574,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		primitiveDeclarationNodes.add(node);
     		return;
     	}
-        moveDown(false, null, null);
 
         boolean isSimple = true;
         final int len = node.getChildCount();
@@ -2607,7 +2606,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
         makingSimpleArray = oldMakingSimpleArray;
 
-        moveUp(false, false);
     }
 
     @Override
