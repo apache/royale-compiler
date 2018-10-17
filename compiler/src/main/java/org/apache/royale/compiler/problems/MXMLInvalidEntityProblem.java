@@ -27,7 +27,7 @@ import org.apache.royale.compiler.common.ISourceLocation;
 public final class MXMLInvalidEntityProblem extends ParserProblem
 {
     public static final String DESCRIPTION =
-        "Unknown entity '{entity}' found. It will be ignored.";
+        "Unknown entity '${entity}' found. It will be ignored.";
 
     public static final int errorCode = 1417;
     public MXMLInvalidEntityProblem(ISourceLocation site, String entity)
