@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.clients;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -364,7 +365,7 @@ public class JSConfiguration extends Configuration
     {
     	if (moduleoutput != null && moduleoutput.equals("/"))
     		return null;
-    	return moduleoutput;
+    	return moduleoutput.replace("/", File.separator);
     }
 
     @Config
