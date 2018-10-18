@@ -365,7 +365,7 @@ public class JSConfiguration extends Configuration
     {
     	if (moduleoutput != null && moduleoutput.equals("/"))
     		return null;
-    	return moduleoutput.replace("/", File.separator);
+    	return moduleoutput == null ? null : moduleoutput.replace("/", File.separator);
     }
 
     @Config
