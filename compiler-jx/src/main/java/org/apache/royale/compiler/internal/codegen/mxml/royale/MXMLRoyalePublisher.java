@@ -507,8 +507,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
             compilerWrapper.compile(false);
 
-            //we don't want sourceMap file in release build since it's only needed in debug
-            //appendSourceMapLocation(projectReleaseMainFile, projectName);
+            appendSourceMapLocation(projectReleaseMainFile, projectName);
         }
 
         // if (ok)
