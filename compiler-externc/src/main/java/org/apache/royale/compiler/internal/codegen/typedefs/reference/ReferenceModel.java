@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.TrueConstant;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.DebugLogUtils;
 
@@ -374,5 +375,10 @@ public class ReferenceModel
     {
         DebugLogUtils.err(message);
     }
+
+	public TrueConstant isTrueConstant(ClassReference classReference,
+			MemberReference memberReference) {
+    	return getConfiguration().isTrueConstant(classReference, memberReference);
+	}
 
 }

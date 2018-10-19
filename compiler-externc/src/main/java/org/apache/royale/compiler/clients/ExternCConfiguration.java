@@ -64,6 +64,7 @@ public class ExternCConfiguration extends Configuration
     private List<ExcludedMember> excludesField = new ArrayList<ExcludedMember>();
     private List<ExcludedMember> excludes = new ArrayList<ExcludedMember>();
     private List<ReadOnlyMember> readonly = new ArrayList<ReadOnlyMember>();
+    private List<TrueConstant> trueConstants = new ArrayList<TrueConstant>();
 
     public ExternCConfiguration()
     {
@@ -384,6 +385,43 @@ public class ExternCConfiguration extends Configuration
     	return null;
 	}
 
+    @Config(allowMultiple = true)
+    @Mapping("true-constant")
+    @Arguments({"class", "name", "value"})
+    public void setTrueConstant(ConfigurationValue cfgval, List<String> values) throws IncorrectArgumentCount
+    {
+        final int size = values.size();
+        if (size % 3 != 0)
+            throw new IncorrectArgumentCount(size + 1, size, cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+
+        for (int nameIndex = 0; nameIndex < size - 2; nameIndex += 3)
+        {
+            final String className = values.get(nameIndex);
+            final String fieldName = values.get(nameIndex + 1);
+            final String value = values.get(nameIndex + 2);
+            addTrueConstant(className, fieldName, value);
+        }
+    }
+
+    public void addTrueConstant(String className, String fieldName, String value)
+    {
+        trueConstants.add(new TrueConstant(className, fieldName, value));
+    }
+    
+    public TrueConstant isTrueConstant(ClassReference classReference,
+			   MemberReference memberReference)
+    {
+
+    	for (TrueConstant constant : trueConstants)
+    	{
+    		if ( constant.isTrueConstant(classReference, memberReference) )
+    			return constant;
+    	}
+    	return null;
+    }
+
+
+
 
     public static class ExcludedMember
     {
@@ -467,4 +505,40 @@ public class ExternCConfiguration extends Configuration
         }
     }
 
+    public static class TrueConstant
+    {
+        private String className;
+        private String name;
+        private String value;
+
+        public String getClassName()
+        {
+            return className;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+
+        public TrueConstant(String className, String name, String value)
+        {
+            this.className = className;
+            this.name = name;
+            this.value = value;
+        }
+
+        public boolean isTrueConstant(BaseReference classReference,
+                                  MemberReference memberReference)
+        {
+            return classReference.getQualifiedName().equals(className)
+                    && memberReference.getQualifiedName().equals(name);
+        }
+        
+    }
 }

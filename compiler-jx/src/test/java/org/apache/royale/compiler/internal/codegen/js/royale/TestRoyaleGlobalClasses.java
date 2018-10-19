@@ -209,6 +209,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         assertOut("var /** @type {number} */ a = 0");
     }
 
+    @Override
+    @Test
+    public void testMath()
+    {
+        IVariableNode node = getVariable("var a:Number = Math.PI;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = Math[\"PI\"]");
+    }
+
     @Test
     public void testDateSetSeconds()
     {

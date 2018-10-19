@@ -19,12 +19,16 @@
 
 package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
+import java.util.Collection;
+
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.TrueConstant;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.FunctionUtils;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
@@ -36,6 +40,7 @@ public class FieldReference extends MemberReference
     private boolean isConst;
     private String overrideStringType;
     private Node constantValueNode;
+    private String constantValue;
 
     public boolean isStatic()
     {
@@ -81,6 +86,16 @@ public class FieldReference extends MemberReference
             JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
+        Collection<Marker> markers = comment.getMarkers();
+        Marker[] markerArray = new Marker[markers.size()];
+        for (Marker marker : markers)
+        {
+        	if (marker.getAnnotation().getItem().equals("const"))
+        		this.isConst = true;
+        }
+        TrueConstant constant = isTrueConstant();
+        if (constant != null)
+        	constantValue = constant.getValue();
         this.isStatic = isStatic;
     }
 
@@ -113,7 +128,10 @@ public class FieldReference extends MemberReference
                 && !getClassReference().isPropertyInterfaceImplementation(getBaseName())
                 && (null == readOnly))
         {
-            emitVar(sb);
+        	if (isConst && constantValue == null)
+        		emitAccessor(sb, true); // const is used for readOnly as well.  If there is an initial value assume it is const
+        	else
+        		emitVar(sb);
         }
         else
         {
@@ -212,13 +230,23 @@ public class FieldReference extends MemberReference
     private void emitConstValue(StringBuilder sb)
     {
         sb.append(" = ");
-        sb.append(toConstValue(constantValueNode));
+        if (constantValueNode != null)
+        	sb.append(toConstValue(constantValueNode));
+        else
+        	sb.append(constantValue);
     }
 
     private String toConstValue(Node node)
     {
-        if (toTypeString().equals("Number"))
+    	String typeString = toTypeString();
+        if (typeString.equals("Number"))
             return Integer.toString(getClassReference().getEnumConstant());
+        if (node == null)
+        {
+        	if (typeString.equals("Number"))
+        		return "NaN";
+        	return "null";
+        }
         if (node.isString())
             return "'" + node.getString() + "'";
         return "undefined /* TODO type not set */";
