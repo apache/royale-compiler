@@ -505,7 +505,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
 
-            compilerWrapper.compile(false);
+            compilerWrapper.compile();
 
             appendSourceMapLocation(projectReleaseMainFile, projectName);
         }
