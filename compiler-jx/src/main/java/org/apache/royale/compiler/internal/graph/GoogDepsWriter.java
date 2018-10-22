@@ -391,6 +391,11 @@ public class GoogDepsWriter {
 			if (!isGoogClass(className))
 			{
 				GoogDep gd = depMap.get(className);
+				if (gd == null)
+				{
+					System.out.println("No GoogDep for " + className);
+					throw new RuntimeException("Unable to find dependency information for class: " + className);
+				}
 				if (!visited.containsKey(className))
 				{
 					sortFunction(gd, arr);
