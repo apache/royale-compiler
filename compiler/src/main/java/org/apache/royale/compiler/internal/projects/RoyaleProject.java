@@ -2169,6 +2169,10 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         String thisPackage = null;
         if (scopeDef != null) 
             thisPackage = scopeDef.getPackageName();
+        else if (scope instanceof ASFileScope)
+        {
+        	thisPackage = "";
+        }
         else
         {
             while (!(scope instanceof PackageScope))
@@ -2208,6 +2212,18 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
             // that they meant the one they did import
             if (!usingWindow)
             {
+            	// but if no packages at all first see if it is a local class
+            	if (package1.length() == 0 && package2.length() == 0)
+            	{
+            		if (pkgScope instanceof PackageScope)
+            			pkgScope = pkgScope.getContainingScope();
+            		if (pkgScope.getAllLocalNames().contains(name))
+            		{
+            			IDefinitionSet defSet = pkgScope.getLocalDefinitionSetByName(name);
+            			if (defSet.getSize() == 1)
+            				return defSet.getDefinition(0);
+            		}
+            	}
                 return package1.length() == 0 ? def2 : def1;
             }
             // otherwise fall through to ambiguous because they need to qualify
