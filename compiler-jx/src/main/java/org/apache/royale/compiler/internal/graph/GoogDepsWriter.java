@@ -413,21 +413,48 @@ public class GoogDepsWriter {
 	{
         List<String> fileLines;
 		try {
-			fileLines = Files.readLines(new File(main.filePath), Charset.defaultCharset());
+			File mainFile = new File(main.filePath);
+			fileLines = Files.readLines(mainFile, Charset.defaultCharset());
+
+			SourceMapConsumerV3 sourceMapConsumer = null;
+			File sourceMapFile = new File(main.filePath + ".map");
+			if (sourceMapFile.exists())
+			{
+				String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+				sourceMapConsumer = new SourceMapConsumerV3();
+				try
+				{
+					sourceMapConsumer.parse(sourceMapContents);
+				}
+				catch(SourceMapParseException e)
+				{
+					sourceMapConsumer = null;
+				}
+			}
+
 			int n = restOfDeps.size();
 			for (int i = n - 1; i >= 0; i--)
 			{
 				String dep = restOfDeps.get(i);
 				//if (!main.deps.contains(dep))
 					fileLines.add(main.fileInfo.googProvideLine + 1, JSGoogEmitterTokens.GOOG_REQUIRE.getToken() + "('" + dep + "');");
+					sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
 			}
-            File file = new File(main.filePath);  
-            PrintWriter out = new PrintWriter(new FileWriter(file));  
+
+			PrintWriter out = new PrintWriter(new FileWriter(mainFile));  
             for (String s : fileLines)
             {
                 out.println(s);
             }
             out.close();
+
+			if (sourceMapConsumer != null)
+			{
+				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
+				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
+				sourceMapOut.print(newSourceMap);
+				sourceMapOut.close();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
