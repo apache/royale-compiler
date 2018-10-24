@@ -94,6 +94,7 @@ public class JSClosureCompilerWrapper
     private String propertyMapInputPath;
     private boolean skipTypeInference;
     private Set<String> provideds;
+    private boolean sourceMap = false;
     
     public String targetFilePath;
     
@@ -120,6 +121,11 @@ public class JSClosureCompilerWrapper
     public void setProvideds(Set<String> set)
     {
     	provideds = set;
+    }
+
+    public void setSourceMap(boolean enabled)
+    {
+        sourceMap = enabled;
     }
     
     public void compile()
@@ -164,9 +170,12 @@ public class JSClosureCompilerWrapper
             targetFile.write(compiler_.toSource());
             targetFile.close();
 
-            FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
-            compiler_.getSourceMap().appendTo(sourceMapFile, "");
-            sourceMapFile.close();
+            if (sourceMap)
+            {
+                FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
+                compiler_.getSourceMap().appendTo(sourceMapFile, "");
+                sourceMapFile.close();
+            }
         }
         catch (IOException error)
         {

@@ -186,6 +186,10 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
     protected void appendSourceMapLocation(File path, String projectName)
             throws IOException
     {
+        if (!googConfiguration.getSourceMap())
+        {
+            return;
+        }
         StringBuilder appendString = new StringBuilder();
         appendString.append("\n//# sourceMappingURL=./" + projectName
                 + ".js.map");
