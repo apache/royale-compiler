@@ -19,7 +19,9 @@
 
 package as;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -68,7 +70,7 @@ public class ASDateTests extends ASFeatureTestsBase
         };
         String[] testCode = new String[]
         {
-            setTimeZone("var date : Date = new Date('Sat Jun 30 23:59:59 TZ 2018');"),
+            setTimeZone("var date : Date = new Date('Sat Jun 30 23:59:59 2018');"),
             "date.date += 1;",
             "assertEqual('date.date', date.date, 1);",
         };
@@ -188,7 +190,7 @@ public class ASDateTests extends ASFeatureTestsBase
         };
         String[] testCode = new String[]
         {
-            setTimeZone("var date : Date = new Date('Sat Jun 30 23:59:59 TZ 2018');"),
+            setTimeZone("var date : Date = new Date('Sat Jun 30 23:59:59 2018');"),
             "date.hours += 1;",
             "assertEqual('date.hours', date.hours, 0);",
         };
@@ -308,7 +310,7 @@ public class ASDateTests extends ASFeatureTestsBase
         };
         String[] testCode = new String[]
         {
-            setTimeZone("var date : Date = new Date('Sat Jun 30 23:59:59 TZ 2018');"),
+            setTimeZone("var date : Date = new Date('Sat Jun 30 23:59:59 2018');"),
             "date.month += 1;",
             "assertEqual('date.month', date.month, 6);",
         };
@@ -396,6 +398,7 @@ public class ASDateTests extends ASFeatureTestsBase
         compileAndRun(source);
     }
 
+    @Ignore
     @Test
     public void ASDateTests_timezoneOffset_get()
     {
