@@ -242,7 +242,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	write("[\"" + nsName + "::" + node.getName() + "\"]");
                 }
                 else
-                	write(node.getName());
+                {
+            		String qname = node.getName();
+                	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+            		write(qname);
+                }
 
                 writeToken(ASEmitterTokens.COMMA);
                 if (wroteSelf)
@@ -312,7 +317,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     }
                 	else
                 	{
-                		write(node.getName());
+                		qname = node.getName();
+                    	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                		write(qname);
                 	}
                 }
                 else if (isPackageOrFileMember)
