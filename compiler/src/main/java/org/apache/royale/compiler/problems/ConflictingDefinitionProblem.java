@@ -17,32 +17,29 @@
  *
  */
 
-package org.apache.royale.compiler.codegen.js;
+package org.apache.royale.compiler.problems;
 
-import java.io.Writer;
-
-import org.apache.royale.compiler.codegen.as.IASEmitter;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.ITypeNode;
-import org.apache.royale.compiler.visitor.IASNodeStrategy;
 
 /**
- * The {@link IJSEmitter} interface allows abstraction between the
- * {@link IASNodeStrategy} and the current output buffer {@link Writer}.
- * 
- * @author Michael Schmalle
+ *  Diagnostic emitted when the code generator detects
+ *  a definition that conflicts with an inherited definition
+ *  from a superclass.
  */
-public interface IJSEmitter extends IASEmitter, IMappingEmitter
+public final class ConflictingDefinitionProblem extends SemanticProblem
 {
-    JSSessionModel getModel();
+    public static final String DESCRIPTION =
+        "A conflict exists with inherited definition ${declName} in class ${className}.";
+
+    public static final int errorCode = 1554;
+
+    public ConflictingDefinitionProblem(IASNode site, String declName, String className)
+    {
+        super(site);
+        this.declName = declName;
+        this.className = className;
+    }
     
-    String formatQualifiedName(String name);
-    String formatPrivateName(String className, String name);
-    
-    void emitSourceMapDirective(ITypeNode node);
-    
-    void emitClosureStart();
-    void emitClosureEnd(IASNode node, IDefinition nodeDef);
+    public final String declName;
+    public final String className;
 }

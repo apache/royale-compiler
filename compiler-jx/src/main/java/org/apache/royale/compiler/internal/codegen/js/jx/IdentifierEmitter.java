@@ -328,8 +328,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                 	write("[\"" + qname + "\"]");                    	
                 }
-                else
+                else 
+                {
+                	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                     write(qname);
+                }
                 endMapping(node);
             }
             else if (grandparentNodeId == ASTNodeID.E4XFilterID &&

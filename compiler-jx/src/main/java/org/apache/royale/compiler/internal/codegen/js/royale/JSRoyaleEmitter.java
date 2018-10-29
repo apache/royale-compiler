@@ -523,13 +523,13 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitMemberName(IDefinitionNode node)
     {
+        ICompilerProject project = getWalker().getProject();
     	if (node.getNodeID() == ASTNodeID.FunctionID)
     	{
     		FunctionNode fn = (FunctionNode)node;
     		if (isCustomNamespace(fn))
     		{
     			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
-                ICompilerProject project = getWalker().getProject();
     			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
     			formatQualifiedName(nsDef.getQualifiedName()); // register with used names
     			String s = nsDef.getURI();
@@ -537,7 +537,11 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     			return;
     		}
     	}
-        write(node.getName());
+    	String qname = node.getName();
+    	IDefinition nodeDef = node.getDefinition();
+    	if (nodeDef != null && nodeDef.isPrivate() && project.getAllowPrivateNameConflicts())
+    		qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+        write(qname);
     }
 
     @Override

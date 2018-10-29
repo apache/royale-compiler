@@ -2415,6 +2415,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         return list;
     }
 
+    private boolean allowPrivateNameConflicts;
+    
+    /**
+     * List of compiler defines so it can be overridden
+     */
+    @Override
+    public boolean getAllowPrivateNameConflicts()
+    {
+    	return allowPrivateNameConflicts;
+    }
+    public void setAllowPrivateNameConflicts(boolean allow)
+    {
+    	allowPrivateNameConflicts = allow;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;

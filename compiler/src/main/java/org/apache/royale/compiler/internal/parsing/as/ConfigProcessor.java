@@ -153,6 +153,12 @@ public class ConfigProcessor
             removeCompilationUnits(Collections.<ICompilationUnit> singletonList(cu));
 
         }
+
+		@Override
+		public boolean getAllowPrivateNameConflicts() {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 
     /**

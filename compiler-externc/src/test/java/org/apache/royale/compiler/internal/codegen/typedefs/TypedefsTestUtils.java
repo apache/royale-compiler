@@ -95,6 +95,13 @@ public class TypedefsTestUtils
         config.addExclude("Date", "valueOf");
         config.addExclude("String", "valueOf");
         config.addExclude("String", "raw");
+        config.addExclude("Document", "loadXML");
+        config.addExclude("Document", "open");
+        config.addExclude("Document", "close");
+        config.addExclude("Document", "createTreeWalker");
+        config.addExclude("Event", "initUIEvent");
+        config.addExclude("Event", "initMessageEvent");
+        config.addExclude("Element", "load");
 
         // SVG
         config.addExclude("SVGStylable", "className");

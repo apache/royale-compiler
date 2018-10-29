@@ -261,5 +261,10 @@ public interface ICompilerProject
 	boolean isParameterCountMismatchAllowed(
 			IFunctionDefinition functionDefinition, int formalCount,
 			int actualCount);
+	
+    /**
+     * @return True if a subclass can have a private API with the same name as a private API in its base classes.
+     */
+	boolean getAllowPrivateNameConflicts();
 
 }

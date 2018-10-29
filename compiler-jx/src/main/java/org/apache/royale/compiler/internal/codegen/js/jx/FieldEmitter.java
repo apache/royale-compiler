@@ -101,7 +101,11 @@ public class FieldEmitter extends JSSubEmitter implements
             className = getEmitter().formatQualifiedName(definition.getQualifiedName());
             write(className
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
-            write(node.getName());
+            String qname = node.getName();
+            IDefinition nodeDef = node.getDefinition();
+        	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+        		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+            write(qname);
             endMapping(node.getNameExpressionNode());
         }
 
