@@ -29,6 +29,7 @@ import org.apache.royale.compiler.common.IMetaInfo;
 import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
@@ -667,12 +668,15 @@ public class AccessorEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
 
-        ModifiersSet modifierSet = node.getDefinition().getModifiers();
+        IDefinition def = node.getDefinition();
+        ModifiersSet modifierSet = def.getModifiers();
         boolean isStatic = (modifierSet != null && modifierSet
                 .hasModifier(ASModifier.STATIC));
         HashMap<String, PropertyNodes> map = isStatic ? getModel()
                 .getStaticPropertyMap() : getModel().getPropertyMap();
         String name = node.getName();
+    	if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
+    		name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
         PropertyNodes p = map.get(name);
         if (p == null)
         {
@@ -693,12 +697,15 @@ public class AccessorEmitter extends JSSubEmitter implements
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) fjs.getDocEmitter();
 
-        ModifiersSet modifierSet = node.getDefinition().getModifiers();
+        IFunctionDefinition def = node.getDefinition();
+        ModifiersSet modifierSet = def.getModifiers();
         boolean isStatic = (modifierSet != null && modifierSet
                 .hasModifier(ASModifier.STATIC));
         HashMap<String, PropertyNodes> map = isStatic ? getModel()
                 .getStaticPropertyMap() : getModel().getPropertyMap();
         String name = node.getName();
+    	if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
+    		name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
         PropertyNodes p = map.get(name);
         if (p == null)
         {
@@ -709,7 +716,6 @@ public class AccessorEmitter extends JSSubEmitter implements
         ICompilerProject project = (ICompilerProject)getWalker().getProject();
         if (project != null)
         {
-        	IFunctionDefinition def = node.getDefinition();
         	IParameterDefinition[] params = def.getParameters();
         	p.type = params[0].resolveType(project);
         }

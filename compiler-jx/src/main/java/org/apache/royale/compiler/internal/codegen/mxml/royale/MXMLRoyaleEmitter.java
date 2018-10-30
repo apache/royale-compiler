@@ -2980,16 +2980,23 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
                         if (vnode != null && (!EmitterUtils.isScalar(vnode)))
     			        {
+    	                    IDefinition varDef = varnode.getDefinition();
+    	                    if (varDef.isStatic())
+    	                    	continue;
     	                    writeNewline();
     	                    write(ASEmitterTokens.THIS);
     	                    write(ASEmitterTokens.MEMBER_ACCESS);
-    	                    write(varnode.getName());
+    	                    JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+    	                    .getASEmitter();
+    		    	        ICompilerProject project = getMXMLWalker().getProject();
+    	                    String qname = varnode.getName();
+    	                	if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
+    	                		qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
+    	                    write(qname);
     	                    if (schildID == ASTNodeID.BindableVariableID && !varnode.isConst())
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
-    	                    JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
-    	                    .getASEmitter();
     	                    fjs.getWalker().walk(vnode);
     	                    write(ASEmitterTokens.SEMICOLON);
 

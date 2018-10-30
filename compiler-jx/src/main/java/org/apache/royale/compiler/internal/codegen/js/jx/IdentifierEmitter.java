@@ -26,6 +26,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
@@ -244,7 +245,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else
                 {
             		String qname = node.getName();
-                	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
             		write(qname);
                 }
@@ -318,7 +319,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	else
                 	{
                 		qname = node.getName();
-                    	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                     		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                 		write(qname);
                 	}
@@ -338,7 +339,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 else 
                 {
-                	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                     write(qname);
                 }
