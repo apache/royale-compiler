@@ -447,6 +447,7 @@ public class BindableEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+    	String qname = info.namespace.equals("private") ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
         if (info.namespace != "public") {
             writeNewline("/** @export");
             writeNewline("  * @private");
@@ -455,7 +456,7 @@ public class BindableEmitter extends JSSubEmitter implements
         }
         writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
         // 'PropName': {
-        writeNewline(name + ASEmitterTokens.COLON.getToken()
+        writeNewline(qname + ASEmitterTokens.COLON.getToken()
                 + ASEmitterTokens.SPACE.getToken()
                 + ASEmitterTokens.BLOCK_OPEN.getToken());
         indentPush();
@@ -472,7 +473,7 @@ public class BindableEmitter extends JSSubEmitter implements
         writeNewline(ASEmitterTokens.RETURN.getToken()
                 + ASEmitterTokens.SPACE.getToken()
                 + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_"
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + qname + "_"
                 + ASEmitterTokens.SEMICOLON.getToken());
         indentPop();
         writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken()
@@ -489,12 +490,12 @@ public class BindableEmitter extends JSSubEmitter implements
                 + ASEmitterTokens.SPACE.getToken()
                 + ASEmitterTokens.BLOCK_OPEN.getToken());
         writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_) {");
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + qname + "_) {");
         writeNewline("    var oldValue = " + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_"
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + qname + "_"
                 + ASEmitterTokens.SEMICOLON.getToken());
         writeNewline("    " + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + qname
                 + "_ = value;");
         writeNewline("    this.dispatchEvent("+fjs.formatQualifiedName(VALUECHANGE_EVENT_QNAME)+".createUpdateEvent(");
         writeNewline("         this, \"" + name + "\", oldValue, value));");
