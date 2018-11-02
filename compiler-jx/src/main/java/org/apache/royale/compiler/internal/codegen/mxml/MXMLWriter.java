@@ -54,7 +54,7 @@ public class MXMLWriter extends JSWriter
     }
 
     @Override
-    public void writeTo(OutputStream out, File sourceMapOut)
+    public void writeTo(OutputStream out, OutputStream sourceMapOut, File sourceMapFile)
     {
         IJSBackend backend = (IJSBackend) project.getBackend();
         JSFilterWriter writer = (JSFilterWriter) backend.createWriterBuffer(project);
@@ -81,7 +81,12 @@ public class MXMLWriter extends JSWriter
 
         if (sourceMapOut != null)
         {
-            convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, sourceMapOut);
+            String sourceMapFilePath = null;
+            if (sourceMapFile != null)
+            {
+                sourceMapFilePath = sourceMapFile.getAbsolutePath();
+                convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, sourceMapFile);
+            }
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter((IMappingEmitter) mxmlEmitter);
@@ -89,11 +94,8 @@ public class MXMLWriter extends JSWriter
             {
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".mxml", ".js");
-                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapOut.getAbsolutePath(), null);
-                BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(sourceMapOut));
-                outStream.write(sourceMap.getBytes());
-                outStream.flush();
-                outStream.close();
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, null);
+                sourceMapOut.write(sourceMap.getBytes());
             } catch (Exception e)
             {
                 e.printStackTrace();
