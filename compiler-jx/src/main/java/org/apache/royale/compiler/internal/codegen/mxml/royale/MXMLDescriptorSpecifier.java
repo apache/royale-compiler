@@ -38,7 +38,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     public MXMLDescriptorSpecifier()
     {
         super();
-        
+
         eventSpecifiers = new ArrayList<MXMLEventSpecifier>();
         propertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
 
@@ -88,6 +88,12 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     public String id;
 
     //---------------------------------
+    //    hasLocalId
+    //---------------------------------
+
+    public boolean hasLocalId;
+
+    //---------------------------------
     //    effectiveId
     //---------------------------------
 
@@ -102,9 +108,9 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     //---------------------------------
     //    isProperty
     //---------------------------------
-    
+
     public boolean isProperty;
-    
+
     //---------------------------------
     //    parent
     //---------------------------------
@@ -131,7 +137,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                 count++;
         }
         write(count + "");
-        
+
         for (MXMLEventSpecifier me : eventSpecifiers)
         {
             writeDelimiter(writeNewline);
@@ -193,7 +199,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                         ASEmitterTokens.SINGLE_QUOTE.getToken()
                                 + ((id != null) ? id : effectiveId) + ASEmitterTokens.SINGLE_QUOTE.getToken(),
                         writeNewline);
-    
+
                 writeDelimiter(writeNewline);
             }
             else
@@ -201,7 +207,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                 write(propertySpecifiers.size() + "");
                 writeDelimiter(writeNewline);
             }
-            
+
             output(writeNewline);
         }
 
@@ -239,7 +245,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
             write(count + "");
             writeNewline(ASEmitterTokens.COMMA);
         }
-        
+
         MXMLDescriptorSpecifier model = null; // model goes first
         MXMLDescriptorSpecifier beads = null; // beads go last
 
@@ -278,17 +284,17 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
             //outputEffectSpecifier(writeNewline);
 
             outputEventSpecifier(writeNewline);
-            
+
             if (!isTopNode)
             {
                 writeDelimiter(writeNewline);
-                
+
                 if (childrenSpecifier == null)
                     write(ASEmitterTokens.NULL);
                 else
                     outputChildren(childrenSpecifier, writeNewline);
             }
-            
+
             boolean isLastChild = parent != null
                     && parent.propertySpecifiers.indexOf(this) == parent.propertySpecifiers
                             .size() - 1;
@@ -299,7 +305,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
 
         return sb.toString();
     }
-    
+
     private void outputChildren(MXMLDescriptorSpecifier children, boolean writeNewline)
     {
         write(ASEmitterTokens.SQUARE_OPEN.getToken());
