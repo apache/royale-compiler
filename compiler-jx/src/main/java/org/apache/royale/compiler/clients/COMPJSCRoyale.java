@@ -39,7 +39,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
-import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.js.IJSWriter;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
@@ -263,26 +263,41 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	
 	                        ICompilationUnit unit = cu;
 	
-	                        IASWriter writer;
+	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = project.getBackend().createWriter(project,
+	                            writer = (IJSWriter) project.getBackend().createWriter(project,
 	                                    (List<ICompilerProblem>) errors, unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
-	                            writer = project.getBackend().createMXMLWriter(
+	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
 	                                    project, (List<ICompilerProblem>) errors,
 	                                    unit, false);
 	                        }
 	                        problems.addAll(errors);
-	                        BufferedOutputStream out = new BufferedOutputStream(
+
+                            BufferedOutputStream out = new BufferedOutputStream(
 	                                new FileOutputStream(outputClassFile));
-	                        writer.writeTo(out);
-	                        out.flush();
+                            BufferedOutputStream sourceMapOut = null;
+	                        File outputSourceMapFile = null;
+                            if (project.config.getSourceMap())
+                            {
+	                            outputSourceMapFile = getOutputSourceMapFile(
+                                        cu.getQualifiedNames().get(0), outputFolder);
+                                sourceMapOut = new BufferedOutputStream(
+                                    new FileOutputStream(outputSourceMapFile));
+                            }
+	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
+                            out.flush();
 	                        out.close();
-	                        writer.close();
+                            if (sourceMapOut != null)
+                            {
+                                sourceMapOut.flush();
+                                sourceMapOut.close();
+                            }
+                            writer.close();
                     	}
                     	else
                     	{
@@ -290,23 +305,30 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                    	
 	                        ICompilationUnit unit = cu;
 	
-	                        IASWriter writer;
+	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = project.getBackend().createWriter(project,
+	                            writer = (IJSWriter) project.getBackend().createWriter(project,
 	                                    (List<ICompilerProblem>) errors, unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
-	                            writer = project.getBackend().createMXMLWriter(
+	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
 	                                    project, (List<ICompilerProblem>) errors,
 	                                    unit, false);
 	                        }
 	                        problems.addAll(errors);
-	                        ByteArrayOutputStream temp = new ByteArrayOutputStream();
-	                        writer.writeTo(temp);
-	                        boolean isExterns = false;
+
+                            ByteArrayOutputStream temp = new ByteArrayOutputStream();
+                            ByteArrayOutputStream sourceMapTemp = null;
+	                        if (project.config.getSourceMap())
+	                        {
+                                sourceMapTemp = new ByteArrayOutputStream();
+	                        }
+                            writer.writeTo(temp, sourceMapTemp, null);
+
+                            boolean isExterns = false;
 	                        if (writer instanceof JSWriter)
 	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
@@ -315,9 +337,20 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
 	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
-	                        zipOutputStream.closeEntry();
-	                        writer.close();
+                            zipOutputStream.closeEntry();
 	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                            if(sourceMapTemp != null)
+                            {
+                                String sourceMapFile = getOutputSourceMapFile(
+                                    cu.getQualifiedNames().get(0), isExterns ? externsOut : jsOut).getPath();
+                                System.out.println("Writing file: " + sourceMapFile);     	
+                                zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
+                                sourceMapTemp.writeTo(zipOutputStream);
+                                zipOutputStream.flush();
+                                zipOutputStream.closeEntry();
+                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                            }
+	                        writer.close();
                     	}
                     }
                 }
@@ -458,6 +491,32 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
         }
 
         return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
+    }
+
+    /**
+     * @param qname
+     * @param outputFolder
+     * @return output source map file path
+     */
+    private File getOutputSourceMapFile(String qname, File outputFolder)
+    {
+        String[] cname = qname.split("\\.");
+        String sdirPath = outputFolder + File.separator;
+        if (cname.length > 0)
+        {
+            for (int i = 0, n = cname.length - 1; i < n; i++)
+            {
+                sdirPath += cname[i] + File.separator;
+            }
+
+            File sdir = new File(sdirPath);
+            if (!sdir.exists())
+                sdir.mkdirs();
+
+            qname = cname[cname.length - 1];
+        }
+
+        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension() + ".map");
     }
 
     /**
