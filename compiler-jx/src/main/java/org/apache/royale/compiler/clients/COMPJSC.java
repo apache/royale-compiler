@@ -393,7 +393,7 @@ public class COMPJSC extends MXMLJSC
                     	if (!packingSWC)
                     	{
 	                        final File outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), outputFolder);
+	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
 	                        System.out.println("Compiling file: " + outputClassFile);
 	
@@ -421,7 +421,7 @@ public class COMPJSC extends MXMLJSC
                             if (project.config.getSourceMap())
                             {
                                 outputSourceMapFile = getOutputSourceMapFile(
-                                        cu.getQualifiedNames().get(0), outputFolder);
+                                        cu.getQualifiedNames().get(0), outputFolder, true);
                                 sourceMapOut = new BufferedOutputStream(
                                     new FileOutputStream(outputSourceMapFile));
                             }
@@ -467,7 +467,9 @@ public class COMPJSC extends MXMLJSC
 	                        if (writer instanceof JSWriter)
 	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), isExterns ? externsOut : jsOut).getPath();
+                                    cu.getQualifiedNames().get(0),
+                                    isExterns ? externsOut : jsOut,
+                                    false).getPath();
 	                        System.out.println("Writing file: " + outputClassFile);     	
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
 	                        temp.writeTo(zipOutputStream);
@@ -477,7 +479,9 @@ public class COMPJSC extends MXMLJSC
                             if(sourceMapTemp != null)
                             {
                                 String sourceMapFile = getOutputSourceMapFile(
-                                    cu.getQualifiedNames().get(0), isExterns ? externsOut : jsOut).getPath();
+                                    cu.getQualifiedNames().get(0),
+                                    isExterns ? externsOut : jsOut,
+                                    false).getPath();
                                 System.out.println("Writing file: " + sourceMapFile);     	
                                 zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
                                 sourceMapTemp.writeTo(zipOutputStream);
@@ -600,14 +604,15 @@ public class COMPJSC extends MXMLJSC
     /**
      * Get the output class file. This includes the (sub)directory in which the
      * original class file lives. If the directory structure doesn't exist, it
-     * is created.
+     * is created, if specified.
      * 
      * @author Erik de Bruin
      * @param qname
      * @param outputFolder
+     * @param createDirs
      * @return output class file path
      */
-    private File getOutputClassFile(String qname, File outputFolder)
+    private File getOutputClassFile(String qname, File outputFolder, boolean createDirs)
     {
         String[] cname = qname.split("\\.");
         String sdirPath = outputFolder + File.separator;
@@ -618,9 +623,12 @@ public class COMPJSC extends MXMLJSC
                 sdirPath += cname[i] + File.separator;
             }
 
-            File sdir = new File(sdirPath);
-            if (!sdir.exists())
-                sdir.mkdirs();
+            if (createDirs)
+            {
+                File sdir = new File(sdirPath);
+                if (!sdir.exists())
+                    sdir.mkdirs();
+            }
 
             qname = cname[cname.length - 1];
         }
@@ -629,11 +637,14 @@ public class COMPJSC extends MXMLJSC
     }
 
     /**
+     * Similar to getOutputClassFile, but for the source map file.
+     * 
      * @param qname
      * @param outputFolder
+     * @param createDirs
      * @return output source map file path
      */
-    private File getOutputSourceMapFile(String qname, File outputFolder)
+    private File getOutputSourceMapFile(String qname, File outputFolder, boolean createDirs)
     {
         String[] cname = qname.split("\\.");
         String sdirPath = outputFolder + File.separator;
@@ -644,9 +655,12 @@ public class COMPJSC extends MXMLJSC
                 sdirPath += cname[i] + File.separator;
             }
 
-            File sdir = new File(sdirPath);
-            if (!sdir.exists())
-                sdir.mkdirs();
+            if (createDirs)
+            {
+                File sdir = new File(sdirPath);
+                if (!sdir.exists())
+                    sdir.mkdirs();
+            }
 
             qname = cname[cname.length - 1];
         }
