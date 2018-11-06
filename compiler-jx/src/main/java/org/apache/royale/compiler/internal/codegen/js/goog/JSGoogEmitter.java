@@ -37,6 +37,7 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitter;
@@ -44,14 +45,18 @@ import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.VariableUsedBeforeDeclarationProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -928,6 +933,21 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             return;
         }
         IDefinition definition = node.resolve(getWalker().getProject());
+        if (node.getNodeID() == ASTNodeID.IdentifierID && node.getParent().getNodeID() == ASTNodeID.VariableID)
+        {
+        	if (definition instanceof VariableDefinition && (!(definition.getParent() instanceof ClassDefinition)))
+        	{
+        		IFileSpecification defFile = ((VariableDefinition)definition).getFileSpecification();
+        		IFileSpecification varFile = node.getFileSpecification();
+        		if (defFile != null && varFile != null && varFile.equals(defFile))
+        		{
+        			if (node.getAbsoluteStart() < definition.getAbsoluteStart())
+        			{
+        				getProblems().add(new VariableUsedBeforeDeclarationProblem(node, definition.getBaseName()));
+        			}
+        		}
+        	}
+        }
         if (node.getNodeID() == ASTNodeID.ClassReferenceID)
         {
             write(definition.getQualifiedName());
