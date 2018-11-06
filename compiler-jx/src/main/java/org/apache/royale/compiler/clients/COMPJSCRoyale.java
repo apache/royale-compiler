@@ -267,16 +267,15 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    (List<ICompilerProblem>) errors, unit,
+	                                    (List<ICompilerProblem>) problems.getProblems(), unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, (List<ICompilerProblem>) errors,
+	                                    project, (List<ICompilerProblem>) problems.getProblems(),
 	                                    unit, false);
 	                        }
-	                        problems.addAll(errors);
 
                             BufferedOutputStream out = new BufferedOutputStream(
 	                                new FileOutputStream(outputClassFile));
@@ -309,16 +308,15 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    (List<ICompilerProblem>) errors, unit,
+	                                    (List<ICompilerProblem>) problems.getProblems(), unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, (List<ICompilerProblem>) errors,
+	                                    project, (List<ICompilerProblem>) problems.getProblems(),
 	                                    unit, false);
 	                        }
-	                        problems.addAll(errors);
 
                             ByteArrayOutputStream temp = new ByteArrayOutputStream();
                             ByteArrayOutputStream sourceMapTemp = null;
@@ -357,6 +355,14 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        writer.close();
                     	}
                     }
+                }
+                if (!config.getCreateTargetWithErrors())
+                {
+                	errors.clear();
+                	warnings.clear();
+                    problems.getErrorsAndWarnings(errors, warnings);
+                    if (errors.size() > 0)
+                        return false;
                 }
                 if (packingSWC)
                 {

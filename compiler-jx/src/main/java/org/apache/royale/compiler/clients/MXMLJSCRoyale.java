@@ -406,6 +406,15 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                }
                 }
                 
+                if (!config.getCreateTargetWithErrors())
+                {
+                	errors.clear();
+                	warnings.clear();
+                    problems.getErrorsAndWarnings(errors, warnings);
+                    if (errors.size() > 0)
+                        return false;
+                }
+                
                 if (jsPublisher != null)
                 {
                     compilationSuccess = jsPublisher.publish(problems);
