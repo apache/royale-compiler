@@ -317,12 +317,19 @@ public abstract class TypeDefinitionBase extends MemberedDefinition implements I
         {
             this.initialType = initialType;
 
-            stack.push(initialType);
+            // bottom of the stack should be the Class type
             ITypeDefinition classType = (ITypeDefinition)project.getBuiltinType(BuiltinType.CLASS);
             stack.push(classType);
-
+            // add our initial type onto the stack, unless we're skipping it where we
+            // just add it straight to the visited list (see definitions of 'next()' && 'pushChildren()')
             if (skipThis)
-                next();
+            {
+                visited.add(initialType);
+            }
+            else
+            {
+                stack.push(initialType);
+            }
         }
 
         @Override
