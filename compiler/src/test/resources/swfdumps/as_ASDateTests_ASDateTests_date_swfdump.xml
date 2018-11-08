@@ -73,7 +73,7 @@ public class %0 extends Object
       0       getlocal0
       1       pushscope
       2       findpropstrict  Date
-      3       pushstring      "Sat Jun 30 23:59:59 GMT-0800 2018"
+      3       pushstring      "Sat Jun 30 23:59:59 2018"
       4       constructprop
       5       coerce          Date
       6       setlocal2
