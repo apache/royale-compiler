@@ -143,6 +143,42 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testArraySortNoArgs()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();a.sort()");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.sort()");
+    }
+
+    @Test
+    public void testArraySortOptArgOnly()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();a.sort(Array.NUMERIC)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("org.apache.royale.utils.Language.sort(a, 16)");
+    }
+
+    @Test
+    public void testArraySortCompareFunctionArgOnly()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();var f:Function = function():void {};a.sort(f)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.sort(f)");
+    }
+
+    @Test
+    public void testArraySortCompareFunctionWithOptArg()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();var f:Function = function():void {};a.sort(f, Array.UNIQUESORT)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("org.apache.royale.utils.Language.sort(a, f, 4)");
+    }
+
+    @Test
     public void testArraySortOn()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo')");
@@ -551,7 +587,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete (b.xml as XML).child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
         assertOut("org.apache.royale.utils.Language.as(b.xml, XML).child('child').removeChild('grandchild')");
-    }    
+    }
 
     @Test
     public void testXMLListDelete()
@@ -927,7 +963,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Namespace} */ a = new Namespace('foo', 'bar')");
     }
-        
+    
     @Test
     public void testQNameNoArg()
     {
