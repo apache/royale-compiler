@@ -232,7 +232,8 @@ public class RoyaleJSProject extends RoyaleProject
 
         if (!interfacesArr.containsKey(qname))
         {
-            interfacesArr.put(qname, qname);
+            if (!isExternalLinkage(to))
+            	interfacesArr.put(qname, qname);
         }
     }
     public boolean needLanguage;
