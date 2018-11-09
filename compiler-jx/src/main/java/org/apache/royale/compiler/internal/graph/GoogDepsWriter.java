@@ -193,7 +193,7 @@ public class GoogDepsWriter {
 					{
 						for (String d : gd.fileInfo.impls)
 						{
-							if (!restOfDeps.contains(d) && !gd.fileInfo.isExtern)
+							if (!restOfDeps.contains(d) && !gd.fileInfo.isExtern && !isExternal(d))
 								restOfDeps.add(d);
 						}
 					}
@@ -202,14 +202,14 @@ public class GoogDepsWriter {
 				ICompilationUnit unit = requireMap.get(gd.className);
 				if (unit == null)
 				{
-					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern)
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className))
 						restOfDeps.add(gd.className);
 					continue;
 				}
 				Set<ICompilationUnit> deps = graph.getDirectReverseDependencies(unit, dependencyTypes);
 				if (deps.size() == 0)
 				{
-					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern)
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className))
 						restOfDeps.add(gd.className);
 				}
 			}
@@ -576,8 +576,8 @@ public class GoogDepsWriter {
                 finalLines.add(line);
                 i++;
             }
-            if (suppressCount > 0)
-            {
+            //if (suppressCount > 0)
+            //{
             	if (fi.suppressLine > 0)
             	{
             		if (fi.suppressLine < fi.constructorLine || fi.constructorLine == -1) 
@@ -648,7 +648,7 @@ public class GoogDepsWriter {
             			System.out.println("Confused by @suppress in " + className);
             		}                		
             	}
-            }
+            //}
 
             sb.append("*/");
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
