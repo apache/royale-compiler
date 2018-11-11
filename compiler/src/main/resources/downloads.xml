@@ -86,7 +86,7 @@
       <param name="src.checksum" value="acfa69f928a0f1653555bda73091efca"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${antlr.name}.jar"/>
-      <param name="license.use.url" value="http://www.antlr.org/license.html"/>
+      <param name="license.use.url" value="https://www.antlr.org/license.html"/>
       <param name="license.cacheName" value="antlr-LICENSE.html"/>
     </antcall>
 
