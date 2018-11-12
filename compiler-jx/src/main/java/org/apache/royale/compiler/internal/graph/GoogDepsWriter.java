@@ -64,6 +64,7 @@ public class GoogDepsWriter {
 		this.moduleOutput = config.getModuleOutput();
 		this.mainName = mainClassName;
 		removeCirculars = config.getRemoveCirculars();
+		sourceMaps = config.getSourceMap();
 		otherPaths = config.getSDKJSLib();
 		otherPaths.add(new File(outputFolder.getParent(), "royale/Royale/src").getPath());
 		this.swcs = swcs;
@@ -81,6 +82,7 @@ public class GoogDepsWriter {
 	private List<String> sourceExternFiles;
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
+	private boolean sourceMaps = false;
 	private ArrayList<GoogDep> dps;
 	private DependencyGraph graph;
 	private CompilerProject project;
@@ -417,18 +419,22 @@ public class GoogDepsWriter {
 			fileLines = Files.readLines(mainFile, Charset.defaultCharset());
 
 			SourceMapConsumerV3 sourceMapConsumer = null;
-			File sourceMapFile = new File(main.filePath + ".map");
-			if (sourceMapFile.exists())
+			File sourceMapFile = null;
+			if (sourceMaps)
 			{
-				String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
-				sourceMapConsumer = new SourceMapConsumerV3();
-				try
+				sourceMapFile = new File(main.filePath + ".map");
+				if (sourceMapFile.exists())
 				{
-					sourceMapConsumer.parse(sourceMapContents);
-				}
-				catch(SourceMapParseException e)
-				{
-					sourceMapConsumer = null;
+					String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+					sourceMapConsumer = new SourceMapConsumerV3();
+					try
+					{
+						sourceMapConsumer.parse(sourceMapContents);
+					}
+					catch(SourceMapParseException e)
+					{
+						sourceMapConsumer = null;
+					}
 				}
 			}
 
@@ -520,18 +526,22 @@ public class GoogDepsWriter {
 			ArrayList<String> finalLines = new ArrayList<String>();
 			
 			SourceMapConsumerV3 sourceMapConsumer = null;
-			File sourceMapFile = new File(gd.filePath + ".map");
-			if (sourceMapFile.exists())
+			File sourceMapFile = null;
+			if (sourceMaps)
 			{
-				String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
-				sourceMapConsumer = new SourceMapConsumerV3();
-				try
+				sourceMapFile = new File(gd.filePath + ".map");
+				if (sourceMapFile.exists())
 				{
-					sourceMapConsumer.parse(sourceMapContents);
-				}
-				catch(SourceMapParseException e)
-				{
-					sourceMapConsumer = null;
+					String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+					sourceMapConsumer = new SourceMapConsumerV3();
+					try
+					{
+						sourceMapConsumer.parse(sourceMapContents);
+					}
+					catch(SourceMapParseException e)
+					{
+						sourceMapConsumer = null;
+					}
 				}
 			}
             
@@ -1092,21 +1102,9 @@ public class GoogDepsWriter {
     		}
         }
 
-		String fwdClassPath = className.replace(".", "/");
-		String bckClassPath = className.replace(".", "\\");
         for (ISWC swc : swcs)
         {
-        	ISWCFileEntry fileEntry =  swc.getFile("js/src/" + fwdClassPath + ".js");
-        	if (fileEntry == null)
-        		fileEntry = swc.getFile("js/out/" + fwdClassPath + ".js");
-        	if (fileEntry == null)
-        		fileEntry = swc.getFile("js/src/" + bckClassPath + ".js");
-        	if (fileEntry == null)
-        		fileEntry = swc.getFile("js/out/" + bckClassPath + ".js");
-            if (fileEntry == null)
-                fileEntry = swc.getFile("js\\src\\" + bckClassPath + ".js");
-            if (fileEntry == null)
-                fileEntry = swc.getFile("js\\out\\" + bckClassPath + ".js");
+			ISWCFileEntry fileEntry = getFileEntry(swc, className);
     		if (fileEntry != null)
     		{
     			fn = outputFolderPath + File.separator + classPath + ".js";
@@ -1123,7 +1121,28 @@ public class GoogDepsWriter {
     				}
     				outStream.flush();
     				outStream.close();    					
-    				inStream.close();
+					inStream.close();
+					
+					//if source maps requested, copy from the swc, if available
+					if (sourceMaps)
+					{
+						ISWCFileEntry sourceMapFileEntry = getFileEntry(swc, className, ".js.map");
+						if (sourceMapFileEntry != null)
+						{
+							String sourceMapFn = outputFolderPath + File.separator + classPath + ".js.map";
+							File sourceMapDestFile = new File(sourceMapFn);
+							inStream = sourceMapFileEntry.createInputStream();
+							outStream = FileUtils.openOutputStream(sourceMapDestFile);
+							b = new byte[1024 * 1024];
+							while ((bytes_read = inStream.read(b)) != -1)
+							{
+								outStream.write(b, 0, bytes_read);
+							}
+							outStream.flush();
+							outStream.close();    					
+							inStream.close();
+						}
+					}
 
     				// (erikdebruin) copy class assets files
     				if (className.contains("org.apache.royale"))
@@ -1164,6 +1183,29 @@ public class GoogDepsWriter {
 		System.out.println("Could not find file for class: " + className);
 		problems.add(new FileNotFoundProblem(className));
 		return "";
+	}
+
+	private ISWCFileEntry getFileEntry(ISWC swc, String className)
+	{
+		return getFileEntry(swc, className, ".js");
+	}
+
+	private ISWCFileEntry getFileEntry(ISWC swc, String className, String extension)
+	{
+		String fwdClassPath = className.replace(".", "/");
+		String bckClassPath = className.replace(".", "\\");
+		ISWCFileEntry fileEntry = swc.getFile("js/src/" + fwdClassPath + extension);
+		if (fileEntry == null)
+			fileEntry = swc.getFile("js/out/" + fwdClassPath + extension);
+		if (fileEntry == null)
+			fileEntry = swc.getFile("js/src/" + bckClassPath + extension);
+		if (fileEntry == null)
+			fileEntry = swc.getFile("js/out/" + bckClassPath + extension);
+		if (fileEntry == null)
+			fileEntry = swc.getFile("js\\src\\" + bckClassPath + extension);
+		if (fileEntry == null)
+			fileEntry = swc.getFile("js\\out\\" + bckClassPath + extension);
+		return fileEntry;
 	}
 	
 	/*
