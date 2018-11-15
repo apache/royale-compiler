@@ -70,6 +70,7 @@ import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.ICompoundAssignmentNode;
@@ -1793,6 +1794,21 @@ public class MethodBodySemanticChecker
             IExpressionNode site = ((IMemberAccessExpressionNode)nameNode).getRightOperandNode();
             def = ((IFunctionCallNode)iNode).resolveCalledExpression(project);
             checkDeprecated(site, def);
+            if (def == null)
+            {
+            	String methodName = null;
+            	if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            	{
+            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)nameNode;
+            		IExpressionNode rightNode = mae.getRightOperandNode();
+            		if (rightNode.getNodeID() == ASTNodeID.IdentifierID)
+            			methodName = ((IdentifierNode)rightNode).getName();
+            	}
+                assert methodName != null;
+                addProblem(new CallUndefinedMethodProblem( 
+                        iNode, methodName
+                    ));
+            }
         }
 
         if ( this.superState == SuperState.Initial )
