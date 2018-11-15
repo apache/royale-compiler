@@ -392,6 +392,8 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             if (qualifier == null)
             {
                 result = asScope.findProperty(project, name, getDependencyType(), isTypeRef());
+                if (result != null && name.equals("graphics") && ((ITypeDefinition)(result.getParent())).isInstanceOf("mx.core.UIComponent", project))
+                	result = asScope.findProperty(project, "royalegraphics", getDependencyType(), isTypeRef());
                 // ASVariableTests_localVarSameNameAsPrivateMethod
                 if (isLegacyCodegen(project) && result != null && getParent().getNodeID() == ASTNodeID.FunctionCallID && result instanceof VariableDefinition)
                 {
@@ -878,7 +880,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         IDefinition result = null;
 
         // Determine baseType, the type of 'a' (the left-hand-side of the member access operator).
-        IDefinition baseType = null;
+        ITypeDefinition baseType = null;
         ExpressionNodeBase baseExpr = getBaseExpression();
         if (baseExpr != null)
         {
@@ -920,6 +922,12 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                 }
                 if (qualifier != null)
                     result = asScope.getQualifiedPropertyFromDef(project, baseType, name, qualifier, isSuper);
+                else if (name.equals("graphics") && baseType.isInstanceOf("mx.core.UIComponent", project))
+                {
+                	result = asScope.getPropertyFromDef(project, baseType, "royalegraphics", isSuper);
+                    if (result == null)
+                        result = asScope.getPropertyFromDef(project, baseType, name, isSuper);
+                }
                 else
                     result = asScope.getPropertyFromDef(project, baseType, name, isSuper);
             }
