@@ -135,13 +135,16 @@ public class JSWriter implements IJSWriter
         List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
         for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
-            mapping.sourcePath = relativePath(mapping.sourcePath, relativeToFile.getAbsolutePath());
+            String relativePath = relativize(mapping.sourcePath, relativeToFile.getAbsolutePath());
+            //prefer forward slash
+            relativePath = relativePath.replace('\\', '/');
+            mapping.sourcePath = relativePath;
         }
     }
 
     //if we ever support Java 7, the java.nio.file.Path relativize() method
     //should be able to replace this method
-    private String relativePath(String filePath, String relativeToFilePath)
+    private String relativize(String filePath, String relativeToFilePath)
     {
         boolean caseInsensitive = System.getProperty("os.name").toLowerCase().startsWith("windows");
         if(caseInsensitive)
