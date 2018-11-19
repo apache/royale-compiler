@@ -110,22 +110,25 @@ public class RoyaleJSProject extends RoyaleProject
 
         IDefinition def = dp.get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
-        IDefinitionNode defNode = actualDef != null ? actualDef.getNode() : null;
-        if (to.getCompilationUnitType() == UnitType.AS_UNIT && (defNode instanceof IClassNode || defNode instanceof IInterfaceNode))
+        if (to.getCompilationUnitType() == UnitType.AS_UNIT)
         {
-        	String defname = def.getQualifiedName();
-	        IASDocComment asDoc = (defNode instanceof IClassNode) ? 
-	        						(IASDocComment) ((IClassNode)defNode).getASDocComment() :
-	        						(IASDocComment) ((IInterfaceNode)defNode).getASDocComment();
-	        if (asDoc != null && (asDoc instanceof ASDocComment))
-	        {
-	            String asDocString = ((ASDocComment)asDoc).commentNoEnd();
-	            if (asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken()))
-	            {
-	            	if (!sourceExterns.contains(defname))
-	            		sourceExterns.add(defname);
-	            }
-	        }
+            IDefinitionNode defNode = actualDef != null ? actualDef.getNode() : null;
+        	if (defNode instanceof IClassNode || defNode instanceof IInterfaceNode)
+        	{
+	        	String defname = def.getQualifiedName();
+		        IASDocComment asDoc = (defNode instanceof IClassNode) ? 
+		        						(IASDocComment) ((IClassNode)defNode).getASDocComment() :
+		        						(IASDocComment) ((IInterfaceNode)defNode).getASDocComment();
+		        if (asDoc != null && (asDoc instanceof ASDocComment))
+		        {
+		            String asDocString = ((ASDocComment)asDoc).commentNoEnd();
+		            if (asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken()))
+		            {
+		            	if (!sourceExterns.contains(defname))
+		            		sourceExterns.add(defname);
+		            }
+		        }
+        	}
         }
         // IDefinition def = to.getDefinitionPromises().get(0);
         boolean isInterface = (actualDef instanceof InterfaceDefinition) && (dt == DependencyType.INHERITANCE);
