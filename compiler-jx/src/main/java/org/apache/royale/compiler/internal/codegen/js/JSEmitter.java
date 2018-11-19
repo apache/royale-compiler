@@ -422,6 +422,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
         }
 
+        //prefer forward slash
+        sourcePath = sourcePath.replace('\\', '/');
+
         SourceMapMapping mapping = new SourceMapMapping();
         mapping.sourcePath = sourcePath;
         mapping.sourceStartPosition = new FilePosition(line, column);
