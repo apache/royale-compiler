@@ -74,4 +74,10 @@ public class ASCProject extends CompilerProject implements IASCProject
     {
         return false;
     }
+
+	@Override
+	public boolean getAllowPrivateNameConflicts() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

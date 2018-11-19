@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.IFileSpecificationGetter;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
@@ -380,6 +382,16 @@ public class MXMLTreeBuilder
         else if (typeName.equals(IASLanguageConstants.Array))
         {
             result = mxmlDialect.parseArray(project, text, flags);
+            if (result == null && flags.contains(TextParsingFlags.RICH_TEXT_CONTENT))
+            {
+                result = mxmlDialect.parseString(project, text, flags);
+                if (result != null)
+                {
+                	ArrayList<Object> arr = new ArrayList<Object>();
+                	arr.add(result);
+                	result = arr;
+                }
+            }
         }
         else if (typeName.equals(IASLanguageConstants.Object) ||
                  typeName.equals(IASLanguageConstants.ANY_TYPE))
@@ -468,10 +480,17 @@ public class MXMLTreeBuilder
         {
             String typeName = type.getQualifiedName();
             if (typeName.equals(IASLanguageConstants.String) ||
-                typeName.equals(IASLanguageConstants.Object)||
+                typeName.equals(IASLanguageConstants.Object) ||
                 typeName.equals(IASLanguageConstants.ANY_TYPE))
             {
                 value = "";
+            }
+            if (typeName.equals(IASLanguageConstants.Number) ||
+                typeName.equals(IASLanguageConstants._int) ||
+                typeName.equals(IASLanguageConstants.uint) ||
+                typeName.equals(IASLanguageConstants.Boolean))
+            {
+                return null;
             }
         }
         
@@ -840,8 +859,12 @@ public class MXMLTreeBuilder
         }
 
         Workspace workspace = getWorkspace();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("MXMLTreeBuilder waiting for lock in getExternalMXMLData");
         IFileSpecification sourceFileSpec =
                 workspace.getFileSpecification(resolvedSourcePath);
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("MXMLTreeBuilder done with lock in getExternalMXMLData");
         IMXMLDataManager mxmlDataManager = workspace.getMXMLDataManager();
 
         return mxmlDataManager.get(sourceFileSpec);

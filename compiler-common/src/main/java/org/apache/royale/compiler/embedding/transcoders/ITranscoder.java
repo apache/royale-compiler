@@ -22,8 +22,6 @@ package org.apache.royale.compiler.embedding.transcoders;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;

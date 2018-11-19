@@ -203,6 +203,20 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
             final ImmutableList<IDefinition> definitions =
                         Target.getAllExternallyVisibleDefinitions(allCompilationUnitsInTarget);
             final Collection<ICompilationUnit> cssDependencies = new HashSet<ICompilationUnit>();
+            // activate rules in user specified CSS
+            for (ICSSDocument cssDocument : cssCompilationSession.cssDocuments)
+            {
+                // Side-effects of this method:
+                // 1. Resolve all type selectors in the CSS model to IClassDefinition definitions.
+                // 2. Activate CSS rules whose subject is in the definition set.
+                final Collection<ICompilationUnit> dependentCUListFromCSS =
+                        cssManager.getDependentCompilationUnitsFromCSS(
+                                cssCompilationSession,
+                                cssDocument,
+                                definitions,
+                                problems);
+                cssDependencies.addAll(dependentCUListFromCSS);        	
+            }
             for (final ICSSDocument cssDocument : activatedStyleSheets.all())
             {
                 // Side-effects of this method:

@@ -43,6 +43,8 @@ import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.problems.AmbiguousReferenceProblem;
+import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
@@ -50,6 +52,8 @@ import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+
+import com.google.common.base.Predicate;
 
 /**
  * Each instance of this class represents the definition of an ActionScript
@@ -302,7 +306,11 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
             IDefinition baseFunc = base.getContainedScope().getQualifiedPropertyFromDef(
                     project, base, this.getBaseName(), namespace, false);
 
-            return baseFunc instanceof FunctionDefinition ? (FunctionDefinition)baseFunc : null;
+            if (baseFunc instanceof FunctionDefinition) return (FunctionDefinition)baseFunc;
+            
+            IDefinition anyDef = base.getContainedScope().getPropertyFromDef(project, base, this.getBaseName(), new PrivatePredicate(!project.getAllowPrivateNameConflicts()), false);
+            if (anyDef != null) // there might be a variable or a function in a different namespace (private vs protected)
+            	project.getProblems().add(new ConflictingDefinitionProblem(this.getFunctionNode(), this.getBaseName(), anyDef.getParent().getQualifiedName()));
         }
         return null;
     }
@@ -628,4 +636,22 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
             sb.append(returnType);
         }
     }
+    
+    private static class PrivatePredicate implements Predicate<IDefinition>
+    {
+        private boolean findPrivates;
+
+        public PrivatePredicate(boolean b)
+        {
+            this.findPrivates = b;
+        }
+
+        @Override
+        public boolean apply(IDefinition definition)
+        {
+        	if (!definition.isPrivate()) return true;
+            return findPrivates;
+        }
+    }
+
 }

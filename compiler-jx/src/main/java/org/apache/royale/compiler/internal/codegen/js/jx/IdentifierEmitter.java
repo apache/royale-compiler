@@ -26,6 +26,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
@@ -226,6 +227,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	write(ASEmitterTokens.MEMBER_ACCESS);
                 endMapping(node);
             }
+            else if (EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node))
+            {
+            	write("node.");
+            }
 
             if (generateClosure)
             {
@@ -238,7 +243,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	write("[\"" + nsName + "::" + node.getName() + "\"]");
                 }
                 else
-                	write(node.getName());
+                {
+            		String qname = node.getName();
+                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+            		write(qname);
+                }
 
                 writeToken(ASEmitterTokens.COMMA);
                 if (wroteSelf)
@@ -308,7 +318,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     }
                 	else
                 	{
-                		write(node.getName());
+                		qname = node.getName();
+                    	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                		write(qname);
                 	}
                 }
                 else if (isPackageOrFileMember)
@@ -324,8 +337,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                 	write("[\"" + qname + "\"]");                    	
                 }
-                else
+                else 
+                {
+                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                     write(qname);
+                }
                 endMapping(node);
             }
             else if (grandparentNodeId == ASTNodeID.E4XFilterID &&

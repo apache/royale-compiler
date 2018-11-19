@@ -36,8 +36,8 @@ public interface IJSWriter extends IASWriter
      * Write JS file and source map.
      *
      * @param jsOut JS output stream
-     * @param sourceMapOut Source map file
+     * @param sourceMapOut Source map output stream
+     * @param sourceMapFile Source map file
      */
-    void writeTo(OutputStream jsOut, File sourceMapOut);
-
+    void writeTo(OutputStream jsOut, OutputStream sourceMapOut, File sourceMapFile);
 }

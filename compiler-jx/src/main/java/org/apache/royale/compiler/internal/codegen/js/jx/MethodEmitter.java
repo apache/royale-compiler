@@ -123,7 +123,7 @@ public class MethodEmitter extends JSSubEmitter implements
         {
             write(ASEmitterTokens.SPACE);
             write(ASEmitterTokens.BLOCK_OPEN);
-            if (hasSuperClass)
+            if (hasSuperClass && !getEmitter().getModel().isExterns)
                 fjs.emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
             //add whatever variant of the bindable implementation is necessary inside the constructor
             if (addingBindableImplementsSupport) {
@@ -145,7 +145,7 @@ public class MethodEmitter extends JSSubEmitter implements
             fjs.emitMethodScope(node.getScopedNode());
         }
 
-        if (isConstructor)
+        if (isConstructor && !getEmitter().getModel().isExterns)
         {
             if (hasSuperClass) {
                 writeNewline(ASEmitterTokens.SEMICOLON);

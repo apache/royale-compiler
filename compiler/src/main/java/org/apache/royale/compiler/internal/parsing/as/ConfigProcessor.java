@@ -29,6 +29,7 @@ import java.util.List;
 import antlr.Token;
 
 import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
@@ -152,6 +153,12 @@ public class ConfigProcessor
             removeCompilationUnits(Collections.<ICompilationUnit> singletonList(cu));
 
         }
+
+		@Override
+		public boolean getAllowPrivateNameConflicts() {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 
     /**
@@ -381,7 +388,8 @@ public class ConfigProcessor
                 {
                 	ConfigConstNode.ConfigDefinition cdef = (ConfigConstNode.ConfigDefinition)def;
     	        	IExpressionNode initializer = cdef.getInitializer();
-    	        	if (initializer.getNodeID() != ASTNodeID.MemberAccessExpressionID)
+    	        	if (initializer.getNodeID() != ASTNodeID.MemberAccessExpressionID &&
+    	        			initializer.getNodeID() != ASTNodeID.IdentifierID)
     	        	{
     	                // Get the real source node for the problem.
     	                // If there isn't one, then don't make a problem - assume 
@@ -441,7 +449,8 @@ public class ConfigProcessor
             {
             	ConfigConstNode.ConfigDefinition def = (ConfigConstNode.ConfigDefinition)definition;
 	        	IExpressionNode initializer = def.getInitializer();
-	        	if (initializer.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	        	if (initializer.getNodeID() == ASTNodeID.MemberAccessExpressionID ||
+		        	initializer.getNodeID() == ASTNodeID.IdentifierID)
 	        		return initializer;
         	}
         	
@@ -503,6 +512,20 @@ public class ConfigProcessor
         {
         	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)result;
         	return mae;
+        }
+        else if (result instanceof IdentifierNode)
+        {
+        	IdentifierNode id = (IdentifierNode)result;
+        	return id;
+        }
+        else if (result instanceof Namespace)
+        {
+        	Namespace ns = (Namespace)result;
+        	String nsName = ns.getName();
+        	if (nsName.length() == 0)
+        		nsName = "public";
+        	
+        	return new IdentifierNode(nsName);
         }
         return null;
     }

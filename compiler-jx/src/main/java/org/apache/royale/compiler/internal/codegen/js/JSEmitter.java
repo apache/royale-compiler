@@ -499,4 +499,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         }
     }
 
+	@Override
+	public String formatPrivateName(String className, String name) {
+		// TODO Auto-generated method stub
+		return className.replace(".", "_") + "_" + name;
+	}
+
 }

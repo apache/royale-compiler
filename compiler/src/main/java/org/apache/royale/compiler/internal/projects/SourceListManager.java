@@ -124,8 +124,12 @@ final class SourceListManager
             unitsToAdd = new ArrayList<ICompilationUnit>(newSourcesToCreate.size());
             for (File file : newSourcesToCreate)
             {
+            	File sourcePath = sourcePathManager.getSourcePath(file);
+            	String qname = null;
+            	if (sourcePath != null)
+            		qname = SourcePathManager.computeQName(sourcePath, file);
                 ICompilationUnit unit = project.getSourceCompilationUnitFactory().createCompilationUnit(
-                    file, DefinitionPriority.BasePriority.SOURCE_LIST, 0, null, null);
+                    file, DefinitionPriority.BasePriority.SOURCE_LIST, 0, qname, null);
                 
                 //It can be null in some cases, see #ResourceBundleSourceFileHandler
                 if(unit != null)

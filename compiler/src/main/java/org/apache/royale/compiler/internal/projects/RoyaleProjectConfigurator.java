@@ -261,6 +261,7 @@ public class RoyaleProjectConfigurator extends Configurator
             project.setProxyBaseClass(configValue);
 
             project.setStrictXML(configuration.isStrictXML());
+            project.setAllowPrivateNameConflicts(configuration.getCompilerAllowPrivateNameConflicts());
             
             DataTranscoder.embedClassName = configuration.getByteArrayEmbedClass();
         }
@@ -398,6 +399,16 @@ public class RoyaleProjectConfigurator extends Configurator
         
         // add Library Path
         libraries.addAll(toFileList(project.getCompilerLibraryPath(configuration)));
+
+        List<String> themes = configuration.getCompilerThemeFiles();
+        for (String theme : themes)
+        {
+        	if (theme.endsWith(".swc"))
+        	{
+        		File f = new File(theme);
+        		libraries.add(f);
+        	}
+        }
         
         project.setLibraries(new ArrayList<File>(libraries));
         

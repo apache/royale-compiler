@@ -38,6 +38,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.embedding.EmbedAttribute;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -173,7 +174,12 @@ public class JPEGTranscoder extends ImageTranscoder
         writer.write(null, ioImage, writeParam);
         writer.dispose();
 
-        return buffer.getDirectByteArray();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+    		System.out.println("JPEGTranscoder waiting for lock in bufferedImageToJPEG");
+        byte[] b =  buffer.getDirectByteArray();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+    		System.out.println("JPEGTranscoder waiting for lock in bufferedImageToJPEG");
+    	return b;
     }
 
     private DefineBitsTag buildImage(byte[] imageBytes, byte[] alphaBytes)
@@ -203,7 +209,12 @@ public class JPEGTranscoder extends ImageTranscoder
         {
             IOUtils.closeQuietly(deflaterStream);
         }
-        return out.getDirectByteArray();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+    		System.out.println("JPEGTranscoder waiting for lock in deflate");
+        byte[] b = out.getDirectByteArray();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+    		System.out.println("JPEGTranscoder waiting for lock in deflate");
+    	return b;
     }
 
     @Override

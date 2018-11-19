@@ -45,7 +45,6 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.workspaces.IWorkspace;
-import org.apache.royale.swc.ISWC;
 import org.apache.royale.utils.FileUtils;
 import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.Trace;
@@ -199,7 +198,12 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             @Override
             public IFileSpecification apply(final String path)
             {
-                return workspace.getFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("Configurator waiting for lock in toFileSpecifications");
+            	IFileSpecification fs = workspace.getFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("Configurator done with lock in toFileSpecifications");
+            	return fs;
             }
         });
     }

@@ -35,6 +35,7 @@ import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
@@ -78,7 +79,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (!(node.getChild(1) instanceof VectorLiteralNode))
                 {
-                    if (def == null || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) || 
+                    if (def == null || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) ||
                     					 def.getBaseName().equals(IASGlobalFunctionConstants.uint) ||
                     					 def instanceof AppliedVectorDefinition))
                     {
@@ -149,13 +150,13 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     // otherwise it just looks like any other "new function"
                     // in JS.
                     if (nameNode.hasParenthesis())
-                        write(ASEmitterTokens.PAREN_OPEN);                        
+                        write(ASEmitterTokens.PAREN_OPEN);
                     // I think we still need this for "new someVarOfTypeClass"
                     getEmitter().getWalker().walk(nameNode);
                     if (nameNode.hasParenthesis())
-                        write(ASEmitterTokens.PAREN_CLOSE);                        
+                        write(ASEmitterTokens.PAREN_CLOSE);
                 }
-                
+
                 if (def instanceof AppliedVectorDefinition)
                 {
                 	ContainerNode args = node.getArgumentsNode();
@@ -185,7 +186,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 if (def != null)
                 {
                     boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
-                    if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.trace)
+                    boolean isTrace = def.getParent() == null && def.getBaseName().equals(IASGlobalFunctionConstants.trace);
+                    if (isInt || isTrace
                             || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
@@ -224,21 +226,27 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 			IExpressionNode args[] = node.getArgumentNodes();
                 			if (args.length > 0)
                 			{
-	                			IExpressionNode param1 = args[0];
-	                            ICompilerProject project = this.getProject();
-	                			IDefinition paramDef1 = param1.resolveType(project);
-	                			if (paramDef1.getBaseName().equals(IASLanguageConstants._int))
-	                			{
-		                            if (project instanceof RoyaleJSProject)
-		                                ((RoyaleJSProject) project).needLanguage = true;
-		                            getEmitter().getModel().needLanguage = true;
-		                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
-		                            write(ASEmitterTokens.MEMBER_ACCESS);
-		                            write("sort");
-		                            IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
-		                            fjs.emitArguments(newArgs);
-		                            return;
-	                			}
+                                IExpressionNode optionsParamCheck = args.length == 1 ? args[0] : args[1];
+                                ICompilerProject project = this.getProject();
+                                IDefinition paramCheck = optionsParamCheck.resolveType(project);
+
+                                if (paramCheck.getBaseName().equals(IASLanguageConstants._int)
+                                    || paramCheck.getBaseName().equals(IASLanguageConstants.uint)
+                                    || paramCheck.getBaseName().equals(IASLanguageConstants.Number))
+                                {
+                                    //deal with specific numeric option argument variations
+                                    //either: Array.sort(option:uint) or Array.sort(compareFunction:Function, option:uint)
+                                    //use our Language sort implementation to support these actionscript-specific method signatures
+                                    if (project instanceof RoyaleJSProject)
+                                        ((RoyaleJSProject) project).needLanguage = true;
+                                    getEmitter().getModel().needLanguage = true;
+                                    write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                    write(ASEmitterTokens.MEMBER_ACCESS);
+                                    write("sort");
+                                    IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
+                                    fjs.emitArguments(newArgs);
+                                    return;
+                                }
                 			}
             			}
             		}
@@ -253,7 +261,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     	}
                     	else if (len > 1)
                     	{
-                    		getWalker().getProject().getProblems().add(new TooManyFunctionParametersProblem(node, 1));                    		
+                    		getWalker().getProject().getProblems().add(new TooManyFunctionParametersProblem(node, 1));
                     	}
                     	else
                     	{
@@ -263,6 +271,32 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         }
                         return;
                     }
+                    else if (def.getBaseName().equals(IASLanguageConstants.XML))
+                    {
+                    	write("XML.conversion");
+                        getEmitter().emitArguments(node.getArgumentsNode());
+                    	return;
+                    }
+                }
+                else if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID && ((JSRoyaleEmitter)getEmitter()).isProxy(((MemberAccessExpressionNode)nameNode).getLeftOperandNode()) && def == null)
+                {
+                	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)nameNode;
+                	getWalker().walk(mae.getLeftOperandNode());
+                    write(".callProperty('");
+                    getWalker().walk(mae.getRightOperandNode());
+                    write("'");
+                    IExpressionNode[] args = node.getArgumentNodes();
+                    int n = args.length;
+                    if (n > 0)
+                    {
+	                    for (int i = 0; i < n; i++)
+	                    {
+		                    write(", ");
+	                        getWalker().walk(args[i]);
+	                    }
+                    }
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    return;
                 }
             	getWalker().walk(node.getNameNode());
 

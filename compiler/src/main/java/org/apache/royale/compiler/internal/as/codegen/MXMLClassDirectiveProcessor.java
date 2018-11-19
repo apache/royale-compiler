@@ -100,6 +100,7 @@ import static org.apache.royale.compiler.mxml.IMXMLTypeConstants.SET_DOCUMENT_DE
 import static org.apache.royale.compiler.mxml.IMXMLTypeConstants.SET_STYLE_CALL_OPERANDS;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.EnumMap;
@@ -159,6 +160,7 @@ import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
+import org.apache.royale.compiler.problems.AccessUndefinedPropertyProblem;
 import org.apache.royale.compiler.problems.CSSCodeGenProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLExecutableStatementsInScriptBlockProblem;
@@ -1880,6 +1882,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (context.hasBeads)
             numProperties += 1;
         
+        int numOperations = context.getCounter(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
+        if (numOperations > 0)
+        	numProperties += 1;
         if (newCodeGen && addCounters)
             context.pushNumericConstant(numProperties);
         // Adds code such as
@@ -1889,6 +1894,20 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (context.hasModel)
             context.transfer(IL.MXML_MODEL_PROPERTIES);
         context.transfer(IL.PROPERTIES);
+        if (numOperations > 0)
+        {
+            context.addInstruction(OP_pushstring, "operations");
+            context.addInstruction(OP_pushfalse);
+            context.addInstruction(OP_findpropstrict, IMXMLTypeConstants.NAME_OBJECT);
+            context.addInstruction(OP_getproperty, IMXMLTypeConstants.NAME_OBJECT);
+            context.pushNumericConstant(numOperations);
+        	context.transfer(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
+            context.pushNumericConstant(0);
+            context.pushNumericConstant(0);
+            context.pushNumericConstant(0);
+            context.addInstruction(OP_pushnull);
+            context.addInstruction(OP_newarray, numOperations * 3 + 6);      
+        }
         if (context.hasBeads)
             context.transfer(IL.MXML_BEAD_PROPERTIES);
         
@@ -2967,6 +2986,39 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // If 'name' is undefined, the WebService node will report problem.
         if (!Strings.isNullOrEmpty(name))
         {
+        	// build out the argument list if any
+        	int n = node.getChildCount();
+        	for (int i = 0; i < n; i++)
+        	{
+        		IASNode childNode = node.getChild(i);
+        		if (childNode.getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+        		{
+        			IMXMLPropertySpecifierNode propNode = (IMXMLPropertySpecifierNode)childNode;
+        			if (propNode.getName().equals("arguments"))
+        			{
+        				ArrayList<String> argList = new ArrayList<String>();
+        				childNode = propNode.getChild(0); // this is an MXMLObjectNode
+        				n = childNode.getChildCount();
+        				for (i = 0; i < n; i++)
+        				{
+        					IASNode argNode = childNode.getChild(i);
+        					propNode = (IMXMLPropertySpecifierNode)argNode;
+        					argList.add(propNode.getName());
+        				}
+        				if (argList.size() > 0)
+        				{
+        		            context.startUsing(IL.PROPERTIES);
+        		            context.addInstruction(OP_pushstring, "argumentNames");
+        		            context.addInstruction(OP_pushtrue);
+        		            for (String s : argList)
+            		            context.addInstruction(OP_pushstring, s);
+        	                context.addInstruction(OP_newarray, argList.size());      
+        		            context.stopUsing(IL.PROPERTIES, 1);        					
+        				}
+        				break;
+        			}
+        		}
+        	}
             context.startUsing(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
             context.addInstruction(OP_pushstring, name);
             processMXMLInstance(node, context);
@@ -3015,9 +3067,21 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         traverse(objectNode, context);
         
         int numElements = context.getCounter(IL.PROPERTIES);
+        String id = objectNode.getEffectiveID();
+        if (id != null)
+        	numElements++;
         if (newCodeGen && !context.makingSimpleArray)
             context.pushNumericConstant(numElements);
         context.transfer(IL.PROPERTIES);
+        if (id != null)
+        {
+        	if (id.startsWith("#"))
+        		context.addInstruction(OP_pushstring, "_id");
+        	else
+        		context.addInstruction(OP_pushstring, "id");
+            context.addInstruction(OP_pushtrue);
+            context.addInstruction(OP_pushstring, id);
+        }
         
         if (!newCodeGen || context.makingSimpleArray)
         {
@@ -3669,6 +3733,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                         traverse(propertyNode, context);
                         
                         context.stopUsing(IL.PROPERTIES, 1);                        
+                    }
+                    else if (propDef == null)
+                    {
+                    	getProblems().add(new AccessUndefinedPropertyProblem(propertyNode, propertyName));
                     }
                     else if (propDef.isPublic())
                     {
@@ -4910,7 +4978,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         String xmlString = node.getXMLString();
         if (xmlString == null)
         {
-            context.addInstruction(OP_pushnull);
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            	context.addInstruction(OP_pushnull);
         }
         else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.E4X)
         {

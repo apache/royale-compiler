@@ -66,6 +66,11 @@
         <delete dir="${jflex.root}" />
 
         <delete dir="${closure.root}" />
+        
+        <delete dir="${basedir}" failonerror="false">
+            <include name="**/hs_err*"/>
+            <include name="**/replay_pid*"/>
+        </delete>
      </target>
     
     <target name="check-env" >

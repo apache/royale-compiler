@@ -95,6 +95,17 @@ public final class SourcePathManager
         return false;
     }
     
+    public File getSourcePath(File file)
+    {
+        for (final DirectoryID directory : sourcePaths.keySet())
+        {
+            if (directory.isParentOf(file))
+                return directory.getFile();
+        }
+        
+        return null;
+    }
+    
     private void accumulateQNameFiles(Set<QNameFile> qNameFiles, File directory, String baseQName, String locale, 
             Collection<ICompilerProblem> problems, int order)
     {

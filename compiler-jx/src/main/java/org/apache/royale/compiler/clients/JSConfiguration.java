@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.clients;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -35,6 +36,7 @@ import org.apache.royale.compiler.internal.config.annotations.Config;
 import org.apache.royale.compiler.internal.config.annotations.RoyaleOnly;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
+import org.apache.royale.compiler.internal.config.annotations.SoftPrerequisites;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 
 import com.google.common.collect.ImmutableList;
@@ -137,6 +139,32 @@ public class JSConfiguration extends Configuration
     }
 
     //
+    // 'js-dynamic-access-unknown-members'
+    //
+
+    private boolean jsDynamicAccessUnknownMembers = false;
+
+    public boolean getJsDynamicAccessUnknownMembers()
+    {
+        return jsDynamicAccessUnknownMembers;
+    }
+
+    /**
+     * If the definition of a member cannot be resolved, emit dynamic access
+     * instead of normal member access. Ensures that dynamic members aren't
+     * renamed.
+     * 
+     * <code>myObject.memberAccess</code> becomes <code>myObject["memberAccess"]</code>
+     */
+    @Config
+    @Mapping("js-dynamic-access-unknown-members")
+    public void setJsDynamicAccessUnknownMembers(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsDynamicAccessUnknownMembers = value;
+    }
+
+    //
     // 'compiler.js-external-library-path' option
     //
 
@@ -178,6 +206,7 @@ public class JSConfiguration extends Configuration
     @Mapping({ "compiler", "js-library-path" })
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
+    @SoftPrerequisites({ "locale", "target-player", "exclude-native-js-libraries" })
     public void setCompilerJsLibraryPath(ConfigurationValue cv, String[] pathlist) throws CannotOpen
     {
         final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
@@ -307,6 +336,43 @@ public class JSConfiguration extends Configuration
     public String getJsLoadConfig()
     {
     	return null;
+    }
+
+    //
+    // 'module-output' option
+    //
+
+    private String moduleoutput;
+
+    /**
+     * if used, the js-debug and js-release folders are calculated by removing
+     * the folders specified from the output folder.  This is useful in some
+     * cases when using module that are in the same source path as the main app
+     * as opposed to being in separate projects.  For example in TourDeFlex,
+     * the main app is in the src folder, and a module example may be in
+     * src/mx/controls/ such as mx/controls/ButtonExample.mxml.
+     * Without this options, the output might end up in
+     * src/mx/controls/bin/js-debug and src/mx/controls/bin/js-release when
+     * it would be better if the output was relative to the main app and go
+     * in bin/js-debug/mx/controls and bin/js-release/mx/controls.  Even
+     * specifying js-output doesn't work as setting it to the main app's
+     * bin folder would result in the output .JS going in the same folder
+     * as the main app instead of being nested in mx/controls.  So, by
+     * setting this option to mx/controls, the compiler will calculate the desired
+     * folder structure.
+     */
+    public String getModuleOutput()
+    {
+    	if (moduleoutput != null && moduleoutput.equals("/"))
+    		return null;
+    	return moduleoutput == null ? null : moduleoutput.replace("/", File.separator);
+    }
+
+    @Config
+    @Arguments("filename")
+    public void setModuleOutput(ConfigurationValue val, String output) throws ConfigurationException
+    {
+        this.moduleoutput = output;
     }
 
     /**

@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.TrueConstant;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.DebugLogUtils;
 
@@ -337,7 +339,7 @@ public class ReferenceModel
 
     //--------------------------------------------------------------------------
 
-    public ExcludedMember isExcludedClass(ClassReference classReference)
+    public ExcludedMember isExcludedClass(BaseReference classReference)
     {
         return getConfiguration().isExcludedClass(classReference);
     }
@@ -345,6 +347,11 @@ public class ReferenceModel
     public ExcludedMember isExcludedMember(ClassReference classReference, MemberReference memberReference)
     {
         return getConfiguration().isExcludedMember(classReference, memberReference);
+    }
+    
+    public ReadOnlyMember isReadOnlyMember(ClassReference classReference, MemberReference memberReference)
+    {
+    	return getConfiguration().isReadOnlyMember(classReference, memberReference);
     }
 
     //--------------------------------------------------------------------------
@@ -368,5 +375,10 @@ public class ReferenceModel
     {
         DebugLogUtils.err(message);
     }
+
+	public TrueConstant isTrueConstant(ClassReference classReference,
+			MemberReference memberReference) {
+    	return getConfiguration().isTrueConstant(classReference, memberReference);
+	}
 
 }

@@ -40,7 +40,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.codegen.as.IASWriter;
+import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
@@ -176,6 +177,7 @@ public class COMPJSC extends MXMLJSC
         try
         {
             final boolean continueCompilation = configure(args);
+        	CompilerDiagnosticsConstants.diagnostics = config.getDiagnosticsLevel();
 
 /*            if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;*/
@@ -391,31 +393,46 @@ public class COMPJSC extends MXMLJSC
                     	if (!packingSWC)
                     	{
 	                        final File outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), outputFolder);
+	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
 	                        System.out.println("Compiling file: " + outputClassFile);
 	
 	                        ICompilationUnit unit = cu;
 	
-	                        IASWriter writer;
+	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = project.getBackend().createWriter(project,
+	                            writer = (IJSWriter) project.getBackend().createWriter(project,
 	                                    (List<ICompilerProblem>) errors, unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
-	                            writer = project.getBackend().createMXMLWriter(
+	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
 	                                    project, (List<ICompilerProblem>) errors,
 	                                    unit, false);
 	                        }
 	                        problems.addAll(errors);
-	                        BufferedOutputStream out = new BufferedOutputStream(
+
+                            BufferedOutputStream out = new BufferedOutputStream(
 	                                new FileOutputStream(outputClassFile));
-	                        writer.writeTo(out);
+                            BufferedOutputStream sourceMapOut = null;
+                            File outputSourceMapFile = null;
+                            if (project.config.getSourceMap())
+                            {
+                                outputSourceMapFile = getOutputSourceMapFile(
+                                        cu.getQualifiedNames().get(0), outputFolder, true);
+                                sourceMapOut = new BufferedOutputStream(
+                                    new FileOutputStream(outputSourceMapFile));
+                            }
+                            writer.writeTo(out, sourceMapOut, outputSourceMapFile);
 	                        out.flush();
 	                        out.close();
+                            if (sourceMapOut != null)
+                            {
+                                sourceMapOut.flush();
+                                sourceMapOut.close();
+                            }
 	                        writer.close();
                     	}
                     	else
@@ -424,35 +441,56 @@ public class COMPJSC extends MXMLJSC
 	                    	
 	                        ICompilationUnit unit = cu;
 	
-	                        IASWriter writer;
+	                        IJSWriter writer;
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
-	                            writer = project.getBackend().createWriter(project,
+	                            writer = (IJSWriter) project.getBackend().createWriter(project,
 	                                    (List<ICompilerProblem>) errors, unit,
 	                                    false);
 	                        }
 	                        else
 	                        {
-	                            writer = project.getBackend().createMXMLWriter(
+	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
 	                                    project, (List<ICompilerProblem>) errors,
 	                                    unit, false);
 	                        }
 	                        problems.addAll(errors);
 	                        ByteArrayOutputStream temp = new ByteArrayOutputStream();
-	                        writer.writeTo(temp);
-	                        boolean isExterns = false;
+                            ByteArrayOutputStream sourceMapTemp = null;
+	                        if (project.config.getSourceMap())
+	                        {
+                                sourceMapTemp = new ByteArrayOutputStream();
+	                        }
+                            writer.writeTo(temp, sourceMapTemp, null);
+
+                            boolean isExterns = false;
 	                        if (writer instanceof JSWriter)
 	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), isExterns ? externsOut : jsOut).getPath();
+                                    cu.getQualifiedNames().get(0),
+                                    isExterns ? externsOut : jsOut,
+                                    false).getPath();
 	                        System.out.println("Writing file: " + outputClassFile);     	
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
 	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
 	                        zipOutputStream.closeEntry();
-	                        writer.close();
 	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
-                    	}
+                            if(sourceMapTemp != null)
+                            {
+                                String sourceMapFile = getOutputSourceMapFile(
+                                    cu.getQualifiedNames().get(0),
+                                    isExterns ? externsOut : jsOut,
+                                    false).getPath();
+                                System.out.println("Writing file: " + sourceMapFile);     	
+                                zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
+                                sourceMapTemp.writeTo(zipOutputStream);
+                                zipOutputStream.flush();
+                                zipOutputStream.closeEntry();
+                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                            }
+                            writer.close();
+                        }
                     }
                 }
                 if (packingSWC)
@@ -566,14 +604,15 @@ public class COMPJSC extends MXMLJSC
     /**
      * Get the output class file. This includes the (sub)directory in which the
      * original class file lives. If the directory structure doesn't exist, it
-     * is created.
+     * is created, if specified.
      * 
      * @author Erik de Bruin
      * @param qname
      * @param outputFolder
+     * @param createDirs
      * @return output class file path
      */
-    private File getOutputClassFile(String qname, File outputFolder)
+    private File getOutputClassFile(String qname, File outputFolder, boolean createDirs)
     {
         String[] cname = qname.split("\\.");
         String sdirPath = outputFolder + File.separator;
@@ -584,14 +623,49 @@ public class COMPJSC extends MXMLJSC
                 sdirPath += cname[i] + File.separator;
             }
 
-            File sdir = new File(sdirPath);
-            if (!sdir.exists())
-                sdir.mkdirs();
+            if (createDirs)
+            {
+                File sdir = new File(sdirPath);
+                if (!sdir.exists())
+                    sdir.mkdirs();
+            }
 
             qname = cname[cname.length - 1];
         }
 
         return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
+    }
+
+    /**
+     * Similar to getOutputClassFile, but for the source map file.
+     * 
+     * @param qname
+     * @param outputFolder
+     * @param createDirs
+     * @return output source map file path
+     */
+    private File getOutputSourceMapFile(String qname, File outputFolder, boolean createDirs)
+    {
+        String[] cname = qname.split("\\.");
+        String sdirPath = outputFolder + File.separator;
+        if (cname.length > 0)
+        {
+            for (int i = 0, n = cname.length - 1; i < n; i++)
+            {
+                sdirPath += cname[i] + File.separator;
+            }
+
+            if (createDirs)
+            {
+                File sdir = new File(sdirPath);
+                if (!sdir.exists())
+                    sdir.mkdirs();
+            }
+
+            qname = cname[cname.length - 1];
+        }
+
+        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension() + ".map");
     }
 
     /**

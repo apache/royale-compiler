@@ -20,15 +20,20 @@
 package org.apache.royale.compiler.clients;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -39,6 +44,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -58,6 +64,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
 import org.apache.royale.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -73,6 +80,9 @@ import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 import org.apache.flex.tools.FlexTool;
+import org.apache.royale.swc.ISWC;
+import org.apache.royale.swc.ISWCFileEntry;
+import org.apache.royale.swc.ISWCManager;
 import org.apache.royale.utils.ArgumentUtil;
 import org.apache.royale.utils.FilenameNormalization;
 
@@ -335,6 +345,15 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
 	                ((RoyaleJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
 	                ((RoyaleJSTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
+	                // run through looking for resource bundles so we can have the list ready for the mainCU in the second loop
+	                for (final ICompilationUnit cu : reachableCompilationUnits)
+	                {
+	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+	                    if (cuType == ICompilationUnit.UnitType.RESOURCE_UNIT)
+	                    {
+	                    	outputResourceBundle((ResourceBundleCompilationUnit)cu, outputFolder);
+	                    }
+	                }
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
@@ -353,30 +372,47 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    errors, unit, false);
+	                                    problems.getProblems(), unit, false);
 	                        }
 	                        else
 	                        {
 	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, errors, unit, false);
+	                                    project, problems.getProblems(), unit, false);
 	                        }
 	
 	                        BufferedOutputStream out = new BufferedOutputStream(
 	                                new FileOutputStream(outputClassFile));
-	
+
+                            BufferedOutputStream sourceMapOut = null;
 	                        File outputSourceMapFile = null;
 	                        if (project.config.getSourceMap())
 	                        {
 	                            outputSourceMapFile = getOutputSourceMapFile(
-	                                    cu.getQualifiedNames().get(0), outputFolder);
+                                        cu.getQualifiedNames().get(0), outputFolder);
+                                sourceMapOut = new BufferedOutputStream(
+	                                    new FileOutputStream(outputSourceMapFile));
 	                        }
 	                        
-	                        writer.writeTo(out, outputSourceMapFile);
+	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
 	                        out.flush();
 	                        out.close();
+                            if (sourceMapOut != null)
+                            {
+                                sourceMapOut.flush();
+                                sourceMapOut.close();
+                            }
 	                        writer.close();
 	                    }
 	                }
+                }
+                
+                if (!config.getCreateTargetWithErrors())
+                {
+                	errors.clear();
+                	warnings.clear();
+                    problems.getErrorsAndWarnings(errors, warnings);
+                    if (errors.size() > 0)
+                        return false;
                 }
                 
                 if (jsPublisher != null)
@@ -394,11 +430,107 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             final ICompilerProblem problem = new InternalCompilerProblem(e);
             problems.add(problem);
         }
+        List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
+        List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
+        problems.getErrorsAndWarnings(errs, warns);
 
-        return compilationSuccess;
+        return compilationSuccess && (errs.size() == 0);
     }
 
-    /**
+    private void outputResourceBundle(ResourceBundleCompilationUnit cu, File outputFolder) {
+		// TODO Auto-generated method stub
+        final ISWCManager swcManager = project.getWorkspace().getSWCManager();
+        // find the SWC
+        final ISWC swc = swcManager.get(new File(cu.getAbsoluteFilename()));
+        if (swc != null)
+        {
+        	String bundleName = cu.getBundleNameInColonSyntax();
+        	String propFileName = "locale/" + cu.getLocale() + "/" + bundleName + ".properties";
+        	String bundleClassName = cu.getLocale() + "$" + bundleName + "_properties";
+            Map<String, ISWCFileEntry> files = swc.getFiles();
+            for (String key : files.keySet())
+            {
+                if (key.equals(propFileName))
+                {
+                	if (!project.compiledResourceBundleNames.contains(bundleName))
+                		project.compiledResourceBundleNames.add(bundleName);
+                	project.compiledResourceBundleClasses.add(bundleClassName);
+                	StringBuilder sb = new StringBuilder();
+                    ISWCFileEntry fileEntry = swc.getFile(key);
+                    if (fileEntry != null)
+                    {
+                        try {
+							InputStream is = fileEntry.createInputStream();
+							BufferedReader br = new BufferedReader(new InputStreamReader(is));
+							String line;
+							while ((line = br.readLine()) != null)
+							{
+								if (line.contains("="))
+								{
+									if (sb.length() == 0)
+									{
+										sb.append("/**\n");
+										sb.append(" * Generated by Apache Royale Compiler from " + bundleClassName + ".properties\n");
+										sb.append(" * " + bundleClassName + "\n");
+										sb.append(" *\n");
+										sb.append(" * @fileoverview\n");
+										sb.append(" *\n");
+										sb.append(" * @suppress {checkTypes|accessControls}\n");
+										sb.append(" */\n\n");
+										sb.append("goog.provide('" + bundleClassName + "');\n\n");
+										sb.append("goog.require('mx.resources.IResourceBundle');\n");
+										sb.append("goog.require('mx.resources.ResourceBundle');\n\n\n");
+										sb.append("/**\n");
+										sb.append(" * @constructor\n");
+										sb.append(" * @extends {mx.resources.ResourceBundle}\n");
+										sb.append(" * @implements {mx.resources.IResourceBundle}\n");
+										sb.append(" */\n");
+										sb.append(bundleClassName + " = function() {\n");
+										sb.append("    " + bundleClassName + ".base(this, 'constructor');\n");
+										sb.append("};\n");
+										sb.append("goog.inherits(" + bundleClassName + ", mx.resources.ResourceBundle);\n\n");
+										sb.append("/**\n");
+										sb.append(" * Prevent renaming of class. Needed for reflection.\n");
+										sb.append(" */\n");
+										sb.append("goog.exportSymbol('" + bundleClassName + "', " + bundleClassName + ");\n\n");
+										sb.append(bundleClassName + ".prototype.getContent = function() { return {\n");
+									}
+									int c = line.indexOf("=");
+									String propName = line.substring(0, c);
+									String value = line.substring(c + 1);
+									while (value.endsWith("/"))
+									{
+										value = value.substring(0, value.length() - 1);
+										value += br.readLine();
+									}
+									sb.append(propName + ": \"" + value + "\",\n");
+								}
+							}
+							sb.append("__end_of_bundle__: 0\n};};\n");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+                    }
+                    final File outputClassFile = getOutputClassFile(
+                            bundleClassName, outputFolder);
+                    System.out.println("Generating resource file: " + outputClassFile);
+                    FileWriter fw;
+					try {
+						fw = new FileWriter(outputClassFile, false);
+	                    fw.write(sb.toString());
+	                    fw.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                }
+            }
+        }
+
+	}
+
+	/**
      * Build target artifact.
      * 
      * @throws InterruptedException threading error

@@ -23,6 +23,8 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.TrueConstant;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
@@ -117,6 +119,11 @@ public abstract class BaseReference
     public ExcludedMember isExcluded()
     {
         return null;
+    }
+    
+    public ReadOnlyMember isReadOnly()
+    {
+    	return null;
     }
 
     public abstract void emit(StringBuilder sb);
@@ -317,4 +324,8 @@ public abstract class BaseReference
             }
         }
     }
+
+	public TrueConstant isTrueConstant() {
+		return null;
+	}
 }

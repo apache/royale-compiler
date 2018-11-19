@@ -27,6 +27,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
+
 public class ArgumentUtil {
 
     // workaround for Royale bug.
@@ -36,7 +38,11 @@ public class ArgumentUtil {
         if (args.length > 1) {
             String targetPath = args[args.length - 1];
             if (targetPath.startsWith(".")) {
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_UTILS) == CompilerDiagnosticsConstants.FILE_UTILS)
+            		System.out.println("ArgumentUtil waiting for lock in getTheRealPathBecauseCanonicalizeDoesNotFixCase");
                 targetPath = FileUtils.getTheRealPathBecauseCanonicalizeDoesNotFixCase(new File(targetPath));
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_UTILS) == CompilerDiagnosticsConstants.FILE_UTILS)
+            		System.out.println("ArgumentUtil waiting for lock in getTheRealPathBecauseCanonicalizeDoesNotFixCase");
                 newArgs = new String[args.length];
                 System.arraycopy(args, 0, newArgs, 0, args.length - 1);
                 newArgs[args.length - 1] = targetPath;

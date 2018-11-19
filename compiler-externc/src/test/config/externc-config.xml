@@ -128,10 +128,52 @@
         <class>String</class>
         <name>raw</name>
     </exclude>
+    <exclude>
+        <class>Document</class>
+        <name>loadXML</name>
+    </exclude>
+    <exclude>
+        <class>Event</class>
+        <name>initUIEvent</name>
+    </exclude>
+    <exclude>
+        <class>Event</class>
+        <name>initMessageEvent</name>
+    </exclude>
+    <exclude>
+        <class>Element</class>
+        <name>load</name>
+    </exclude>
+    <exclude>
+        <class>Document</class>
+        <name>open</name>
+    </exclude>
+    <exclude>
+        <class>Document</class>
+        <name>close</name>
+    </exclude>
+    <exclude>
+        <class>Document</class>
+        <name>createTreeWalker</name>
+    </exclude>
     <!-- SVG -->
     <exclude><class>SVGStylable</class><name>className</name></exclude>
     <exclude><class>SVGStylable</class><name>style</name></exclude>
     <exclude><class>SVGLocatable</class><name>farthestViewportElement</name></exclude>
     <exclude><class>SVGLocatable</class><name>nearestViewportElement</name></exclude>
+
+    <!-- read-only properties where we only emit a 'get' accessor method -->
+    <field-readonly>
+        <class>Date</class>
+        <name>timezoneOffset</name>
+    </field-readonly>
+    <field-readonly>
+        <class>Date</class>
+        <name>day</name>
+    </field-readonly>
+    <field-readonly>
+        <class>Date</class>
+        <name>dayUTC</name>
+    </field-readonly>
 
 </royale-config>

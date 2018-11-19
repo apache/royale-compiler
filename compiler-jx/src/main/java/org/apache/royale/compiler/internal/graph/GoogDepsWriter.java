@@ -44,18 +44,24 @@ import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.problems.MainDefinitionQNameProblem;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
 
 import com.google.common.io.Files;
+import com.google.debugging.sourcemap.FilePosition;
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.debugging.sourcemap.SourceMapGeneratorV3;
+import com.google.debugging.sourcemap.SourceMapParseException;
 
 public class GoogDepsWriter {
 
     public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
+		this.moduleOutput = config.getModuleOutput();
 		this.mainName = mainClassName;
 		removeCirculars = config.getRemoveCirculars();
 		otherPaths = config.getSDKJSLib();
@@ -68,14 +74,17 @@ public class GoogDepsWriter {
 	}
 	
 	private ProblemQuery problems;
+	private String moduleOutput;
 	private String outputFolderPath;
 	private String mainName;
 	private List<String> otherPaths;
+	private List<String> sourceExternFiles;
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
 	private ArrayList<GoogDep> dps;
 	private DependencyGraph graph;
 	private CompilerProject project;
+	private ArrayList<String> staticInitializers;
 	
 	private HashMap<String, GoogDep> depMap = new HashMap<String,GoogDep>();
 	private HashMap<String, ICompilationUnit> requireMap = new HashMap<String, ICompilationUnit>();
@@ -83,21 +92,26 @@ public class GoogDepsWriter {
 	
 	public boolean needCSS = false;
 	
-	public ArrayList<String> getListOfFiles(CompilerProject project, ProblemQuery problems)
+	public ArrayList<String> getListOfFiles(CompilerProject project, List<String> sourceExternFiles, ProblemQuery problems)
 	{
 		this.project = project;
 		this.problems = problems;
+		this.sourceExternFiles = sourceExternFiles;
 
 		if (dps == null)
 		{
-			buildDB();
+			if (!buildDB())
+				return null;
 			dps = sort();
 		}
 		visited.clear();
 		ArrayList<String> files = new ArrayList<String>();
 		for (GoogDep gd : dps)
 		{
-			files.add(gd.filePath);
+			if (gd.fileInfo.isExtern)
+				sourceExternFiles.add(gd.filePath);
+			else
+				files.add(gd.filePath);
 			visited.put(gd.className, gd);
 		}
 		if (removeCirculars)
@@ -107,7 +121,12 @@ public class GoogDepsWriter {
 			for (GoogDep gd : depMap.values())
 			{
 				if (!visited.containsKey(gd.className))
-					files.add(gd.filePath);			
+				{
+					if (gd.fileInfo.isExtern)
+						sourceExternFiles.add(gd.filePath);
+					else
+						files.add(gd.filePath);
+				}
 			}
 			files.add(mainDep.filePath);
 		}
@@ -120,7 +139,8 @@ public class GoogDepsWriter {
 	    this.problems = problems;
 	    if (dps == null)
 	    {
-	    	buildDB();
+	    	if (!buildDB())
+	    		return "";
 	    	dps = sort();
 	    }
 	    StringBuilder sb = new StringBuilder();
@@ -162,6 +182,7 @@ public class GoogDepsWriter {
 			mainDeps.append("goog.addDependency('").append(relativePath(mainDep.filePath)).append("', ['")
 								.append(mainDep.className).append("'], [");
 			ArrayList<String> restOfDeps = new ArrayList<String>();
+			restOfDeps.addAll(mainDep.deps);
 	        DependencyTypeSet dependencyTypes = DependencyTypeSet.allOf();
 			// get the list of all units not referenced by other units
 			for (GoogDep gd : depMap.values())
@@ -172,7 +193,7 @@ public class GoogDepsWriter {
 					{
 						for (String d : gd.fileInfo.impls)
 						{
-							if (!restOfDeps.contains(d))
+							if (!restOfDeps.contains(d) && !gd.fileInfo.isExtern && !isExternal(d))
 								restOfDeps.add(d);
 						}
 					}
@@ -181,14 +202,14 @@ public class GoogDepsWriter {
 				ICompilationUnit unit = requireMap.get(gd.className);
 				if (unit == null)
 				{
-					if (!restOfDeps.contains(gd.className))
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className))
 						restOfDeps.add(gd.className);
 					continue;
 				}
 				Set<ICompilationUnit> deps = graph.getDirectReverseDependencies(unit, dependencyTypes);
 				if (deps.size() == 0)
 				{
-					if (!restOfDeps.contains(gd.className))
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className))
 						restOfDeps.add(gd.className);
 				}
 			}
@@ -198,6 +219,13 @@ public class GoogDepsWriter {
 			for (String dep : restOfDeps)
 			{
 				GoogDep gd = depMap.get(dep);
+				if (gd == null)
+				{
+					//added this to prevent a NullPointerException when the
+					//GoogDep is null. -JT
+					problems.add(new FileNotFoundProblem(dep));
+					continue;
+				}
 				sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 				.append(gd.className).append("'], [")
 				.append((gd.fileInfo.impls != null) ? getDependencies(gd.fileInfo.impls) : "")
@@ -213,10 +241,23 @@ public class GoogDepsWriter {
 	    return className.startsWith("goog.");
 	}
 	
-	private void buildDB()
+	private boolean buildDB()
 	{
+		staticInitializers = new ArrayList<String>();
+		
 		graph = new DependencyGraph();
+		if (isGoogClass(mainName))
+		{
+			problems.add(new MainDefinitionQNameProblem("Google Closure Library", mainName));
+			return false;
+		}
+		if (isExternal(mainName))
+		{
+			problems.add(new MainDefinitionQNameProblem("External Libraries", mainName));
+			return false;
+		}
 		addDeps(mainName);
+		return true;
 	}
 	
     public ArrayList<String> additionalHTML = new ArrayList<String>();
@@ -225,6 +266,24 @@ public class GoogDepsWriter {
     
 	private ArrayList<GoogDep> sort()
 	{
+		// first, promote all dependencies of classes used in static initializers to
+		// the level of static dependencies since their constructors will be
+		// run early
+		for (String staticClass: staticInitializers)
+		{
+			GoogDep info = depMap.get(staticClass);
+			if (info != null && info.fileInfo != null && info.fileInfo.deps != null)
+			{
+				if (info.fileInfo.staticDeps == null)
+					info.fileInfo.staticDeps = new ArrayList<String>();
+				for (String dep : info.fileInfo.deps)
+				{
+					if (!info.fileInfo.staticDeps.contains(dep))
+						info.fileInfo.staticDeps.add(dep);
+				}
+			}
+		}
+		
 		ArrayList<GoogDep> arr = new ArrayList<GoogDep>();
 		GoogDep current = depMap.get(mainName);
 		sortFunction(current, arr);
@@ -243,7 +302,13 @@ public class GoogDepsWriter {
 				if (isGoogClass(name)) continue;
 				GoogDep dep = depMap.get(name);
 				if (dep == null)
+				{
 					System.out.println("No GoogDep for " + name);
+					//added this to prevent a NullPointerException when the
+					//GoogDep is null. -JT
+					problems.add(new FileNotFoundProblem(name));
+					continue;
+				}
 				depsInOrder.add(dep);
 			}
 			return depsInOrder;
@@ -330,6 +395,11 @@ public class GoogDepsWriter {
 			if (!isGoogClass(className))
 			{
 				GoogDep gd = depMap.get(className);
+				if (gd == null)
+				{
+					System.out.println("No GoogDep for " + className);
+					throw new RuntimeException("Unable to find dependency information for class: " + className);
+				}
 				if (!visited.containsKey(className))
 				{
 					sortFunction(gd, arr);
@@ -343,21 +413,48 @@ public class GoogDepsWriter {
 	{
         List<String> fileLines;
 		try {
-			fileLines = Files.readLines(new File(main.filePath), Charset.defaultCharset());
+			File mainFile = new File(main.filePath);
+			fileLines = Files.readLines(mainFile, Charset.defaultCharset());
+
+			SourceMapConsumerV3 sourceMapConsumer = null;
+			File sourceMapFile = new File(main.filePath + ".map");
+			if (sourceMapFile.exists())
+			{
+				String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+				sourceMapConsumer = new SourceMapConsumerV3();
+				try
+				{
+					sourceMapConsumer.parse(sourceMapContents);
+				}
+				catch(SourceMapParseException e)
+				{
+					sourceMapConsumer = null;
+				}
+			}
+
 			int n = restOfDeps.size();
 			for (int i = n - 1; i >= 0; i--)
 			{
 				String dep = restOfDeps.get(i);
 				//if (!main.deps.contains(dep))
 					fileLines.add(main.fileInfo.googProvideLine + 1, JSGoogEmitterTokens.GOOG_REQUIRE.getToken() + "('" + dep + "');");
+					sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
 			}
-            File file = new File(main.filePath);  
-            PrintWriter out = new PrintWriter(new FileWriter(file));  
+
+			PrintWriter out = new PrintWriter(new FileWriter(mainFile));  
             for (String s : fileLines)
             {
                 out.println(s);
             }
             out.close();
+
+			if (sourceMapConsumer != null)
+			{
+				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
+				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
+				sourceMapOut.print(newSourceMap);
+				sourceMapOut.close();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -417,9 +514,26 @@ public class GoogDepsWriter {
 	    // remove requires that are not base classes and interfaces
 	    try
         {
-	    	gd = depMap.get(className);
-            List<String> fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
-            ArrayList<String> finalLines = new ArrayList<String>();
+			gd = depMap.get(className);
+			File depFile = new File(gd.filePath);
+            List<String> fileLines = Files.readLines(depFile, Charset.defaultCharset());
+			ArrayList<String> finalLines = new ArrayList<String>();
+			
+			SourceMapConsumerV3 sourceMapConsumer = null;
+			File sourceMapFile = new File(gd.filePath + ".map");
+			if (sourceMapFile.exists())
+			{
+				String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+				sourceMapConsumer = new SourceMapConsumerV3();
+				try
+				{
+					sourceMapConsumer.parse(sourceMapContents);
+				}
+				catch(SourceMapParseException e)
+				{
+					sourceMapConsumer = null;
+				}
+			}
             
             boolean firstDependency = true;
         	StringBuilder sb = new StringBuilder();
@@ -453,7 +567,8 @@ public class GoogDepsWriter {
                     		if (!firstDependency)
                     			sb.append(",");
                     		sb.append(s);
-                    		firstDependency = false;
+							firstDependency = false;
+							sourceMapConsumer = removeLineFromSourceMap(sourceMapConsumer, depFile.getName(), finalLines.size());
                         	continue;
 	                    }
                     }
@@ -461,8 +576,8 @@ public class GoogDepsWriter {
                 finalLines.add(line);
                 i++;
             }
-            if (suppressCount > 0)
-            {
+            //if (suppressCount > 0)
+            //{
             	if (fi.suppressLine > 0)
             	{
             		if (fi.suppressLine < fi.constructorLine || fi.constructorLine == -1) 
@@ -475,7 +590,8 @@ public class GoogDepsWriter {
                 			{
                 				line = line.substring(0, c) + "@suppress {missingRequire|" + line.substring(c + 11);
                 				finalLines.remove(fi.suppressLine);
-                				finalLines.add(fi.suppressLine, line);
+								finalLines.add(fi.suppressLine, line);
+								//no need to call addLineToSourceMap or removeLineFromSourceMap here
                 			}
                 		}
                 		else
@@ -489,6 +605,7 @@ public class GoogDepsWriter {
                 		{
                 			// there is already a fileOverview but no @suppress
                 			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
+							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.fileoverviewLine + 1);
                 		}
                 		else if (fi.googProvideLine > -1)
                 		{
@@ -496,6 +613,10 @@ public class GoogDepsWriter {
                 			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
                 			finalLines.add(fi.googProvideLine, " *  @fileoverview");
                 			finalLines.add(fi.googProvideLine, "/**");
+							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
                 		}
                 		else
                 		{
@@ -509,6 +630,7 @@ public class GoogDepsWriter {
             		{
             			// there is already a fileoverview but no @suppress
             			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
+						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.fileoverviewLine + 1);
             		}
             		else if (fi.googProvideLine > -1)
             		{
@@ -516,29 +638,219 @@ public class GoogDepsWriter {
             			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
             			finalLines.add(fi.googProvideLine, " *  @fileoverview");
             			finalLines.add(fi.googProvideLine, "/**");
+						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
             		}
             		else
             		{
             			System.out.println("Confused by @suppress in " + className);
             		}                		
             	}
-            }
+            //}
 
             sb.append("*/");
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
-            File file = new File(gd.filePath);  
-            PrintWriter out = new PrintWriter(new FileWriter(file));  
+			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
+
+			PrintWriter out = new PrintWriter(new FileWriter(depFile));  
             for (String s : finalLines)
             {
                 out.println(s);
             }
-            out.close();
-                
+			out.close();
+
+			if (sourceMapConsumer != null)
+			{
+				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, depFile.getName());
+				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
+				sourceMapOut.print(newSourceMap);
+				sourceMapOut.close();
+			}
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }		
+	}
+
+	String sourceMapConsumerToString(SourceMapConsumerV3 consumer, String file)
+	{
+		SourceMapGeneratorV3 generator = sourceMapConsumerToGenerator(consumer);
+		StringBuilder builder = new StringBuilder();
+		try
+		{
+			generator.appendTo(builder, file);
+		}
+		catch(IOException e)
+		{
+			return "";
+		}
+		return builder.toString();
+	}
+
+	private void appendExtraMappingToGenerator(SourceMapGeneratorV3 generator,
+		String sourceName,
+		String symbolName,
+		FilePosition sourceStartPosition,
+		FilePosition startPosition,
+		FilePosition endPosition)
+	{
+		//add an extra mapping because there seems to be a bug in
+		//SourceMapGeneratorV3's appendTo() that omits the last
+		//entry, for some reason
+		FilePosition newEndPosition = new FilePosition(endPosition.getLine(), endPosition.getColumn() + 1);
+		generator.addMapping(sourceName, null, sourceStartPosition, endPosition, newEndPosition);
+	}
+
+	private SourceMapGeneratorV3 sourceMapConsumerToGenerator(SourceMapConsumerV3 consumer)
+	{
+		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
+		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
+		consumer.visitMappings(counter);
+		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
+		{
+			private int index = 0;
+
+			@Override
+			public void visit(String sourceName,
+				String symbolName,
+				FilePosition sourceStartPosition,
+				FilePosition startPosition,
+				FilePosition endPosition) {
+				generator.addMapping(sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
+				index++;
+				if(index == counter.count)
+				{
+					//add an extra mapping because there seems to be a bug in
+					//SourceMapGeneratorV3's appendTo() that omits the last
+					//entry, for some reason
+					appendExtraMappingToGenerator(generator, sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
+				}
+			}
+		});
+		return generator;
+	}
+
+	class SourceMapEntryCounter implements SourceMapConsumerV3.EntryVisitor
+	{
+		private int count = 0;
+
+		@Override
+		public void visit(String sourceName,
+			String symbolName,
+			FilePosition sourceStartPosition,
+			FilePosition startPosition,
+			FilePosition endPosition) {
+			count++;
+		}
+	}
+
+	SourceMapConsumerV3 sourceMapGeneratorToConsumer(SourceMapGeneratorV3 generator, String fileName)
+	{
+		StringBuilder builder = new StringBuilder();
+		try
+		{
+			generator.appendTo(builder, fileName);
+		}
+		catch(IOException e)
+		{
+			return null;
+		}
+		SourceMapConsumerV3 consumer = new SourceMapConsumerV3();
+		try
+		{
+			consumer.parse(builder.toString());
+		}
+		catch(SourceMapParseException e)
+		{
+			return null;
+		}
+		return consumer;
+	}
+
+	SourceMapConsumerV3 addLineToSourceMap(SourceMapConsumerV3 consumer, String sourceFileName, final int lineToAdd)
+	{
+		if (consumer == null)
+		{
+			return null;
+		}
+		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
+		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
+		consumer.visitMappings(counter);
+		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
+		{
+			private int index = 0;
+
+			@Override
+			public void visit(String sourceName,
+				String symbolName,
+				FilePosition sourceStartPosition,
+				FilePosition startPosition,
+				FilePosition endPosition) {
+				if(startPosition.getLine() >= lineToAdd)
+				{
+					startPosition = new FilePosition(startPosition.getLine() + 1, startPosition.getColumn());
+					endPosition = new FilePosition(endPosition.getLine() + 1, endPosition.getColumn());
+				}
+				generator.addMapping(sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
+				index++;
+				if(index == counter.count)
+				{
+					//add an extra mapping because there seems to be a bug in
+					//SourceMapGeneratorV3's appendTo() that omits the last
+					//entry, for some reason
+					appendExtraMappingToGenerator(generator, sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
+				}
+			}
+		});
+		return sourceMapGeneratorToConsumer(generator, sourceFileName);
+	}
+
+	SourceMapConsumerV3 removeLineFromSourceMap(SourceMapConsumerV3 consumer, String sourceFileName, final int lineToRemove)
+	{
+		if (consumer == null)
+		{
+			return null;
+		}
+		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
+		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
+		consumer.visitMappings(counter);
+		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
+		{
+			private int index = 0;
+
+			@Override
+			public void visit(String sourceName,
+				String symbolName,
+				FilePosition sourceStartPosition,
+				FilePosition startPosition,
+				FilePosition endPosition) {
+				if(startPosition.getLine() == lineToRemove)
+				{
+					return;
+				}
+				if(startPosition.getLine() > lineToRemove)
+				{
+					startPosition = new FilePosition(startPosition.getLine() - 1, startPosition.getColumn());
+				}
+				if(endPosition.getLine() > lineToRemove)
+				{
+					endPosition = new FilePosition(endPosition.getLine() - 1, endPosition.getColumn());
+				}
+				generator.addMapping(sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
+				index++;
+				if(index == counter.count)
+				{
+					//add an extra mapping because there seems to be a bug in
+					//SourceMapGeneratorV3's appendTo() that omits the last
+					//entry, for some reason
+					appendExtraMappingToGenerator(generator, sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
+				}
+			}
+		});
+		return sourceMapGeneratorToConsumer(generator, sourceFileName);
 	}
 		
 	FileInfo getFileInfo(List<String> lines, String className)
@@ -654,35 +966,50 @@ public class GoogDepsWriter {
 						    				{
 						    					c2 = line.indexOf("*/");
 						    					line = line.substring(c + token.length(), c2);
+						    					List<String> staticDeps = Arrays.asList(line.split(","));
 							        			fi.staticDeps = new ArrayList<String>();
-						    					fi.staticDeps.addAll(Arrays.asList(line.split(",")));
+						    					fi.staticDeps.addAll(staticDeps);
+						    					for (String staticDep : staticDeps)
+						    					{
+						    						if (staticDep.equals(className))
+						    							continue;
+						    						staticInitializers.add(staticDep);
+						    					}
 						    				}
 						    				else
 						    				{
-							        			token = JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken();
-							    				c = line.indexOf(token);
-							    				if (c > -1)
-							    				{
-							    					c2 = line.indexOf("*/");
-							    					line = line.substring(c + token.length(), c2);
-								        			fi.deps = new ArrayList<String>();
-								        			if (line.length() > 2) // don't add blank or space if no deps
-								        				fi.deps.addAll(Arrays.asList(line.split(",")));
-							    					fi.depsLine = i;
-							    				}
-							    				else if (fi.depsLine == 0)
-							    				{
-							    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
-							    					c = line.indexOf(token);
-							    					if (c > -1)
-							    					{
-							                            c2 = line.indexOf(")");
-							                            String s = line.substring(c + 14, c2 - 1);
-							                            if (fi.deps == null)
-							                            	fi.deps = new ArrayList<String>();
-							                            fi.deps.add(s);
-							    					}
-							    				}
+						    					c = line.indexOf("@externs");
+						    					if (c > -1)
+						    					{
+						    						fi.isExtern = true;
+						    					}
+						    					else
+						    					{
+								        			token = JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken();
+								    				c = line.indexOf(token);
+								    				if (c > -1)
+								    				{
+								    					c2 = line.indexOf("*/");
+								    					line = line.substring(c + token.length(), c2);
+									        			fi.deps = new ArrayList<String>();
+									        			if (line.length() > 2) // don't add blank or space if no deps
+									        				fi.deps.addAll(Arrays.asList(line.split(",")));
+								    					fi.depsLine = i;
+								    				}
+								    				else if (fi.depsLine == 0)
+								    				{
+								    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
+								    					c = line.indexOf(token);
+								    					if (c > -1)
+								    					{
+								                            c2 = line.indexOf(")");
+								                            String s = line.substring(c + 14, c2 - 1);
+								                            if (fi.deps == null)
+								                            	fi.deps = new ArrayList<String>();
+								                            fi.deps.add(s);
+								    					}
+								    				}
+						    					}
 							        		}
 						        		}
 					        		}
@@ -703,10 +1030,6 @@ public class GoogDepsWriter {
 	    File f;
 	    
 		String classPath = className.replace(".", File.separator);
-		// special case app names with underscores, but hope that
-		// no other class names have underscores in them
-        if (className.equals(mainName))
-        	classPath = className;
         
         fn = outputFolderPath + File.separator + classPath + ".js";
         f = new File(fn);
@@ -918,9 +1241,16 @@ public class GoogDepsWriter {
 
 	String relativePath(String path)
 	{
+		String replacement = "../../..";
         if (path.indexOf(outputFolderPath) == 0)
         {
-            path = path.replace(outputFolderPath, "../../..");
+            if (moduleOutput != null)
+            {
+            	replacement += moduleOutput;
+            	if (replacement.endsWith("/"))
+            		replacement = replacement.substring(0, replacement.length() - 1);
+            }
+        	path = path.replace(outputFolderPath, replacement);
         }
         else
         {
@@ -966,5 +1296,6 @@ public class GoogDepsWriter {
 		public int suppressLine;
 		public int fileoverviewLine;
 		public int googProvideLine;
+		public boolean isExtern;
 	}
 }

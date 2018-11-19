@@ -41,28 +41,28 @@ public class JSCPublisher extends MXMLRoyalePublisher
     private RoyaleJSProject project;
 
     @Override
-    protected String getTemplateBody(String projectName)
+    protected String getTemplateBody(String mainClassQName)
     {
-        IDefinition def = project.resolveQNameToDefinition(projectName);
+        IDefinition def = project.resolveQNameToDefinition(mainClassQName);
         IDefinitionNode node = def.getNode();
         if (node instanceof IMXMLDocumentNode)
         {
             //we should probably customize MXML too, but for now, pass it to the
             //default implementation -JT
-            return super.getTemplateBody(projectName);
+            return super.getTemplateBody(mainClassQName);
         }
         //for ActionScript classes, simply call the constructor by default
         StringBuilder bodyHTML = new StringBuilder();
         bodyHTML.append("\t<script type=\"text/javascript\">\n");
         bodyHTML.append("\t\tnew ");
-        bodyHTML.append(projectName);
+        bodyHTML.append(mainClassQName);
         bodyHTML.append("();\n");
         bodyHTML.append("\t</script>\n");
         return bodyHTML.toString();
     }
 
     @Override
-    protected void writeHTML(String type, String projectName, File targetDir,
+    protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir,
                              String deps, List<String> additionalHTML) throws IOException
     {
         if ("intermediate".equals(type))

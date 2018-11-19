@@ -55,6 +55,7 @@ import org.apache.royale.compiler.internal.tree.as.BaseVariableNode;
 import org.apache.royale.compiler.internal.tree.as.VariableExpressionNode;
 import org.apache.royale.compiler.problems.AmbiguousGotoTargetProblem;
 import org.apache.royale.compiler.problems.AnyNamespaceCannotBeQualifierProblem;
+import org.apache.royale.compiler.problems.CallNonFunctionProblem;
 import org.apache.royale.compiler.problems.CodegenInternalProblem;
 import org.apache.royale.compiler.problems.DuplicateLabelProblem;
 import org.apache.royale.compiler.problems.DuplicateNamespaceDefinitionProblem;
@@ -3999,6 +4000,8 @@ public class ABCGeneratingReducer
     public InstructionList reduce_functionCallOfSuperclassMethod_to_expression(IASNode iNode, InstructionList stem, Binding method_name, Vector<InstructionList> args)
     {
         currentScope.getMethodBodySemanticChecker().checkSuperAccess(iNode);
+        if (method_name.getDefinition() instanceof AccessorDefinition)
+        	getProblems().add(new CallNonFunctionProblem(iNode, method_name.getName().getBaseName()));
 
         InstructionList result = createInstructionList(iNode);
 
@@ -4017,6 +4020,8 @@ public class ABCGeneratingReducer
     public InstructionList reduce_functionCallOfSuperclassMethod_to_void_expression(IASNode iNode, InstructionList stem, Binding method_name, Vector<InstructionList> args)
     {
         currentScope.getMethodBodySemanticChecker().checkSuperAccess(iNode);
+        if (method_name.getDefinition() instanceof AccessorDefinition)
+        	getProblems().add(new CallNonFunctionProblem(iNode, method_name.getName().getBaseName()));
 
         InstructionList result = createInstructionList(iNode);
 

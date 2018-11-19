@@ -69,6 +69,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -309,7 +310,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 				sb.append(staticName);
 			}
 			sb.append("*/");
-			finalLines.add(provideIndex, sb.toString());
+            finalLines.add(provideIndex, sb.toString());
+            addLineToMappings(provideIndex);
 		}
 
     	return Joiner.on("\n").join(finalLines);
@@ -476,7 +478,16 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         writeToken(ASEmitterTokens.NEW);
         write(IASLanguageConstants.Namespace);
         write(ASEmitterTokens.PAREN_OPEN);
-        getWalker().walk(node.getNamespaceURINode());
+        staticUsedNames.add(IASLanguageConstants.Namespace);
+        IExpressionNode uriNode = node.getNamespaceURINode();
+        if (uriNode == null)
+        {
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(node.getName());
+            write(ASEmitterTokens.SINGLE_QUOTE);
+        }
+        else
+        	getWalker().walk(uriNode);
         write(ASEmitterTokens.PAREN_CLOSE);
         write(ASEmitterTokens.SEMICOLON);
     }
@@ -512,13 +523,13 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitMemberName(IDefinitionNode node)
     {
+        ICompilerProject project = getWalker().getProject();
     	if (node.getNodeID() == ASTNodeID.FunctionID)
     	{
     		FunctionNode fn = (FunctionNode)node;
     		if (isCustomNamespace(fn))
     		{
     			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
-                ICompilerProject project = getWalker().getProject();
     			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
     			formatQualifiedName(nsDef.getQualifiedName()); // register with used names
     			String s = nsDef.getURI();
@@ -526,7 +537,11 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     			return;
     		}
     	}
-        write(node.getName());
+    	String qname = node.getName();
+    	IDefinition nodeDef = node.getDefinition();
+    	if (nodeDef != null && nodeDef.isPrivate() && project.getAllowPrivateNameConflicts())
+    		qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+        write(qname);
     }
 
     @Override
@@ -554,7 +569,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	else if (!isDoc)
     	{
         	if (getModel().inStaticInitializer)
-        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name))
+        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && !isExternal(name))
         			staticUsedNames.add(name);
     		
     		if (!usedNames.contains(name) && !isExternal(name))
@@ -821,9 +836,9 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
-    	getModel().inE4xFilter = true;
     	getWalker().walk(node.getLeftOperandNode());
-    	write(".filter(function(node){return (node.");
+    	getModel().inE4xFilter = true;
+    	write(".filter(function(node){return (");
     	String s = stringifyNode(node.getRightOperandNode());
     	if (s.startsWith("(") && s.endsWith(")"))
     		s = s.substring(1, s.length() - 1);
@@ -1085,6 +1100,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	IASNode op = node.getOperandNode();
         	if (op != null)
         	{
+        		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
+        			write("node.");
             	write("attribute('");
         		getWalker().walk(node.getOperandNode());
             	write("')");
@@ -1092,6 +1109,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	else if (node.getParent().getNodeID() == ASTNodeID.ArrayIndexExpressionID)
         	{
         		DynamicAccessNode parentNode = (DynamicAccessNode)node.getParent();
+        		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
+        			write("node.");
             	write("attribute(");
         		getWalker().walk(parentNode.getRightOperandNode());        		
             	write(")");
@@ -1250,6 +1269,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			{
 				if (rightDef instanceof AccessorDefinition)
 					return true;
+				else if (rightDef instanceof VariableDefinition)
+					return true;
 				else if (rightDef == null && rightNode.getNodeID() == ASTNodeID.IdentifierID)
 				{
 					if (writeAccess)
@@ -1306,6 +1327,11 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitTypedExpression(ITypedExpressionNode node)
     {
         write(JSRoyaleEmitterTokens.VECTOR);
+        if (getModel().inStaticInitializer)
+        	staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+        if (project instanceof RoyaleJSProject)
+        	((RoyaleJSProject)project).needLanguage = true;
+        getModel().needLanguage = true;
     }
     
 	boolean isExternal(String className)

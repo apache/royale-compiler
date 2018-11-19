@@ -40,6 +40,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
@@ -101,6 +103,7 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLNumberID:
             visitor.visitNumber((IMXMLNumberNode) node);
             break;
+        case MXMLEffectSpecifierID:
         case MXMLPropertySpecifierID:
             visitor.visitPropertySpecifier((IMXMLPropertySpecifierNode) node);
             break;
@@ -149,6 +152,18 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLObjectID:
             visitor.visitObject((IMXMLObjectNode) node);
         	break;
+        case MXMLHTTPServiceID:
+        case MXMLXMLID:
+        case MXMLXMLListID:
+        case MXMLFunctionID:
+            visitor.visitInstance((IMXMLInstanceNode) node);
+            break;
+        case MXMLRemoteObjectID:
+            visitor.visitRemoteObject((IMXMLRemoteObjectNode) node);
+            break;
+        case MXMLRemoteObjectMethodID:
+            visitor.visitRemoteObjectMethod((IMXMLRemoteObjectMethodNode) node);
+            break;
         case MXMLApplicationID:
         case MXMLBindingAttributeID:
         case MXMLClassID:
@@ -158,9 +173,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLDateID:
         case MXMLDefinitionID:
         case MXMLDesignLayerID:
-        case MXMLEffectSpecifierID:
-        case MXMLFunctionID:
-        case MXMLHTTPServiceID:
         case MXMLHTTPServiceRequestID:
         case MXMLLibraryID:
         case MXMLModelID:
@@ -168,15 +180,11 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLModelRootID:
         case MXMLPrivateID:
         case MXMLRegExpID:
-        case MXMLRemoteObjectID:
-        case MXMLRemoteObjectMethodID:
         case MXMLReparentID:
         //case MXMLRepeaterID:
         case MXMLResourceID:
         case MXMLWebServiceID:
         case MXMLWebServiceOperationID:
-        case MXMLXMLID:
-        case MXMLXMLListID:
         default:
             throw new IllegalArgumentException(
                     "No handler specified for nodes of type '"

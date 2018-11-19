@@ -219,3 +219,95 @@ uint.MAX_VALUE;
  * @const
  */
 uint.MIN_VALUE;
+
+// additions to the Date prototype to allow AS code to use these properties
+
+/**
+ * @type {number}
+ */
+Date.prototype.date;
+
+/**
+ * @type {number}
+ */
+Date.prototype.dateUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.day;
+
+/**
+ * @type {number}
+ */
+Date.prototype.dayUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.fullYear;
+
+/**
+ * @type {number}
+ */
+Date.prototype.fullYearUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.hours;
+
+/**
+ * @type {number}
+ */
+Date.prototype.hoursUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.milliseconds;
+
+/**
+ * @type {number}
+ */
+Date.prototype.millisecondsUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.minutes;
+
+/**
+ * @type {number}
+ */
+Date.prototype.minutesUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.month;
+
+/**
+ * @type {number}
+ */
+Date.prototype.monthUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.seconds;
+
+/**
+ * @type {number}
+ */
+Date.prototype.secondsUTC;
+
+/**
+ * @type {number}
+ */
+Date.prototype.time;
+
+/**
+ * @type {number}
+ */
+Date.prototype.timezoneOffset;

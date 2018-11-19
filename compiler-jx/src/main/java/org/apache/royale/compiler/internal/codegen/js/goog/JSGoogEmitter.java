@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants.BuiltinType;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogEmitter;
@@ -36,20 +37,26 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitter;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.VariableUsedBeforeDeclarationProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -661,6 +668,34 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
+        ASDocComment asDoc = (ASDocComment) node
+                .getASDocComment();
+        if (asDoc != null)
+        {
+            String asDocString = asDoc.commentNoEnd();
+            String debugToken = JSRoyaleEmitterTokens.DEBUG_COMMENT
+                    .getToken();
+            int emitIndex = asDocString.indexOf(debugToken);
+            if(emitIndex != -1)
+            {
+                IParameterNode[] pnodes = node.getParameterNodes();
+
+                IParameterNode rest = EmitterUtils.getRest(pnodes);
+                if (rest != null)
+                {
+                    final StringBuilder code = new StringBuilder();
+                    code.append(rest.getName());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.EQUAL.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(rest.getName());
+                    code.append(ASEmitterTokens.SEMICOLON.getToken());
+                    write(code.toString());
+                }
+                write(JSRoyaleEmitterTokens.DEBUG_RETURN);
+                writeNewline();
+            }
+        }
         IDefinition def = node.getDefinition();
         boolean isStatic = false;
         if (def != null && def.isStatic())
@@ -676,9 +711,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 && !EmitterUtils.hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
 
-        emitRestParameterCodeBlock(node);
+        if (!getModel().isExterns)
+        	emitRestParameterCodeBlock(node);
 
-        emitDefaultParameterCodeBlock(node);
+        if (!getModel().isExterns)
+        	emitDefaultParameterCodeBlock(node);
     }
 
     // XXX Dead
@@ -896,6 +933,21 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             return;
         }
         IDefinition definition = node.resolve(getWalker().getProject());
+        if (node.getNodeID() == ASTNodeID.IdentifierID && node.getParent().getNodeID() == ASTNodeID.VariableID)
+        {
+        	if (definition instanceof VariableDefinition && (!(definition.getParent() instanceof ClassDefinition)))
+        	{
+        		IFileSpecification defFile = ((VariableDefinition)definition).getFileSpecification();
+        		IFileSpecification varFile = node.getFileSpecification();
+        		if (defFile != null && varFile != null && varFile.equals(defFile))
+        		{
+        			if (node.getAbsoluteStart() < definition.getAbsoluteStart())
+        			{
+        				getProblems().add(new VariableUsedBeforeDeclarationProblem(node, definition.getBaseName()));
+        			}
+        		}
+        	}
+        }
         if (node.getNodeID() == ASTNodeID.ClassReferenceID)
         {
             write(definition.getQualifiedName());
@@ -1095,11 +1147,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             if (id == ASTNodeID.Op_LogicalAndAssignID
                     || id == ASTNodeID.Op_LogicalOrAssignID)
             {
-                IIdentifierNode lnode = (IIdentifierNode) node
+                IExpressionNode lnode = node
                         .getLeftOperandNode();
 
                 writeToken(ASEmitterTokens.EQUAL);
-                writeToken(lnode.getName());
+                getWalker().walk(lnode);
+                write(ASEmitterTokens.SPACE);
                 write((id == ASTNodeID.Op_LogicalAndAssignID) ? ASEmitterTokens.LOGICAL_AND
                         : ASEmitterTokens.LOGICAL_OR);
             }
@@ -1126,5 +1179,29 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     protected void emitClosureEnd(FunctionNode node, IDefinition nodeDef)
     {
         write(ASEmitterTokens.PAREN_CLOSE);
+    }
+    
+    @Override
+    public void emitContainer(IContainerNode node)
+    {
+    	// saw this in a for loop with multiple initializer statements: for (var i = 0, j = 0; ...
+        int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode child = node.getChild(i);
+            if (i == 0)
+            	getWalker().walk(child);
+            else
+            {
+            	String s = stringifyNode(child);
+            	if (s.startsWith("var "))
+            	{
+            		s = s.substring(4);
+            		write(s);
+            	}
+            }
+            if (i < len - 1)
+            	write(", ");
+        }    	
     }
 }

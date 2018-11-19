@@ -21,8 +21,12 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
@@ -43,11 +47,39 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         if (leftOperandNode.getNodeID() == ASTNodeID.Op_AtID)
         	return;
 
+        IExpressionNode rightOperandNode = node.getRightOperandNode();
+        IJSEmitter ijs = getEmitter();
+    	JSRoyaleEmitter fjs = (ijs instanceof JSRoyaleEmitter) ? 
+    							(JSRoyaleEmitter)ijs : null;
+    	if (fjs != null)
+    	{
+	    	boolean isXML = false;
+	    	if (leftOperandNode instanceof MemberAccessExpressionNode)
+	    		isXML = fjs.isLeftNodeXMLish((MemberAccessExpressionNode)leftOperandNode);
+	    	else if (leftOperandNode instanceof IExpressionNode)
+	    		isXML = fjs.isXML((IExpressionNode)leftOperandNode);
+	    	if (isXML)
+	    	{
+	    		ITypeDefinition type = rightOperandNode.resolveType(getProject());
+				if (type.isInstanceOf("String", getProject()))
+				{
+					String field = fjs.stringifyNode(rightOperandNode);
+					if (field.startsWith("\"@"))
+					{
+						field = field.replace("@", "");
+						write(".attribute(" + field + ")");
+					}
+					else
+						write(".child(" + field + ")");
+					return;
+				}    		
+	    	}
+    	}
+    	
         startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SQUARE_OPEN);
         endMapping(node);
 
-        IExpressionNode rightOperandNode = node.getRightOperandNode();
         getWalker().walk(rightOperandNode);
 
         startMapping(node, rightOperandNode);

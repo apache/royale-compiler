@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDualContentProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
@@ -125,7 +126,11 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
                 RoyaleProject project = builder.getProject();
                 Workspace workspace = builder.getWorkspace();
                 Collection<ICompilerProblem> problems = builder.getProblems();
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("MXMLScriptNode waiting for lock in processTagSpecificAttribute");
                 IFileSpecification sourceFileSpec = workspace.getFileSpecification(sourcePath);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("MXMLScriptNode done with lock in processTagSpecificAttribute");
                 String scriptText = builder.readExternalFile(attribute, sourcePath);
 
                 if (scriptText != null)

@@ -1460,6 +1460,31 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-private-name-conflicts' option
+    //
+
+    private boolean allowPrivateNameConflicts = true;
+
+    public boolean getCompilerAllowPrivateNameConflicts()
+    {
+        return allowPrivateNameConflicts;
+    }
+
+    /**
+     * Whether the compiler will allow a subclass to have a variable/property/method with the
+     * same name as a private variable/property/method in the base classes.  The compiler
+     * will always report an error if the subclass has an API that conflicts with public/protected
+     * APIs in the base classes.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-private-name-conflicts" })
+    @RoyaleOnly
+    public void setCompilerAllowPrivateNameConflicts(ConfigurationValue cv, boolean allow)
+    {
+        this.allowPrivateNameConflicts = allow;
+    }
+
+    //
     // 'compiler.actionscript-file-encoding' option
     //
 
@@ -5894,6 +5919,23 @@ public class Configuration
     public void setVerbose(ConfigurationValue cfgval, boolean b)
     {
         verbose = b;
+    }
+
+    //
+    // 'verbose' option from CommandLineConfiguration
+    //
+
+    private int diagnostics = 0;
+
+    public int getDiagnosticsLevel()
+    {
+        return diagnostics;
+    }
+
+    @Config(hidden = true)
+    public void setDiagnostics(ConfigurationValue cfgval, int b)
+    {
+        diagnostics = b;
     }
 
     //

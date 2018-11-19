@@ -361,16 +361,24 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
 	                        BufferedOutputStream out = new BufferedOutputStream(
 	                                new FileOutputStream(outputClassFile));
 	
+                            BufferedOutputStream sourceMapOut = null;
 	                        File outputSourceMapFile = null;
 	                        if (project.config.getSourceMap())
 	                        {
 	                            outputSourceMapFile = getOutputSourceMapFile(
 	                                    cu.getQualifiedNames().get(0), outputFolder);
+                                sourceMapOut = new BufferedOutputStream(
+                                        new FileOutputStream(outputSourceMapFile));
 	                        }
 	                        
-	                        writer.writeTo(out, outputSourceMapFile);
+	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
 	                        out.flush();
 	                        out.close();
+                            if (sourceMapOut != null)
+                            {
+                                sourceMapOut.flush();
+                                sourceMapOut.close();
+                            }
 	                        writer.close();
 	                    }
 	                }

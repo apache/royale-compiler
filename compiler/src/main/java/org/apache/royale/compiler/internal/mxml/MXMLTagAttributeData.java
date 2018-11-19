@@ -340,7 +340,8 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     @Override
     public SourceLocation getValueLocation()
     {
-        return new SourceLocation(getSourcePath(), getValueStart(), getValueEnd(), getValueLine(), getValueColumn());
+        return new SourceLocation(getSourcePath(), getValueStart(), getValueEnd(), getValueLine(), getValueColumn(),
+            getValueLine(), getValueColumn() + getValueEnd() - getValueStart());
     }
 
     //

@@ -72,7 +72,7 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         {
             cssName = cssName.replaceAll("[A-Z]", "-$0").toLowerCase();
         }
-        if (cssName.equals("content"))
+        if (cssName.equals("content") && value instanceof CSSStringPropertyValue)
         {
             return String.format("%s: \"%s\";", cssName, escape(((CSSStringPropertyValue)value).getValue()));            
         }

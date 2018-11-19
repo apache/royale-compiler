@@ -1325,6 +1325,7 @@ public final class TagDecoder
         System.arraycopy(alphaData, 0, t.alphaData, 0, i);
 
         dict.add(id, t);
+        r1.close();
         return t;
     }
 
@@ -1627,52 +1628,52 @@ public final class TagDecoder
         return t;
     }
 
-    private Tag decodePlaceObject2(int length) throws IOException
-    {
-        PlaceObject t;
-        t = new PlaceObject(stagPlaceObject2);
-        r.syncBits();
+    // private Tag decodePlaceObject2(int length) throws IOException
+    // {
+    //     PlaceObject t;
+    //     t = new PlaceObject(stagPlaceObject2);
+    //     r.syncBits();
 
-        int pos = r.getOffset();
+    //     int pos = r.getOffset();
 
-        t.flags = r.readUI8();
-        t.depth = r.readUI16();
+    //     t.flags = r.readUI8();
+    //     t.depth = r.readUI16();
 
-        if (t.hasCharID())
-        {
-            int idref = r.readUI16();
-            t.ref = dict.getTag(idref);
-        }
-        if (t.hasMatrix())
-        {
-            t.matrix = decodeMatrix();
-        }
-        if (t.hasCxform())
-        {
-            // ed 5/22/03 the SWF 6 file format spec says this will be a CXFORM, but
-            // the spec is wrong.  the player expects a CXFORMA.
-            t.colorTransform = decodeCxforma();
-        }
-        if (t.hasRatio())
-        {
-            t.ratio = r.readUI16();
-        }
-        if (t.hasName())
-        {
-            t.name = r.readString();
-        }
-        if (t.hasClipDepth())
-        {
-            t.clipDepth = r.readUI16();
-        }
-        if (t.hasClipAction())
-        {
-            ActionDecoder actionDecoder = new ActionDecoder(r,swd);
-            actionDecoder.setKeepOffsets(keepOffsets);
-            t.clipActions = actionDecoder.decodeClipActions(length - (r.getOffset() - pos));
-        }
-        return t;
-    }
+    //     if (t.hasCharID())
+    //     {
+    //         int idref = r.readUI16();
+    //         t.ref = dict.getTag(idref);
+    //     }
+    //     if (t.hasMatrix())
+    //     {
+    //         t.matrix = decodeMatrix();
+    //     }
+    //     if (t.hasCxform())
+    //     {
+    //         // ed 5/22/03 the SWF 6 file format spec says this will be a CXFORM, but
+    //         // the spec is wrong.  the player expects a CXFORMA.
+    //         t.colorTransform = decodeCxforma();
+    //     }
+    //     if (t.hasRatio())
+    //     {
+    //         t.ratio = r.readUI16();
+    //     }
+    //     if (t.hasName())
+    //     {
+    //         t.name = r.readString();
+    //     }
+    //     if (t.hasClipDepth())
+    //     {
+    //         t.clipDepth = r.readUI16();
+    //     }
+    //     if (t.hasClipAction())
+    //     {
+    //         ActionDecoder actionDecoder = new ActionDecoder(r,swd);
+    //         actionDecoder.setKeepOffsets(keepOffsets);
+    //         t.clipActions = actionDecoder.decodeClipActions(length - (r.getOffset() - pos));
+    //     }
+    //     return t;
+    // }
 
 
     private CXFormWithAlpha decodeCxforma() throws IOException

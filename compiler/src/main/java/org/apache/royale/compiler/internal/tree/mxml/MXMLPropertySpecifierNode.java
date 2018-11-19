@@ -289,16 +289,29 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                             !definition.getQualifiedName().contains(IASLanguageConstants.Vector + ".<"))
                     {
                         initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
-                                getListOfUnits(tag));
+                                tag, getListOfUnits(tag));
                         return;
                     }
                     else if (propertyTypeName.equals(IASLanguageConstants.Array) && (definition != null) &&
                             !definition.getQualifiedName().equals(IASLanguageConstants.Array))
                     {
                         initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
-                                getListOfUnits(tag));
+                                tag, getListOfUnits(tag));
                         return;                        
                     }
+                }
+            }
+        }
+        else if (propertyTypeName.contains(IASLanguageConstants.Object))
+        {
+            // Process each content unit.
+            for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+            {
+                if (unit instanceof IMXMLTagData)
+                {
+                    initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
+                                tag, getListOfUnits(tag));
+                    return;                        
                 }
             }
         }
@@ -334,7 +347,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     }
 
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
-                                   List<IMXMLUnitData> contentUnits)
+                                   IMXMLTagData parentTag, List<IMXMLUnitData> contentUnits)
     {
         RoyaleProject project = builder.getProject();
 
@@ -349,6 +362,30 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         setLocation(builder, contentUnits);
 
         String propertyTypeName = getPropertyTypeName(builder);
+        
+        int numChildTags = 0;
+        IMXMLTagData oneAndOnlyChildTag = null;
+    	boolean childrenAreClasses = true;
+    	for (IMXMLUnitData unit : contentUnits)
+    	{
+    		if (unit instanceof IMXMLTagData)
+    		{
+    			oneAndOnlyChildTag = (IMXMLTagData)unit;
+    			numChildTags++;
+                IDefinition definition = builder.getFileScope().resolveTagToDefinition(oneAndOnlyChildTag);
+                if (!(definition instanceof ClassDefinition))
+                {
+                	childrenAreClasses = false;
+                }
+    		}
+    	}
+    	boolean oneAndOnlyChildIsClass = false;
+    	if (numChildTags == 1)
+    	{
+            IDefinition definition = builder.getFileScope().resolveTagToDefinition(oneAndOnlyChildTag);
+            if (definition instanceof ClassDefinition)
+                oneAndOnlyChildIsClass = true;    		
+    	}
 
         // If the property is of type IDeferredInstance or ITransientDeferredInstance,
         // create an implicit MXMLDeferredInstanceNode.
@@ -359,13 +396,21 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLDeferredInstanceNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if (propertyTypeName.equals(IASLanguageConstants.Array) && 
-                oneChildIsNotArray(builder, contentUnits))
+        else if ((propertyTypeName.equals(IASLanguageConstants.Array) && 
+                oneChildIsNotArray(builder, contentUnits)) ||
+                (propertyTypeName.equals(IASLanguageConstants.Object) && childrenAreClasses && !oneAndOnlyChildIsClass))
         {
             // Create an implicit array node.
             instanceNode = new MXMLArrayNode(this);
             ((MXMLArrayNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
+        }
+        else if (propertyTypeName.equals(IASLanguageConstants.Object) && !oneAndOnlyChildIsClass)
+        {
+            // Create an implicit Object node.
+            instanceNode = new MXMLObjectNode(this);
+            ((MXMLObjectNode)instanceNode).initialize(
+                    builder, parentTag, contentUnits, createNodeInfo(builder));
         }
         else if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<") && 
                 oneChildIsNotVector(builder, contentUnits))
@@ -375,9 +420,9 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLVectorNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if (contentUnits.size() == 1 && contentUnits.get(0) instanceof IMXMLTagData)
+        else if (oneAndOnlyChildTag != null)
         {
-            IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);
+            IMXMLTagData tag = oneAndOnlyChildTag;
             IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
             if (definition instanceof ClassDefinition)
             {

@@ -118,6 +118,11 @@
     </target>
 
     <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
+        <ant dir="compiler-build-tools" target="clean"/>
+        <ant dir="compiler-test-utils" target="clean"/>
+        <ant dir="compiler-jburg-types" target="clean"/>
+        <ant dir="compiler-common" target="clean"/>
+        <ant dir="compiler-externc" target="clean"/>
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
         <ant dir="compiler-jx" target="clean"/>

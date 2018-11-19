@@ -31,17 +31,21 @@ import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
 import org.apache.royale.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.royale.compiler.internal.css.CSSFontFace;
 import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -84,6 +88,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         super(project, config);
         this.isMarmotinniRun = googConfiguration.getMarmotinni() != null;
         this.outputPathParameter = configuration.getOutput();
+        this.moduleOutput = googConfiguration.getModuleOutput();
         this.useStrictPublishing = googConfiguration.getStrictPublish();
 
         this.project = project;
@@ -93,14 +98,15 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
     private boolean isMarmotinniRun;
     private String outputPathParameter;
+    private String moduleOutput;
     private boolean useStrictPublishing;
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
-    										String projectName, 
+    										String mainClassQName, 
     										JSGoogConfiguration googConfiguration, 
     										List<ISWC> swcs)
     {
-    	return new GoogDepsWriter(intermediateDir, projectName, googConfiguration, swcs);
+    	return new GoogDepsWriter(intermediateDir, mainClassQName, googConfiguration, swcs);
     }
 
     @Override
@@ -124,7 +130,18 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             if (outputPathParameter.contains(".swf")) {
             	if (outputParentFolder == null)
             		outputParentFolder = new File(outputPathParameter);
-                outputParentFolder = outputParentFolder.getParentFile().getParentFile();
+                if (moduleOutput != null && outputPathParameter.contains(moduleOutput))
+                {
+                	String rootFolder = outputPathParameter.substring(0, outputPathParameter.indexOf(moduleOutput));
+                    if (rootFolder.endsWith("src"))
+                        outputParentFolder = new File(rootFolder).getParentFile();
+                    else if (rootFolder.endsWith("src/main/royale") || rootFolder.endsWith("src\\main\\royale"))
+                        outputParentFolder = new File(rootFolder).getParentFile().getParentFile().getParentFile();
+                    else
+                        outputParentFolder = new File(rootFolder).getParentFile();
+                }
+                else
+                	outputParentFolder = outputParentFolder.getParentFile().getParentFile();
             } else {
                 outputParentFolder = new File(outputPathParameter);
             }
@@ -136,6 +153,14 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
             else if (mainClassFolder.endsWith("src/main/royale") || mainClassFolder.endsWith("src\\main\\royale"))
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile().getParentFile().getParentFile();
+            else if (moduleOutput != null && mainClassFolder.endsWith(moduleOutput))
+            {
+            	String rootFolder = mainClassFolder.replace(mainClassFolder, "");
+                if (rootFolder.endsWith("src"))
+                    outputParentFolder = new File(rootFolder).getParentFile();
+                else if (rootFolder.endsWith("src/main/royale") || rootFolder.endsWith("src\\main\\royale"))
+                    outputParentFolder = new File(rootFolder).getParentFile().getParentFile().getParentFile();            	
+            }
             else
                 outputParentFolder = new File(configuration.getTargetFileDirectory());
         }
@@ -143,6 +168,8 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         outputParentFolder = new File(outputParentFolder, ROYALE_OUTPUT_DIR_NAME);
 
         outputFolder = new File(outputParentFolder, File.separator + ROYALE_INTERMEDIATE_DIR_NAME);
+        if (moduleOutput != null)
+        	outputFolder = new File(outputFolder, File.separator + moduleOutput);
 
         // (erikdebruin) Marmotinni handles file management, so we
         // bypass the setup.
@@ -159,11 +186,49 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // The "intermediate" is the "js-debug" output.
         final File intermediateDir = outputFolder;
 
+        // The source directory is the source path entry containing the Main class.
+        List<File> sourcePaths = project.getSourcePath();
+        String targetFile = configuration.getTargetFile().toLowerCase();
+    	System.out.println("find project folder for " + targetFile);
+        File imageSrcDir = null;
+        for (File sp : sourcePaths)
+        {
+        	System.out.println("checking source path " + sp.getAbsolutePath());
+        	String lowercasePath = sp.getAbsolutePath().toLowerCase();
+        	if (targetFile.startsWith(lowercasePath))
+        		imageSrcDir = sp;
+        }
+        if (imageSrcDir == null)
+        {
+        	imageSrcDir = new File(configuration.getTargetFile()).getAbsoluteFile().getParentFile();
+        	System.out.println("not found on source path, using parent file " + imageSrcDir.getAbsolutePath());
+        }
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
+        String qName = null;
+        try {
+			qName = project.mainCU.getQualifiedNames().get(0);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String mainClassQName = qName;
+		DefinitionPromise cpromise = (DefinitionPromise)project.mainCU.getDefinitionPromises().get(0);
+		ClassDefinition cdef = (ClassDefinition)(cpromise.getActualDefinition());
+		ClassDefinition baseDef = (ClassDefinition)(project.resolveQNameToDefinition(cdef.getBaseClassAsDisplayString()));
+		if (baseDef != null)
+		{
+			String factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
+			if (factoryClassName != null)
+			{
+				mainClassQName = generateFactoryClass(factoryClassName, projectName, mainClassQName, intermediateDir);
+			}
+		}
         final String outputFileName = projectName + "." + project.getBackend().getOutputExtension();
 
         // The "release" is the "js-release" directory.
         File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
+        if (moduleOutput != null)
+        	releaseDir = new File(releaseDir, File.separator + moduleOutput);
 
         /////////////////////////////////////////////////////////////////////////////////
         // Copy static resources to the intermediate (and release) directory.
@@ -184,14 +249,12 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter, jpgSuffixFilter, jpegSuffixFilter, svgSuffixFilter, gifSuffixFilter,
                 jsonSuffixFilter);
         IOFileFilter resourceFilter = FileFilterUtils.or(DirectoryFileFilter.DIRECTORY, assetFiles);
-        // The source directory is the directory containing the Main class.
-        File imageSrcDir = new File(configuration.getTargetFile()).getAbsoluteFile().getParentFile();
         // FIXME: All images need to be located relative to the Main class ... for Maven this is a problem.
         FileUtils.copyDirectory(imageSrcDir, intermediateDir, resourceFilter);
-        
         // Iterate over all themes SWCs and add the contents of any included files in
         // an assets folder to an assets folder in the destination folder.
         final ISWCManager swcManager = project.getWorkspace().getSWCManager();
+        List<ISWC> themeSWCs = new ArrayList<ISWC>();
         List<IFileSpecification> themes = project.getThemeFiles();
         for (final IFileSpecification themeFile : themes)
         {
@@ -199,6 +262,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             if ("swc".equalsIgnoreCase(extension))
             {
                 final ISWC swc = swcManager.get(new File(themeFile.getPath()));
+                themeSWCs.add(swc);
 	            Map<String, ISWCFileEntry> files = swc.getFiles();
 	            for (String key : files.keySet())
 	            {
@@ -216,6 +280,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 	                        	total += is.read(data, total, n - total);
 	                        }
 	                        FileUtils.writeByteArrayToFile(new File(intermediateDir, key), data);
+                            if (configuration.release())
+                            {
+	                            FileUtils.writeByteArrayToFile(new File(releaseDir, key), data);
+                            }
 	                    }
 	                }
 	            }
@@ -312,7 +380,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // Iterate over all swc dependencies and add all the externs they contain.
         // (Externs are located in a "externs" directory in the root of the SWC)
         List<ISWC> swcs = project.getLibraries();
-        for (ISWC swc : swcs)
+        List<ISWC> allswcs = new ArrayList<ISWC>();
+        allswcs.addAll(swcs);
+        allswcs.addAll(themeSWCs);
+        for (ISWC swc : allswcs)
         {
             Map<String, ISWCFileEntry> files = swc.getFiles();
             for (String key : files.keySet())
@@ -342,13 +413,32 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // Add all files generated by the compiler to the compilation unit.
         /////////////////////////////////////////////////////////////////////////////////
 
-        GoogDepsWriter gdw = getGoogDepsWriter(intermediateDir, projectName, googConfiguration, swcs);
+        GoogDepsWriter gdw = getGoogDepsWriter(intermediateDir, mainClassQName, googConfiguration, allswcs);
         // This list contains all files generated by the compiler, this is both the
         // compiled js files created by the sources of the current project plus the
         // js files of used dependencies.
-        ArrayList<String> fileList = gdw.getListOfFiles(project, problems);
+        ArrayList<String> sourceExternFiles = new ArrayList<String>();
+        ArrayList<String> fileList = gdw.getListOfFiles(project, sourceExternFiles, problems);
+        for (String sourceExtern : project.sourceExterns)
+        {
+        	String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
+        	File sourceExternFile = new File(intermediateDir, sourceExternFileName);
+        	if (sourceExternFile.exists())
+        	{
+        		String sourceExternPath = sourceExternFile.getAbsolutePath();
+        		if (!sourceExternFiles.contains(sourceExternPath))
+        			sourceExternFiles.add(sourceExternPath);
+        	}
+        }
+        if (fileList == null)
+        	return false; // some error occurred
         for (String file : fileList) {
             compilerWrapper.addJSSourceFile(file);
+            System.out.println("using source file: " + file);            
+        }
+        for (String file : sourceExternFiles) {
+        	compilerWrapper.addJSExternsFile(file);
+            System.out.println("using extern file: " + file);            
         }
 
 
@@ -360,10 +450,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // is generated here so it can be used for outputting the html templates.
         String depsFileData = gdw.generateDeps(project, problems);
 
-        if (project.isModule(projectName))
+        if (project.isModule(mainClassQName))
         {
         	// need better test someday
-        	depsFileData += "\ngoog.require('" + projectName + "');\n";
+        	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
             writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData, false);
             Set<String> provideds = computeProvideds(depsFileData);
             compilerWrapper.setProvideds(provideds);
@@ -375,17 +465,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
-	                writeTemplate(template, "intermediate", projectName, intermediateDir, depsFileData, gdw.additionalHTML);
+	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, gdw.additionalHTML);
 	            } else {
-	                writeHTML("intermediate", projectName, intermediateDir, depsFileData, gdw.additionalHTML);
+	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, gdw.additionalHTML);
 	            }
 	        }
 	        // Create the index.html for the release-js version.
 	        if (configuration.release()) {
 	            if (template != null) {
-	                writeTemplate(template, "release", projectName, releaseDir, depsFileData, gdw.additionalHTML);
+	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, gdw.additionalHTML);
 	            } else {
-	                writeHTML("release", projectName, releaseDir, null, gdw.additionalHTML);
+	                writeHTML("release", projectName, mainClassQName, releaseDir, null, gdw.additionalHTML);
 	            }
 	        }
         }        
@@ -397,11 +487,11 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         project.needCSS = gdw.needCSS;
         if (project.needCSS || googConfiguration.getSkipTranspile()) {
             if (!googConfiguration.getSkipTranspile()) {
-                writeCSS(projectName, intermediateDir);
+                writeCSS(projectName, intermediateDir, false);
             }
             if (project.needCSS && configuration.release()) {
-                FileUtils.copyFile(new File(intermediateDir, projectName + ".css"),
-                        new File(releaseDir, projectName + ".css"));
+                // if release version minify css string
+                writeCSS(projectName, releaseDir, true);
             }
         }
 
@@ -414,6 +504,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             final File projectReleaseMainFile = new File(releaseDir, outputFileName);
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
+            compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
 
             compilerWrapper.compile();
 
@@ -603,7 +694,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         return code;
     }
 
-    protected void writeTemplate(File template, String type, String projectName, File targetDir, String deps, List<String> additionalHTML)
+    protected void writeTemplate(File template, String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
     		throws IOException
 	{
 	    // Check if the template exists.
@@ -624,7 +715,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             bgcolor = ta.getBackgroundColor();
             pageTitle = ta.getPageTitle();
         }
-        String result = input.replaceAll("\\$\\{application\\}", projectName);
+
+        String result = null;
+        if (type.equals("release")) {
+            result = input.replaceAll("\\$\\{application\\}", projectName + ".min");
+        } else {
+            result = input.replaceAll("\\$\\{application\\}", projectName);
+        }
         if (bgcolor != null)
             result = result.replaceAll("\\$\\{bgcolor\\}", bgcolor);
         //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
@@ -641,10 +738,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         StringBuilder addHTML = new StringBuilder();
         addHTML.append(getTemplateAdditionalHTML(additionalHTML));
-		addHTML.append(getTemplateDependencies(type, projectName, deps));
+		addHTML.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
         result = result.replaceAll("\\$\\{head\\}", addHTML.toString());
 
-        String templateBody = getTemplateBody(projectName);
+        String templateBody = getTemplateBody("release".equals(type) ? projectName : mainClassQName);
         result = result.replaceAll("\\$\\{body\\}", templateBody);
 
 		writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), result, false);
@@ -660,7 +757,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         return htmlFile.toString();
     }
 
-    protected String getTemplateDependencies(String type, String projectName, String deps)
+    protected String getTemplateDependencies(String type, String projectName, String mainClassQName, String deps)
     {
         StringBuilder depsHTML = new StringBuilder();
         if ("intermediate".equals(type))
@@ -669,7 +766,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             depsHTML.append("\t<script type=\"text/javascript\">\n");
             depsHTML.append(deps);
             depsHTML.append("\t\tgoog.require(\"");
-            depsHTML.append(projectName);
+            depsHTML.append(mainClassQName);
             depsHTML.append("\");\n");
             depsHTML.append("\t</script>\n");
         }
@@ -682,19 +779,19 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         return depsHTML.toString();
     }
 
-	protected String getTemplateBody(String projectName)
+	protected String getTemplateBody(String mainClassQName)
     {
         StringBuilder bodyHTML = new StringBuilder();
         bodyHTML.append("\t<script type=\"text/javascript\">\n");
         bodyHTML.append("\t\tnew ");
-        bodyHTML.append(projectName);
+        bodyHTML.append(mainClassQName);
         bodyHTML.append("()");
         bodyHTML.append(".start();\n");
         bodyHTML.append("\t</script>\n");
         return bodyHTML.toString();
     }
 
-    protected void writeHTML(String type, String projectName, File targetDir, String deps, List<String> additionalHTML)
+    protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
             throws IOException
     {
         StringBuilder htmlFile = new StringBuilder();
@@ -703,15 +800,21 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+        
+        // if release version want to call minified css file, while in debug the non minified one
+        if (type.equals("release")) {
+            htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".min.css\">\n");
+        } else {
+            htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+        }
 
         htmlFile.append(getTemplateAdditionalHTML(additionalHTML));
-        htmlFile.append(getTemplateDependencies(type, projectName, deps));
+        htmlFile.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
 
         htmlFile.append("</head>\n");
         htmlFile.append("<body>\n");
 
-        htmlFile.append(getTemplateBody(projectName));
+        htmlFile.append(getTemplateBody(mainClassQName));
 
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");
@@ -719,10 +822,19 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), htmlFile.toString(), false);
     }
 
-    private void writeCSS(String projectName, File targetDir) throws IOException
+    private void writeCSS(String projectName, File targetDir, Boolean minify) throws IOException
     {
         JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
-        writeFile(new File(targetDir, projectName + ".css"), cssSession.emitCSS(), false);
+        String cssString = cssSession.emitCSS();
+
+        if (minify)
+        {
+            //minify CSS for release
+            writeFile(new File(targetDir, projectName + ".min.css"), JSCSSCompilationSession.minifyCSSString(cssString), false);
+        } else {
+            writeFile(new File(targetDir, projectName + ".css"), cssString, false);
+        }
+
         for (CSSFontFace fontFace : cssSession.fontFaces)
         {
         	// check frameworks/fonts folder
@@ -870,5 +982,52 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 	        }
     	}
     }
+    
+    private String getFactoryClass(IMetaTag node)
+    {
+    	if (node == null) return null;
+    	
+    	return(node.getAttribute("factoryClass").getValue());
+    }
 
+    protected String generateFactoryClass(String factoryClassName, String projectName, String mainClassQName, File targetDir)
+    throws IOException
+	{
+    	String generatedName = projectName + "." + factoryClassName;
+    	generatedName = generatedName.replace(".", "_");
+		StringBuilder factoryClass = new StringBuilder();
+    	factoryClass.append("/**\n");
+    	factoryClass.append(" * Generated by Apache Royale Compiler\n");
+		factoryClass.append(" * " + generatedName + "\n");
+    	factoryClass.append(" *\n");
+    	factoryClass.append(" * @fileoverview\n");
+    	factoryClass.append(" *\n");
+    	factoryClass.append(" * @suppress {checkTypes|accessControls}\n");
+    	factoryClass.append(" */\n");
+    	factoryClass.append("\n");
+		factoryClass.append("goog.provide('" + generatedName + "');\n");
+    	factoryClass.append("\n");
+    	factoryClass.append("goog.require('" + factoryClassName + "');\n");
+    	factoryClass.append("goog.require('" + mainClassQName + "');\n");
+    	factoryClass.append("\n");
+    	factoryClass.append("\n");
+    	factoryClass.append("\n");
+    	factoryClass.append("/**\n");
+    	factoryClass.append(" * @constructor\n");
+    	factoryClass.append(" * @extends {" + factoryClassName + "}\n");
+    	factoryClass.append(" */\n");
+    	factoryClass.append(generatedName + " = function() {\n");
+    	factoryClass.append("  " + generatedName + ".base(this, 'constructor');\n");
+    	factoryClass.append("   this.mainClassName = " + mainClassQName + ";\n");
+    	factoryClass.append("};\n");
+    	factoryClass.append("goog.inherits(" + generatedName + ", " + factoryClassName + ");\n");
+    	factoryClass.append("goog.exportSymbol('" + generatedName + "', " + generatedName + ");\n");
+    	factoryClass.append("/**\n");
+    	factoryClass.append(" * @type {Object.<string, Array.<Object>>}\n");
+    	factoryClass.append(" */\n");
+    	factoryClass.append(generatedName + ".prototype.ROYALE_CLASS_INFO = { names: [{ name: '" + generatedName + "', qName: '" + generatedName + "', kind: 'class' }]};\n");
+				
+		writeFile(new File(targetDir, generatedName + ".js"), factoryClass.toString(), false);
+		return generatedName;
+	}
 }

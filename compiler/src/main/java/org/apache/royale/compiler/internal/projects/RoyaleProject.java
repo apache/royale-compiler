@@ -76,6 +76,7 @@ import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.mxml.MXMLManifestManager;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.internal.projects.DependencyGraph.Edge;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
@@ -168,6 +169,11 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
      * Currently this is "mx.states.State".
      */
     private String stateClass;
+    
+    /**
+     * The resolved stateClass 
+     */
+    public ITypeDefinition stateClassType = null;
     
     /**
      * The fully-qualified name of the runtime interface 
@@ -1786,6 +1792,8 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         return actionScriptFileEncoding;
     }
 
+    private boolean isTranspiling;
+    
     @Override
     public void setDefineDirectives(Map<String, String> defines)
     {
@@ -1793,6 +1801,10 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         // TODO: This seems strange. Each call to the setter
         // adds new defines. How do you get rid of the old ones?
         addConfigVariables(defines);
+        if (defines.containsKey("COMPILE::SWF"))
+        {
+        	isTranspiling = defines.get("COMPILE::SWF").equalsIgnoreCase("false");
+        }
         clean();
     }
 
@@ -2157,6 +2169,10 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         String thisPackage = null;
         if (scopeDef != null) 
             thisPackage = scopeDef.getPackageName();
+        else if (scope instanceof ASFileScope)
+        {
+        	thisPackage = "";
+        }
         else
         {
             while (!(scope instanceof PackageScope))
@@ -2179,7 +2195,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         {
             // now check to see if the class was imported in the window package.
             ASScope pkgScope = (ASScope)scope;
-            while (!(pkgScope instanceof PackageScope))
+            while (!(pkgScope instanceof PackageScope || pkgScope instanceof ASFileScope))
                 pkgScope = pkgScope.getContainingScope();
             String[] imports = pkgScope.getImports();
             String windowName = "window." + name;
@@ -2196,6 +2212,18 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
             // that they meant the one they did import
             if (!usingWindow)
             {
+            	// but if no packages at all first see if it is a local class
+            	if (package1.length() == 0 && package2.length() == 0)
+            	{
+            		if (pkgScope instanceof PackageScope)
+            			pkgScope = pkgScope.getContainingScope();
+            		if (pkgScope.getAllLocalNames().contains(name))
+            		{
+            			IDefinitionSet defSet = pkgScope.getLocalDefinitionSetByName(name);
+            			if (defSet.getSize() == 1)
+            				return defSet.getDefinition(0);
+            		}
+            	}
                 return package1.length() == 0 ? def2 : def1;
             }
             // otherwise fall through to ambiguous because they need to qualify
@@ -2387,6 +2415,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         return list;
     }
 
+    private boolean allowPrivateNameConflicts;
+    
+    /**
+     * List of compiler defines so it can be overridden
+     */
+    @Override
+    public boolean getAllowPrivateNameConflicts()
+    {
+    	return allowPrivateNameConflicts;
+    }
+    public void setAllowPrivateNameConflicts(boolean allow)
+    {
+    	allowPrivateNameConflicts = allow;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;
@@ -2465,4 +2508,16 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 			}
 		}
 	}
+	
+	@Override
+	public boolean isParameterCountMismatchAllowed(IFunctionDefinition func,
+			int formalCount, int actualCount) {
+		if (!isTranspiling) return false;
+		if (func.getBaseName().equals("sort") &&
+				func.getParent().getQualifiedName().equals("Array") &&
+				formalCount == 1 && actualCount == 2)
+			return true;
+        return false;
+	}
+
 }

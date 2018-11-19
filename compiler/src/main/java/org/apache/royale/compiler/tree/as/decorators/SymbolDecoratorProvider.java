@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
@@ -71,6 +72,8 @@ public class SymbolDecoratorProvider
      */
     public List<IVariableTypeDecorator> getVariableTypeDecorators(IDefinition context)
     {
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYMBOL_DECORATOR_PROVIDER) == CompilerDiagnosticsConstants.SYMBOL_DECORATOR_PROVIDER)
+    		System.out.println("SymbolDecoratorProvider waiting for lock in getVariableTypeDecorators");
         synchronized (variableTypeDecorators)
         {
             Iterator<IVariableTypeDecorator> it = variableTypeDecorators.iterator();
@@ -83,6 +86,8 @@ public class SymbolDecoratorProvider
                     retVal.add(next);
                 }
             }
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.SYMBOL_DECORATOR_PROVIDER) == CompilerDiagnosticsConstants.SYMBOL_DECORATOR_PROVIDER)
+        		System.out.println("SymbolDecoratorProvider done with lock in getVariableTypeDecorators");
             return retVal;
         }
     }

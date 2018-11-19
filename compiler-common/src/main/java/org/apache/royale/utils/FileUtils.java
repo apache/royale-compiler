@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 
 /**
  * A collection of file related utilities.
@@ -164,7 +165,12 @@ public final class FileUtils
             {
                 baos.write(buffer, 0, num);
             }
-            return baos.getDirectByteArray();
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+        		System.out.println("FileUtils waiting for lock in toByteArray");
+            //byte[] b = 
+            baos.getDirectByteArray();
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+        		System.out.println("FileUtils waiting for lock in toByteArray");
         }
         catch (IOException ex)
         {

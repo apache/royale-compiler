@@ -217,7 +217,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         // (erikdebruin) E4X in Javascript is obsolete.
         //               Ref.: https://developer.mozilla.org/en-US/docs/E4X
         
-        assertOut("var /** @type {XML} */ a = XML('@')");
+        assertOut("var /** @type {XML} */ a = XML.conversion('@')");
     }
 
     @Override

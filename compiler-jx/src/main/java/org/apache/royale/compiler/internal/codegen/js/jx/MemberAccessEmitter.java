@@ -32,12 +32,14 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.GetterNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceAccessExpressionNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
@@ -168,7 +170,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		write(ASEmitterTokens.SPACE);
         		write(IASLanguageConstants.QName);
         		write(ASEmitterTokens.PAREN_OPEN);
-        		write(d.getBaseName());
+	    		write(fjs.formatQualifiedName(d.getQualifiedName()));
         		write(ASEmitterTokens.COMMA);
         		write(ASEmitterTokens.SPACE);
         		write(ASEmitterTokens.SINGLE_QUOTE);
@@ -209,7 +211,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	    		write(ASEmitterTokens.SPACE);
 	    		write(IASLanguageConstants.QName);
 	    		write(ASEmitterTokens.PAREN_OPEN);
-	    		write(fjs.formatQualifiedName(d.getBaseName()));
+	    		write(fjs.formatQualifiedName(d.getQualifiedName()));
 	    		write(ASEmitterTokens.COMMA);
 	    		write(ASEmitterTokens.SPACE);
 	    		write(ASEmitterTokens.SINGLE_QUOTE);
@@ -255,17 +257,48 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		getEmitter().emitClosureStart();
         	
         	continueWalk = writeLeftSide(node, leftNode, rightNode);
-            if (continueWalk && !isCustomNamespace)
-            {
-                startMapping(node, node.getLeftOperandNode());
-                write(node.getOperator().getOperatorText());
-                endMapping(node);
-            }
         }
 
         if (continueWalk)
         {
-            getWalker().walk(node.getRightOperandNode());
+			boolean emitDynamicAccess = false;
+            boolean dynamicAccessUnknownMembers = false;
+            ICompilerProject project = getProject();
+            if(project instanceof RoyaleJSProject)
+            {
+                RoyaleJSProject fjsProject = (RoyaleJSProject) project;
+                if(fjsProject.config != null)
+                {
+                    dynamicAccessUnknownMembers = fjsProject.config.getJsDynamicAccessUnknownMembers();
+                }
+            }
+			if (dynamicAccessUnknownMembers && rightNode instanceof IIdentifierNode)
+			{
+				IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
+				IDefinition resolvedDefinition = identifierNode.resolve(getProject());
+				emitDynamicAccess = resolvedDefinition == null;
+			}
+			if (emitDynamicAccess)
+			{
+				IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
+				startMapping(node, rightNode);
+				write(ASEmitterTokens.SQUARE_OPEN);
+				write(ASEmitterTokens.DOUBLE_QUOTE);
+				write(identifierNode.getName());
+				write(ASEmitterTokens.DOUBLE_QUOTE);
+				write(ASEmitterTokens.SQUARE_CLOSE);
+				endMapping(node);
+			}
+			else
+			{
+				if (!isStatic && !isCustomNamespace)
+				{
+					startMapping(node, node.getLeftOperandNode());
+					write(node.getOperator().getOperatorText());
+					endMapping(node);
+				}
+				getWalker().walk(node.getRightOperandNode());
+			}
         }
         
         if (needClosure)

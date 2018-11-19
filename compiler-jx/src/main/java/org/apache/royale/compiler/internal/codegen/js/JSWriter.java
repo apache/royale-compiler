@@ -19,9 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.js;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -79,7 +77,7 @@ public class JSWriter implements IJSWriter
     @Override
     public void writeTo(OutputStream out)
     {
-        writeTo(out, null);
+        writeTo(out, null, null);
     }
 
     @Override
@@ -88,7 +86,7 @@ public class JSWriter implements IJSWriter
         return 0;
     }
 
-    public void writeTo(OutputStream jsOut, File sourceMapOut)
+    public void writeTo(OutputStream jsOut, OutputStream jsSourceMapOut, File sourceMapFile)
     {
         IJSBackend backend = (IJSBackend) project.getBackend();
         JSFilterWriter writer = (JSFilterWriter) backend.createWriterBuffer(project);
@@ -108,9 +106,14 @@ public class JSWriter implements IJSWriter
             e.printStackTrace();
         }
 
-        if (sourceMapOut != null)
+        if (jsSourceMapOut != null)
         {
-            convertMappingSourcePathsToRelative(emitter, sourceMapOut);
+            String sourceMapFilePath = null;
+            if (sourceMapFile != null)
+            {
+                sourceMapFilePath = sourceMapFile.getAbsolutePath();
+                convertMappingSourcePathsToRelative(emitter, sourceMapFile);
+            }
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter(emitter);
@@ -118,11 +121,8 @@ public class JSWriter implements IJSWriter
             {
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".as", ".js");
-                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapOut.getAbsolutePath(), null);
-                BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(sourceMapOut));
-                outStream.write(sourceMap.getBytes());
-                outStream.flush();
-                outStream.close();
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, null);
+                jsSourceMapOut.write(sourceMap.getBytes());
             } catch (Exception e)
             {
                 e.printStackTrace();

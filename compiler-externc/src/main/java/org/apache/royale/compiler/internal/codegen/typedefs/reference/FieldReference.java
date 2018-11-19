@@ -19,11 +19,16 @@
 
 package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 
+import java.util.Collection;
+
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.ReadOnlyMember;
+import org.apache.royale.compiler.clients.ExternCConfiguration.TrueConstant;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.FunctionUtils;
 import org.apache.royale.compiler.internal.codegen.typedefs.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
@@ -35,6 +40,7 @@ public class FieldReference extends MemberReference
     private boolean isConst;
     private String overrideStringType;
     private Node constantValueNode;
+    private String constantValue;
 
     public boolean isStatic()
     {
@@ -80,6 +86,16 @@ public class FieldReference extends MemberReference
             JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
+        Collection<Marker> markers = comment.getMarkers();
+        Marker[] markerArray = new Marker[markers.size()];
+        for (Marker marker : markers)
+        {
+        	if (marker.getAnnotation().getItem().equals("const"))
+        		this.isConst = true;
+        }
+        TrueConstant constant = isTrueConstant();
+        if (constant != null)
+        	constantValue = constant.getValue();
         this.isStatic = isStatic;
     }
 
@@ -105,19 +121,25 @@ public class FieldReference extends MemberReference
             excluded.print(sb);
             return; // XXX (mschmalle) accessors are not treated right, need to exclude get/set
         }
+        
+        ReadOnlyMember readOnly = isReadOnly();
 
         if (!getClassReference().isInterface() && !getComment().isOverride()
-                && !getClassReference().isPropertyInterfaceImplementation(getBaseName()))
+                && !getClassReference().isPropertyInterfaceImplementation(getBaseName())
+                && (null == readOnly))
         {
-            emitVar(sb);
+        	if (isConst && constantValue == null)
+        		emitAccessor(sb, true); // const is used for readOnly as well.  If there is an initial value assume it is const
+        	else
+        		emitVar(sb);
         }
         else
         {
-            emitAccessor(sb);
+            emitAccessor(sb, (null != readOnly));
         }
     }
 
-    private void emitAccessor(StringBuilder sb)
+    private void emitAccessor(StringBuilder sb, boolean isReadOnly)
     {
         boolean isInterface = getClassReference().isInterface();
 
@@ -153,17 +175,20 @@ public class FieldReference extends MemberReference
         sb.append(getBody);
         sb.append(";\n");
 
-        // setter
-        sb.append(indent);
-        sb.append(isPublic);
-        sb.append(staticValue);
-        sb.append("function set ");
-        sb.append(getBaseName());
-        sb.append("(value:");
-        sb.append(type);
-        sb.append("):void");
-        sb.append(setBody);
-        sb.append(";\n");
+        if (!isReadOnly)
+        {
+	        // setter
+	        sb.append(indent);
+	        sb.append(isPublic);
+	        sb.append(staticValue);
+	        sb.append("function set ");
+	        sb.append(getBaseName());
+	        sb.append("(value:");
+	        sb.append(type);
+	        sb.append("):void");
+	        sb.append(setBody);
+	        sb.append(";\n");
+        }
     }
 
     private void emitVar(StringBuilder sb)
@@ -205,13 +230,23 @@ public class FieldReference extends MemberReference
     private void emitConstValue(StringBuilder sb)
     {
         sb.append(" = ");
-        sb.append(toConstValue(constantValueNode));
+        if (constantValueNode != null)
+        	sb.append(toConstValue(constantValueNode));
+        else
+        	sb.append(constantValue);
     }
 
     private String toConstValue(Node node)
     {
-        if (toTypeString().equals("Number"))
+    	String typeString = toTypeString();
+        if (typeString.equals("Number"))
             return Integer.toString(getClassReference().getEnumConstant());
+        if (node == null)
+        {
+        	if (typeString.equals("Number"))
+        		return "NaN";
+        	return "null";
+        }
         if (node.isString())
             return "'" + node.getString() + "'";
         return "undefined /* TODO type not set */";

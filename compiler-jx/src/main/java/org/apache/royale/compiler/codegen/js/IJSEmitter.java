@@ -39,6 +39,7 @@ public interface IJSEmitter extends IASEmitter, IMappingEmitter
     JSSessionModel getModel();
     
     String formatQualifiedName(String name);
+    String formatPrivateName(String className, String name);
     
     void emitSourceMapDirective(ITypeNode node);
     

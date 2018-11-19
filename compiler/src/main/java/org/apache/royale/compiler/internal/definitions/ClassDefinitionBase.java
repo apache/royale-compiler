@@ -25,6 +25,7 @@ import java.util.*;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.RecursionGuard;
 
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -414,6 +415,9 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
         return new InterfaceDefinition.InterfaceIterator(this, project, null);
     }
 
+    private ArrayList<IDefinition> baseDefinitions = null;
+    private ArrayList<IDefinition> implDefinitions = null;
+    
     @Override
     public boolean isInstanceOf(final ITypeDefinition type, ICompilerProject project)
     {
@@ -423,35 +427,65 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 
         if (type instanceof IClassDefinition)
         {
-            // We're trying to determine whether this class
-            // is derived from a specified class ('type').
-            // Iterate the superclass chain looking for 'type'.
-            Iterator<IClassDefinition> iter = classIterator(project, false);
-            while (iter.hasNext())
-            {
-                IClassDefinition cls = iter.next();
-                if (cls == type)
-                    return true;
-            }
-            return false;
+        	if (baseDefinitions == null)
+        	{
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
+            		System.out.println("ClassDefinitionBase waiting for lock for " + this.getQualifiedName());
+	        	synchronized (this) 
+	        	{
+		        	if (baseDefinitions == null)
+		        	{
+		        		ArrayList<IDefinition> bases = new ArrayList<IDefinition>();
+		        		
+			            // We're trying to determine whether this class
+			            // is derived from a specified class ('type').
+			            // Iterate the superclass chain looking for 'type'.
+			            Iterator<IClassDefinition> iter = classIterator(project, false);
+			            while (iter.hasNext())
+			            {
+			                IClassDefinition cls = iter.next();
+			                bases.add(cls);
+			            }
+			            baseDefinitions = bases;
+		        	}
+	        	}
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
+            		System.out.println("ClassDefinitionBase done with lock for " + this.getQualifiedName());
+        	}
+            return baseDefinitions.contains(type);
         }
         else if (type instanceof IInterfaceDefinition)
         {
-            // We're trying to determine whether this class
-            // implements a specified interface ('type').
-            // Iterate all of the interfaces that this class implements,
-            // looking for 'type'.
-            Iterator<IInterfaceDefinition> iter = interfaceIterator(project);
-            while (iter.hasNext())
-            {
-                IInterfaceDefinition intf = iter.next();
-                if (intf == type)
-                    return true;
-            }
-            return false;
+        	if (implDefinitions == null)
+        	{
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
+            		System.out.println("ClassDefinitionBase waiting for lock for " + this.getQualifiedName());
+	        	synchronized (this) 
+	        	{
+	            	if (implDefinitions == null)
+	            	{
+		        		ArrayList<IDefinition> impls = new ArrayList<IDefinition>();
+		        		
+			            // We're trying to determine whether this class
+			            // implements a specified interface ('type').
+			            // Iterate all of the interfaces that this class implements,
+			            // looking for 'type'.
+			            Iterator<IInterfaceDefinition> iter = interfaceIterator(project);
+			            while (iter.hasNext())
+			            {
+			                IInterfaceDefinition intf = iter.next();
+			                impls.add(intf);
+			            }
+			            implDefinitions = impls;
+	            	}
+	        	}
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
+            		System.out.println("ClassDefinitionBase done with lock for " + this.getQualifiedName());
+	        }
+            return implDefinitions.contains(type);
         }
 
-        return false;
+    	return false;
     }
 
     @Override

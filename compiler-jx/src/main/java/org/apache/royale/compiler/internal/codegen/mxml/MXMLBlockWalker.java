@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.InternalCompilerProblem2;
 import org.apache.royale.compiler.projects.IASProject;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
@@ -49,6 +50,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
@@ -145,10 +148,23 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     @Override
     public void walk(IASNode node)
     {
-        if (node instanceof IMXMLNode)
-            mxmlStrategy.handle(node);
-        else
-            asStrategy.handle(node);
+    	try {
+	        if (node instanceof IMXMLNode)
+	            mxmlStrategy.handle(node);
+	        else
+	            asStrategy.handle(node);
+    	}
+    	catch (Exception e)
+    	{
+    		String sp = String.format("%s line %d column %d", node.getSourcePath(), node.getLine() + 1, node.getColumn());
+    		if (node.getSourcePath() == null)
+    		{
+    			IASNode parent = node.getParent();
+    			sp = String.format("%s line %d column %d", parent.getSourcePath(), parent.getLine() + 1, parent.getColumn());
+    		}
+    		InternalCompilerProblem2 problem = new InternalCompilerProblem2(sp, e, "ASBlockWalker");
+    		errors.add(problem);
+    	}
     }
 
     @Override
@@ -427,10 +443,28 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
     
     //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitRemoteObjectMethod(IMXMLRemoteObjectMethodNode node)
+    {
+        debug("visitRemoteObjectMethod()");
+        
+        mxmlEmitter.emitRemoteObjectMethod(node);
+    }
+    
+	@Override
+	public void visitRemoteObject(IMXMLRemoteObjectNode node) {
+        debug("visitRemoteObjectMethod()");
+        
+        mxmlEmitter.emitRemoteObject(node);		
+	}
+    
+    //--------------------------------------------------------------------------
 
     protected void debug(String message)
     {
         //System.out.println(message);
     }
+
 
 }

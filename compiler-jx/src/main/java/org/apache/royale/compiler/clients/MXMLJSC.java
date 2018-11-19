@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -42,8 +43,11 @@ import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
 import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.CommandLineConfigurator;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
+import org.apache.royale.compiler.config.ConfigurationValue;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerProblemSettings;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
@@ -53,6 +57,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -97,6 +102,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         return problems;
     }
+    
+    static final String NEWLINE = System.getProperty("line.separator");
+    private static final String DEFAULT_VAR = "file-specs";
+    private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 
     /*
      * JS output type enumerations.
@@ -203,6 +212,16 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public String getName()
     {
         return FLEX_TOOL_MXMLC;
+    }
+
+    /**
+     * Get my program name.
+     * 
+     * @return always "mxmlc".
+     */
+    protected String getProgramName()
+    {
+        return "mxmljsc";
     }
 
     @Override
@@ -314,6 +333,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         try
         {
             final boolean continueCompilation = configure(args);
+        	CompilerDiagnosticsConstants.diagnostics = config.getDiagnosticsLevel();
 
 /*            if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;*/
@@ -557,16 +577,24 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                        BufferedOutputStream out = new BufferedOutputStream(
 	                                new FileOutputStream(outputClassFile));
 	
+                            BufferedOutputStream sourceMapOut = null;
 	                        File outputSourceMapFile = null;
 	                        if (project.config.getSourceMap())
 	                        {
 	                            outputSourceMapFile = getOutputSourceMapFile(
 	                                    cu.getQualifiedNames().get(0), outputFolder);
+                                sourceMapOut = new BufferedOutputStream(
+                                        new FileOutputStream(outputSourceMapFile));
 	                        }
 	                        
-	                        writer.writeTo(out, outputSourceMapFile);
+	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
 	                        out.flush();
-	                        out.close();
+                            out.close();
+                            if (sourceMapOut != null)
+                            {
+                                sourceMapOut.flush();
+                                sourceMapOut.close();
+                            }
 	                        writer.close();
 	                    }
 	                }
@@ -820,6 +848,18 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     	
         try
         {
+            if (args.length == 0)
+            {
+                final String usage = CommandLineConfigurator.brief(
+                        getProgramName(),
+                        DEFAULT_VAR,
+                        LocalizationManager.get(),
+                        L10N_CONFIG_PREFIX);
+                println(getStartMessage());
+                if (usage != null)
+                    println(usage);
+            }
+            
             if (useFlashBuilderProjectFiles(args))
             {
                 projectConfigurator.setConfiguration(
@@ -843,6 +883,14 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
             {
                 System.out.println(VersionInfo.buildMessage());
+                return false;
+            }
+            
+            // Print help if "-help" is present.
+            final List<ConfigurationValue> helpVar = configBuffer.getVar("help");
+            if (helpVar != null)
+            {
+                processHelp(helpVar);
                 return false;
             }
 
@@ -880,6 +928,61 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         return false;
     }
 
+    /**
+     * Print a message.
+     * 
+     * @param msg Message text.
+     */
+    public void println(final String msg)
+    {
+        System.out.println(msg);
+    }
+    
+    /**
+     * Get the start up message that contains the program name 
+     * with the copyright notice.
+     * 
+     * @return The startup message.
+     */
+    protected String getStartMessage()
+    {
+        // This message should not be localized.
+        String message = "Apache Royale MXML and ActionScript Compiler (mxmlc)" + NEWLINE +
+            VersionInfo.buildMessage() + NEWLINE;
+        return message;
+    }
+
+    /**
+     * Print detailed help information if -help is provided.
+     */
+    private void processHelp(final List<ConfigurationValue> helpVar)
+    {
+        final Set<String> keywords = new LinkedHashSet<String>();
+        for (final ConfigurationValue val : helpVar)
+        {
+            for (final Object element : val.getArgs())
+            {
+                String keyword = (String)element;
+                while (keyword.startsWith("-"))
+                    keyword = keyword.substring(1);
+                keywords.add(keyword);
+            }
+        }
+
+        if (keywords.size() == 0)
+            keywords.add("help");
+
+        final String usages = CommandLineConfigurator.usage(
+                    getProgramName(),
+                    DEFAULT_VAR,
+                    configBuffer,
+                    keywords,
+                    LocalizationManager.get(),
+                    L10N_CONFIG_PREFIX);
+        println(getStartMessage());
+        println(usages);
+    }
+    
     protected TargetType getTargetType()
     {
         return TargetType.SWF;

@@ -46,6 +46,7 @@
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler-common}/local.properties"/>
+    <property file="${compiler-common}/../build.properties"/>
     
     <property name="src.depend" value="true"/>
 
@@ -57,6 +58,7 @@
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
     <property name="manifest.Implementation-Title" value="Apache Royale Compiler"/>
+    <echo>RELEASE_VERSION IS: ${release.version}</echo>
     <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
     
@@ -64,6 +66,9 @@
     <condition property="build.number" value="${env.BUILD_NUMBER}">
         <isset property="env.BUILD_NUMBER"/>
     </condition>
+    <target name="version-info" unless="build.number">
+        <property name="build.number" value="0"/>
+    </target>
     
     <target name="compile" >
         <mkdir dir="${compiler-common}/target/classes"/>
@@ -83,7 +88,7 @@
         </javac>
     </target>
     
-    <target name="main" depends="compile" >
+    <target name="main" depends="compile, version-info" >
         <mkdir dir="${sdk}"/>
         <copy file="${basedir}/../LICENSE.base" tofile="${compiler-common}/target/classes/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.base" tofile="${compiler-common}/target/classes/META-INF/NOTICE"/>

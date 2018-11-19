@@ -36,6 +36,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.apache.royale.abc.visitors.IABCVisitor;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
 import org.apache.royale.compiler.css.ICSSProperty;
 import org.apache.royale.compiler.css.ICSSRule;
 import org.apache.royale.compiler.css.ICSSSelector;
@@ -187,20 +188,17 @@ public class CSSCompilationSession
      * 
      * @return A synthesized CSS model from normalized CSS model.
      */
-    protected ICSSDocument synthesisNormalizedCSS()
+    protected ICSSDocument synthesisNormalizedCSS(boolean isSWF)
     {
         fontFaces = new ArrayList<CSSFontFace>();
         
         for (final ICSSDocument cssDocument : cssDocuments)
-        {
-        	if (excludedCSSFiles.contains(cssDocument.getSourcePath()))
-        		continue;
-        			
+        {        			
             for (final ICSSRule newRule : cssDocument.getRules())
             {
                 if (keepRule(newRule))
                 {
-                    addRuleToCodeGeneration(newRule);
+                    addRuleToCodeGeneration(newRule, isSWF);
                 }
             }
             for (final ICSSFontFace fontFace : cssDocument.getFontFaces())
@@ -229,9 +227,10 @@ public class CSSCompilationSession
      * 
      * @param newRule A CSS rule to be added to the synthesized CSS document.
      */
-    private void addRuleToCodeGeneration(final ICSSRule newRule)
+    private void addRuleToCodeGeneration(final ICSSRule newRule, boolean isSWF)
     {
-        if (newRule.getMediaQueryConditions().isEmpty())
+    	ImmutableList<ICSSMediaQueryCondition> mq = newRule.getMediaQueryConditions();
+        if (mq.isEmpty() || (isSWF && mq.size() == 1 && mq.get(0).getValue().toString().equals("-royale-swf")))
         {
             // Normalize the rule and clobber properties if the rule has no media query.
             final ImmutableList<CSSProperty> properties = ImmutableList.copyOf(
@@ -280,7 +279,7 @@ public class CSSCompilationSession
      */
     public ICSSCodeGenResult emitStyleDataClass(final IRoyaleProject project, final IABCVisitor abcVisitor) throws Exception
     {
-        final ICSSDocument css = synthesisNormalizedCSS();
+        final ICSSDocument css = synthesisNormalizedCSS(true);
         //LoggingProfiler.onSynthesisCSS(css);
         final CSSReducer reducer = new CSSReducer(project, css, abcVisitor, this, true, 0);
         final CSSEmitter emitter = new CSSEmitter(reducer);
@@ -311,7 +310,7 @@ public class CSSCompilationSession
                 selectorQname = qname;
         }
         final String resolvedSelectorName = selectorQname.concat(
-                selector.getCSSSyntax());
+                selector.getCSSSyntaxNoNamespaces());
         return resolvedSelectorName;
     }
 

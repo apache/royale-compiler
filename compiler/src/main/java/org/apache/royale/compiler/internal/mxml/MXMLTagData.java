@@ -1050,6 +1050,8 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         int end = getEnd();
         int line = getLine();
         int column = getColumn();
+        int endLine = getEndLine();
+        int endColumn = getEndColumn();
 
         boolean foundFirstChild = false;
 
@@ -1061,6 +1063,8 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                 start = unit.getStart();
                 line = unit.getLine();
                 column = unit.getColumn();
+                endLine = unit.getEndLine();
+                endColumn = unit.getEndColumn();
 
                 foundFirstChild = true;
             }
@@ -1068,7 +1072,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
             end = unit.getEnd();
         }
 
-        return new SourceLocation(sourcePath, start, end, line, column);
+        return new SourceLocation(sourcePath, start, end, line, column, endLine, endColumn);
     }
 
     /**

@@ -103,7 +103,9 @@ public class PackageJSMojo extends AbstractMojo {
                     addDirectoryToZip(zipRootDirectory, file, zipOutputStream);
                 } else {
                     String relativePath = zipRootDirectory.toURI().relativize(currentDirectory.toURI()).getPath();
-                    ZipEntry zipEntry = new ZipEntry(relativePath + "/" + file.getName());
+                    if (relativePath.startsWith("/"))
+                        relativePath = relativePath.substring(1);
+                    ZipEntry zipEntry = new ZipEntry(relativePath + file.getName());
                     zipOutputStream.putNextEntry(zipEntry);
                     FileInputStream in = new FileInputStream(file);
                     IOUtils.copy(in, zipOutputStream);

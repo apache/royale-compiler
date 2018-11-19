@@ -742,6 +742,8 @@ public class MethodBodySemanticChecker
 
         if ( actuals.size() > formals.length && !last_is_rest )
         {
+        	if (project.isParameterCountMismatchAllowed(func, formals.length, actuals.size()))
+        		return;
             addProblem(new TooManyFunctionParametersProblem(iNode, formals.length));
         }
 
@@ -1745,6 +1747,12 @@ public class MethodBodySemanticChecker
                 );
         }
 
+        while (iNode.getSourcePath().contains("compiler-jx") &&
+        		iNode.getSourcePath().contains("config.as"))
+		{
+        	iNode = iNode.getParent();
+		}
+        	
         return new AccessUndefinedPropertyProblem(iNode, unknown_name);
     }
     

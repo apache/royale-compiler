@@ -19,9 +19,6 @@
 
 package org.apache.royale.compiler.problems;
 
-import org.apache.royale.compiler.common.ISourceLocation;
-
-
 /**
  * Marker interface to break dependencies in ProblemQuery
  */

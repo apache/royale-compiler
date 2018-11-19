@@ -63,6 +63,7 @@ import org.apache.royale.compiler.tree.as.IPackageNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.utils.NativeUtils;
 
@@ -414,55 +415,63 @@ public class EmitterUtils
     public static boolean isClassMember(ICompilerProject project,
             IDefinition nodeDef, IClassNode classNode)
     {
-    	if (nodeDef.isInternal() && (!(nodeDef.getParent() instanceof ClassDefinition)))
+        IDefinition parentDef = nodeDef.getParent();
+    	if (nodeDef.isInternal() && (!(parentDef instanceof ClassDefinition)))
     		return false;
     	
-        TypeScope cscope = (TypeScope) classNode.getDefinition()
-                .getContainedScope();
-
-        Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);
-        Collection<IDefinition> defs = new HashSet<IDefinition>();
-
-        cscope.getAllPropertiesForMemberAccess((CompilerProject) project, defs,
-                nsSet);
-
-        Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
-        while (visiblePropertiesIterator.hasNext())
-        {
-            if (nodeDef.getQualifiedName().equals(
-                    visiblePropertiesIterator.next().getQualifiedName()))
-                return true;
-        }
-
-        return false;
+        IClassDefinition cdef = classNode.getDefinition();
+        return parentDef == cdef || (parentDef instanceof ClassDefinition && cdef.isInstanceOf((ClassDefinition)parentDef, project));
     }
     
     public static boolean isClassMember(ICompilerProject project,
             IDefinition nodeDef, IClassDefinition classDef)
     {
-    	if (nodeDef.isInternal() && (!(nodeDef.getParent() instanceof ClassDefinition)))
+        IDefinition parentDef = nodeDef.getParent();
+    	if (nodeDef.isInternal() && (!(parentDef instanceof ClassDefinition)))
     		return false;
     	
-        TypeScope cscope = (TypeScope) classDef
-                .getContainedScope();
+        return parentDef == classDef || (parentDef instanceof ClassDefinition && ((ClassDefinition)parentDef).isInstanceOf(classDef, project));
+    }
+    
+    public static boolean writeE4xFilterNode(ICompilerProject project,
+            JSSessionModel model, IExpressionNode node)
+    {
+    	if (!model.inE4xFilter) return false;
+    	
+        IDefinition nodeDef = node.resolve(project);
 
-        Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);
-        Collection<IDefinition> defs = new HashSet<IDefinition>();
+        IASNode parentNode = node.getParent();
+//        ASTNodeID parentNodeId = parentNode.getNodeID();
 
-        cscope.getAllPropertiesForMemberAccess((CompilerProject) project, defs,
-                nsSet);
+        IASNode firstChild = parentNode.getChild(0);
 
-        Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
-        while (visiblePropertiesIterator.hasNext())
+//        final IClassDefinition thisClass = model.getCurrentClass();
+
+//        boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
+
+        if (parentNode instanceof IUnaryOperatorNode)
+        	return false;
+        if (nodeDef instanceof ParameterDefinition)
+            return false;
+        if (nodeDef instanceof InterfaceDefinition)
+            return false;
+        if (nodeDef instanceof ClassDefinition)
+            return false;
+        if (nodeDef instanceof VariableDefinition)
         {
-            if (nodeDef.getQualifiedName().equals(
-                    visiblePropertiesIterator.next().getQualifiedName()))
-                return true;
+        		List<IVariableNode> list = model.getVars();
+        		for (IVariableNode element : list) {
+        		    if(element.getQualifiedName().equals(((IIdentifierNode)node).getName()))
+        		    		return false;
+        		}
         }
+        
+        if (node == firstChild) 
+        		return true;
 
         return false;
     }
-    
+
     public static boolean isScalar(IExpressionNode node)
     {
     	ASTNodeID id = node.getNodeID();

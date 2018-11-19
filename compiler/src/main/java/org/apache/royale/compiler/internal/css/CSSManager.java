@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.royale.compiler.problems.CSSUnresolvedClassReferenceProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -181,6 +183,11 @@ public class CSSManager implements ICSSManager
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
         final ISWC swc = swcManager.get(swcFile);
+        ITargetSettings ts = royaleProject.getTargetSettings();
+        List<String> excludedCSSFiles = (ts != null) ? ts.getExcludeDefaultsCSSFiles() : null;
+        String defaultsCSS = swcFile.getName() + ":" + "defaults.css";
+        if (excludedCSSFiles != null && excludedCSSFiles.contains(defaultsCSS)) 
+        	return null;
         return cache.getDefaultsCSS(swc, royaleProject.getCompatibilityVersion());
     }
     
@@ -234,8 +241,12 @@ public class CSSManager implements ICSSManager
         final ImmutableList.Builder<ICSSDocument> builder = new ImmutableList.Builder<ICSSDocument>();
         final ISWCManager swcManager = royaleProject.getWorkspace().getSWCManager();
         final CSSDocumentCache cssCache = (CSSDocumentCache)swcManager.getCSSDocumentCache();
+        ITargetSettings ts = royaleProject.getTargetSettings();
+        List<String> excludedCSSFiles = (ts != null) ? ts.getExcludeDefaultsCSSFiles() : null;
         for (final IFileSpecification themeFile : royaleProject.getThemeFiles())
         {
+        	if (excludedCSSFiles != null && excludedCSSFiles.contains(themeFile.getPath()))
+        		continue;
             try
             {
                 final ICSSDocument css;

@@ -63,6 +63,12 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
      * {@code <fx:Style src="styles.css" />}.
      */
     private String cssText;
+    
+    /**
+     * path of included css.
+     * {@code <fx:Style src="styles.css" />}.
+     */
+    private String cssSourcePath = null;
 
     @Override
     public ASTNodeID getNodeID()
@@ -84,7 +90,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
             if (cssText != null && !cssText.isEmpty() && !cssText.trim().isEmpty())
             {
                 ANTLRStringStream stream = new ANTLRStringStream(cssText);
-                stream.name = getSourcePath();
+                stream.name = cssSourcePath != null ? cssSourcePath : getSourcePath();
                 cssDocument = CSSDocument.parse(stream, problems);
             }
             else
@@ -114,7 +120,10 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
             // Doing so makes this compilation unit dependent on that file.
             final String sourcePath = resolveSourceAttributePath(builder, attribute, info);
             if (sourcePath != null)
+            {
                 cssText = builder.readExternalFile(attribute, sourcePath);
+                cssSourcePath = sourcePath;
+            }
         }
         else
         {

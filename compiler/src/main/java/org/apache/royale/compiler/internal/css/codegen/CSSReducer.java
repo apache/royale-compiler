@@ -462,7 +462,7 @@ public class CSSReducer implements ICSSCodeGenResult
         }
         else if (value instanceof CSSRgbaColorPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+            valueInstructions.addInstruction(ABCConstants.OP_pushuint, new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
         }
         else if (value instanceof CSSKeywordPropertyValue)
         {
@@ -527,8 +527,15 @@ public class CSSReducer implements ICSSCodeGenResult
             }
             else
             {
-                assert false : "CSS parser bug: unexpected function call property value: " + functionCall;
-                throw new IllegalStateException("Unexpected function call property value: " + functionCall);
+            	if (project.isRoyale())
+            	{
+                    valueInstructions.addInstruction(ABCConstants.OP_pushstring, functionCall.toString());
+            	}
+            	else
+            	{
+	                assert false : "CSS parser bug: unexpected function call property value: " + functionCall;
+	                throw new IllegalStateException("Unexpected function call property value: " + functionCall);
+            	}
             }
         }
         else if (value instanceof CSSArrayPropertyValue)

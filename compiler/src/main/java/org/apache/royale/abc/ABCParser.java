@@ -41,6 +41,9 @@ import static org.apache.royale.abc.ABCConstants.*;
  */
 public class ABCParser
 {
+	public boolean verbose = false;
+	public PrintWriter output;
+	
     /**
      * The ABC as a byte array.
      */
@@ -159,6 +162,9 @@ public class ABCParser
 
         vabc.visit(major, minor);
 
+        if (verbose)
+        	output.println("parsing int pool");
+        	
         pool_size = p.readU30();
         ints = new int[pool_size];
         for (int i = 1; i < pool_size; i++)
@@ -167,6 +173,9 @@ public class ABCParser
             vabc.visitPooledInt(ints[i]);
         }
 
+        if (verbose)
+        	output.println("parsing uint pool");
+        
         pool_size = p.readU30();
         uints = new long[pool_size];
         for (int i = 1; i < pool_size; i++)
@@ -175,6 +184,9 @@ public class ABCParser
             vabc.visitPooledUInt(uints[i]);
         }
 
+        if (verbose)
+        	output.println("parsing float pool");
+        
         pool_size = p.readU30();
         doubles = new double[pool_size];
         for (int i = 1; i < pool_size; i++)
@@ -182,6 +194,9 @@ public class ABCParser
             doubles[i] = p.readDouble();
             vabc.visitPooledDouble(doubles[i]);
         }
+
+        if (verbose)
+        	output.println("parsing string pool");
 
         pool_size = p.readU30();
         strings = new String[pool_size];
@@ -201,6 +216,9 @@ public class ABCParser
             p.pos += len;
         }
 
+        if (verbose)
+        	output.println("parsing namespace pool");
+        
         pool_size = p.readU30();
         namespaces = new Namespace[pool_size];
         for (int i = 1; i < pool_size; i++)
@@ -212,6 +230,9 @@ public class ABCParser
             vabc.visitPooledNamespace(namespaces[i]);
         }
 
+        if (verbose)
+        	output.println("parsing namespace_set pool");
+        
         pool_size = p.readU30();
         namespace_sets = new Nsset[pool_size];
         for (int i = 1; i < pool_size; i++)
@@ -228,6 +249,9 @@ public class ABCParser
 
         pool_size = p.readU30();
 
+        if (verbose)
+        	output.println("parsing name pool");
+        
         names = new Name[pool_size];
         List<NameAndPos> forward_ref_names = null;
         for (int i = 1; i < pool_size; i++)
@@ -267,6 +291,9 @@ public class ABCParser
             p.pos = orig_pos;
         }
 
+        if (verbose)
+        	output.println("parsing method pool");
+        
         int n_methods = p.readU30();
         this.methodInfos = new MethodInfo[n_methods];
         this.methodVisitors = new IMethodVisitor[n_methods];
@@ -278,6 +305,9 @@ public class ABCParser
                 this.methodVisitors[i].visit();
         }
 
+        if (verbose)
+        	output.println("parsing metadata pool");
+        
         pool_size = p.readU30();
         metadata = new Metadata[pool_size];
         for (int i = 0; i < pool_size; i++)
@@ -286,6 +316,9 @@ public class ABCParser
             vabc.visitPooledMetadata(metadata[i]);
         }
 
+        if (verbose)
+        	output.println("parsing instances pool");
+        
         //  InstanceInfos and ClassInfos are stored in
         //  homogenous arrays in the ABC, but their
         //  IClassVisitor needs both in its constructor; so
@@ -323,6 +356,9 @@ public class ABCParser
             }
         }
 
+        if (verbose)
+        	output.println("parsing scripts pool");
+        
         int n_scripts = p.readU30();
         for (int i = 0; i < n_scripts; i++)
         {
@@ -339,6 +375,9 @@ public class ABCParser
             }
         }
 
+        if (verbose)
+        	output.println("parsing method bodies pool");
+        
         int n_method_bodies = p.readU30();
         for (int i = 0; i < n_method_bodies; i++)
         {

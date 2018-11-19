@@ -209,7 +209,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                         writeToken(ASEmitterTokens.EQUAL);
                         write("0");
                     }
-                    if (defaultInitializers)
+                    else if (defaultInitializers)
                     {
                         if (defName.equals("Number"))
                         {

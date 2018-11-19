@@ -15,10 +15,6 @@
 package org.apache.royale.maven;
 
 import org.apache.flex.tools.FlexTool;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.velocity.VelocityContext;
-
-import java.io.File;
 
 /**
  * Created by christoferdutz on 30.04.16.

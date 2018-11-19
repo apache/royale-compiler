@@ -40,6 +40,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -75,121 +76,124 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 		boolean isInterface = tnode instanceof IInterfaceNode;
 
-	    /*
-	     * Metadata
-	     * 
-	     * @type {Object.<string, Array.<Object>>}
-	     */
-	    writeNewline();
-	    writeNewline();
-	    writeNewline();
-	    doc.begin();
-	    writeNewline(" * Metadata");
-	    writeNewline(" *");
-	    writeNewline(" * @type {Object.<string, Array.<Object>>}");
-	    doc.end();
-
-	    // a.B.prototype.AFJS_CLASS_INFO = {  };
-	    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
-	    write(ASEmitterTokens.MEMBER_ACCESS);
-	    write(JSEmitterTokens.PROTOTYPE);
-	    write(ASEmitterTokens.MEMBER_ACCESS);
-	    writeToken(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO);
-	    writeToken(ASEmitterTokens.EQUAL);
-	    writeToken(ASEmitterTokens.BLOCK_OPEN);
-	
-	    // names: [{ name: '', qName: '', kind:'interface|class' }]
-	    write(JSRoyaleEmitterTokens.NAMES);
-	    writeToken(ASEmitterTokens.COLON);
-	    write(ASEmitterTokens.SQUARE_OPEN);
-	    writeToken(ASEmitterTokens.BLOCK_OPEN);
-	    write(JSRoyaleEmitterTokens.NAME);
-	    writeToken(ASEmitterTokens.COLON);
-	    write(ASEmitterTokens.SINGLE_QUOTE);
-	    write(tnode.getName());
-	    write(ASEmitterTokens.SINGLE_QUOTE);
-	    writeToken(ASEmitterTokens.COMMA);
-	    write(JSRoyaleEmitterTokens.QNAME);
-	    writeToken(ASEmitterTokens.COLON);
-	    write(ASEmitterTokens.SINGLE_QUOTE);
-	    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
-	    write(ASEmitterTokens.SINGLE_QUOTE);
-		writeToken(ASEmitterTokens.COMMA);
-		write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_KIND);
-		writeToken(ASEmitterTokens.COLON);
-		write(ASEmitterTokens.SINGLE_QUOTE);
-		if (isInterface) write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_INTERFACE_KIND);
-		else write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_CLASS_KIND);
-		writeToken(ASEmitterTokens.SINGLE_QUOTE);
-	    write(ASEmitterTokens.BLOCK_CLOSE);
-	    write(ASEmitterTokens.SQUARE_CLOSE);
-
-	    IExpressionNode[] enodes;
-	    if (tnode instanceof IClassNode)
-	        enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
-	    else {
-			enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
-		}
-
-
-		boolean needsIEventDispatcher = tnode instanceof IClassNode
-				&& ((IClassDefinition) tnode.getDefinition()).needsEventDispatcher(getProject())
-				&& getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS;
-
-		//we can remove the mapping from the model for ImplicitBindableImplementation now
-		if (tnode.getDefinition() instanceof IClassDefinition)
-				getModel().unregisterImplicitBindableImplementation(
-						(IClassDefinition) tnode.getDefinition());
-
-	    if (enodes.length > 0 || needsIEventDispatcher)
+	    if (!getEmitter().getModel().isExterns)
 	    {
-	        writeToken(ASEmitterTokens.COMMA);
+		    /*
+		     * Metadata
+		     * 
+		     * @type {Object.<string, Array.<Object>>}
+		     */
+		    writeNewline();
+		    writeNewline();
+		    writeNewline();
+		    doc.begin();
+		    writeNewline(" * Metadata");
+		    writeNewline(" *");
+		    writeNewline(" * @type {Object.<string, Array.<Object>>}");
+		    doc.end();
 	
-	        // interfaces: [a.IC, a.ID]
-	        write(JSRoyaleEmitterTokens.INTERFACES);
-	        writeToken(ASEmitterTokens.COLON);
-	        write(ASEmitterTokens.SQUARE_OPEN);
-			if (needsIEventDispatcher) {
-				//add IEventDispatcher interface to implemented interfaces list
-				write(getEmitter().formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
-				if (enodes.length > 0)
-					writeToken(ASEmitterTokens.COMMA);
+		    // a.B.prototype.AFJS_CLASS_INFO = {  };
+		    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
+		    write(ASEmitterTokens.MEMBER_ACCESS);
+		    write(JSEmitterTokens.PROTOTYPE);
+		    write(ASEmitterTokens.MEMBER_ACCESS);
+		    writeToken(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO);
+		    writeToken(ASEmitterTokens.EQUAL);
+		    writeToken(ASEmitterTokens.BLOCK_OPEN);
+		
+		    // names: [{ name: '', qName: '', kind:'interface|class' }]
+		    write(JSRoyaleEmitterTokens.NAMES);
+		    writeToken(ASEmitterTokens.COLON);
+		    write(ASEmitterTokens.SQUARE_OPEN);
+		    writeToken(ASEmitterTokens.BLOCK_OPEN);
+		    write(JSRoyaleEmitterTokens.NAME);
+		    writeToken(ASEmitterTokens.COLON);
+		    write(ASEmitterTokens.SINGLE_QUOTE);
+		    write(tnode.getName());
+		    write(ASEmitterTokens.SINGLE_QUOTE);
+		    writeToken(ASEmitterTokens.COMMA);
+		    write(JSRoyaleEmitterTokens.QNAME);
+		    writeToken(ASEmitterTokens.COLON);
+		    write(ASEmitterTokens.SINGLE_QUOTE);
+		    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
+		    write(ASEmitterTokens.SINGLE_QUOTE);
+			writeToken(ASEmitterTokens.COMMA);
+			write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_KIND);
+			writeToken(ASEmitterTokens.COLON);
+			write(ASEmitterTokens.SINGLE_QUOTE);
+			if (isInterface) write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_INTERFACE_KIND);
+			else write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_CLASS_KIND);
+			writeToken(ASEmitterTokens.SINGLE_QUOTE);
+		    write(ASEmitterTokens.BLOCK_CLOSE);
+		    write(ASEmitterTokens.SQUARE_CLOSE);
+	
+		    IExpressionNode[] enodes;
+		    if (tnode instanceof IClassNode)
+		        enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
+		    else {
+				enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
 			}
-	        int i = 0;
-	        for (IExpressionNode enode : enodes)
-	        {
-	        	IDefinition edef = enode.resolve(getProject());
-	        	if (edef == null)
-	        		continue;
-	            write(getEmitter().formatQualifiedName(
-	                    edef.getQualifiedName()));
-	            if (i < enodes.length - 1)
-	                writeToken(ASEmitterTokens.COMMA);
-	            i++;
-	        }
-	        write(ASEmitterTokens.SQUARE_CLOSE);
+	
+	
+			boolean needsIEventDispatcher = tnode instanceof IClassNode
+					&& ((IClassDefinition) tnode.getDefinition()).needsEventDispatcher(getProject())
+					&& getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS;
+	
+			//we can remove the mapping from the model for ImplicitBindableImplementation now
+			if (tnode.getDefinition() instanceof IClassDefinition)
+					getModel().unregisterImplicitBindableImplementation(
+							(IClassDefinition) tnode.getDefinition());
+	
+		    if (enodes.length > 0 || needsIEventDispatcher)
+		    {
+		        writeToken(ASEmitterTokens.COMMA);
+		
+		        // interfaces: [a.IC, a.ID]
+		        write(JSRoyaleEmitterTokens.INTERFACES);
+		        writeToken(ASEmitterTokens.COLON);
+		        write(ASEmitterTokens.SQUARE_OPEN);
+				if (needsIEventDispatcher) {
+					//add IEventDispatcher interface to implemented interfaces list
+					write(getEmitter().formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
+					if (enodes.length > 0)
+						writeToken(ASEmitterTokens.COMMA);
+				}
+		        int i = 0;
+		        for (IExpressionNode enode : enodes)
+		        {
+		        	IDefinition edef = enode.resolve(getProject());
+		        	if (edef == null)
+		        		continue;
+		            write(getEmitter().formatQualifiedName(
+		                    edef.getQualifiedName()));
+		            if (i < enodes.length - 1)
+		                writeToken(ASEmitterTokens.COMMA);
+		            i++;
+		        }
+		        write(ASEmitterTokens.SQUARE_CLOSE);
+		    }
+		    write(ASEmitterTokens.SPACE);
+		    write(ASEmitterTokens.BLOCK_CLOSE);
+		    write(ASEmitterTokens.SEMICOLON);
+
+		    collectReflectionData(tnode);
+		    IMetaTagNode[] metadata = null;
+		    IMetaTagsNode metadataTags = tnode.getMetaTags();
+		    if (metadataTags != null)
+		    	metadata = metadataTags.getAllTags();
+	
+			String typeName = getEmitter().formatQualifiedName(tnode.getQualifiedName());
+	
+		    emitReflectionData(
+		    		typeName,
+					reflectionKind,
+		    		varData,
+		    		accessorData,
+		    		methodData,
+		    		metadata);
+		    
+		    emitExportProperties(typeName, exportProperties, exportSymbols);
 	    }
-	    write(ASEmitterTokens.SPACE);
-	    write(ASEmitterTokens.BLOCK_CLOSE);
-	    write(ASEmitterTokens.SEMICOLON);
-
-	    collectReflectionData(tnode);
-	    IMetaTagNode[] metadata = null;
-	    IMetaTagsNode metadataTags = tnode.getMetaTags();
-	    if (metadataTags != null)
-	    	metadata = metadataTags.getAllTags();
-
-		String typeName = getEmitter().formatQualifiedName(tnode.getQualifiedName());
-
-	    emitReflectionData(
-	    		typeName,
-				reflectionKind,
-	    		varData,
-	    		accessorData,
-	    		methodData,
-	    		metadata);
-	    
-	    emitExportProperties(typeName, exportProperties, exportSymbols);
     }
 
     public enum ReflectionKind{
@@ -840,7 +844,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			write("type");
 			writeToken(ASEmitterTokens.COLON);
 			write(ASEmitterTokens.SINGLE_QUOTE);
-			write(parameterDefinition.resolveType(getProject()).getQualifiedName());
+			ITypeDefinition pd = parameterDefinition.resolveType(getProject());
+			if (pd == null)
+			{
+				UnknownTypeProblem problem = new UnknownTypeProblem(parameterDefinition.getNode(), parameterDefinition.getQualifiedName());
+				getProject().getProblems().add(problem);
+				write("not found");
+			}
+			else
+				write(pd.getQualifiedName());
 			write(ASEmitterTokens.SINGLE_QUOTE);
 
 			write(ASEmitterTokens.COMMA);

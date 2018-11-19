@@ -87,6 +87,7 @@ public class ASTestBase extends TestBase
     protected static final int WRAP_LEVEL_MEMBER = 3;
     protected static final int WRAP_LEVEL_CLASS = 2;
     protected static final int WRAP_LEVEL_PACKAGE = 1;
+    protected static final int WRAP_LEVEL_NONE = 0;
 
     protected IASNode getNode(String code, Class<? extends IASNode> type)
     {

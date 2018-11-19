@@ -22,6 +22,7 @@ package org.apache.royale.swf.io;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.utils.DAByteArrayOutputStream;
 
 import SevenZip.Compression.LZMA.Decoder;
@@ -89,6 +90,10 @@ public class LZMAInputStream extends InputStream
 
         os.flush();
         readIndex = 0;
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+    		System.out.println("LZMAInputStream waiting for lock in initDecode");
         buffer = os.getDirectByteArray();
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.DA_BYTEARRAY) == CompilerDiagnosticsConstants.DA_BYTEARRAY)
+    		System.out.println("LZMAInputStream waiting for lock in initDecode");
     }
 }

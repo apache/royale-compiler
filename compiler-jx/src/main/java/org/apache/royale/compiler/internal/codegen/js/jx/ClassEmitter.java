@@ -244,7 +244,11 @@ public class ClassEmitter extends JSSubEmitter implements
                     writeNewline();
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.MEMBER_ACCESS);
-                    write(dnode.getName());
+                    String dname = dnode.getName();
+                    IDefinition dDef = dnode.getDefinition();
+                	if (dDef != null && dDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                		dname = getEmitter().formatPrivateName(dDef.getParent().getQualifiedName(), dname);
+                    write(dname);
                     if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
                     {
                     	write("_");

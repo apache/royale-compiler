@@ -700,6 +700,27 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
     }
 
     /**
+     * Sets the start/end/line/column/endLine/endColumn location information for this node.
+     * 
+     * @param start The starting offset of this node.
+     * @param end The ending offset of this node.
+     * @param line The number of the line on which this node starts.
+     * @param column This number of the column at which this node starts.
+     * @param endLine The number of the line on which this node ends.
+     * @param endColumn This number of the column at which this node ends.
+     */
+    public void setLocation(String sourcePath, int start, int end, int line, int column, int endLine, int endColumn)
+    {
+        setSourcePath(sourcePath);
+        setStart(start);
+        setEnd(end);
+        setLine(line);
+        setColumn(column);
+        setEndLine(endLine);
+        setEndColumn(endColumn);
+    }
+
+    /**
      * Sets the start/end/line/column location information for this node.
      * 
      * @param location A {@link SourceLocation} object.
@@ -711,8 +732,10 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         int end = location.getEnd();
         int line = location.getLine();
         int column = location.getColumn();
+        int endLine = location.getEndLine();
+        int endColumn = location.getEndColumn();
 
-        setLocation(sourcePath, start, end, line, column);
+        setLocation(sourcePath, start, end, line, column, endLine, endColumn);
     }
 
     /**
@@ -737,8 +760,10 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         }
         int line = unit.getLine();
         int column = unit.getColumn();
+        int endLine = unit.getEndLine();
+        int endColumn = unit.getEndColumn();
 
-        setLocation(sourcePath, start, end, line, column);
+        setLocation(sourcePath, start, end, line, column, endLine, endColumn);
     }
 
     /**
@@ -753,8 +778,10 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         int end = attribute.getAbsoluteEnd();
         int line = attribute.getLine();
         int column = attribute.getColumn();
+        int endLine = attribute.getEndLine();
+        int endColumn = attribute.getEndColumn();
 
-        setLocation(sourcePath, start, end, line, column);
+        setLocation(sourcePath, start, end, line, column, endLine, endColumn);
     }
 
     /**
@@ -785,8 +812,10 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         int end = lastUnit.getEnd();
         int line = firstUnit.getLine();
         int column = firstUnit.getColumn();
+        int endLine = lastUnit.getEndLine();
+        int endColumn = lastUnit.getEndColumn();
         
-        setLocation(sourcePath, start, end, line, column);
+        setLocation(sourcePath, start, end, line, column, endLine, endColumn);
         
         adjustOffsets(builder);
     }
@@ -936,8 +965,10 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
             int end = lastFragment.getPhysicalStart() + lastFragment.getPhysicalText().length();
             int line = firstFragment.getPhysicalLine();
             int column = firstFragment.getPhysicalColumn();
+            int endLine = lastFragment.getPhysicalLine();
+            int endColumn = lastFragment.getPhysicalColumn() + lastFragment.getPhysicalText().length();
 
-            return new SourceLocation(sourcePath, start, end, line, column);
+            return new SourceLocation(sourcePath, start, end, line, column, endLine, endColumn);
         }
         
         /**

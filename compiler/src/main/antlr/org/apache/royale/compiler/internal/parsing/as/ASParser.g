@@ -222,6 +222,7 @@ attributedDefinition[ContainerNode c]
 attribute [List<ModifierNode> modifiers, List<INamespaceDecorationNode> namespaceAttributes] 
 {
     ExpressionNodeBase namespaceNode = null; 
+    ExpressionNodeBase configAsNamespaceNode = null; 
     ModifierNode modifierNode = null;
 }
     :   modifierNode=modifierAttribute
@@ -234,8 +235,33 @@ attribute [List<ModifierNode> modifiers, List<INamespaceDecorationNode> namespac
             if (namespaceNode instanceof INamespaceDecorationNode)
                 namespaceAttributes.add((INamespaceDecorationNode) namespaceNode); 
         }
+    |   configAsNamespaceNode=configConditionAsNamespaceModifier
+        {
+            if (configAsNamespaceNode instanceof INamespaceDecorationNode)
+                namespaceAttributes.add((INamespaceDecorationNode) configAsNamespaceNode); 
+        }
     ;
 	
+configConditionAsNamespaceModifier returns [ExpressionNodeBase n]
+{
+    n = null; 
+}
+    :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_NAMESPACE_ANNOTATION
+        { final NamespaceIdentifierNode nsNode = new NamespaceIdentifierNode((ASToken)ns); 
+          nsNode.setIsConfigNamespace(isConfigNamespace(nsNode));
+	  final IdentifierNode idNode = new IdentifierNode((ASToken)id);
+	  final IdentifierNode idNode2 = (IdentifierNode)transformToNSAccessExpression(nsNode, (ASToken) op, idNode);
+          n = new NamespaceIdentifierNode(idNode2.getName());
+          n = n.copyForInitializer(null);
+	  n.setSourcePath(nsNode.getSourcePath());
+	  n.setLine(nsNode.getLine());
+	  n.setColumn(nsNode.getColumn());
+	  n.setEndLine(idNode.getEndLine());
+	  n.setEndColumn(idNode.getEndColumn());
+	  n.setStart(nsNode.getStart());
+	  n.setEnd(idNode.getEnd());
+        }
+    ;
 	
 /**
  * Matches a definition of variable, function, namespace, class or interface.
@@ -2037,10 +2063,31 @@ type returns [ExpressionNodeBase n]
     n = null; 
 }
     :   n=starLiteral
+    |   n=configConditionAsType
     |   n=restrictedName ( n=typeApplication[n] )?
     ;	
     exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex); }
   
+configConditionAsType returns [ExpressionNodeBase n]
+{
+    n = null; 
+}
+    :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_IDENTIFIER
+        { final NamespaceIdentifierNode nsNode = new NamespaceIdentifierNode((ASToken)ns); 
+          nsNode.setIsConfigNamespace(isConfigNamespace(nsNode));
+	  final IdentifierNode idNode = new IdentifierNode((ASToken)id);
+	  n = transformToNSAccessExpression(nsNode, (ASToken) op, idNode);
+          n = n.copyForInitializer(null);
+	  n.setSourcePath(nsNode.getSourcePath());
+	  n.setLine(nsNode.getLine());
+	  n.setColumn(nsNode.getColumn());
+	  n.setEndLine(idNode.getEndLine());
+	  n.setEndColumn(idNode.getEndColumn());
+	  n.setStart(nsNode.getStart());
+	  n.setEnd(idNode.getEnd());
+        }
+    ;
+
 /**
  * Matches a "type application" part>
  *
@@ -2999,7 +3046,26 @@ propertyAccessExpression [ExpressionNodeBase l] returns [ExpressionNodeBase n]
     |   TOKEN_OPERATOR_DESCENDANT_ACCESS r=accessPart
         { n = new MemberAccessExpressionNode(l, op, r); }
     |   TOKEN_OPERATOR_NS_QUALIFIER r=nsAccessPart
-        { n = transformToNSAccessExpression(l, op, r); } 
+        { if (l instanceof NamespaceIdentifierNode)
+          {
+            final NamespaceIdentifierNode nsNode = (NamespaceIdentifierNode)l; 
+            nsNode.setIsConfigNamespace(isConfigNamespace(nsNode));
+            final IdentifierNode idNode = (IdentifierNode)r;
+	    n = transformToNSAccessExpression(nsNode, (ASToken) op, idNode);
+            n = n.copyForInitializer(null);
+	    n.setSourcePath(nsNode.getSourcePath());
+	    n.setLine(nsNode.getLine());
+	    n.setColumn(nsNode.getColumn());
+	    n.setEndLine(idNode.getEndLine());
+	    n.setEndColumn(idNode.getEndColumn());
+	    n.setStart(nsNode.getStart());
+	    n.setEnd(idNode.getEnd());
+          }
+          else
+          {
+	    n = transformToNSAccessExpression(l, (ASToken) op, r);
+          }
+        } 
     |   n=bracketExpression[l]
     |   n=typeApplication[l]
     ;

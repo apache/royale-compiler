@@ -94,6 +94,7 @@ public class JSClosureCompilerWrapper
     private String propertyMapInputPath;
     private boolean skipTypeInference;
     private Set<String> provideds;
+    private boolean sourceMap = false;
     
     public String targetFilePath;
     
@@ -120,6 +121,11 @@ public class JSClosureCompilerWrapper
     public void setProvideds(Set<String> set)
     {
     	provideds = set;
+    }
+
+    public void setSourceMap(boolean enabled)
+    {
+        sourceMap = enabled;
     }
     
     public void compile()
@@ -164,9 +170,12 @@ public class JSClosureCompilerWrapper
             targetFile.write(compiler_.toSource());
             targetFile.close();
 
-            FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
-            compiler_.getSourceMap().appendTo(sourceMapFile, "");
-            sourceMapFile.close();
+            if (sourceMap)
+            {
+                FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
+                compiler_.getSourceMap().appendTo(sourceMapFile, "");
+                sourceMapFile.close();
+            }
         }
         catch (IOException error)
         {
@@ -177,24 +186,30 @@ public class JSClosureCompilerWrapper
         {
         	File outputFile = new File(outputFolder, variableMapOutputPath);
         	VariableMap map = CompilerMapFetcher.getVariableMap(compiler_);
-        	try {
-				map.save(outputFile.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	if (map != null)
+        	{
+	        	try {
+					map.save(outputFile.getAbsolutePath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         }
         
         if (propertyMapOutputPath != null)
         {
         	File outputFile = new File(outputFolder, propertyMapOutputPath);
         	VariableMap map = CompilerMapFetcher.getPropertyMap(compiler_);
-        	try {
-				map.save(outputFile.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	if (map != null)
+        	{
+	        	try {
+					map.save(outputFile.getAbsolutePath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         }
         
         /*
@@ -394,7 +409,8 @@ public class JSClosureCompilerWrapper
         String[] asdocTags = new String[] {"productversion", 
         		"playerversion", "langversion", "copy", 
         		"asparam", "asreturn", "asprivate",
-        		"royaleignoreimport", "royaleignorecoercion", "royalenoimplicitstringconversion"};
+        		"royaleignoreimport", "royaleignorecoercion", "royaleemitcoercion",
+                "royalenoimplicitstringconversion","royaledebug"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     

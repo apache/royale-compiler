@@ -48,6 +48,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.CommandLineConfigurator;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.ConfigurationPathResolver;
@@ -120,9 +121,10 @@ public class MXMLC implements FlexTool
         // Therefore the following enum values must be non-negative.
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_ERRORS(2),
-        FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_ERRORS(4);
+        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_ERRORS(3),
+        FAILED_WITH_EXCEPTIONS(4),
+        FAILED_WITH_CONFIG_ERRORS(5);
 
         ExitCode(int code)
         {
@@ -226,9 +228,11 @@ public class MXMLC implements FlexTool
             ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer); 
             
             ProblemPrinter printer = new ProblemPrinter(formatter, err);
-
+            
             if (continueCompilation)
             {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("Configuration is ok");
                 project.setProblems(problems.getProblems());
                 compile();
                 exitCode = printProblems(printer, legacyOutput);
@@ -236,6 +240,8 @@ public class MXMLC implements FlexTool
             }
             else if (problems.hasFilteredProblems())
             {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("Failed with config errors");
                 printer.printProblems(problems.getFilteredProblems());
                 exitCode = ExitCode.FAILED_WITH_CONFIG_ERRORS;
             }
@@ -246,6 +252,8 @@ public class MXMLC implements FlexTool
         }
         catch (Exception e)
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("Failed with exceptions");
             (new PrintStream(err)).println(e.getMessage());
             exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
         }
@@ -621,9 +629,15 @@ public class MXMLC implements FlexTool
         boolean compilationSuccess = false;
         try
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("Setting up target file");
             if (!setupTargetFile())
+            {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("Could not set up target file");
                 return false;
-
+            }
+            
             if (config.isDumpAst())
                 dumpAST();
 
@@ -631,15 +645,25 @@ public class MXMLC implements FlexTool
             project.generateAPIReport();
 
             if (swfTarget == null)
+            {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("No swftarget");
                 return false;
-
+            }
+            
             // Don't create a swf if there are errors unless a 
             // developer requested otherwise.
             if (!config.getCreateTargetWithErrors() && problems.hasErrors())
+            {
+                if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+                	System.out.println("got errors creating target");
                 return false;
+            }
 
             if (skipLinking)
                 return true;
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("attempting to write output");
             final File outputFile = new File(getOutputFilePath());
             final int swfSize = writeSWF(swfTarget, outputFile);
             long endTime = System.nanoTime();
@@ -655,11 +679,15 @@ public class MXMLC implements FlexTool
         }
         catch (IOException e)
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("got IOException in compile()");
             final FileIOProblem problem = new FileIOProblem(e);
             problems.add(problem);
         }
         catch (Exception e)
         {
+            if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
+            	System.out.println("got Exception in compile()");
             final ICompilerProblem problem = new InternalCompilerProblem(e);
             problems.add(problem);
         }
@@ -732,7 +760,11 @@ public class MXMLC implements FlexTool
             final IASNode ast = compilationUnit.getSyntaxTreeRequest().get().getAST();
             if (ast != null)
             {
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
+            		System.out.println("MXMLC waiting for lock in populateFunctionNodes");
                 ((IFileNode)ast).populateFunctionNodes();
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
+            		System.out.println("MXMLC done with lock in populateFunctionNodes");
                 astDump.add(ast.toString());
             }
         }
@@ -1022,7 +1054,12 @@ public class MXMLC implements FlexTool
             @Override
             public IFileSpecification apply(final String path)
             {
-                return workspace.getFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("MXMLC waiting for lock in toFileSpecifications");
+                IFileSpecification ret = workspace.getFileSpecification(path);
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+            		System.out.println("MXMLC waiting for lock in toFileSpecifications");
+            	return ret;
             }
         });
     }

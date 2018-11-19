@@ -252,4 +252,19 @@ public interface ICompilerProject
 			IFunctionDefinition functionDefinition, ITypeDefinition type1,
 			ITypeDefinition type2, int i);
 
+    /**
+     * @param functionDefinition 
+     * @param formalCount The number of formal parameters.  
+     * @param actualCount The number of actual parameters used in the call.
+     * @return True if parameter count mismatch is allowed (because the transpiler will generate different code);
+     */
+	boolean isParameterCountMismatchAllowed(
+			IFunctionDefinition functionDefinition, int formalCount,
+			int actualCount);
+	
+    /**
+     * @return True if a subclass can have a private API with the same name as a private API in its base classes.
+     */
+	boolean getAllowPrivateNameConflicts();
+
 }

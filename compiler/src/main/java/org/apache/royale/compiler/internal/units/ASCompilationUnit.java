@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.royale.compiler.clients.ASC;
 import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
@@ -335,7 +336,11 @@ public class ASCompilationUnit extends CompilationUnitBase
             }
             final ImmutableSet<String> includedFiles = ast.getIncludeHandler().getIncludedFiles();
             addScopeToProjectScope(new ASFileScope[] { ast.getFileScope() });
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
+        		System.out.println("ASCompilationUnit waiting for lock in parseRequiredFunctionBodies");
             ast.parseRequiredFunctionBodies();
+        	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
+        		System.out.println("ASCompilationUnit done with lock in parseRequiredFunctionBodies");
             final Collection<ICompilerProblem> problemCollection = ast.getProblems();
             ASSyntaxTreeRequestResult result = new ASSyntaxTreeRequestResult(this, syntaxTreeRequest, ast, includedFiles, ast.getIncludeTreeLastModified(), problemCollection);
             getProject().getWorkspace().addIncludedFilesToCompilationUnit(this, result.getIncludedFiles());

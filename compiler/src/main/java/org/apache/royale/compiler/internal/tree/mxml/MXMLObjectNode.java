@@ -19,9 +19,16 @@
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 
 /**
@@ -48,4 +55,26 @@ class MXMLObjectNode extends MXMLInstanceNode implements IMXMLObjectNode
     {
         return IASLanguageConstants.Object;
     }
+    
+    public void initialize(MXMLTreeBuilder builder, IMXMLTagData parentTag, List<IMXMLUnitData> contentUnits, MXMLNodeInfo info)
+	{
+    	RoyaleProject project = builder.getProject();
+
+    	// Set the location of the implicit array node
+    	// to span the tags that specify the default property value.
+    	setLocation(builder, contentUnits);
+
+    	setClassReference(project, IASLanguageConstants.Object);
+
+    	for (IMXMLUnitData unit : contentUnits)
+    	{
+    		if (unit instanceof IMXMLTagData)
+    		{
+    			IMXMLTagData tag = (IMXMLTagData)unit;
+    			processChildTag(builder, parentTag, tag, info);
+    		}
+    	}
+    	initializationComplete(builder, parentTag, info);
+	}
+
 }

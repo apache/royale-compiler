@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.apache.royale.compiler.asdoc.IASDocComment;
 import org.apache.royale.compiler.common.IEmbedResolver;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
@@ -367,7 +368,12 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
     @Override
     public IFileSpecification getFileSpecification()
     {
-        return fileScope.getWorkspace().getFileSpecification(fileScope.getContainingPath());
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("MXMLFileNode waiting for lock in getFileSpecification");
+    	IFileSpecification fs = fileScope.getWorkspace().getFileSpecification(fileScope.getContainingPath());
+    	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.WORKSPACE) == CompilerDiagnosticsConstants.WORKSPACE)
+    		System.out.println("MXMLFileNode done with lock in getFileSpecification");
+    	return fs;
     }
 
     @Override
@@ -508,10 +514,20 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
      * @return CSS semantic information.
      */
     @Override
-    public synchronized CSSCompilationSession getCSSCompilationSession()
+    public CSSCompilationSession getCSSCompilationSession()
     {
         if (cssCompilationSession == null)
-            cssCompilationSession = project.getCSSCompilationSession();
+        {
+        	synchronized (this)
+        	{
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
+            		System.out.println("MXMLFileNode waiting for lock in getCSSCompilationSession");
+                if (cssCompilationSession == null)
+                	cssCompilationSession = project.getCSSCompilationSession();        		
+            	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.FILE_NODE) == CompilerDiagnosticsConstants.FILE_NODE)
+            		System.out.println("MXMLFileNode done with lock in getCSSCompilationSession");
+        	}
+        }
         return cssCompilationSession;
     }
 
