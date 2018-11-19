@@ -404,6 +404,9 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                        writer.close();
 	                    }
 	                }
+	                File externsReportFile = googConfiguration.getExternsReport();
+	                if (externsReportFile != null)
+	                	generateExternsReport(externsReportFile, reachableCompilationUnits, problems);
                 }
                 
                 if (!config.getCreateTargetWithErrors())
@@ -437,7 +440,14 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         return compilationSuccess && (errs.size() == 0);
     }
 
-    private void outputResourceBundle(ResourceBundleCompilationUnit cu, File outputFolder) {
+    private void generateExternsReport(File externsReportFile,
+			List<ICompilationUnit> reachableCompilationUnits,
+			ProblemQuery problems2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void outputResourceBundle(ResourceBundleCompilationUnit cu, File outputFolder) {
 		// TODO Auto-generated method stub
         final ISWCManager swcManager = project.getWorkspace().getSWCManager();
         // find the SWC
