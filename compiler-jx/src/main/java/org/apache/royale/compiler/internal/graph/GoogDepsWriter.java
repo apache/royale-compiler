@@ -718,6 +718,7 @@ public class GoogDepsWriter {
 	{
 		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
 		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
+		generator.setSourceRoot(consumer.getSourceRoot());
 		consumer.visitMappings(counter);
 		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
 		{
@@ -788,6 +789,7 @@ public class GoogDepsWriter {
 		}
 		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
 		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
+		generator.setSourceRoot(consumer.getSourceRoot());
 		consumer.visitMappings(counter);
 		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
 		{
@@ -826,6 +828,7 @@ public class GoogDepsWriter {
 		}
 		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
 		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
+		generator.setSourceRoot(consumer.getSourceRoot());
 		consumer.visitMappings(counter);
 		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
 		{
