@@ -59,6 +59,9 @@ public class JSClosureCompilerWrapper
         Compiler.setLoggingLevel(Level.INFO);
 
         compiler_ = new Compiler();
+        jsSourceFiles_ = new ArrayList<SourceFile>();
+        jsExternsFiles_ = new ArrayList<SourceFile>();
+        
         filterOptions(args);
         
         ArrayList<String> splitArgs = new ArrayList<String>();
@@ -75,9 +78,6 @@ public class JSClosureCompilerWrapper
 		String[] stringArgs = new String[splitArgs.size()];
 		splitArgs.toArray(stringArgs);
         options_ = new CompilerOptionsParser(stringArgs).getOptions();
-        
-        jsSourceFiles_ = new ArrayList<SourceFile>();
-        jsExternsFiles_ = new ArrayList<SourceFile>();
         
         initOptions(args);
         initExterns();
@@ -307,11 +307,13 @@ public class JSClosureCompilerWrapper
 		final String VARIABLE_MAP = "--variable_map_output_file ";
 		final String PROPERTY_INPUT_MAP = "--property_map_input_file ";
 		final String VARIABLE_INPUT_MAP = "--variable_map_input_file ";
+		final String EXTERNS = "--externs ";
 		String propEntry = null;
 		String varEntry = null;
 		String skipEntry = null;
 		String propInputEntry = null;
 		String varInputEntry = null;
+		ArrayList<String> removeArgs = new ArrayList<String>();
 
     	for (String s : args)
     	{
@@ -344,6 +346,13 @@ public class JSClosureCompilerWrapper
     			skipEntry = s;
     			skipTypeInference = true;
     		}
+    		
+    		if (s.startsWith(EXTERNS))
+    		{
+    			String fileName = s.substring(EXTERNS.length());
+    			addJSExternsFile(fileName);
+    			removeArgs.add(s);
+    		}    			
     	}
     	if (varEntry != null)
     		args.remove(varEntry);
@@ -355,6 +364,10 @@ public class JSClosureCompilerWrapper
     		args.remove(propInputEntry);
     	if (skipEntry != null)
     		args.remove(skipEntry);
+    	for (String s : removeArgs)
+    	{
+    		args.remove(s);
+    	}
     		
     }
     
