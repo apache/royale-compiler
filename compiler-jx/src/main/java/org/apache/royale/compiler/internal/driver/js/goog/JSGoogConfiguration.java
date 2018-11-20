@@ -446,6 +446,29 @@ public class JSGoogConfiguration extends JSConfiguration
     	warnPublicVars = value;
     }
 
+    // 'externs-report' option
+    //
+
+    private String externsReportFileName = null;
+
+    public File getExternsReport()
+    {
+        return externsReportFileName != null ? new File(externsReportFileName) : null;
+    }
+
+    /**
+     * Prints externs information to the specified output file. This file is an Google Closure Compiler externs file that contains
+     * all of the public and protected APIs in the final SWF file. The file format output
+     * by this command can be used to write a file for input to the {@code -js-compiler-options="--externs <path-to-this-file>"} option.
+     */
+    @Config(advanced = true)
+    @Mapping("externs-report")
+    @Arguments("filename")
+    public void setLinkReport(ConfigurationValue cv, String filename)
+    {
+        this.externsReportFileName = getOutputPath(cv, filename);
+    }
+
     
 
 }
