@@ -510,6 +510,19 @@ public class GoogDepsWriter {
 	        			gd.fileInfo.provides.contains(dep)) continue;
 	            addDeps(dep);
 	        }
+	        if (gd.fileInfo.staticDeps != null)
+	        {
+		        for (String dep : gd.fileInfo.staticDeps)
+		        {
+		        	if (!gd.deps.contains(dep))
+		        	{
+		        		gd.deps.add(dep);
+		        		if (gd.fileInfo.provides != null &&
+		        			gd.fileInfo.provides.contains(dep)) continue;
+		        		addDeps(dep);
+		        	}
+		        }
+	        }
 		}
 	}
 	
