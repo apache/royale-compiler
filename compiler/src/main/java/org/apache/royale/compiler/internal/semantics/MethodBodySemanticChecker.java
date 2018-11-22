@@ -391,18 +391,18 @@ public class MethodBodySemanticChecker
 
         if (!SemanticUtils.isValidTypeConversion(expected_type, actual_type, project, currentScope.getInInvisibleCompilationUnit()))
         {
-            addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, actual_type.getBaseName(), expected_type.getBaseName()));
+            addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, actual_type.getQualifiedName(), expected_type.getQualifiedName()));
         }
         else
         {
             SpecialValue value = getSpecialValue((IExpressionNode)iNode);
             if (value == SpecialValue.UNDEFINED) // test for undefined
             {
-                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASLanguageConstants.UNDEFINED, expected_type.getBaseName()));                
+                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASLanguageConstants.UNDEFINED, expected_type.getQualifiedName()));                
             }
             else if (iNode instanceof LiteralNode && IASKeywordConstants.NULL.equals(((LiteralNode)iNode).getValue())) // test for null
             {
-                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASKeywordConstants.NULL, expected_type.getBaseName()));
+                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASKeywordConstants.NULL, expected_type.getQualifiedName()));
             }
         }
     }
@@ -571,11 +571,11 @@ public class MethodBodySemanticChecker
             {
                 if ( utils.isInstanceOf(expected_type, actual_type) )
                 {
-                    addProblem(new ImplicitCoercionToSubtypeProblem(iNode, actual_type.getBaseName(), expected_type.getBaseName()));
+                    addProblem(new ImplicitCoercionToSubtypeProblem(iNode, actual_type.getQualifiedName(), expected_type.getQualifiedName()));
                 }
                 else
                 {
-                    addProblem(new ImplicitCoercionToUnrelatedTypeProblem(iNode, actual_type.getBaseName(), expected_type.getBaseName()));
+                    addProblem(new ImplicitCoercionToUnrelatedTypeProblem(iNode, actual_type.getQualifiedName(), expected_type.getQualifiedName()));
                 }
             }
         }
