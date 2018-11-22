@@ -145,6 +145,7 @@ public class GoogDepsWriter {
 	    		return "";
 	    	dps = sort();
 	    }
+	    ArrayList<String> usedDeps = new ArrayList<String>();
 	    StringBuilder sb = new StringBuilder();
 		int n = dps.size();
 		for (int i = n - 1; i >= 0; i--)
@@ -156,13 +157,20 @@ public class GoogDepsWriter {
 				{
 					ArrayList <String> deps = new ArrayList<String>();
 					if (gd.fileInfo.impls != null)
+					{
 						deps.addAll(gd.fileInfo.impls);
+						for (String dep : gd.fileInfo.impls)
+							if (!usedDeps.contains(dep))
+								usedDeps.add(dep);
+					}
 					if (gd.fileInfo.staticDeps != null)
 					{
 						for (String dep : gd.fileInfo.staticDeps)
 						{
 							if (!deps.contains(dep))
 								deps.add(dep);
+							if (!usedDeps.contains(dep))
+								usedDeps.add(dep);
 						}
 					}
 					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
@@ -171,10 +179,12 @@ public class GoogDepsWriter {
 						.append("]);\n");
 				}
 				else
+				{
 					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 					.append(gd.className).append("'], [")
 					.append(getDependencies(gd.deps))
-					.append("]);\n");					
+					.append("]);\n");
+				}
 			}
 		}
 		if (removeCirculars)
@@ -185,17 +195,22 @@ public class GoogDepsWriter {
 								.append(mainDep.className).append("'], [");
 			ArrayList<String> restOfDeps = new ArrayList<String>();
 			restOfDeps.addAll(mainDep.deps);
+			if (mainDep.fileInfo.impls != null)
+				restOfDeps.addAll(mainDep.fileInfo.impls);
 	        DependencyTypeSet dependencyTypes = DependencyTypeSet.allOf();
 			// get the list of all units not referenced by other units
 			for (GoogDep gd : depMap.values())
 			{
+//				if (usedDeps.contains(gd.className))
+//					continue;
+				
 				if (gd.className.equals(mainName)) 
 				{
 					if (gd.fileInfo.impls != null)
 					{
 						for (String d : gd.fileInfo.impls)
 						{
-							if (!restOfDeps.contains(d) && !gd.fileInfo.isExtern && !isExternal(d))
+							if (!restOfDeps.contains(d) && !gd.fileInfo.isExtern && !isExternal(d) && !usedDeps.contains(d))
 								restOfDeps.add(d);
 						}
 					}
@@ -204,14 +219,14 @@ public class GoogDepsWriter {
 				ICompilationUnit unit = requireMap.get(gd.className);
 				if (unit == null)
 				{
-					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className))
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className) && !usedDeps.contains(gd.className))
 						restOfDeps.add(gd.className);
 					continue;
 				}
 				Set<ICompilationUnit> deps = graph.getDirectReverseDependencies(unit, dependencyTypes);
 				if (deps.size() == 0)
 				{
-					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className))
+					if (!restOfDeps.contains(gd.className) && !gd.fileInfo.isExtern && !isExternal(gd.className) && !usedDeps.contains(gd.className))
 						restOfDeps.add(gd.className);
 				}
 			}
@@ -281,7 +296,30 @@ public class GoogDepsWriter {
 				for (String dep : info.fileInfo.deps)
 				{
 					if (!info.fileInfo.staticDeps.contains(dep))
+					{
 						info.fileInfo.staticDeps.add(dep);
+						if (!isGoogClass(dep))
+						{
+							System.out.println(staticClass + " used in static initializers so make " + dep + "a static dependency");
+							ICompilationUnit depcu = requireMap.get(dep);
+							if (depcu == null)
+							{
+								depcu = new JSCompilationUnit(project, dep, DefinitionPriority.BasePriority.SOURCE_LIST, dep);
+								graph.addCompilationUnit(depcu);
+								requireMap.put(dep, depcu);
+								requireMap2.put(depcu, dep);
+							}
+							ICompilationUnit cu = requireMap.get(staticClass);
+							if (cu == null)
+							{
+								cu = new JSCompilationUnit(project, staticClass, DefinitionPriority.BasePriority.SOURCE_LIST, staticClass);
+								graph.addCompilationUnit(cu);
+								requireMap.put(staticClass, cu);
+								requireMap2.put(cu, staticClass);
+							}
+							graph.addDependency(cu, depcu, DependencyType.INHERITANCE);
+						}
+					}
 				}
 			}
 		}
@@ -562,6 +600,7 @@ public class GoogDepsWriter {
         	StringBuilder sb = new StringBuilder();
         	sb.append(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
         	
+        	int staticDepsLine = -1;
             FileInfo fi = gd.fileInfo;
             int suppressCount = 0;
             int i = 0;
@@ -575,6 +614,9 @@ public class GoogDepsWriter {
                     int c = line.indexOf(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
                     if (c > -1)
                     	return; // already been processed
+                    c = line.indexOf(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
+                    if (c > -1)
+                    	staticDepsLine = i;
                     c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
                     if (c > -1)
                     {
@@ -676,6 +718,28 @@ public class GoogDepsWriter {
             sb.append("*/");
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
 			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
+			if (staticInitializers.contains(className) && gd.fileInfo.staticDeps != null)
+			{
+				// add or rewrite static deps cache since we may have mucked with the list.
+				sb = new StringBuilder();
+	        	sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
+	        	boolean firstOne = true;
+	        	for (String dep : gd.fileInfo.staticDeps)
+	        	{
+	        		if (!firstOne)
+	        			sb.append(",");
+	        		firstOne = false;
+	        		sb.append(dep);
+	        	}
+	            sb.append("*/");
+	            if (staticDepsLine == -1)
+	            {
+		            finalLines.add(gd.fileInfo.googProvideLine + 2, sb.toString());
+					sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 2);
+	            }
+	            else
+	            	finalLines.set(staticDepsLine, sb.toString());
+			}
 
 			PrintWriter out = new PrintWriter(new FileWriter(depFile));  
             for (String s : finalLines)

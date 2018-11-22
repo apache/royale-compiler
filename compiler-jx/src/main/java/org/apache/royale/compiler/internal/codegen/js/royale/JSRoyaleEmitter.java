@@ -303,7 +303,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
 			boolean firstDependency = true;
 			for (String staticName : staticUsedNames)
-			{
+			{					
 				if (!firstDependency)
 					sb.append(",");
 				firstDependency = false;
@@ -569,7 +569,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	else if (!isDoc)
     	{
         	if (getModel().inStaticInitializer)
-        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && !isExternal(name))
+        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) 
+        				&& !isExternal(name) && !getModel().getCurrentClass().getQualifiedName().equals(name))
         			staticUsedNames.add(name);
     		
     		if (!usedNames.contains(name) && !isExternal(name))

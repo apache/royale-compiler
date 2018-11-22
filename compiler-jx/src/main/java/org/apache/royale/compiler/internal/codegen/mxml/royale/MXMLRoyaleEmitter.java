@@ -482,19 +482,26 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
 		if (staticUsedNames.size() > 0)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
-			boolean firstDependency = true;
-			for (String staticName : staticUsedNames)
+			if (staticUsedNames.size() > 1 ||
+					!staticUsedNames.get(0).equals(currentClassName))
 			{
-				if (!firstDependency)
-					sb.append(",");
-				firstDependency = false;
-				sb.append(staticName);
+				StringBuilder sb = new StringBuilder();
+				sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
+				boolean firstDependency = true;
+				for (String staticName : staticUsedNames)
+				{
+					if (currentClassName.equals(staticName))
+						continue;
+					
+					if (!firstDependency)
+						sb.append(",");
+					firstDependency = false;
+					sb.append(staticName);
+				}
+				sb.append("*/");
+				finalLines.add(provideIndex, sb.toString());
+	            addLineToMappings(provideIndex);
 			}
-			sb.append("*/");
-			finalLines.add(provideIndex, sb.toString());
-            addLineToMappings(provideIndex);
 		}
 
     	return Joiner.on("\n").join(finalLines);
