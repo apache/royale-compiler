@@ -1487,19 +1487,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             FunctionWatcherInfo functionWatcherInfo = (FunctionWatcherInfo)watcherInfoBase;
 
             writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + functionWatcherInfo.getFunctionName() +
-                    ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                    ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
             IExpressionNode params[] = functionWatcherInfo.params;
             StringBuilder sb = new StringBuilder();
             sb.append("function() { return [");
             boolean firstone = true;
             for (IExpressionNode param : params)
             {
-                if (firstone)
-                    firstone = false;
-                sb.append(ASEmitterTokens.COMMA.getToken());
+                if (!firstone)
+                    sb.append(ASEmitterTokens.COMMA.getToken());
+                firstone = false;
                 sb.append(asEmitter.stringifyNode(param));
             }
             sb.append("]; },");
+            writeNewline(sb.toString());
             outputEventNames(functionWatcherInfo.getEventNames());
             outputBindings(functionWatcherInfo.getBindings());
         }
