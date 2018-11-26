@@ -688,6 +688,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         assertOut("var /** @type {XMLList} */ b = a.descendants('child')");
     }
     
+    @Test
+    public void testXMLDoubleDotTwice()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a..child..grandchild;");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.descendants('child').descendants('grandchild')");
+    }
+    
     @Ignore
     public void testXMLDoubleDotLiteral()
     {

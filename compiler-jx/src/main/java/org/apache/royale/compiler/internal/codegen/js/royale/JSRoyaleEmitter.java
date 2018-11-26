@@ -1170,7 +1170,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			if (leftDef != null)
 				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
 		}
-		else if (leftID == ASTNodeID.MemberAccessExpressionID)
+		else if (leftID == ASTNodeID.MemberAccessExpressionID || leftID == ASTNodeID.Op_DescendantsID)
 		{
 			MemberAccessExpressionNode maen = (MemberAccessExpressionNode)leftNode;
 	    	IExpressionNode rightNode = maen.getRightOperandNode();
