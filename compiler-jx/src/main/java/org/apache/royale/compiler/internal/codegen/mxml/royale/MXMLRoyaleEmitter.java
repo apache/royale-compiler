@@ -1453,23 +1453,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("function (value) { ");
-		int lastGet = body.lastIndexOf("get_");
-		int lastDot = body.lastIndexOf(".");
-		if (lastDot == lastGet - 1)
-		{
-			String object = body.substring(0, lastDot);
-			String getter = body.substring(lastDot);
-			String setter = getter.replace("get_", "set_");
-			setter = setter.replace("()", "(value)");
-			body = object + setter;
-			sb.append(body);
-		}
-		else
-		{
-			sb.append(body);
-			sb.append(" = value;");
-		}
-		sb.append(";}");
+		sb.append(body);
+		sb.append(" = value;");
+		sb.append("}");
 		return sb.toString();
 	}
 
@@ -3129,9 +3115,15 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (instanceNode instanceof IMXMLStringNode)
     	{
     		IMXMLStringNode stringNode = (IMXMLStringNode)instanceNode;
-            IMXMLLiteralNode valueNode = (IMXMLLiteralNode)(stringNode.getExpressionNode());
-            Object value = valueNode.getValue();
-            return objectToString(value);
+    		IASNode vNode = stringNode.getExpressionNode();
+    		if (vNode instanceof IMXMLLiteralNode)
+    		{
+	            IMXMLLiteralNode valueNode = (IMXMLLiteralNode)vNode;
+	            Object value = valueNode.getValue();
+	            return objectToString(value);
+    		}
+    		else
+    			return "''";
     	}
     	return "";
     }
