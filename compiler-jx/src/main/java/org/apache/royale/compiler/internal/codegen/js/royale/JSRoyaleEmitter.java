@@ -1302,6 +1302,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
 		// See if the left side is XML or XMLList
 		IDefinition leftDef = obj.resolveType(getWalker().getProject());
+		if (leftDef == null && obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+		{
+			return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode());
+		}
 		return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
     }
 

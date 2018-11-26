@@ -835,6 +835,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLSetChildAttributeBracketProp()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var z:String = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.child.@['attr3'] = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.child('child').setAttribute('attr3', 'foo')");
+    }
+    
+    @Test
     public void testXMLListSetAttribute()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a[1].@bar = 'foo'");
