@@ -746,6 +746,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     {
         ArrayList<MXMLDescriptorSpecifier> oldDescriptorTree;
         MXMLDescriptorSpecifier oldPropertiesTree;
+        MXMLDescriptorSpecifier oldStateOverrides;
         ArrayList<MXMLEventSpecifier> oldEvents;
         ArrayList<IMXMLScriptNode> oldScripts;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentInstances;
@@ -774,7 +775,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
         oldCurrentPropertySpecifiers = currentPropertySpecifiers;
         currentPropertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
-
+        oldStateOverrides = currentStateOverrides;
+        currentStateOverrides = new MXMLDescriptorSpecifier();
+        
         oldEventCounter = eventCounter;
         eventCounter = 0;
         oldIdCounter = idCounter;
@@ -827,6 +830,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         descriptorTree = oldDescriptorTree;
         propertiesTree = oldPropertiesTree;
+        currentStateOverrides = oldStateOverrides;
         events = oldEvents;
         scripts = oldScripts;
         currentInstances = oldCurrentInstances;
