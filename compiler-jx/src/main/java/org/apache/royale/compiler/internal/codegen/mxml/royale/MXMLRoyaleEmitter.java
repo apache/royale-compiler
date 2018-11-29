@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.royale.abc.semantics.MethodInfo;
@@ -50,6 +51,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingInfo;
@@ -80,6 +82,7 @@ import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -1405,7 +1408,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (destNode != null)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.append(generateSetterFunction(destNode));
+                sb.append(generateSetterFunction(bi, destNode));
                 writeNewline(sb.toString() + ASEmitterTokens.COMMA.getToken());
             }
             else
@@ -1450,18 +1453,63 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         writeNewline( ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
     }
 
-    private String generateSetterFunction(IExpressionNode destNode) {
+    private String generateSetterFunction(BindingInfo bi, IExpressionNode destNode) {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
         	.getASEmitter();
-		String body = asEmitter.stringifyNode(destNode);
-
 		StringBuilder sb = new StringBuilder();
 		sb.append("function (value) { ");
-		sb.append(body);
-		sb.append(" = value;");
+		if (destNode instanceof InstructionListNode)
+		{
+			sb.append(generateDestExpression(bi));
+		}
+		else
+		{
+			String body = asEmitter.stringifyNode(destNode);
+			sb.append(body);
+			sb.append(" = value;");
+		}
 		sb.append("}");
 		return sb.toString();
 	}
+    
+    String generateDestExpression(BindingInfo bi)
+    {
+    	StringBuilder sb = new StringBuilder();
+    	MXMLBindingNode node = (MXMLBindingNode)bi.node;
+    	IMXMLBindingAttributeNode destNode = node.getDestinationAttributeNode();
+    	Stack<IASNode> nodeStack = new Stack<IASNode>();    
+    	nodeStack.push(node);
+    	IASNode parentNode = node.getParent();
+    	while (!(parentNode instanceof IMXMLInstanceNode))
+    	{
+    		nodeStack.push(parentNode);
+    		parentNode = parentNode.getParent();
+    	}    	
+    	boolean isXML = parentNode instanceof IMXMLXMLNode;
+    	sb.append("this.");
+    	sb.append(((IMXMLInstanceNode)parentNode).getEffectiveID());
+    	while (nodeStack.size() > 0)
+    	{
+    		IASNode childNode = nodeStack.pop();
+    		int n = parentNode.getChildCount();
+    		int i = 0;
+    		for (; i < n; i++)
+    		{
+    			if (childNode == parentNode.getChild(i))
+    				break;
+    		}
+    		assert i < n;
+    		sb.append("[" + new Integer(i).toString() + "]" );
+    		parentNode = childNode;
+    	}
+    	if (isXML)
+    	{
+    		sb.append(".setAttribute('" + destNode.getName() + "', value);" );
+    	}
+    	else
+    		sb.append("." + destNode.getName() + " = value;");
+    	return sb.toString();
+    }
 
 	private void encodeWatcher(WatcherInfoBase watcherInfoBase)
     {

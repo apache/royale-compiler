@@ -284,6 +284,8 @@ class XMLBuilder
         MXMLBindingNode bindingNode = new MXMLBindingNode(parent);
 
         MXMLBindingAttributeNode target = new MXMLBindingAttributeNode(bindingNode, destExpr);
+        target.setLocation(attr);
+        target.setName(attr.getName());
         destExpr.setParent(target);
         MXMLBindingAttributeNode source = new MXMLBindingAttributeNode(bindingNode, dbnode.getExpressionNode());
 
