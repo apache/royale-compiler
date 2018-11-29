@@ -1405,7 +1405,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                         ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
 
             IExpressionNode destNode = bi.getExpressionNodeForDestination();
-            if (destNode != null)
+            s = bi.getDestinationString();
+            if (destNode != null && s == null)
             {
                 StringBuilder sb = new StringBuilder();
                 sb.append(generateSetterFunction(bi, destNode));
@@ -1414,7 +1415,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             else
                 writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
 
-            s = bi.getDestinationString();
             if (s == null)
             {
                 writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
