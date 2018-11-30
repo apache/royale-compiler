@@ -114,6 +114,7 @@ public class JSWriter implements IJSWriter
                 sourceMapFilePath = sourceMapFile.getAbsolutePath();
                 convertMappingSourcePathsToRelative(emitter, sourceMapFile);
             }
+            convertMappingSourcePathsToURI(emitter);
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter(emitter);
@@ -136,9 +137,24 @@ public class JSWriter implements IJSWriter
         for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
             String relativePath = relativize(mapping.sourcePath, relativeToFile.getAbsolutePath());
-            //prefer forward slash
-            relativePath = relativePath.replace('\\', '/');
             mapping.sourcePath = relativePath;
+        }
+    }
+    
+    protected void convertMappingSourcePathsToURI(IMappingEmitter emitter)
+    {
+        List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
+        for (IMappingEmitter.SourceMapMapping mapping : mappings)
+        {
+            //prefer forward slash because web browser devtools expect it
+            String sourcePath = mapping.sourcePath;
+            File file = new File(sourcePath);
+            if(file.isAbsolute())
+            {
+                sourcePath = "file:///" + sourcePath;
+            }
+            sourcePath = sourcePath.replace('\\', '/');
+            mapping.sourcePath = sourcePath;
         }
     }
 

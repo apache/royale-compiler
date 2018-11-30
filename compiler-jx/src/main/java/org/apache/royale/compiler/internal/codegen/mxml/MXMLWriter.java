@@ -87,6 +87,7 @@ public class MXMLWriter extends JSWriter
                 sourceMapFilePath = sourceMapFile.getAbsolutePath();
                 convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, sourceMapFile);
             }
+            convertMappingSourcePathsToURI((IMappingEmitter) mxmlEmitter);
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter((IMappingEmitter) mxmlEmitter);
