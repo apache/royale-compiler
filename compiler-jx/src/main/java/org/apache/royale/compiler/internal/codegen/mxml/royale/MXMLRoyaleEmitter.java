@@ -2043,7 +2043,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             propertiesTree.propertySpecifiers.add(currentInstance);
         }
 
-        instances.add(currentInstance);
+        addInstanceIfNeeded(instances, currentInstance);
 
         IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
         if (pnodes != null)
@@ -2138,7 +2138,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
     }
 
-    public void emitPropertyOverride(IMXMLPropertySpecifierNode propertyNode)
+    private void addInstanceIfNeeded(
+			ArrayList<MXMLDescriptorSpecifier> instances2,
+			MXMLDescriptorSpecifier currentInstance) {
+    	for (MXMLDescriptorSpecifier instance : instances2)
+    		if (instance.id != null && currentInstance.id != null && instance.id.equals(currentInstance.id))
+    			return;
+        instances.add(currentInstance);
+
+	}
+
+	public void emitPropertyOverride(IMXMLPropertySpecifierNode propertyNode)
     {
         RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name propertyOverride = project.getPropertyOverrideClassName();
