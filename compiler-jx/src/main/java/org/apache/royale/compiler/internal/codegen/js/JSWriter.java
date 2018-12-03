@@ -109,10 +109,17 @@ public class JSWriter implements IJSWriter
         if (jsSourceMapOut != null)
         {
             String sourceMapFilePath = null;
+            String sourceRoot = null;
             if (sourceMapFile != null)
             {
                 sourceMapFilePath = sourceMapFile.getAbsolutePath();
                 convertMappingSourcePathsToRelative(emitter, sourceMapFile);
+            }
+            else
+            {
+                sourceRoot = System.getProperty("user.dir");
+                convertMappingSourcePathsToRelative((IMappingEmitter) emitter, new File(sourceRoot, "test.js.map"));
+                sourceRoot = convertSourcePathToURI(sourceRoot);
             }
             convertMappingSourcePathsToURI(emitter);
 
@@ -122,7 +129,7 @@ public class JSWriter implements IJSWriter
             {
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".as", ".js");
-                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, null);
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
                 jsSourceMapOut.write(sourceMap.getBytes());
             } catch (Exception e)
             {
@@ -148,14 +155,19 @@ public class JSWriter implements IJSWriter
         {
             //prefer forward slash because web browser devtools expect it
             String sourcePath = mapping.sourcePath;
-            File file = new File(sourcePath);
-            if(file.isAbsolute())
-            {
-                sourcePath = "file:///" + sourcePath;
-            }
-            sourcePath = sourcePath.replace('\\', '/');
+            sourcePath = convertSourcePathToURI(sourcePath);
             mapping.sourcePath = sourcePath;
         }
+    }
+    
+    protected String convertSourcePathToURI(String sourcePath)
+    {
+        File file = new File(sourcePath);
+        if(file.isAbsolute())
+        {
+            sourcePath = "file:///" + sourcePath;
+        }
+        return sourcePath.replace('\\', '/');
     }
 
     //if we ever support Java 7, the java.nio.file.Path relativize() method

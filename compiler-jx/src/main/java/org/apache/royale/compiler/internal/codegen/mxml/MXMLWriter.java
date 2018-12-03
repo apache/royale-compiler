@@ -82,10 +82,17 @@ public class MXMLWriter extends JSWriter
         if (sourceMapOut != null)
         {
             String sourceMapFilePath = null;
+            String sourceRoot = null;
             if (sourceMapFile != null)
             {
                 sourceMapFilePath = sourceMapFile.getAbsolutePath();
                 convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, sourceMapFile);
+            }
+            else
+            {
+                sourceRoot = System.getProperty("user.dir");
+                convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, new File(sourceRoot, "test.js.map"));
+                sourceRoot = convertSourcePathToURI(sourceRoot);
             }
             convertMappingSourcePathsToURI((IMappingEmitter) mxmlEmitter);
 
@@ -95,7 +102,7 @@ public class MXMLWriter extends JSWriter
             {
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".mxml", ".js");
-                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, null);
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
                 sourceMapOut.write(sourceMap.getBytes());
             } catch (Exception e)
             {
