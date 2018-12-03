@@ -118,13 +118,19 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             endMapping(node);
+            boolean varIsInt = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
+          		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants._int) ||
+               		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.uint)));
             boolean varIsNumber = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
             		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.Number) ||
-            		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants._int) ||
-            		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.uint)));
+            		   varIsInt));
+            boolean valIsInt = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
+					 							  avdef.getQualifiedName().equals(IASLanguageConstants.uint) ||
+					 							  (avdef.getQualifiedName().equals(IASLanguageConstants.Number) &&
+					 									  (avnode.getNodeID() == ASTNodeID.LiteralIntegerID ||
+					 									   avnode.getNodeID() == ASTNodeID.LiteralIntegerZeroID))));
             boolean valIsNumber = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-            										 avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
-            										 avdef.getQualifiedName().equals(IASLanguageConstants.uint)));
+            										 valIsInt));
             if (!valIsNumber && avdef == null && avnode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
             		fjs.isDateProperty(avnode, false))
             	valIsNumber = true;
@@ -170,6 +176,8 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             String coercion = "";
             if (varIsNumber && !valIsNumber)
             	coercion = "Number(";
+            //else if (varIsNumber && valIsNumber && varIsInt && !valIsInt)
+            //	coercion = "Math.floor(";
             if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
                 	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
                 	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
