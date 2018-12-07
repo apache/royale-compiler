@@ -146,6 +146,7 @@ public class GoogDepsWriter {
 	    	dps = sort();
 	    }
 	    ArrayList<String> usedDeps = new ArrayList<String>();
+	    ArrayList<String> addedDeps = new ArrayList<String>();
 	    StringBuilder sb = new StringBuilder();
 		int n = dps.size();
 		for (int i = n - 1; i >= 0; i--)
@@ -153,26 +154,11 @@ public class GoogDepsWriter {
 			GoogDep gd = dps.get(i);
 			if (!isGoogClass(gd.className)) 
 			{
+				addedDeps.add(gd.filePath);
 				if (removeCirculars)
 				{
 					ArrayList <String> deps = new ArrayList<String>();
-					if (gd.fileInfo.impls != null)
-					{
-						deps.addAll(gd.fileInfo.impls);
-						for (String dep : gd.fileInfo.impls)
-							if (!usedDeps.contains(dep))
-								usedDeps.add(dep);
-					}
-					if (gd.fileInfo.staticDeps != null)
-					{
-						for (String dep : gd.fileInfo.staticDeps)
-						{
-							if (!deps.contains(dep))
-								deps.add(dep);
-							if (!usedDeps.contains(dep))
-								usedDeps.add(dep);
-						}
-					}
+					computeDeps(deps, gd, usedDeps);
 					sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 						.append(gd.className).append("'], [")
 						.append(getDependencies(deps))
@@ -201,8 +187,8 @@ public class GoogDepsWriter {
 			// get the list of all units not referenced by other units
 			for (GoogDep gd : depMap.values())
 			{
-//				if (usedDeps.contains(gd.className))
-//					continue;
+				if (usedDeps.contains(gd.className))
+					continue;
 				
 				if (gd.className.equals(mainName)) 
 				{
@@ -243,9 +229,13 @@ public class GoogDepsWriter {
 					problems.add(new FileNotFoundProblem(dep));
 					continue;
 				}
+				if (addedDeps.contains(gd.filePath))
+					continue;
+				ArrayList<String> deps = new ArrayList<String>();
+				computeDeps(deps, gd, usedDeps);
 				sb.append("goog.addDependency('").append(relativePath(gd.filePath)).append("', ['")
 				.append(gd.className).append("'], [")
-				.append((gd.fileInfo.impls != null) ? getDependencies(gd.fileInfo.impls) : "")
+				.append(getDependencies(deps))
 				.append("]);\n");
 			}
 			addRestOfDeps(mainDep, restOfDeps);
@@ -253,6 +243,26 @@ public class GoogDepsWriter {
 		return sb.toString();
 	}
 	
+	private void computeDeps(ArrayList<String> deps, GoogDep gd, ArrayList<String> usedDeps) {
+		if (gd.fileInfo.impls != null)
+		{
+			deps.addAll(gd.fileInfo.impls);
+			for (String dep : gd.fileInfo.impls)
+				if (!usedDeps.contains(dep))
+					usedDeps.add(dep);
+		}
+		if (gd.fileInfo.staticDeps != null)
+		{
+			for (String dep : gd.fileInfo.staticDeps)
+			{
+				if (!deps.contains(dep))
+					deps.add(dep);
+				if (!usedDeps.contains(dep))
+					usedDeps.add(dep);
+			}
+		}
+	}
+
 	private boolean isGoogClass(String className)
 	{
 	    return className.startsWith("goog.");
