@@ -304,7 +304,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            	Set<String> mixins = royaleProject.mixinClassNames;
 	            	if (mixins.size() > 0)
 	            	{
-		            	String mixinInject = "mixins: [";
+		            	String mixinInject = "\"mixins\": [";
 		            	boolean firstOne = true;
 		            	for (String mixin : mixins)
 		            	{
@@ -333,7 +333,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            	Map<String, String> aliases = royaleProject.remoteClassAliasMap;
 	            	if (aliases != null && aliases.size() > 0)
 	            	{
-		            	String aliasInject = sep + "remoteClassAliases: {";
+		            	String aliasInject = sep + "\"remoteClassAliases\": {";
 		            	boolean firstOne = true;
 		            	for (String className : aliases.keySet())
 		            	{
@@ -364,7 +364,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                Collection<String> locales = royaleProject.getLocales();
 	                if (locales.size() > 0)
 	                {
-		            	String localeInject = sep + "compiledLocales: [";
+		            	String localeInject = sep + "\"compiledLocales\": [";
 		            	boolean firstOne = true;
 		            	String[] localeNames = new String[locales.size()];
 		            	locales.toArray(localeNames);
@@ -383,7 +383,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                List<String> bundles = royaleProject.compiledResourceBundleNames;
 	                if (bundles.size() > 0)
 	                {
-		            	String bundleInject = sep + "compiledResourceBundleNames: [";
+		            	String bundleInject = sep + "\"compiledResourceBundleNames\": [";
 		            	boolean firstOne = true;
 		            	for (String bundle : bundles)
 		            	{
