@@ -464,7 +464,7 @@ public class JSGoogConfiguration extends JSConfiguration
     @Config(advanced = true)
     @Mapping("externs-report")
     @Arguments("filename")
-    public void setLinkReport(ConfigurationValue cv, String filename)
+    public void setExternsReport(ConfigurationValue cv, String filename)
     {
         this.externsReportFileName = getOutputPath(cv, filename);
     }
