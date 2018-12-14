@@ -461,6 +461,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         System.out.println("Generating externs report: " + externsReportFile.getAbsolutePath());
         
     	ArrayList<String> packageNames = new ArrayList<String>();
+    	ArrayList<String> partNames = new ArrayList<String>();
     	
     	StringBuilder sb = new StringBuilder();
         sb.append("/**\n");
@@ -485,6 +486,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 
             IDefinition def = dp.get(0);
             IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
+            if (actualDef.getPackageName().contains("goog")) continue;
             if (actualDef instanceof ClassDefinition)
             {
             	sb.append("\n\n");
@@ -499,6 +501,13 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             		for (String part : parts)
             		{
             			current += part;
+            			if (partNames.contains(current))
+            			{
+            				firstOne = false;
+        	                current += ".";
+            				continue;
+            			}            			
+            			partNames.add(current);
         				sb.append("/** @const */\n");
             			if (firstOne)
             			{
@@ -521,7 +530,10 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             	for (String iface : ifaces)
             		sb.append(" * @implements {" + iface + "}\n");
             	sb.append(" */\n");
-                sb.append("function " + cdef.getQualifiedName() + "() {}\n");
+            	if (pkgName.length() == 0)
+                    sb.append("function " + cdef.getQualifiedName() + "() {}\n");
+            	else
+            		sb.append(cdef.getQualifiedName() + " = function() {}\n");
                 
             	ASScope cscope = cdef.getContainedScope();
             	Collection<IDefinitionSet> defSets = cscope.getAllLocalDefinitionSets();
@@ -533,6 +545,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             		for (int i = 0; i < n; i++)
             		{
             			IDefinition api = defSet.getDefinition(i);
+            			String apiName = api.getBaseName();
+            			if (apiName.startsWith("#")) continue; // invalid in externs
             			if (!api.isOverride() && (api.isProtected() || api.isPublic()))
             			{
             				if (!(api instanceof FunctionDefinition) ||
@@ -554,7 +568,12 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                             	sb.append("\n\n");
                             	sb.append("/**\n");
                             	for (ParameterDefinition param : params)
-                            		sb.append(" * @param {" + getJSType(param.getTypeAsDisplayString()) + "} " + param.getBaseName() + "\n");
+                            	{
+                            		if (param.getBaseName().isEmpty())
+                            			sb.append(" * @param {*=} opt_rest\n");
+                            		else
+                            			sb.append(" * @param {" + getJSType(param.getTypeAsDisplayString()) + "} " + param.getBaseName() + "\n");
+                            	}
                             	String ret = getJSType(method.getReturnTypeAsDisplayString());
                             	if (!ret.equals("void"))
                             		sb.append(" * @returns {" + ret + "}\n");
@@ -569,7 +588,10 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                             	{
                             		if (j > 0)
                             			sb.append(",");
-                            		sb.append(params[j].getBaseName());
+                            		if (params[j].getBaseName().isEmpty())
+                            			sb.append("opt_rest");
+                            		else
+                            			sb.append(params[j].getBaseName());
                             	}
                             	sb.append(") {");
                             	if (!ret.equals("void"))
@@ -601,6 +623,13 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             		for (String part : parts)
             		{
             			current += part;
+            			if (partNames.contains(current))
+            			{
+            				firstOne = false;
+        	                current += ".";
+            				continue;
+            			}            			
+            			partNames.add(current);
         				sb.append("/** @const */\n");
             			if (firstOne)
             			{
@@ -620,7 +649,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             	for (String iface : ifaces)
             		sb.append(" * @extends {" + iface + "}\n");
             	sb.append(" */\n");
-                sb.append("function " + cdef.getQualifiedName() + "() {}\n");
+                sb.append(cdef.getQualifiedName() + " = function() {}\n");
             }
     	}
         System.out.println("Writing externs report: " + externsReportFile.getAbsolutePath());
@@ -637,6 +666,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     
     private String getJSType(String s)
     {
+    	if (s.contains("__AS3__.vec.Vector"))
+    		return "Array";
     	return JSGoogDocEmitter.convertASTypeToJSType(s, "");
     }
 
