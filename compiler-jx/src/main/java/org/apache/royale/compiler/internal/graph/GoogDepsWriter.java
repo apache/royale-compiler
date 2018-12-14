@@ -180,9 +180,19 @@ public class GoogDepsWriter {
 			mainDeps.append("goog.addDependency('").append(relativePath(mainDep.filePath)).append("', ['")
 								.append(mainDep.className).append("'], [");
 			ArrayList<String> restOfDeps = new ArrayList<String>();
-			restOfDeps.addAll(mainDep.deps);
+			for (String dep: mainDep.deps)
+			{
+				if (!isExternal(dep))
+					restOfDeps.add(dep);
+			}
 			if (mainDep.fileInfo.impls != null)
-				restOfDeps.addAll(mainDep.fileInfo.impls);
+			{
+				for (String dep: mainDep.fileInfo.impls)
+				{
+					if (!isExternal(dep))
+						restOfDeps.add(dep);
+				}				
+			}
 	        DependencyTypeSet dependencyTypes = DependencyTypeSet.allOf();
 			// get the list of all units not referenced by other units
 			for (GoogDep gd : depMap.values())
@@ -353,13 +363,17 @@ public class GoogDepsWriter {
 				GoogDep dep = depMap.get(name);
 				if (dep == null)
 				{
-					System.out.println("No GoogDep for " + name);
-					//added this to prevent a NullPointerException when the
-					//GoogDep is null. -JT
-					problems.add(new FileNotFoundProblem(name));
-					continue;
+					if (!isExternal(name))
+					{
+						System.out.println("No GoogDep for " + name);
+						//added this to prevent a NullPointerException when the
+						//GoogDep is null. -JT
+						problems.add(new FileNotFoundProblem(name));
+						continue;
+					}
 				}
-				depsInOrder.add(dep);
+				else
+					depsInOrder.add(dep);
 			}
 			return depsInOrder;
 		}
@@ -442,7 +456,7 @@ public class GoogDepsWriter {
 		ArrayList<String> deps = current.deps;
 		for (String className : deps)
 		{
-			if (!isGoogClass(className))
+			if (!isGoogClass(className) && !isExternal(className))
 			{
 				GoogDep gd = depMap.get(className);
 				if (gd == null)
@@ -486,6 +500,25 @@ public class GoogDepsWriter {
 				}
 			}
 
+			// first scan requires in case this is a module and some have been externed
+			int j = main.fileInfo.googProvideLine + 1;
+			while (!fileLines.get(j).contains(JSGoogEmitterTokens.GOOG_REQUIRE.getToken()))
+				j++;
+			while (fileLines.get(j).contains(JSGoogEmitterTokens.GOOG_REQUIRE.getToken()))
+			{
+				String line = fileLines.get(j);
+				int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+				int c2 = line.indexOf(")");
+                String s = line.substring(c + 14, c2 - 1);
+                if (isExternal(s))
+                {
+                	fileLines.remove(j);
+					sourceMapConsumer = removeLineFromSourceMap(sourceMapConsumer, mainFile.getName(), j);
+                }
+                else
+                	j++;
+			}
+			
 			int n = restOfDeps.size();
 			for (int i = n - 1; i >= 0; i--)
 			{
@@ -632,8 +665,9 @@ public class GoogDepsWriter {
                     {
                         int c2 = line.indexOf(")");
                         String s = line.substring(c + 14, c2 - 1);
-                        if ((gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s)) &&
-                        		(gd.fileInfo.staticDeps == null || !gd.fileInfo.staticDeps.contains(s)))
+                        if (((gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s)) &&
+                        		(gd.fileInfo.staticDeps == null || !gd.fileInfo.staticDeps.contains(s))) ||
+                        		isExternal(s))
                         {
                         	// don't remove the require if some class needs it at static initialization
                         	// time
