@@ -18,6 +18,7 @@
  */
 package org.apache.royale.compiler.internal.projects;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -301,7 +302,11 @@ public class RoyaleJSProject extends RoyaleProject
         try {
             qnames = cu.getQualifiedNames();
             String qname = qnames.get(0);
-            if (qname.equals("QName") || qname.equals("XML") || qname.equals("XMLList"))
+            // if compiling against airglobal/playerglobal, we have to keep QName, XML, XMLList from being seens
+            // as external otherwise theJS implementations won't get added to the output.  But if the definitions
+            // come from XML.SWC assume the linkage is right in case these files get excluded from modules
+            if ((cu.getAbsoluteFilename().contains("airglobal") || cu.getAbsoluteFilename().contains("playerglobal")) &&
+            		(qname.equals("QName") || qname.equals("XML") || qname.equals("XMLList")))
                 return false;
         } catch (InterruptedException e1) {
             // TODO Auto-generated catch block
@@ -537,4 +542,23 @@ public class RoyaleJSProject extends RoyaleProject
         return list;
     }
 
+
+	@Override
+	public File getLinkReport(Configuration config) {
+		File f = config.getLinkReport();
+		if (f != null)
+		{
+			String baseName = f.getName();
+			String suffix = "";
+			int c = baseName.indexOf(".");
+			if (c != -1)
+			{
+				suffix = baseName.substring(c);
+				baseName = baseName.substring(0, c);
+			}
+			baseName += "-js" + suffix;
+			f = new File(f.getParentFile(), baseName);
+		}
+		return f;
+	}
 }
