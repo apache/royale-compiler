@@ -2520,4 +2520,9 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         return false;
 	}
 
+	@Override
+	public File getLinkReport(Configuration config) {
+		return config.getLinkReport();
+	}
+
 }

@@ -72,4 +72,14 @@ public class RoyaleTargetSettings extends TargetSettings
 
         return externalLibraryPath;
     }
+    
+    @Override
+    public File getLinkReport()
+    {
+    	if (project != null)
+    		return ((IRoyaleProject)project).getLinkReport(configuration);
+    	
+        return super.getLinkReport();
+    }
+
 }
