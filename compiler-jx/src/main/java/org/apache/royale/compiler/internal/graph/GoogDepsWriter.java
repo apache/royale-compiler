@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.driver.js.JSCompilationUnit;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
@@ -354,7 +356,35 @@ public class GoogDepsWriter {
 			roots.add(mainUnit);
 			requireMap.remove(mainName);
 			
+			if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.GOOG_DEPS) == CompilerDiagnosticsConstants.GOOG_DEPS)
+			{
+				Collection<ICompilationUnit> units = graph.getCompilationUnits();
+				System.out.println("Contents of graph:");
+				for (ICompilationUnit unit : units)
+				{
+					try {
+						System.out.println(unit.getQualifiedNames().toString());
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+				}
+			}
 			List<ICompilationUnit> order = graph.topologicalSort(requireMap.values());
+			if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.GOOG_DEPS) == CompilerDiagnosticsConstants.GOOG_DEPS)
+			{
+				Collection<ICompilationUnit> units = graph.getCompilationUnits();
+				System.out.println("Contents of graph in order:");
+				for (ICompilationUnit unit : order)
+				{
+					try {
+						System.out.println(unit.getQualifiedNames().toString());
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+				}
+			}
 			ArrayList<GoogDep> depsInOrder = new ArrayList<GoogDep>();
 			for (ICompilationUnit unit : order)
 			{
@@ -502,9 +532,9 @@ public class GoogDepsWriter {
 
 			// first scan requires in case this is a module and some have been externed
 			int j = main.fileInfo.googProvideLine + 1;
-			while (!fileLines.get(j).contains(JSGoogEmitterTokens.GOOG_REQUIRE.getToken()))
+			while (j < fileLines.size() && !fileLines.get(j).contains(JSGoogEmitterTokens.GOOG_REQUIRE.getToken()))
 				j++;
-			while (fileLines.get(j).contains(JSGoogEmitterTokens.GOOG_REQUIRE.getToken()))
+			while (j < fileLines.size() && fileLines.get(j).contains(JSGoogEmitterTokens.GOOG_REQUIRE.getToken()))
 			{
 				String line = fileLines.get(j);
 				int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
