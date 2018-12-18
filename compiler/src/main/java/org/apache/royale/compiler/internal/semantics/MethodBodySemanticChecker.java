@@ -942,6 +942,7 @@ public class MethodBodySemanticChecker
     public void checkFunctionDefinition(IFunctionNode iNode, FunctionDefinition def )
     {
         SemanticUtils.checkReturnValueHasNoTypeDeclaration(this.currentScope, iNode, def);
+        SemanticUtils.checkParametersHaveNoTypeDeclaration(this.currentScope, iNode, def);
         
         if (SemanticUtils.isInFunction(iNode))
         {

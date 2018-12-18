@@ -347,6 +347,8 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
 
         // Warn if there is no return type
         SemanticUtils.checkReturnValueHasNoTypeDeclaration(interfaceScope, func, func_def);
+        // Warn if there are any missing parameter types
+        SemanticUtils.checkParametersHaveNoTypeDeclaration(interfaceScope, func, func_def);
 
         // Interface methods can't have a body
         if( func.hasBody() )
