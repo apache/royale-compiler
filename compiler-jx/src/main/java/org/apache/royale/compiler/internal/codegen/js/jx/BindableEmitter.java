@@ -447,7 +447,7 @@ public class BindableEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-    	String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
+    		String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
         if (info.namespace != "public") {
             writeNewline("/** @export");
             writeNewline("  * @private");

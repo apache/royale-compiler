@@ -3049,10 +3049,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	                    write(ASEmitterTokens.MEMBER_ACCESS);
     	                    JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
     	                    .getASEmitter();
-    		    	        ICompilerProject project = getMXMLWalker().getProject();
+    	                    
+    	                    ICompilerProject project = getMXMLWalker().getProject();
     	                    String qname = varnode.getName();
-    	                	if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
-    	                		qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
+    	                		if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
+    	                			qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
     	                    write(qname);
     	                    if (schildID == ASTNodeID.BindableVariableID && !varnode.isConst())
     	                    	write("_"); // use backing variable

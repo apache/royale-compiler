@@ -675,8 +675,8 @@ public class AccessorEmitter extends JSSubEmitter implements
         HashMap<String, PropertyNodes> map = isStatic ? getModel()
                 .getStaticPropertyMap() : getModel().getPropertyMap();
         String name = node.getName();
-    	if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
-    		name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
+    		if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
+    			name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
         PropertyNodes p = map.get(name);
         if (p == null)
         {
@@ -704,8 +704,8 @@ public class AccessorEmitter extends JSSubEmitter implements
         HashMap<String, PropertyNodes> map = isStatic ? getModel()
                 .getStaticPropertyMap() : getModel().getPropertyMap();
         String name = node.getName();
-    	if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
-    		name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
+    		if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
+    			name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
         PropertyNodes p = map.get(name);
         if (p == null)
         {

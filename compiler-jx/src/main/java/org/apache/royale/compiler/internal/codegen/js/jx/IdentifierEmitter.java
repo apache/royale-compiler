@@ -245,7 +245,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else
                 {
             		String qname = node.getName();
-                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
             		write(qname);
                 }
@@ -319,7 +319,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	else
                 	{
                 		qname = node.getName();
-                    	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                     		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                 		write(qname);
                 	}
@@ -339,7 +339,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 else 
                 {
-                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                     write(qname);
                 }

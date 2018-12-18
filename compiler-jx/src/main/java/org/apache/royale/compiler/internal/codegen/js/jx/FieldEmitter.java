@@ -103,8 +103,8 @@ public class FieldEmitter extends JSSubEmitter implements
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
             String qname = node.getName();
             IDefinition nodeDef = node.getDefinition();
-        	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-        		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+            if (nodeDef != null && !nodeDef.isStatic() && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+        			qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
             write(qname);
             endMapping(node.getNameExpressionNode());
         }

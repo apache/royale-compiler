@@ -524,23 +524,23 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitMemberName(IDefinitionNode node)
     {
         ICompilerProject project = getWalker().getProject();
-    	if (node.getNodeID() == ASTNodeID.FunctionID)
-    	{
-    		FunctionNode fn = (FunctionNode)node;
-    		if (isCustomNamespace(fn))
-    		{
-    			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
-    			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
-    			formatQualifiedName(nsDef.getQualifiedName()); // register with used names
-    			String s = nsDef.getURI();
-    			write("[\"" + s + "::" + node.getName() + "\"]");
-    			return;
-    		}
-    	}
-    	String qname = node.getName();
-    	IDefinition nodeDef = node.getDefinition();
-    	if (nodeDef != null && nodeDef.isPrivate() && project.getAllowPrivateNameConflicts())
-    		qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+        if (node.getNodeID() == ASTNodeID.FunctionID)
+        {
+            FunctionNode fn = (FunctionNode)node;
+            if (isCustomNamespace(fn))
+            {
+                INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
+                INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+                formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                String s = nsDef.getURI();
+                write("[\"" + s + "::" + node.getName() + "\"]");
+                return;
+            }
+        }
+        String qname = node.getName();
+        IDefinition nodeDef = node.getDefinition();
+        if (nodeDef != null && !nodeDef.isStatic() && nodeDef.isPrivate() && project.getAllowPrivateNameConflicts())
+            qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
         write(qname);
     }
 
