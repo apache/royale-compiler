@@ -43,6 +43,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
+import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.RoyaleDiagnosticGroups;
 import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.ShowByPathWarningsGuard;
@@ -128,7 +129,7 @@ public class JSClosureCompilerWrapper
         sourceMap = enabled;
     }
     
-    public void compile()
+    public boolean compile()
     {
     	System.out.println("list of source files");
     	for (SourceFile file : jsSourceFiles_)
@@ -162,8 +163,8 @@ public class JSClosureCompilerWrapper
         }
 
 
-        compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
-
+        Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
+        
         try
         {
             FileWriter targetFile = new FileWriter(targetFilePath);
@@ -223,6 +224,7 @@ public class JSClosureCompilerWrapper
             System.err.println("Error message: " + message.toString());
         }
         */
+        return result.success;
     }
     
     private Set<String> getUsedVars(File file)

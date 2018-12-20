@@ -501,18 +501,21 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         /////////////////////////////////////////////////////////////////////////////////
 
         if (configuration.release()) {
+            boolean ok = true;
             final File projectReleaseMainFile = new File(releaseDir, outputFileName);
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
             compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
 
-            compilerWrapper.compile();
+            ok = compilerWrapper.compile();
 
             appendSourceMapLocation(projectReleaseMainFile, projectName);
+            
+            if (ok)
+                System.out.println("The project '" + projectName + "' has been successfully compiled and optimized.");
         }
-
-        // if (ok)
-        System.out.println("The project '" + projectName + "' has been successfully compiled and optimized.");
+        else
+        	System.out.println("The project '" + projectName + "' has been successfully compiled.");
 
         return true;
     }
