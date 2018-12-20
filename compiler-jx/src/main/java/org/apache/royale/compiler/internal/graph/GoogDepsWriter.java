@@ -734,7 +734,7 @@ public class GoogDepsWriter {
     				lastRequireLine = gd.fileInfo.googProvideLine + 1;
             	for (String dep : gd.fileInfo.staticDeps)
             	{
-            		if (!writtenRequires.contains(dep))
+            		if (!writtenRequires.contains(dep) && !isExternal(dep))
             		{
             			String line = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
             			line += "('" + dep + "');";
