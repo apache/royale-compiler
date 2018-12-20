@@ -39,6 +39,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.driver.js.JSCompilationUnit;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
@@ -48,6 +49,7 @@ import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.problems.MainDefinitionQNameProblem;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
+import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -89,6 +91,7 @@ public class GoogDepsWriter {
 	private DependencyGraph graph;
 	private CompilerProject project;
 	private ArrayList<String> staticInitializers;
+	private ArrayList<String> staticInitializerOwners;
 	
 	private HashMap<String, GoogDep> depMap = new HashMap<String,GoogDep>();
 	private HashMap<String, ICompilationUnit> requireMap = new HashMap<String, ICompilationUnit>();
@@ -283,6 +286,7 @@ public class GoogDepsWriter {
 	private boolean buildDB()
 	{
 		staticInitializers = new ArrayList<String>();
+		staticInitializerOwners = new ArrayList<String>();
 		
 		graph = new DependencyGraph();
 		if (isGoogClass(mainName))
@@ -307,39 +311,35 @@ public class GoogDepsWriter {
 	{
 		// first, promote all dependencies of classes used in static initializers to
 		// the level of static dependencies since their constructors will be
-		// run early
-		for (String staticClass: staticInitializers)
+		// run early.  This may need to be a full transitive walk someday.
+		// This is because we move many goog.requires from the various classes
+		// to the main app when removing circulars.  We only keep goog.requires
+		// that Closure Compiler cares about, which are requires for @extends
+		// and @implements.  However, as classes required by the application get
+		// loaded, their static initializers will fail if we haven't already goog.required
+		// the classes used by these static initializers, so we have to keep goog.requires
+		// used by these static initializers in the class files.
+		int n = staticInitializers.size();
+		for (int i = 0; i < n; i++)
 		{
+			String staticClass = staticInitializers.get(i);
+			String staticOwner = staticInitializerOwners.get(i);
 			GoogDep info = depMap.get(staticClass);
-			if (info != null && info.fileInfo != null && info.fileInfo.deps != null)
+			GoogDep ownerInfo = depMap.get(staticOwner);
+			if (info != null && info.fileInfo != null && info.fileInfo.deps != null && 
+					ownerInfo != null && ownerInfo.fileInfo != null)
 			{
-				if (info.fileInfo.staticDeps == null)
-					info.fileInfo.staticDeps = new ArrayList<String>();
+				if (ownerInfo.fileInfo.staticDeps == null)
+					ownerInfo.fileInfo.staticDeps = new ArrayList<String>();
 				for (String dep : info.fileInfo.deps)
 				{
-					if (!info.fileInfo.staticDeps.contains(dep))
+					if (!ownerInfo.fileInfo.staticDeps.contains(dep))
 					{
-						info.fileInfo.staticDeps.add(dep);
+						ownerInfo.fileInfo.staticDeps.add(dep);
 						if (!isGoogClass(dep))
 						{
-							System.out.println(staticClass + " used in static initializers so make " + dep + "a static dependency");
-							ICompilationUnit depcu = requireMap.get(dep);
-							if (depcu == null)
-							{
-								depcu = new JSCompilationUnit(project, dep, DefinitionPriority.BasePriority.SOURCE_LIST, dep);
-								graph.addCompilationUnit(depcu);
-								requireMap.put(dep, depcu);
-								requireMap2.put(depcu, dep);
-							}
-							ICompilationUnit cu = requireMap.get(staticClass);
-							if (cu == null)
-							{
-								cu = new JSCompilationUnit(project, staticClass, DefinitionPriority.BasePriority.SOURCE_LIST, staticClass);
-								graph.addCompilationUnit(cu);
-								requireMap.put(staticClass, cu);
-								requireMap2.put(cu, staticClass);
-							}
-							graph.addDependency(cu, depcu, DependencyType.INHERITANCE);
+							System.out.println(staticClass + " used in static initializer of " + staticOwner + " so make " + dep + " a static dependency");
+							// all things added here should get added to graph in sortFunction
 						}
 					}
 				}
@@ -371,6 +371,10 @@ public class GoogDepsWriter {
 				}
 			}
 			List<ICompilationUnit> order = graph.topologicalSort(requireMap.values());
+			if (graph.lastCircularDependencyException != null)
+			{
+				problems.add(new UnexpectedExceptionProblem(graph.lastCircularDependencyException));
+			}
 			if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.GOOG_DEPS) == CompilerDiagnosticsConstants.GOOG_DEPS)
 			{
 				Collection<ICompilationUnit> units = graph.getCompilationUnits();
@@ -421,11 +425,9 @@ public class GoogDepsWriter {
 		ICompilationUnit unit = null;
 		
 		if (removeCirculars)
+		{
 			if (current.fileInfo.deps == null)
 				return;
-		
-		if (removeCirculars)
-		{
 			unit = requireMap.get(current.className);
 			if (unit == null)
 			{
@@ -434,24 +436,8 @@ public class GoogDepsWriter {
 				requireMap.put(current.className, unit);
 				requireMap2.put(unit, current.className);
 			}
-			if (current.fileInfo.staticDeps != null && removeCirculars)
-			{
-				for (String staticDep : current.fileInfo.staticDeps)
-				{
-					ICompilationUnit base = requireMap.get(staticDep);
-					if (base == null)
-					{
-						base = new JSCompilationUnit(project, staticDep, DefinitionPriority.BasePriority.SOURCE_LIST, staticDep);
-						graph.addCompilationUnit(base);
-						requireMap.put(staticDep, base);
-						requireMap2.put(base, staticDep);
-					}
-					System.out.println(current.className + " static initialization depends on " + staticDep);
-					graph.addDependency(unit, base, DependencyType.INHERITANCE);
-					
-				}
-			}
 		}
+		
 		ArrayList<String> impls = current.fileInfo.impls != null ? current.fileInfo.impls : null;
 		if (impls != null)
 		{
@@ -480,6 +466,25 @@ public class GoogDepsWriter {
 							sortFunction(gd, arr);
 						}
 					}
+				}
+			}
+		}
+		if (removeCirculars)
+		{
+			if (current.fileInfo.staticDeps != null && removeCirculars)
+			{
+				for (String staticDep : current.fileInfo.staticDeps)
+				{
+					ICompilationUnit base = requireMap.get(staticDep);
+					if (base == null)
+					{
+						base = new JSCompilationUnit(project, staticDep, DefinitionPriority.BasePriority.SOURCE_LIST, staticDep);
+						graph.addCompilationUnit(base);
+						requireMap.put(staticDep, base);
+						requireMap2.put(base, staticDep);
+					}
+					System.out.println(current.className + " static initialization depends on " + staticDep);
+					graph.addDependency(unit, base, DependencyType.INHERITANCE);
 				}
 			}
 		}
@@ -673,7 +678,9 @@ public class GoogDepsWriter {
         	StringBuilder sb = new StringBuilder();
         	sb.append(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
         	
+        	ArrayList<String> writtenRequires = new ArrayList<String>();
         	int staticDepsLine = -1;
+        	int lastRequireLine = -1;
             FileInfo fi = gd.fileInfo;
             int suppressCount = 0;
             int i = 0;
@@ -693,6 +700,7 @@ public class GoogDepsWriter {
                     c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
                     if (c > -1)
                     {
+                    	lastRequireLine = i;
                         int c2 = line.indexOf(")");
                         String s = line.substring(c + 14, c2 - 1);
                         if (((gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s)) &&
@@ -710,10 +718,29 @@ public class GoogDepsWriter {
 							sourceMapConsumer = removeLineFromSourceMap(sourceMapConsumer, depFile.getName(), finalLines.size());
                         	continue;
 	                    }
+                        else
+                        {
+                        	writtenRequires.add(s);
+                        }
                     }
             	}
                 finalLines.add(line);
                 i++;
+            }
+            // add any static deps not already listed that were added by static initializers;
+            if (gd.fileInfo.staticDeps != null)
+            {
+    			if (lastRequireLine == -1)
+    				lastRequireLine = gd.fileInfo.googProvideLine + 1;
+            	for (String dep : gd.fileInfo.staticDeps)
+            	{
+            		if (!writtenRequires.contains(dep))
+            		{
+            			String line = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
+            			line += "('" + dep + "');";
+            			finalLines.add(lastRequireLine++, line);
+            		}
+            	}
             }
             //if (suppressCount > 0)
             //{
@@ -792,28 +819,6 @@ public class GoogDepsWriter {
             sb.append("*/");
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
 			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
-			if (staticInitializers.contains(className) && gd.fileInfo.staticDeps != null)
-			{
-				// add or rewrite static deps cache since we may have mucked with the list.
-				sb = new StringBuilder();
-	        	sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
-	        	boolean firstOne = true;
-	        	for (String dep : gd.fileInfo.staticDeps)
-	        	{
-	        		if (!firstOne)
-	        			sb.append(",");
-	        		firstOne = false;
-	        		sb.append(dep);
-	        	}
-	            sb.append("*/");
-	            if (staticDepsLine == -1)
-	            {
-		            finalLines.add(gd.fileInfo.googProvideLine + 2, sb.toString());
-					sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 2);
-	            }
-	            else
-	            	finalLines.set(staticDepsLine, sb.toString());
-			}
 
 			PrintWriter out = new PrintWriter(new FileWriter(depFile));  
             for (String s : finalLines)
@@ -1138,6 +1143,7 @@ public class GoogDepsWriter {
 						    						if (staticDep.equals(className))
 						    							continue;
 						    						staticInitializers.add(staticDep);
+						    						staticInitializerOwners.add(className);
 						    					}
 						    				}
 						    				else

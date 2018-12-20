@@ -500,6 +500,8 @@ public final class DependencyGraph
             }
         });
     }
+    
+    public CircularDependencyException lastCircularDependencyException;
 
     /**
      * Computes the list of all {@link ICompilationUnit}'s that the specified
@@ -522,6 +524,7 @@ public final class DependencyGraph
         lock.readLock().lock();
         try
         {
+        	lastCircularDependencyException = null;
             final ArrayList<ICompilationUnit> sortedList = new ArrayList<ICompilationUnit>(graph.getVertices().size());
             TopologicalSort.IVisitor<ICompilationUnit, Edge> visitor =
                     new TopologicalSort.IVisitor<ICompilationUnit, Edge>()
@@ -567,6 +570,7 @@ public final class DependencyGraph
     				}
     				System.out.println("End of Circular Dependency");
     			}
+    			lastCircularDependencyException = e1;
                 assert false : "CircularDependencyException";
             }
             return sortedList;
