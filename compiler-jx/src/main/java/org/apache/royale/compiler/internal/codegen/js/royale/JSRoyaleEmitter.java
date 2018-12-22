@@ -478,7 +478,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         writeToken(ASEmitterTokens.NEW);
         write(IASLanguageConstants.Namespace);
         write(ASEmitterTokens.PAREN_OPEN);
-        staticUsedNames.add(IASLanguageConstants.Namespace);
+        if (!staticUsedNames.contains(IASLanguageConstants.Namespace))
+        	staticUsedNames.add(IASLanguageConstants.Namespace);
         IExpressionNode uriNode = node.getNamespaceURINode();
         if (uriNode == null)
         {
@@ -1333,7 +1334,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
         write(JSRoyaleEmitterTokens.VECTOR);
         if (getModel().inStaticInitializer)
-        	staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+        {
+        	if (!staticUsedNames.contains(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()))
+        		staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+        }
         if (project instanceof RoyaleJSProject)
         	((RoyaleJSProject)project).needLanguage = true;
         getModel().needLanguage = true;

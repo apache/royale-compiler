@@ -1376,8 +1376,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                String[] parts = s.split("\\.");
 	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
 	                        bi.classDef.getQualifiedName() + ASEmitterTokens.DOUBLE_QUOTE.getToken());
-	                usedNames.add(bi.classDef.getQualifiedName());
-	                staticUsedNames.add(bi.classDef.getQualifiedName());
+	                String qname = bi.classDef.getQualifiedName();
+	                if (!usedNames.contains(qname))
+	                	usedNames.add(qname);
+	                if (!staticUsedNames.contains(qname))
+	                	staticUsedNames.add(qname);
 	                int n = parts.length;
 	                for (int i = 1; i < n; i++)
 	                {
