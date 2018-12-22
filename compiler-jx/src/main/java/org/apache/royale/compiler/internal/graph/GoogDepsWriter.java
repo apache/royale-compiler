@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -426,8 +427,6 @@ public class GoogDepsWriter {
 		
 		if (removeCirculars)
 		{
-			if (current.fileInfo.deps == null)
-				return;
 			unit = requireMap.get(current.className);
 			if (unit == null)
 			{
@@ -436,6 +435,8 @@ public class GoogDepsWriter {
 				requireMap.put(current.className, unit);
 				requireMap2.put(unit, current.className);
 			}
+			if (current.fileInfo.deps == null)
+				return;
 		}
 		
 		ArrayList<String> impls = current.fileInfo.impls != null ? current.fileInfo.impls : null;
@@ -739,6 +740,7 @@ public class GoogDepsWriter {
             			String line = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
             			line += "('" + dep + "');";
             			finalLines.add(lastRequireLine++, line);
+            			System.out.println("adding require for static dependency " + dep + " to " + className);
             		}
             	}
             }
@@ -1041,7 +1043,7 @@ public class GoogDepsWriter {
 	        int c = line.indexOf("*/");
 	        if (c > -1 && constructorCount > 0 && constructorCount == numProvides)
 	        {
-                return fi;
+                break;
 	        }
 	        else
 	        {
@@ -1166,7 +1168,7 @@ public class GoogDepsWriter {
 									        				fi.deps.addAll(Arrays.asList(line.split(",")));
 								    					fi.depsLine = i;
 								    				}
-								    				else if (fi.depsLine == 0)
+								    				else /* if (fi.depsLine == 0) */
 								    				{
 								    					token = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
 								    					c = line.indexOf(token);
@@ -1189,6 +1191,14 @@ public class GoogDepsWriter {
 			        }
 		        }
 	        }
+	    }
+	    if (fi.deps != null)
+	    {
+	    	Collections.sort(fi.deps);
+	    }
+	    if (fi.staticDeps != null)
+	    {
+	    	Collections.sort(fi.staticDeps);
 	    }
 	    return fi;
 	}
