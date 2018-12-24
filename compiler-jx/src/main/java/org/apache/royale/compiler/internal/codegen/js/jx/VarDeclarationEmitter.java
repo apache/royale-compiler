@@ -154,7 +154,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         			IDefinition leftDef = dyn.getLeftOperandNode().resolveType(getProject());
         			IDefinition rightDef = dyn.getRightOperandNode().resolveType(getProject());
         			// numeric indexing?
-        			if (rightDef.getQualifiedName().equals(IASLanguageConstants.Number))
+        			if (leftDef != null && rightDef.getQualifiedName().equals(IASLanguageConstants.Number))
         			{
         				IMetaTag[] metas = leftDef.getAllMetaTags();
         				for (IMetaTag meta : metas)
