@@ -2852,6 +2852,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         {
             return node instanceof IMXMLInstanceNode;
         }
+        @Override
+        public boolean test(IASNode input)
+        {
+            return apply(input);
+        }
     };
 
     /**
@@ -2863,6 +2868,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         public boolean apply(IASNode node)
         {
             return node instanceof IMXMLSpecifierNode;
+        }
+        @Override
+        public boolean test(IASNode input)
+        {
+            return apply(input);
         }
     };
     

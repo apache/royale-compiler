@@ -169,6 +169,12 @@ public class OffsetLookup
                     {
                         return cue.filename.equals(filename);
                     }
+                    
+                    @Override
+                    public boolean test(OffsetCue input)
+                    {
+                        return apply(input);
+                    }
                 });
 
         // Find a list of OffsetCues before the local offset.

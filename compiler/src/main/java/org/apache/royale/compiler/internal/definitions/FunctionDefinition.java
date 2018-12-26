@@ -652,6 +652,12 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         	if (!definition.isPrivate()) return true;
             return findPrivates;
         }
+        
+        @Override
+        public boolean test(IDefinition input)
+        {
+            return apply(input);
+        }
     }
 
 }

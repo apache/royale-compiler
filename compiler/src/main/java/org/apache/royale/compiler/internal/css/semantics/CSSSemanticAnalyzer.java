@@ -406,6 +406,13 @@ public class CSSSemanticAnalyzer
             }
             return false;
         }
+        
+        @Override
+        public boolean test(ICSSRule input)
+        {
+            return apply(input);
+        }
+
     }
 
     /**
@@ -446,6 +453,12 @@ public class CSSSemanticAnalyzer
                     return false;
             }
             return true;
+        }
+        
+        @Override
+        public boolean test(ICSSRule input)
+        {
+            return apply(input);
         }
     }
 

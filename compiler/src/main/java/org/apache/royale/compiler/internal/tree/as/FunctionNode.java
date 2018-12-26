@@ -902,6 +902,11 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             {
                 return problem.getLine() == line;
             }
+            @Override
+            public boolean test(ICompilerProblem input)
+            {
+                return apply(input);
+            }
         };
     }
 
@@ -916,6 +921,11 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             public boolean apply(ICompilerProblem problem)
             {
                 return problemClass.isInstance(problem);
+            }
+            @Override
+            public boolean test(ICompilerProblem input)
+            {
+                return apply(input);
             }
         };
     }

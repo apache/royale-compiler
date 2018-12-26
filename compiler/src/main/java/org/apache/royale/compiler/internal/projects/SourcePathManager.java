@@ -256,7 +256,13 @@ public final class SourcePathManager
                         {
                             DefinitionPriority defPriority = (DefinitionPriority)cu.getDefinitionPriority();
                             return defPriority.getBasePriority() == DefinitionPriority.BasePriority.SOURCE_PATH;
-                        }});
+                        }
+                        @Override
+                        public boolean test(ICompilationUnit input)
+                        {
+                            return apply(input);
+                        }
+                        });
                 unitsToRemove.addAll(sourcePathCompilationUnitsToRemove);
             }
         }
@@ -334,6 +340,11 @@ public final class SourcePathManager
                     {
                         DefinitionPriority priority = ((DefinitionPriority)compilationUnit.getDefinitionPriority());
                         return priority.getBasePriority() == DefinitionPriority.BasePriority.SOURCE_PATH;
+                    }
+                    @Override
+                    public boolean test(ICompilationUnit input)
+                    {
+                        return apply(input);
                     }
                 });
     }

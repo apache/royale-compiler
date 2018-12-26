@@ -1948,6 +1948,12 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
                 }
                 return true;
             }
+            
+            @Override
+            public boolean test(IDefinition input)
+            {
+                return apply(input);
+            }
 
             /**
              * Determine if a reference from one definition to another should be considered a forward
