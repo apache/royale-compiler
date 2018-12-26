@@ -67,7 +67,7 @@ public class ReferenceCompiler
         options.setPrettyPrint(true);
         options.setLineLengthThreshold(80);
         options.setPreferSingleQuotes(true);
-        options.setIdeMode(true);
+        //options.setIdeMode(true);
         options.setParseJsDocDocumentation(Config.JsDocParsing.INCLUDE_DESCRIPTIONS_NO_WHITESPACE);
         options.setExternExports(false);
         options.setExtraAnnotationNames(Arrays.asList(asdocTags));
