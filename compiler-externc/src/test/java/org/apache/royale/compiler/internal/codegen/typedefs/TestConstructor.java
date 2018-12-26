@@ -30,6 +30,8 @@ import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.compiler.internal.codegen.typedefs.reference.ClassReference;
 import org.junit.Test;
 
+import com.google.javascript.rhino.jstype.JSType.Nullability;
+
 public class TestConstructor extends TypedefsTestBase
 {
 
@@ -82,13 +84,13 @@ public class TestConstructor extends TypedefsTestBase
 
         assertEquals(
                 "number",
-                evaluateParam(FooOptVarArgs.getConstructor(), "arg1").toAnnotationString());
+                evaluateParam(FooOptVarArgs.getConstructor(), "arg1").toAnnotationString(Nullability.EXPLICIT));
         assertEquals(
                 "*",
-                evaluateParam(FooOptVarArgs.getConstructor(), "opt_arg2").toAnnotationString());
+                evaluateParam(FooOptVarArgs.getConstructor(), "opt_arg2").toAnnotationString(Nullability.EXPLICIT));
         assertEquals(
                 "*",
-                evaluateParam(FooOptVarArgs.getConstructor(), "var_args").toAnnotationString());
+                evaluateParam(FooOptVarArgs.getConstructor(), "var_args").toAnnotationString(Nullability.EXPLICIT));
     }
 
     @Test
