@@ -29,7 +29,7 @@
               antlr (3) - BSD
               commons-cli (1.2) - Apache 2.0
               commons-io (2.0.1) - Apache 2.0
-              guava (15.0) - Apache 2.0
+              guava (25.1) - Apache 2.0
               JBurg (1.10.2) - CPL 1.0
               lzma-sdk (9.2) - Public Domain
   -->
@@ -131,13 +131,13 @@
 
     <!--  guava -->
     <property name="guava.name" value="guava"/>
-    <property name="guava.version" value="20.0"/>
+    <property name="guava.version" value="25.1-jre"/>
     <antcall target="download-dependency">
       <param name="name" value="${guava.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
       <param name="src.filename" value="guava-${guava.version}.jar"/>
-      <param name="src.checksum" value="f32a8a2524620dbecc9f6bf6a20c293f"/>
+      <param name="src.checksum" value="da3838847d109ac435f0d3ed4ae1c794"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${guava.name}.jar"/>
       <param name="license.use.apache" value="true"/>
