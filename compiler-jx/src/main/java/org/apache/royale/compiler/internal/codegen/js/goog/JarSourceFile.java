@@ -37,7 +37,7 @@ public class JarSourceFile extends SourceFile {
     private String code;
 
     public JarSourceFile(String fileName, String code, boolean isExtern) {
-        super(fileName);
+        super(fileName, isExtern ? SourceKind.EXTERN : SourceKind.STRONG);
         this.fileName = fileName;
         this.isExtern = isExtern;
         this.code = code;
