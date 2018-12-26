@@ -17,5 +17,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>
+	<classpathentry kind="lib" path="/compiler-externc/target/test-classes"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
