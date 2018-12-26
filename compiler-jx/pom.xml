@@ -104,7 +104,7 @@
     <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>v20170626</version>
+      <version>v20181210</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
