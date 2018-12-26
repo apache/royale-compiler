@@ -311,3 +311,34 @@ Date.prototype.time;
  * @type {number}
  */
 Date.prototype.timezoneOffset;
+
+/**
+ * @param {string} type
+ * @param {EventListener|function(!Event):*} listener
+ * @param {(boolean|!AddEventListenerOptions)=} opt_options
+ * @return {undefined}
+ * @see https://dom.spec.whatwg.org/#dom-eventtarget-addeventlistener
+ */
+BaseAudioContext.prototype.addEventListener = function(type, listener, opt_options) {
+};
+
+/**
+ * @param {string} type
+ * @param {EventListener|function(!Event):*} listener
+ * @param {(boolean|!EventListenerOptions)=} opt_options
+ * @return {undefined}
+ * @see https://dom.spec.whatwg.org/#dom-eventtarget-removeeventlistener
+ */
+BaseAudioContext.prototype.removeEventListener = function(
+    type, listener, opt_options) {};
+	
+/**
+ * @param {!Event} evt
+ * @return {boolean}
+ * @see https://dom.spec.whatwg.org/#dom-eventtarget-dispatchevent
+ */
+BaseAudioContext.prototype.dispatchEvent = function(evt) {};
+
+
+
+
