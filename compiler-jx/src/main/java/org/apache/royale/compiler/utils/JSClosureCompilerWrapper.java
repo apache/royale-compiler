@@ -42,6 +42,7 @@ import com.google.javascript.jscomp.CompilerMapFetcher;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DependencyOptions;
+import com.google.javascript.jscomp.DependencyOptions.DependencyMode;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.RoyaleDiagnosticGroups;
@@ -447,10 +448,10 @@ public class JSClosureCompilerWrapper
             options_.setDeadAssignmentElimination(true);
             options_.setInlineConstantVars(true);
             options_.setInlineFunctions(true);
-            options_.setInlineLocalFunctions(true);
-            options_.setCrossModuleCodeMotion(true);
+            options_.setInlineLocalVariables(true);
+            options_.setCrossChunkCodeMotion(true);
             options_.setCoalesceVariableNames(true);
-            options_.setCrossModuleMethodMotion(true);
+            options_.setCrossChunkMethodMotion(true);
             options_.setInlineProperties(true);
             options_.setInlineVariables(true);
             options_.setSmartNameRemoval(true);
@@ -465,8 +466,6 @@ public class JSClosureCompilerWrapper
             options_.setAliasAllStrings(true);
             options_.setConvertToDottedProperties(true);
             options_.setRewriteFunctionExpressions(true);
-            options_.setOptimizeParameters(true);
-            options_.setOptimizeReturns(true);
             options_.setOptimizeCalls(true);
             options_.setOptimizeArgumentsArray(true);
             options_.setGenerateExports(true);
@@ -475,14 +474,11 @@ public class JSClosureCompilerWrapper
                     new String[] { "goog/", "externs/svg.js" },
                     ShowByPathWarningsGuard.ShowType.EXCLUDE));
             
-            DependencyOptions dopts = new DependencyOptions();
-            ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
-            entryPoints.add(ModuleIdentifier.forClosure(projectName));
-            dopts.setDependencyPruning(manageDependencies)
-                 .setDependencySorting(manageDependencies)
-                 .setMoocherDropping(manageDependencies)
-                 .setEntryPoints(entryPoints);
-            options_.setDependencyOptions(dopts);
+            ArrayList<String> entryPoints = new ArrayList<String>();
+            if (manageDependencies)
+            	entryPoints.add(projectName);
+            options_.setDependencyOptions(DependencyOptions.fromFlags(manageDependencies ? DependencyMode.PRUNE_LEGACY : DependencyMode.NONE, 
+            				entryPoints, new ArrayList<String>(), null, manageDependencies, false));
             
             // warnings already activated in previous incarnation
             options_.setWarningLevel(DiagnosticGroups.ACCESS_CONTROLS, CheckLevel.WARNING);
