@@ -91,6 +91,7 @@ public class ConstantReference extends BaseReference
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("Number", "0");
         map.put("undefined", "0");
+        map.put("Boolean", "false");
 
         if (map.containsKey(type))
             return map.get(type);

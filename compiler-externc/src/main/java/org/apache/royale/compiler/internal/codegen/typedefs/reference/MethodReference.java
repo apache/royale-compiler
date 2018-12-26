@@ -31,6 +31,7 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSType.Nullability;
 
 public class MethodReference extends MemberReference
 {
@@ -69,7 +70,7 @@ public class MethodReference extends MemberReference
     public String toReturnTypeAnnotationString()
     {
         JSType jsType = getModel().evaluate(getComment().getReturnType());
-        return jsType.toAnnotationString();
+        return jsType.toAnnotationString(Nullability.EXPLICIT);
     }
 
     public MethodReference(ReferenceModel model, ClassReference classReference, Node node, String name,

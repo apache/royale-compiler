@@ -40,6 +40,8 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
+import com.google.javascript.rhino.jstype.JSType.Nullability;
 
 public class ClassReference extends BaseReference
 {
@@ -502,7 +504,7 @@ public class ClassReference extends BaseReference
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
         {
-            String interfaceName = getModel().evaluate(jsTypeExpression).toAnnotationString();
+            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
             ClassReference reference = getModel().getClassReference(interfaceName);
             if (reference != null)
                 result.add(reference);
@@ -515,7 +517,7 @@ public class ClassReference extends BaseReference
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         for (JSTypeExpression jsTypeExpression : getComment().getExtendedInterfaces())
         {
-            String interfaceName = getModel().evaluate(jsTypeExpression).toAnnotationString();
+            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
             ClassReference reference = getModel().getClassReference(interfaceName);
             if (reference != null)
                 result.add(reference);
@@ -530,7 +532,11 @@ public class ClassReference extends BaseReference
         for (JSTypeExpression jsTypeExpression : implementedInterfaces)
         {
             JSType jsType = getModel().evaluate(jsTypeExpression);
-            String interfaceName = jsType.toAnnotationString();
+            if (jsType.isTemplatizedType())
+            {
+            	jsType = ((TemplatizedType)jsType).getReferencedType();
+            }
+            String interfaceName = jsType.getDisplayName();
             ClassReference interfaceReference = getModel().getClassReference(interfaceName);
             if (interfaceReference != null)
             	result.add(interfaceReference);
@@ -871,7 +877,7 @@ public class ClassReference extends BaseReference
             sb.append("extends ");
             for (JSTypeExpression jsTypeExpression : extendedInterfaces)
             {
-                String value = getModel().evaluate(jsTypeExpression).toAnnotationString();
+                String value = getModel().evaluate(jsTypeExpression).toString();
                 sb.append(value);
                 if (--len > 0)
                     sb.append(", ");
