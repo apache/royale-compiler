@@ -106,10 +106,10 @@ public class TestRoyaleAccessors extends ASTestBase
                 "import custom.custom_namespace;use namespace custom_namespace;public class B { public function B() {}; public function doStuff():void {var theLabel:String = label; label = theLabel;}; private var _label:String; custom_namespace function get label():String {return _label}; custom_namespace function set label(value:String):void {_label = value};}",
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this[\"http://ns.apache.org/2017/custom/namespace::label\"];\n  this[\"http://ns.apache.org/2017/custom/namespace::label\"] = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n" +
-				"B.prototype[\"http://ns.apache.org/2017/custom/namespace::get__label\"] = function() {\n  return this._label;\n};\n\n\n" +
-				"B.prototype[\"http://ns.apache.org/2017/custom/namespace::set__label\"] = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n\"http://ns.apache.org/2017/custom/namespace::label\": {\nget: B.prototype[\"http://ns.apache.org/2017/custom/namespace::get__label\"],\nset: B.prototype[\"http://ns.apache.org/2017/custom/namespace::set__label\"]}}\n);";
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this.http_$$ns_apache_org$2017$custom$namespace__label;\n  this.http_$$ns_apache_org$2017$custom$namespace__label = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n" +
+				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label = function() {\n  return this._label;\n};\n\n\n" +
+				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nhttp_$$ns_apache_org$2017$custom$namespace__label: {\nget: B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label,\nset: B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label}}\n);";
         assertOut(expected);
     }
 

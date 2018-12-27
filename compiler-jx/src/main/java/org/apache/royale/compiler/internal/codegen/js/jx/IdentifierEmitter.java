@@ -240,7 +240,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	INamespaceDefinition nsDef = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveNamespaceReference(getProject());
         			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
                 	String nsName = ns.getName();
-                	write("[\"" + nsName + "::" + node.getName() + "\"]");
+                	write(JSRoyaleEmitter.formatNamespacedProperty(nsName, node.getName(), true));
                 }
                 else
                 {
@@ -310,7 +310,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     else if (isCustomNamespace)
                     {
                     	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
-                    	write("[\"" + ns + "::" + qname + "\"]");
+                    	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, true));
                     }
                     else if (identifierIsAccessorFunction && isStatic)
                     {
@@ -331,7 +331,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else if (isCustomNamespace)
                 {
                 	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
-                	write("[\"" + ns + "::" + qname + "\"]");
+                	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, true));
                 }
                 else if (identifierIsAccessorFunction && isStatic)
                 {

@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -534,7 +535,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                 INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 formatQualifiedName(nsDef.getQualifiedName()); // register with used names
                 String s = nsDef.getURI();
-                write("[\"" + s + "::" + node.getName() + "\"]");
+                write(formatNamespacedProperty(s, node.getName(), true));
                 return;
             }
         }
@@ -545,7 +546,20 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         write(qname);
     }
 
-    @Override
+    public static String formatNamespacedProperty(String s, String propName, boolean access) {
+    	//closure compiler choked on this syntax so stop using bracket notation for now
+    	//if (access) return "[\"" + s + "::" + propName + "\"]";
+    	//return "\"" + s + "::" + propName + "\"";
+    	s = s.replace(":", "_");
+    	s = s.replace(".", "_");
+    	s = s.replace("/", "$");
+    	s += "__" + propName;
+    	if (access)
+    		s = ASEmitterTokens.MEMBER_ACCESS.getToken() + s;
+    	return s;
+	}
+
+	@Override
     public String formatQualifiedName(String name)
     {
         return formatQualifiedName(name, false);

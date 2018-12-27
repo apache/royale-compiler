@@ -204,7 +204,6 @@ public class SuperCallEmitter extends JSSubEmitter
         }
 
         boolean usingApply = false;
-        boolean isCustomNamespace = false;
         if (fnode != null && !fnode.isConstructor())
         {
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -226,21 +225,12 @@ public class SuperCallEmitter extends JSSubEmitter
             	if (nsDef.getContainingScope() != null) // was null for flash_proxy in unit test
             		fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
     			String s = nsDef.getURI();
-    			superName = s + "::" + superName;
-    			isCustomNamespace = true;
-            }
-            if (isCustomNamespace)
-            {
-            	write(ASEmitterTokens.SQUARE_OPEN);
-            	write(ASEmitterTokens.SINGLE_QUOTE);
+    			write(JSRoyaleEmitter.formatNamespacedProperty(s, superName, true));
             }
             else
-                write(ASEmitterTokens.MEMBER_ACCESS);
-            write(superName);
-            if (isCustomNamespace)
             {
-            	write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.SQUARE_CLOSE);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(superName);
             }
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.APPLY);

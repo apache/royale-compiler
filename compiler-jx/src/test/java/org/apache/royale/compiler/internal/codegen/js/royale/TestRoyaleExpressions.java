@@ -130,7 +130,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionNode node = (IFunctionNode)getNode("import custom.TestProxy;import custom.custom_namespace;use namespace custom_namespace;public class RoyaleTest_A extends TestProxy { custom_namespace function foo(){if (a) super.setProperty(a, b);}}",
         					IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n */\nRoyaleTest_A.prototype[\"http://ns.apache.org/2017/custom/namespace::foo\"] = function() {\n  if (a)\n    RoyaleTest_A.superClass_['http://ns.apache.org/2017/custom/namespace::setProperty'].apply(this, [ a, b] );\n}");
+        assertOut("/**\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.http_$$ns_apache_org$2017$custom$namespace__setProperty.apply(this, [ a, b] );\n}");
     }
 
     @Test
@@ -903,7 +903,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n */\nB.prototype[\"http://ns.apache.org/2017/custom/namespace::b\"] = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this[\"http://ns.apache.org/2017/custom/namespace::b\"], this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
+        assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
     }
     
     @Test
@@ -913,7 +913,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b():int { return this.b(); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @return {number}\n */\nB.prototype[\"http://ns.apache.org/2017/custom/namespace::b\"] = function() {\n  return this[\"http://ns.apache.org/2017/custom/namespace::b\"]();\n}");
+        assertOut("/**\n * @return {number}\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  return this.http_$$ns_apache_org$2017$custom$namespace__b();\n}");
     }
     
     @Test

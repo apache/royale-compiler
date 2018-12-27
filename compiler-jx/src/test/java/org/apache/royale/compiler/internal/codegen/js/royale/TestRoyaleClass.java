@@ -198,7 +198,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("import custom.custom_namespace; use namespace custom_namespace; public class B {public function B() {}; custom_namespace function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n */\norg.apache.royale.B.prototype[\"http://ns.apache.org/2017/custom/namespace::foo\"] = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n */\norg.apache.royale.B.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -509,15 +509,15 @@ public class TestRoyaleClass extends TestGoogClass
         		"org.apache.royale.A.prototype.set__foo3 = function(value) {\n};\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo5 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.royale.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
-        		"org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::get__foo6\"] = function() {\n  return null;\n};\n\n\n" +
-        		"org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::set__foo6\"] = function(value) {\n};\n\n\n" +
+        		"org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__get__foo6 = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__set__foo6 = function(value) {\n};\n\n\n" +
         		"Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo1: {\nget: org.apache.royale.A.prototype.get__foo1,\nset: org.apache.royale.A.prototype.set__foo1},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo2: {\nget: org.apache.royale.A.prototype.get__foo2,\nset: org.apache.royale.A.prototype.set__foo2},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo3: {\nget: org.apache.royale.A.prototype.get__foo3,\nset: org.apache.royale.A.prototype.set__foo3},\n/**\n  * @export\n  * @type {Object} */\n" +
         		    "foo5: {\nget: org.apache.royale.A.prototype.get__foo5,\nset: org.apache.royale.A.prototype.set__foo5},\n/**\n  * @export\n  * @type {Object} */\n" +
-        		    "\"http://ns.apache.org/2017/custom/namespace::foo6\": {\nget: org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::get__foo6\"],\n" +
-        		    																"set: org.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::set__foo6\"]}}\n);");
+        		    "http_$$ns_apache_org$2017$custom$namespace__foo6: {\nget: org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__get__foo6,\n" +
+        		    																"set: org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__set__foo6}}\n);");
     }
 
     @Override
@@ -535,7 +535,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "custom_namespace static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype[\"http://ns.apache.org/2017/custom/namespace::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A[\"http://ns.apache.org/2017/custom/namespace::foo7\"] = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo6 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__foo7 = function(value) {\n};");
     }
 
     @Test

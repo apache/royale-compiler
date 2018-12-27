@@ -100,7 +100,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("import custom.custom_namespace;custom_namespace function foo(bar:String, baz:int = null):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nRoyaleTest_A.prototype[\"http://ns.apache.org/2017/custom/namespace::foo\"] = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
     //--------------------------------------------------------------------------
