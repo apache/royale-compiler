@@ -89,6 +89,10 @@ public class LiteralContainerEmitter extends JSSubEmitter implements
             		value = value.replace("\"", "\\\"");
             		value = value.replace("\r", "");
             		value = value.replace("\n", "\\n");
+            		if (value.contentEquals("<>"))
+            			value = "<domparserdoesntlikeemptynodes>";
+            		else if (value.contentEquals("</>"))
+            			value = "</domparserdoesntlikeemptynodes>";
             		write(value);
             	}
             }
