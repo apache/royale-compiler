@@ -89,10 +89,14 @@ public class LiteralContainerEmitter extends JSSubEmitter implements
             		value = value.replace("\"", "\\\"");
             		value = value.replace("\r", "");
             		value = value.replace("\n", "\\n");
+            		// skip the wrapping empty nodes.  XMLList
+            		// is expecting illegal xml (a sequence of children nodes
+            		// and will wrap it
+            		// in containing nodes
             		if (value.contentEquals("<>"))
-            			value = "<domparserdoesntlikeemptynodes>";
+            			continue;
             		else if (value.contentEquals("</>"))
-            			value = "</domparserdoesntlikeemptynodes>";
+            			continue;
             		write(value);
             	}
             }
