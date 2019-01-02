@@ -77,6 +77,12 @@ public class JSSessionModel
         public IClassDefinition classDefinition;
         public ImplicitBindableImplementation bindableImplementation;
     }
+    
+    public JSSessionModel()
+    {
+    	
+    }
+    
     private Stack<Context> stack = new Stack<Context>();
 
     public boolean needLanguage = false;
@@ -107,6 +113,8 @@ public class JSSessionModel
 
     private ImplicitBindableImplementation implicitBindableImplementation = ImplicitBindableImplementation.NONE;
 
+    public String primaryDefinitionQName;
+    
     public IClassDefinition getCurrentClass()
     {
         return currentClass;

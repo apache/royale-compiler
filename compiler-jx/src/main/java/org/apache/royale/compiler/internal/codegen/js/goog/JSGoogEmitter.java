@@ -186,6 +186,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             ITypeNode tnode = EmitterUtils.findTypeNode(definition.getNode());
             if (tnode != null)
             {
+            	getModel().primaryDefinitionQName = formatQualifiedName(type.getQualifiedName());
                 getWalker().walk(tnode); // IClassNode | IInterfaceNode
             }
             return;
