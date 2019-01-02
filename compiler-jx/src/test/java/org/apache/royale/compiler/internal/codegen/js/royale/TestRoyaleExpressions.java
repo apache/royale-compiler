@@ -1154,6 +1154,22 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
     
     @Test
+    public void testES5StrictNamedLocalFunctionsAsParameter()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public function foo() { var a:Array = []; a.filter(function isEven(element: int, index: int, arr: Array) : Boolean {\n" + 
+                "  return element % 2 == 0;\n" + 
+                "});}",
+                IFunctionNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\n" + 
+      		  "RoyaleTest_A.prototype.foo = function() {\n" +
+      		  "  var self = this;\n" +
+      		  "  function isEven(element, index, arr) {\n    return element % 2 == 0;\n  };\n  var /** @type {Array} */ a = [];\n"
+      		  + "  a.filter(isEven);\n}");
+    }
+    
+    @Test
     public void testParametersInInnerFunctions()
     {
         IFunctionNode node = (IFunctionNode) getNode(

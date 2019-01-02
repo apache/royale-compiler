@@ -465,7 +465,17 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             if (i < 0)
             	System.out.println("missing index for " + node.toString());
             else
-            	write("__localFn" + Integer.toString(i) + "__");
+            {
+            	IFunctionNode localFn = anonFns.get(i);
+            	IExpressionNode idNode = localFn.getNameExpressionNode();
+            	String fnName = "";
+            	if (idNode != null && idNode.getNodeID() == ASTNodeID.IdentifierID)
+            		fnName = ((IdentifierNode)idNode).getName();
+            	if (!fnName.isEmpty())
+            		write(((IdentifierNode)idNode).getName());
+            	else
+            		write("__localFn" + Integer.toString(i) + "__");
+            }
     	}
     }
 
