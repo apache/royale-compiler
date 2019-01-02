@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -48,6 +49,7 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         	return;
 
         IExpressionNode rightOperandNode = node.getRightOperandNode();
+		ITypeDefinition type = rightOperandNode.resolveType(getProject());
         IJSEmitter ijs = getEmitter();
     	JSRoyaleEmitter fjs = (ijs instanceof JSRoyaleEmitter) ? 
     							(JSRoyaleEmitter)ijs : null;
@@ -60,7 +62,6 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 	    		isXML = fjs.isXML((IExpressionNode)leftOperandNode);
 	    	if (isXML)
 	    	{
-	    		ITypeDefinition type = rightOperandNode.resolveType(getProject());
 				if (type.isInstanceOf("String", getProject()))
 				{
 					String field = fjs.stringifyNode(rightOperandNode);
@@ -79,9 +80,10 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SQUARE_OPEN);
         endMapping(node);
-
+        
         getWalker().walk(rightOperandNode);
-
+        if (type != null && type.getQualifiedName().contentEquals(IASLanguageConstants.QName))
+        	write(".objectAccessFormat()");
         startMapping(node, rightOperandNode);
         write(ASEmitterTokens.SQUARE_CLOSE);
         endMapping(node);

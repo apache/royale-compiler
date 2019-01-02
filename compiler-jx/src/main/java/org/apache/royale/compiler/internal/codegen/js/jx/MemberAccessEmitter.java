@@ -177,6 +177,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		write(r.getName());
         		write(ASEmitterTokens.SINGLE_QUOTE);
         		write(ASEmitterTokens.PAREN_CLOSE);
+        		write(".objectAccessFormat()");
         		write(ASEmitterTokens.SQUARE_CLOSE);
         		return;
         	}
@@ -218,6 +219,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	    		write(r.getName());
 	    		write(ASEmitterTokens.SINGLE_QUOTE);
 	    		write(ASEmitterTokens.PAREN_CLOSE);
+        		write(".objectAccessFormat()");
 	    		write(ASEmitterTokens.SQUARE_CLOSE);
     		}
     		else

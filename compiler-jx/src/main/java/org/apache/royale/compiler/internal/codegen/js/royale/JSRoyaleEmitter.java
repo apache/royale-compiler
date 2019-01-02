@@ -1008,7 +1008,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getWalker().getProject()).getName();
             	write(ns + "::");
         	}
-    		write(((IIdentifierNode)node).getName());
+    		write(nodeDef.getBaseName());
     	}
     	else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
     		writeChainName(node);

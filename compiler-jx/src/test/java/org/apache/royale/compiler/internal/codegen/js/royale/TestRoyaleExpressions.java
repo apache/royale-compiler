@@ -32,6 +32,7 @@ import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
@@ -63,6 +64,33 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         super.setUp();
     }
 
+    @Test
+	public void testVisitDynamicAccessString()
+    {
+        IDynamicAccessNode node = (IDynamicAccessNode) getNode(
+                "public class KnownMember { public function KnownMember() { this[\"knownMember\"] = 4; } public var knownMember:Number; }", IDynamicAccessNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitDynamicAccess(node);
+        assertOut("this[\"knownMember\"]");
+    }
+    
+    @Test
+	public void testVisitDynamicAccessQName()
+    {
+        IDynamicAccessNode node = (IDynamicAccessNode) getNode(
+                "public class KnownMember { public function KnownMember() { var q:QName; this[q] = 4; } public var knownMember:Number; }", IDynamicAccessNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitDynamicAccess(node);
+        assertOut("this[q.objectAccessFormat()]");
+    }
+    
+    @Test
+	public void testVisitDynamicAccessQName2()
+    {
+        IDynamicAccessNode node = (IDynamicAccessNode) getNode(
+                "public class KnownMember { public function KnownMember() { this[new QName(new Namespace('ns'), 'knownMember')] = 4; } public var knownMember:Number; }", IDynamicAccessNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitDynamicAccess(node);
+        assertOut("this[new QName(new Namespace('ns'), 'knownMember').objectAccessFormat()]");
+    }
+    
     @Ignore
     @Override
     @Test
@@ -904,6 +932,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
+    }
+    
+    @Test
+    public void testCustomNamespaceMethodAsVariableWithoutUse()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.custom_namespace;;public class B {custom_namespace function b() { function c(f:Function):void {}; var f:Function = this.custom_namespace::b; c(f); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this[new QName(custom.custom_namespace, 'b').objectAccessFormat()], this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
     }
     
     @Test
