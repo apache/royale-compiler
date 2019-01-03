@@ -1114,7 +1114,8 @@ public class GoogDepsWriter {
 					        				fi.impls = new ArrayList<String>();
 					        			c2 = line.indexOf("}", c);
 					        			String impl = line.substring(c + 13, c2);
-					        			fi.impls.add(impl);
+					        			if (!fi.impls.contains(impl))
+					        				fi.impls.add(impl);
 					        			if (impl.equals("org.apache.royale.core.ICSSImpl"))
 					        				needCSS = true;
 					        		}
@@ -1127,7 +1128,8 @@ public class GoogDepsWriter {
 						        				fi.impls = new ArrayList<String>();
 						        			c2 = line.indexOf("}", c);
 						        			String impl = line.substring(c + 10, c2);
-						        			fi.impls.add(impl);
+						        			if (!fi.impls.contains(impl))
+						        				fi.impls.add(impl);
 						        		}
 						        		else
 						        		{
