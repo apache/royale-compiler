@@ -47,7 +47,6 @@ import org.apache.royale.compiler.internal.embedding.transcoders.PBJTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.SoundTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
 import org.apache.royale.compiler.internal.embedding.transcoders.XMLTranscoder;
-import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.ASProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.SourcePathManager;

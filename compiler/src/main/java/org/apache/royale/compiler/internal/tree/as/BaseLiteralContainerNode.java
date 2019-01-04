@@ -37,7 +37,8 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase
     /**
      * Constructor.
      */
-    public BaseLiteralContainerNode(LiteralNode baseTypeNode)
+    @SuppressWarnings("incomplete-switch")
+	public BaseLiteralContainerNode(LiteralNode baseTypeNode)
     {
         this.baseTypeNode = baseTypeNode;
         baseTypeNode.setParent(this);

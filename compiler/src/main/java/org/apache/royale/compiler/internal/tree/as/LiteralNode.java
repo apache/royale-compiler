@@ -119,7 +119,8 @@ public class LiteralNode extends ExpressionNodeBase implements ILiteralNode
     // NodeBase overrides
     //
 
-    @Override
+    @SuppressWarnings("incomplete-switch")
+	@Override
     public ASTNodeID getNodeID()
     {
         switch (type)

@@ -847,7 +847,8 @@ public abstract class CompilerProject implements ICompilerProject
         return fatalProblems == null ? Collections.<ICompilerProblem>emptyList() : fatalProblems;
     }
 
-    @Override
+    @SuppressWarnings("incomplete-switch")
+	@Override
     public ITypeDefinition getBuiltinType(IASLanguageConstants.BuiltinType type)
     {
         switch( type )

@@ -46,7 +46,6 @@ import com.google.javascript.jscomp.DependencyOptions.DependencyMode;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.RoyaleDiagnosticGroups;
-import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.ShowByPathWarningsGuard;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
@@ -430,7 +429,8 @@ public class JSClosureCompilerWrapper
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
-    public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
+    @SuppressWarnings("deprecation")
+	public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
     {
         if (useStrictPublishing)
         {

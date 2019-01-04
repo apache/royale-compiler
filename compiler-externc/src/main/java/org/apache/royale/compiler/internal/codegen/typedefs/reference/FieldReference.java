@@ -88,7 +88,6 @@ public class FieldReference extends MemberReference
     {
         super(model, classReference, node, name, comment);
         Collection<Marker> markers = comment.getMarkers();
-        Marker[] markerArray = new Marker[markers.size()];
         for (Marker marker : markers)
         {
         	if (marker.getAnnotation().getItem().equals("const"))

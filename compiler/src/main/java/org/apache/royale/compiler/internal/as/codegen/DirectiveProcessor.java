@@ -23,7 +23,6 @@ import java.util.Collection;
 
 
 
-import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;

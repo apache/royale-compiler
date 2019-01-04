@@ -470,7 +470,8 @@ public final class LibraryPathManager
      * @param swcFilesToRemove SWC file paths
      * @return compilation units associated with the SWC files
      */
-    private List<ICompilationUnit> computeUnitsToRemove(final Collection<String> swcFilesToRemove)
+    @SuppressWarnings("incomplete-switch")
+	private List<ICompilationUnit> computeUnitsToRemove(final Collection<String> swcFilesToRemove)
     {
         final List<ICompilationUnit> unitsToRemove;
         unitsToRemove = new ArrayList<ICompilationUnit>();

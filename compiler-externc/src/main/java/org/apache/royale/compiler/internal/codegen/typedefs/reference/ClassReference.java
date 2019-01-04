@@ -41,7 +41,6 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
-import com.google.javascript.rhino.jstype.JSType.Nullability;
 
 public class ClassReference extends BaseReference
 {

@@ -22,7 +22,7 @@ package com.google.javascript.jscomp;
 public class CompilerMapFetcher
 {
 
-    private static final long serialVersionUID = 2021530437904249081L;
+    //private static final long serialVersionUID = 2021530437904249081L;
 
     public CompilerMapFetcher()
     {

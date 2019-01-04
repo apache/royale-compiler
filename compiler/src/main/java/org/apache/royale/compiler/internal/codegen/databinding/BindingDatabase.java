@@ -317,7 +317,8 @@ public class BindingDatabase
        return ret;
     }
     
-    private boolean objIsType(WatcherInfoBase obj, WatcherType type)
+    @SuppressWarnings("incomplete-switch")
+	private boolean objIsType(WatcherInfoBase obj, WatcherType type)
     {
         boolean ret = false;
         

@@ -33,7 +33,6 @@ import java.util.zip.ZipFile;
 import org.apache.royale.swc.io.SWCReader;
 import org.apache.royale.swf.ISWF;
 import org.apache.royale.swf.io.ISWFReader;
-import org.apache.royale.swf.io.SWFReader;
 
 /**
  * Implementation of library model in a SWC.

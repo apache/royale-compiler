@@ -385,7 +385,7 @@
         <jburg input="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/as/codegen/cmc.jbg"
                output="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java"/>
         <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>		
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused", "incomplete-switch"})'/>
 	</target>
 	
 	<target name="set.css.emitter.uptodate">
@@ -404,7 +404,7 @@
         <jburg input="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/css/codegen/css.jbg"
                output="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java"/>
         <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>	
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused", "incomplete-switch"})'/>	
 	</target>
 	
 	<target name="jburg" depends="cmc.emitter, css.emitter"

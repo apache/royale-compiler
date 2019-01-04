@@ -20,10 +20,6 @@
 package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 
-import static org.apache.royale.abc.ABCConstants.OP_newarray;
-import static org.apache.royale.abc.ABCConstants.OP_pushstring;
-import static org.apache.royale.abc.ABCConstants.OP_pushtrue;
-
 import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
@@ -1339,7 +1335,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
             	if (bdef != null)
             	{
-	            	IDefinition cdef = bdef.getParent();
+	            	//IDefinition cdef = bdef.getParent();
 	            	project.addExportedName(/*cdef.getQualifiedName() + "." + */bdef.getBaseName());
             	}
             }
@@ -3022,7 +3018,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
      	return name;
     }
 
-    private void emitComplexInitializers(IASNode node)
+    @SuppressWarnings("incomplete-switch")
+	private void emitComplexInitializers(IASNode node)
     {
     	int n = node.getChildCount();
     	for (int i = 0; i < n; i++)

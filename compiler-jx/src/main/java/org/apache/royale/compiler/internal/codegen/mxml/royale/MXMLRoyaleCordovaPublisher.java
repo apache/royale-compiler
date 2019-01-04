@@ -19,12 +19,10 @@
 
 package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 
-import java.io.File;
 import java.io.IOException;
 
 public class MXMLRoyaleCordovaPublisher extends MXMLRoyalePublisher
@@ -50,12 +48,5 @@ public class MXMLRoyaleCordovaPublisher extends MXMLRoyalePublisher
     
     private void createCordovaProjectIfNeeded()
     {
-        // The "intermediate" is the "js-debug" output.
-        final File intermediateDir = outputFolder;
-        final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
-
-        // The "release" is the "js-release" directory.
-        File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
-
     }
 }

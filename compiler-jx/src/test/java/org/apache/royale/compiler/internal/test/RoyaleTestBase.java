@@ -23,9 +23,7 @@ import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
-import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;

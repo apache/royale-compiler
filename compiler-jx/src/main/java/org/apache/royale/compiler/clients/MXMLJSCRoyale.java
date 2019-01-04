@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +45,6 @@ import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -60,14 +58,12 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyT
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
-import org.apache.royale.compiler.internal.definitions.ScopedDefinitionBase;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
@@ -712,7 +708,6 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             {
             	// it isn't a bundle from a SWC, it is a bundle in the source path
 	        	String bundleName = cu.getBundleNameInColonSyntax();
-	        	String propFileName = swc.getSWCFile().getAbsolutePath();
 	        	String bundleClassName = cu.getLocale() + "$" + bundleName + "_properties";
             	if (!project.compiledResourceBundleNames.contains(bundleName))
             		project.compiledResourceBundleNames.add(bundleName);

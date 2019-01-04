@@ -43,7 +43,6 @@ import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.problems.AmbiguousReferenceProblem;
 import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;

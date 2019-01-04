@@ -29,7 +29,6 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
-import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
@@ -45,7 +44,6 @@ import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
-import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -560,10 +558,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             while (true)
             {
 	            String line = in.readLine();
+	            if (line == null)
+	            	break;
 	            if (line.startsWith("//") || line.trim().length() == 0)
 	            	continue;
 	            deps.add(line);
             }
+            in.close();
         }
         catch (Exception e)
         {

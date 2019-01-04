@@ -40,7 +40,6 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
-import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.driver.js.JSCompilationUnit;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
@@ -84,7 +83,6 @@ public class GoogDepsWriter {
 	private String outputFolderPath;
 	private String mainName;
 	private List<String> otherPaths;
-	private List<String> sourceExternFiles;
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
 	private boolean sourceMaps = false;
@@ -104,7 +102,6 @@ public class GoogDepsWriter {
 	{
 		this.project = project;
 		this.problems = problems;
-		this.sourceExternFiles = sourceExternFiles;
 
 		if (dps == null)
 		{
@@ -378,7 +375,6 @@ public class GoogDepsWriter {
 			}
 			if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.GOOG_DEPS) == CompilerDiagnosticsConstants.GOOG_DEPS)
 			{
-				Collection<ICompilationUnit> units = graph.getCompilationUnits();
 				System.out.println("Contents of graph in order:");
 				for (ICompilationUnit unit : order)
 				{
@@ -680,10 +676,10 @@ public class GoogDepsWriter {
         	sb.append(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
         	
         	ArrayList<String> writtenRequires = new ArrayList<String>();
-        	int staticDepsLine = -1;
+//        	int staticDepsLine = -1;
         	int lastRequireLine = -1;
             FileInfo fi = gd.fileInfo;
-            int suppressCount = 0;
+//            int suppressCount = 0;
             int i = 0;
             int stopLine = fi.constructorLine;
             if (fi.constructorLine == -1) // standalone functions
@@ -695,9 +691,9 @@ public class GoogDepsWriter {
                     int c = line.indexOf(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
                     if (c > -1)
                     	return; // already been processed
-                    c = line.indexOf(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
-                    if (c > -1)
-                    	staticDepsLine = i;
+//                    c = line.indexOf(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
+//                    if (c > -1)
+//                    	staticDepsLine = i;
                     c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
                     if (c > -1)
                     {
@@ -710,7 +706,7 @@ public class GoogDepsWriter {
                         {
                         	// don't remove the require if some class needs it at static initialization
                         	// time
-                        	suppressCount++;
+//                        	suppressCount++;
                         	System.out.println(gd.filePath + " removing require: " + s);
                     		if (!firstDependency)
                     			sb.append(",");
@@ -1168,7 +1164,7 @@ public class GoogDepsWriter {
 									        			fi.deps = new ArrayList<String>();
 									        			if (line.length() > 2) // don't add blank or space if no deps
 									        				fi.deps.addAll(Arrays.asList(line.split(",")));
-								    					fi.depsLine = i;
+//								    					fi.depsLine = i;
 								    				}
 								    				else /* if (fi.depsLine == 0) */
 								    				{
@@ -1506,7 +1502,7 @@ public class GoogDepsWriter {
 		public ArrayList<String> staticDeps;
 		public ArrayList<String> provides;
 		public int constructorLine;
-		public int depsLine;
+//		public int depsLine;
 		public int suppressLine;
 		public int fileoverviewLine;
 		public int googProvideLine;

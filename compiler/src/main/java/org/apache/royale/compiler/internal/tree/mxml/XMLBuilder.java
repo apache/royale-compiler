@@ -198,7 +198,8 @@ class XMLBuilder
      * those are (these are the expressions to set the value in the XML object
      * when the TODO: PropertyChange event fires).
      */
-    void processNode(IMXMLTextData tag,
+    @SuppressWarnings("incomplete-switch")
+	void processNode(IMXMLTextData tag,
                      StringWriter sw)
     {
         switch (tag.getTextType())

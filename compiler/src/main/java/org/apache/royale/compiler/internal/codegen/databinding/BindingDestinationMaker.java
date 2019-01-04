@@ -33,7 +33,6 @@ import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcesso
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -41,7 +40,6 @@ import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLConcatenatedDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.royale.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelRootNode;

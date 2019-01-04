@@ -37,7 +37,6 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -466,7 +465,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     
     private boolean suppressedWarning(IVariableNode node, RoyaleJSProject fjp)
     {
-    	boolean suppressed = false;
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         String suppressToken = JSRoyaleEmitterTokens.SUPPRESS_PUBLIC_VAR_WARNING

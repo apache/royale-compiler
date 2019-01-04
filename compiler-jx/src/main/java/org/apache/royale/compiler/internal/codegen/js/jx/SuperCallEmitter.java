@@ -73,14 +73,24 @@ public class SuperCallEmitter extends JSSubEmitter
             IClassNode cnode = (IClassNode) node
                     .getAncestorOfType(IClassNode.class);
 
-            IExpressionNode fcNameNode = fcnode.getNameNode();
-            // assume it is memberaccess of the form super.somefunction
-            MemberAccessExpressionNode mae = null;
-            if (fcNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            	mae = (MemberAccessExpressionNode)fcNameNode;
-            if (mae != null
-                    && (mae.getRightOperandNode().getNodeID() == ASTNodeID.GetterID || mae.getRightOperandNode()
-                            .getNodeID() == ASTNodeID.SetterID))
+            boolean isGetterSetter = false;
+            if (fcnode != null)
+            {
+	            IExpressionNode fcNameNode = fcnode.getNameNode();
+	            // assume it is memberaccess of the form super.somefunction
+	            MemberAccessExpressionNode mae = null;
+	            if (fcNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	            	mae = (MemberAccessExpressionNode)fcNameNode;
+	            if (mae != null
+	                    && (mae.getRightOperandNode().getNodeID() == ASTNodeID.GetterID || mae.getRightOperandNode()
+	                            .getNodeID() == ASTNodeID.SetterID))
+	            	isGetterSetter = true;
+            }
+            else if (fnode != null && (fnode.getNodeID() == ASTNodeID.GetterID || fnode.getNodeID() == ASTNodeID.SetterID))
+            {
+            	isGetterSetter = true;            	
+            }
+            if (isGetterSetter)
             {
                 if (cnode == null && thisClass != null)
                     write(getEmitter().formatQualifiedName(

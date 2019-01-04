@@ -900,7 +900,6 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     {
     	HashMap<String, String> map = new HashMap<String, String>();
 		boolean firstOne = true;
-		int count = 0;
 		for (IASDocTag value : values) {
 		    String description = value.getDescription().trim();
 			if (map.containsKey(description)) {
@@ -914,7 +913,6 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 			commentaryWriter.write("\"");
 			
 			map.put(description, "true");
-			count++;
 		}
     }
     
@@ -1077,7 +1075,6 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     		if (!firstLine)
     			out.write(",\n");
     		firstLine = false;
-        	RoyaleASDocProject.ASDocRecord record = project.classes.get(key);
         	out.write("\"");
         	out.write(key);
         	out.write("\"");

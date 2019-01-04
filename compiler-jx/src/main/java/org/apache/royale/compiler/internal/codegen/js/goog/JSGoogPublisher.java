@@ -322,6 +322,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 {
                     if (!dir.mkdirs())
                     {
+                        jar.close();
                         throw new IOException("Unable to create directory "
                                 + dir.getAbsolutePath());
                     }

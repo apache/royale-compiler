@@ -52,7 +52,6 @@ import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
-import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CannotResolveConfigExpressionProblem;
 import org.apache.royale.compiler.problems.CannotResolveProjectLevelConfigExpressionProblem;
 import org.apache.royale.compiler.problems.ConflictingNameInNamespaceProblem;

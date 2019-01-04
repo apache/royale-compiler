@@ -293,7 +293,8 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     /**
      * @return The start offset of actual content
      */
-    public int getContentsStart()
+    @SuppressWarnings("incomplete-switch")
+	public int getContentsStart()
     {
         switch (type)
         {
@@ -313,7 +314,8 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     /**
      * @return The end offset of content
      */
-    public int getContentsEnd()
+    @SuppressWarnings("incomplete-switch")
+	public int getContentsEnd()
     {
         switch (type)
         {
@@ -335,7 +337,8 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         return getLine();
     }
 
-    public int getContentsColumn()
+    @SuppressWarnings("incomplete-switch")
+	public int getContentsColumn()
     {
         switch (type)
         {

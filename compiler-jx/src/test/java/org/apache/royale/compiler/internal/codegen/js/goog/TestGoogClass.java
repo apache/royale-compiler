@@ -19,16 +19,11 @@
 
 package org.apache.royale.compiler.internal.codegen.js.goog;
 
-import java.io.File;
-import java.util.List;
-
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.TestClass;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
-import org.apache.royale.utils.FilenameNormalization;
 import org.junit.Test;
 
 /**

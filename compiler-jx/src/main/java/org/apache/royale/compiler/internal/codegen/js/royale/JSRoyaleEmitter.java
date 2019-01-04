@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
-import org.apache.royale.compiler.codegen.IEmitterTokens;
 import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;

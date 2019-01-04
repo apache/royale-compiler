@@ -167,7 +167,8 @@ public class COMPJSC extends MXMLJSC
      * @param args command line arguments
      * @return exit code
      */
-    private int _mainNoExit(final String[] args,
+    @SuppressWarnings("incomplete-switch")
+	private int _mainNoExit(final String[] args,
             List<ICompilerProblem> outProblems)
     {
     	System.out.println("args:");

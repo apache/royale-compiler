@@ -2002,7 +2002,8 @@ public class MethodBodySemanticChecker
      * 
      * @param call_node {@link FunctionCallNode} that has the "new" call.
      */
-    public void checkNewExpr(IASNode call_node)
+    @SuppressWarnings("incomplete-switch")
+	public void checkNewExpr(IASNode call_node)
     {
         final ExpressionNodeBase name = ((FunctionCallNode)call_node).getNameNode();
         if (name instanceof MemberAccessExpressionNode)

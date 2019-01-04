@@ -4365,7 +4365,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      * based on the instances, properties, styles, and events
      * that depend on the state.
      */
-    void processMXMLState(IMXMLStateNode stateNode, Context context)
+    @SuppressWarnings("incomplete-switch")
+	void processMXMLState(IMXMLStateNode stateNode, Context context)
     {
         int numElements = 1;
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
