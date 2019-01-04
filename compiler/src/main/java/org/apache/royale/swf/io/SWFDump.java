@@ -1394,7 +1394,7 @@ public final class SWFDump
                 if (styleChange.isStateLineStyle())
                 {
                     out.print("lineStyle=\"" +
-                              (styles.getFillStyles().indexOf(styleChange.getLinestyle()) + 1) + "\" ");
+                              (styles.getLineStyles().indexOf(styleChange.getLinestyle()) + 1) + "\" ");
                 }
                 if (styleChange.isStateNewStyles())
                 {
