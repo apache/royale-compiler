@@ -121,7 +121,7 @@ public class InlineFunctionLexicalScope extends LexicalScope
         {
             String paramName = params[i].getBaseName();
             Binding paramBinding = getBinding(params[i]);
-            if (paramBinding != null && !uniqueParamNames.contains(paramBinding))
+            if (paramBinding != null && !uniqueParamNames.contains(paramName))
             {
                 result.addInstruction(paramBinding.setlocal());
                 uniqueParamNames.add(paramName);
