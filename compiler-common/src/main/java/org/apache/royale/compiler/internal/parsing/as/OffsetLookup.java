@@ -88,7 +88,8 @@ public class OffsetLookup
      * @param absoluteOffset absolute offset
      * @return The {@code OffsetCue} that applies to the given absolute offset.
      */
-    private OffsetCue findOffsetCue(int absoluteOffset)
+    @SuppressWarnings("deprecation")
+	private OffsetCue findOffsetCue(int absoluteOffset)
     {
         if (offsetCueList.isEmpty() || absoluteOffset < 0)
             return null;
