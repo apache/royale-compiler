@@ -331,14 +331,13 @@ public class GoogDepsWriter {
 					ownerInfo.fileInfo.staticDeps = new ArrayList<String>();
 				for (String dep : info.fileInfo.deps)
 				{
-					if (!ownerInfo.fileInfo.staticDeps.contains(dep))
+					if (!ownerInfo.fileInfo.staticDeps.contains(dep) 
+							&& !isGoogClass(dep)
+							&& !dep.equals(staticOwner))
 					{
 						ownerInfo.fileInfo.staticDeps.add(dep);
-						if (!isGoogClass(dep))
-						{
-							System.out.println(staticClass + " used in static initializer of " + staticOwner + " so make " + dep + " a static dependency");
-							// all things added here should get added to graph in sortFunction
-						}
+						System.out.println(staticClass + " used in static initializer of " + staticOwner + " so make " + dep + " a static dependency");
+						// all things added here should get added to graph in sortFunction
 					}
 				}
 			}
