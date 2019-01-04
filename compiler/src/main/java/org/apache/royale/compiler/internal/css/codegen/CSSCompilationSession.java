@@ -166,11 +166,6 @@ public class CSSCompilationSession
     private boolean keepAllTypeSelectors;
 
     /**
-     * Excluded CSS files.
-     */
-    private List<String> excludedCSSFiles;
-
-    /**
      * Determine if a rule should be in the output
      * 
      * @return true if rule should be in the output
@@ -419,16 +414,6 @@ public class CSSCompilationSession
     public void setKeepAllTypeSelectors(boolean keepAllTypeSelectors)
     {
         this.keepAllTypeSelectors = keepAllTypeSelectors;
-    }
-
-    /**
-     * Set whether to keep all type selectors for linking.
-     * 
-     * @param keepAllTypeSelectors value
-     */
-    public void setExcludeDefaultsCSSFiles(List<String> excludes)
-    {
-        this.excludedCSSFiles = excludes;
     }
 
 }

@@ -61,7 +61,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         mxmlBlockWalker.visitFile(node);
         
         JSCSSCompilationSession jscss = (JSCSSCompilationSession)project.getCSSCompilationSession();
-        jscss.setExcludeDefaultsCSSFiles(new ArrayList<String>());
 
         String result = getCodeFromFile("CSSTestSource_result.css", "royale/files");
         String output = jscss.emitCSS();       

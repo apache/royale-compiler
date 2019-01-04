@@ -149,7 +149,6 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
     {
         JSCSSCompilationSession cssCompilationSession = (JSCSSCompilationSession) royaleProject.getCSSCompilationSession();
         cssCompilationSession.setKeepAllTypeSelectors(targetSettings.keepAllTypeSelectors());
-        cssCompilationSession.setExcludeDefaultsCSSFiles(targetSettings.getExcludeDefaultsCSSFiles());
         
         // Performance heuristic: let's start compilation on all of the compilation
         // units we know about up front. This is particularly useful on SWC projects where 
