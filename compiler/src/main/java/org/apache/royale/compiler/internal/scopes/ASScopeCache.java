@@ -131,7 +131,7 @@ public class ASScopeCache
      * @param dt Which type of dependency to introduce when we do the lookup
      * @return The IDefinition for the property, or null if it wasn't found
      */
-    IDefinition findProperty(String name, DependencyType dt)
+    IDefinition findProperty(String name, DependencyType dt, boolean favorTypes)
     {
         ConcurrentMap<String, IDefinition> map = getScopeChainMap();
 
@@ -148,6 +148,7 @@ public class ASScopeCache
         // the benefit is that we avoid any sort of locking, which was proving expensive (time wise,
         // and memory wise).
 
+        boolean wasAmbiguous = false;
         IDefinition def = null;
         Set<INamespaceDefinition> namespaceSet = scope.getNamespaceSetForName(project, name);
         // Look for the definition in the scope
@@ -164,7 +165,8 @@ public class ASScopeCache
                 assert def.isInProject(project);
                 break;
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+            	wasAmbiguous = true;
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, favorTypes);
                 if (d != null)
                     def = d;
                 else {
@@ -186,7 +188,7 @@ public class ASScopeCache
             // If the dependency type is null we can't cache the name
             // resolution result, because the name resolution cache will not
             // be properly invalidated when the file containing the definition changes.
-            if (dt != null)
+            if (dt != null && !wasAmbiguous)
             {
                 result = map.putIfAbsent(name, def);
                 if (result == null)
@@ -294,7 +296,7 @@ public class ASScopeCache
                 break;
 
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, false);
                 if (d != null)
                     def = d;
                 else
@@ -361,7 +363,7 @@ public class ASScopeCache
                 assert def.isInProject(project);
                 break;
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, false);
                 if (d != null)
                     def = d;
                 else

@@ -1425,7 +1425,7 @@ public abstract class ASScope extends ASScopeBase
         assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname";
         CompilerProject compilerProject = (CompilerProject)project;
         ASScopeCache scopeCache = compilerProject.getCacheForScope(this);
-        return filterWith(scopeCache.findProperty(baseName, dt), canEscapeWith);
+        return filterWith(scopeCache.findProperty(baseName, dt, canEscapeWith), canEscapeWith);
     }
 
     /**
@@ -1487,7 +1487,7 @@ public abstract class ASScope extends ASScopeBase
                 assert def.isInProject(project);
                 break;
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, false);
                 if (d != null)
                     def = d;
                 else

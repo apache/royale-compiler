@@ -128,7 +128,7 @@ public class ResolvedQualifiersReference implements IResolvedQualifiersReference
             }
             default:
             {
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, false);
                 if (d == null)
                     return AmbiguousDefinition.get();
                 return d;
