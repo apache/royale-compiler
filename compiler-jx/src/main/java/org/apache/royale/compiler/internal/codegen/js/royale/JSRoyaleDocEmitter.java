@@ -490,6 +490,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             IClassDefinition cdef = ((IClassNode)classNode).getDefinition();
             if (cdef.isBindable())
             	return true;
+            if (!cdef.isPublic())
+            	return true;
     	}
     	return false;
     }
