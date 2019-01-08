@@ -2033,6 +2033,10 @@ public class MethodBodySemanticChecker
                         break;
                 }
             }
+            else if (def == null)
+            {
+            	addProblem(new UnresolvedClassReferenceProblem(call_node, func_name.getDisplayString()));
+            }
         }
     }
 
