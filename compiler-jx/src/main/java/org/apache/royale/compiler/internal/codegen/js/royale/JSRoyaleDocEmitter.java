@@ -436,7 +436,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             	if (tag != null)
             		bindable = true;
             }
-            if (warnPublicVars && !node.isConst() && !bindable && !ns.contentEquals("internal"))
+            if (warnPublicVars && !node.isConst() && !bindable && ns.contentEquals("public"))
             {
                 if (!suppressedWarning(node, fjp))
                 	fjp.getProblems().add(new PublicVarWarningProblem(node));
