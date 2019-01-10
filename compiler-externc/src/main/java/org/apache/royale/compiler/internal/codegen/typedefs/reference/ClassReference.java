@@ -644,6 +644,11 @@ public class ClassReference extends BaseReference
         {
             // skipping Object.prototype.toString() allows toString(opt_radix) for Number, int and uint
         }
+        else if (getQualifiedName().equals("Object") && functionName.equals("toJSON"))
+        {
+            // skipping Object.prototype.toJSON().  Doesn't seem to be in the spec and excluding
+        	// in the config seems to also block Date.toJSON
+        }
         else
         {
             instanceMethods.put(functionName, method);
