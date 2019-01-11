@@ -36,6 +36,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.royale.compiler.internal.tree.as.NonResolvingIdentifierNode;
@@ -319,7 +320,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	else
                 	{
                 		qname = node.getName();
-                    	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    	if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                     		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                 		write(qname);
                 	}
@@ -339,7 +340,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 else 
                 {
-                	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                     write(qname);
                 }
