@@ -422,7 +422,7 @@ public class JSClosureCompilerWrapper
     		WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
         
         String[] asdocTags = new String[] {"productversion", 
-        		"playerversion", "langversion", "copy", 
+        		"playerversion", "langversion", "copy", "span", "para", "throw", "tiptext",
         		"asparam", "asreturn", "asreturns", "asprivate",
         		"royaleignoreimport", "royaleignorecoercion", "royaleemitcoercion",
                 "royalenoimplicitstringconversion","royaledebug"};
