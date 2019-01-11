@@ -107,6 +107,7 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                            if (child instanceof LiteralNode)
 	                            {
 	                                s = ((LiteralNode)child).getValue(true);
+	                                s = s.replace("\n", "");
 	                                if (s.contains("'"))
 	                                    sb.append("\"" + s + "\"");
 	                                else
