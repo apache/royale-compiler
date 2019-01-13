@@ -98,6 +98,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         	return IASLanguageConstants.Array;
         
         name = super.convertASTypeToJS(name, pname);
+        if (name.equals(IASLanguageConstants.Boolean.toLowerCase())
+                || name.equals(IASLanguageConstants.String.toLowerCase())
+                || name.equals(IASLanguageConstants.Number.toLowerCase()))
+            return name;
+
         return formatQualifiedName(name);
     }
 
