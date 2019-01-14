@@ -49,6 +49,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.node.NodeBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
@@ -176,6 +177,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
     
     protected MXMLJSCNode(IBackend backend)
     {
+        DefinitionBase.setPerformanceCachingEnabled(true);
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
         project = new RoyaleJSProject(workspace, backend);
