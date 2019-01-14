@@ -427,7 +427,23 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 
         if (type instanceof IClassDefinition)
         {
-        	if (baseDefinitions == null)
+            if (!getPerformanceCachingEnabled())
+            {
+                baseDefinitions = null;
+
+                // We're trying to determine whether this class
+                // is derived from a specified class ('type').
+                // Iterate the superclass chain looking for 'type'.
+                Iterator<IClassDefinition> iter = classIterator(project, false);
+                while (iter.hasNext())
+                {
+                    IClassDefinition cls = iter.next();
+                    if (cls == type)
+                        return true;
+                }
+                return false;
+            }
+        	else if (baseDefinitions == null)
         	{
             	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
             		System.out.println("ClassDefinitionBase waiting for lock for " + this.getQualifiedName());
@@ -456,7 +472,24 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
         }
         else if (type instanceof IInterfaceDefinition)
         {
-        	if (implDefinitions == null)
+            if (!getPerformanceCachingEnabled())
+            {
+                implDefinitions = null;
+
+                // We're trying to determine whether this class
+                // implements a specified interface ('type').
+                // Iterate all of the interfaces that this class implements,
+                // looking for 'type'.
+                Iterator<IInterfaceDefinition> iter = interfaceIterator(project);
+                while (iter.hasNext())
+                {
+                    IInterfaceDefinition intf = iter.next();
+                    if (intf == type)
+                        return true;
+                }
+                return false;
+            }
+        	else if (implDefinitions == null)
         	{
             	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
             		System.out.println("ClassDefinitionBase waiting for lock for " + this.getQualifiedName());

@@ -108,6 +108,18 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     protected static final short FLAG_DEPRECATED = 1 << 13;
     protected static final short FLAG_DECLARED_IN_CONTROL_FLOW = 1 << 14;
 
+    private static boolean performanceCachingEnabled = false;
+
+    public static boolean getPerformanceCachingEnabled()
+    {
+        return performanceCachingEnabled;
+    }
+
+    public static void setPerformanceCachingEnabled(boolean enable)
+    {
+        performanceCachingEnabled = enable;
+    }
+
     /**
      * Constructor.
      * 
@@ -243,7 +255,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public IDefinition getParent()
     {
-    	if (parentDef != null)
+    	if (getPerformanceCachingEnabled() && parentDef != null)
     		return parentDef;
     	
         IASScope scope = getContainingScope();
@@ -257,8 +269,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         while ((scope != null) && (scope.getDefinition() == null))
             scope = scope.getContainingScope();
 
-        parentDef = scope != null ? scope.getDefinition() : null;
-        return parentDef;
+        IDefinition result = scope != null ? scope.getDefinition() : null;
+        if (getPerformanceCachingEnabled())
+            parentDef = result;
+        return result;
     }
 
     @Override
