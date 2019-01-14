@@ -99,7 +99,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_PROBLEMS(0),
         FAILED_WITH_ERRORS(3),
         FAILED_WITH_EXCEPTIONS(4),
         FAILED_WITH_CONFIG_PROBLEMS(5);
