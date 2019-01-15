@@ -1884,6 +1884,7 @@ caseClause[ContainerNode swb]
  			b = t.getContentsNode();
  		}
  		caseStatementList[b]
+        |   asDocComment
  	;
  	exception catch [RecognitionException ex] {handleParsingError(ex);  }
 
