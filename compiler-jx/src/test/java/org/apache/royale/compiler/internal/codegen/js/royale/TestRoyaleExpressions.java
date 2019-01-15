@@ -122,8 +122,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  "  var self = this;\n" +
         		  "  ;\n" +
         		  "  function isDefaultPrevented() {\n" +
-        		  "    return defaultPrevented;\n  };\n" +
-        		  "  ;\n  \n" +
+        		  "    return defaultPrevented;\n  };\n  \n" +
         		  "};\n\n\n" +
         		  "RoyaleTest_A.prototype.get__defaultPrevented = function() {\n" +
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
@@ -1119,11 +1118,10 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
         assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
-        		  "  var self = this;\n" +
-        		  "  var /** @type {Function} */ __localFn0__ = function() {\n" +
-        		  "  }\n" +
-        		  "  var /** @type {*} */ a = __localFn0__;\n" +
-        		  "}");
+        	  "  var self = this;\n" +
+        	  "  var /** @type {*} */ a = function() {\n" +
+        	  "  };\n" +
+        	  "}");
     }
 
     @Override
@@ -1136,11 +1134,10 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
       		  "  var self = this;\n" +
-      		  "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
+      		  "  var /** @type {Object} */ a = function(foo, bar) {\n" +
       		  "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
       		  "    return -1;\n" +
-      		  "  }\n" +
-      		  "  var /** @type {Object} */ a = __localFn0__;\n" +
+      		  "  };\n" +
       		  "}");
     }
 
@@ -1154,10 +1151,9 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
       		  "  var self = this;\n" +
-      		  "  var /** @type {Function} */ __localFn0__ = function(event) {\n" +
+      		  "  addListener('foo', function(event) {\n" +
       		  "    doit();\n" +
-      		  "  }\n" +
-      		  "  addListener('foo', __localFn0__);\n" +
+      		  "  });\n" +
       		  "}");
     }
 
@@ -1170,9 +1166,8 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		  "  var self = this;\n" +
-        		  "  var /** @type {Function} */ __localFn0__ = function(foo) {\n    foo.bar = 10;\n  }\n" +
         		  "  var /** @type {Object} */ a = {};\n" +
-        		  "  var /** @type {Function} */ b = __localFn0__;\n" +
+        		  "  var /** @type {Function} */ b = function(foo) {\n    foo.bar = 10;\n  };\n" +
         		  "  var /** @type {Object} */ c = b(a);\n}");
     }
     

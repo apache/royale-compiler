@@ -401,11 +401,12 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitLocalNamedFunction(IFunctionNode node)
     {
-		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
-    	if (fnNode.getEmittingLocalFunctions())
+        IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+        if (parentFnNode == null || parentFnNode.getEmittingLocalFunctions())
     	{
+            // emit named functions only when allowed
     		super.emitLocalNamedFunction(node);
-    	}
+        }
     }
 
     @Override
@@ -424,26 +425,23 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                     bindableEmitter.emitBindableExtendsConstructorCode(cnode.getDefinition().getQualifiedName(),false);
             }
             emitComplexInitializers(cnode);
-
     	}
         if (node.containsLocalFunctions())
         {
-            List<IFunctionNode> anonFns = node.getLocalFunctions();
-            int n = anonFns.size();
+            List<IFunctionNode> localFns = node.getLocalFunctions();
+            int n = localFns.size();
             for (int i = 0; i < n; i++)
             {
-                IFunctionNode anonFn = anonFns.get(i);
-                if (anonFn.getParent().getNodeID() == ASTNodeID.AnonymousFunctionID)
+                IFunctionNode localFn = localFns.get(i);
+                // named functions need to be declared at the top level to
+                // comply with JS strict mode.
+                // anonymous functions can be emitted inline, so we'll do that.
+                if (localFn.getName().length() > 0)
                 {
-                    write("var /** @type {Function} */ __localFn" + Integer.toString(i) + "__ = ");
-                	getWalker().walk(anonFn.getParent());
-                }
-                else
-                {
-                	getWalker().walk(anonFn);
+                	getWalker().walk(localFn);
                 	write(ASEmitterTokens.SEMICOLON);
+                    this.writeNewline();
                 }
-                this.writeNewline();
             }
         }
     	node.setEmittingLocalFunctions(false);
@@ -452,20 +450,27 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitFunctionObject(IFunctionObjectNode node)
     {
-		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
-    	if (fnNode == null || fnNode.getEmittingLocalFunctions())
+		IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+        IFunctionNode localFnNode = node.getFunctionNode();
+    	if (parentFnNode == null || parentFnNode.getEmittingLocalFunctions())
     	{
+            // emit named functions only when allowed
     		super.emitFunctionObject(node);
-    	}
+        }
+        else if(localFnNode.getName().length() == 0)
+        {
+            // anonymous functions are allowed to be inline
+    		super.emitFunctionObject(node);
+        }
     	else
     	{
-            List<IFunctionNode> anonFns = fnNode.getLocalFunctions();
-            int i = anonFns.indexOf(node.getFunctionNode());
+            List<IFunctionNode> localFns = parentFnNode.getLocalFunctions();
+            int i = localFns.indexOf(node.getFunctionNode());
             if (i < 0)
             	System.out.println("missing index for " + node.toString());
             else
             {
-            	IFunctionNode localFn = anonFns.get(i);
+            	IFunctionNode localFn = localFns.get(i);
             	IExpressionNode idNode = localFn.getNameExpressionNode();
             	String fnName = "";
             	if (idNode != null && idNode.getNodeID() == ASTNodeID.IdentifierID)
@@ -1020,11 +1025,17 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitStatement(IASNode node)
     {
-    	// don't emit named local functions as statements
-    	// they are emitted as part of the function block header
-    	if (node.getNodeID() == ASTNodeID.FunctionID)
+    	if (node instanceof IFunctionNode)
     	{
-    		return;
+            IFunctionNode fnode = (IFunctionNode) node;
+            if(fnode.getName().length() > 0)
+            {
+                // don't emit named local functions as statements, if they have
+                // a name. these functions are emitted as part of the function
+                // block header because that is required by JS strict mode.
+                // anonymous functions (functions without a name) are allowed.
+                return;
+            }
     	}
     	super.emitStatement(node);
     }

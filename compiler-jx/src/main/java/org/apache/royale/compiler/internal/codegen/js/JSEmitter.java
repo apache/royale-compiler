@@ -196,6 +196,13 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         startMapping(node);
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
+        String name = fnode.getName();
+        //may have a name, or may be anonymous
+        if(name.length() > 0)
+        {
+            write(ASEmitterTokens.SPACE);
+            write(name);
+        }
         endMapping(node);
         emitParameters(fnode.getParametersContainerNode());
         emitFunctionScope(fnode.getScopedNode());

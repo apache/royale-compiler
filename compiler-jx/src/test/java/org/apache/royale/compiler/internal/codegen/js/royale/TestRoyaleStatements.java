@@ -547,10 +547,6 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
         		              "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
         		              "  var self = this;\n" +
-        		              "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
-            		          "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
-            		          "    return -1;\n" +
-            		          "  }\n" +
             		          "  try {\n" +
         		              "    a;\n" +
         		              "  } catch (e) {\n" +
@@ -595,7 +591,10 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "      }\n" +
         		              "    } finally {\n" +
         		              "      d;\n" +
-        		              "      var /** @type {Object} */ a = __localFn0__;\n" +
+        		              "      var /** @type {Object} */ a = function(foo, bar) {\n" +
+            		          "        bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
+            		          "        return -1;\n" +
+            		          "      };\n" +
         		              "      eee.dd;\n" +
         		              "      eee.dd;\n" +
         		              "      eee.dd;\n" +
