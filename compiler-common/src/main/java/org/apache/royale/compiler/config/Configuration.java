@@ -1485,6 +1485,29 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-import-aliases' option
+    //
+
+    private boolean allowImportAliases = false;
+
+    public boolean getCompilerAllowImportAliases()
+    {
+        return allowImportAliases;
+    }
+
+    /**
+     * Whether the compiler will allow imports to include an optional alias for
+     * the definition name.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-import-aliases" })
+    @RoyaleOnly
+    public void setCompilerAllowImportAliases(ConfigurationValue cv, boolean allow)
+    {
+        this.allowImportAliases = allow;
+    }
+
+    //
     // 'compiler.actionscript-file-encoding' option
     //
 

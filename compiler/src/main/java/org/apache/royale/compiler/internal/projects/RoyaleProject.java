@@ -2430,6 +2430,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	allowPrivateNameConflicts = allow;
     }
 
+    private boolean allowImportAliases = false;
+    
+    /**
+     * Indicates if import aliases are allowed.
+     */
+    @Override
+    public boolean getAllowImportAliases()
+    {
+    	return allowImportAliases;
+    }
+    public void setAllowImportAliases(boolean allow)
+    {
+    	allowImportAliases = allow;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;

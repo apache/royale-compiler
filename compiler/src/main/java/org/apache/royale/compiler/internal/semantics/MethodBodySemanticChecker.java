@@ -2241,6 +2241,13 @@ public class MethodBodySemanticChecker
     {
         IASNode site = importNode.getImportNameNode();
         
+        String importAlias = importNode.getImportAlias();
+        if (importAlias != null && !project.getAllowImportAliases())
+        {
+            //import aliases need to be enabled
+            addProblem(new SyntaxProblem(importNode, "="));
+        }
+        
         if (!SemanticUtils.isValidImport(importNode, project, currentScope.getInInvisibleCompilationUnit()))
         {
             String importName = importNode.getImportName();

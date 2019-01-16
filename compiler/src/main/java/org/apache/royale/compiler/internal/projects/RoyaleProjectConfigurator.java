@@ -262,6 +262,8 @@ public class RoyaleProjectConfigurator extends Configurator
 
             project.setStrictXML(configuration.isStrictXML());
             project.setAllowPrivateNameConflicts(configuration.getCompilerAllowPrivateNameConflicts());
+
+            project.setAllowImportAliases(configuration.getCompilerAllowImportAliases());
             
             DataTranscoder.embedClassName = configuration.getByteArrayEmbedClass();
         }

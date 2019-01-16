@@ -158,6 +158,12 @@ public class ConfigProcessor
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		@Override
+		public boolean getAllowImportAliases() {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 
     /**
