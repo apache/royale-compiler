@@ -67,7 +67,7 @@ import java.util.Map;
  * <p>For lots of examples, see the unit test.
  *
  */
-class CollapseProperties implements CompilerPass {
+class CollapsePropertiesWithModuleSupport implements CompilerPass {
   // Warnings
   static final DiagnosticType UNSAFE_NAMESPACE_WARNING =
       DiagnosticType.warning(
@@ -92,7 +92,7 @@ class CollapseProperties implements CompilerPass {
   /** Maps names (e.g. "a.b.c") to nodes in the global namespace tree */
   private Map<String, Name> nameMap;
 
-  CollapseProperties(AbstractCompiler compiler, PropertyCollapseLevel propertyCollapseLevel) {
+  CollapsePropertiesWithModuleSupport(AbstractCompiler compiler, PropertyCollapseLevel propertyCollapseLevel) {
     this.compiler = compiler;
     this.propertyCollapseLevel = propertyCollapseLevel;
   }

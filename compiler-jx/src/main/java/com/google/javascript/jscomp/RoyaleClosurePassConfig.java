@@ -83,7 +83,7 @@ import javax.annotation.Nullable;
  * creating the list of checks and optimizations, not after passes have started
  * executing. For example, the field namespaceForChecks should be in Compiler.
  */
-public final class DefaultPassConfig extends PassConfig {
+public final class RoyaleClosurePassConfig extends PassConfig {
 
   /* For the --mark-as-compiled pass */
   private static final String COMPILED_CONSTANT_NAME = "COMPILED";
@@ -120,7 +120,7 @@ public final class DefaultPassConfig extends PassConfig {
    */
   private final boolean protectHiddenSideEffects;
 
-  public DefaultPassConfig(CompilerOptions options) {
+  public RoyaleClosurePassConfig(CompilerOptions options) {
     super(options);
 
     // The current approach to protecting "hidden" side-effects is to
@@ -147,7 +147,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   @Override
   protected List<PassFactory> getTranspileOnlyPasses() {
-    List<PassFactory> passes = new ArrayList<>();
+    List<PassFactory> passes = new ArrayList<PassFactory>();
 
     if (options.needsTranspilationFrom(TYPESCRIPT)) {
       passes.add(convertEs6TypedToEs6);
@@ -201,7 +201,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   @Override
   protected List<PassFactory> getWhitespaceOnlyPasses() {
-    List<PassFactory> passes = new ArrayList<>();
+    List<PassFactory> passes = new ArrayList<PassFactory>();
 
     if (options.processCommonJSModules) {
       passes.add(rewriteCommonJsModules);
@@ -238,7 +238,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   @Override
   protected List<PassFactory> getChecks() {
-    List<PassFactory> checks = new ArrayList<>();
+    List<PassFactory> checks = new ArrayList<PassFactory>();
 
     checks.add(gatherGettersAndSetters);
 
@@ -483,7 +483,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   @Override
   protected List<PassFactory> getOptimizations() {
-    List<PassFactory> passes = new ArrayList<>();
+    List<PassFactory> passes = new ArrayList<PassFactory>();
 
     if (options.skipNonTranspilationPasses) {
       return passes;
@@ -882,7 +882,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   /** Creates the passes for the main optimization loop. */
   private List<PassFactory> getMainOptimizationLoop() {
-    List<PassFactory> passes = new ArrayList<>();
+    List<PassFactory> passes = new ArrayList<PassFactory>();
     if (options.inlineGetters) {
       passes.add(inlineSimpleMethods);
     }
@@ -926,7 +926,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   /** Creates several passes aimed at removing code. */
   private List<PassFactory> getCodeRemovingPasses() {
-    List<PassFactory> passes = new ArrayList<>();
+    List<PassFactory> passes = new ArrayList<PassFactory>();
     if (options.collapseObjectLiterals) {
       passes.add(collapseObjectLiterals);
     }
@@ -994,7 +994,7 @@ public final class DefaultPassConfig extends PassConfig {
       new HotSwapPassFactory("suspiciousCode") {
         @Override
         protected HotSwapCompilerPass create(final AbstractCompiler compiler) {
-          List<Callback> sharedCallbacks = new ArrayList<>();
+          List<Callback> sharedCallbacks = new ArrayList<Callback>();
           if (options.checkSuspiciousCode) {
             sharedCallbacks.add(new CheckSuspiciousCode());
             sharedCallbacks.add(new CheckDuplicateCase(compiler));
@@ -1548,7 +1548,7 @@ public final class DefaultPassConfig extends PassConfig {
             public void process(Node externs, Node jsRoot) {
               Map<String, Integer> newCssNames = null;
               if (options.gatherCssNames) {
-                newCssNames = new HashMap<>();
+                newCssNames = new HashMap<String, Integer>();
               }
               ReplaceCssNames pass =
                   new ReplaceCssNames(compiler, newCssNames, options.cssRenamingWhitelist);
@@ -1585,7 +1585,7 @@ public final class DefaultPassConfig extends PassConfig {
       new PassFactory("earlyPeepholeOptimizations", true) {
         @Override
         protected CompilerPass create(AbstractCompiler compiler) {
-          List<AbstractPeepholeOptimization> peepholeOptimizations = new ArrayList<>();
+          List<AbstractPeepholeOptimization> peepholeOptimizations = new ArrayList<AbstractPeepholeOptimization>();
           peepholeOptimizations.add(new PeepholeRemoveDeadCode());
           if (compiler.getOptions().j2clPassMode.shouldAddJ2clPasses()) {
             peepholeOptimizations.add(new J2clEqualitySameRewriterPass());
@@ -1625,7 +1625,7 @@ public final class DefaultPassConfig extends PassConfig {
       AbstractCompiler compiler, String passName) {
     final boolean late = false;
     final boolean useTypesForOptimization = compiler.getOptions().useTypesForLocalOptimization;
-    List<AbstractPeepholeOptimization> optimizations = new ArrayList<>();
+    List<AbstractPeepholeOptimization> optimizations = new ArrayList<AbstractPeepholeOptimization>();
     optimizations.add(new MinimizeExitPoints());
     optimizations.add(new PeepholeMinimizeConditions(late));
     optimizations.add(new PeepholeSubstituteAlternateSyntax(late));
@@ -1917,7 +1917,7 @@ public final class DefaultPassConfig extends PassConfig {
       new HotSwapPassFactory("checkControlFlow") {
         @Override
         protected HotSwapCompilerPass create(AbstractCompiler compiler) {
-          List<Callback> callbacks = new ArrayList<>();
+          List<Callback> callbacks = new ArrayList<Callback>();
           if (!options.disables(DiagnosticGroups.CHECK_USELESS_CODE)) {
             callbacks.add(new CheckUnreachableCode(compiler));
           }
@@ -2120,7 +2120,7 @@ public final class DefaultPassConfig extends PassConfig {
           return new CompilerPass() {
             @Override
             public void process(Node externs, Node jsRoot) {
-              HashMap<String, Node> replacements = new HashMap<>();
+              HashMap<String, Node> replacements = new HashMap<String, Node>();
               replacements.putAll(compiler.getDefaultDefineValues());
               replacements.putAll(getAdditionalReplacements(options));
               replacements.putAll(options.getDefineReplacements());
@@ -3047,7 +3047,7 @@ public final class DefaultPassConfig extends PassConfig {
         options.anonymousFunctionNaming.getReservedCharacters();
     boolean preserveAnonymousFunctionNames =
         options.anonymousFunctionNaming != AnonymousFunctionNamingPolicy.OFF;
-    Set<String> reservedNames = new HashSet<>();
+    Set<String> reservedNames = new HashSet<String>();
     if (options.renamePrefixNamespace != null) {
       // don't use the prefix name as a global symbol.
       reservedNames.add(options.renamePrefixNamespace);
@@ -3206,7 +3206,7 @@ public final class DefaultPassConfig extends PassConfig {
 
   @VisibleForTesting
   static Map<String, Node> getAdditionalReplacements(CompilerOptions options) {
-    Map<String, Node> additionalReplacements = new HashMap<>();
+    Map<String, Node> additionalReplacements = new HashMap<String, Node>();
 
     if (options.markAsCompiled || options.closurePass) {
       additionalReplacements.put(COMPILED_CONSTANT_NAME, IR.trueNode());

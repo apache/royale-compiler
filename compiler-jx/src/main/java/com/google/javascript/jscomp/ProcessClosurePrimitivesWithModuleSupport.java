@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
  *
  * @author chrisn@google.com (Chris Nokleberg)
  */
-class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotSwapCompilerPass {
+class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallback implements HotSwapCompilerPass {
 
   static final DiagnosticType NULL_ARGUMENT_ERROR = DiagnosticType.error(
       "JSC_NULL_ARGUMENT_ERROR",
@@ -172,20 +172,20 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
   private final JSModuleGraph moduleGraph;
 
   // The goog.provides must be processed in a deterministic order.
-  private final Map<String, ProvidedName> providedNames = new LinkedHashMap<>();
+  private final Map<String, ProvidedName> providedNames = new LinkedHashMap<String, ProvidedName>();
 
-  private final Set<String> knownClosureSubclasses = new HashSet<>();
+  private final Set<String> knownClosureSubclasses = new HashSet<String>();
 
-  private final List<UnrecognizedRequire> unrecognizedRequires = new ArrayList<>();
-  private final Set<String> exportedVariables = new HashSet<>();
+  private final List<UnrecognizedRequire> unrecognizedRequires = new ArrayList<UnrecognizedRequire>();
+  private final Set<String> exportedVariables = new HashSet<String>();
   private final CheckLevel requiresLevel;
   private final PreprocessorSymbolTable preprocessorSymbolTable;
-  private final List<Node> defineCalls = new ArrayList<>();
+  private final List<Node> defineCalls = new ArrayList<Node>();
   private final boolean preserveGoogProvidesAndRequires;
-  private final List<Node> requiresToBeRemoved = new ArrayList<>();
-  private final Set<Node> maybeTemporarilyLiveNodes = new HashSet<>();
+  private final List<Node> requiresToBeRemoved = new ArrayList<Node>();
+  private final Set<Node> maybeTemporarilyLiveNodes = new HashSet<Node>();
 
-  ProcessClosurePrimitives(AbstractCompiler compiler,
+  ProcessClosurePrimitivesWithModuleSupport(AbstractCompiler compiler,
       @Nullable PreprocessorSymbolTable preprocessorSymbolTable,
       CheckLevel requiresLevel,
       boolean preserveGoogProvidesAndRequires) {
@@ -255,16 +255,16 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
       typeAst = typeAst.getLastChild();
     }
     checkState(typeAst.isString(), typeAst);
-    switch (typeAst.getString()) {
-      case "boolean":
+    /** Converted switch to else/if for Java 1.6 compatibility */
+    String astType = typeAst.getString();
+    if (astType.contentEquals("boolean"))
         return IR.falseNode();
-      case "string":
+    if (astType.contentEquals("string"))
         return IR.string("");
-      case "number":
+    if (astType.contentEquals("number"))
         return IR.number(0);
-      default:
-        throw new RuntimeException(typeAst.getString());
-    }
+    
+    throw new RuntimeException(typeAst.getString());
   }
 
   /**
@@ -303,31 +303,32 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
             // when we see a provides/requires, and don't worry about
             // reporting the change when we actually do the replacement.
             String methodName = name.getNext().getString();
-            switch (methodName) {
-              case "base":
+            /** Converted switch to else/if for Java 1.6 compatibility */
+            if (methodName.contentEquals("base"))
                 processBaseClassCall(t, n);
-                break;
-              case "define":
+            else if (methodName.contentEquals("define"))
+            {
                 if (validateUnaliasablePrimitiveCall(t, n, methodName)) {
                   processDefineCall(t, n, parent);
                 }
-                break;
-              case "require":
-              case "requireType":
+            }
+            else if (methodName.contentEquals("require") ||
+            		methodName.contentEquals("requireType"))
+            {
                 if (validateAliasiablePrimitiveCall(t, n, methodName)) {
                   processRequireCall(t, n, parent);
                 }
-                break;
-              case "provide":
+            }
+            else if (methodName.contentEquals("provide"))
+            {
                 if (validateUnaliasablePrimitiveCall(t, n, methodName)) {
                   processProvideCall(t, n, parent);
                 }
-                break;
-              case "inherits":
-                // Note: inherits is allowed in local scope
+            }
+            else if (methodName.contentEquals("inherits"))
                 processInheritsCall(n);
-                break;
-              case "exportSymbol":
+            else if (methodName.contentEquals("exportSymbol"))
+            {
                 // Note: exportSymbol is allowed in local scope
                 Node arg = left.getNext();
                 if (arg.isString()) {
@@ -339,21 +340,21 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
                     exportedVariables.add(argString.substring(0, dot));
                   }
                 }
-                break;
-              case "forwardDeclare":
+            }
+            else if (methodName.contentEquals("forwardDeclare"))
+            {
                 if (validateAliasiablePrimitiveCall(t, n, methodName)) {
                   processForwardDeclare(t, n, parent);
                 }
-                break;
-              case "addDependency":
+            }
+            else if (methodName.contentEquals("addDependency"))
+            {
                 if (validateUnaliasablePrimitiveCall(t, n, methodName)) {
                   processAddDependency(n, parent);
                 }
-                break;
-              case "setCssNameMapping":
+            }
+            else if (methodName.contentEquals("setCssNameMapping")) {
                 processSetCssNameMapping(t, n, parent);
-                break;
-              default: // fall out
             }
           } else if (left.getLastChild().getString().equals("base")) {
             // maybe an "base" setup by goog.inherits
@@ -461,7 +462,7 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
     if (NodeUtil.isNameDeclaration(n.getParent())
         && n.hasOneChild()
         && n.getFirstChild().isObjectLit()) {
-      HashMap<String, Node> builder = new HashMap<>();
+      HashMap<String, Node> builder = new HashMap<String, Node>();
       builder.putAll(compiler.getDefaultDefineValues());
       for (Node c : n.getFirstChild().children()) {
         if (c.isStringKey()
@@ -1032,7 +1033,7 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
     if (verifySetCssNameMapping(t, left, arg)) {
       // Translate OBJECTLIT into SubstitutionMap. All keys and
       // values must be strings, or an error will be thrown.
-      final Map<String, String> cssNames = new HashMap<>();
+      final Map<String, String> cssNames = new HashMap<String, String>();
 
       for (Node key = arg.getFirstChild(); key != null;
           key = key.getNext()) {
@@ -1064,7 +1065,7 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
 
       if (style == CssRenamingMap.Style.BY_PART) {
         // Make sure that no keys contain -'s
-        List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<String>();
         for (String key : cssNames.keySet()) {
           if (key.contains("-")) {
             errors.add(key);
@@ -1079,7 +1080,7 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
         // n^2 check over the map which makes sure that if "a-b" in
         // the map, then map(a-b) = map(a)-map(b).
         // To speed things up, only consider cases where len(b) <= 10
-        List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<String>();
         for (Map.Entry<String, String> b : cssNames.entrySet()) {
           if (b.getKey().length() > 10) {
             continue;
@@ -1214,7 +1215,7 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback implements HotS
     try {
       typeDeclaration = Iterables.getOnlyElement(
           convention.identifyTypeDeclarationCall(n));
-    } catch (NullPointerException | NoSuchElementException | IllegalArgumentException e) {
+    } catch (Exception e) {
       compiler.report(
           t.makeError(
               n,
