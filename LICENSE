@@ -200,3 +200,17 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+--------------------------------------------------------------------------------
+
+APACHE ROYALE SUBCOMPONENTS:
+
+The Apache Royale SDK includes a number of subcomponents with
+separate copyright notices and license terms. Your use of the source
+code for the these subcomponents is subject to the terms and
+conditions of the following licenses. Paths are relative to the royale-compiler
+folder.
+
+The .java files in compiler-jx/src/main/java/org/apache/royale/compiler/utils/pass
+are derived from the files in the Google Closure Compiler which are available 
+under Apache License 2.0.
