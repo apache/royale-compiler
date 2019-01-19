@@ -45,6 +45,7 @@ import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DependencyOptions.DependencyMode;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.Result;
+import com.google.javascript.jscomp.RoyaleClosurePassConfig;
 import com.google.javascript.jscomp.RoyaleDiagnosticGroups;
 import com.google.javascript.jscomp.ShowByPathWarningsGuard;
 import com.google.javascript.jscomp.SourceFile;
@@ -162,7 +163,7 @@ public class JSClosureCompilerWrapper
 			}
         }
 
-
+        compiler_.setPassConfig(new RoyaleClosurePassConfig(options_));
         Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
         
         try
