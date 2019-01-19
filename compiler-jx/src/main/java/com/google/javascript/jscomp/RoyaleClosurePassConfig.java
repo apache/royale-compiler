@@ -1263,7 +1263,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
   /** Closure pre-processing pass. */
   private final HotSwapPassFactory closurePrimitives =
       new HotSwapPassFactory("closurePrimitives") {
-        @Override
+        @SuppressWarnings("deprecation")
+		@Override
         protected HotSwapCompilerPass create(final AbstractCompiler compiler) {
           preprocessorSymbolTableFactory.maybeInitialize(compiler);
           final ProcessClosurePrimitivesWithModuleSupport pass =
