@@ -24,6 +24,7 @@ import static com.google.javascript.jscomp.ClosurePrimitiveErrors.INVALID_CLOSUR
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import com.google.javascript.jscomp.GlobalNamespace.Name;
 import com.google.javascript.jscomp.NodeTraversal.AbstractPostOrderCallback;
 import com.google.javascript.jscomp.parsing.JsDocInfoParser;
 import com.google.javascript.rhino.IR;
@@ -203,9 +204,20 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
   Set<String> getExportedVariableNames() {
     return exportedVariables;
   }
+  
+  private ArrayList<String> externStrings = new ArrayList<String>();
 
   @Override
   public void process(Node externs, Node root) {
+    /*
+     * ApacheRoyale:  build list of namespaces from externs 
+     */
+    GlobalNamespace externNamespace = new GlobalNamespace(compiler, externs);
+    List<Name> externNames = externNamespace.getNameForest();
+    for (Name en : externNames) {
+      addExternNameAndDescendants(en, externStrings);
+    }
+
     NodeTraversal.traverseRoots(compiler, this, externs, root);
 
     for (Node n : defineCalls) {
@@ -1313,6 +1325,17 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
     return true;
   }
 
+  private void addExternNameAndDescendants(Name en, ArrayList<String> externStrings) {
+	    externStrings.add(en.getName());
+
+	    if (en.props == null || en.isCollapsingExplicitlyDenied()) {
+	      return;
+	    }
+	    for (Name p : en.props) {
+	      addExternNameAndDescendants(p, externStrings);
+	    }
+	  }
+
   /**
    * Registers ProvidedNames for prefix namespaces if they haven't
    * already been defined. The prefix namespaces must be registered in
@@ -1332,9 +1355,9 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
         providedNames.get(prefixNs).addProvide(
             node, module, false /* implicit */);
       } else {
-        providedNames.put(
-            prefixNs,
-            new ProvidedName(prefixNs, node, module, false /* implicit */));
+          if (!externStrings.contains(prefixNs))
+              providedNames.put(prefixNs,
+                  new ProvidedName(prefixNs, node, module, false /* implicit */));
       }
     }
   }

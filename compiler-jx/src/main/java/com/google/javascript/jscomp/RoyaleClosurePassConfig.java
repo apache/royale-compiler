@@ -76,6 +76,9 @@ import javax.annotation.Nullable;
  *
  * @author nicksantos@google.com (Nick Santos)
  *
+ * Apache Royale copied DefaultPassConfig and modified it to replace
+ * two passes with "WithModuleSupport" passes.
+ * 
  * NOTE(dimvar): this needs some non-trivial refactoring. The pass config should
  * use as little state as possible. The recommended way for a pass to leave
  * behind some state for a subsequent pass is through the compiler object.
@@ -1263,8 +1266,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         @Override
         protected HotSwapCompilerPass create(final AbstractCompiler compiler) {
           preprocessorSymbolTableFactory.maybeInitialize(compiler);
-          final ProcessClosurePrimitives pass =
-              new ProcessClosurePrimitives(
+          final ProcessClosurePrimitivesWithModuleSupport pass =
+              new ProcessClosurePrimitivesWithModuleSupport(
                   compiler,
                   preprocessorSymbolTableFactory.getInstanceOrNull(),
                   options.brokenClosureRequiresLevel,
@@ -2375,7 +2378,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       new PassFactory(PassNames.COLLAPSE_PROPERTIES, true) {
         @Override
         protected CompilerPass create(AbstractCompiler compiler) {
-          return new CollapseProperties(compiler, options.getPropertyCollapseLevel());
+          return new CollapsePropertiesWithModuleSupport(compiler, options.getPropertyCollapseLevel());
         }
 
         @Override
