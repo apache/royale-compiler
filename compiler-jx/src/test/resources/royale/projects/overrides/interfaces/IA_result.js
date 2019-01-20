@@ -38,11 +38,13 @@ interfaces.IA = function() {
  */
 goog.exportSymbol('interfaces.IA', interfaces.IA);
 /**
+ * @export
  * @return {classes.B}
  */
 interfaces.IA.prototype.someFunction = function() {
 };
 /**
+ * @export
  * @return {interfaces.IB}
  */
 interfaces.IA.prototype.someOtherFunction = function() {

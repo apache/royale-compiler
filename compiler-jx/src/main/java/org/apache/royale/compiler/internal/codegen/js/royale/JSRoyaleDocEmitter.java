@@ -409,7 +409,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
             emitProtected(node);
         }
-        else if (ns != null && ns == IASKeywordConstants.PUBLIC)
+        else /*if (ns != null && ns == IASKeywordConstants.PUBLIC)*/
         {
             emitPublic(node);
         }
