@@ -2049,7 +2049,25 @@ public class MethodBodySemanticChecker
 
         if ( class_binding.isLocal() )
         {
-            //  No checking required.
+            // Note: previously, local bindings were not checked at all, but
+            // actually, variables of most types cannot be used with a "new"
+            // expression -JT
+
+            if (def instanceof IVariableDefinition)
+            {
+                ITypeDefinition typeDef = def.resolveType(project);
+                if (typeDef != null
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.CLASS, project)
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.FUNCTION, project)
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.OBJECT, project)
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.ANY_TYPE, project))
+                {
+                    addProblem(new CallUndefinedMethodProblem(
+                        roundUpUsualSuspects(class_binding, iNode),
+                        class_binding.getName().getBaseName()
+                    ));
+                }
+            }
         }
         else if ( def == null && utils.definitionCanBeAnalyzed(class_binding) && !(class_binding.getName().isTypeName()) )
         {
