@@ -32,8 +32,10 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -534,6 +536,30 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
         }
 
         return interfaces;
+    }
+
+    @Override
+    public boolean isAbstract()
+    {
+        if(super.isAbstract())
+        {
+            return true;
+        }
+        IMetaTag[] metaTags = getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_ABSTRACT);
+        return metaTags != null && metaTags.length > 0;
+    }
+
+    /**
+     * Utility to mark a definition as abstract. This method should only ever be
+     * called during construction or initialization of a definition.
+     */
+    @Override
+    public void setAbstract()
+    {
+        super.setAbstract();
+
+        MetaTag abstractMetaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_ABSTRACT, new IMetaTagAttribute[0]);
+        addMetaTag(abstractMetaTag);
     }
 
     /*

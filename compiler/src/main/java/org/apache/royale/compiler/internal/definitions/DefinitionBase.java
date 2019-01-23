@@ -701,6 +701,21 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         flags |= FLAG_STATIC;
     }
 
+    // instead of increasing the size of "flags" from a short to int, I added
+    // a boolean variable instead. feel free to change this, if desired. -JT
+    private boolean abstractFlag = false;
+
+    @Override
+    public boolean isAbstract()
+    {
+        return abstractFlag;
+    }
+
+    public void setAbstract()
+    {
+        abstractFlag = true;
+    }
+
     @Override
     public boolean hasModifier(ASModifier modifier)
     {
@@ -731,6 +746,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             // Ignore "virtual" modifier.
             return false;
         }
+        else if (modifier == ASModifier.ABSTRACT)
+        {
+            return abstractFlag;
+        }
         else
         {
             assert false : "Unknown modifier: " + modifier;
@@ -752,6 +771,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             result.addModifier(ASModifier.DYNAMIC);
         if ((flags & FLAG_NATIVE) != 0)
             result.addModifier(ASModifier.NATIVE);
+        if (abstractFlag)
+            result.addModifier(ASModifier.ABSTRACT);
         return result;
     }
 
@@ -773,6 +794,9 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
 
         else if (modifier == ASModifier.NATIVE)
             flags |= FLAG_NATIVE;
+
+        else if (modifier == ASModifier.ABSTRACT)
+            setAbstract();
 
         else
             assert false;

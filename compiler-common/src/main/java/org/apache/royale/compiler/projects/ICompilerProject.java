@@ -271,5 +271,10 @@ public interface ICompilerProject
      * @return True if import aliases are allowed.
      */
      boolean getAllowImportAliases();
+     
+     /**
+      * @return True if abstract classes are allowed.
+      */
+      boolean getAllowAbstractClasses();
 
 }

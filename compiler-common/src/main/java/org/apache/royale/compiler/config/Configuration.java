@@ -1508,6 +1508,28 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-abstract-classes' option
+    //
+
+    private boolean allowAbstractClasses = false;
+
+    public boolean getCompilerAllowAbstractClasses()
+    {
+        return allowAbstractClasses;
+    }
+
+    /**
+     * Whether the compiler will allow classes to be abstract.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-abstract-classes" })
+    @RoyaleOnly
+    public void setCompilerAllowAbstractClasses(ConfigurationValue cv, boolean allow)
+    {
+        this.allowAbstractClasses = allow;
+    }
+
+    //
     // 'compiler.actionscript-file-encoding' option
     //
 

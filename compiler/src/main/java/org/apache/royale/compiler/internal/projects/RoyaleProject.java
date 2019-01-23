@@ -2445,6 +2445,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	allowImportAliases = allow;
     }
 
+    private boolean allowAbstractClasses = false;
+    
+    /**
+     * Indicates if abstract classes are allowed.
+     */
+    @Override
+    public boolean getAllowAbstractClasses()
+    {
+    	return allowAbstractClasses;
+    }
+    public void setAllowAbstractClasses(boolean allow)
+    {
+    	allowAbstractClasses = allow;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;

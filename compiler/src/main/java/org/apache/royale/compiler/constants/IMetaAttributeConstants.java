@@ -210,6 +210,9 @@ public interface IMetaAttributeConstants
     static final String NAME_MIN_VALUE_EXCLUSIVE = "minValueExclusive";
     static final String NAME_MAX_VALUE = "maxValue";
     static final String NAME_MAX_VALUE_EXCLUSIVE = "maxValueExclusive";
+
+    // [RoyaleAbstract]
+    static final String ATTRIBUTE_ABSTRACT = "RoyaleAbstract";
 	
 	/**
 	 * List of metadata tags that do not inherit
@@ -222,6 +225,7 @@ public interface IMetaAttributeConstants
 		    ATTRIBUTE_DEPRECATED,
 		    ATTRIBUTE_DISCOURAGED_FOR_PROFILE,
             ATTRIBUTE_EXCLUDECLASS,
+            ATTRIBUTE_ABSTRACT,
         })));
 }
 

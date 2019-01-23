@@ -58,6 +58,7 @@ import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
+import org.apache.royale.compiler.problems.AbstractOutsideClassProblem;
 import org.apache.royale.compiler.problems.CircularTypeReferenceProblem;
 import org.apache.royale.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
 import org.apache.royale.compiler.problems.ConstructorIsGetterSetterProblem;
@@ -1091,6 +1092,10 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             {
                 classScope.addProblem(new VirtualOutsideClassProblem(site) );
             }
+            if( modifiersSet.hasModifier(ASModifier.ABSTRACT) )
+            {
+                classScope.addProblem(new AbstractOutsideClassProblem(site) );
+            }
         }
         classScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(f);
         // Functions in a class allow all modifiers
@@ -1126,6 +1131,10 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             else if( modifier == ASModifier.VIRTUAL )
             {
                 classScope.addProblem(new VirtualOutsideClassProblem(site));
+            }
+            else if( modifier == ASModifier.ABSTRACT )
+            {
+                classScope.addProblem(new AbstractOutsideClassProblem(site));
             }
         }
         classScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(v);

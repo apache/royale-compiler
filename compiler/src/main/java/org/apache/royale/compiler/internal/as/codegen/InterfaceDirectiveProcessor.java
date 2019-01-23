@@ -55,6 +55,7 @@ import org.apache.royale.compiler.internal.tree.as.ImportNode;
 import org.apache.royale.compiler.internal.tree.as.InterfaceNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.problems.AbstractOutsideClassProblem;
 import org.apache.royale.compiler.problems.AmbiguousReferenceProblem;
 import org.apache.royale.compiler.problems.CannotExtendClassProblem;
 import org.apache.royale.compiler.problems.ConstructorInInterfaceProblem;
@@ -455,6 +456,10 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
             else if( modifier == ASModifier.VIRTUAL )
             {
                 interfaceScope.addProblem(new VirtualOutsideClassProblem(site));
+            }
+            else if( modifier == ASModifier.ABSTRACT )
+            {
+                interfaceScope.addProblem(new AbstractOutsideClassProblem(site));
             }
             else if ( modifier == ASModifier.DYNAMIC )
             {

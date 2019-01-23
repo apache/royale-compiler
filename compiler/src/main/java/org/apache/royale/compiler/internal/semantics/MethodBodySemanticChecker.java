@@ -2089,6 +2089,13 @@ public class MethodBodySemanticChecker
         {
             ClassDefinition class_def = (ClassDefinition)def;
 
+            if ( project.getAllowAbstractClasses() && class_def.isAbstract() )
+            {
+                addProblem(new AbstractClassCannotBeInstantiatedProblem(
+                    roundUpUsualSuspects(class_binding, iNode)
+                ));
+            }
+
             IFunctionDefinition ctor = class_def.getConstructor();
 
             if ( ctor instanceof FunctionDefinition )
@@ -2455,6 +2462,10 @@ public class MethodBodySemanticChecker
                 else if( modifier == ASModifier.STATIC )
                 {
                     currentScope.addProblem(new StaticOutsideClassProblem(site));
+                }
+                else if( modifier == ASModifier.ABSTRACT )
+                {
+                    currentScope.addProblem(new AbstractOutsideClassProblem(site));
                 }
             }
         }

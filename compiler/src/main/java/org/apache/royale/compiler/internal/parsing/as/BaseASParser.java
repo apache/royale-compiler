@@ -2329,7 +2329,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
     }
 
     private static final ImmutableSet<String> CONTEXTUAL_RESERVED_KEYWORD_MODIFIERS =
-            ImmutableSet.of("dynamic", "final", "native", "static", "override");
+            ImmutableSet.of("dynamic", "final", "native", "static", "override", "abstract");
 
     /**
      * Recover from {@link CanNotInsertSemicolonProblem} after an expression
@@ -2854,6 +2854,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 case TOKEN_MODIFIER_OVERRIDE:
                 case TOKEN_MODIFIER_STATIC:
                 case TOKEN_MODIFIER_VIRTUAL:
+                case TOKEN_MODIFIER_ABSTRACT:
                     return true;
             }
         }

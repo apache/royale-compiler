@@ -60,6 +60,11 @@ public class ASModifier
      * Represents the <code>virtual</code> modifier.
 	 */
 	public static final ASModifier VIRTUAL = new ASModifier(IASKeywordConstants.VIRTUAL, 1 << 6);
+
+	/**
+     * Represents the <code>abstract</code> modifier.
+	 */
+	public static final ASModifier ABSTRACT = new ASModifier(IASKeywordConstants.ABSTRACT, 1 << 7);
 	
 	/**
 	 * A list of all the modifiers that exist within AS3
@@ -71,7 +76,8 @@ public class ASModifier
 		NATIVE,
 		OVERRIDE,
 		STATIC,
-		VIRTUAL
+		VIRTUAL,
+		ABSTRACT
 	};
 	
     /**
