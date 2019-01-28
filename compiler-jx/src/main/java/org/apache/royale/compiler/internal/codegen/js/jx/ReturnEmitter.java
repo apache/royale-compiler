@@ -21,10 +21,12 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
 
 public class ReturnEmitter extends JSSubEmitter implements
@@ -51,7 +53,17 @@ public class ReturnEmitter extends JSSubEmitter implements
 
         if (hasReturnValue)
         {
-            getWalker().walk(rnode);
+            IDefinition returnDef = null;
+            IFunctionNode parentFn = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+            if (parentFn != null)
+            {
+                IExpressionNode returnTypeNode = parentFn.getReturnTypeNode();
+                if (returnTypeNode != null)
+                {
+                    returnDef = returnTypeNode.resolve(getProject());
+                }
+            }
+            getEmitter().emitAssignmentCoercion(rnode, returnDef);
         }
     }
 }

@@ -28,6 +28,7 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -58,11 +59,13 @@ import org.apache.royale.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WhileLoopEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WithEmitter;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.ICatchNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IForLoopNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
@@ -514,5 +517,89 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		// TODO Auto-generated method stub
 		return className.replace(".", "_") + "_" + name;
 	}
+
+    public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
+    {
+        IDefinition assignedDef = null;
+        ICompilerProject project = getWalker().getProject();
+        if (assignedNode != null)
+        {
+            assignedDef = assignedNode.resolveType(project);
+        }
+		String coercionStart = null;
+        String coercionEnd = null;
+		if (project.getBuiltinType(BuiltinType.INT).equals(definition))
+		{
+			boolean needsCoercion = false;
+			if (assignedNode instanceof INumericLiteralNode)
+			{
+				INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+				if (!BuiltinType.INT.equals(numericLiteral.getNumericValue().getAssumedType()))
+				{
+					needsCoercion = true;
+				}
+			}
+			else if(!project.getBuiltinType(BuiltinType.INT).equals(assignedDef))
+			{
+				needsCoercion = true;
+			}
+			if (needsCoercion)
+			{
+				coercionStart = "(";
+				coercionEnd = ") >> 0";
+			}
+		}
+		else if (project.getBuiltinType(BuiltinType.UINT).equals(definition))
+		{
+			boolean needsCoercion = false;
+			if (assignedNode instanceof INumericLiteralNode)
+			{
+				INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+				if (!BuiltinType.UINT.equals(numericLiteral.getNumericValue().getAssumedType()))
+				{
+					needsCoercion = true;
+				}
+			}
+			else if(!project.getBuiltinType(BuiltinType.UINT).equals(assignedDef))
+			{
+				needsCoercion = true;
+			}
+			if (needsCoercion)
+			{
+				coercionStart = "(";
+				coercionEnd = ") >>> 0";
+            }
+        }
+        else if (project.getBuiltinType(BuiltinType.NUMBER).equals(definition)
+                && !project.getBuiltinType(BuiltinType.NUMBER).equals(assignedDef)
+                && !project.getBuiltinType(BuiltinType.INT).equals(assignedDef)
+                && !project.getBuiltinType(BuiltinType.UINT).equals(assignedDef))
+        {
+            coercionStart = "Number(";
+        }
+        else if (project.getBuiltinType(BuiltinType.STRING).equals(definition)
+                && !project.getBuiltinType(BuiltinType.STRING).equals(assignedDef)
+                && !project.getBuiltinType(BuiltinType.NULL).equals(assignedDef))
+        {
+            coercionStart = "org.apache.royale.utils.Language.string(";
+        }
+
+		if (coercionStart != null)
+		{
+			write(coercionStart);
+		}
+		getWalker().walk(assignedNode);
+		if (coercionStart != null)
+		{
+			if (coercionEnd != null)
+			{
+				write(coercionEnd);
+			}
+			else
+			{
+				write(")");
+			}
+		}
+    }
 
 }

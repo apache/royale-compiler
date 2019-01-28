@@ -149,6 +149,42 @@ public class TestRoyaleClass extends TestGoogClass
     }
 
     @Test
+    public void testMethod_returnInt()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { var a:Number = 123.4; return a; };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  var a /** @type {number} */ = 123.4;\n  return (a) >> 0;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnIntLiteral()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { return 123.4 };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  return (123.4) >> 0;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnUint()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { var a:Number = 123.4; return a; };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  var a /** @type {number} */ = 123.4;\n  return (a) >>> 0;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnUintLiteral()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { return 123.4 };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  return (123.4) >>> 0;\n};";
+        assertOut(expected);
+    }
+
+    @Test
     public void testMethod_override()
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {};}");

@@ -330,7 +330,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     @Test
     public void testDefaultParameter()
     {
-        IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
+        IFunctionNode node = getMethodWithPackage("function method1(p1:Number, p2:Number, p3:Number = 3, p4:Number = 4):Number{return p1 + p2 + p3 + p4;}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"

@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
@@ -45,6 +46,7 @@ import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class BinaryOperatorEmitter extends JSSubEmitter implements
@@ -444,32 +446,91 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         			}
         		}
             }
-            String coercion = (leftIsNumber && !rightIsNumber && isAssignment) ? "Number(" : "";
-            if (isAssignment && leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
+			String coercionStart = null;
+			String coercionEnd = null;
+            if (isAssignment)
             {
-            	if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
-            			rNode.getNodeID() != ASTNodeID.LiteralNullID)
-            	{
-		        	if (rightDef == null ||
-		        			(!(rightDef.getQualifiedName().equals(IASLanguageConstants.String) ||
-		        			  (rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
-		                    		&& rNode.getNodeID() == ASTNodeID.FunctionCallID &&
-		                    		isToString(rNode)) ||
-		        			  // if not an assignment we don't need to coerce numbers
-		        			  (!isAssignment && rightIsNumber) ||
-		        			   rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
-		        	{
-		        		JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(getEmitter().getDocEmitter());
-		        		if (docEmitter.emitStringConversions)
-		        		{
-		        			coercion = "org.apache.royale.utils.Language.string(";
-		        		}
-		        	}
-            	}
+				if (getProject().getBuiltinType(BuiltinType.INT).equals(leftDef))
+				{
+					boolean needsCoercion = false;
+					if (rNode instanceof INumericLiteralNode)
+					{
+						INumericLiteralNode rNumber = (INumericLiteralNode) rNode;
+						if (!BuiltinType.INT.equals(rNumber.getNumericValue().getAssumedType()))
+						{
+							needsCoercion = true;
+						}
+					}
+					else if(!getProject().getBuiltinType(BuiltinType.INT).equals(rightDef))
+					{
+						needsCoercion = true;
+					}
+					if (needsCoercion)
+					{
+						coercionStart = "(";
+						coercionEnd = ") >> 0";
+					}
+				}
+				else if (getProject().getBuiltinType(BuiltinType.UINT).equals(leftDef))
+				{
+					boolean needsCoercion = false;
+					if (rNode instanceof INumericLiteralNode)
+					{
+						INumericLiteralNode rNumber = (INumericLiteralNode) rNode;
+						if (!BuiltinType.UINT.equals(rNumber.getNumericValue().getAssumedType()))
+						{
+							needsCoercion = true;
+						}
+					}
+					else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(rightDef))
+					{
+						needsCoercion = true;
+					}
+					if (needsCoercion)
+					{
+						coercionStart = "(";
+						coercionEnd = ") >>> 0";
+					}
+				}
+				else if (leftIsNumber && !rightIsNumber)
+				{
+					coercionStart = "Number(";
+				}
+				else if (getProject().getBuiltinType(BuiltinType.STRING).equals(leftDef))
+				{
+					if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
+							rNode.getNodeID() != ASTNodeID.LiteralNullID)
+					{
+						if (rightDef == null ||
+								(!(rightDef.getQualifiedName().equals(IASLanguageConstants.String) ||
+								(rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
+										&& rNode.getNodeID() == ASTNodeID.FunctionCallID &&
+										isToString(rNode)) ||
+								// if not an assignment we don't need to coerce numbers
+								(!isAssignment && rightIsNumber) ||
+								rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
+						{
+							JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(getEmitter().getDocEmitter());
+							if (docEmitter.emitStringConversions)
+							{
+								coercionStart = "org.apache.royale.utils.Language.string(";
+							}
+						}
+					}
+				}
             }
-            super_emitBinaryOperator(node, coercion);
-            if (coercion.length() > 0)
-            	write(")");
+            super_emitBinaryOperator(node, coercionStart);
+			if (coercionStart != null)
+			{
+				if (coercionEnd != null)
+				{
+					write(coercionEnd);
+				}
+				else
+				{
+					write(")");
+				}
+			}
             	
             /*
             IExpressionNode leftSide = node.getLeftOperandNode();
@@ -550,7 +611,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	return false;
     }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercion)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercionStart)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -617,7 +678,10 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             endMapping(node);
 
-            write(coercion);
+			if (coercionStart != null)
+			{
+				write(coercionStart);
+			}
             /*
             IDefinition definition = node.getRightOperandNode().resolve(getProject());
         	if (definition instanceof FunctionDefinition &&

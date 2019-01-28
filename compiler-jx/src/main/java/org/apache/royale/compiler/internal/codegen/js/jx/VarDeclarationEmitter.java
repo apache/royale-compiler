@@ -23,6 +23,7 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -40,6 +41,7 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IEmbedNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
 public class VarDeclarationEmitter extends JSSubEmitter implements
@@ -65,9 +67,11 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         }
 
         IExpressionNode variableTypeNode = node.getVariableTypeNode();
+        IDefinition variableDef = null;
         boolean hasVariableType = variableTypeNode.getLine() >= 0;
         if(hasVariableType)
         {
+            variableDef = variableTypeNode.resolve(getProject());
             startMapping(variableTypeNode,
                     variableTypeNode.getLine(),
                     variableTypeNode.getColumn() - 1); //include the :
@@ -173,20 +177,76 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         			}
         		}
             }
-            String coercion = "";
-            if (varIsNumber && !valIsNumber)
-            	coercion = "Number(";
-            //else if (varIsNumber && valIsNumber && varIsInt && !valIsInt)
-            //	coercion = "Math.floor(";
-            if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
-                	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
-                	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
-                			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
-                	coercion = "org.apache.royale.utils.Language.string(";
-            write(coercion);
+            String coercionStart = null;
+            String coercionEnd = null;
+            if (getProject().getBuiltinType(BuiltinType.INT).equals(variableDef))
+            {
+                boolean needsCoercion = false;
+                if (avnode instanceof INumericLiteralNode)
+                {
+                    INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
+                    if (!BuiltinType.INT.equals(numericLiteral.getNumericValue().getAssumedType()))
+                    {
+                        needsCoercion = true;
+                    }
+                }
+                else if(!getProject().getBuiltinType(BuiltinType.INT).equals(avdef))
+                {
+                    needsCoercion = true;
+                }
+                if (needsCoercion)
+                {
+                    coercionStart = "(";
+                    coercionEnd = ") >> 0";
+                }
+            }
+            else if (getProject().getBuiltinType(BuiltinType.UINT).equals(variableDef))
+            {
+                boolean needsCoercion = false;
+                if (avnode instanceof INumericLiteralNode)
+                {
+                    INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
+                    if (!BuiltinType.UINT.equals(numericLiteral.getNumericValue().getAssumedType()))
+                    {
+                        needsCoercion = true;
+                    }
+                }
+                else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(avdef))
+                {
+                    needsCoercion = true;
+                }
+                if (needsCoercion)
+                {
+                    coercionStart = "(";
+                    coercionEnd = ") >>> 0";
+                }
+            }
+            else if (varIsNumber && !valIsNumber)
+            {
+                coercionStart = "Number(";
+            }
+            else if (getProject().getBuiltinType(BuiltinType.STRING).equals(variableDef) &&
+                !getProject().getBuiltinType(BuiltinType.STRING).equals(avdef) &&
+                !getProject().getBuiltinType(BuiltinType.NULL).equals(avdef))
+            {
+                coercionStart = "org.apache.royale.utils.Language.string(";
+            }
+			if (coercionStart != null)
+			{
+                write(coercionStart);
+            }
             fjs.emitAssignedValue(avnode);
-            if (coercion.length() > 0)
-              	write(")");
+			if (coercionStart != null)
+			{
+				if (coercionEnd != null)
+				{
+					write(coercionEnd);
+				}
+				else
+				{
+					write(")");
+				}
+			}
         }
         if (avnode == null)
         {

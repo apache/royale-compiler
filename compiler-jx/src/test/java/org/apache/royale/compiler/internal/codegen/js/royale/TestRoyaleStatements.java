@@ -96,6 +96,24 @@ public class TestRoyaleStatements extends TestGoogStatements
         assertOut("var /** @type {number} */ a = 0");
     }
 
+    @Test
+    public void testVarDeclaration_withTypeIntAndAssignedNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:int = 123.4;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = (123.4) >> 0");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeUintAndAssignedNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:uint = 123.4;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = (123.4) >>> 0");
+    }
+
     //----------------------------------
     // const declaration
     //----------------------------------

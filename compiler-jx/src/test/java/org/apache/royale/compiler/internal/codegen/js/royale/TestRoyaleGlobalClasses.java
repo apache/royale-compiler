@@ -675,7 +675,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ b = a.child('child').length()");
+        assertOut("var /** @type {number} */ b = (a.child('child').length()) >> 0");
     }
     
     @Test
@@ -939,7 +939,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");for each (var p:XMLList in a) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = (p.length()) >> 0;}\n");
     }
     
     @Test
@@ -947,7 +947,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:*;for each (var p:XML in (a as XMLList)) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = org.apache.royale.utils.Language.as(a, XMLList);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = org.apache.royale.utils.Language.as(a, XMLList);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = (p.length()) >> 0;}\n");
     }
     
     @Test
@@ -955,7 +955,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:*;for each (var p:XML in XMLList(a)) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = XMLList(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = p.length();}\n");
+        assertOut("var foreachiter0_target = XMLList(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = (p.length()) >> 0;}\n");
     }
     
     @Test
@@ -1074,7 +1074,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();for each (var p:String in a) var i:int = p.length; }}",
                 IForLoopNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = p.length;}\n");
+        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = (p.length) >> 0;}\n");
     }
     
     @Test

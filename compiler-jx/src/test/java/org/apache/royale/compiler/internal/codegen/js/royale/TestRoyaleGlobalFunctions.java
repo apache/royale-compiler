@@ -104,7 +104,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     @Test
     public void testParseInt()
     {
-        IVariableNode node = getVariable("var a:int = parseInt('1.8');");
+        IVariableNode node = getVariable("var a:Number = parseInt('1.8');");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = parseInt('1.8', undefined)");
     }
@@ -112,7 +112,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     @Test
     public void testParseIntTwoArgs()
     {
-        IVariableNode node = getVariable("var a:int = parseInt('1.8', 16);");
+        IVariableNode node = getVariable("var a:Number = parseInt('1.8', 16);");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = parseInt('1.8', 16)");
     }

@@ -147,7 +147,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function RoyaleTest_A(){}; private function foo(value:int):String{return value;}; private function bar():String{if(true){while(i){return this.foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n * @return {string}\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      return this.foo(42);\n    }\n  }\n};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return org.apache.royale.utils.Language.string(value);\n};\n\n\n/**\n * @private\n * @return {string}\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      return this.foo(42);\n    }\n  }\n};");
     }
 
     @Test
@@ -155,7 +155,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function RoyaleTest_A(){}; private function foo(value:int):String{return value;}; private function bar():void{if(true){while(i){foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      this.foo(42);\n    }\n  }\n};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return org.apache.royale.utils.Language.string(value);\n};\n\n\n/**\n * @private\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      this.foo(42);\n    }\n  }\n};");
     }
 
     @Override

@@ -269,10 +269,82 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_AssignmentIntVarToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var integer1:int;var integer2:int;integer1 = integer2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("integer1 = integer2");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNumberVarToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var integer:int;var number:Number;integer = number");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("integer = (number) >> 0");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentUintVarToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var integer:int;var unsigned_integer:uint;integer = unsigned_integer");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("integer = (unsigned_integer) >> 0");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNumberLiteralToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 123.4");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToInt = (123.4) >> 0");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentIntLiteralToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 321");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToInt = 321");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentUintVarToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var unsigned_integer1:uint;var unsigned_integer2:uint;unsigned_integer1 = unsigned_integer2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("unsigned_integer1 = unsigned_integer2");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNumberVarToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var unsigned_integer:uint;var number:Number;unsigned_integer = number");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("unsigned_integer = (number) >>> 0");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentIntVarToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var unsigned_integer:uint;var integer:int;unsigned_integer = integer");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("unsigned_integer = (integer) >>> 0");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNumberLiteralToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = 123.4");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToUint = (123.4) >>> 0");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_setterAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function c() { b = 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function c() { b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -282,7 +354,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentWithThis()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function c() { this.b = 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -292,7 +364,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentPrivate()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function get b():int { return 0; } private function set b(value:int):void {}; public function test() { this.b = 1; }}",
+                "public class B {public function get b():Number { return 0; } private function set b(value:Number):void {}; public function test() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -302,7 +374,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentPrivateWithNamespace()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function get b():int { return 0; } private function set b(value:int):void {}; public function test() { this.private::b = 1; }}",
+                "public class B {public function get b():Number { return 0; } private function set b(value:Number):void {}; public function test() { this.private::b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -316,7 +388,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         // disconnect fileNode from parent
         // set thisclass on emitter to class def
         IFileNode node = (IFileNode) getNode(
-                "public class B { public function c() { this.b = 1; }; public function set b(value:int):void {}}",
+                "public class B { public function c() { this.b = 1; }; public function set b(value:Number):void {}}",
                 IFileNode.class, WRAP_LEVEL_PACKAGE, true);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -340,7 +412,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         // disconnect fileNode from parent
         // set thisclass on emitter to class def
         IFileNode node = (IFileNode) getNode(
-                "public class B { public function c() { b = 1; }; public function set b(value:int):void {}}",
+                "public class B { public function c() { b = 1; }; public function set b(value:Number):void {}}",
                 IFileNode.class, WRAP_LEVEL_PACKAGE, true);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -360,7 +432,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentOtherInstance()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function c(other:B) { other.b = 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function c(other:B) { other.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("other.b = 1");
@@ -370,7 +442,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_nestedSetterAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function get d():B {}; public function c(other:B) { d.d.b = 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function get d():B {}; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.d.d.b = 1");
@@ -380,7 +452,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_nestedSetterAssignmentOtherInstance()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function get d():B {}; public function c(other:B) { other.d.b = 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function get d():B {}; public function c(other:B) { other.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("other.d.b = 1");
@@ -390,7 +462,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentFromGetter()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function c() { b = b + 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = this.b + 1");
@@ -400,7 +472,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentFromGetterMaskedByLocal()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function c() { var b:int; b = b + 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function c() { var b:Number; b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("b = b + 1");
@@ -410,7 +482,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentFromGetterMaskedByParam()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public function set b(value:int):void {}; public function c(b:int) { b = b + 1; }}",
+                "public class B {public function set b(value:Number):void {}; public function c(b:Number) { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("b = b + 1");
@@ -420,7 +492,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_setterAssignmentFromInternalVar()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {var b:int; public function c() { b = b + 1; }}",
+                "public class B {var b:Number; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = this.b + 1");
@@ -430,7 +502,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignmentFromInternalVar()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {static var b:int; public function c() { b = b + 1; }}",
+                "public class B {static var b:Number; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("B.b = B.b + 1");
@@ -440,7 +512,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public function c() { b = 1; }}",
+                "public class B {[Bindable] public var b:Number; public function c() { b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -450,7 +522,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableAssignmentWithThis()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public function c() { this.b = 1; }}",
+                "public class B {[Bindable] public var b:Number; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -460,7 +532,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableAssignmentOtherInstance()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public function c(other:B) { other.b = 1; }}",
+                "public class B {[Bindable] public var b:Number; public function c(other:B) { other.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("other.b = 1");
@@ -470,7 +542,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableSetterAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; [Bindable] public var d:B; public function c(other:B) { d.d.b = 1; }}",
+                "public class B {[Bindable] public var b:Number; [Bindable] public var d:B; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.d.d.b = 1");
@@ -480,7 +552,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableSetterAssignmentOtherInstance()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; [Bindable] public var d:B; public function c(other:B) { other.d.b = 1; }}",
+                "public class B {[Bindable] public var b:Number; [Bindable] public var d:B; public function c(other:B) { other.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("other.d.b = 1");
@@ -490,7 +562,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableAssignmentFromGetter()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public function c() { b = b + 1; }}",
+                "public class B {[Bindable] public var b:Number; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = this.b + 1");
@@ -500,7 +572,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableAssignmentFromGetterMaskedByLocal()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public function c() { var b:int; b = b + 1; }}",
+                "public class B {[Bindable] public var b:Number; public function c() { var b:Number; b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("b = b + 1");
@@ -510,7 +582,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_bindableAssignmentFromGetterMaskedByParam()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public function c(b:int) { b = b + 1; }}",
+                "public class B {[Bindable] public var b:Number; public function c(b:Number) { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("b = b + 1");
@@ -520,7 +592,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public function c() { b = 1; }}",
+                "public class B {public var b:Number; public function c() { b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -530,7 +602,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varAssignmentWithThis()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public function c() { this.b = 1; }}",
+                "public class B {public var b:Number; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
@@ -540,7 +612,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varAssignmentOtherInstance()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public function c(other:B) { other.b = 1; }}",
+                "public class B {public var b:Number; public function c(other:B) { other.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("other.b = 1");
@@ -550,7 +622,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varSetterAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public var d:B; public function c(other:B) { d.d.b = 1; }}",
+                "public class B {[Bindable] public var b:Number; public var d:B; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.d.d.b = 1");
@@ -560,7 +632,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varVarAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public var d:B; public function c(other:B) { d.d.b = 1; }}",
+                "public class B {public var b:Number; public var d:B; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.d.d.b = 1");
@@ -570,7 +642,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varSetterAssignmentOtherInstance()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {[Bindable] public var b:int; public var d:B; public function c(other:B) { other.d.b = 1; }}",
+                "public class B {[Bindable] public var b:Number; public var d:B; public function c(other:B) { other.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("other.d.b = 1");
@@ -580,7 +652,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varAssignmentFromVar()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public function c() { b = b + 1; }}",
+                "public class B {public var b:Number; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = this.b + 1");
@@ -590,7 +662,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varAssignmentFromVarMaskedByLocal()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public function c() { var b:int; b = b + 1; }}",
+                "public class B {public var b:Number; public function c() { var b:Number; b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("b = b + 1");
@@ -600,7 +672,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_varAssignmentFromVarMaskedByParam()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:int; public function c(b:int) { b = b + 1; }}",
+                "public class B {public var b:Number; public function c(b:Number) { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("b = b + 1");
@@ -610,7 +682,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignment()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function c() { b = 1; }; public static function set b(value:int):void {}}",
+                "public class B {public function c() { b = 1; }; public static function set b(value:Number):void {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -622,7 +694,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignmentWithPath()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function c() { foo.bar.B.b = 1; }; public static function set b(value:int):void {}}",
+                "public class B {public function c() { foo.bar.B.b = 1; }; public static function set b(value:Number):void {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -634,7 +706,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignmentOtherInstance()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function c() { d.b = 1; }; public function set b(value:int):void {}; public static function get d():B {}}",
+                "public class B {public function c() { d.b = 1; }; public function set b(value:Number):void {}; public static function get d():B {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -650,7 +722,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         // disconnect fileNode from parent
         // set thisclass on emitter to class def
         IFileNode node = (IFileNode) getNode(
-                "public class B {public function c() { d.b = 1; }; public function set b(value:int):void {}; public static function get d():B {}}",
+                "public class B {public function c() { d.b = 1; }; public function set b(value:Number):void {}; public static function get d():B {}}",
                 IFileNode.class, WRAP_LEVEL_PACKAGE, true);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -670,7 +742,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignmentFromGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function c() { b = b + 1; }; public static function set b(value:int):void {}; public static function get b():int {}}",
+                "public class B {public function c() { b = b + 1; }; public static function set b(value:Number):void {}; public static function get b():Number {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -682,7 +754,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignmentFromGetterMaskedByLocal()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function c() { var b:int; b = b + 1; }; public static function set b(value:int):void {}; public static function get b():int {}}",
+                "public class B {public function c() { var b:Number; b = b + 1; }; public static function set b(value:Number):void {}; public static function get b():Number {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -694,7 +766,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_staticSetterAssignmentFromGetterMaskedByParam()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function c(b:int) { b = b + 1; }; public static function set b(value:int):void {}; public static function get b():int {}}",
+                "public class B {public function c(b:Number) { b = b + 1; }; public static function set b(value:Number):void {}; public static function get b():Number {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -1036,7 +1108,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testNativeGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b():int { var s:String; return s.length; }}",
+                "public class B {public function b():Number { var s:String; return s.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
@@ -1047,7 +1119,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testNativeVectorGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b():int { var a:Vector.<String>; return a.length; }}",
+                "public class B {public function b():Number { var a:Vector.<String>; return a.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
