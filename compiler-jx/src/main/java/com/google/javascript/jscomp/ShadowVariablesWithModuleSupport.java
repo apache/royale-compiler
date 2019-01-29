@@ -20,7 +20,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.javascript.jscomp.NodeTraversal.AbstractPostOrderCallback;
 import com.google.javascript.jscomp.NodeTraversal.ScopedCallback;
-import com.google.javascript.jscomp.RenameVars.Assignment;
+import com.google.javascript.jscomp.RenameVarsWithModuleSupport.Assignment;
 import com.google.javascript.rhino.Node;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -47,7 +47,7 @@ import java.util.SortedSet;
  * and reusing frequently used local names.
  *
  */
-class ShadowVariables implements CompilerPass {
+class ShadowVariablesWithModuleSupport implements CompilerPass {
 
   // Keep a map of Upward Referencing name nodes of each scope.
   // A name is upward referencing name of a scope if:
@@ -89,7 +89,7 @@ class ShadowVariables implements CompilerPass {
    * @param pseudoNameMap The current pseudo name map so this pass can update
    *     it accordingly.
    */
-  ShadowVariables(
+  ShadowVariablesWithModuleSupport(
       AbstractCompiler compiler,
       Map<String, Assignment> assignments,
       SortedSet<Assignment> varsByFrequency,
@@ -98,7 +98,7 @@ class ShadowVariables implements CompilerPass {
     this.assignments = assignments;
     this.varsByFrequency = varsByFrequency;
     this.oldPseudoNameMap = pseudoNameMap;
-    this.deltaPseudoNameMap = new LinkedHashMap<>();
+    this.deltaPseudoNameMap = new LinkedHashMap<Node, String>();
   }
 
   @Override

@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
  * size and also to obfuscate the code.
  *
  */
-final class RenameVars implements CompilerPass {
+final class RenameVarsWithModuleSupport implements CompilerPass {
 
   /**
    * Limit on number of locals in a scope for temporary local renaming
@@ -53,13 +53,13 @@ final class RenameVars implements CompilerPass {
   private final AbstractCompiler compiler;
 
   /** List of global NAME nodes */
-  private final ArrayList<Node> globalNameNodes = new ArrayList<>();
+  private final ArrayList<Node> globalNameNodes = new ArrayList<Node>();
 
   /** List of local NAME nodes */
-  private final ArrayList<Node> localNameNodes = new ArrayList<>();
+  private final ArrayList<Node> localNameNodes = new ArrayList<Node>();
 
   /** Mapping of original names for change detection */
-  private final Map<Node, String> originalNameByNode = new HashMap<>();
+  private final Map<Node, String> originalNameByNode = new HashMap<Node, String>();
 
   /**
    * Maps a name node to its pseudo name, null if we are not generating so
@@ -74,7 +74,7 @@ final class RenameVars implements CompilerPass {
   private final Set<String> reservedNames;
 
   /** The renaming map */
-  private final Map<String, String> renameMap = new HashMap<>();
+  private final Map<String, String> renameMap = new HashMap<String, String>();
 
   /** The previously used rename map. */
   private final VariableMap prevUsedRenameMap;
@@ -87,7 +87,7 @@ final class RenameVars implements CompilerPass {
 
   // Logic for bleeding functions, where the name leaks into the outer
   // scope on IE but not on other browsers.
-  private final Set<Var> localBleedingFunctions = new HashSet<>();
+  private final Set<Var> localBleedingFunctions = new HashSet<Var>();
   private final ListMultimap<Scope, Var> localBleedingFunctionsPerScope =
       ArrayListMultimap.create();
 
@@ -119,7 +119,7 @@ final class RenameVars implements CompilerPass {
 
   /** Maps an old name to a new name assignment */
   private final Map<String, Assignment> assignments =
-      new HashMap<>();
+      new HashMap<String, Assignment>();
 
   /** Whether renaming should apply to local variables only. */
   private final boolean localRenamingOnly;
@@ -150,7 +150,7 @@ final class RenameVars implements CompilerPass {
    * the instance may reset or reconfigure it, so the caller should
    * not expect any state to be preserved.
    */
-  RenameVars(AbstractCompiler compiler, String prefix,
+  RenameVarsWithModuleSupport(AbstractCompiler compiler, String prefix,
       boolean localRenamingOnly, boolean preserveFunctionExpressionNames,
       boolean generatePseudoNames, boolean shouldShadow,
       boolean preferStableNames, VariableMap prevUsedRenameMap,
@@ -162,7 +162,7 @@ final class RenameVars implements CompilerPass {
     this.localRenamingOnly = localRenamingOnly;
     this.preserveFunctionExpressionNames = preserveFunctionExpressionNames;
     if (generatePseudoNames) {
-      this.pseudoNameMap = new HashMap<>();
+      this.pseudoNameMap = new HashMap<Node, String>();
     } else {
       this.pseudoNameMap = null;
     }
@@ -171,9 +171,9 @@ final class RenameVars implements CompilerPass {
     this.shouldShadow = shouldShadow;
     this.preferStableNames = preferStableNames;
     if (reservedNames == null) {
-      this.reservedNames = new HashSet<>();
+      this.reservedNames = new HashSet<String>();
     } else {
-      this.reservedNames = new HashSet<>(reservedNames);
+      this.reservedNames = new HashSet<String>(reservedNames);
     }
     this.nameGenerator = nameGenerator;
   }
@@ -353,11 +353,11 @@ final class RenameVars implements CompilerPass {
     reservedNames.addAll(externNames);
 
     // Rename vars, sorted by frequency of occurrence to minimize code size.
-    SortedSet<Assignment> varsByFrequency = new TreeSet<>(FREQUENCY_COMPARATOR);
+    SortedSet<Assignment> varsByFrequency = new TreeSet<Assignment>(FREQUENCY_COMPARATOR);
     varsByFrequency.addAll(assignments.values());
 
     if (shouldShadow) {
-      new ShadowVariables(
+      new ShadowVariablesWithModuleSupport(
           compiler, assignments, varsByFrequency, pseudoNameMap).process(
               externs, root);
     }
@@ -479,8 +479,8 @@ final class RenameVars implements CompilerPass {
         : nameGenerator.clone(reservedNames, "", reservedCharacters);
 
     // Generated names and the assignments for non-local vars.
-    List<Assignment> pendingAssignments = new ArrayList<>();
-    List<String> generatedNamesForAssignments = new ArrayList<>();
+    List<Assignment> pendingAssignments = new ArrayList<Assignment>();
+    List<String> generatedNamesForAssignments = new ArrayList<String>();
 
     for (Assignment a : varsToRename) {
       if (a.newName != null) {
@@ -523,7 +523,7 @@ final class RenameVars implements CompilerPass {
     int numPendingAssignments = generatedNamesForAssignments.size();
     for (int i = 0; i < numPendingAssignments;) {
       SortedSet<Assignment> varsByOrderOfOccurrence =
-          new TreeSet<>(ORDER_OF_OCCURRENCE_COMPARATOR);
+          new TreeSet<Assignment>(ORDER_OF_OCCURRENCE_COMPARATOR);
 
       // Add k number of Assignment to the set, where k is the number of
       // generated names of the same length.
