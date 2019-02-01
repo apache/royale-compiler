@@ -19,19 +19,13 @@
 
 package org.apache.royale.compiler.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -95,7 +89,6 @@ public class JSClosureCompilerWrapper
     private String variableMapInputPath;
     private String propertyMapInputPath;
     private boolean skipTypeInference;
-    private Set<String> provideds;
     private boolean sourceMap = false;
     
     public String targetFilePath;
@@ -120,11 +113,6 @@ public class JSClosureCompilerWrapper
         jsSourceFiles_.add(file);
     }
 
-    public void setProvideds(Set<String> set)
-    {
-    	provideds = set;
-    }
-
     public void setSourceMap(boolean enabled)
     {
         sourceMap = enabled;
@@ -143,8 +131,6 @@ public class JSClosureCompilerWrapper
         	try {
             	VariableMap map = VariableMap.load(inputFile.getAbsolutePath());
 				CompilerMapFetcher.setVariableMap(options_, map);
-				Set<String> usedVars = getUsedVars(inputFile);
-				compiler_.addExportedNames(usedVars);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -163,7 +149,9 @@ public class JSClosureCompilerWrapper
 			}
         }
 
-        compiler_.setPassConfig(new RoyaleClosurePassConfig(options_));
+        compiler_.setPassConfig(new RoyaleClosurePassConfig(options_, 
+        		jsSourceFiles_.get(jsSourceFiles_.size() - 1).getName(), 
+        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath)));
         Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
         
         try
@@ -226,65 +214,7 @@ public class JSClosureCompilerWrapper
         }
         */
         return result.success;
-    }
-    
-    private Set<String> getUsedVars(File file)
-    {
-    	HashMap<String, String> vars = new HashMap<String, String>();
-    	
-        try
-        {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-
-            String line = in.readLine();
-
-            while (line != null)
-            {
-                int c = line.indexOf(":");
-                if (c != -1)
-                {
-                	String name = line.substring(0, c);
-                	
-                	String var = line.substring(c + 1).trim();
-                	vars.put(name, var);
-                }
-                line = in.readLine();
-            }
-            
-            // remove all vars that are used by this module
-            // that way they will re-use the names in the
-            // loader
-            for (String name : provideds)
-            {
-            	name = name.replace('.', '$');
-            	Set<String> keys = vars.keySet();
-            	ArrayList<String> remKeys = new ArrayList<String>();
-            	for (String key : keys)
-            	{
-            		if (key.contains(name))
-            		{
-            			remKeys.add(key);
-            		}
-            	}
-            	for (String key : remKeys)
-            	{
-            		vars.remove(key);
-            	}
-            }
-            in.close();
-        }
-        catch (Exception e)
-        {
-            // nothing to see, move along...
-        }
-        HashSet<String> usedVars = new HashSet<String>();
-    	Set<String> keys = vars.keySet();
-    	for (String key : keys)
-    	{
-    		usedVars.add(vars.get(key));
-    	}
-        return usedVars;
-    }
+    }    
     
     @SuppressWarnings( "deprecation" )
     private void initExterns()

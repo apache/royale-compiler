@@ -453,8 +453,6 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         	// need better test someday
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
             writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData, false);
-            Set<String> provideds = computeProvideds(depsFileData);
-            compilerWrapper.setProvideds(provideds);
             gdw.needCSS = true;
         }
         else
@@ -518,23 +516,6 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         return true;
     }
 
-    private Set<String> computeProvideds(String data)
-    {
-    	HashSet<String> set = new HashSet<String>();
-    	String[] lines = data.split("\n");
-    	for (String line : lines)
-    	{
-    		int c = line.indexOf("['");
-    		if (c != -1)
-    		{
-	    		int c2 = line.indexOf("'", c + 2);
-	    		String name = line.substring(c + 2, c2);
-	    		set.add(name);
-    		}
-    	}
-    	return set;
-    }
-    
     protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, String entryPoint)
     {
     	ArrayList<String> sortedFiles = new ArrayList<String>();
