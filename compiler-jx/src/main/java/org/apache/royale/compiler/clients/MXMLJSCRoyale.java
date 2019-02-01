@@ -507,9 +507,9 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             				continue;
             			}            			
             			partNames.add(current);
+        				sb.append("/**\n * @suppress {duplicate}\n * @const\n */\n");
             			if (firstOne)
             			{
-            				sb.append("/**\n * @suppress {duplicate}\n * @const\n */\n");
             				sb.append("var ");
             				firstOne = false;
             			}
@@ -629,9 +629,9 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             				continue;
             			}            			
             			partNames.add(current);
+        				sb.append("/**\n * @suppress {duplicate}\n * @const\n */\n");
             			if (firstOne)
             			{
-            				sb.append("/**\n * @suppress {duplicate}\n * @const\n */\n");
             				sb.append("var ");
             				firstOne = false;
             			}
