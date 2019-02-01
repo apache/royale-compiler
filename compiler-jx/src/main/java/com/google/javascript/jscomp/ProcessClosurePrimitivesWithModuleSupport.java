@@ -40,6 +40,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
+
 import javax.annotation.Nullable;
 
 /**
@@ -204,8 +206,21 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
     return exportedVariables;
   }
   
+  /** list of strings from the externs */
   private ArrayList<String> externStrings = new ArrayList<String>();
 
+  /** a map extern node trees to their list of vars that are in the externs but also renamed/aliased */
+  public static WeakHashMap<Node, List<String>> externedAliases = new WeakHashMap<Node, List<String>>();
+  
+  /** list of namespaces that are in the externs but also renamed/aliased */
+  private ArrayList<String> externAliases = new ArrayList<String>();
+  
+  /** a map extern node trees to the processed goog.provides */
+  public static WeakHashMap<Node, List<String>> providedsMap = new WeakHashMap<Node, List<String>>();
+  
+  /** list of namespaces that are goog.provided */
+  private ArrayList<String> provideds = new ArrayList<String>();
+  
   @Override
   public void process(Node externs, Node root) {
     /*
@@ -216,7 +231,9 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
     for (Name en : externNames) {
       addExternNameAndDescendants(en, externStrings);
     }
-
+    externedAliases.put(externs, externAliases);
+    providedsMap.put(externs, provideds);
+    
     NodeTraversal.traverseRoots(compiler, this, externs, root);
 
     for (Node n : defineCalls) {
@@ -1355,9 +1372,13 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
         providedNames.get(prefixNs).addProvide(
             node, module, false /* implicit */);
       } else {
-          if (!externStrings.contains(prefixNs))
               providedNames.put(prefixNs,
                   new ProvidedName(prefixNs, node, module, false /* implicit */));
+              if (externStrings.contains(prefixNs))
+            	  if (!externAliases.contains(prefixNs))
+            		  externAliases.add(prefixNs);
+        	  if (!provideds.contains(prefixNs))
+        		  provideds.add(prefixNs);
       }
     }
   }

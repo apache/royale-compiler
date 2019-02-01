@@ -62,6 +62,8 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.jscomp.parsing.parser.FeatureSet;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -122,8 +124,14 @@ public final class RoyaleClosurePassConfig extends PassConfig {
    * @see CheckSideEffects
    */
   private final boolean protectHiddenSideEffects;
+  
+  /** name of a source file we can use to inject other code */
+  private String sourceFileName;
 
-  public RoyaleClosurePassConfig(CompilerOptions options) {
+  /** file of already renamed vars */
+  private File varRenameMapFile;
+  
+  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName, File varRenameMapFile) {
     super(options);
 
     // The current approach to protecting "hidden" side-effects is to
@@ -131,6 +139,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     // be done in IDE mode where AST changes may be unexpected.
     protectHiddenSideEffects = options != null && options.shouldProtectHiddenSideEffects();
     preprocessorSymbolTableFactory = new PreprocessorSymbolTable.CachedInstanceFactory();
+    this.varRenameMapFile = varRenameMapFile;
+    this.sourceFileName = sourceFileName;
   }
 
   GlobalNamespace getGlobalNamespace() {
@@ -2379,7 +2389,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       new PassFactory(PassNames.COLLAPSE_PROPERTIES, true) {
         @Override
         protected CompilerPass create(AbstractCompiler compiler) {
-          return new CollapsePropertiesWithModuleSupport(compiler, options.getPropertyCollapseLevel());
+          return new CollapsePropertiesWithModuleSupport(compiler, options.getPropertyCollapseLevel(), sourceFileName, varRenameMapFile);
         }
 
         @Override
@@ -3058,7 +3068,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     }
     reservedNames.addAll(compiler.getExportedNames());
     reservedNames.addAll(ParserRunner.getReservedVars());
-    RenameVars rn = new RenameVars(
+    RenameVarsWithModuleSupport rn = new RenameVarsWithModuleSupport(
         compiler,
         options.renamePrefix,
         options.variableRenaming == VariableRenamingPolicy.LOCAL,

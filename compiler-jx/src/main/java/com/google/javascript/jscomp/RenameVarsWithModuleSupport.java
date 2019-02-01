@@ -145,6 +145,8 @@ final class RenameVarsWithModuleSupport implements CompilerPass {
   // Shared name generator
   private final NameGenerator nameGenerator;
 
+  private List<String> externAliases;
+  
   /*
    * nameGenerator is a shared NameGenerator that this instance can use;
    * the instance may reset or reconfigure it, so the caller should
@@ -342,6 +344,7 @@ final class RenameVarsWithModuleSupport implements CompilerPass {
 
   @Override
   public void process(Node externs, Node root) {
+	externAliases = ProcessClosurePrimitivesWithModuleSupport.externedAliases.get(externs);
     this.externNames = NodeUtil.collectExternVariableNames(this.compiler, externs);
 
     originalNameByNode.clear();
@@ -367,12 +370,28 @@ final class RenameVarsWithModuleSupport implements CompilerPass {
       reusePreviouslyUsedVariableMap(varsByFrequency);
     }
 
+    if (prevUsedRenameMap != null) {
+    	reservedNames.addAll(prevUsedRenameMap.getNewNameToOriginalNameMap().keySet());
+    }
     // Assign names, sorted by descending frequency to minimize code size.
     assignNames(varsByFrequency);
 
     // Rename the globals!
     for (Node n : globalNameNodes) {
+      boolean moveToExternsAfterRename = false;
+      String renamedVar = n.getString();
+      if (prevUsedRenameMap != null && 
+    		  externAliases.contains(renamedVar) &&
+      		  n.getParent().isVar())
+        moveToExternsAfterRename = true;
       setNameAndReport(n, getNewGlobalName(n));
+      if (moveToExternsAfterRename) {
+        Node p = n.getParent();
+        p.detach();
+        Node externsInput = compiler.getSynthesizedExternsInput().getAstRoot(compiler);
+        externsInput.addChildToBack(p);
+        compiler.reportChangeToEnclosingScope(p);
+      }
     }
 
     // Rename the locals!

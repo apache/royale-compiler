@@ -22,17 +22,22 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.google.common.io.Files;
 import com.google.javascript.jscomp.CompilerOptions.PropertyCollapseLevel;
 import com.google.javascript.jscomp.GlobalNamespace.Name;
 import com.google.javascript.jscomp.GlobalNamespace.Ref;
 import com.google.javascript.jscomp.Normalize.PropagateConstantAnnotationsOverVars;
 import com.google.javascript.rhino.IR;
+import com.google.javascript.rhino.InputId;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.TokenStream;
 import com.google.javascript.rhino.jstype.JSType;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -96,38 +101,60 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 
   /** Maps names (e.g. "a.b.c") to nodes in the global namespace tree */
   private Map<String, Name> nameMap;
+  
+  /** name of a source file we can use to inject other code */
+  private String sourceFileName;
 
-  CollapsePropertiesWithModuleSupport(AbstractCompiler compiler, PropertyCollapseLevel propertyCollapseLevel) {
+  /** name of the file of renamed variables */
+  private File varRenameMapFile;
+  
+  /** list of renamed variables */
+  private ArrayList<String> renamedVars = null;
+  
+  private List<String> externAliases;
+
+  private List<String> providedAliases = new ArrayList<String>();
+  
+  CollapsePropertiesWithModuleSupport(AbstractCompiler compiler, PropertyCollapseLevel propertyCollapseLevel, String sourceFileName, File varRenameMapFile) {
     this.compiler = compiler;
     this.propertyCollapseLevel = propertyCollapseLevel;
+    this.varRenameMapFile = varRenameMapFile;
+    this.sourceFileName = sourceFileName;
   }
 
   @Override
   public void process(Node externs, Node root) {
-    GlobalNamespace namespace = new GlobalNamespace(compiler, root);
+	externAliases = ProcessClosurePrimitivesWithModuleSupport.externedAliases.get(externs);
+	int n = externAliases.size();
+	for (int i = 0; i < n; i++)
+	{
+		String s = externAliases.get(i);
+		String t = s.replace(".", "$");
+		externAliases.set(i, t);
+	}
+	providedAliases = ProcessClosurePrimitivesWithModuleSupport.providedsMap.get(externs);
+	n = providedAliases.size();
+	for (int i = 0; i < n; i++)
+	{
+		String s = providedAliases.get(i);
+		String t = s.replace(".", "$");
+		providedAliases.set(i, t);
+	}
+	
+    GlobalNamespace namespace = new GlobalNamespace(compiler, externs, root);
     nameMap = namespace.getNameIndex();
     globalNames = namespace.getNameForest();
     checkNamespaces();
 
-    /*
-     * ApacheRoyale:  build list of namespaces from externs 
-     */
-    GlobalNamespace externNamespace = new GlobalNamespace(compiler, externs);
-    List<Name> externNames = externNamespace.getNameForest();
-    ArrayList<String> externStrings = new ArrayList<String>();
-    for (Name en : externNames) {
-      addExternNameAndDescendants(en, externStrings);
-    }
-
     for (Name name : globalNames) {
-      flattenReferencesToCollapsibleDescendantNames(name, name.getBaseName(), externStrings);
+        flattenReferencesToCollapsibleDescendantNames(name, name.getBaseName());
     }
 
     // We collapse property definitions after collapsing property references
     // because this step can alter the parse tree above property references,
     // invalidating the node ancestry stored with each reference.
     for (Name name : globalNames) {
-      collapseDeclarationOfNameAndDescendants(name, name.getBaseName(), externStrings);
+      collapseDeclarationOfNameAndDescendants(name, name.getBaseName());
     }
 
     // This shouldn't be necessary, this pass should already be setting new constants as constant.
@@ -135,17 +162,6 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     (new PropagateConstantAnnotationsOverVars(compiler, false)).process(externs, root);
   }
 
-  // copy in ProcessClosurePrimitives
-  private void addExternNameAndDescendants(Name en, ArrayList<String> externStrings) {
-    externStrings.add(en.getName());
-
-    if (en.props == null || en.isCollapsingExplicitlyDenied()) {
-      return;
-    }
-    for (Name p : en.props) {
-      addExternNameAndDescendants(p, externStrings);
-    }
-  }
   
   private boolean canCollapse(Name name) {
     if (!name.canCollapse()) {
@@ -267,7 +283,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
    * @param alias The flattened name for {@code n}
    */
   private void flattenReferencesToCollapsibleDescendantNames(
-      Name n, String alias, List<String> externStrings) {
+      Name n, String alias) {
     if (n.props == null || n.isCollapsingExplicitlyDenied()) {
       return;
     }
@@ -278,11 +294,11 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       boolean isAllowedToCollapse =
           propertyCollapseLevel != PropertyCollapseLevel.MODULE_EXPORT || p.isModuleExport();
 
-      if (isAllowedToCollapse)
-          if (externStrings.contains(p.getName()))
-            isAllowedToCollapse = false; // don't collapse if used in extern
+      //if (isAllowedToCollapse)
+      //    if (externStrings.contains(p.getName()))
+      //      isAllowedToCollapse = false; // don't collapse if used in extern
 
-      if (isAllowedToCollapse && p.canCollapse()) {
+      if (isAllowedToCollapse && (p.canCollapse() || wasCollapsed(propAlias) || shouldCollapse(propAlias))) {
         flattenReferencesTo(p, propAlias);
       } else if (isAllowedToCollapse
           && p.isSimpleStubDeclaration()
@@ -290,9 +306,73 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
         flattenSimpleStubDeclaration(p, propAlias);
       }
 
-      flattenReferencesToCollapsibleDescendantNames(p, propAlias, externStrings);
+      flattenReferencesToCollapsibleDescendantNames(p, propAlias);
     }
   }
+  
+  private boolean shouldCollapse(String propAlias) {
+	if (providedAliases.contains(propAlias))
+	{
+        InputId inputId = new InputId(
+              sourceFileName);
+        CompilerInput compilerInput = compiler.getInput(inputId);
+        Node nameNode = IR.name(propAlias);
+        Node child = IR.var(nameNode);
+        compilerInput.getAstRoot(compiler).addChildToBack(child);
+        compiler.reportChangeToEnclosingScope(child);
+        if (!externAliases.contains(propAlias))
+          externAliases.add(propAlias);
+		return true;
+	}
+	return false;
+}
+
+/**
+   * See if this property was collapse by the loading app
+   * @param propAlias The alias that might have been collapsed
+   * @return
+   */
+  private boolean wasCollapsed(String propAlias) {
+	if (varRenameMapFile == null)
+		return false;
+	
+	if (renamedVars == null)
+	{
+		List<String> fileLines;
+		
+		renamedVars = new ArrayList<String>();
+		try {
+			fileLines = Files.readLines(varRenameMapFile, Charset.defaultCharset());
+			for (String line : fileLines)
+			{
+				int c = line.indexOf(":");
+				if (c > 0)
+				{
+					renamedVars.add(line.substring(0, c));
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	if (renamedVars.contains(propAlias) || externAliases.contains(propAlias)) {
+	  // if it was collapsed, add a var for it in our source for now.
+	  // RemoveUnusedNames will move the var before it gets code-genned.
+      InputId inputId = new InputId(
+          sourceFileName);
+      CompilerInput compilerInput = compiler.getInput(inputId);
+      Node nameNode = IR.name(propAlias);
+      Node child = IR.var(nameNode);
+      compilerInput.getAstRoot(compiler).addChildToBack(child);
+      compiler.reportChangeToEnclosingScope(child);
+      if (!externAliases.contains(propAlias))
+    	externAliases.add(propAlias);
+      return true;
+    }
+    return false;
+  }
+
 
   /**
    * Flattens a stub declaration.
@@ -332,7 +412,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       // 2) References inside a complex assign. (a = x.y = 0). These are
       //    called TWIN references, because they show up twice in the
       //    reference list. Only collapse the set, not the alias.
-      if (!NodeUtil.isObjectLitKey(r.node) && (r.getTwin() == null || r.isSet())) {
+      if (!r.node.isFromExterns() && !NodeUtil.isObjectLitKey(r.node) && (r.getTwin() == null || r.isSet())) {
         flattenNameRef(alias, r.node, rParent, originalName);
       }
     }
@@ -342,7 +422,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     // replaced with "a$b" in all occurrences of "a.b.c", "a.b.c.d", etc.
     if (n.props != null) {
       for (Name p : n.props) {
-        flattenPrefixes(alias, p, 1);
+    	flattenPrefixes(alias, p, 1);
       }
     }
   }
@@ -361,7 +441,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     // initialized is fully qualified (i.e. not an object literal key).
     String originalName = n.getFullName();
     Ref decl = n.getDeclaration();
-    if (decl != null && decl.node != null && decl.node.isGetProp()) {
+    if (decl != null && decl.node != null && !decl.node.isFromExterns() && decl.node.isGetProp()) {
       flattenNameRefAtDepth(alias, decl.node, depth, originalName);
     }
 
@@ -374,7 +454,8 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       // References inside a complex assign (a = x.y = 0)
       // have twins. We should only flatten one of the twins.
       if (r.getTwin() == null || r.isSet()) {
-        flattenNameRefAtDepth(alias, r.node, depth, originalName);
+    	if (r.node != null && !r.node.isFromExterns())
+    	  flattenNameRefAtDepth(alias, r.node, depth, originalName);
       }
     }
 
@@ -436,7 +517,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     //   name a$b$c
     Node ref = NodeUtil.newName(compiler, alias, n, originalName);
     NodeUtil.copyNameAnnotations(n.getLastChild(), ref);
-    if (parent.isCall() && n == parent.getFirstChild()) {
+    if (parent != null && parent.isCall() && n == parent.getFirstChild()) {
       // The node was a call target, we are deliberately flatten these as
       // we node the "this" isn't provided by the namespace. Mark it as such:
       parent.putBooleanProp(Node.FREE_CALL, true);
@@ -447,8 +528,22 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       ref.setJSType(type);
     }
 
-    parent.replaceChild(n, ref);
-    compiler.reportChangeToEnclosingScope(ref);
+    if (parent == null)
+    {
+    	// in some cases parent is null (not sure why)
+    	// but ref is a StringNode and a child of n
+    	// is a StringNode so replace that StringNode
+    	parent = n;
+    	n = n.getFirstChild();
+	    parent.replaceChild(n, ref);
+    }
+    else
+    {
+	    parent.replaceChild(n, ref);
+	    Node enclosingScopeNode = NodeUtil.getEnclosingChangeScopeRoot(n.getParent());
+	    if (enclosingScopeNode != null)
+	    	compiler.reportChangeToEnclosingScope(ref);
+    }
   }
 
   /**
@@ -459,11 +554,11 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
    * @param n A node representing a global name
    * @param alias The flattened name for {@code n}
    */
-  private void collapseDeclarationOfNameAndDescendants(Name n, String alias, List<String> externStrings) {
+  private void collapseDeclarationOfNameAndDescendants(Name n, String alias) {
     boolean canCollapseChildNames = n.canCollapseUnannotatedChildNames();
 
     // Handle this name first so that nested object literals get unrolled.
-    if (canCollapse(n) && !externStrings.contains(n.getName())) {
+    if (canCollapse(n)/* && !externStrings.contains(n.getName())*/) {
       updateGlobalNameDeclaration(n, alias, canCollapseChildNames);
     }
 
@@ -471,7 +566,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       return;
     }
     for (Name p : n.props) {
-      collapseDeclarationOfNameAndDescendants(p, appendPropForAlias(alias, p.getBaseName()), externStrings);
+      collapseDeclarationOfNameAndDescendants(p, appendPropForAlias(alias, p.getBaseName()));
     }
   }
 
@@ -554,6 +649,9 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       return;
     }
 
+    if (decl.node == null)
+    	return; // package stubs (org.apache.royale)
+    
     switch (decl.node.getParent().getToken()) {
       case ASSIGN:
         updateGlobalNameDeclarationAtAssignNode(
