@@ -3016,8 +3016,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
           return new CompilerPass() {
             @Override
             public void process(Node externs, Node root) {
-              RenameProperties rprop =
-                  new RenameProperties(
+              RenamePropertiesWithModuleSupport rprop =
+                  new RenamePropertiesWithModuleSupport(
                       compiler,
                       options.generatePseudoNames,
                       prevPropertyMap,

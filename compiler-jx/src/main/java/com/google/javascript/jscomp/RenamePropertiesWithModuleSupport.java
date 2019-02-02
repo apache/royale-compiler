@@ -72,6 +72,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
 
   /** Property renaming map from a previous compilation. */
   private final VariableMap prevUsedPropertyMap;
+  private final List<String> prevUsedPropertyOldNames = new ArrayList<String>();
 
   private final List<Node> toRemove = new ArrayList<Node>();
   private final List<Node> stringNodesToRename = new ArrayList<Node>();
@@ -187,12 +188,14 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
   public void process(Node externs, Node root) {
     checkState(compiler.getLifeCycleStage().isNormalized());
 
+    if (prevUsedPropertyMap != null) {
+    	prevUsedPropertyOldNames.addAll(prevUsedPropertyMap.getOriginalNameToNewNameMap().keySet());
+    }
+    
     NodeTraversal.traverse(compiler, root, new ProcessProperties());
 
     Set<String> reservedNames =
         Sets.newHashSetWithExpectedSize(externedNames.size() + quotedNames.size());
-    reservedNames.addAll(externedNames);
-    reservedNames.addAll(quotedNames);
 
     // Assign names, sorted by descending frequency to minimize code size.
     Set<Property> propsByFreq = new TreeSet<Property>(FREQUENCY_COMPARATOR);
@@ -204,6 +207,9 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
       reusePropertyNames(reservedNames, propsByFreq);
     }
 
+    reservedNames.addAll(externedNames);
+    reservedNames.addAll(quotedNames);
+    
     generateNames(propsByFreq, reservedNames);
 
     // Update the string nodes.
@@ -469,7 +475,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
      */
     private void maybeMarkCandidate(Node n) {
       String name = n.getString();
-      if (!externedNames.contains(name)) {
+      if (!externedNames.contains(name) || prevUsedPropertyOldNames.contains(name)) {
         stringNodesToRename.add(n);
         countPropertyOccurrence(name);
       }
@@ -498,7 +504,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
           t.report(callNode, BAD_ARG, fnName);
           continue;
         }
-        if (!externedNames.contains(name)) {
+        if (!externedNames.contains(name) || prevUsedPropertyOldNames.contains(name)) {
           countPropertyOccurrence(name);
         }
       }
