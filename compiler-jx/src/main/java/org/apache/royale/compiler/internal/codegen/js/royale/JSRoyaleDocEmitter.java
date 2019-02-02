@@ -60,6 +60,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     private List<String> coercionList;
     public boolean emitStringConversions = true;
     private boolean emitExports = true;
+    private boolean exportProtected = false;
 
     public JSRoyaleDocEmitter(IJSEmitter emitter)
     {
@@ -120,7 +121,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     	RoyaleJSProject fjp = (RoyaleJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         if (fjp.config != null)
+        {
         	emitExports = fjp.config.getExportPublicSymbols();
+        	exportProtected = fjp.config.getExportProtectedSymbols();
+        }
         
         coercionList = null;
         ignoreList = null;
@@ -461,6 +465,14 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         end();
     }
 
+    @Override
+    public void emitProtected(IASNode node)
+    {
+    	if (exportProtected)
+    		super.emitPublic(node);
+    	super.emitProtected(node);
+    }
+    
     @Override
     public void emitPublic(IASNode node)
     {

@@ -428,6 +428,26 @@ public class JSGoogConfiguration extends JSConfiguration
 
     
     //
+    // 'export-protected-symbols'
+    //
+
+    private boolean exportProtectedSymbols = false;
+
+    public boolean getExportProtectedSymbols()
+    {
+        return exportProtectedSymbols;
+    }
+
+    @Config
+    @Mapping("export-protected-symbols")
+    public void setExportProtectedSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	exportProtectedSymbols = value;
+    }
+
+    
+    //
     // 'warn-public-vars'
     //
 
