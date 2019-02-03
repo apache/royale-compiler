@@ -411,6 +411,10 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         || !options.disables(DiagnosticGroups.MISSING_RETURN)) {
       checks.add(checkControlFlow);
     }
+    
+    /* The AS compiler should have checked the same thing
+     * that CheckAccessControls checks.  CheckAccessControls
+     * also outputs false positives when compiling modules.
 
     // CheckAccessControls only works if check types is on.
     if (options.isTypecheckingEnabled()
@@ -418,8 +422,13 @@ public final class RoyaleClosurePassConfig extends PassConfig {
             || options.enables(DiagnosticGroups.CONSTANT_PROPERTY))) {
       checks.add(checkAccessControls);
     }
+     */
 
+    /* The AS compiler should have checked the same thing
+     * that CheckConsts checks.  CheckConsts
+     * also outputs false positives when compiling modules.
     checks.add(checkConsts);
+     */
 
     // Analyzer checks must be run after typechecking.
     if (options.enables(DiagnosticGroups.ANALYZER_CHECKS) && options.isTypecheckingEnabled()) {
@@ -1948,6 +1957,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       };
 
   /** Checks access controls. Depends on type-inference. */
+  /*
   private final HotSwapPassFactory checkAccessControls =
       new HotSwapPassFactory("checkAccessControls") {
     @Override
@@ -1960,7 +1970,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     protected FeatureSet featureSet() {
       return TYPE_CHECK_SUPPORTED;
     }
-  };
+  };*/
 
   private final HotSwapPassFactory lintChecks =
       new HotSwapPassFactory(PassNames.LINT_CHECKS) {
@@ -2205,6 +2215,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
   };
 
   /** Checks that all constants are not modified */
+  /*
   private final PassFactory checkConsts =
       new PassFactory("checkConsts", true) {
         @Override
@@ -2216,7 +2227,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         public FeatureSet featureSet() {
           return ES2018;
         }
-      };
+      };*/
 
   /** Checks that the arguments are constants */
   private final PassFactory checkConstParams =
