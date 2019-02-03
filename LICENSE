@@ -211,6 +211,10 @@ code for the these subcomponents is subject to the terms and
 conditions of the following licenses. Paths are relative to the royale-compiler
 folder.
 
-The .java files in compiler-jx/src/main/java/org/apache/royale/compiler/utils/pass
+The following .java files in 
+compiler-jx/src/main/java/com/google/javascript/jscomp
 are derived from the files in the Google Closure Compiler which are available 
 under Apache License 2.0.
+
+RoyaleClosurePassConfig.java
+Files with names ending with WithModuleSupport.java
