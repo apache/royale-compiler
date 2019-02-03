@@ -470,7 +470,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
     	if (exportProtected)
     		super.emitPublic(node);
-    	super.emitProtected(node);
+    	else
+    		super.emitProtected(node);
     }
     
     @Override
