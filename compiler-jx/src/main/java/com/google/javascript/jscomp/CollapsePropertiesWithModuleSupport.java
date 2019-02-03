@@ -115,6 +115,8 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 
   private List<String> providedAliases = new ArrayList<String>();
   
+  private List<String> providedNamespaces = new ArrayList<String>();
+  
   CollapsePropertiesWithModuleSupport(AbstractCompiler compiler, PropertyCollapseLevel propertyCollapseLevel, String sourceFileName, File varRenameMapFile) {
     this.compiler = compiler;
     this.propertyCollapseLevel = propertyCollapseLevel;
@@ -133,6 +135,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 		externAliases.set(i, t);
 	}
 	providedAliases = ProcessClosurePrimitivesWithModuleSupport.providedsMap.get(externs);
+	providedNamespaces.addAll(providedAliases);
 	n = providedAliases.size();
 	for (int i = 0; i < n; i++)
 	{
@@ -212,13 +215,16 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
           } else if (
               ref.type == Ref.Type.SET_FROM_GLOBAL
               || ref.type == Ref.Type.SET_FROM_LOCAL) {
-            if (initialized && !isSafeNamespaceReinit(ref)) {
+            if (initialized && !isSafeNamespaceReinit(ref) && 
+            		!providedNamespaces.contains(name.getFullName())) {
               warnAboutNamespaceRedefinition(name, ref);
             }
 
             initialized = true;
           } else if (ref.type == Ref.Type.ALIASING_GET) {
-            warnAboutNamespaceAliasing(name, ref);
+        	  if (!providedNamespaces.contains(name.getFullName()) &&
+        			  !ref.name.inExterns())
+        		  warnAboutNamespaceAliasing(name, ref);
           }
         }
       }
