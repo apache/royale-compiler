@@ -1252,7 +1252,6 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = (IFunctionNode) getNode("function a() {};", IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        System.err.println("**** " + removeGeneratedString(writer.toString()));
         assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
                   "  var self = this;\n" +
                   "  function a() {\n" +
@@ -1267,7 +1266,6 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = (IFunctionNode) getNode("function a(foo:int, bar:String = 'goo'):int{return -1;};", IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        System.err.println("**** " + removeGeneratedString(writer.toString()));
         assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
                   "  var self = this;\n" +
                   "  function a(foo, bar) {\n" +
