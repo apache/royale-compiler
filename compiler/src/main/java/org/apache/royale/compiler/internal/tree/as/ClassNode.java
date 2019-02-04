@@ -361,6 +361,16 @@ public class ClassNode extends MemberedNode implements IClassNode
         {
             if (contentsNode.getChild(i) instanceof IDefinitionNode)
                 names.add(((IDefinitionNode)contentsNode.getChild(i)));
+            else if (contentsNode.getChild(i).getNodeID() == ASTNodeID.ConfigBlockID)
+            {
+            	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)contentsNode.getChild(i);
+            	int configChildCount = configNode.getChildCount();
+            	for (int j = 0; j < configChildCount; j++)
+            	{
+                    if (configNode.getChild(j) instanceof IDefinitionNode)
+                        names.add(((IDefinitionNode)configNode.getChild(j)));            		
+            	}            	
+            }
         }
         return names.toArray(new IDefinitionNode[0]);
     }
