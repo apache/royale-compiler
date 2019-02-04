@@ -44,6 +44,10 @@ import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
+/**
+ * Local variable in a function. For member and static variables of a class, see
+ * FieldEmitter instead.
+ */
 public class VarDeclarationEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>
 {
