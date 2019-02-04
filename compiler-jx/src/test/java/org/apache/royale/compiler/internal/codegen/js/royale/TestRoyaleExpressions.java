@@ -1245,6 +1245,38 @@ public class TestRoyaleExpressions extends TestGoogExpressions
       		  "  });\n" +
       		  "}");
     }
+    
+    @Override
+    @Test
+    public void testVisitLocalNamedFunction()
+    {
+        IFunctionNode node = (IFunctionNode) getNode("function a() {};", IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        System.err.println("**** " + removeGeneratedString(writer.toString()));
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
+                  "  var self = this;\n" +
+                  "  function a() {\n" +
+                  "  };\n" +
+                  "  \n" +
+                  "}");
+    }
+    
+    @Override
+    @Test
+    public void testVisitLocalNamedFunctionWithParamsReturn()
+    {
+        IFunctionNode node = (IFunctionNode) getNode("function a(foo:int, bar:String = 'goo'):int{return -1;};", IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        System.err.println("**** " + removeGeneratedString(writer.toString()));
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
+                  "  var self = this;\n" +
+                  "  function a(foo, bar) {\n" +
+                  "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
+                  "    return -1;\n" +
+                  "  };\n" +
+                  "  \n" +
+                  "}");
+    }
 
     @Test
     public void testES5StrictAnonymousFunctions()

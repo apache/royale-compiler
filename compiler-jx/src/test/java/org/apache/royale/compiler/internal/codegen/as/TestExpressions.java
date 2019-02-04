@@ -25,6 +25,7 @@ import org.apache.royale.compiler.internal.tree.as.ObjectLiteralNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IIterationFlowNode;
 import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
@@ -517,6 +518,22 @@ public class TestExpressions extends ASTestBase
                 IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("addListener('foo', function(event:Object):void {\n\tdoit();\n})");
+    }
+    
+    @Test
+    public void testVisitLocalNamedFunction()
+    {
+        IFunctionNode node = (IFunctionNode) getLocalFunction("function a() {};");
+        asBlockWalker.visitFunction(node);
+        assertOut("function a() {\n}");
+    }
+    
+    @Test
+    public void testVisitLocalNamedFunctionWithParamsReturn()
+    {
+        IFunctionNode node = (IFunctionNode) getLocalFunction("function a(foo:int, bar:String = 'goo'):int{return -1;};");
+        asBlockWalker.visitFunction(node);
+        assertOut("function a(foo:int, bar:String = 'goo'):int {\n\treturn -1;\n}");
     }
 
     @Test

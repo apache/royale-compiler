@@ -150,6 +150,15 @@ public class TestGoogExpressions extends TestExpressions
         asBlockWalker.visitFunctionCall(node);
         assertOut("addListener('foo', function(event) {\n\tdoit();\n})");
     }
+    
+    @Override
+    @Test
+    public void testVisitLocalNamedFunctionWithParamsReturn()
+    {
+        IFunctionNode node = (IFunctionNode) getLocalFunction("function a(foo:int, bar:String = 'goo'):int{return -1;};");
+        asBlockWalker.visitFunction(node);
+        assertOut("function a(foo, bar) {\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
+    }
 
     @Override
     @Test
