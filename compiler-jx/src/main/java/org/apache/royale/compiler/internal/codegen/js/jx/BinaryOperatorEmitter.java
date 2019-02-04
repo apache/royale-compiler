@@ -519,18 +519,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					}
 				}
             }
-            super_emitBinaryOperator(node, coercionStart);
-			if (coercionStart != null)
-			{
-				if (coercionEnd != null)
-				{
-					write(coercionEnd);
-				}
-				else
-				{
-					write(")");
-				}
-			}
+            super_emitBinaryOperator(node, coercionStart, coercionEnd);
             	
             /*
             IExpressionNode leftSide = node.getLeftOperandNode();
@@ -611,7 +600,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	return false;
     }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercionStart)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercionStart, String coercionEnd)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -701,6 +690,18 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	write(".propertyNames()");
                 }
         }
+
+		if (coercionStart != null)
+		{
+			if (coercionEnd != null)
+			{
+				write(coercionEnd);
+			}
+			else
+			{
+				write(")");
+			}
+		}
 
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_CLOSE);
