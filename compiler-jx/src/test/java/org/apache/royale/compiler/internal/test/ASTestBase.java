@@ -193,4 +193,10 @@ public class ASTestBase extends TestBase
         return (IVariableNode) getNode(code, IVariableNode.class);
     }
 
+    protected IASNode getLocalFunction(String code)
+    {
+        IFunctionNode method = (IFunctionNode) getNode(code, IFunctionNode.class);
+        return (IFunctionNode) findFirstDescendantOfType(method, IFunctionNode.class);
+    }
+
 }
