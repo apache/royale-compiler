@@ -45,6 +45,10 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
+/**
+ * Static or member variables of a class. For local variables in a function, see
+ * VarDeclarationEmitter. For accessors, see AccessorEmitter.
+ */
 public class FieldEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>
 {
@@ -278,7 +282,7 @@ public class FieldEmitter extends JSSubEmitter implements
 	            write(vnodeString);
 	            write(ASEmitterTokens.SEMICOLON);
                 return true;
-	        }
+            }
         }
 
         return false;
