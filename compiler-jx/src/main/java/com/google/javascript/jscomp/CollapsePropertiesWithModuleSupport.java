@@ -111,10 +111,13 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
   /** list of renamed variables */
   private ArrayList<String> renamedVars = null;
   
+  /** list of aliases that are also in externs */
   private List<String> externAliases;
 
+  /** list of aliases that came from goog.provides */
   private List<String> providedAliases = new ArrayList<String>();
   
+  /** list of namespaces that came from goog.provides */
   private List<String> providedNamespaces = new ArrayList<String>();
   
   CollapsePropertiesWithModuleSupport(AbstractCompiler compiler, PropertyCollapseLevel propertyCollapseLevel, String sourceFileName, File varRenameMapFile) {
@@ -126,6 +129,8 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 
   @Override
   public void process(Node externs, Node root) {
+	// ProcessClosurePrimitives runs first and builds up an initial list of
+	// namespaces from goog.provides that were also in externs.
 	externAliases = ProcessClosurePrimitivesWithModuleSupport.externedAliases.get(externs);
 	int n = externAliases.size();
 	for (int i = 0; i < n; i++)
@@ -134,6 +139,8 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 		String t = s.replace(".", "$");
 		externAliases.set(i, t);
 	}
+	// ProcessClosurePrimitives runs first and builds up an initial list of
+	// namespaces from goog.provides.
 	providedAliases = ProcessClosurePrimitivesWithModuleSupport.providedsMap.get(externs);
 	providedNamespaces.addAll(providedAliases);
 	n = providedAliases.size();
@@ -142,7 +149,18 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 		String s = providedAliases.get(i);
 		String t = s.replace(".", "$");
 		providedAliases.set(i, t);
-	}
+	}	
+	/*
+	 * The goal is to use knowledge of the aliases and which are externed
+	 * to eliminate warnings and allow aliases in more places than
+	 * closure compiler would normally.  Closure compiler doesn't want to
+	 * collapse things found in externs, but we want to collapse
+	 * them to save size and need to collapse them when there are
+	 * overrides in the module of a collapsed property in code
+	 * in the main app.  Or when the code in the main app is calling
+	 * via an interface and code in the module implements that
+	 * interface.
+	 */
 	
     GlobalNamespace namespace = new GlobalNamespace(compiler, externs, root);
     nameMap = namespace.getNameIndex();
@@ -150,7 +168,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     checkNamespaces();
 
     for (Name name : globalNames) {
-        flattenReferencesToCollapsibleDescendantNames(name, name.getBaseName());
+      flattenReferencesToCollapsibleDescendantNames(name, name.getBaseName());
     }
 
     // We collapse property definitions after collapsing property references
@@ -300,10 +318,6 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       boolean isAllowedToCollapse =
           propertyCollapseLevel != PropertyCollapseLevel.MODULE_EXPORT || p.isModuleExport();
 
-      //if (isAllowedToCollapse)
-      //    if (externStrings.contains(p.getName()))
-      //      isAllowedToCollapse = false; // don't collapse if used in extern
-
       if (isAllowedToCollapse && (p.canCollapse() || wasCollapsed(propAlias) || shouldCollapse(propAlias))) {
         flattenReferencesTo(p, propAlias);
       } else if (isAllowedToCollapse
@@ -316,6 +330,12 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     }
   }
   
+  /**
+   * we should collapse aliases in the module no matter what.
+   * 
+   * @param propAlias The alias being considered.
+   * @return true If alias is for a namespace provided in the module.
+   */
   private boolean shouldCollapse(String propAlias) {
 	if (providedAliases.contains(propAlias))
 	{
@@ -333,38 +353,38 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 	return false;
 }
 
-/**
-   * See if this property was collapse by the loading app
-   * @param propAlias The alias that might have been collapsed
-   * @return
+  /**
+   * See if this property was collapse by the loading app.
+   * @param propAlias The alias that might have been collapsed.
+   * @return true If the alias was collapsed in the loading app.
    */
   private boolean wasCollapsed(String propAlias) {
-	if (varRenameMapFile == null)
-		return false;
-	
-	if (renamedVars == null)
-	{
-		List<String> fileLines;
-		
-		renamedVars = new ArrayList<String>();
-		try {
-			fileLines = Files.readLines(varRenameMapFile, Charset.defaultCharset());
-			for (String line : fileLines)
-			{
-				int c = line.indexOf(":");
-				if (c > 0)
-				{
-					renamedVars.add(line.substring(0, c));
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	if (renamedVars.contains(propAlias) || externAliases.contains(propAlias)) {
-	  // if it was collapsed, add a var for it in our source for now.
-	  // RemoveUnusedNames will move the var before it gets code-genned.
+    if (varRenameMapFile == null)
+      return false;
+
+    if (renamedVars == null)
+    {
+      List<String> fileLines;
+
+      renamedVars = new ArrayList<String>();
+      try {
+        fileLines = Files.readLines(varRenameMapFile, Charset.defaultCharset());
+        for (String line : fileLines)
+        {
+          int c = line.indexOf(":");
+          if (c > 0)
+          {
+            renamedVars.add(line.substring(0, c));
+          }
+        }
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    if (renamedVars.contains(propAlias) || externAliases.contains(propAlias)) {
+      // if it was collapsed, add a var for it in our source for now.
+      // RemoveUnusedNames will move the var before it gets code-genned.
       InputId inputId = new InputId(
           sourceFileName);
       CompilerInput compilerInput = compiler.getInput(inputId);
@@ -372,8 +392,10 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
       Node child = IR.var(nameNode);
       compilerInput.getAstRoot(compiler).addChildToBack(child);
       compiler.reportChangeToEnclosingScope(child);
+      // add it to the list of aliases from the externs so
+      // rename vars can know what variables we created here.
       if (!externAliases.contains(propAlias))
-    	externAliases.add(propAlias);
+        externAliases.add(propAlias);
       return true;
     }
     return false;
@@ -428,7 +450,7 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
     // replaced with "a$b" in all occurrences of "a.b.c", "a.b.c.d", etc.
     if (n.props != null) {
       for (Name p : n.props) {
-    	flattenPrefixes(alias, p, 1);
+        flattenPrefixes(alias, p, 1);
       }
     }
   }
@@ -536,19 +558,19 @@ class CollapsePropertiesWithModuleSupport implements CompilerPass {
 
     if (parent == null)
     {
-    	// in some cases parent is null (not sure why)
-    	// but ref is a StringNode and a child of n
-    	// is a StringNode so replace that StringNode
-    	parent = n;
-    	n = n.getFirstChild();
-	    parent.replaceChild(n, ref);
+      // in some cases parent is null (not sure why)
+      // but ref is a StringNode and a child of n
+      // is a StringNode so replace that StringNode
+      parent = n;
+      n = n.getFirstChild();
+	  parent.replaceChild(n, ref);
     }
     else
     {
-	    parent.replaceChild(n, ref);
-	    Node enclosingScopeNode = NodeUtil.getEnclosingChangeScopeRoot(n.getParent());
-	    if (enclosingScopeNode != null)
-	    	compiler.reportChangeToEnclosingScope(ref);
+	  parent.replaceChild(n, ref);
+	  Node enclosingScopeNode = NodeUtil.getEnclosingChangeScopeRoot(n.getParent());
+	  if (enclosingScopeNode != null)
+	    compiler.reportChangeToEnclosingScope(ref);
     }
   }
 

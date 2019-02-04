@@ -45,6 +45,9 @@ import java.util.WeakHashMap;
 import javax.annotation.Nullable;
 
 /**
+ * Apache Royale copied ProcessClosurePrimitives and modified it to handle
+ * Royale modules.
+ * 
  * Replaces goog.provide calls, removes goog.{require,requireType} calls, verifies that each
  * goog.{require,requireType} has a corresponding goog.provide, and performs some Closure-pecific
  * simplifications.
@@ -1128,7 +1131,7 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
       }
 
       @SuppressWarnings("serial")
-	CssRenamingMap cssRenamingMap = new CssRenamingMap() {
+      CssRenamingMap cssRenamingMap = new CssRenamingMap() {
         @Override
         public String get(String value) {
           if (cssNames.containsKey(value)) {
@@ -1342,6 +1345,12 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
     return true;
   }
 
+  /**
+   * Build up the list of strings in the externs.
+   * 
+   * @param en The extern name.
+   * @param externStrings The list of strings to add to.
+   */
   private void addExternNameAndDescendants(Name en, ArrayList<String> externStrings) {
 	    externStrings.add(en.getName());
 
@@ -1372,13 +1381,15 @@ class ProcessClosurePrimitivesWithModuleSupport extends AbstractPostOrderCallbac
         providedNames.get(prefixNs).addProvide(
             node, module, false /* implicit */);
       } else {
-              providedNames.put(prefixNs,
-                  new ProvidedName(prefixNs, node, module, false /* implicit */));
-              if (externStrings.contains(prefixNs))
-            	  if (!externAliases.contains(prefixNs))
-            		  externAliases.add(prefixNs);
-        	  if (!provideds.contains(prefixNs))
-        		  provideds.add(prefixNs);
+        providedNames.put(prefixNs,
+            new ProvidedName(prefixNs, node, module, false /* implicit */));
+        // if it was in externs, added to externAliases
+        if (externStrings.contains(prefixNs))
+          if (!externAliases.contains(prefixNs))
+            externAliases.add(prefixNs);
+        // if the namespace of any provided classes
+        if (!provideds.contains(prefixNs))
+          provideds.add(prefixNs);
       }
     }
   }

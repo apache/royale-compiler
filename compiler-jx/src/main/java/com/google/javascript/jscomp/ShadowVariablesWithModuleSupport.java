@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.SortedSet;
 
 /**
+ * Apache Royale copied ShadowVariables and modified it to handle
+ * Royale modules.  The only change is to uses classes from
+ * RenameVarsWithModuleSupport instead of RenameVars.
+ * 
  * Tries to compute a list of variables that can shadow a variable in the
  * outer scope.
  *

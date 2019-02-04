@@ -39,6 +39,9 @@ import java.util.TreeSet;
 import javax.annotation.Nullable;
 
 /**
+ * Apache Royale copied RenameProperties and modified it to handle
+ * Royale modules.
+ * 
  * RenameProperties renames properties (including methods) of all JavaScript
  * objects. This includes prototypes, functions, object literals, etc.
  *
@@ -72,6 +75,8 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
 
   /** Property renaming map from a previous compilation. */
   private final VariableMap prevUsedPropertyMap;
+  
+  /** Original names of properties that were renamed */
   private final List<String> prevUsedPropertyOldNames = new ArrayList<String>();
 
   private final List<Node> toRemove = new ArrayList<Node>();
@@ -207,6 +212,18 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
       reusePropertyNames(reservedNames, propsByFreq);
     }
 
+    /* add externed and quoted names after previously renamed
+     * properties are told to re-use their renames from the main
+     * app.  The original code added these names before
+     * trying to reuse previous renames because those
+     * externs are typically from 3rd-party libraries, but
+     * in modules, externs are from the main loading app
+     * and we want to reuse previous renames as much as possible
+     * because classes in the main loading app will make calls
+     * using the renames instead of the exported name so any
+     * override or implementations of interface methods must
+     * also have the same rename.
+     */
     reservedNames.addAll(externedNames);
     reservedNames.addAll(quotedNames);
     

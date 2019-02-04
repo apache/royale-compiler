@@ -38,6 +38,9 @@ import java.util.TreeSet;
 import javax.annotation.Nullable;
 
 /**
+ * Apache Royale copied RenameVars and modified it to handle
+ * Royale modules.
+ * 
  * RenameVars renames all the variables names into short names, to reduce code
  * size and also to obfuscate the code.
  *
@@ -145,6 +148,7 @@ final class RenameVarsWithModuleSupport implements CompilerPass {
   // Shared name generator
   private final NameGenerator nameGenerator;
 
+  /* list of aliases from the externs */
   private List<String> externAliases;
   
   /*
@@ -370,14 +374,28 @@ final class RenameVarsWithModuleSupport implements CompilerPass {
       reusePreviouslyUsedVariableMap(varsByFrequency);
     }
 
+    // now that previous names have been assigned, 
+    // add those previous renames to reserved names
+    // so those variable names don't get re-used in assignNames.
     if (prevUsedRenameMap != null) {
     	reservedNames.addAll(prevUsedRenameMap.getNewNameToOriginalNameMap().keySet());
     }
+    
     // Assign names, sorted by descending frequency to minimize code size.
     assignNames(varsByFrequency);
 
     // Rename the globals!
     for (Node n : globalNameNodes) {
+      /* A module may have a reference to a class
+       * but no variable defining it since the class
+       * is defined in the main loading app.  Closure 
+       * expects every reference to have a var so in
+       * CollapseProperties, some vars are added so that
+       * they can be collapsed.  However, we don't want those
+       * added vars in the output so here we move them
+       * to externs (if we added them to the externs in 
+       * CollapseProperties they wouldn't get renamed).
+       */ 
       boolean moveToExternsAfterRename = false;
       String renamedVar = n.getString();
       if (prevUsedRenameMap != null && 
