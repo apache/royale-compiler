@@ -3059,7 +3059,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
-    	                    fjs.getWalker().walk(vnode);
+                            fjs.emitAssignmentCoercion(vnode, varnode.getVariableTypeNode().resolve(getMXMLWalker().getProject()));
     	                    write(ASEmitterTokens.SEMICOLON);
 
     			        }

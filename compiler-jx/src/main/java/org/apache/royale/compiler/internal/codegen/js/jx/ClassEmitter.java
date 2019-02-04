@@ -255,7 +255,7 @@ public class ClassEmitter extends JSSubEmitter implements
                     }
                     write(ASEmitterTokens.SPACE);
                     writeToken(ASEmitterTokens.EQUAL);
-                    getEmitter().getWalker().walk(vnode);
+                    getEmitter().emitAssignmentCoercion(vnode, varnode.getVariableTypeNode().resolve(getProject()));
                     write(ASEmitterTokens.SEMICOLON);
                     wroteOne = true;
                 }

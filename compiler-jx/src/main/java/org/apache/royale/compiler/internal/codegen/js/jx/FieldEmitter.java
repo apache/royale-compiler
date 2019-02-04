@@ -158,9 +158,7 @@ public class FieldEmitter extends JSSubEmitter implements
 	            write(ASEmitterTokens.SPACE);
 	            writeToken(ASEmitterTokens.EQUAL);
 	            endMapping(node);
-                startMapping(vnode);
-	            write(vnodeString);
-                endMapping(vnode);
+                getEmitter().emitAssignmentCoercion(vnode, node.getVariableTypeNode().resolve(getProject()));
 	        }
 	        else if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className))
 	        {
@@ -267,8 +265,8 @@ public class FieldEmitter extends JSSubEmitter implements
         	if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className) && !isPackageOrFileMember)
 	        {
                 writeNewline();
-                write(className
-                        + ASEmitterTokens.MEMBER_ACCESS.getToken());
+                write(className);
+                write(ASEmitterTokens.MEMBER_ACCESS.getToken());
                 write(node.getName());
 	
 	            if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
