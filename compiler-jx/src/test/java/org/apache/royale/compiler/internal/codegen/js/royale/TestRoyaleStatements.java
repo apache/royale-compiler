@@ -102,7 +102,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         IVariableNode node = (IVariableNode) getNode("var a:int = 123.4;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = (123.4) >> 0");
+        assertOut("var /** @type {number} */ a = 123");
     }
 
     @Test
@@ -111,7 +111,16 @@ public class TestRoyaleStatements extends TestGoogStatements
         IVariableNode node = (IVariableNode) getNode("var a:uint = 123.4;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = (123.4) >>> 0");
+        assertOut("var /** @type {number} */ a = 123");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeUintAndAssignedNegative()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:uint = -123;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 4294967173");
     }
 
     //----------------------------------

@@ -534,10 +534,11 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 			if (assignedNode instanceof INumericLiteralNode)
 			{
 				INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
-				if (!BuiltinType.INT.equals(numericLiteral.getNumericValue().getAssumedType()))
-				{
-					needsCoercion = true;
-				}
+                INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                startMapping(assignedNode);
+                write(Integer.toString(numericValue.toInt32()));
+                endMapping(assignedNode);
+                return;
 			}
 			else if(!project.getBuiltinType(BuiltinType.INT).equals(assignedDef))
 			{
@@ -554,11 +555,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 			boolean needsCoercion = false;
 			if (assignedNode instanceof INumericLiteralNode)
 			{
-				INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
-				if (!BuiltinType.UINT.equals(numericLiteral.getNumericValue().getAssumedType()))
-				{
-					needsCoercion = true;
-				}
+                INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+                INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                startMapping(assignedNode);
+                write(Long.toString(numericValue.toUint32()));
+                endMapping(assignedNode);
+                return;
 			}
 			else if(!project.getBuiltinType(BuiltinType.UINT).equals(assignedDef))
 			{

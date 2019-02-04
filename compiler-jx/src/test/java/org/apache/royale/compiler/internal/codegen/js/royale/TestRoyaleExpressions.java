@@ -37,6 +37,7 @@ import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.IReturnNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -297,7 +298,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 123.4");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("numToInt = (123.4) >> 0");
+        assertOut("numToInt = 123");
     }
 
     @Test
@@ -306,6 +307,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 321");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("numToInt = 321");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNegativeIntLiteralToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = -321");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToInt = -321");
     }
 
     @Test
@@ -337,7 +346,15 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = 123.4");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("numToUint = (123.4) >>> 0");
+        assertOut("numToUint = 123");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNegativeIntLiteralToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = -123");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToUint = 4294967173");
     }
 
     @Test
@@ -1498,6 +1515,30 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         							IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("new Fn(\"a\", \"b\", \"return a + b;\")(1, 2)");
+    }
+
+    @Test
+    public void testVisitReturnIntWithDecimalValue()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():int { return -123.4; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return -123");
+    }
+
+    @Test
+    public void testVisitReturnUintWithDecimalValue()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():uint { return 123.4; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 123");
+    }
+
+    @Test
+    public void testVisitReturnUintWithNegativeValue()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():uint { return -123; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 4294967173");
     }
 
     protected IBackend createBackend()

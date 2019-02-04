@@ -448,6 +448,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
 			String coercionStart = null;
 			String coercionEnd = null;
+			String coercedValue = null;
             if (isAssignment)
             {
 				if (getProject().getBuiltinType(BuiltinType.INT).equals(leftDef))
@@ -455,11 +456,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					boolean needsCoercion = false;
 					if (rNode instanceof INumericLiteralNode)
 					{
-						INumericLiteralNode rNumber = (INumericLiteralNode) rNode;
-						if (!BuiltinType.INT.equals(rNumber.getNumericValue().getAssumedType()))
-						{
-							needsCoercion = true;
-						}
+						INumericLiteralNode numericLiteral = (INumericLiteralNode) rNode;
+						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+						coercedValue = Integer.toString(numericValue.toInt32());
 					}
 					else if(!getProject().getBuiltinType(BuiltinType.INT).equals(rightDef))
 					{
@@ -476,11 +475,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					boolean needsCoercion = false;
 					if (rNode instanceof INumericLiteralNode)
 					{
-						INumericLiteralNode rNumber = (INumericLiteralNode) rNode;
-						if (!BuiltinType.UINT.equals(rNumber.getNumericValue().getAssumedType()))
-						{
-							needsCoercion = true;
-						}
+						INumericLiteralNode numericLiteral = (INumericLiteralNode) rNode;
+						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+						coercedValue = Long.toString(numericValue.toUint32());
 					}
 					else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(rightDef))
 					{
@@ -518,8 +515,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						}
 					}
 				}
-            }
-            super_emitBinaryOperator(node, coercionStart, coercionEnd);
+			}
+            super_emitBinaryOperator(node, coercionStart, coercionEnd, coercedValue);
             	
             /*
             IExpressionNode leftSide = node.getLeftOperandNode();
@@ -600,7 +597,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	return false;
     }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercionStart, String coercionEnd)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercionStart, String coercionEnd, String coercedValue)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -671,24 +668,26 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			{
 				write(coercionStart);
 			}
-            /*
-            IDefinition definition = node.getRightOperandNode().resolve(getProject());
-        	if (definition instanceof FunctionDefinition &&
-        			(!(definition instanceof AccessorDefinition)))
-        	{
-        	}
-        	else */
-        		getWalker().walk(node.getRightOperandNode());
-                if (node.getNodeID() == ASTNodeID.Op_InID &&
-                        ((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
-                {
-                	write(".elementNames()");
-                }   
-                else if (node.getNodeID() == ASTNodeID.Op_InID &&
-                        ((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
-                {
-                	write(".propertyNames()");
-                }
+			if (coercedValue != null)
+			{
+				startMapping(node.getRightOperandNode());
+				write(coercedValue);
+				endMapping(node.getRightOperandNode());
+			}
+			else
+			{
+				getWalker().walk(node.getRightOperandNode());
+			}
+			if (node.getNodeID() == ASTNodeID.Op_InID &&
+					((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
+			{
+				write(".elementNames()");
+			}   
+			else if (node.getNodeID() == ASTNodeID.Op_InID &&
+					((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
+			{
+				write(".propertyNames()");
+			}
         }
 
 		if (coercionStart != null)

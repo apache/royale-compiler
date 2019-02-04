@@ -82,6 +82,30 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     }
 
     @Test
+    public void testField_withTypeValue_IntDecimal()
+    {
+        IVariableNode node = getField("var foo:int = -123.4;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = -123");
+    }
+
+    @Test
+    public void testField_withTypeValue_UintDecimal()
+    {
+        IVariableNode node = getField("var foo:uint = 123.4;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 123");
+    }
+
+    @Test
+    public void testField_withTypeValue_UintNegative()
+    {
+        IVariableNode node = getField("var foo:uint = -123;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 4294967173");
+    }
+
+    @Test
     public void testVariable_withTypeValue_ArrayElementType()
     {
         IVariableNode node = (IVariableNode)getNode("public class A { function foobar():void {var foo:Number = bar[0];var bar:B;}}\n[ArrayElementType(\"Number\")]\nclass B {}",

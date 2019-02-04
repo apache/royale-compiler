@@ -183,16 +183,15 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             }
             String coercionStart = null;
             String coercionEnd = null;
+            String coercedValue = null;
             if (getProject().getBuiltinType(BuiltinType.INT).equals(variableDef))
             {
                 boolean needsCoercion = false;
                 if (avnode instanceof INumericLiteralNode)
                 {
                     INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
-                    if (!BuiltinType.INT.equals(numericLiteral.getNumericValue().getAssumedType()))
-                    {
-                        needsCoercion = true;
-                    }
+                    INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                    coercedValue = Integer.toString(numericValue.toInt32());
                 }
                 else if(!getProject().getBuiltinType(BuiltinType.INT).equals(avdef))
                 {
@@ -210,10 +209,8 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 if (avnode instanceof INumericLiteralNode)
                 {
                     INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
-                    if (!BuiltinType.UINT.equals(numericLiteral.getNumericValue().getAssumedType()))
-                    {
-                        needsCoercion = true;
-                    }
+                    INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                    coercedValue = Long.toString(numericValue.toUint32());
                 }
                 else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(avdef))
                 {
@@ -239,7 +236,16 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
 			{
                 write(coercionStart);
             }
-            fjs.emitAssignedValue(avnode);
+            if (coercedValue != null)
+            {
+                startMapping(avnode);
+                write(coercedValue);
+                endMapping(avnode);
+            }
+            else
+            {
+                fjs.emitAssignedValue(avnode);
+            }
 			if (coercionStart != null)
 			{
 				if (coercionEnd != null)
