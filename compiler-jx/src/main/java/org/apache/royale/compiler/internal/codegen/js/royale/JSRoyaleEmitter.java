@@ -68,6 +68,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.D
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
@@ -828,6 +829,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                         newNode = EmitterUtils.insertArgumentsAt(node, 1, new NumericLiteralNode("0"));
             		}
     			}
+        		else if (def.getParent() != null && def.getParent() instanceof AppliedVectorDefinition)
+        		{
+                    newNode = EmitterUtils.insertArgumentsAt(node, 1, new NumericLiteralNode("0"));
+        		}
     		}
     	}
         if (len == 1)
@@ -846,6 +851,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                         newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("1"));
                     }
                 }
+        		else if (def.getParent() != null && def.getParent() instanceof AppliedVectorDefinition)
+        		{
+                    newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("1"));
+        		}
             }
             else if (def != null && def.getBaseName().equals("parseInt"))
             {

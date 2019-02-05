@@ -568,25 +568,22 @@ public class EmitterUtils
         result.setParent((NodeBase) argumentsNode.getParent());
         for (int i = 0; i < originalLength; i++)
         {
-            if(i < originalLength)
+            if(i < index)
             {
                 result.addItem((NodeBase) argumentsNode.getChild(i));
             }
             else
             {
-                int j = i;
-                if (i >= index + extraLength)
+            	if (i == index)
                 {
-                    j -= extraLength;
-                    result.addItem((NodeBase) argumentsNode.getChild(j));
+                    for (IASNode node : nodes)
+                    {
+                    	NodeBase n = (NodeBase) node;
+                    	n.setSourcePath(argumentsNode.getSourcePath());
+                    	result.addItem(n);
+                    }
                 }
-                else
-                {
-                    j -= originalLength;
-                    NodeBase node = (NodeBase) nodes[j];
-                    node.setSourcePath(argumentsNode.getSourcePath());
-                    result.addItem(node);
-                }
+                result.addItem((NodeBase) argumentsNode.getChild(i));
             }
         }
         return result;

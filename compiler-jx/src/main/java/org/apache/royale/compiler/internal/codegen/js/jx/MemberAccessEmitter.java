@@ -28,9 +28,11 @@ import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
@@ -39,6 +41,7 @@ import org.apache.royale.compiler.internal.tree.as.GetterNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -198,6 +201,21 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		return;
         	}
         }
+		else if (def.getParent() instanceof AppliedVectorDefinition)
+		{
+        	if (def.getBaseName().equals("removeAt"))
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".splice");
+        		return;
+        	}
+        	else if (def.getBaseName().equals("insertAt"))
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".splice");
+        		return;
+        	}				
+		}
     	else if (rightNode instanceof NamespaceAccessExpressionNode)
     	{
     		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
