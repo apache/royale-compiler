@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
@@ -96,7 +97,12 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 return IASLanguageConstants.Object;
         }
         if (name.matches("Vector\\.<.*>"))
+        {
+        	RoyaleJSProject fjp = (RoyaleJSProject)((IASEmitter)emitter).getWalker().getProject();
+        	String vectorClassName = fjp.config == null ? null : fjp.config.getJsVectorEmulationClass();
+        	if (vectorClassName != null) return vectorClassName;
         	return IASLanguageConstants.Array;
+        }
         
         name = super.convertASTypeToJS(name, pname);
         if (name.equals(IASLanguageConstants.Boolean.toLowerCase())

@@ -487,7 +487,110 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     	}
     }
 
+    @Test
+    public void testCustomVector()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(['Hello', 'World'], 'String')");
+    }
 
+    @Test
+    public void testCustomVectorLiteral_1()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([], 'String')");
+    }
+
+    @Test
+    public void testCustomVectorLiteral_2()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([0, 1, 2, 3], 'int')");
+    }
+
+    @Test
+    public void testCustomVectorLiteral_3()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[\"one\", \"two\", \"three\";");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([\"one\", \"two\", \"three\"], 'String')");
+    }
+    
+    @Test
+    public void testCustomVectorNoArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([], 'String')");
+    }
+
+    @Test
+    public void testCustomVectorStringArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World');");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector('Hello', 'String')");
+    }
+
+    @Test
+    public void testCustomVectorStringArgs3()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World', 'Three');");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector('Hello', 'String')");
+    }
+
+    @Test
+    public void testCustomVectorSizeArg()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String')");
+    }
+    
+    @Test
+    public void testCustomVectorSizeAndFixedArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, true);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String', true)");
+    }
+
+    @Test
+    public void testCustomVectorNumberArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, 40);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String')");
+    }
+
+    @Test
+    public void testCustomVectorArrayArg()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(['Hello', 'World'], 'String')");
+    }
+    
     @Test
     public void testXML()
     {

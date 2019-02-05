@@ -442,4 +442,25 @@ public class JSConfiguration extends Configuration
         }
     }
 
+    //
+    // 'js-vector-emulation-class' option
+    //
+
+    private String jsVectorEmulationClass = null;
+
+    public String getJsVectorEmulationClass()
+    {
+        return jsVectorEmulationClass;
+    }
+
+    /**
+     * The class to use instead of Array for handling Vector.
+     */
+    @Config(advanced = true)
+    public void setJsVectorEmulationClass(ConfigurationValue cv, String b)
+    {
+    	jsVectorEmulationClass = b;
+    }
+
+
 }

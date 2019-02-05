@@ -1377,6 +1377,17 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitTypedExpression(ITypedExpressionNode node)
     {
+        ICompilerProject project = getWalker().getProject();
+        if (project instanceof RoyaleJSProject)
+        {
+        	String vectorClassName = ((RoyaleJSProject)project).config == null ? null : ((RoyaleJSProject)project).config.getJsVectorEmulationClass();
+        	if (vectorClassName != null)
+        	{
+        		writeToken(ASEmitterTokens.NEW);
+        		write(vectorClassName);
+        		return;
+        	}
+        }
         write(JSRoyaleEmitterTokens.VECTOR);
         if (getModel().inStaticInitializer)
         {
