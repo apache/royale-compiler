@@ -594,4 +594,15 @@ public class TargetSettings implements ITargetSettings
     {
         return configuration.getRemoveDeadCode();
     }
+
+	@Override
+	public String getSWFMetadataDate() {
+		return configuration.getMetadataDate();
+	}
+	
+	@Override
+	public String getSWFMetadataDateFormat() {
+		return configuration.getMetadataDateFormat();
+	}
+
 }

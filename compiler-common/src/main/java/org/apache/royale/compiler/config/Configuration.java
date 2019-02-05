@@ -4614,6 +4614,11 @@ public class Configuration
     //
 
     public String date = null;
+    
+    public String getMetadataDate()
+    {
+    	return date;
+    }
 
     @Config
     @Mapping({ "metadata", "date" })
@@ -4621,6 +4626,25 @@ public class Configuration
     public void setMetadataDate(ConfigurationValue cv, String text)
     {
         date = text;
+    }
+
+    //
+    // 'metadata.dateFormat' option
+    //
+
+    public String dateFormat = null;
+    
+    public String getMetadataDateFormat()
+    {
+    	return dateFormat;
+    }
+
+    @Config
+    @Mapping({ "metadata", "dateFormat" })
+    @Arguments("text")
+    public void setMetadataDateFormat(ConfigurationValue cv, String text)
+    {
+        dateFormat = text;
     }
 
     //
