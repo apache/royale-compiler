@@ -1523,7 +1523,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testVisitCallFunctionReturnedFromFunction()
     {
-        IFunctionCallNode node = (IFunctionCallNode) getNode("function foo(a:String, b:String):Function { return null }; return foo(3, 4)(1, 2);", 
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function foo(a:int, b:int):Function { return null }; return foo(3, 4)(1, 2);", 
         							IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("foo(3, 4)(1, 2)");
@@ -1569,6 +1569,38 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IReturnNode node = (IReturnNode) getNode("function():uint { return -123; }", IReturnNode.class);
         asBlockWalker.visitReturn(node);
         assertOut("return 4294967173");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithIntParameterNegative()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(-123)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(-123)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithIntParameterDecimal()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(123.4)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(123)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithUintParameterNegative()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(-123)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(4294967173)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithUintParameterDecimal()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(123.4)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(123)");
     }
 
     protected IBackend createBackend()

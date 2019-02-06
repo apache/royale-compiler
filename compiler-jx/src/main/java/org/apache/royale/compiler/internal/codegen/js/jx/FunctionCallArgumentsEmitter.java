@@ -61,17 +61,21 @@ public class FunctionCallArgumentsEmitter extends JSSubEmitter implements
         for (int i = 0; i < len; i++)
         {
             IExpressionNode argumentNode = (IExpressionNode) node.getChild(i);
-            IParameterDefinition paramDef = null;
+            IDefinition paramTypeDef = null;
             if (paramDefs != null && paramDefs.length > i)
             {
-                paramDef = paramDefs[i];
+                IParameterDefinition paramDef = paramDefs[i];
                 if (paramDef.isRest())
                 {
                     paramDef = null;
                 }
+                if (paramDef != null)
+                {
+                    paramTypeDef = paramDef.resolveType(getProject());
+                }
             }
 
-            getEmitter().emitAssignmentCoercion(argumentNode, paramDef);
+            getEmitter().emitAssignmentCoercion(argumentNode, paramTypeDef);
 
             if (i < len - 1)
             {
