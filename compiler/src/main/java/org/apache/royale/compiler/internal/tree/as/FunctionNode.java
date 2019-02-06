@@ -165,6 +165,12 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
      * Save the problems until later if we were parsed from somewhere we don't have a problems collection
      */
     private Collection<ICompilerProblem> parseProblems;
+
+    /**
+     * Indicates whether we've called rememberLocalFunction() on the parent
+     * function yet (if a parent function even exists in the first place) -JT
+     */
+    private boolean isRemembered = false;
     
     //
     // NodeBase overrides
@@ -203,12 +209,24 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
     @Override
     protected void analyze(EnumSet<PostProcessStep> set, ASScope scope, Collection<ICompilerProblem> problems)
     {
-        if (set.contains(PostProcessStep.POPULATE_SCOPE))
+        if (!isRemembered)
         {
+            //previously, we remembered local functions only during
+            //POPULATE_SCOPE. however, in MXML, functions get created multiple
+            //times, and the second time around, analyze() is NOT called with
+            //POPULATE_SCOPE. this causes our function to be forgotten.
+            //better to check if we've remembered or not no matter which steps
+            //were passed in. -JT
             final IFunctionNode parentFunctionNode = (IFunctionNode)getAncestorOfType(IFunctionNode.class);
             if (parentFunctionNode != null)
+            {
+                isRemembered = true;
                 parentFunctionNode.rememberLocalFunction(this);
-        
+            }
+        }
+
+        if (set.contains(PostProcessStep.POPULATE_SCOPE))
+        {
             FunctionDefinition definition = buildDefinition();
             setDefinition(definition);
 
