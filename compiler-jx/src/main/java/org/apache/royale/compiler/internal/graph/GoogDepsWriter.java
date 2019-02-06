@@ -720,7 +720,9 @@ public class GoogDepsWriter {
                         }
                     }
             	}
-                finalLines.add(line);
+				finalLines.add(line);
+				//no need to call addLineToSourceMap here because we're
+				//populating finalLines for the first time
                 i++;
             }
             // add any static deps not already listed that were added by static initializers;
@@ -735,6 +737,7 @@ public class GoogDepsWriter {
             			String line = JSGoogEmitterTokens.GOOG_REQUIRE.getToken();
             			line += "('" + dep + "');";
             			finalLines.add(lastRequireLine++, line);
+						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, new File(gd.filePath).getName(), lastRequireLine);
             			System.out.println("adding require for static dependency " + dep + " to " + className);
             		}
             	}
