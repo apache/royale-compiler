@@ -703,7 +703,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         boolean isLocal = false;
         if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
             isLocal = true;
-        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal)
+        boolean isPackage = false;
+        if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.PACKAGE_MEMBER)
+        isPackage = true;
+        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal && !isPackage)
             emitSelfReference(node);
 
         if (node.isConstructor()
