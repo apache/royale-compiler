@@ -31,6 +31,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
@@ -198,6 +199,21 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		return;
         	}
         }
+		else if (def.getParent() instanceof AppliedVectorDefinition)
+		{
+        	if (def.getBaseName().equals("removeAt"))
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".splice");
+        		return;
+        	}
+        	else if (def.getBaseName().equals("insertAt"))
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".splice");
+        		return;
+        	}				
+		}
     	else if (rightNode instanceof NamespaceAccessExpressionNode)
     	{
     		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;

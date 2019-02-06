@@ -19,6 +19,8 @@
 
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
+import java.io.File;
+
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
@@ -122,27 +124,60 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         assertOut("var /** @type {number} */ a = 16");
     }
 
-    @Ignore
+    @Test
     public void testArrayRemoveAt()
     {
-    	// requires FP19 or newer
-        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.removeAt(2)");
-        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
-        asBlockWalker.visitFunctionCall(parentNode);
-        assertOut("a.splice(2, 1)");
-    }
-
-    @Ignore
-    public void testArrayInsertAt()
-    {
-    	// requires FP19 or newer
-        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.insertAt(2, 'foo')");
-        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
-        asBlockWalker.visitFunctionCall(parentNode);
-        assertOut("a.splice(2, 0, 'foo')");
+    	File pg = testAdapter.getPlayerglobal();
+    	if (arrayHasInsertAtRemoveAt(pg))
+    	{
+	    	// requires FP19 or newer
+	        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.removeAt(2)");
+	        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+	        asBlockWalker.visitFunctionCall(parentNode);
+	        assertOut("a.splice(2, 1)");
+    	}
     }
 
     @Test
+    public void testArrayInsertAt()
+    {
+    	File pg = testAdapter.getPlayerglobal();
+    	if (arrayHasInsertAtRemoveAt(pg))
+    	{
+	    	// requires FP19 or newer
+	        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.insertAt(2, 'foo')");
+	        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+	        asBlockWalker.visitFunctionCall(parentNode);
+	        assertOut("a.splice(2, 0, 'foo')");
+    	}
+    }
+
+    private boolean arrayHasInsertAtRemoveAt(File pg) {
+    	if (pg == null) return true;
+    	String path = pg.getAbsolutePath();
+    	String[] parts = path.split("/");
+    	if (path.contains("\\"))
+    		parts = path.split("\\");
+    	for (String part : parts)
+    	{
+    		if (part.contains("."))
+    		{
+    			// see if it is the playerglobal version string
+    			String[] versionParts = part.split("\\.");
+    			if (versionParts.length != 2) return false;
+    			try {
+	    			int major = Integer.parseInt(versionParts[0]);
+	    			if (major >= 19) return true;
+    			} catch (NumberFormatException e)
+    			{    				
+    			}
+    		}
+    	}
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Test
     public void testArraySortNoArgs()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();a.sort()");
@@ -423,7 +458,139 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         //MXMLC does not report an error.  Should we?
         assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.Vector(['Hello', 'World'], 'String')");
     }
+    
+    @Test
+    public void testVectorRemoveAt()
+    {
+    	File pg = testAdapter.getPlayerglobal();
+    	if (arrayHasInsertAtRemoveAt(pg))
+    	{
+	    	// requires FP19 or newer
+	        IBinaryOperatorNode node = getBinaryNode("var a:Vector.<String> = new Vector.<String>(); a.removeAt(2)");
+	        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+	        asBlockWalker.visitFunctionCall(parentNode);
+	        assertOut("a.splice(2, 1)");
+    	}
+    }
 
+    @Test
+    public void testVectorInsertAt()
+    {
+    	File pg = testAdapter.getPlayerglobal();
+    	if (arrayHasInsertAtRemoveAt(pg))
+    	{
+	    	// requires FP19 or newer
+	        IBinaryOperatorNode node = getBinaryNode("var a:Vector.<String> = new Vector.<String>(); a.insertAt(2, 'foo')");
+	        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+	        asBlockWalker.visitFunctionCall(parentNode);
+	        assertOut("a.splice(2, 0, 'foo')");
+    	}
+    }
+
+    @Test
+    public void testCustomVector()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(['Hello', 'World'], 'String')");
+    }
+
+    @Test
+    public void testCustomVectorLiteral_1()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([], 'String')");
+    }
+
+    @Test
+    public void testCustomVectorLiteral_2()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([0, 1, 2, 3], 'int')");
+    }
+
+    @Test
+    public void testCustomVectorLiteral_3()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[\"one\", \"two\", \"three\";");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([\"one\", \"two\", \"three\"], 'String')");
+    }
+    
+    @Test
+    public void testCustomVectorNoArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([], 'String')");
+    }
+
+    @Test
+    public void testCustomVectorStringArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World');");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector('Hello', 'String')");
+    }
+
+    @Test
+    public void testCustomVectorStringArgs3()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World', 'Three');");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector('Hello', 'String')");
+    }
+
+    @Test
+    public void testCustomVectorSizeArg()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String')");
+    }
+    
+    @Test
+    public void testCustomVectorSizeAndFixedArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, true);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String', true)");
+    }
+
+    @Test
+    public void testCustomVectorNumberArgs()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, 40);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String')");
+    }
+
+    @Test
+    public void testCustomVectorArrayArg()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(['Hello', 'World'], 'String')");
+    }
+    
     @Test
     public void testXML()
     {

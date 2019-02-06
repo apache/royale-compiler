@@ -490,6 +490,18 @@ public class ASC
         {
             return removeDeadCode;
         }
+
+		@Override
+		public String getSWFMetadataDate() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getSWFMetadataDateFormat() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
     
     private static final int EXIT_CODE_SUCCESS = 0;

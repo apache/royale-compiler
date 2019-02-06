@@ -500,5 +500,19 @@ public interface ITargetSettings
      * @return An array of strings specifying the import targets.
      */
     String[] getMxmlImplicitImports();
+    
+    /**
+     * Gets Date string used in RDF metadata.
+     * 
+     * @return null or RDF date.
+     */
+    String getSWFMetadataDate();
+    
+    /**
+     * Gets DateFormat string used in RDF metadata date.
+     * 
+     * @return null or Java SimpleDateFormat pattern.
+     */
+    String getSWFMetadataDateFormat();
 }
 

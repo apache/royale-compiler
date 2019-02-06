@@ -23,7 +23,9 @@ import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -91,6 +93,13 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 else
                 {
                     VectorLiteralNode vectorLiteralNode = (VectorLiteralNode) node.getChild(1);
+                    String vectorClassName = (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass());
+                    if (vectorClassName != null)
+                    {
+                    	writeToken(ASEmitterTokens.NEW);
+                    	write(vectorClassName);
+                    	write(ASEmitterTokens.PAREN_OPEN);
+                    }
                     write("[");
                     ContainerNode contentsNode = vectorLiteralNode.getContentsNode();
                     int len = contentsNode.getChildCount();
@@ -103,6 +112,14 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         }
                     }
                     write("]");
+                    if (vectorClassName != null)
+                    {
+                    	writeToken(ASEmitterTokens.COMMA);
+                    	write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getBaseName());
+                    	write(ASEmitterTokens.SINGLE_QUOTE);
+                    	write(ASEmitterTokens.PAREN_CLOSE);
+                    }
                     return;
                 }
             }
@@ -162,7 +179,21 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 	ContainerNode args = node.getArgumentsNode();
                 	if (args.getChildCount() == 0)
                 	{
-                    	getEmitter().emitArguments(node.getArgumentsNode());
+                        String vectorClassName = (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass());
+                        if (vectorClassName != null)
+                        {
+                            write(ASEmitterTokens.PAREN_OPEN);
+                        	write(ASEmitterTokens.SQUARE_OPEN);
+                        	write(ASEmitterTokens.SQUARE_CLOSE);
+                            write(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.SPACE);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getBaseName());
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                        }
+                        else
+                        	getEmitter().emitArguments(node.getArgumentsNode());
                 	}
                 	else
                 	{
@@ -175,6 +206,21 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         write(ASEmitterTokens.SINGLE_QUOTE);
                         write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getBaseName());
                         write(ASEmitterTokens.SINGLE_QUOTE);
+                        if (args.getChildCount() == 2)
+                        {
+                        	IASNode second = args.getChild(1);
+                        	if (second instanceof IExpressionNode)
+                        	{
+                        		ITypeDefinition secondType =
+                        				((IExpressionNode)second).resolveType(fjs.getWalker().getProject());
+                        		if (fjs.getWalker().getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(secondType))
+                        		{
+                                    write(ASEmitterTokens.COMMA);
+                                    write(ASEmitterTokens.SPACE);
+                                    getWalker().walk(second);                        			
+                        		}
+                        	}
+                        }
                         write(ASEmitterTokens.PAREN_CLOSE);
                 	}
                 }
