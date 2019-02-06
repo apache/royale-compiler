@@ -157,7 +157,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     	String path = pg.getAbsolutePath();
     	String[] parts = path.split("/");
     	if (path.contains("\\"))
-    		parts = path.split("\\");
+    		parts = path.split("\\\\");
     	for (String part : parts)
     	{
     		if (part.contains("."))
@@ -173,7 +173,6 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     			}
     		}
     	}
-		// TODO Auto-generated method stub
 		return false;
 	}
 
