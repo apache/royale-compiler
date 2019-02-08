@@ -97,6 +97,60 @@ public class TestRoyaleStatements extends TestGoogStatements
     }
 
     @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedPositiveNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = 123.4;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = true");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedNegativeNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = -123;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = true");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedZeroNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = 0;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = false");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedDecimalNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = 0.123;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = true");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedNull()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = null;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = false");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedUndefined()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = undefined;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = false");
+    }
+
+    @Test
     public void testVarDeclaration_withTypeIntAndAssignedNumber()
     {
         IVariableNode node = (IVariableNode) getNode("var a:int = 123.4;",

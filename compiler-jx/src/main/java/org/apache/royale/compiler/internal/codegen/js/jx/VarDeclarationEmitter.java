@@ -92,13 +92,15 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         }
         IExpressionNode avnode = node.getAssignedValueNode();
         IDefinition avdef = null;
+        IDefinition avtypedef = null;
         if (avnode != null)
         {
-        	avdef = avnode.resolveType(getWalker().getProject());
+            avdef = avnode.resolve(getProject());
+        	avtypedef = avnode.resolveType(getProject());
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
             {
-                fjs.getDocEmitter().emitVarDoc(node, avdef, getWalker().getProject());
+                fjs.getDocEmitter().emitVarDoc(node, avtypedef, getWalker().getProject());
             }
         }
         else
@@ -132,17 +134,17 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             boolean varIsNumber = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
             		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.Number) ||
             		   varIsInt));
-            boolean valIsInt = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					 							  avdef.getQualifiedName().equals(IASLanguageConstants.uint) ||
-					 							  (avdef.getQualifiedName().equals(IASLanguageConstants.Number) &&
+            boolean valIsInt = (avtypedef != null && (avtypedef.getQualifiedName().equals(IASLanguageConstants._int) ||
+					 							  avtypedef.getQualifiedName().equals(IASLanguageConstants.uint) ||
+					 							  (avtypedef.getQualifiedName().equals(IASLanguageConstants.Number) &&
 					 									  (avnode.getNodeID() == ASTNodeID.LiteralIntegerID ||
 					 									   avnode.getNodeID() == ASTNodeID.LiteralIntegerZeroID))));
-            boolean valIsNumber = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants.Number) ||
+            boolean valIsNumber = (avtypedef != null && (avtypedef.getQualifiedName().equals(IASLanguageConstants.Number) ||
             										 valIsInt));
-            if (!valIsNumber && avdef == null && avnode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
+            if (!valIsNumber && avtypedef == null && avnode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
             		fjs.isDateProperty(avnode, false))
             	valIsNumber = true;
-            if (varIsNumber && !valIsNumber && (avdef == null || avdef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
+            if (varIsNumber && !valIsNumber && (avtypedef == null || avtypedef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
             {
         		if (avnode.getNodeID() == ASTNodeID.FunctionCallID)
         		{
@@ -193,7 +195,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                     INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
                     coercedValue = Integer.toString(numericValue.toInt32());
                 }
-                else if(!getProject().getBuiltinType(BuiltinType.INT).equals(avdef))
+                else if(!getProject().getBuiltinType(BuiltinType.INT).equals(avtypedef))
                 {
                     needsCoercion = true;
                 }
@@ -212,7 +214,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                     INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
                     coercedValue = Long.toString(numericValue.toUint32());
                 }
-                else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(avdef))
+                else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(avtypedef))
                 {
                     needsCoercion = true;
                 }
@@ -226,9 +228,36 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             {
                 coercionStart = "Number(";
             }
+            else if (getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(variableDef)
+                    && !getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(avtypedef))
+            {
+                if (getProject().getBuiltinType(BuiltinType.NULL).equals(avtypedef)
+                        || (avdef != null && avdef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED)))
+                {
+                    //null and undefined are coerced to false
+                    startMapping(avnode);
+                    write(IASLanguageConstants.FALSE);
+                    endMapping(avnode);
+                    return;
+                }
+                if (avnode instanceof INumericLiteralNode)
+                {
+                    INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
+                    INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                    //zero is coerced to false, and everything else is true
+                    String booleanValue = numericValue.toNumber() == 0.0
+                            ? IASLanguageConstants.FALSE
+                            : IASLanguageConstants.TRUE;
+                    startMapping(avnode);
+                    write(booleanValue);
+                    endMapping(avnode);
+                    return;
+                }
+                coercionStart = "!!(";
+            }
             else if (getProject().getBuiltinType(BuiltinType.STRING).equals(variableDef) &&
-                !getProject().getBuiltinType(BuiltinType.STRING).equals(avdef) &&
-                !getProject().getBuiltinType(BuiltinType.NULL).equals(avdef))
+                !getProject().getBuiltinType(BuiltinType.STRING).equals(avtypedef) &&
+                !getProject().getBuiltinType(BuiltinType.NULL).equals(avtypedef))
             {
                 coercionStart = "org.apache.royale.utils.Language.string(";
             }

@@ -403,11 +403,12 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					  leftDef.getQualifiedName().equals(IASLanguageConstants._int) ||
 					  leftDef.getQualifiedName().equals(IASLanguageConstants.uint)));
         	IExpressionNode rNode = node.getRightOperandNode();
-        	IDefinition rightDef = rNode.resolveType(getWalker().getProject());
-        	boolean rightIsNumber = (rightDef != null && (rightDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-					  rightDef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					  rightDef.getQualifiedName().equals(IASLanguageConstants.uint)));
-            if (leftIsNumber && !rightIsNumber && (rightDef == null || rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
+        	IDefinition rightDef = rNode.resolve(getWalker().getProject());
+        	IDefinition rightTypeDef = rNode.resolveType(getWalker().getProject());
+        	boolean rightIsNumber = (rightTypeDef != null && (rightTypeDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
+					  rightTypeDef.getQualifiedName().equals(IASLanguageConstants._int) ||
+					  rightTypeDef.getQualifiedName().equals(IASLanguageConstants.uint)));
+            if (leftIsNumber && !rightIsNumber && (rightTypeDef == null || rightTypeDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
             {
         		if (rNode.getNodeID() == ASTNodeID.FunctionCallID)
         		{
@@ -460,7 +461,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
 						coercedValue = Integer.toString(numericValue.toInt32());
 					}
-					else if(!getProject().getBuiltinType(BuiltinType.INT).equals(rightDef))
+					else if(!getProject().getBuiltinType(BuiltinType.INT).equals(rightTypeDef))
 					{
 						needsCoercion = true;
 					}
@@ -479,7 +480,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
 						coercedValue = Long.toString(numericValue.toUint32());
 					}
-					else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(rightDef))
+					else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(rightTypeDef))
 					{
 						needsCoercion = true;
 					}
@@ -493,19 +494,45 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				{
 					coercionStart = "Number(";
 				}
+				else if (getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(leftDef)
+						&& !getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(rightTypeDef))
+				{
+					boolean needsCoercion = true;
+					if (getProject().getBuiltinType(BuiltinType.NULL).equals(rightTypeDef)
+							|| (rightDef != null && rightDef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED)))
+					{
+						//null and undefined are coerced to false
+						coercedValue = IASLanguageConstants.FALSE;
+						needsCoercion = false;
+					}
+					else if (rNode instanceof INumericLiteralNode)
+					{
+						INumericLiteralNode numericLiteral = (INumericLiteralNode) rNode;
+						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+						//zero is coerced to false, and everything else is true
+						coercedValue = numericValue.toNumber() == 0.0
+								? IASLanguageConstants.FALSE
+								: IASLanguageConstants.TRUE;
+								needsCoercion = false;
+					}
+					if (needsCoercion)
+					{
+						coercionStart = "!!(";
+					}
+				}
 				else if (getProject().getBuiltinType(BuiltinType.STRING).equals(leftDef))
 				{
 					if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
 							rNode.getNodeID() != ASTNodeID.LiteralNullID)
 					{
-						if (rightDef == null ||
-								(!(rightDef.getQualifiedName().equals(IASLanguageConstants.String) ||
-								(rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
+						if (rightTypeDef == null ||
+								(!(rightTypeDef.getQualifiedName().equals(IASLanguageConstants.String) ||
+								(rightTypeDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
 										&& rNode.getNodeID() == ASTNodeID.FunctionCallID &&
 										isToString(rNode)) ||
 								// if not an assignment we don't need to coerce numbers
 								(!isAssignment && rightIsNumber) ||
-								rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
+								rightTypeDef.getQualifiedName().equals(IASLanguageConstants.Null))))
 						{
 							JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(getEmitter().getDocEmitter());
 							if (docEmitter.emitStringConversions)

@@ -106,9 +106,9 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testVisitLanguageIdentifierNode_SuperGetter()
     {
-        IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Boolean " +
+        IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Object " +
         		                       "{ return super.isDefaultPrevented(); }" + 
-        		                       "override public function isDefaultPrevented():Boolean" +
+        		                       "override public function isDefaultPrevented():Object" +
                                        "{ return defaultPrevented; }", IClassNode.class);
         // getters and setters don't get output until the class is output so you can't just visit the accessorNode
         asBlockWalker.visitClass(node);
@@ -129,7 +129,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +
         		  "Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n" +
-        		  "/**\n  * @export\n  * @type {boolean} */\n" +
+        		  "/**\n  * @export\n  * @type {Object} */\n" +
         		  "defaultPrevented: {\nget: RoyaleTest_A.prototype.get__defaultPrevented}}\n);");
     }
 
@@ -267,6 +267,78 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("(s.toLowerCase() == 'foo')");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentBooleanVarToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool1:Boolean;var bool2:Boolean;bool1 = bool2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool1 = bool2");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNumberVarToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var boolean:Boolean;var number:Number;boolean = number");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("boolean = !!(number)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentBooleanLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = true");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentPositiveNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = 123.4");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNegativeNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = -123");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentZeroNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = 0");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = false");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentDecimalNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = 0.123");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNullToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = null");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = false");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentUndefinedToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = undefined");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = false");
     }
 
     @Test
@@ -1548,6 +1620,78 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitReturnBoolean()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return true; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithBooleanLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return true; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithPositiveNumberLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return 123.4; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithNegativeNumberLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return -123; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithZeroLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return 0; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return false");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithDecimalLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return 0.01; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithNull()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return null; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return false");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithUndefined()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return undefined; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return false");
+    }
+
+    @Test
+    public void testVisitReturnIntWithIntLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():int { return 123; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 123");
+    }
+
+    @Test
     public void testVisitReturnIntWithDecimalValue()
     {
         IReturnNode node = (IReturnNode) getNode("function():int { return -123.4; }", IReturnNode.class);
@@ -1601,6 +1745,62 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(123.4)", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("a(123)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterBoolean()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(false)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterPositiveNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(123.4)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(true)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterNegativeNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(-123)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(true)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterZeroNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(0.0)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterLessThanOneNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(0.5)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(true)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterNull()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(null)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterUndefined()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(undefined)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
     }
 
     protected IBackend createBackend()

@@ -149,7 +149,16 @@ public class TestRoyaleClass extends TestGoogClass
     }
 
     @Test
-    public void testMethod_returnInt()
+    public void testMethod_returnIntWithVariableNoCoercion()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { var a:int = 123; return a; };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  var a /** @type {number} */ = 123.4;\n  return a;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnIntWithVariableCoercion()
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { var a:Number = 123.4; return a; };}");
         asBlockWalker.visitClass(node);
@@ -158,7 +167,7 @@ public class TestRoyaleClass extends TestGoogClass
     }
 
     @Test
-    public void testMethod_returnIntLiteral()
+    public void testMethod_returnIntWithLiteralCoercion()
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { return 123.4 };}");
         asBlockWalker.visitClass(node);
@@ -167,7 +176,16 @@ public class TestRoyaleClass extends TestGoogClass
     }
 
     @Test
-    public void testMethod_returnUint()
+    public void testMethod_returnUintWithVariableNoCoercion()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { var a:uint = 123; return a; };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  var a /** @type {number} */ = 123.4;\n  return a;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnUintWithVariableCoercion()
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { var a:Number = 123.4; return a; };}");
         asBlockWalker.visitClass(node);
@@ -176,11 +194,38 @@ public class TestRoyaleClass extends TestGoogClass
     }
 
     @Test
-    public void testMethod_returnUintLiteral()
+    public void testMethod_returnUintWithLiteralCoercion()
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { return 123.4 };}");
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  return (123.4) >>> 0;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnBooleanWithVariableNoCoercion()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():Boolean { var a:Boolean = true; return a; };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  var a /** @type {number} */ = 123.4;\n  return a;\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnBooleanWithVariableCoercion()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():Boolean { var a:Number = 123.4; return a; };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  var a /** @type {number} */ = 123.4;\n  return !!(a);\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_returnBooleanWithLiteralNoCoercion()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function foo():Boolean { return 123.4 };}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n  return true;\n};";
         assertOut(expected);
     }
 

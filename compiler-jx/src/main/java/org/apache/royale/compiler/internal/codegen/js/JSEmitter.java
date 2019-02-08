@@ -28,6 +28,7 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
@@ -521,10 +522,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
     {
         IDefinition assignedDef = null;
+        IDefinition assignedTypeDef = null;
         ICompilerProject project = getWalker().getProject();
         if (assignedNode != null)
         {
-            assignedDef = assignedNode.resolveType(project);
+            assignedDef = assignedNode.resolve(project);
+            assignedTypeDef = assignedNode.resolveType(project);
         }
 		String coercionStart = null;
         String coercionEnd = null;
@@ -540,7 +543,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 endMapping(assignedNode);
                 return;
 			}
-			else if(!project.getBuiltinType(BuiltinType.INT).equals(assignedDef))
+			else if(!project.getBuiltinType(BuiltinType.INT).equals(assignedTypeDef))
 			{
 				needsCoercion = true;
 			}
@@ -562,7 +565,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 endMapping(assignedNode);
                 return;
 			}
-			else if(!project.getBuiltinType(BuiltinType.UINT).equals(assignedDef))
+			else if(!project.getBuiltinType(BuiltinType.UINT).equals(assignedTypeDef))
 			{
 				needsCoercion = true;
 			}
@@ -573,15 +576,42 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
         }
         else if (project.getBuiltinType(BuiltinType.NUMBER).equals(definition)
-                && !project.getBuiltinType(BuiltinType.NUMBER).equals(assignedDef)
-                && !project.getBuiltinType(BuiltinType.INT).equals(assignedDef)
-                && !project.getBuiltinType(BuiltinType.UINT).equals(assignedDef))
+                && !project.getBuiltinType(BuiltinType.NUMBER).equals(assignedTypeDef)
+                && !project.getBuiltinType(BuiltinType.INT).equals(assignedTypeDef)
+                && !project.getBuiltinType(BuiltinType.UINT).equals(assignedTypeDef))
         {
             coercionStart = "Number(";
         }
+        else if (project.getBuiltinType(BuiltinType.BOOLEAN).equals(definition)
+                && !project.getBuiltinType(BuiltinType.BOOLEAN).equals(assignedTypeDef))
+        {
+            if (project.getBuiltinType(BuiltinType.NULL).equals(assignedTypeDef)
+                    || (assignedDef != null && assignedDef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED)))
+            {
+                //null and undefined are coerced to false
+                startMapping(assignedNode);
+                write(IASLanguageConstants.FALSE);
+                endMapping(assignedNode);
+                return;
+            }
+			if (assignedNode instanceof INumericLiteralNode)
+			{
+                INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+                INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                //zero is coerced to false, and everything else is true
+                String booleanValue = numericValue.toNumber() == 0.0
+                        ? IASLanguageConstants.FALSE
+                        : IASLanguageConstants.TRUE;
+                startMapping(assignedNode);
+                write(booleanValue);
+                endMapping(assignedNode);
+                return;
+			}
+            coercionStart = "!!(";
+        }
         else if (project.getBuiltinType(BuiltinType.STRING).equals(definition)
-                && !project.getBuiltinType(BuiltinType.STRING).equals(assignedDef)
-                && !project.getBuiltinType(BuiltinType.NULL).equals(assignedDef))
+                && !project.getBuiltinType(BuiltinType.STRING).equals(assignedTypeDef)
+                && !project.getBuiltinType(BuiltinType.NULL).equals(assignedTypeDef))
         {
             coercionStart = "org.apache.royale.utils.Language.string(";
         }
