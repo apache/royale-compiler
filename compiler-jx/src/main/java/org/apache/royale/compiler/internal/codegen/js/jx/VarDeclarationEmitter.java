@@ -22,28 +22,17 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
-import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
-import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
-import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IEmbedNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
@@ -93,21 +82,10 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                     nameExpressionNode.getColumn() + nameExpressionNode.getAbsoluteEnd() - nameExpressionNode.getAbsoluteStart());
         }
         IExpressionNode avnode = node.getAssignedValueNode();
-        IDefinition avdef = null;
         IDefinition avtypedef = null;
         if (avnode != null)
         {
-            avdef = avnode.resolve(getProject());
         	avtypedef = avnode.resolveType(getProject());
-            if (getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(avtypedef))
-            {
-                IDefinition resolvedXMLDef = SemanticUtils.resolveXML(avnode, getProject());
-                if (resolvedXMLDef != null)
-                {
-                    avdef = resolvedXMLDef;
-                    avtypedef = SemanticUtils.resolveTypeXML(avnode, getProject());
-                }
-            }
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
             {
@@ -139,194 +117,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             endMapping(node);
-            boolean varIsInt = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
-          		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants._int) ||
-               		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.uint)));
-            boolean varIsNumber = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
-            		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.Number) ||
-            		   varIsInt));
-            boolean valIsInt = (avtypedef != null && (avtypedef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					 							  avtypedef.getQualifiedName().equals(IASLanguageConstants.uint) ||
-					 							  (avtypedef.getQualifiedName().equals(IASLanguageConstants.Number) &&
-					 									  (avnode.getNodeID() == ASTNodeID.LiteralIntegerID ||
-					 									   avnode.getNodeID() == ASTNodeID.LiteralIntegerZeroID))));
-            boolean valIsNumber = (avtypedef != null && (avtypedef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-            										 valIsInt));
-            if (!valIsNumber && avtypedef == null && avnode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
-            		fjs.isDateProperty(avnode, false))
-            	valIsNumber = true;
-            if (varIsNumber && !valIsNumber && (avtypedef == null || avtypedef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
-            {
-        		if (avnode.getNodeID() == ASTNodeID.FunctionCallID)
-        		{
-	            	IExpressionNode fnNameNode = ((FunctionCallNode)avnode).getNameNode();
-	            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-	            	{
-	            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-	            		IExpressionNode rightNode = mae.getRightOperandNode();
-	            		valIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-	            				((IdentifierNode)rightNode).getName().equals("length") &&
-	            				fjs.isXMLList(mae);
-	            	}
-        		}
-        		else if (avnode.getNodeID() == ASTNodeID.ArrayIndexExpressionID)
-        		{
-        			DynamicAccessNode dyn = (DynamicAccessNode)avnode;
-        			IDefinition leftDef = dyn.getLeftOperandNode().resolveType(getProject());
-        			IDefinition rightDef = dyn.getRightOperandNode().resolveType(getProject());
-        			// numeric indexing?
-        			if (leftDef != null && rightDef.getQualifiedName().equals(IASLanguageConstants.Number))
-        			{
-        				IMetaTag[] metas = leftDef.getAllMetaTags();
-        				for (IMetaTag meta : metas)
-        				{
-        					if (meta.getTagName().equals("ArrayElementType"))
-        					{
-        						IMetaTagAttribute[] attrs = meta.getAllAttributes();
-        						for (IMetaTagAttribute attr : attrs)
-        						{
-        							String t = attr.getValue();
-            						if (t.equals(IASLanguageConstants.Number))
-            							valIsNumber = true;
-        						}
-        					}
-        				}
-        			}
-        		}
-            }
-            String coercionStart = null;
-            String coercionEnd = null;
-            String coercedValue = null;
-            if (getProject().getBuiltinType(BuiltinType.INT).equals(variableDef))
-            {
-                boolean needsCoercion = false;
-                if (avnode instanceof INumericLiteralNode)
-                {
-                    INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
-                    INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-                    if(numericValue.toString().startsWith("0x"))
-                    {
-                        //for readability, keep the same formatting
-                        coercedValue = "0x" + Integer.toHexString(numericValue.toInt32());
-                    }
-                    else
-                    {
-                        coercedValue = Integer.toString(numericValue.toInt32());
-                    }
-                }
-                else if(!getProject().getBuiltinType(BuiltinType.INT).equals(avtypedef))
-                {
-                    needsCoercion = true;
-                }
-                if (needsCoercion)
-                {
-                    coercionStart = "(";
-                    coercionEnd = ") >> 0";
-                }
-            }
-            else if (getProject().getBuiltinType(BuiltinType.UINT).equals(variableDef))
-            {
-                boolean needsCoercion = false;
-                if (avnode instanceof INumericLiteralNode)
-                {
-                    INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
-                    INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-                    if(numericValue.toString().startsWith("0x"))
-                    {
-                        //for readability, keep the same formatting
-                        coercedValue = "0x" + Long.toHexString(numericValue.toUint32());
-                    }
-                    else
-                    {
-                        coercedValue = Long.toString(numericValue.toUint32());
-                    }
-                }
-                else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(avtypedef))
-                {
-                    needsCoercion = true;
-                }
-                if (needsCoercion)
-                {
-                    coercionStart = "(";
-                    coercionEnd = ") >>> 0";
-                }
-            }
-            else if (varIsNumber && !valIsNumber)
-            {
-                coercionStart = "Number(";
-            }
-            else if (getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(variableDef)
-                    && !getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(avtypedef))
-            {
-                if (getProject().getBuiltinType(BuiltinType.NULL).equals(avtypedef)
-                        || (avdef != null && avdef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED)))
-                {
-                    //null and undefined are coerced to false
-                    startMapping(avnode);
-                    write(IASLanguageConstants.FALSE);
-                    endMapping(avnode);
-                    return;
-                }
-                if (avnode instanceof INumericLiteralNode)
-                {
-                    INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
-                    INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-                    //zero is coerced to false, and everything else is true
-                    String booleanValue = numericValue.toNumber() == 0.0
-                            ? IASLanguageConstants.FALSE
-                            : IASLanguageConstants.TRUE;
-                    startMapping(avnode);
-                    write(booleanValue);
-                    endMapping(avnode);
-                    return;
-                }
-                coercionStart = "!!(";
-            }
-            else if (getProject().getBuiltinType(BuiltinType.STRING).equals(variableDef)
-                    && !getProject().getBuiltinType(BuiltinType.STRING).equals(avtypedef)
-                    && !getProject().getBuiltinType(BuiltinType.NULL).equals(avtypedef)
-                    && !(getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(avtypedef)
-                            && SemanticUtils.isToStringFunctionCall(avnode, getProject())))
-            {
-                if(avdef != null && avdef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED))
-                {
-                    //undefined is coerced to null
-                    startMapping(avnode);
-                    write(IASLanguageConstants.NULL);
-                    endMapping(avnode);
-                    return;
-                }
-                JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter) (getEmitter().getDocEmitter());
-                if (docEmitter.emitStringConversions)
-                {
-                    coercionStart = "org.apache.royale.utils.Language.string(";
-                }
-            }
-			if (coercionStart != null)
-			{
-                write(coercionStart);
-            }
-            if (coercedValue != null)
-            {
-                startMapping(avnode);
-                write(coercedValue);
-                endMapping(avnode);
-            }
-            else
-            {
-                fjs.emitAssignedValue(avnode);
-            }
-			if (coercionStart != null)
-			{
-				if (coercionEnd != null)
-				{
-					write(coercionEnd);
-				}
-				else
-				{
-					write(")");
-				}
-			}
+            getEmitter().emitAssignmentCoercion(avnode, variableDef);
         }
         if (avnode == null)
         {

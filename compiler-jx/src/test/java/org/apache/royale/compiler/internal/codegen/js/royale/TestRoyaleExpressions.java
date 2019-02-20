@@ -518,6 +518,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_AssignmentDatePropertyToNumber()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:Number;var var2:Date;var1 = var2.month");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = var2.getMonth()");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_setterAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
@@ -1840,6 +1848,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitReturnNumberWithDateProperty()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Number { var a:Date; return a.month; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a.getMonth()");
+    }
+
+    @Test
     public void testVisitFunctionCallWithIntParameterHex()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(0xabc)", IFunctionCallNode.class);
@@ -1997,6 +2013,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:XML; a(b.child);", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("a(org.apache.royale.utils.Language.string(b.child('child')))");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithNumberParameterDateProperty()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Number):void {}; var b:Date; a(b.month);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b.getMonth())");
     }
 
     protected IBackend createBackend()

@@ -258,6 +258,15 @@ public class TestRoyaleStatements extends TestGoogStatements
         assertOut("var /** @type {string} */ a = this.b.toString()");
     }
 
+    @Test
+    public void testVarDeclaration_withTypeNumberAndAssignedDateProperty()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:Number = b.fullYear; }var b:Date;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = this.b.getFullYear()");
+    }
+
     //----------------------------------
     // const declaration
     //----------------------------------

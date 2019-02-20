@@ -700,7 +700,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		{
 			write(coercionStart);
         }
-		getWalker().walk(assignedNode);
+        emitAssignedValue(assignedNode);
 		if (coercionStart != null)
 		{
 			if (coercionEnd != null)
