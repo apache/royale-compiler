@@ -554,7 +554,15 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 				INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
                 INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
                 startMapping(assignedNode);
-                write(Integer.toString(numericValue.toInt32()));
+                if(numericValue.toString().startsWith("0x"))
+                {
+                    //for readability, keep the same formatting
+                    write("0x" + Integer.toHexString(numericValue.toInt32()));
+                }
+                else
+                {
+                    write(Integer.toString(numericValue.toInt32()));
+                }
                 endMapping(assignedNode);
                 return;
 			}
@@ -576,7 +584,15 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
                 INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
                 startMapping(assignedNode);
-                write(Long.toString(numericValue.toUint32()));
+                if(numericValue.toString().startsWith("0x"))
+                {
+                    //for readability, keep the same formatting
+                    write("0x" + Long.toHexString(numericValue.toUint32()));
+                }
+                else
+                {
+                    write(Long.toString(numericValue.toUint32()));
+                }
                 endMapping(assignedNode);
                 return;
 			}

@@ -151,6 +151,33 @@ public class TestRoyaleStatements extends TestGoogStatements
     }
 
     @Test
+    public void testVarDeclaration_withTypeIntAndAssignedHex()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:int = 0xabc;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0xabc");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeUintAndAssignedHex()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:uint = 0xabc;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0xabc");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeNumberAndAssignedHex()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Number = 0xabc;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0xabc");
+    }
+
+    @Test
     public void testVarDeclaration_withTypeIntAndAssignedNumber()
     {
         IVariableNode node = (IVariableNode) getNode("var a:int = 123.4;",

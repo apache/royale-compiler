@@ -204,7 +204,15 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 {
                     INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
                     INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-                    coercedValue = Integer.toString(numericValue.toInt32());
+                    if(numericValue.toString().startsWith("0x"))
+                    {
+                        //for readability, keep the same formatting
+                        coercedValue = "0x" + Integer.toHexString(numericValue.toInt32());
+                    }
+                    else
+                    {
+                        coercedValue = Integer.toString(numericValue.toInt32());
+                    }
                 }
                 else if(!getProject().getBuiltinType(BuiltinType.INT).equals(avtypedef))
                 {
@@ -223,7 +231,15 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 {
                     INumericLiteralNode numericLiteral = (INumericLiteralNode) avnode;
                     INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-                    coercedValue = Long.toString(numericValue.toUint32());
+                    if(numericValue.toString().startsWith("0x"))
+                    {
+                        //for readability, keep the same formatting
+                        coercedValue = "0x" + Long.toHexString(numericValue.toUint32());
+                    }
+                    else
+                    {
+                        coercedValue = Long.toString(numericValue.toUint32());
+                    }
                 }
                 else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(avtypedef))
                 {

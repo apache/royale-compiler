@@ -382,6 +382,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_AssignmentHexIntLiteralToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 0xabc");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToInt = 0xabc");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_AssignmentNegativeIntLiteralToInt()
     {
         IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = -321");
@@ -427,6 +435,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = -123");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("numToUint = 4294967173");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentHexLiteralToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = 0xabc");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToUint = 0xabc");
     }
 
     @Test
@@ -1728,6 +1744,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitReturnIntWithHexIntLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():int { return 0xabc; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 0xabc");
+    }
+
+    @Test
     public void testVisitReturnIntWithDecimalValue()
     {
         IReturnNode node = (IReturnNode) getNode("function():int { return -123.4; }", IReturnNode.class);
@@ -1749,6 +1773,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IReturnNode node = (IReturnNode) getNode("function():uint { return -123; }", IReturnNode.class);
         asBlockWalker.visitReturn(node);
         assertOut("return 4294967173");
+    }
+
+    @Test
+    public void testVisitReturnUintWithHexLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():uint { return 0xabc; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 0xabc");
     }
 
     @Test
@@ -1808,6 +1840,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitFunctionCallWithIntParameterHex()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(0xabc)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(0xabc)");
+    }
+
+    @Test
     public void testVisitFunctionCallWithIntParameterNegative()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(-123)", IFunctionCallNode.class);
@@ -1821,6 +1861,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(123.4)", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("a(123)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithUintParameterHex()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(0xabc)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(0xabc)");
     }
 
     @Test
