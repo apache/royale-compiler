@@ -957,22 +957,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         else
         {
-            // AJH need Language.bind here and maybe not require
-            // that the node is a MemberAccessExpression
-            if (definition instanceof FunctionDefinition &&
-                    !((FunctionDefinition)definition).isStatic() &&
-                    (!(definition instanceof AccessorDefinition)) &&
-                    node instanceof MemberAccessExpressionNode &&
-                    ((MemberAccessExpressionNode)node).getLeftOperandNode().getNodeID() != ASTNodeID.SuperID)
-            {
-                emitClosureStart();
-                getWalker().walk(node);
-                writeToken(ASEmitterTokens.COMMA);
-                getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
-                emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode(), definition);
-            }
-            else
-                getWalker().walk(node);
+            getWalker().walk(node);
         }
     }
 

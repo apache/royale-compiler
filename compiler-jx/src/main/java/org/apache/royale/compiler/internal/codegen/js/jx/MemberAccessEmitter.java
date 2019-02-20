@@ -216,6 +216,27 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 		}
     	else if (rightNode instanceof NamespaceAccessExpressionNode)
     	{
+			boolean isStatic = false;
+			if (def != null && def.isStatic())
+				isStatic = true;
+			boolean needClosure = false;
+			if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition))
+					&& !def.getBaseName().equals("constructor")) // don't wrap references to obj.constructor
+			{
+				IASNode parentNode = node.getParent();
+				if (parentNode != null)
+				{
+					ASTNodeID parentNodeId = parentNode.getNodeID();
+					// we need a closure if this MAE is the top-level in a chain
+					// of MAE and not in a function call.
+					needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
+								parentNodeId != ASTNodeID.MemberAccessExpressionID &&
+								parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+				}
+			}
+        	if (needClosure)
+        		getEmitter().emitClosureStart();
+
     		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
     		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
     		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
@@ -243,6 +264,17 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 write(node.getOperator().getOperatorText());
 	    		write(r.getName());    			
     		}
+        
+			if (needClosure)
+			{
+				write(ASEmitterTokens.COMMA);
+				write(ASEmitterTokens.SPACE);
+				if (leftNode.getNodeID() == ASTNodeID.SuperID)
+					write(ASEmitterTokens.THIS);
+				else
+					writeLeftSide(node, leftNode, rightNode);
+				getEmitter().emitClosureEnd(leftNode, def);
+			}
     		return;
     	}
         boolean isCustomNamespace = false;
