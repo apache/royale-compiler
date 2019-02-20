@@ -23,14 +23,18 @@ import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.IEmitter;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BlockCloseEmitter;
@@ -59,6 +63,8 @@ import org.apache.royale.compiler.internal.codegen.js.jx.TryEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WhileLoopEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WithEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -528,6 +534,15 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         {
             assignedDef = assignedNode.resolve(project);
             assignedTypeDef = assignedNode.resolveType(project);
+            if (project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef))
+            {
+                IDefinition resolvedXMLDef = SemanticUtils.resolveXML(assignedNode, project);
+                if (resolvedXMLDef != null)
+                {
+                    assignedDef = resolvedXMLDef;
+                    assignedTypeDef = SemanticUtils.resolveTypeXML(assignedNode, project);
+                }
+            }
         }
 		String coercionStart = null;
         String coercionEnd = null;
@@ -580,7 +595,36 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 && !project.getBuiltinType(BuiltinType.INT).equals(assignedTypeDef)
                 && !project.getBuiltinType(BuiltinType.UINT).equals(assignedTypeDef))
         {
-            coercionStart = "Number(";
+			boolean needsCoercion = true;
+            if (assignedNode instanceof IDynamicAccessNode)
+            {
+                IDynamicAccessNode dynamicAccess = (IDynamicAccessNode) assignedNode;
+                IDefinition dynamicAccessIndexDef = dynamicAccess.getRightOperandNode().resolveType(project);
+                if (project.getBuiltinType(BuiltinType.NUMBER).equals(dynamicAccessIndexDef))
+                {
+                    IDefinition leftDef = dynamicAccess.getLeftOperandNode().resolveType(project);
+                    IMetaTag[] metas = leftDef.getAllMetaTags();
+                    for (IMetaTag meta : metas)
+                    {
+                        if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
+                        {
+                            IMetaTagAttribute[] attrs = meta.getAllAttributes();
+                            for (IMetaTagAttribute attr : attrs)
+                            {
+                                String t = attr.getValue();
+                                if (t.equals(IASLanguageConstants.Number))
+                                {
+                                    needsCoercion = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (needsCoercion)
+            {
+                coercionStart = "Number(";
+            }
         }
         else if (project.getBuiltinType(BuiltinType.BOOLEAN).equals(definition)
                 && !project.getBuiltinType(BuiltinType.BOOLEAN).equals(assignedTypeDef))
@@ -611,15 +655,35 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         }
         else if (project.getBuiltinType(BuiltinType.STRING).equals(definition)
                 && !project.getBuiltinType(BuiltinType.STRING).equals(assignedTypeDef)
-                && !project.getBuiltinType(BuiltinType.NULL).equals(assignedTypeDef))
+                && !project.getBuiltinType(BuiltinType.NULL).equals(assignedTypeDef)
+                && !(project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef)
+                        && SemanticUtils.isToStringFunctionCall(assignedNode, project)))
         {
-            coercionStart = "org.apache.royale.utils.Language.string(";
+            if(assignedDef != null && assignedDef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED))
+            {
+                //undefined is coerced to null
+                startMapping(assignedNode);
+                write(IASLanguageConstants.NULL);
+                endMapping(assignedNode);
+                return;
+            }
+            boolean emitStringCoercion = true;
+            IDocEmitter docEmitter = getDocEmitter();
+            if (docEmitter instanceof JSRoyaleDocEmitter)
+            {
+                JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
+                emitStringCoercion = royaleDocEmitter.emitStringConversions;
+            }
+            if (emitStringCoercion)
+            {
+                coercionStart = "org.apache.royale.utils.Language.string(";
+            }
         }
 
 		if (coercionStart != null)
 		{
 			write(coercionStart);
-		}
+        }
 		getWalker().walk(assignedNode);
 		if (coercionStart != null)
 		{

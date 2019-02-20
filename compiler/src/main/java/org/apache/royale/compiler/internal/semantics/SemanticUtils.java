@@ -118,12 +118,14 @@ import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
@@ -836,7 +838,7 @@ public class SemanticUtils
         if (base != null && base.isDynamicExpression(project))
         	return true;
         // the JS version of XML is not currently dynamic so special case it here.
-        if (base != null && base.getNodeID() == ASTNodeID.IdentifierID && IdentifierNode.isXMLish(base.resolveType(project), project))
+        if (base != null && base.getNodeID() == ASTNodeID.IdentifierID && isXMLish(base.resolveType(project), project))
         	return true;
         return false;
     }
@@ -943,6 +945,116 @@ public class SemanticUtils
         }
 
         return null;
+    }
+
+    /**
+     * Resolving the type of an expression on an XMLish object always returns *,
+     * but this function returns the actual resolved type, if available.
+     * 
+     * @param iNode The node you want to resolve
+     * @param project an ICompilerProject for the current project.
+     * @return The type of the underlying expression, or null.
+     */
+    public static IDefinition resolveTypeXML(IExpressionNode iNode, ICompilerProject project)
+    {
+        IDefinition def = resolveXML(iNode, project);
+        if(def == null)
+        {
+            return null;
+        }
+        if (def instanceof IFunctionDefinition)
+        {
+            IFunctionDefinition functionDef = (IFunctionDefinition) def;
+            return functionDef.resolveReturnType(project);
+        }
+        return null;
+    }
+
+    /**
+     * Resolving an expression on an XMLish object always returns null, but this
+     * function returns the actual resolved definition, if available.
+     * 
+     * @param iNode The node you want to resolve
+     * @param project an ICompilerProject for the current project.
+     * @return The definition of the underlying expression, or null.
+     */
+    public static IDefinition resolveXML(IExpressionNode iNode, ICompilerProject project)
+    {
+        if (iNode instanceof IFunctionCallNode)
+        {
+            IFunctionCallNode functionCall = (IFunctionCallNode) iNode;
+            IExpressionNode nameNode = functionCall.getNameNode();
+            if (nameNode instanceof IMemberAccessExpressionNode)
+            {
+                IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) nameNode;
+                nameNode = memberAccess.getRightOperandNode();
+            }
+            if (nameNode instanceof IdentifierNode)
+            {
+                IdentifierNode rightIdentifier = (IdentifierNode) nameNode;
+                if (rightIdentifier.isMemberRef())
+                {
+                    ITypeDefinition baseType = null;
+                    ExpressionNodeBase baseExpr = rightIdentifier.getBaseExpression();
+                    if (baseExpr != null)
+                    {
+                        baseType = baseExpr.resolveType(project);
+                    }
+                    if(isXMLish(baseType, project))
+                    {
+                        ASScope asScope = rightIdentifier.getASScope();
+                        IDefinition propertyDef = asScope.getPropertyFromDef(project, baseType, rightIdentifier.getName(), false);
+                        if (propertyDef instanceof IFunctionDefinition &&
+                            !(propertyDef instanceof IAccessorDefinition))
+                        {
+                            IFunctionDefinition functionDef = (IFunctionDefinition) propertyDef;
+                            return functionDef;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Determine if the definition passed in is one of the XML types (XML or
+     * XMLList) These classes are unrelated, but behave in similar manners.
+     * 
+     * @param def the {@link IDefinition} to check
+     * @param project the {@link ICompilerProject} in which to look up types
+     * @return true if definition is the built-in XML or XMLList type.
+     */
+    public static boolean isXMLish(IDefinition def, ICompilerProject project)
+    {
+        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
+        IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        return (xmlDef != null && def == xmlDef) ||
+               (xmlListDef != null && def == xmlListDef);
+    }
+    
+    /**
+     * Determines if an expression is a toString() function call.
+     */
+    public static boolean isToStringFunctionCall(IExpressionNode node, ICompilerProject project)
+    {
+        if(!(node instanceof IFunctionCallNode))
+        {
+            return false;
+        }
+        IFunctionCallNode functionCall = (IFunctionCallNode) node;
+    	IExpressionNode nameExpression = functionCall.getNameNode();
+    	if (nameExpression instanceof IMemberAccessExpressionNode)
+    	{
+    		IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) nameExpression;
+    		IExpressionNode rightNode = memberAccess.getRightOperandNode();
+            if (rightNode instanceof IIdentifierNode)
+            {
+                IIdentifierNode rightIdentifier = (IIdentifierNode) rightNode;
+                return rightIdentifier.getName().equals("toString");
+            }
+    	}
+    	return false;
     }
 
     /**

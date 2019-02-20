@@ -29,8 +29,10 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
@@ -97,6 +99,15 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         {
             avdef = avnode.resolve(getProject());
         	avtypedef = avnode.resolveType(getProject());
+            if (getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(avtypedef))
+            {
+                IDefinition resolvedXMLDef = SemanticUtils.resolveXML(avnode, getProject());
+                if (resolvedXMLDef != null)
+                {
+                    avdef = resolvedXMLDef;
+                    avtypedef = SemanticUtils.resolveTypeXML(avnode, getProject());
+                }
+            }
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
             {
@@ -255,11 +266,25 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 }
                 coercionStart = "!!(";
             }
-            else if (getProject().getBuiltinType(BuiltinType.STRING).equals(variableDef) &&
-                !getProject().getBuiltinType(BuiltinType.STRING).equals(avtypedef) &&
-                !getProject().getBuiltinType(BuiltinType.NULL).equals(avtypedef))
+            else if (getProject().getBuiltinType(BuiltinType.STRING).equals(variableDef)
+                    && !getProject().getBuiltinType(BuiltinType.STRING).equals(avtypedef)
+                    && !getProject().getBuiltinType(BuiltinType.NULL).equals(avtypedef)
+                    && !(getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(avtypedef)
+                            && SemanticUtils.isToStringFunctionCall(avnode, getProject())))
             {
-                coercionStart = "org.apache.royale.utils.Language.string(";
+                if(avdef != null && avdef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED))
+                {
+                    //undefined is coerced to null
+                    startMapping(avnode);
+                    write(IASLanguageConstants.NULL);
+                    endMapping(avnode);
+                    return;
+                }
+                JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter) (getEmitter().getDocEmitter());
+                if (docEmitter.emitStringConversions)
+                {
+                    coercionStart = "org.apache.royale.utils.Language.string(";
+                }
             }
 			if (coercionStart != null)
 			{

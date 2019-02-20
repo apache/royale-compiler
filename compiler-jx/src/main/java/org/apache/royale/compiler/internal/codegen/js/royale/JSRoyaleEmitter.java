@@ -76,6 +76,7 @@ import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -1194,7 +1195,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
 			if (rightDef != null)
 			{
-				if (IdentifierNode.isXMLish(rightDef, getWalker().getProject()))
+				if (SemanticUtils.isXMLish(rightDef, getWalker().getProject()))
 				{
 					return isLeftNodeXMLish(leftNode);
 				}
@@ -1214,7 +1215,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		{
 			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
 			if (leftDef != null)
-				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
 		}
 		else if (leftID == ASTNodeID.MemberAccessExpressionID || leftID == ASTNodeID.Op_DescendantsID)
 		{
@@ -1226,7 +1227,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 				IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
 				if (rightDef != null)
 				{
-					return IdentifierNode.isXMLish(rightDef, getWalker().getProject());
+					return SemanticUtils.isXMLish(rightDef, getWalker().getProject());
 				}
 			}
 			leftNode = maen.getLeftOperandNode();
@@ -1251,7 +1252,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			leftNode = (IExpressionNode)(leftNode.getChild(0));
 			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
 			if (leftDef != null)
-				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
 
 		}
 		else if (leftID == ASTNodeID.E4XFilterID)
@@ -1352,7 +1353,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		{
 			return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode());
 		}
-		return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+		return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
     }
 
     public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)

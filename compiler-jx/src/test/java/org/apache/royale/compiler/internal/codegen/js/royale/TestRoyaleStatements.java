@@ -177,6 +177,60 @@ public class TestRoyaleStatements extends TestGoogStatements
         assertOut("var /** @type {number} */ a = 4294967173");
     }
 
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedStringLiteral()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = \"hi\";",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = \"hi\"");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedNull()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = null;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = null");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedUndefined()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = undefined;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = null");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedStringVar()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:String = b }var b:String;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = this.b");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedAnyTypeVar()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:String = b }var b:*;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = org.apache.royale.utils.Language.string(this.b)");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedToStringFunctionCall()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:String = b.toString(); }var b:Object;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = this.b.toString()");
+    }
+
     //----------------------------------
     // const declaration
     //----------------------------------

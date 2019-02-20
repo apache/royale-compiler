@@ -430,6 +430,78 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_AssignmentStringVarToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:String;var1 = var2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = var2");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentAnyTypeVarToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:*;var1 = var2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = org.apache.royale.utils.Language.string(var2)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentAnyTypeVarToStringSuppressed()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:Object; /**\n * @royalenoimplicitstringconversion\n */\npublic function d() { b = c; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
+        IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
+        
+        // this adds '/**\n * @royalenoimplicitstringconversion\n * @export\n */' to the output but parses
+        // the asdoc so the emitter will suppress the output
+        docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("/**\n * @royalenoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentXMLChildToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:XML;var1 = var2.child");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = org.apache.royale.utils.Language.string(var2.child('child'))");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentStringLiteralToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = \"hi\"");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = \"hi\"");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNullToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = null");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = null");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentUndefinedToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = undefined");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = null");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentToStringFunctionCallToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:Object;var1 = var2.toString()");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = var2.toString()");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_setterAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
@@ -898,32 +970,6 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
-    public void testVisitBinaryOperatorNode_StringVarAssignmentFromObject()
-    {
-        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; public function d() { b = c; }}",
-                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("this.b = org.apache.royale.utils.Language.string(this.c)");
-    }
-
-    @Test
-    public void testVisitBinaryOperatorNode_StringVarAssignmentFromObjectSupressed()
-    {
-        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; /**\n * @royalenoimplicitstringconversion\n */\npublic function d() { b = c; }}",
-                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
-        IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
-        
-        // this adds '/**\n * @royalenoimplicitstringconversion\n * @export\n */' to the output but parses
-        // the asdoc so the emitter will suppress the output
-        docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("/**\n * @royalenoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
-    }
-
-    @Test
     public void testVisitBinaryOperatorNode_StringVarCompareWithObject()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
@@ -951,16 +997,6 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("obj[prop] + 1");
-    }
-
-    @Test
-    public void testVisitBinaryOperatorNode_StringAssignFromStarToString()
-    {
-        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:*; public function d() { b = c.toString(); }}",
-                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("this.b = this.c.toString()");
     }
 
     @Test
@@ -1716,6 +1752,62 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitReturnStringWithLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { return \"hi\"; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return \"hi\"");
+    }
+
+    @Test
+    public void testVisitReturnStringWithNull()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { return null; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return null");
+    }
+
+    @Test
+    public void testVisitReturnStringWithUndefined()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { return undefined; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return null");
+    }
+
+    @Test
+    public void testVisitReturnStringWithStringVar()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:String; return a; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a");
+    }
+
+    @Test
+    public void testVisitReturnStringWithAnyTypeVar()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:*; return a; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return org.apache.royale.utils.Language.string(a)");
+    }
+
+    @Test
+    public void testVisitReturnStringWithToStringFunctionCall()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:Object; return a.toString(); }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a.toString()");
+    }
+
+    @Test
+    public void testVisitReturnStringWithXMLChild()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:XML; return a.child; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return org.apache.royale.utils.Language.string(a.child('child'))");
+    }
+
+    @Test
     public void testVisitFunctionCallWithIntParameterNegative()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(-123)", IFunctionCallNode.class);
@@ -1801,6 +1893,62 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(undefined)", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; a(\"hi\");", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(\"hi\")");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterNull()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; a(null);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(null)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterUndefined()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; a(undefined);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(null)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterStringVar()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:String; a(b);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterAnyTypeVar()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:*; a(b);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(org.apache.royale.utils.Language.string(b))");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterToStringFunctionCall()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:Object; a(b.toString());", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b.toString())");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterXMLVarChild()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:XML; a(b.child);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(org.apache.royale.utils.Language.string(b.child('child')))");
     }
 
     protected IBackend createBackend()

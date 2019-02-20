@@ -104,22 +104,6 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     }
 
     /**
-     * Determine if the definition passed in is one of the XML types (XML or
-     * XMLList) These classes are unrelated, but behave in similar manners.
-     * 
-     * @param def the {@link IDefinition} to check
-     * @param project the {@link ICompilerProject} in which to look up types
-     * @return true if definition is the built-in XML or XMLList type.
-     */
-    public static boolean isXMLish(IDefinition def, ICompilerProject project)
-    {
-        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
-        IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
-        return (xmlDef != null && def == xmlDef) ||
-               (xmlListDef != null && def == xmlListDef);
-    }
-
-    /**
      * Constructor.
      */
     public IdentifierNode(String name)
@@ -469,7 +453,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
 
         if (def != null)
         {
-            if (isXMLish(def.getParent(), project))
+            if (SemanticUtils.isXMLish(def.getParent(), project))
             {
                 // XML and XMLList members should be treated as '*' because any access could
                 // resolve to some content inside the XML (i.e. it has a child tag named 'name').
@@ -903,7 +887,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    if (!((RoyaleProject)project).useStrictXML() && isXMLish(baseType, project))
+                    if (!((RoyaleProject)project).useStrictXML() && SemanticUtils.isXMLish(baseType, project))
                         return null;
                     
                     if (baseExpr instanceof IdentifierNode)
@@ -1039,7 +1023,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             // Can't early bind to XML/XMLList properties as they may be hidden by the unknown contents
             // of the XML itself, i.e. a child tag named 'parent'
             // Matches ASC behavior.
-            if (!isXMLish(def.getParent(), project))
+            if (!SemanticUtils.isXMLish(def.getParent(), project))
                 return true;
         }
         return false;

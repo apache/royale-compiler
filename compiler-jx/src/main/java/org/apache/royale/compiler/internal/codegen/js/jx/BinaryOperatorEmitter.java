@@ -21,23 +21,17 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
-import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -46,7 +40,6 @@ import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class BinaryOperatorEmitter extends JSSubEmitter implements
@@ -320,7 +313,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             else if (leftSide.getNodeID() == ASTNodeID.IdentifierID)
             {
     			if ((leftDef != null)
-    				&& IdentifierNode.isXMLish(leftDef, getWalker().getProject()))
+    				&& SemanticUtils.isXMLish(leftDef, getWalker().getProject()))
     			{
                 	if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
                 	{
@@ -398,233 +391,12 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
     			}
             }
-
-            boolean leftIsNumber = (leftDef != null && (leftDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-					  leftDef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					  leftDef.getQualifiedName().equals(IASLanguageConstants.uint)));
-        	IExpressionNode rNode = node.getRightOperandNode();
-        	IDefinition rightDef = rNode.resolve(getWalker().getProject());
-        	IDefinition rightTypeDef = rNode.resolveType(getWalker().getProject());
-        	boolean rightIsNumber = (rightTypeDef != null && (rightTypeDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-					  rightTypeDef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					  rightTypeDef.getQualifiedName().equals(IASLanguageConstants.uint)));
-            if (leftIsNumber && !rightIsNumber && (rightTypeDef == null || rightTypeDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
-            {
-        		if (rNode.getNodeID() == ASTNodeID.FunctionCallID)
-        		{
-	            	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
-	            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-	            	{
-	            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-	            		IExpressionNode rightNode = mae.getRightOperandNode();
-	            		rightIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-	            				((IdentifierNode)rightNode).getName().equals("length") &&
-	            				fjs.isXMLList(mae);
-	            	}
-        		}
-        		else if (rNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID)
-        		{
-        			DynamicAccessNode dyn = (DynamicAccessNode)rNode;
-        			IDefinition lDef = dyn.getLeftOperandNode().resolveType(getProject());
-        			IDefinition rDef = dyn.getRightOperandNode().resolveType(getProject());
-        			// numeric indexing?
-        			if (rDef.getQualifiedName().equals(IASLanguageConstants.Number))
-        			{
-        				IMetaTag[] metas = lDef.getAllMetaTags();
-        				for (IMetaTag meta : metas)
-        				{
-        					if (meta.getTagName().equals("ArrayElementType"))
-        					{
-        						IMetaTagAttribute[] attrs = meta.getAllAttributes();
-        						for (IMetaTagAttribute attr : attrs)
-        						{
-        							String t = attr.getValue();
-            						if (t.equals(IASLanguageConstants.Number))
-            							rightIsNumber = true;
-        						}
-        					}
-        				}
-        			}
-        		}
-            }
-			String coercionStart = null;
-			String coercionEnd = null;
-			String coercedValue = null;
-            if (isAssignment)
-            {
-				if (getProject().getBuiltinType(BuiltinType.INT).equals(leftDef))
-				{
-					boolean needsCoercion = false;
-					if (rNode instanceof INumericLiteralNode)
-					{
-						INumericLiteralNode numericLiteral = (INumericLiteralNode) rNode;
-						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-						coercedValue = Integer.toString(numericValue.toInt32());
-					}
-					else if(!getProject().getBuiltinType(BuiltinType.INT).equals(rightTypeDef))
-					{
-						needsCoercion = true;
-					}
-					if (needsCoercion)
-					{
-						coercionStart = "(";
-						coercionEnd = ") >> 0";
-					}
-				}
-				else if (getProject().getBuiltinType(BuiltinType.UINT).equals(leftDef))
-				{
-					boolean needsCoercion = false;
-					if (rNode instanceof INumericLiteralNode)
-					{
-						INumericLiteralNode numericLiteral = (INumericLiteralNode) rNode;
-						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-						coercedValue = Long.toString(numericValue.toUint32());
-					}
-					else if(!getProject().getBuiltinType(BuiltinType.UINT).equals(rightTypeDef))
-					{
-						needsCoercion = true;
-					}
-					if (needsCoercion)
-					{
-						coercionStart = "(";
-						coercionEnd = ") >>> 0";
-					}
-				}
-				else if (leftIsNumber && !rightIsNumber)
-				{
-					coercionStart = "Number(";
-				}
-				else if (getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(leftDef)
-						&& !getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(rightTypeDef))
-				{
-					boolean needsCoercion = true;
-					if (getProject().getBuiltinType(BuiltinType.NULL).equals(rightTypeDef)
-							|| (rightDef != null && rightDef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED)))
-					{
-						//null and undefined are coerced to false
-						coercedValue = IASLanguageConstants.FALSE;
-						needsCoercion = false;
-					}
-					else if (rNode instanceof INumericLiteralNode)
-					{
-						INumericLiteralNode numericLiteral = (INumericLiteralNode) rNode;
-						INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
-						//zero is coerced to false, and everything else is true
-						coercedValue = numericValue.toNumber() == 0.0
-								? IASLanguageConstants.FALSE
-								: IASLanguageConstants.TRUE;
-								needsCoercion = false;
-					}
-					if (needsCoercion)
-					{
-						coercionStart = "!!(";
-					}
-				}
-				else if (getProject().getBuiltinType(BuiltinType.STRING).equals(leftDef))
-				{
-					if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
-							rNode.getNodeID() != ASTNodeID.LiteralNullID)
-					{
-						if (rightTypeDef == null ||
-								(!(rightTypeDef.getQualifiedName().equals(IASLanguageConstants.String) ||
-								(rightTypeDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
-										&& rNode.getNodeID() == ASTNodeID.FunctionCallID &&
-										isToString(rNode)) ||
-								// if not an assignment we don't need to coerce numbers
-								(!isAssignment && rightIsNumber) ||
-								rightTypeDef.getQualifiedName().equals(IASLanguageConstants.Null))))
-						{
-							JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(getEmitter().getDocEmitter());
-							if (docEmitter.emitStringConversions)
-							{
-								coercionStart = "org.apache.royale.utils.Language.string(";
-							}
-						}
-					}
-				}
-			}
-            super_emitBinaryOperator(node, coercionStart, coercionEnd, coercedValue);
-            	
-            /*
-            IExpressionNode leftSide = node.getLeftOperandNode();
-
-            IExpressionNode property = null;
-            int leftSideChildCount = leftSide.getChildCount();
-            if (leftSideChildCount > 0)
-            {
-                IASNode childNode = leftSide.getChild(leftSideChildCount - 1);
-                if (childNode instanceof IExpressionNode)
-                    property = (IExpressionNode) childNode;
-                else
-                    property = leftSide;
-            }
-            else
-                property = leftSide;
-
-            IDefinition def = null;
-            if (property instanceof IIdentifierNode)
-                def = ((IIdentifierNode) property).resolve(getWalker()
-                        .getProject());
-
-            boolean isSuper = false;
-            if (leftSide.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            {
-                IASNode cnode = leftSide.getChild(0);
-                ASTNodeID cId = cnode.getNodeID();
-
-                isSuper = cId == ASTNodeID.SuperID;
-            }
-
-            String op = node.getOperator().getOperatorText();
-            boolean isAssignment = op.contains("=") && !op.contains("==") && 
-                                                    !(op.startsWith("<") || 
-                                                            op.startsWith(">") || 
-                                                            op.startsWith("!"));
-
-            if (def instanceof AccessorDefinition && isAssignment)
-            {
-                // this will make the set_foo call
-                getWalker().walk(leftSide);
-            }
-            else if (isSuper) 
-            {
-                emitSuperCall(node, "");
-            }
-            else
-            {
-                if (ASNodeUtils.hasParenOpen(node))
-                    write(ASEmitterTokens.PAREN_OPEN);
-
-                getWalker().walk(leftSide);
-
-                if (node.getNodeID() != ASTNodeID.Op_CommaID)
-                    write(ASEmitterTokens.SPACE);
-
-                writeToken(node.getOperator().getOperatorText());
-
-                getWalker().walk(node.getRightOperandNode());
-
-                if (ASNodeUtils.hasParenClose(node))
-                    write(ASEmitterTokens.PAREN_CLOSE);
-            }
-            */
+			
+            super_emitBinaryOperator(node, isAssignment);
         }
     }
-    
-    private boolean isToString(IASNode rNode)
-    {
-    	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
-    	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    	{
-    		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-    		IExpressionNode rightNode = mae.getRightOperandNode();
-    		return rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-    				((IdentifierNode)rightNode).getName().equals("toString");
-    	}
-    	return false;
-    }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercionStart, String coercionEnd, String coercedValue)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean isAssignment)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -691,43 +463,25 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             endMapping(node);
 
-			if (coercionStart != null)
+			if (isAssignment)
 			{
-				write(coercionStart);
-			}
-			if (coercedValue != null)
-			{
-				startMapping(node.getRightOperandNode());
-				write(coercedValue);
-				endMapping(node.getRightOperandNode());
+				getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()));
 			}
 			else
 			{
 				getWalker().walk(node.getRightOperandNode());
-			}
-			if (node.getNodeID() == ASTNodeID.Op_InID &&
-					((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
-			{
-				write(".elementNames()");
-			}   
-			else if (node.getNodeID() == ASTNodeID.Op_InID &&
-					((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
-			{
-				write(".propertyNames()");
+				if (node.getNodeID() == ASTNodeID.Op_InID &&
+						((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
+				{
+					write(".elementNames()");
+				}   
+				else if (node.getNodeID() == ASTNodeID.Op_InID &&
+						((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
+				{
+					write(".propertyNames()");
+				}
 			}
         }
-
-		if (coercionStart != null)
-		{
-			if (coercionEnd != null)
-			{
-				write(coercionEnd);
-			}
-			else
-			{
-				write(")");
-			}
-		}
 
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_CLOSE);
