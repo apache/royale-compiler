@@ -43,3 +43,6 @@ debugger/generated/
 
 # Asciidoctor related temp files
 ditaa-diagram.*
+
+# JUnit temp files
+junittestcases*.properties
