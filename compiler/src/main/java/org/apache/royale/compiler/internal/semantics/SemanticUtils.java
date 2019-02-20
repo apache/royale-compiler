@@ -967,7 +967,7 @@ public class SemanticUtils
             IFunctionDefinition functionDef = (IFunctionDefinition) def;
             return functionDef.resolveReturnType(project);
         }
-        return null;
+        return def.resolveType(project);
     }
 
     /**
@@ -989,30 +989,41 @@ public class SemanticUtils
                 IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) nameNode;
                 nameNode = memberAccess.getRightOperandNode();
             }
-            if (nameNode instanceof IdentifierNode)
+            if (nameNode instanceof IIdentifierNode)
             {
-                IdentifierNode rightIdentifier = (IdentifierNode) nameNode;
-                if (rightIdentifier.isMemberRef())
+                IdentifierNode identifierNode = (IdentifierNode) nameNode;
+                IDefinition resolvedDef = identifierNode.resolve(project);
+                if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
                 {
-                    ITypeDefinition baseType = null;
-                    ExpressionNodeBase baseExpr = rightIdentifier.getBaseExpression();
-                    if (baseExpr != null)
+                    if (resolvedDef instanceof IFunctionDefinition
+                            && !(resolvedDef instanceof IAccessorDefinition))
                     {
-                        baseType = baseExpr.resolveType(project);
-                    }
-                    if(isXMLish(baseType, project))
-                    {
-                        ASScope asScope = rightIdentifier.getASScope();
-                        IDefinition propertyDef = asScope.getPropertyFromDef(project, baseType, rightIdentifier.getName(), false);
-                        if (propertyDef instanceof IFunctionDefinition &&
-                            !(propertyDef instanceof IAccessorDefinition))
-                        {
-                            IFunctionDefinition functionDef = (IFunctionDefinition) propertyDef;
-                            return functionDef;
-                        }
+                        //method call on XML or XMLList instance
+                        return resolvedDef;
                     }
                 }
             }
+            return null;
+        }
+
+        if (iNode instanceof IIdentifierNode)
+        {
+            IdentifierNode identifierNode = (IdentifierNode) iNode;
+            IDefinition resolvedDef = identifierNode.resolve(project);
+            if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
+            {
+                if (resolvedDef.isPrivate() || resolvedDef.isProtected())
+                {
+                    //private/protected member inside the XML or XMLList class
+                    return resolvedDef;
+                }
+            }
+        }
+        if (iNode instanceof IMemberAccessExpressionNode)
+        {
+            IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) iNode;
+            IExpressionNode nameNode = memberAccess.getRightOperandNode();
+            return resolveXML(nameNode, project);
         }
         return null;
     }
