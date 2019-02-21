@@ -52,6 +52,7 @@
     <air.version>20.0</air.version>
 
     <jburgTypesRequired>true</jburgTypesRequired>
+    <skipgpg>false</skipgpg>
     <compiler-build-tools.version>1.0.0</compiler-build-tools.version>
     <compiler-jburg-types.version>1.0.0</compiler-jburg-types.version>
 
@@ -188,6 +189,13 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <configuration>
+          <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
+        </configuration>
+      </plugin>
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
         <groupId>org.apache.rat</groupId>
