@@ -44,13 +44,7 @@ import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.problems.PublicVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
@@ -453,8 +447,26 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             }
             if (warnPublicVars && !node.isConst() && !bindable && ns.contentEquals("public"))
             {
+                IASNode warningNode = node;
+                //find "public" child node, which may not be the start of the IVariableNode node because of associated metadata
+                int childCount = node.getChildCount();
+                int index = 0;
+                while (index < childCount) {
+                    IASNode child = node.getChild(index);
+                    if (child instanceof IIdentifierNode && ((IIdentifierNode) child).getName().equals("public")) {
+                        warningNode = child;
+                        break;
+                    }
+                    index++;
+                }
+                
                 if (!suppressedWarning(node, fjp))
-                	fjp.getProblems().add(new PublicVarWarningProblem(node));
+                	fjp.getProblems().add(new PublicVarWarningProblem(node.getSourcePath(),
+                            node.getStart(), node.getEnd(),
+                            warningNode.getLine(), warningNode.getColumn(),
+                            node.getEndLine(), node.getEndColumn()));
+               
+
             }
             emitPublic(node);
         }
