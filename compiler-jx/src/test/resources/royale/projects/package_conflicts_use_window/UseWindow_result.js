@@ -71,3 +71,9 @@ UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+UseWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;

@@ -49,7 +49,7 @@ import com.google.common.collect.ImmutableList;
  * configure() method of {@link MXMLJSC}.
  * <p>
  * This class inherits all compiler arguments from the MXMLC compiler.
- * 
+ *
  * @author Michael Schmalle
  */
 public class JSConfiguration extends Configuration
@@ -153,7 +153,7 @@ public class JSConfiguration extends Configuration
      * If the definition of a member cannot be resolved, emit dynamic access
      * instead of normal member access. Ensures that dynamic members aren't
      * renamed.
-     * 
+     *
      * <code>myObject.memberAccess</code> becomes <code>myObject["memberAccess"]</code>
      */
     @Config
@@ -222,7 +222,7 @@ public class JSConfiguration extends Configuration
      * Example: <code>-define=CONFIG::debugging,true</code>
      *
      * In <code>royale-config.xml</code>:<br/>
-     * 
+     *
      * <pre>
      * <royale-config>
      *    <compiler>
@@ -251,7 +251,7 @@ public class JSConfiguration extends Configuration
      * <code>"\"foo\""</code> or <code>"\'foo\'"</code>) or single-quoted (<code>"'foo'"</code>).
      *
      * String values in configuration files need only be single- or double- quoted:<br/>
-     * 
+     *
      * <pre>
      * <royale-config>
      *    <compiler>
@@ -270,18 +270,18 @@ public class JSConfiguration extends Configuration
      *
      * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and <code>''</code> or
      * <code>""</code> in configuration files.
-     * 
+     *
      * Finally, if you have existing definitions in a configuration file, and you would like to add to them with the
      * command-line (let's say most of your build setCompilertings are in the configuration, and that you are adding one
      * temporarily using the command-line), you use the following syntax: <code>-define+=TEST::temporary,false</code>
      * (noting the plus sign)
-     * 
+     *
      * Note that definitions can be overridden/redefined if you use the append ("+=") syntax (on the commandline or in a
      * user config file, for instance) with the same namespace and name, and a new value.
-     * 
+     *
      * Definitions cannot be removed/undefined. You can undefine ALL existing definitions from (e.g. from
      * royale-config.xml) if you do not use append syntax ("=" or append="false").
-     * 
+     *
      * IMPORTANT FOR FLASH BUILDER If you are using "Additional commandline arguments" to "-define", don't use the
      * following syntax though I suggest it above: -define+=CONFIG::foo,"'value'" The trouble is that FB parses the
      * double quotes incorrectly as <"'value'> -- the trailing double-quote is dropped. The solution is to avoid inner
@@ -382,7 +382,7 @@ public class JSConfiguration extends Configuration
     @Arguments("filename")
     public void setJsLoadConfig(ConfigurationValue cv, String filename) throws ConfigurationException
     {
-        
+    
     }
     
     //////////////////////////////////////////////////////////////////////////
@@ -400,7 +400,7 @@ public class JSConfiguration extends Configuration
      * Configures a list of many manifests mapped to a single namespace URI.
      * <namespace> <uri>library:adobe/flex/something</uri> <manifest>something-manifest.xml</manifest>
      * <manifest>something-else-manifest.xml</manifest> ... </namespace>
-     * 
+     *
      * @param cfgval The configuration value context.
      * @param args A List of values for the namespace element, with the first item expected to be the uri and the
      *        remaining are manifest paths.

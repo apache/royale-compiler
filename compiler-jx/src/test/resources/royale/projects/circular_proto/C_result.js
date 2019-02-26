@@ -73,8 +73,14 @@ C.prototype.ROYALE_REFLECTION_INFO = function () {
     methods: function () {
       return {
         'C': { type: '', declaredBy: 'C'},
-        '|a': { type: 'int', declaredBy: 'C', parameters: function () { return [  { index: 1, type: 'Boolean', optional: false } ]; }}
+        '|a': { type: 'int', declaredBy: 'C', parameters: function () { return [ { index: 1, type: 'Boolean', optional: false } ]; }}
       };
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+C.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;

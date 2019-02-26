@@ -1184,16 +1184,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             data.isStatic = false;
             data.declaredBy = cdef.getQualifiedName();
         }
-
-
-        for (MXMLEventSpecifier event : events)
-        {
-        	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
-        	methodData.add(data);
-        	data.name = event.eventHandler;
-        	data.type = ASEmitterTokens.VOID.getToken();
-    	    data.declaredBy = cdef.getQualifiedName();
-        }
+        
         ArrayList<IMetaTagNode> metadataTagNodes = new ArrayList<IMetaTagNode>();
         for (IMXMLMetadataNode metadataTag : metadataNodes)
         {
@@ -1212,6 +1203,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         		accessorData,
                 methodData,
                 metadataTagNodes.toArray(metaDataTags));
+	
+		asEmitter.packageFooterEmitter.emitReflectionRegisterInitialStaticFields(
+				formatQualifiedName(cdef.getQualifiedName()),
+				cdef);
+        
         asEmitter.packageFooterEmitter.emitExportProperties(
                 formatQualifiedName(cdef.getQualifiedName()),
                 exportProperties,
@@ -1476,14 +1472,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	StringBuilder sb = new StringBuilder();
     	MXMLBindingNode node = (MXMLBindingNode)bi.node;
     	IMXMLBindingAttributeNode destNode = node.getDestinationAttributeNode();
-    	Stack<IASNode> nodeStack = new Stack<IASNode>();    
+    	Stack<IASNode> nodeStack = new Stack<IASNode>();
     	nodeStack.push(node);
     	IASNode parentNode = node.getParent();
     	while (!(parentNode instanceof IMXMLInstanceNode))
     	{
     		nodeStack.push(parentNode);
     		parentNode = parentNode.getParent();
-    	}    	
+    	}
     	boolean isXML = parentNode instanceof IMXMLXMLNode;
     	sb.append("this.");
     	sb.append(((IMXMLInstanceNode)parentNode).getEffectiveID());

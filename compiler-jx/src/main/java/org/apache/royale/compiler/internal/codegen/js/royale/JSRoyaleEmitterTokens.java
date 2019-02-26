@@ -28,9 +28,13 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
 {
     ROYALE_CLASS_INFO("ROYALE_CLASS_INFO"),
     ROYALE_REFLECTION_INFO("ROYALE_REFLECTION_INFO"),
+    ROYALE_REFLECTION_INFO_GET_SET("get_set"),
+    ROYALE_REFLECTION_INFO_INITIAL_STATICS("statics"),
+    ROYALE_REFLECTION_INFO_COMPILE_TIME_FLAGS("compileFlags"),
     ROYALE_CLASS_INFO_KIND("kind"),
     ROYALE_CLASS_INFO_CLASS_KIND("class"),
     ROYALE_CLASS_INFO_INTERFACE_KIND("interface"),
+    ROYALE_CLASS_INFO_IS_DYNAMIC("isDynamic"),
     GOOG_EXPORT_PROPERTY("goog.exportProperty"),
     GOOG_EXPORT_SYMBOL("goog.exportSymbol"),
     INDENT("  "),

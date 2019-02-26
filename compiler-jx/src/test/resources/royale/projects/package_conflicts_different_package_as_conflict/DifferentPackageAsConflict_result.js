@@ -71,3 +71,9 @@ DifferentPackageAsConflict.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+DifferentPackageAsConflict.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;

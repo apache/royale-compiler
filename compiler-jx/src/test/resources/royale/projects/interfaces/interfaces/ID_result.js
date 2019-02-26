@@ -56,3 +56,9 @@ interfaces.ID.prototype.ROYALE_REFLECTION_INFO = function () {
     methods: function () {return {};}
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+interfaces.ID.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;

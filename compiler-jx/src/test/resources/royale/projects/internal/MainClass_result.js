@@ -64,6 +64,12 @@ MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+MainClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
 
 
 
@@ -94,26 +100,3 @@ MainClass.InternalClass.prototype.foo;
  * @type {Object.<string, Array.<Object>>}
  */
 MainClass.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass', kind: 'class' }] };
-
-
-
-/**
- * Reflection
- *
- * @return {Object.<string, Function>}
- */
-MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
-  return {
-    variables: function () {
-      return {
-        'foo': { type: 'OtherClass'}
-      };
-    },
-    accessors: function () {return {};},
-    methods: function () {
-      return {
-        'InternalClass': { type: '', declaredBy: 'MainClass.InternalClass'}
-      };
-    }
-  };
-};
