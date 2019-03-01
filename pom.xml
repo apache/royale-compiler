@@ -185,6 +185,23 @@
         <website.path>${project.version}</website.path>
       </properties>
     </profile>
+    <profile>
+        <id>upload-release-to-staging</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>wagon-maven-plugin</artifactId>
+                    <version>2.0.0</version>
+                    <configuration>
+                        <includes>**</includes>
+                        <serverId>apache.releases.https</serverId>
+                        <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
   </profiles>
 
   <build>
