@@ -166,7 +166,7 @@
     <property name="jflex.name" value="jflex"/>
     <property name="jflex.version" value="1.6.0"/>
     <!-- property name="jflex.version" value="1.5.1"/ -->
-    <property name="jflex.server" value="http://jflex.de"/>
+    <property name="jflex.server" value="https://jflex.de"/>
     <property name="jflex.folder" value="."/>
     <property name="jflex.filename" value="${jflex.name}-${jflex.version}.tar.gz"/>
     <property name="jflex.md5" value="df8cc9ca50b549bf705bd23479c100dc"/>
