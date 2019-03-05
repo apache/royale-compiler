@@ -160,98 +160,53 @@
         <antcall target="sign-file" >
             <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" />
         </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler/${release.version}/compiler-${release.version}-javadoc.jar" />
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler" />
         </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler/${release.version}/compiler-${release.version}-sources.jar" />
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-common" />
         </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler/${release.version}/compiler-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-common/${release.version}/compiler-common-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-common/${release.version}/compiler-common-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-common/${release.version}/compiler-common-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-sources.jar" />
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-externc" />
         </antcall>
         <antcall target="sign-file" >
             <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-tests.jar" />
         </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-jx" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-test-utils" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="debugger" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="flex-compiler-oem" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="royale-ant-tasks" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="royale-maven-plugin" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="swfutils" />
+        </antcall>
+    </target>
+    
+    <target name="sign-jar-artifacts">
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-jx/${release.version}/compiler-jx-${release.version}-javadoc.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-jx/${release.version}/compiler-jx-${release.version}-sources.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-jx/${release.version}/compiler-jx-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-test-utils/${release.version}/compiler-test-utils-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-test-utils/${release.version}/compiler-test-utils-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-test-utils/${release.version}/compiler-test-utils-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/debugger/${release.version}/debugger-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/debugger/${release.version}/debugger-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/debugger/${release.version}/debugger-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/flex-compiler-oem/${release.version}/flex-compiler-oem-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/flex-compiler-oem/${release.version}/flex-compiler-oem-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/flex-compiler-oem/${release.version}/flex-compiler-oem-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-ant-tasks/${release.version}/royale-ant-tasks-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-ant-tasks/${release.version}/royale-ant-tasks-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-ant-tasks/${release.version}/royale-ant-tasks-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-maven-plugin/${release.version}/royale-maven-plugin-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-maven-plugin/${release.version}/royale-maven-plugin-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-maven-plugin/${release.version}/royale-maven-plugin-${release.version}.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/swfutils/${release.version}/swfutils-${release.version}-javadoc.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/swfutils/${release.version}/swfutils-${release.version}-sources.jar" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/swfutils/${release.version}/swfutils-${release.version}.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
         </antcall>
     </target>
     
