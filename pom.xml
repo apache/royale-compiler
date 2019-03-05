@@ -187,6 +187,9 @@
     </profile>
     <profile>
         <id>upload-release-to-staging</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>
         <modules><!-- only run on top-level, not for each module -->
         </modules>
         <build>

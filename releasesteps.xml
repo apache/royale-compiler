@@ -273,7 +273,7 @@
             <arg value="-X" />
             <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/checkout/release-dir" />
             <arg value="-P" />
-            <arg value="upload-release-to-staging" />
+            <arg value="upload-release-to-staging,-main" />
         </exec>
     </target>
     
