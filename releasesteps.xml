@@ -160,6 +160,9 @@
         <antcall target="sign-file" >
             <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" />
         </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}.pom" />
+        </antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler" />
         </antcall>
