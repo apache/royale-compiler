@@ -268,7 +268,7 @@ Software Dependencies
         commons-compress - https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.10/commons-compress-1.10.jar
         guava - https://repo1.maven.org/maven2/com/google/guava/guava/17.0/guava-17.0.jar
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
-        jflex - http://jflex.de/jflex-1.6.0.tar.gz
+        jflex - https://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
         Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
 
