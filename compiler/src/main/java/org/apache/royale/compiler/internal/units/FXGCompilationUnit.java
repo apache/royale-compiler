@@ -124,6 +124,12 @@ public class FXGCompilationUnit extends CompilationUnitBase
         {
             return false;
         }
+
+		@Override
+		public void setLastModified(long fileDate) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     public FXGCompilationUnit(CompilerProject project, String path, BasePriority basePriority, String qname)

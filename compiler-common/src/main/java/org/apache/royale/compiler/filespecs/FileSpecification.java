@@ -127,4 +127,10 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
     {
         return new BufferedInputStream(new FileInputStream(getFileHandle()));
     }
+
+	@Override
+	public void setLastModified(long fileDate) {
+		File fileHandle = getFileHandle();
+		fileHandle.setLastModified(fileDate);
+	}
 }
