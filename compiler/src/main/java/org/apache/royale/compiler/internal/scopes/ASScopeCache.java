@@ -25,6 +25,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinitionBase;
@@ -32,10 +33,13 @@ import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
 import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 import com.google.common.collect.MapMaker;
 
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -138,8 +142,18 @@ public class ASScopeCache
         IDefinition result = map.get(name);
         if (result != null)
         {
-            assert result.isInProject(project);
-            // We found a cached result - we're done
+        	if (result instanceof ITypeDefinition)
+        	{
+	        	ICompilationUnit from = scope.getFileScope().getCompilationUnit();
+	            assert result.isInProject(project);
+	            // We found a cached result - we're done
+	            Collection<WeakReference<ICompilationUnit>> units = project.getWorkspace().getCompilationUnits(result.getContainingFilePath());
+	            for (WeakReference<ICompilationUnit> unit : units)
+	            {
+	            	ICompilationUnit to = unit.get();
+	            	project.addDependency(from, to, dt, result.getQualifiedName());
+	            }
+        	}
             return result;
         }
 
