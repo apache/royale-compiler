@@ -41,6 +41,7 @@ import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -125,6 +126,11 @@ public class ASScopeCache
     private SoftReference<Set<IASLanguageConstants.BuiltinType>> builtinTypeDependencyCache;
 
     /**
+     * Cache the CompilationUnit for a Definition
+     */
+    private HashMap<IDefinition, WeakReference<ICompilationUnit>> compilationUnitMap = new HashMap<IDefinition, WeakReference<ICompilationUnit>>();
+    
+    /**
      * Version of findProperty that uses a cache. Checks the cache first, and
      * only queries the scope if the we don't have a cached result.
      * 
@@ -146,12 +152,46 @@ public class ASScopeCache
         	{
 	        	ICompilationUnit from = scope.getFileScope().getCompilationUnit();
 	            assert result.isInProject(project);
-	            // We found a cached result - we're done
-	            Collection<WeakReference<ICompilationUnit>> units = project.getWorkspace().getCompilationUnits(result.getContainingFilePath());
-	            for (WeakReference<ICompilationUnit> unit : units)
-	            {
-	            	ICompilationUnit to = unit.get();
-	            	project.addDependency(from, to, dt, result.getQualifiedName());
+	            
+	            String qname = result.getQualifiedName();
+            	WeakReference<ICompilationUnit> cuRef = compilationUnitMap.get(result);
+            	if (cuRef == null)
+            	{
+		            // We found a cached result - we're done
+		            Collection<WeakReference<ICompilationUnit>> units = project.getWorkspace().getCompilationUnits(result.getContainingFilePath());
+		            for (WeakReference<ICompilationUnit> unit : units)
+		            {
+		            	ICompilationUnit cu = unit.get();
+		            	if (cu != null)
+		            	{
+		            		List<String> qnames = null;
+							try {
+								qnames = cu.getQualifiedNames();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (qnames != null)
+							{
+			            		for (String q : qnames)
+			            		{
+			            			if (q.contentEquals(qname))
+			            			{
+			            				cuRef = unit;
+			            				compilationUnitMap.put(result, unit);
+			            				break;
+			            			}
+			            		}
+							}
+		            	}
+		            	if (cuRef != null)
+		            		break;
+		            }
+            	}
+            	if (cuRef != null)
+            	{
+            		ICompilationUnit to = cuRef.get();
+	            	project.addDependency(from, to, dt, qname);
 	            }
         	}
             return result;
