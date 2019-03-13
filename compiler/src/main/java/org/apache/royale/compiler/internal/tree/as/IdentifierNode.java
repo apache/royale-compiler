@@ -323,6 +323,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         return true;
     }
 
+    private IDefinition idDef = null;
     //
     // ExpressionNodeBase overrides
     //
@@ -330,6 +331,9 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     @Override
     public IDefinition resolve(ICompilerProject project)
     {
+    	if (idDef != null)
+    		return idDef;
+    	
         ASScope asScope = getASScope();
 
         if (asScope == null)
@@ -391,7 +395,8 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         {
             if (qualifier == null)
             {
-                result = asScope.findProperty(project, name, getDependencyType(), isTypeRef());
+            	DependencyType dt = getDependencyType();
+                result = asScope.findProperty(project, name, dt, isTypeRef());
                 if (result != null && name.equals("graphics") && (result.getParent() instanceof ITypeDefinition) && ((ITypeDefinition)(result.getParent())).isInstanceOf("mx.core.UIComponent", project))
                 	result = asScope.findProperty(project, "royalegraphics", getDependencyType(), isTypeRef());
                 // ASVariableTests_localVarSameNameAsPrivateMethod
@@ -459,6 +464,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         		((RoyaleProject)project).addToAPIReport(result);
         }
         
+        idDef = result;
         return result;
     }
 
