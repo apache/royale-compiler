@@ -25,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -601,6 +603,22 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                                 sourceMapOut.close();
                             }
 	                        writer.close();
+	                        long fileDate = 0;
+	                    	String metadataDate = targetSettings.getSWFMetadataDate();
+	                    	if (metadataDate != null)
+	                    	{
+	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			fileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    		outputClassFile.setLastModified(fileDate);
+	                    	}
 	                    }
 	                }
                 }

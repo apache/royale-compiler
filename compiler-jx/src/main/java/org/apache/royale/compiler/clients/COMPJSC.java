@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -472,11 +474,28 @@ public class COMPJSC extends MXMLJSC
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
 	                        System.out.println("Writing file: " + outputClassFile);     	
-	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
+	                        long fileDate = System.currentTimeMillis();
+	                    	String metadataDate = targetSettings.getSWFMetadataDate();
+	                    	if (metadataDate != null)
+	                    	{
+	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			fileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    	}
+	                    	ZipEntry ze = new ZipEntry(outputClassFile);
+	                    	ze.setTime(fileDate);
+	                        zipOutputStream.putNextEntry(ze);
 	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
 	                        zipOutputStream.closeEntry();
-	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + fileDate + "\"/>\n");
                             if(sourceMapTemp != null)
                             {
                                 String sourceMapFile = getOutputSourceMapFile(
@@ -488,7 +507,7 @@ public class COMPJSC extends MXMLJSC
                                 sourceMapTemp.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
                                 zipOutputStream.closeEntry();
-                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + fileDate + "\"/>\n");
                             }
                             writer.close();
                         }
@@ -497,11 +516,28 @@ public class COMPJSC extends MXMLJSC
                 if (packingSWC)
                 {
                 	zipFile.close();
+                    long fileDate = System.currentTimeMillis();
+                	String metadataDate = targetSettings.getSWFMetadataDate();
+                	if (metadataDate != null)
+                	{
+                		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+                		try {
+                			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			fileDate = sdf.parse(metadataDate).getTime();
+                		} catch (ParseException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			} catch (IllegalArgumentException e1) {
+            				e1.printStackTrace();
+            			}
+                	}
                 	int libraryIndex = catalog.indexOf("</libraries>");
                 	catalog = catalog.substring(0, libraryIndex + 13) +
                 		"    <files>\n" + fileList.toString() + "    </files>" + 
                 		catalog.substring(libraryIndex + 13);
-                    zipOutputStream.putNextEntry(new ZipEntry(SWCReader.CATALOG_XML));
+                	ZipEntry ze = new ZipEntry(SWCReader.CATALOG_XML);
+                	ze.setTime(fileDate);
+                    zipOutputStream.putNextEntry(ze);
                 	zipOutputStream.write(catalog.getBytes());
                     zipOutputStream.flush();
                     zipOutputStream.closeEntry();
