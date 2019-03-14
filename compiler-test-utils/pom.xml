@@ -34,6 +34,16 @@
     Shared test code, which is needed by the compiler and the compiler-jx test-suites.
   </description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.8</version>
+      </plugin>
+    </plugins>
+  </build>
+    
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>

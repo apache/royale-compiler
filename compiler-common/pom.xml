@@ -32,6 +32,16 @@
     <name>Apache Royale: Compiler: Compiler-Common</name>
     <description>The Apache Royale Compiler Common classes</description>
   
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>io.github.zlika</groupId>
+              <artifactId>reproducible-build-maven-plugin</artifactId>
+              <version>0.8</version>
+          </plugin>
+      </plugins>
+  </build>
+  
   <dependencies>
     <dependency>
       <groupId>org.apache.flex</groupId>
