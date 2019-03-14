@@ -35,6 +35,32 @@
   <name>Apache Royale: JBurg Types</name>
   <description>Types needed by JBurg to perform it's code generation.</description>
 
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>io.github.zlika</groupId>
+            <artifactId>reproducible-build-maven-plugin</artifactId>
+            <version>0.8</version>
+        </plugin>
+    </plugins>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>io.github.zlika</groupId>
+                <artifactId>reproducible-build-maven-plugin</artifactId>
+                <version>0.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>strip-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>net.sourceforge.jburg</groupId>
