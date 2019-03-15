@@ -185,7 +185,6 @@ public class FieldEmitter extends JSSubEmitter implements
                 // 'dynamic' properties).
                 write(ASEmitterTokens.SPACE);
                 writeToken(ASEmitterTokens.EQUAL);
-                write(ASEmitterTokens.SPACE);
                 write(ASEmitterTokens.NULL);
             }
         }
