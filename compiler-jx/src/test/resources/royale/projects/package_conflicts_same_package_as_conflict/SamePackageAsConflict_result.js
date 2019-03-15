@@ -43,7 +43,7 @@ goog.exportSymbol('SamePackageAsConflict', SamePackageAsConflict);
  * @private
  * @type {mypackage.TestClass}
  */
-SamePackageAsConflict.prototype.testClass;
+SamePackageAsConflict.prototype.testClass = null;
 
 
 /**
@@ -76,4 +76,4 @@ SamePackageAsConflict.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-SamePackageAsConflict.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+SamePackageAsConflict.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

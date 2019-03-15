@@ -42,7 +42,7 @@ goog.exportSymbol('Super', Super);
  * @private
  * @type {Base}
  */
-Super.isItCircular;
+Super.isItCircular = null;
 
 
 /**
@@ -75,4 +75,11 @@ Super.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+/**
+ * Provide reflection support for distinguishing dynamic fields on class object (static)
+ * @export
+ * @const
+ * @type {Array<string>}
+ */
+Super.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(Super);

@@ -71,4 +71,4 @@ classes.C.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-classes.C.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+classes.C.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

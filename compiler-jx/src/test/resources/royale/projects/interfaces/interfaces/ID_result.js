@@ -61,4 +61,4 @@ interfaces.ID.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-interfaces.ID.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+interfaces.ID.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

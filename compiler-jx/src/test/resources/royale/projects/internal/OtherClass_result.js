@@ -66,4 +66,4 @@ OtherClass.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-OtherClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+OtherClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

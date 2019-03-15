@@ -46,14 +46,14 @@ goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
  * @private
  * @type {Event}
  */
-mypackage.TestClass.prototype.event1;
+mypackage.TestClass.prototype.event1 = null;
 
 
 /**
  * @private
  * @type {otherpackage.Event}
  */
-mypackage.TestClass.prototype.event2;
+mypackage.TestClass.prototype.event2 = null;
 
 
 /**
@@ -86,4 +86,4 @@ mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

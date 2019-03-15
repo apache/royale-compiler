@@ -99,4 +99,4 @@ Super.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

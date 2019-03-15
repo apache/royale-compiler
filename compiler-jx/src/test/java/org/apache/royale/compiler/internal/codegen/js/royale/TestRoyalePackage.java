@@ -111,7 +111,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n");
+				"A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Override
@@ -165,7 +165,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n");
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Override
@@ -229,7 +229,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n"
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
 		
 		);
     }
@@ -300,7 +300,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n");
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Test
@@ -364,7 +364,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n");
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Test
@@ -436,7 +436,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"goog.exportProperty(foo.bar.baz.A.prototype, 'foo', foo.bar.baz.A.prototype.foo);\n" );
     }
 
@@ -509,7 +509,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -602,7 +602,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -677,7 +677,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -768,7 +768,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -925,7 +925,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1048,7 +1048,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1096,7 +1096,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 14;\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +

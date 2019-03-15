@@ -67,4 +67,4 @@ mypackage.Event.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-mypackage.Event.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+mypackage.Event.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

@@ -38,7 +38,7 @@ AmbiguousDefinition = function() {
  * @export
  * @type {mypackage.TestClass}
  */
-AmbiguousDefinition.prototype.testClass;
+AmbiguousDefinition.prototype.testClass = null;
 
 
 /**

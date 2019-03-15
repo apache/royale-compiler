@@ -69,7 +69,7 @@ MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-MainClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+MainClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
 
 
 
@@ -91,7 +91,7 @@ goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
  * @export
  * @type {OtherClass}
  */
-MainClass.InternalClass.prototype.foo;
+MainClass.InternalClass.prototype.foo = null;
 
 
 /**

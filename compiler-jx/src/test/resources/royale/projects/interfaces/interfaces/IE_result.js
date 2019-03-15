@@ -73,4 +73,4 @@ interfaces.IE.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-interfaces.IE.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+interfaces.IE.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

@@ -43,7 +43,7 @@ goog.exportSymbol('NoConflictNoWindow', NoConflictNoWindow);
  * @private
  * @type {mypackage.TestClass}
  */
-NoConflictNoWindow.prototype.testClass;
+NoConflictNoWindow.prototype.testClass = null;
 
 
 /**
@@ -76,4 +76,4 @@ NoConflictNoWindow.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-NoConflictNoWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+NoConflictNoWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

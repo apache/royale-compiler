@@ -43,7 +43,7 @@ goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
  * @private
  * @type {Event}
  */
-mypackage.TestClass.prototype.event;
+mypackage.TestClass.prototype.event = null;
 
 
 /**
@@ -76,4 +76,4 @@ mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
