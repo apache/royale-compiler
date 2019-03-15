@@ -276,15 +276,16 @@
           <debug>true</debug>
         </configuration>
         <dependencies>
-          <dependency>
-            <groupId>net.sourceforge.jburg</groupId>
-            <artifactId>jburg</artifactId>
-            <version>1.10.3</version>
-          </dependency>
+          <!-- this needs to be first in order to patch jburg -->
           <dependency>
             <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
             <version>${compiler-jburg-types.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.jburg</groupId>
+            <artifactId>jburg</artifactId>
+            <version>1.10.3</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -359,6 +360,33 @@
             </configuration>
           </execution>
           <execution>
+            <id>add-suppress-all-warnings-annotations-css</id>
+            <goals>
+              <goal>add-class-annotation</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>antlr3/org/apache/royale/compiler/internal/css/CSSLexer.java</include>
+                <include>antlr3/org/apache/royale/compiler/internal/css/CSSParser.java</include>
+              </includes>
+              <annotation>@SuppressWarnings("all")</annotation>
+              <dateStart>// $ANTLR 3.5.2 ***CSS.g</dateStart>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-suppress-all-warnings-annotations-csstree</id>
+            <goals>
+              <goal>add-class-annotation</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>antlr3/org/apache/royale/compiler/internal/css/CSSTree.java</include>
+              </includes>
+              <annotation>@SuppressWarnings("all")</annotation>
+              <dateStart>// $ANTLR 3.5.2 ***CSSTree.g</dateStart>
+            </configuration>
+          </execution>
+          <execution>
             <id>add-suppress-all-warnings-annotations-jburg</id>
             <goals>
               <goal>add-class-annotation</goal>
@@ -381,6 +409,8 @@
                 <include>jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java</include>
               </includes>
               <annotation>@SuppressWarnings({"rawtypes", "unchecked", "unused"})</annotation>
+              <dateStart>/*  Generated</dateStart>
+              <dateEnd> by JBurg</dateEnd>
             </configuration>
           </execution>
           <execution>
