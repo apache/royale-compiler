@@ -38,10 +38,23 @@ public class AnnotateClass
         }
     }
     
-    public static void processFile(File file, String annotation) throws AnnotateClassDeleteException, AnnotateClassRenameException {
+    public static void processFile(File file, String annotation, String dateStart, String dateEnd) throws AnnotateClassDeleteException, AnnotateClassRenameException {
         if(!file.exists()) {
             System.out.println("Missing file: " + file.getPath());
             return;
+        }
+        String comment = "";
+        if (dateStart.length() > 0)
+        {
+            int c = dateStart.indexOf("***");
+            if (c > -1)
+            {
+                comment = dateStart.substring(0, c);
+                dateStart = dateStart.substring(c + 3);
+            }
+            System.out.println("searching for generated date line starting with: '" + dateStart + "'");
+            if (comment.length() > 0)
+                System.out.println("and comment starting with: '" + comment + "'");
         }
         try
         {
@@ -60,6 +73,26 @@ public class AnnotateClass
                 boolean alreadyAnnotated = false;
                 while ((line = bufferedReader.readLine()) != null)
                 {
+                    if (dateStart.length() > 0)
+                    {
+                        if ((comment.length() > 0 && line.startsWith(comment)) || comment.length() == 0)
+                        {
+                            int c = line.indexOf(dateStart);
+                            if (c > -1)
+                            {
+                                if (dateEnd.length() > 0)
+                                {
+                                    int c1 = line.lastIndexOf(dateEnd);
+                                    if (c1 > 0)
+                                    {
+                                        line = comment + dateStart + line.substring(c1);
+                                    }
+                                }
+                                else
+                                    line = comment + dateStart;
+                            }
+                        }
+                    }
                     // If the class is already annotated, prevent us from doing it again.
                     if (line.contains(annotation)) {
                         alreadyAnnotated = true;
@@ -114,8 +147,10 @@ public class AnnotateClass
     {
         File f = new File(args[0]);
         String annotation = args[1];
+        String dateStart = args[2];
+        String dateEnd = args[3];
         try {
-            processFile(f, annotation);
+            processFile(f, annotation, dateStart, dateEnd);
         } catch (Exception e) {
             e.printStackTrace();
         }
