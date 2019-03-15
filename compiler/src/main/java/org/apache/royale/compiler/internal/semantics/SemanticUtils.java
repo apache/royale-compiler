@@ -991,7 +991,7 @@ public class SemanticUtils
             }
             if (nameNode instanceof IIdentifierNode)
             {
-                IdentifierNode identifierNode = (IdentifierNode) nameNode;
+                IIdentifierNode identifierNode = (IIdentifierNode) nameNode;
                 IDefinition resolvedDef = identifierNode.resolve(project);
                 if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
                 {
@@ -1008,7 +1008,7 @@ public class SemanticUtils
 
         if (iNode instanceof IIdentifierNode)
         {
-            IdentifierNode identifierNode = (IdentifierNode) iNode;
+            IIdentifierNode identifierNode = (IIdentifierNode) iNode;
             IDefinition resolvedDef = identifierNode.resolve(project);
             if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
             {
