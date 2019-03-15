@@ -123,7 +123,7 @@ public class JSConfiguration extends Configuration
     // 'js-default-initializers'
     //
 
-    private boolean jsDefaultInitializers = false;
+    private boolean jsDefaultInitializers = true;
 
     public boolean getJsDefaultInitializers()
     {
