@@ -51,6 +51,7 @@ import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDuplicateChildTagProblem;
+import org.apache.royale.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -591,6 +592,11 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
 	                        return;
                         }
                 	}
+                }
+                if (processingDefaultProperty && definition == null)
+                {
+                    builder.getProblems().add(new MXMLUnresolvedTagProblem(childTag));
+                	return;
                 }
                 // Handle child tags that are something other than property/style/event tags
                 // or instance tags.
