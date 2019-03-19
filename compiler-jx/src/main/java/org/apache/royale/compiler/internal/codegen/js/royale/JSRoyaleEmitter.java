@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.embedding.EmbedAttribute;
@@ -156,8 +158,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public ArrayList<String> usedNames = new ArrayList<String>();
     public ArrayList<String> staticUsedNames = new ArrayList<String>();
     private boolean needNamespace;
-
-    private Set<IFunctionNode> emittingLocalFunctions = new HashSet<IFunctionNode>();
+    
+    private Set<IFunctionNode> emittingHoistedNodes = new HashSet<IFunctionNode>();
 
     @Override
     public String postProcess(String output)
@@ -408,34 +410,34 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitLocalNamedFunction(IFunctionNode node)
     {
         IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
-        if (parentFnNode == null || isEmittingLocalFunctions(parentFnNode))
+        if (parentFnNode == null || isEmittingHoistedNodes(parentFnNode))
     	{
             // emit named functions only when allowed
     		super.emitLocalNamedFunction(node);
         }
     }
 
-    protected Boolean isEmittingLocalFunctions(IFunctionNode node)
+    protected Boolean isEmittingHoistedNodes(IFunctionNode node)
     {
-        return emittingLocalFunctions.contains(node);
+        return emittingHoistedNodes.contains(node);
     }
 
-    protected void setEmittingLocalFunctions(IFunctionNode node, boolean emit)
+    protected void setEmittingHoistedNodes(IFunctionNode node, boolean emit)
     {
         if (emit)
         {
-            emittingLocalFunctions.add(node);
+            emittingHoistedNodes.add(node);
         }
         else
         {
-            emittingLocalFunctions.remove(node);
+            emittingHoistedNodes.remove(node);
         }
     }
 
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
-    	setEmittingLocalFunctions(node, true);
+        setEmittingHoistedNodes(node, true);
     	super.emitFunctionBlockHeader(node);
     	if (node.isConstructor())
     	{
@@ -449,25 +451,57 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             }
             emitComplexInitializers(cnode);
     	}
-        if (node.containsLocalFunctions())
+
+        emitHoistedFunctionsCodeBlock(node);
+
+        if (!getModel().isExterns)
+            emitHoistedVariablesCodeBlock(node);
+
+        setEmittingHoistedNodes(node, false);
+    }   
+
+    protected void emitHoistedFunctionsCodeBlock(IFunctionNode node)
+    {
+        if (!node.containsLocalFunctions())
         {
-            List<IFunctionNode> localFns = node.getLocalFunctions();
-            int n = localFns.size();
-            for (int i = 0; i < n; i++)
+            return;
+        }
+        List<IFunctionNode> localFns = node.getLocalFunctions();
+        int n = localFns.size();
+        for (int i = 0; i < n; i++)
+        {
+            IFunctionNode localFn = localFns.get(i);
+            // named functions need to be declared at the top level to
+            // comply with JS strict mode.
+            // anonymous functions can be emitted inline, so we'll do that.
+            if (localFn.getName().length() > 0)
             {
-                IFunctionNode localFn = localFns.get(i);
-                // named functions need to be declared at the top level to
-                // comply with JS strict mode.
-                // anonymous functions can be emitted inline, so we'll do that.
-                if (localFn.getName().length() > 0)
-                {
-                	getWalker().walk(localFn);
-                	write(ASEmitterTokens.SEMICOLON);
-                    this.writeNewline();
-                }
+                getWalker().walk(localFn);
+                write(ASEmitterTokens.SEMICOLON);
+                this.writeNewline();
             }
         }
-    	setEmittingLocalFunctions(node, false);
+    }
+
+    protected void emitHoistedVariablesCodeBlock(IFunctionNode node)
+    {
+        Collection<IDefinition> localDefs = node.getScopedNode().getScope().getAllLocalDefinitions();
+        for (IDefinition localDef : localDefs)
+        {
+            if (localDef instanceof IVariableDefinition)
+            {
+                IVariableDefinition varDef = (IVariableDefinition) localDef;
+                IVariableNode varNode = varDef.getVariableNode();
+                if (!EmitterUtils.needsDefaultValue(varNode, getWalker().getProject()))
+                {
+                    //already has a default value. no need to hoist.
+                    continue;
+                }
+                getWalker().walk(varNode);
+                write(ASEmitterTokens.SEMICOLON);
+                writeNewline();
+            }
+        }
     }
 
     @Override
@@ -475,7 +509,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
 		IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
         IFunctionNode localFnNode = node.getFunctionNode();
-    	if (parentFnNode == null || isEmittingLocalFunctions(parentFnNode))
+    	if (parentFnNode == null || isEmittingHoistedNodes(parentFnNode))
     	{
             // emit named functions only when allowed
     		super.emitFunctionObject(node);
@@ -766,6 +800,33 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitVarDeclaration(IVariableNode node)
     {
+        if (EmitterUtils.needsDefaultValue(node, getWalker().getProject()))
+        {
+            boolean defaultInitializers = false;
+            ICompilerProject project = getWalker().getProject();
+            if(project instanceof RoyaleJSProject)
+            {
+                RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
+                if(fjsProject.config != null)
+                {
+                    defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+                }
+            }
+
+            IExpressionNode avnode = node.getAssignedValueNode();
+            if (avnode == null && defaultInitializers)
+            {
+                IFunctionNode parentFunction = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+                if (!isEmittingHoistedNodes(parentFunction))
+                {
+                    write("//");
+                    writeToken(ASEmitterTokens.VAR);
+                    write(node.getName());
+                    return;
+                }
+            }
+        }
+
         varDeclarationEmitter.emit(node);
     }
 

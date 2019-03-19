@@ -46,6 +46,7 @@ import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
@@ -58,6 +59,7 @@ import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableExpressionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.utils.NativeUtils;
 
@@ -593,6 +595,50 @@ public class EmitterUtils
     {
         return node.getContainerType() == IContainerNode.ContainerType.IMPLICIT
                 || node.getContainerType() == IContainerNode.ContainerType.SYNTHESIZED;
+    }
+
+    public static boolean needsDefaultValue(IVariableNode node, ICompilerProject project)
+    {
+        if (node == null)
+        {
+            return false;
+        }
+        if (node instanceof IParameterNode)
+        {
+            return false;
+        }
+        if (node instanceof IAccessorNode)
+        {
+            return false;
+        }
+        IExpressionNode assignedValueNode = node.getAssignedValueNode();
+        if (assignedValueNode != null)
+        {
+            //already has an assigned value, so it doesn't need to be
+            //hoisted
+            return false;
+        }
+        IASNode parentNode = node.getParent();
+        if (parentNode instanceof IVariableExpressionNode)
+        {
+            //ignore for-in loops
+            return false;
+        }
+        IExpressionNode variableTypeNode = node.getVariableTypeNode();
+        if (variableTypeNode == null)
+        {
+            return false;
+        }
+        IDefinition varTypeDef = variableTypeNode.resolve(project);
+        if (varTypeDef == null)
+        {
+            return false;
+        }
+        if (IASLanguageConstants.ANY_TYPE.equals(varTypeDef.getQualifiedName()))
+        {
+            return false;
+        }
+        return true;
     }
 
 }

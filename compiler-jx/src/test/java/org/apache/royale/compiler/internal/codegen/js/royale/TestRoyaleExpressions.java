@@ -178,7 +178,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodAsVarFunctionReference()
     {
-    	IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {var f:Function; f = super.foo;} } }\n" +
+    	IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {var f:Function = null; f = super.foo;} } }\n" +
         		"class Base { public function foo(){} }", IFileNode.class, 0, false);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -1197,7 +1197,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testMethodAsAssign()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b() { function c(f:Function):void {}; var f:Function; f = b; c(f); }}",
+                "public class B {public function b() { function c(f:Function):void {}; var f:Function = null; f = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
@@ -1207,7 +1207,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testStaticMethodAsAssign()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {static public function b() { function c(f:Function):void {}; var f:Function; f = b; c(f); }}",
+                "public class B {static public function b() { function c(f:Function):void {}; var f:Function = null; f = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = foo.bar.B.b;\n  c(f);\n}");
@@ -1257,7 +1257,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testNativeGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b():Number { var s:String; return s.length; }}",
+                "public class B {public function b():Number { var s:String = null; return s.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
@@ -1268,7 +1268,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testNativeVectorGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b():Number { var a:Vector.<String>; return a.length; }}",
+                "public class B {public function b():Number { var a:Vector.<String> = null; return a.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
@@ -1326,7 +1326,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testComplexBooleanExpression()
     {
-        IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String; var d:String; if (!(b ? c : d)) { return b;}}");
+        IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String = null; var d:String = null; if (!(b ? c : d)) { return b;}}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n * @param {boolean} b\n * @return {boolean}\n */\nRoyaleTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c = null;\n  var /** @type {string} */ d = null;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
     }
@@ -1491,7 +1491,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitAs2()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
+                "public class B {public function b(o:Object):int { var a:B = null; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.B);\n}");
@@ -1517,7 +1517,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitAsMemberVariable()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B; a = o as memberVar; }}",
+                "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
@@ -1527,7 +1527,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitJSDoc()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class LinkableString {public function b(o:Object):int { var a:LinkableString; a = o as LinkableString; }}",
+                "public class LinkableString {public function b(o:Object):int { var a:LinkableString = null; a = o as LinkableString; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.LinkableString.prototype.b = function(o) {\n  var /** @type {foo.bar.LinkableString} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.LinkableString);\n}");

@@ -21,11 +21,13 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogStatements;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IIfNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
@@ -47,6 +49,7 @@ public class TestRoyaleStatements extends TestGoogStatements
     {
         backend = createBackend();
         project = new RoyaleJSProject(workspace, backend);
+        project.config = new JSGoogConfiguration();
         super.setUp();
     }
     
@@ -90,10 +93,10 @@ public class TestRoyaleStatements extends TestGoogStatements
     @Test
     public void testVarDeclaration_withType()
     {
-        IVariableNode node = (IVariableNode) getNode("var a:int;",
-                IVariableNode.class);
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = 0");
+        IFunctionNode node = (IFunctionNode) getNode("var a:int;",
+            IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
     }
 
     @Test
@@ -717,7 +720,8 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "RoyaleTest_A = function() {\n" +
         		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
         		              "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
-        		              "  var self = this;\n" +
+                              "  var self = this;\n" +
+                              "  var /** @type {number} */ len = 0;\n" +
             		          "  try {\n" +
         		              "    a;\n" +
         		              "  } catch (e) {\n" +
@@ -734,7 +738,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "  } finally {\n" +
         		              "  }\n" +
         		              "  if (d) {\n" +
-        		              "    var /** @type {number} */ len = 0;\n" +
+        		              "    //var len;\n" +
         		              "    for (var /** @type {number} */ i = 0; i < len; i++)\n" +
         		              "      break;\n" +
         		              "  }\n" +
@@ -798,7 +802,13 @@ public class TestRoyaleStatements extends TestGoogStatements
                                 "  accessors: function () {return {};},\n" +
                                 "  methods: function () {return {};}\n" +
         		        		"};\n" +
-        		        		"};\n");
+                                "};\n" +
+                                "/**\n" +
+                                " * @export\n" +
+                                " * @const\n" +
+                                " * @type {number}\n" +
+                                " */\n" +
+                                "RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
     }
 
     @Override
