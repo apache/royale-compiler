@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
@@ -154,6 +156,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public ArrayList<String> usedNames = new ArrayList<String>();
     public ArrayList<String> staticUsedNames = new ArrayList<String>();
     private boolean needNamespace;
+
+    private Set<IFunctionNode> emittingLocalFunctions = new HashSet<IFunctionNode>();
 
     @Override
     public String postProcess(String output)
@@ -404,17 +408,34 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitLocalNamedFunction(IFunctionNode node)
     {
         IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
-        if (parentFnNode == null || parentFnNode.getEmittingLocalFunctions())
+        if (parentFnNode == null || isEmittingLocalFunctions(parentFnNode))
     	{
             // emit named functions only when allowed
     		super.emitLocalNamedFunction(node);
         }
     }
 
+    protected Boolean isEmittingLocalFunctions(IFunctionNode node)
+    {
+        return emittingLocalFunctions.contains(node);
+    }
+
+    protected void setEmittingLocalFunctions(IFunctionNode node, boolean emit)
+    {
+        if (emit)
+        {
+            emittingLocalFunctions.add(node);
+        }
+        else
+        {
+            emittingLocalFunctions.remove(node);
+        }
+    }
+
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
-    	node.setEmittingLocalFunctions(true);
+    	setEmittingLocalFunctions(node, true);
     	super.emitFunctionBlockHeader(node);
     	if (node.isConstructor())
     	{
@@ -446,7 +467,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                 }
             }
         }
-    	node.setEmittingLocalFunctions(false);
+    	setEmittingLocalFunctions(node, false);
     }
 
     @Override
@@ -454,7 +475,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
 		IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
         IFunctionNode localFnNode = node.getFunctionNode();
-    	if (parentFnNode == null || parentFnNode.getEmittingLocalFunctions())
+    	if (parentFnNode == null || isEmittingLocalFunctions(parentFnNode))
     	{
             // emit named functions only when allowed
     		super.emitFunctionObject(node);
