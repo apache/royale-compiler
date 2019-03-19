@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
@@ -597,7 +598,7 @@ public class EmitterUtils
                 || node.getContainerType() == IContainerNode.ContainerType.SYNTHESIZED;
     }
 
-    public static boolean needsDefaultValue(IVariableNode node, ICompilerProject project)
+    public static boolean needsDefaultValue(IVariableNode node, boolean defaultInitializers, ICompilerProject project)
     {
         if (node == null)
         {
@@ -638,7 +639,19 @@ public class EmitterUtils
         {
             return false;
         }
-        return true;
+        if (project.getBuiltinType(BuiltinType.ANY_TYPE).equals(varTypeDef)
+                || project.getBuiltinType(BuiltinType.ANY_TYPE).equals(varTypeDef)
+                || project.getBuiltinType(BuiltinType.ANY_TYPE).equals(varTypeDef))
+        {
+            return false;
+        }
+        if (project.getBuiltinType(BuiltinType.INT).equals(varTypeDef)
+                || project.getBuiltinType(BuiltinType.UINT).equals(varTypeDef))
+        {
+            //always true, regardless of -js-default-initializers
+            return true;
+        }
+        return defaultInitializers;
     }
 
 }

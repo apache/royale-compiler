@@ -485,6 +485,16 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 
     protected void emitHoistedVariablesCodeBlock(IFunctionNode node)
     {
+        boolean defaultInitializers = false;
+        ICompilerProject project = getWalker().getProject();
+        if(project instanceof RoyaleJSProject)
+        {
+            RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
+            if(fjsProject.config != null)
+            {
+                defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+            }
+        }
         Collection<IDefinition> localDefs = node.getScopedNode().getScope().getAllLocalDefinitions();
         for (IDefinition localDef : localDefs)
         {
@@ -492,7 +502,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             {
                 IVariableDefinition varDef = (IVariableDefinition) localDef;
                 IVariableNode varNode = varDef.getVariableNode();
-                if (!EmitterUtils.needsDefaultValue(varNode, getWalker().getProject()))
+                if (!EmitterUtils.needsDefaultValue(varNode, defaultInitializers, getWalker().getProject()))
                 {
                     //already has a default value. no need to hoist.
                     continue;
@@ -800,21 +810,20 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitVarDeclaration(IVariableNode node)
     {
-        if (EmitterUtils.needsDefaultValue(node, getWalker().getProject()))
+        boolean defaultInitializers = false;
+        ICompilerProject project = getWalker().getProject();
+        if(project instanceof RoyaleJSProject)
         {
-            boolean defaultInitializers = false;
-            ICompilerProject project = getWalker().getProject();
-            if(project instanceof RoyaleJSProject)
+            RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
+            if(fjsProject.config != null)
             {
-                RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
-                if(fjsProject.config != null)
-                {
-                    defaultInitializers = fjsProject.config.getJsDefaultInitializers();
-                }
+                defaultInitializers = fjsProject.config.getJsDefaultInitializers();
             }
-
+        }
+        if (EmitterUtils.needsDefaultValue(node, defaultInitializers, project))
+        {
             IExpressionNode avnode = node.getAssignedValueNode();
-            if (avnode == null && defaultInitializers)
+            if (avnode == null)
             {
                 IFunctionNode parentFunction = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
                 if (!isEmittingHoistedNodes(parentFunction))

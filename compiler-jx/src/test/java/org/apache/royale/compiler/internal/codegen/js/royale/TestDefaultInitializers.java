@@ -110,11 +110,11 @@ public class TestDefaultInitializers extends ASTestBase
     public void testVarDeclaration_noDefaultInitializers_withIntType()
     {
         createConfig(false);
-        IVariableNode node = (IVariableNode) getNode("var a:int;",
-                IVariableNode.class);
-        asBlockWalker.visitVariable(node);
+        IFunctionNode node = (IFunctionNode) getNode("var a:int;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
         //an exception that always has an initializer
-        assertOut("var /** @type {number} */ a = 0");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
     }
 
     @Test
@@ -131,11 +131,11 @@ public class TestDefaultInitializers extends ASTestBase
     public void testVarDeclaration_noDefaultInitializers_withUintType()
     {
         createConfig(false);
-        IVariableNode node = (IVariableNode) getNode("var a:uint;",
-                IVariableNode.class);
-        asBlockWalker.visitVariable(node);
+        IFunctionNode node = (IFunctionNode) getNode("var a:uint;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
         //an exception that always has an initializer
-        assertOut("var /** @type {number} */ a = 0");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
     }
 
     @Test
