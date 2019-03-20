@@ -96,7 +96,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         IFunctionNode node = (IFunctionNode) getNode("var a:int;",
             IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
@@ -738,7 +738,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "  } finally {\n" +
         		              "  }\n" +
         		              "  if (d) {\n" +
-        		              "    //var len;\n" +
+        		              "    //var /** @type {number} */ len = 0;\n" +
         		              "    for (var /** @type {number} */ i = 0; i < len; i++)\n" +
         		              "      break;\n" +
         		              "  }\n" +

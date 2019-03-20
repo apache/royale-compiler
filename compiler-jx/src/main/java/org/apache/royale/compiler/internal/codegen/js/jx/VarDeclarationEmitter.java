@@ -26,6 +26,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -33,6 +34,7 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IEmbedNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
@@ -56,6 +58,26 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
 
         getModel().getVars().add(node);
         
+        boolean defaultInitializers = false;
+        ICompilerProject project = getProject();
+        if(project instanceof RoyaleJSProject)
+        {
+            RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
+            if(fjsProject.config != null)
+            {
+                defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+            }
+        }
+        boolean needsDefaultValue = EmitterUtils.needsDefaultValue(node, defaultInitializers, getProject());
+
+        IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+        boolean isHoisting = fjs.isEmittingHoistedNodes(parentFnNode);
+        
+        if (!(node instanceof ChainedVariableNode) && !isHoisting && needsDefaultValue)
+        {
+            write("//");
+        }
+
         if (!(node instanceof ChainedVariableNode) && !node.isConst())
         {
             fjs.emitMemberKeyword(node);
@@ -89,12 +111,12 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
             {
-                fjs.getDocEmitter().emitVarDoc(node, avtypedef, getWalker().getProject());
+                fjs.getDocEmitter().emitVarDoc(node, avtypedef, getProject());
             }
         }
         else
         {
-            fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
+            fjs.getDocEmitter().emitVarDoc(node, null, getProject());
         }
         endMapping(variableTypeNode);
 
@@ -104,7 +126,12 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         }
 
         fjs.emitDeclarationName(node);
-        if (avnode != null && !(avnode instanceof IEmbedNode))
+
+        if (avnode == null)
+        {
+            emitDefaultInitializer(node, defaultInitializers);
+        }
+        else if(!(avnode instanceof IEmbedNode))
         {
             if (hasVariableType)
             {
@@ -119,79 +146,117 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             endMapping(node);
             getEmitter().emitAssignmentCoercion(avnode, variableDef);
         }
-        if (avnode == null)
+
+        emitChainedVariables(node, defaultInitializers, isHoisting);
+    }
+
+    private void emitDefaultInitializer(IVariableNode node, boolean defaultInitializers)
+    {
+        IDefinition typedef = null;
+        IExpressionNode enode = node.getVariableTypeNode();
+        if (enode != null)
         {
-            IDefinition typedef = null;
-            IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
-            if (enode != null)
-                typedef = enode.resolveType(getWalker().getProject());
-            if (typedef != null)
+            typedef = enode.resolveType(getProject());
+        }
+        if (typedef != null)
+        {
+            if (node.getParent() != null &&
+                    node.getParent().getParent() != null &&
+                    node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
             {
-                boolean defaultInitializers = false;
-                ICompilerProject project = getProject();
-                if(project instanceof RoyaleJSProject)
+                String defName = typedef.getQualifiedName();
+                if (defName.equals("int") || defName.equals("uint"))
                 {
-                    RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
-                    if(fjsProject.config != null)
-                    {
-                        defaultInitializers = fjsProject.config.getJsDefaultInitializers();
-                    }
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write("0");
                 }
-                if (node.getParent() != null &&
-                        node.getParent().getParent() != null &&
-                        node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
+                else if (defaultInitializers)
                 {
-                    String defName = typedef.getQualifiedName();
-                    if (defName.equals("int") || defName.equals("uint"))
+                    if (defName.equals("Number"))
                     {
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
-                        write("0");
+                        write(IASKeywordConstants.NA_N);
                     }
-                    else if (defaultInitializers)
+                    else if (defName.equals("Boolean"))
                     {
-                        if (defName.equals("Number"))
-                        {
-                            write(ASEmitterTokens.SPACE);
-                            writeToken(ASEmitterTokens.EQUAL);
-                            write(IASKeywordConstants.NA_N);
-                        }
-                        else if (defName.equals("Boolean"))
-                        {
-                            write(ASEmitterTokens.SPACE);
-                            writeToken(ASEmitterTokens.EQUAL);
-                            write(IASKeywordConstants.FALSE);
-                        }
-                        else if (!defName.equals("*"))
-                        {
-                            //type * is meant to default to undefined, so it
-                            //doesn't need to be initialized, but everything
-                            //else should default to null
-                            write(ASEmitterTokens.SPACE);
-                            writeToken(ASEmitterTokens.EQUAL);
-                            write(IASKeywordConstants.NULL);
-                        }
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.FALSE);
                     }
-                }
-            }
-        }
-
-        if (!(node instanceof ChainedVariableNode))
-        {
-            // check for chained variables
-            int len = node.getChildCount();
-            for (int i = 0; i < len; i++)
-            {
-                IASNode child = node.getChild(i);
-                if (child instanceof ChainedVariableNode)
-                {
-                    startMapping(node, node.getChild(i - 1));
-                    writeToken(ASEmitterTokens.COMMA);
-                    endMapping(node);
-                    fjs.emitVarDeclaration((IVariableNode) child);
+                    else if (!defName.equals("*"))
+                    {
+                        //type * is meant to default to undefined, so it
+                        //doesn't need to be initialized, but everything
+                        //else should default to null
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.NULL);
+                    }
                 }
             }
         }
     }
 
+    private void emitChainedVariables(IVariableNode node, boolean defaultInitializers, boolean isHoisting)
+    {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        if (!(node instanceof ChainedVariableNode))
+        {
+            // check for chained variables
+            int len = node.getChildCount();
+            boolean splitVariables = false;
+            for (int i = 0; i < len; i++)
+            {
+                IASNode child = node.getChild(i);
+                if (child instanceof ChainedVariableNode)
+                {
+                    ChainedVariableNode varChild = (ChainedVariableNode) child;
+                    //if any of them need a default value, they all should be
+                    //split onto different lines
+                    if(EmitterUtils.needsDefaultValue(varChild, defaultInitializers, getProject()))
+                    {
+                        splitVariables = true;
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < len; i++)
+            {
+                IASNode child = node.getChild(i);
+                if (child instanceof ChainedVariableNode)
+                {
+                    if (splitVariables)
+                    {
+                        boolean childNeedsDefault = EmitterUtils.needsDefaultValue((IVariableNode) child, defaultInitializers, getProject());
+                        if (isHoisting && !childNeedsDefault)
+                        {
+                            //this one does not need to be hoisted because it
+                            //already has a default value
+                            continue;
+                        }
+                        startMapping(node, node.getChild(i - 1));
+                        write(ASEmitterTokens.SEMICOLON);
+                        endMapping(node);
+                        writeNewline();
+                        if (!isHoisting && childNeedsDefault)
+                        {
+                            write("//");
+                        }
+                        writeToken(ASEmitterTokens.VAR);
+                    }
+                    else
+                    {
+                        startMapping(node, node.getChild(i - 1));
+                        writeToken(ASEmitterTokens.COMMA);
+                        endMapping(node);
+                    }
+                    fjs.emitVarDeclaration((IVariableNode) child);
+                }
+            }
+            
+        }
+    }
 }

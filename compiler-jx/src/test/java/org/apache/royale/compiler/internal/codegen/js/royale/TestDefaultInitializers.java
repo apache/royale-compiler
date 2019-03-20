@@ -63,7 +63,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:Number;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  //var /** @type {number} */ a = NaN;\n}");
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:Boolean;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {boolean} */ a = false;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {boolean} */ a = false;\n  //var /** @type {boolean} */ a = false;\n}");
     }
 
     @Test
@@ -103,7 +103,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:int;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class TestDefaultInitializers extends ASTestBase
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
         //an exception that always has an initializer
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:uint;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TestDefaultInitializers extends ASTestBase
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
         //an exception that always has an initializer
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:String;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {string} */ a = null;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {string} */ a = null;\n  //var /** @type {string} */ a = null;\n}");
     }
 
     @Test
@@ -165,7 +165,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:Object;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {Object} */ a = null;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {Object} */ a = null;\n  //var /** @type {Object} */ a = null;\n}");
     }
 
     @Test
@@ -185,7 +185,7 @@ public class TestDefaultInitializers extends ASTestBase
         IFunctionNode node = (IFunctionNode) getNode("var a:Array;",
                 IFunctionNode.class);
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {Array} */ a = null;\n  //var a;\n}");
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {Array} */ a = null;\n  //var /** @type {Array} */ a = null;\n}");
     }
 
     @Test
@@ -196,6 +196,46 @@ public class TestDefaultInitializers extends ASTestBase
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndAllInitialized()
+    {
+        createConfig(true);
+        IVariableNode node = (IVariableNode) getNode("var a:Number = 0, b:Number = 0, c:Number = 0;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0, /** @type {number} */ b = 0, /** @type {number} */ c = 0");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndNoneInitialized()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number, b:Number, c:Number;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  var /** @type {number} */ b = NaN;\n  var /** @type {number} */ c = NaN;\n  //var /** @type {number} */ a = NaN;\n  //var /** @type {number} */ b = NaN;\n  //var /** @type {number} */ c = NaN;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndFirstInitialized()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number = 1, b:Number, c:Number;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ b = NaN;\n  var /** @type {number} */ c = NaN;\n  var /** @type {number} */ a = 1;\n  //var /** @type {number} */ b = NaN;\n  //var /** @type {number} */ c = NaN;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndLastInitialized()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number, b:Number, c:Number = 1;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  var /** @type {number} */ b = NaN;\n  //var /** @type {number} */ a = NaN;\n  //var /** @type {number} */ b = NaN;\n  var /** @type {number} */ c = 1;\n}");
     }
 
     @Test

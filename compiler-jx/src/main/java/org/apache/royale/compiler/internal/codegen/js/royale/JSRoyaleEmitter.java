@@ -417,7 +417,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
     }
 
-    protected Boolean isEmittingHoistedNodes(IFunctionNode node)
+    public Boolean isEmittingHoistedNodes(IFunctionNode node)
     {
         return emittingHoistedNodes.contains(node);
     }
@@ -502,14 +502,44 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             {
                 IVariableDefinition varDef = (IVariableDefinition) localDef;
                 IVariableNode varNode = varDef.getVariableNode();
-                if (!EmitterUtils.needsDefaultValue(varNode, defaultInitializers, getWalker().getProject()))
+                if (varNode == null)
                 {
-                    //already has a default value. no need to hoist.
+                    //no associated node is possible for implicit variables,
+                    //like "arguments"
                     continue;
                 }
-                getWalker().walk(varNode);
-                write(ASEmitterTokens.SEMICOLON);
-                writeNewline();
+                if (varNode instanceof ChainedVariableNode)
+                {
+                    //these will be handled from the first variable in the chain
+                    continue;
+                }
+                if (EmitterUtils.needsDefaultValue(varNode, defaultInitializers, getWalker().getProject()))
+                {
+                    emitVarDeclaration(varNode);
+                    write(ASEmitterTokens.SEMICOLON);
+                    writeNewline();
+                }
+                else
+                {
+                    //when the first varible in a chain doesn't need a default
+                    //value, we need to manually check the rest of the chain
+                    int len = varNode.getChildCount();
+                    for(int i = 0; i < len; i++)
+                    {
+                        IASNode child = varNode.getChild(i);
+                        if(child instanceof ChainedVariableNode)
+                        {
+                            ChainedVariableNode childVarNode = (ChainedVariableNode) child;
+                            if (EmitterUtils.needsDefaultValue(childVarNode, defaultInitializers, getWalker().getProject()))
+                            {
+                                writeToken(ASEmitterTokens.VAR);
+                                emitVarDeclaration(childVarNode);
+                                write(ASEmitterTokens.SEMICOLON);
+                                writeNewline();
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -810,32 +840,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
     public void emitVarDeclaration(IVariableNode node)
     {
-        boolean defaultInitializers = false;
-        ICompilerProject project = getWalker().getProject();
-        if(project instanceof RoyaleJSProject)
-        {
-            RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
-            if(fjsProject.config != null)
-            {
-                defaultInitializers = fjsProject.config.getJsDefaultInitializers();
-            }
-        }
-        if (EmitterUtils.needsDefaultValue(node, defaultInitializers, project))
-        {
-            IExpressionNode avnode = node.getAssignedValueNode();
-            if (avnode == null)
-            {
-                IFunctionNode parentFunction = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
-                if (!isEmittingHoistedNodes(parentFunction))
-                {
-                    write("//");
-                    writeToken(ASEmitterTokens.VAR);
-                    write(node.getName());
-                    return;
-                }
-            }
-        }
-
         varDeclarationEmitter.emit(node);
     }
 
