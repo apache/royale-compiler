@@ -26,10 +26,13 @@ import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
 
 public class DynamicAccessEmitter extends JSSubEmitter implements
         ISubEmitter<IDynamicAccessNode>
@@ -54,11 +57,16 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
     							(JSRoyaleEmitter)ijs : null;
     	if (fjs != null)
     	{
+        	boolean isProxy = false;
 	    	boolean isXML = false;
 	    	if (leftOperandNode instanceof MemberAccessExpressionNode)
 	    		isXML = fjs.isLeftNodeXMLish((MemberAccessExpressionNode)leftOperandNode);
 	    	else if (leftOperandNode instanceof IExpressionNode)
 	    		isXML = fjs.isXML((IExpressionNode)leftOperandNode);
+        	if (leftOperandNode instanceof MemberAccessExpressionNode)
+        		isProxy = fjs.isProxy((MemberAccessExpressionNode)leftOperandNode);
+        	else if (leftOperandNode instanceof IExpressionNode)
+        		isProxy = fjs.isProxy((IExpressionNode)leftOperandNode);
 	    	if (isXML)
 	    	{
 				if (type.isInstanceOf("String", getProject()))
@@ -74,6 +82,17 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 					return;
 				}    		
 	    	}
+        	else if (isProxy)
+        	{
+        		boolean isLiteral = rightOperandNode instanceof ILiteralNode;
+        		write(".getProperty(");
+        		if (isLiteral) write("'");
+        		String s = fjs.stringifyNode(rightOperandNode);
+        		write(s);
+        		if (isLiteral) write("'");
+        		write(")");
+        		return;
+        	}
     	}
     	
         startMapping(node, leftOperandNode);
