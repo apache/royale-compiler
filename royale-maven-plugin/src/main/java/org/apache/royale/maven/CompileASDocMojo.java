@@ -37,6 +37,9 @@ public class CompileASDocMojo
     @Parameter(defaultValue = "false")
     private boolean skipASDoc;
 
+    @Parameter(defaultValue = "false")
+    private boolean skipAS;
+    
     private ThreadLocal<Type> type = new ThreadLocal<Type>();
 
     @Override
@@ -90,17 +93,20 @@ public class CompileASDocMojo
         // compiler will be instantiated in the future. This method is safe in
         // any way it could be used (Multiple executions in parallel with Maven).
         try {
-            // Execute the ASDoc generation for SWF
-            getLog().info("Generating SWF apidocs");
-            type.set(Type.SWF);
-            File outputDirectory = getOutput();
-            if (!outputDirectory.exists()) {
-                if (!outputDirectory.mkdirs()) {
-                    throw new MojoExecutionException("Could not create output directory for apidocs " + outputDirectory.getPath());
+            if (!skipAS)
+            {
+                // Execute the ASDoc generation for SWF
+                getLog().info("Generating SWF apidocs");
+                type.set(Type.SWF);
+                File outputDirectory = getOutput();
+                if (!outputDirectory.exists()) {
+                    if (!outputDirectory.mkdirs()) {
+                        throw new MojoExecutionException("Could not create output directory for apidocs " + outputDirectory.getPath());
+                    }
                 }
+                super.execute();
+                getLog().info("Finished");
             }
-            super.execute();
-            getLog().info("Finished");
 
             // Execute the ASDoc generation for JavaScript
             getLog().info("Generating JS apidocs");
