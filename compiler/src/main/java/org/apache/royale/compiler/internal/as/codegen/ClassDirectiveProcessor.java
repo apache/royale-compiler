@@ -1092,10 +1092,10 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             {
                 classScope.addProblem(new VirtualOutsideClassProblem(site) );
             }
-            if( modifiersSet.hasModifier(ASModifier.ABSTRACT) )
-            {
-                classScope.addProblem(new AbstractOutsideClassProblem(site) );
-            }
+        }
+        if( modifiersSet.hasModifier(ASModifier.ABSTRACT) )
+        {
+            classScope.addProblem(new AbstractOutsideClassProblem(site) );
         }
         classScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(f);
         // Functions in a class allow all modifiers

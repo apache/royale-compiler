@@ -28,7 +28,7 @@ public final class AbstractOutsideClassProblem extends CodegenProblem
 {
     // TODO ErrorMSG: not specific to methods
     public static final String DESCRIPTION =
-            "The ${ABSTRACT} attribute may be used only ${CLASS} property definitions.";
+            "The ${ABSTRACT} attribute can only be used on a ${CLASS} definition.";
 
     public static final int errorCode = 1011;
 
