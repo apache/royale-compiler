@@ -19,23 +19,30 @@
 
 package org.apache.royale.compiler.problems;
 
-import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.definitions.IDefinition;
 
 /**
- * Problem generated when 'abstract' is used outside of a class
+ * Problem generated when a class does not implement an abstract method from one
+ * of its superclasses.
  */
-public final class AbstractOutsideClassProblem extends CodegenProblem
+public final class UnimplementedAbstractMethodProblem extends CodegenProblem
 {
-    // TODO ErrorMSG: not specific to methods
     public static final String DESCRIPTION =
-            "The ${ABSTRACT} attribute can only be used on a ${CLASS} definition or a non-static, non-final method defined on an ${ABSTRACT} ${CLASS}.";
+        "Method ${methodName} in ${ABSTRACT} ${CLASS} ${abstractClassName} not implemented by ${CLASS} ${className}";
 
-    public static final int errorCode = 1011;
+    public static final int errorCode = 1044;
 
-    public AbstractOutsideClassProblem(IASNode site)
+    public UnimplementedAbstractMethodProblem(IDefinition site, String methodName, String abstractClassName, String className)
     {
         super(site);
+        this.methodName = methodName;
+        this.abstractClassName = abstractClassName;
+        this.className = className;
     }
+    
+    public final String methodName;
+    public final String abstractClassName;
+    public final String className;
 
     // Prevent these from being localized.
     public final String ABSTRACT = "abstract";

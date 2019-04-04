@@ -323,40 +323,47 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
      */
     protected void verifyClassModifiers(ClassNode c)
     {
-        if(!currentScope.getProject().getAllowAbstractClasses() && c.getDefinition().isAbstract())
-        {
-            IASNode problemNode = c.getNameExpressionNode();
-            if (problemNode == null)
-            {
-                problemNode = c;
-            }
-            currentScope.addProblem(new SyntaxProblem(problemNode, IASKeywordConstants.ABSTRACT));
-        }
+        IExpressionNode site = c.getNameExpressionNode();
 
         ModifiersSet modifiersSet = c.getModifiers();
-        if (modifiersSet == null)
-            return;
-
-        ASModifier[] modifiers = modifiersSet.getAllModifiers();
-        IExpressionNode site = c.getNameExpressionNode();
-        for (ASModifier modifier : modifiers)
+        if (modifiersSet != null)
         {
-            // final, dynamic, and abstract allowed on a class
-            if( modifier == ASModifier.FINAL || modifier == ASModifier.DYNAMIC || modifier == ASModifier.ABSTRACT)
+            ASModifier[] modifiers = modifiersSet.getAllModifiers();
+            for (ASModifier modifier : modifiers)
             {
-                continue;
+                // final, dynamic, and abstract allowed on a class
+                if( modifier == ASModifier.FINAL || modifier == ASModifier.DYNAMIC || modifier == ASModifier.ABSTRACT)
+                {
+                    continue;
+                }
+                // native generates different error for class/interface
+                else if (modifier == ASModifier.NATIVE)
+                {
+                    currentScope.addProblem(new NativeNotOnFunctionProblem(site) );
+                }
+                else
+                {
+                    verifyModifier(site, modifier);
+                }
             }
-            // native generates different error for class/interface
-            else if (modifier == ASModifier.NATIVE)
+            currentScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(c);
+        }
+
+        IDefinition classDef = c.getDefinition();
+        if (classDef.isAbstract())
+        {
+            if (currentScope.getProject().getAllowAbstractClasses())
             {
-                currentScope.addProblem(new NativeNotOnFunctionProblem(site) );
+                if(!SemanticUtils.canBeAbstract(c, currentScope.getProject()))
+                {
+                    currentScope.addProblem(new AbstractOutsideClassProblem(site) );
+                }
             }
             else
             {
-                verifyModifier(site, modifier);
+                currentScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
             }
         }
-        currentScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(c);
     }
 
     /**
@@ -422,7 +429,16 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
         else if( modifier == ASModifier.VIRTUAL )
             currentScope.addProblem(new VirtualOutsideClassProblem(site));
         else if( modifier == ASModifier.ABSTRACT )
-            currentScope.addProblem(new AbstractOutsideClassProblem(site));
+        {
+            if(currentScope.getProject().getAllowAbstractClasses())
+            {
+                currentScope.addProblem(new AbstractOutsideClassProblem(site));
+            }
+            else
+            {
+                currentScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
+            }
+        }
     }
 
     /**

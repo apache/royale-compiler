@@ -864,6 +864,18 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void emitMethodScope(IScopedNode node)
     {
         write(ASEmitterTokens.SPACE);
+        if (node instanceof IContainerNode)
+        {
+            IContainerNode container = (IContainerNode) node;
+            //native or abstract methods may have a synthesized scope block
+            if (container.getContainerType().equals(ContainerType.SYNTHESIZED))
+            {
+                write(ASEmitterTokens.BLOCK_OPEN);
+                writeNewline();
+                write(ASEmitterTokens.BLOCK_CLOSE);
+                return;
+            }
+        }
         getWalker().walk(node);
     }
 

@@ -206,6 +206,14 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
         assertOut("/**\n * @export\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function() {\n  \n/**\n * @const\n * @type {string}\n */\nvar A = 'Hello World';\n  return A;\n}");
     }
 
+    @Test
+    public void testAbstractMethod()
+    {
+        IClassNode node = (IClassNode) getNode("public abstract class A { public abstract function a(arg1:String):Object; }", IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('A', A);\n\n\n/**\n * @export\n * @param {string} arg1\n * @return {Object}\n */\nA.prototype.a = function(arg1) {\n};");
+    }
+
     @Override
     protected IBackend createBackend()
     {

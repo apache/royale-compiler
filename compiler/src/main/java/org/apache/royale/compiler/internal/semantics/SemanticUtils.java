@@ -3043,13 +3043,44 @@ public class SemanticUtils
     }
 
     /**
+     *  Can the subject be abstract?
+     *  @param iNode - an AST node in (or at the border of) the function.
+     *  @return true if the definition is allowed to be abstract
+     */
+    public static boolean canBeAbstract(IASNode iNode, ICompilerProject project)
+    {
+        if(iNode instanceof IClassNode)
+        {
+            IClassNode classNode = (IClassNode) iNode;
+            IClassDefinition classDef = classNode.getDefinition();
+            return !classDef.isFinal();
+        }
+        else if(iNode instanceof IFunctionNode)
+        {
+            IFunctionNode funcNode = (IFunctionNode) iNode;
+            IFunctionDefinition funcDef = funcNode.getDefinition();
+            IDefinition parentDef = funcDef.getParent();
+            if (parentDef instanceof IClassDefinition)
+            {
+                return parentDef.isAbstract()
+                        && !funcDef.isStatic()
+                        && !funcDef.isFinal()
+                        && !funcDef.isConstructor()
+                        && !(funcDef instanceof IAccessorDefinition);
+            }
+            return false;
+        }
+        return false;
+    }
+
+    /**
      *  Does the subject function require a non-void return value?
      *  @param iNode - an AST node in (or at the border of) the function.
      *  @return true if the function's definition is known, the definition's
      *    return type is known (and the function is not a constructor),
      *    and the return type is not void or *
      */
-    public static boolean functionMustReturnValue(IASNode iNode, ICompilerProject project)
+    public static boolean functionMustReturnValue(IASNode iNode, boolean allowAbstract, ICompilerProject project)
     {
         FunctionDefinition func_def = SemanticUtils.getFunctionDefinition(iNode);
 
@@ -3062,7 +3093,8 @@ public class SemanticUtils
                 return_type == null ||
                 return_type.equals(ClassDefinition.getVoidClassDefinition()) ||
                 return_type.equals(ClassDefinition.getAnyTypeClassDefinition()) ||
-                func_def.isConstructor()
+                func_def.isConstructor() ||
+                (allowAbstract && canBeAbstract(iNode, project) && func_def.isAbstract())
             );
         }
         else
