@@ -41,6 +41,11 @@
       <artifactId>jburg</artifactId>
       <version>1.10.3</version>
     </dependency>
+    <dependency>
+        <groupId>antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>2.7.7</version>
+    </dependency>
   </dependencies>
 
 </project>
