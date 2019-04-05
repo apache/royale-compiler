@@ -71,8 +71,14 @@ B.prototype.ROYALE_REFLECTION_INFO = function () {
     methods: function () {
       return {
         'B': { type: '', declaredBy: 'B'},
-        '|a': { type: 'int', declaredBy: 'B', parameters: function () { return [  { index: 1, type: 'Boolean', optional: false } ]; }}
+        '|a': { type: 'int', declaredBy: 'B', parameters: function () { return [ { index: 1, type: 'Boolean', optional: false } ]; }}
       };
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+B.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;

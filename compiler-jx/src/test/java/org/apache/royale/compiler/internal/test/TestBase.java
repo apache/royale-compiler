@@ -46,6 +46,7 @@ import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
@@ -108,6 +109,8 @@ public class TestBase implements ITestBase
     @Before
     public void setUp()
     {
+        DefinitionBase.setPerformanceCachingEnabled(true);
+
         errors = new ArrayList<ICompilerProblem>();
 
         if (project == null)
@@ -148,6 +151,7 @@ public class TestBase implements ITestBase
     @After
     public void tearDown()
     {
+        DefinitionBase.setPerformanceCachingEnabled(false);
         backend = null;
         writer = null;
     }

@@ -22,22 +22,20 @@ package org.apache.royale.compiler.problems;
 import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
- * Problem generated when 'abstract' is used outside of a class
+ * Diagnostic emitted when an abstract method has a body
  */
-public final class AbstractOutsideClassProblem extends CodegenProblem
+public final class AbstractMethodWithBodyProblem extends SemanticProblem
 {
-    // TODO ErrorMSG: not specific to methods
     public static final String DESCRIPTION =
-            "The ${ABSTRACT} attribute can only be used on a ${CLASS} definition or a non-static, non-final method defined on an ${ABSTRACT} ${CLASS}.";
+        "Method marked ${ABSTRACT} must not have a body.";
 
-    public static final int errorCode = 1011;
+    public static final int errorCode = 1125;
 
-    public AbstractOutsideClassProblem(IASNode site)
+    public AbstractMethodWithBodyProblem(IASNode site)
     {
         super(site);
     }
-
+    
     // Prevent these from being localized.
     public final String ABSTRACT = "abstract";
-    public final String CLASS = "class";
 }

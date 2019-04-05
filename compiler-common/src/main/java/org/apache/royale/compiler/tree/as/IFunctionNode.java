@@ -172,16 +172,4 @@ public interface IFunctionNode extends IScopedDefinitionNode, IDocumentableDefin
      * JS codegen needs to know about them.
      */
     void rememberLocalFunction(IFunctionNode localFunction);
-    
-    /**
-     * flag to determine whether to emit the local function
-     * or a reference to it
-     */
-    boolean getEmittingLocalFunctions();
-    
-    /**
-     * flag to determine whether to emit the local function
-     * or a reference to it
-     */
-    void setEmittingLocalFunctions(boolean emit);
 }

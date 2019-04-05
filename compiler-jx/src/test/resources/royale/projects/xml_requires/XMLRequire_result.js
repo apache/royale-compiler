@@ -64,3 +64,9 @@ XMLRequire.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+XMLRequire.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

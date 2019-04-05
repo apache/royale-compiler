@@ -106,9 +106,9 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testVisitLanguageIdentifierNode_SuperGetter()
     {
-        IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Boolean " +
+        IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Object " +
         		                       "{ return super.isDefaultPrevented(); }" + 
-        		                       "override public function isDefaultPrevented():Boolean" +
+        		                       "override public function isDefaultPrevented():Object" +
                                        "{ return defaultPrevented; }", IClassNode.class);
         // getters and setters don't get output until the class is output so you can't just visit the accessorNode
         asBlockWalker.visitClass(node);
@@ -129,7 +129,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +
         		  "Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n" +
-        		  "/**\n  * @export\n  * @type {boolean} */\n" +
+        		  "/**\n  * @export\n  * @type {Object} */\n" +
         		  "defaultPrevented: {\nget: RoyaleTest_A.prototype.get__defaultPrevented}}\n);");
     }
 
@@ -178,7 +178,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethodAsVarFunctionReference()
     {
-    	IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {var f:Function; f = super.foo;} } }\n" +
+    	IFileNode node = (IFileNode)getNode("package { public class RoyaleTest_A extends Base { override public function foo() {var f:Function = null; f = super.foo;} } }\n" +
         		"class Base { public function foo(){} }", IFileNode.class, 0, false);
         IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
                 node, IFunctionNode.class);
@@ -187,7 +187,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f;\n  f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
+        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
     }
     
     @Test
@@ -270,6 +270,78 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_AssignmentBooleanVarToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool1:Boolean;var bool2:Boolean;bool1 = bool2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool1 = bool2");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNumberVarToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var boolean:Boolean;var number:Number;boolean = number");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("boolean = !!(number)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentBooleanLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = true");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentPositiveNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = 123.4");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNegativeNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = -123");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentZeroNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = 0");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = false");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentDecimalNumberLiteralToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = 0.123");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = true");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNullToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = null");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = false");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentUndefinedToBoolean()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var bool:Boolean;bool = undefined");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("bool = false");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_AssignmentIntVarToInt()
     {
         IBinaryOperatorNode node = getBinaryNode("var integer1:int;var integer2:int;integer1 = integer2");
@@ -307,6 +379,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 321");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("numToInt = 321");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentHexIntLiteralToInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToInt:int;numToInt = 0xabc");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToInt = 0xabc");
     }
 
     @Test
@@ -355,6 +435,94 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = -123");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("numToUint = 4294967173");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentHexLiteralToUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var numToUint:uint;numToUint = 0xabc");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("numToUint = 0xabc");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentStringVarToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:String;var1 = var2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = var2");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentAnyTypeVarToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:*;var1 = var2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = org.apache.royale.utils.Language.string(var2)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentAnyTypeVarToStringSuppressed()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:Object; /**\n * @royalenoimplicitstringconversion\n */\npublic function d() { b = c; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
+        IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
+        
+        // this adds '/**\n * @royalenoimplicitstringconversion\n * @export\n */' to the output but parses
+        // the asdoc so the emitter will suppress the output
+        docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("/**\n * @royalenoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentXMLChildToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:XML;var1 = var2.child");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = org.apache.royale.utils.Language.string(var2.child('child'))");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentStringLiteralToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = \"hi\"");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = \"hi\"");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentNullToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = null");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = null");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentUndefinedToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = undefined");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = null");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentToStringFunctionCallToString()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:Object;var1 = var2.toString()");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = var2.toString()");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentDatePropertyToNumber()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var1:Number;var var2:Date;var1 = var2.month");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var1 = var2.getMonth()");
     }
 
     @Test
@@ -826,32 +994,6 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
-    public void testVisitBinaryOperatorNode_StringVarAssignmentFromObject()
-    {
-        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; public function d() { b = c; }}",
-                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("this.b = org.apache.royale.utils.Language.string(this.c)");
-    }
-
-    @Test
-    public void testVisitBinaryOperatorNode_StringVarAssignmentFromObjectSupressed()
-    {
-        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; /**\n * @royalenoimplicitstringconversion\n */\npublic function d() { b = c; }}",
-                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
-        IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
-        
-        // this adds '/**\n * @royalenoimplicitstringconversion\n * @export\n */' to the output but parses
-        // the asdoc so the emitter will suppress the output
-        docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("/**\n * @royalenoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
-    }
-
-    @Test
     public void testVisitBinaryOperatorNode_StringVarCompareWithObject()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
@@ -879,16 +1021,6 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("obj[prop] + 1");
-    }
-
-    @Test
-    public void testVisitBinaryOperatorNode_StringAssignFromStarToString()
-    {
-        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:*; public function d() { b = c.toString(); }}",
-                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("this.b = this.c.toString()");
     }
 
     @Test
@@ -1065,20 +1197,20 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testMethodAsAssign()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b() { function c(f:Function):void {}; var f:Function; f = b; c(f); }}",
+                "public class B {public function b() { function c(f:Function):void {}; var f:Function = null; f = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f;\n  f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
     }
     
     @Test
     public void testStaticMethodAsAssign()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {static public function b() { function c(f:Function):void {}; var f:Function; f = b; c(f); }}",
+                "public class B {static public function b() { function c(f:Function):void {}; var f:Function = null; f = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f;\n  f = foo.bar.B.b;\n  c(f);\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = foo.bar.B.b;\n  c(f);\n}");
     }
     
     @Test
@@ -1125,22 +1257,22 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testNativeGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b():Number { var s:String; return s.length; }}",
+                "public class B {public function b():Number { var s:String = null; return s.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ s;\n  return s.length;\n}");
+        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ s = null;\n  return s.length;\n}");
     }
 
     @Test
     public void testNativeVectorGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b():Number { var a:Vector.<String>; return a.length; }}",
+                "public class B {public function b():Number { var a:Vector.<String> = null; return a.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array} */ a;\n  return a.length;\n}");
+        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array} */ a = null;\n  return a.length;\n}");
     }
 
     //----------------------------------
@@ -1194,9 +1326,9 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     @Test
     public void testComplexBooleanExpression()
     {
-        IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String; var d:String; if (!(b ? c : d)) { return b;}}");
+        IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String = null; var d:String = null; if (!(b ? c : d)) { return b;}}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {boolean} b\n * @return {boolean}\n */\nRoyaleTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c;\n  var /** @type {string} */ d;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
+        assertOut("/**\n * @export\n * @param {boolean} b\n * @return {boolean}\n */\nRoyaleTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c = null;\n  var /** @type {string} */ d = null;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
     }
 
     @Override
@@ -1359,10 +1491,10 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitAs2()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
+                "public class B {public function b(o:Object):int { var a:B = null; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.B);\n}");
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.B);\n}");
     }
 
     @Test
@@ -1385,20 +1517,20 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     public void testVisitAsMemberVariable()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B; a = o as memberVar; }}",
+                "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
     }
 
     @Test
     public void testVisitJSDoc()
     {
         IFunctionNode node = (IFunctionNode) getNode(
-                "public class LinkableString {public function b(o:Object):int { var a:LinkableString; a = o as LinkableString; }}",
+                "public class LinkableString {public function b(o:Object):int { var a:LinkableString = null; a = o as LinkableString; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.LinkableString.prototype.b = function(o) {\n  var /** @type {foo.bar.LinkableString} */ a;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.LinkableString);\n}");
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.LinkableString.prototype.b = function(o) {\n  var /** @type {foo.bar.LinkableString} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.LinkableString);\n}");
     }
 
     @Override
@@ -1548,6 +1680,86 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitReturnBoolean()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return true; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithBooleanLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return true; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithPositiveNumberLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return 123.4; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithNegativeNumberLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return -123; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithZeroLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return 0; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return false");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithDecimalLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return 0.01; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return true");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithNull()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return null; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return false");
+    }
+
+    @Test
+    public void testVisitReturnBooleanWithUndefined()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Boolean { return undefined; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return false");
+    }
+
+    @Test
+    public void testVisitReturnIntWithIntLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():int { return 123; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 123");
+    }
+
+    @Test
+    public void testVisitReturnIntWithHexIntLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():int { return 0xabc; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 0xabc");
+    }
+
+    @Test
     public void testVisitReturnIntWithDecimalValue()
     {
         IReturnNode node = (IReturnNode) getNode("function():int { return -123.4; }", IReturnNode.class);
@@ -1572,6 +1784,86 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitReturnUintWithHexLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():uint { return 0xabc; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return 0xabc");
+    }
+
+    @Test
+    public void testVisitReturnStringWithLiteral()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { return \"hi\"; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return \"hi\"");
+    }
+
+    @Test
+    public void testVisitReturnStringWithNull()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { return null; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return null");
+    }
+
+    @Test
+    public void testVisitReturnStringWithUndefined()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { return undefined; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return null");
+    }
+
+    @Test
+    public void testVisitReturnStringWithStringVar()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:String; return a; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a");
+    }
+
+    @Test
+    public void testVisitReturnStringWithAnyTypeVar()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:*; return a; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return org.apache.royale.utils.Language.string(a)");
+    }
+
+    @Test
+    public void testVisitReturnStringWithToStringFunctionCall()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:Object; return a.toString(); }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a.toString()");
+    }
+
+    @Test
+    public void testVisitReturnStringWithXMLChild()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():String { var a:XML; return a.child; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return org.apache.royale.utils.Language.string(a.child('child'))");
+    }
+
+    @Test
+    public void testVisitReturnNumberWithDateProperty()
+    {
+        IReturnNode node = (IReturnNode) getNode("function():Number { var a:Date; return a.month; }", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a.getMonth()");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithIntParameterHex()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(0xabc)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(0xabc)");
+    }
+
+    @Test
     public void testVisitFunctionCallWithIntParameterNegative()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:int):void {}; a(-123)", IFunctionCallNode.class);
@@ -1588,6 +1880,14 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitFunctionCallWithUintParameterHex()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(0xabc)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(0xabc)");
+    }
+
+    @Test
     public void testVisitFunctionCallWithUintParameterNegative()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(-123)", IFunctionCallNode.class);
@@ -1601,6 +1901,126 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:uint):void {}; a(123.4)", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("a(123)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterBoolean()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(false)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterPositiveNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(123.4)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(true)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterNegativeNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(-123)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(true)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterZeroNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(0.0)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterLessThanOneNumberLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(0.5)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(true)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterNull()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(null)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithBooleanParameterUndefined()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Boolean):void {}; a(undefined)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(false)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterLiteral()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; a(\"hi\");", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(\"hi\")");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterNull()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; a(null);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(null)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterUndefined()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; a(undefined);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(null)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterStringVar()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:String; a(b);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b)");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterAnyTypeVar()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:*; a(b);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(org.apache.royale.utils.Language.string(b))");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterToStringFunctionCall()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:Object; a(b.toString());", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b.toString())");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithStringParameterXMLVarChild()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:XML; a(b.child);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(org.apache.royale.utils.Language.string(b.child('child')))");
+    }
+
+    @Test
+    public void testVisitFunctionCallWithNumberParameterDateProperty()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Number):void {}; var b:Date; a(b.month);", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b.getMonth())");
     }
 
     protected IBackend createBackend()

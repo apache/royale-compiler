@@ -22,22 +22,22 @@ package org.apache.royale.compiler.problems;
 import org.apache.royale.compiler.tree.as.IASNode;
 
 /**
- * Problem generated when 'abstract' is used outside of a class
+ * Diagnostic emitted when the code generator detects an abstract method
+ * declared with an invalid access modifier
  */
-public final class AbstractOutsideClassProblem extends CodegenProblem
+public final class BadAccessAbstractMethodProblem extends SemanticProblem
 {
-    // TODO ErrorMSG: not specific to methods
     public static final String DESCRIPTION =
-            "The ${ABSTRACT} attribute can only be used on a ${CLASS} definition or a non-static, non-final method defined on an ${ABSTRACT} ${CLASS}.";
+        "Methods that are ${ABSTRACT} cannot be declared ${PRIVATE}.";
 
-    public static final int errorCode = 1011;
+    public static final int errorCode = 1157;
 
-    public AbstractOutsideClassProblem(IASNode site)
+    public BadAccessAbstractMethodProblem(IASNode site)
     {
         super(site);
     }
-
+    
     // Prevent these from being localized.
     public final String ABSTRACT = "abstract";
-    public final String CLASS = "class";
+    public final String PRIVATE = "private";
 }

@@ -59,3 +59,9 @@ interfaces.IC.prototype.ROYALE_REFLECTION_INFO = function () {
     methods: function () {return {};}
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+interfaces.IC.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

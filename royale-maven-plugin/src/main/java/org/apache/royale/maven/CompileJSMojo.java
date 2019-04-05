@@ -122,7 +122,7 @@ public class CompileJSMojo
     @Override
     protected boolean includeLibrary(Artifact library) {
         String classifier = library.getClassifier();
-        return (classifier == null) && !("provided".equalsIgnoreCase(library.getScope()));
+        return (classifier == null) && !("runtime".equalsIgnoreCase(library.getScope()));
     }
 
     @Override

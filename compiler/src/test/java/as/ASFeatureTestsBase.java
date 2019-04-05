@@ -154,7 +154,7 @@ public class ASFeatureTestsBase
 
         // Check that there were no compilation problems.
         List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
-        StringBuilder sb = new StringBuilder(checkExitCode ? "Unexpected compilation problems:\n" : "");
+        StringBuilder sb = new StringBuilder(checkExitCode && problems.size() > 0 ? "Unexpected compilation problems:\n" : "");
         for (ICompilerProblem problem : problems)
         {
             sb.append(problem.toString());

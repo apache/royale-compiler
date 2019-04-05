@@ -65,13 +65,13 @@ public class TestSourceMapStatements extends SourceMapTestBase
     @Test
     public void testVarDeclaration_withType()
     {
-        IVariableNode node = (IVariableNode) getNode("var a:int;",
+        IVariableNode node = (IVariableNode) getNode("var a:Number;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
         //var /** @type {number} */ a
         assertMapping(node, 0, 0, 0, 0, 0, 4);   // var
         assertMapping(node, 0, 4, 0, 26, 0, 27); // a
-        assertMapping(node, 0, 5, 0, 4, 0, 26);  // :int
+        assertMapping(node, 0, 5, 0, 4, 0, 26);  // :Number
     }
 
     @Test

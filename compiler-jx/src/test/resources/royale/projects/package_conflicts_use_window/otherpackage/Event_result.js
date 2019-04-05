@@ -62,3 +62,9 @@ otherpackage.Event.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+otherpackage.Event.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

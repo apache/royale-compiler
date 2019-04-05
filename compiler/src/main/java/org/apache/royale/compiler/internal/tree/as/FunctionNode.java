@@ -1068,19 +1068,5 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             localFunctions = new ArrayList<IFunctionNode>();
         
         localFunctions.add(value);
-    }  
-
-    private boolean emitLocalFunctions;
-    
-    @Override
-    public boolean getEmittingLocalFunctions()
-    {
-        return emitLocalFunctions;
-    }
-    
-    @Override
-    public void setEmittingLocalFunctions(boolean emit)
-    {
-        emitLocalFunctions = emit;
     }
 }

@@ -43,7 +43,7 @@ goog.exportSymbol('UseWindow', UseWindow);
  * @private
  * @type {mypackage.TestClass}
  */
-UseWindow.prototype.testClass;
+UseWindow.prototype.testClass = null;
 
 
 /**
@@ -71,3 +71,9 @@ UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+UseWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

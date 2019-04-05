@@ -23,7 +23,10 @@ import java.io.File;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
@@ -36,6 +39,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.embedding.EmbedAttribute;
@@ -76,6 +80,7 @@ import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -153,6 +158,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public ArrayList<String> usedNames = new ArrayList<String>();
     public ArrayList<String> staticUsedNames = new ArrayList<String>();
     private boolean needNamespace;
+    
+    private Set<IFunctionNode> emittingHoistedNodes = new HashSet<IFunctionNode>();
 
     @Override
     public String postProcess(String output)
@@ -403,17 +410,34 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitLocalNamedFunction(IFunctionNode node)
     {
         IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
-        if (parentFnNode == null || parentFnNode.getEmittingLocalFunctions())
+        if (parentFnNode == null || isEmittingHoistedNodes(parentFnNode))
     	{
             // emit named functions only when allowed
     		super.emitLocalNamedFunction(node);
         }
     }
 
+    public Boolean isEmittingHoistedNodes(IFunctionNode node)
+    {
+        return emittingHoistedNodes.contains(node);
+    }
+
+    protected void setEmittingHoistedNodes(IFunctionNode node, boolean emit)
+    {
+        if (emit)
+        {
+            emittingHoistedNodes.add(node);
+        }
+        else
+        {
+            emittingHoistedNodes.remove(node);
+        }
+    }
+
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
-    	node.setEmittingLocalFunctions(true);
+        setEmittingHoistedNodes(node, true);
     	super.emitFunctionBlockHeader(node);
     	if (node.isConstructor())
     	{
@@ -427,25 +451,97 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             }
             emitComplexInitializers(cnode);
     	}
-        if (node.containsLocalFunctions())
+
+        emitHoistedFunctionsCodeBlock(node);
+
+        if (!getModel().isExterns)
+            emitHoistedVariablesCodeBlock(node);
+
+        setEmittingHoistedNodes(node, false);
+    }   
+
+    protected void emitHoistedFunctionsCodeBlock(IFunctionNode node)
+    {
+        if (!node.containsLocalFunctions())
         {
-            List<IFunctionNode> localFns = node.getLocalFunctions();
-            int n = localFns.size();
-            for (int i = 0; i < n; i++)
+            return;
+        }
+        List<IFunctionNode> localFns = node.getLocalFunctions();
+        int n = localFns.size();
+        for (int i = 0; i < n; i++)
+        {
+            IFunctionNode localFn = localFns.get(i);
+            // named functions need to be declared at the top level to
+            // comply with JS strict mode.
+            // anonymous functions can be emitted inline, so we'll do that.
+            if (localFn.getName().length() > 0)
             {
-                IFunctionNode localFn = localFns.get(i);
-                // named functions need to be declared at the top level to
-                // comply with JS strict mode.
-                // anonymous functions can be emitted inline, so we'll do that.
-                if (localFn.getName().length() > 0)
+                getWalker().walk(localFn);
+                write(ASEmitterTokens.SEMICOLON);
+                this.writeNewline();
+            }
+        }
+    }
+
+    protected void emitHoistedVariablesCodeBlock(IFunctionNode node)
+    {
+        boolean defaultInitializers = false;
+        ICompilerProject project = getWalker().getProject();
+        if(project instanceof RoyaleJSProject)
+        {
+            RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
+            if(fjsProject.config != null)
+            {
+                defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+            }
+        }
+        Collection<IDefinition> localDefs = node.getScopedNode().getScope().getAllLocalDefinitions();
+        for (IDefinition localDef : localDefs)
+        {
+            if (localDef instanceof IVariableDefinition)
+            {
+                IVariableDefinition varDef = (IVariableDefinition) localDef;
+                IVariableNode varNode = varDef.getVariableNode();
+                if (varNode == null)
                 {
-                	getWalker().walk(localFn);
-                	write(ASEmitterTokens.SEMICOLON);
-                    this.writeNewline();
+                    //no associated node is possible for implicit variables,
+                    //like "arguments"
+                    continue;
+                }
+                if (varNode instanceof ChainedVariableNode)
+                {
+                    //these will be handled from the first variable in the chain
+                    continue;
+                }
+                if (EmitterUtils.needsDefaultValue(varNode, defaultInitializers, getWalker().getProject()))
+                {
+                    emitVarDeclaration(varNode);
+                    write(ASEmitterTokens.SEMICOLON);
+                    writeNewline();
+                }
+                else
+                {
+                    //when the first varible in a chain doesn't need a default
+                    //value, we need to manually check the rest of the chain
+                    int len = varNode.getChildCount();
+                    for(int i = 0; i < len; i++)
+                    {
+                        IASNode child = varNode.getChild(i);
+                        if(child instanceof ChainedVariableNode)
+                        {
+                            ChainedVariableNode childVarNode = (ChainedVariableNode) child;
+                            if (EmitterUtils.needsDefaultValue(childVarNode, defaultInitializers, getWalker().getProject()))
+                            {
+                                writeToken(ASEmitterTokens.VAR);
+                                emitVarDeclaration(childVarNode);
+                                write(ASEmitterTokens.SEMICOLON);
+                                writeNewline();
+                            }
+                        }
+                    }
                 }
             }
         }
-    	node.setEmittingLocalFunctions(false);
     }
 
     @Override
@@ -453,7 +549,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
 		IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
         IFunctionNode localFnNode = node.getFunctionNode();
-    	if (parentFnNode == null || parentFnNode.getEmittingLocalFunctions())
+    	if (parentFnNode == null || isEmittingHoistedNodes(parentFnNode))
     	{
             // emit named functions only when allowed
     		super.emitFunctionObject(node);
@@ -1194,7 +1290,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
 			if (rightDef != null)
 			{
-				if (IdentifierNode.isXMLish(rightDef, getWalker().getProject()))
+				if (SemanticUtils.isXMLish(rightDef, getWalker().getProject()))
 				{
 					return isLeftNodeXMLish(leftNode);
 				}
@@ -1214,7 +1310,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		{
 			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
 			if (leftDef != null)
-				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
 		}
 		else if (leftID == ASTNodeID.MemberAccessExpressionID || leftID == ASTNodeID.Op_DescendantsID)
 		{
@@ -1226,7 +1322,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 				IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
 				if (rightDef != null)
 				{
-					return IdentifierNode.isXMLish(rightDef, getWalker().getProject());
+					return SemanticUtils.isXMLish(rightDef, getWalker().getProject());
 				}
 			}
 			leftNode = maen.getLeftOperandNode();
@@ -1251,7 +1347,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			leftNode = (IExpressionNode)(leftNode.getChild(0));
 			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
 			if (leftDef != null)
-				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
 
 		}
 		else if (leftID == ASTNodeID.E4XFilterID)
@@ -1352,7 +1448,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		{
 			return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode());
 		}
-		return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+		return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
     }
 
     public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)

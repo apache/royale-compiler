@@ -41,4 +41,10 @@ public class PublicVarWarningProblem extends CompilerProblem
     {
         super(site);
     }
+    
+    public PublicVarWarningProblem(String sourcePath, int start, int end, int line, int column, int endLine, int endColumn)
+    {
+        super(sourcePath, start, end, line, column, endLine, endColumn);
+    }
+    
 }

@@ -61,7 +61,7 @@ public class TestRoyalePackage extends TestGoogPackage
         // with block disallows implicit blocks from getting { }
 
         // (erikdebruin) the constuctor IS the class definition, in 'goog' JS,
-        //               therefor we need to write out implicit constructors 
+        //               therefor we need to write out implicit constructors
         //               (if I understand the term correctly)
 
         IFileNode node = compileAS("package {public class A{}}");
@@ -105,7 +105,13 @@ public class TestRoyalePackage extends TestGoogPackage
         		"    accessors: function () {return {};},\n" +
         		"    methods: function () {return {};}\n" +
         		"  };\n" +
-        		"};\n");
+        		"};\n"+
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Override
@@ -153,7 +159,13 @@ public class TestRoyalePackage extends TestGoogPackage
 				"    accessors: function () {return {};},\n" +
 				"    methods: function () {return {};}\n" +
         		"  };\n" +
-        		"};\n");
+        		"};\n"+
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Override
@@ -163,49 +175,63 @@ public class TestRoyalePackage extends TestGoogPackage
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		" * foo.bar.baz.A\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('foo.bar.baz.A');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" */\n" +
-        		"foo.bar.baz.A = function() {\n" +
-        		"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-        		"      };\n" +
-        		"    }\n" + 
-        		"  };\n" +
-        		"};\n");
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+		
+		);
     }
 
     @Override
@@ -215,54 +241,66 @@ public class TestRoyalePackage extends TestGoogPackage
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		" * foo.bar.baz.A\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('foo.bar.baz.A');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" */\n" +
-        		"foo.bar.baz.A = function() {\n" +
-        		"  if (a) {\n" +
-        		"    for (var /** @type {Object} */ i in obj) {\n" +
-        		"      doit();\n" +
-        		"    }\n" +
-        		"  }\n" +
-        		"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  if (a) {\n" +
+				"    for (var /** @type {Object} */ i in obj) {\n" +
+				"      doit();\n" +
+				"    }\n" +
+				"  }\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-        		"      };\n" +
-        		"    }\n" + 
-        		"  };\n" +
-        		"};\n");
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Test
@@ -271,50 +309,62 @@ public class TestRoyalePackage extends TestGoogPackage
         IFileNode node = compileAS("package foo.bar.baz {[Event(name='add', type='mx.events.FlexEvent')]\npublic class A{public function A(){}}}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		" * foo.bar.baz.A\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('foo.bar.baz.A');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" */\n" +
-        		"foo.bar.baz.A = function() {\n" +
-        		"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
-        		"  };\n" +
-        		"};\n");
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
     }
 
     @Test
@@ -323,58 +373,71 @@ public class TestRoyalePackage extends TestGoogPackage
         IFileNode node = compileAS("package foo.bar.baz {[Event(name='add', type='mx.events.FlexEvent')]\npublic class A{public function A(){}\n[Before]\npublic function foo() {}}}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		" * foo.bar.baz.A\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('foo.bar.baz.A');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" */\n" +
-        		"foo.bar.baz.A = function() {\n" +
-        		"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @export\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.foo = function() {\n};\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.foo = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'},\n" +
-        		"        'foo': { type: '', declaredBy: 'foo.bar.baz.A', metadata: function () { return [ { name: 'Before' } ]; }}\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
-        		"  };\n" +
-        		"};\n" +
-        		"goog.exportProperty(foo.bar.baz.A.prototype, 'foo', foo.bar.baz.A.prototype.foo);\n");
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'},\n" +
+				"        'foo': { type: '', declaredBy: 'foo.bar.baz.A', metadata: function () { return [ { name: 'Before' } ]; }}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"goog.exportProperty(foo.bar.baz.A.prototype, 'foo', foo.bar.baz.A.prototype.foo);\n" );
     }
 
     @Test
@@ -390,86 +453,86 @@ public class TestRoyalePackage extends TestGoogPackage
         							  "}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		  " * foo.bar.baz.A\n" +
-        		  " *\n" +
-        		  " * @fileoverview\n" +
-        		  " *\n" +
-        		  " * @suppress {checkTypes|accessControls}\n" +
-        		  " */\n" +
-        		  "\n" +
-        		  "goog.provide('foo.bar.baz.A');\n" +
-        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A = function() {\n" +
-        		  "  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		  "\n" +
-        		  "\n/" +
-        		  "**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"goog.provide('foo.bar.baz.A.InternalClass');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass = function() {\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n");
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };"
+		);
     }
 
 	@Test
@@ -500,34 +563,46 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A = function() {\n" +
 				"  foo.bar.baz.A.internalFunction();\n" +
-				"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"};\n" +
 				"\n" +
-				"\n/" +
-				"**\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -563,34 +638,46 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A = function() {\n" +
 				"  foo.bar.baz.A.internalVar = 3;\n" +
-				"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"};\n" +
 				"\n" +
-				"\n/" +
-				"**\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -598,7 +685,8 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @export\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.internalVar = 2");
+				"foo.bar.baz.A.internalVar = 2"
+		);
 	}
 
     @Test
@@ -621,120 +709,114 @@ public class TestRoyalePackage extends TestGoogPackage
         							  "}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		  " * foo.bar.baz.A\n" +
-        		  " *\n" +
-        		  " * @fileoverview\n" +
-        		  " *\n" +
-        		  " * @suppress {checkTypes|accessControls}\n" +
-        		  " */\n" +
-        		  "\n" +
-        		  "goog.provide('foo.bar.baz.A');\n" +
-        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A = function() {\n" +
-        		  "  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
-        		  "  var /** @type {string} */ myString = foo.bar.baz.A.InternalClass.someString;\n" +
-        		  "  myString = foo.bar.baz.A.InternalClass.someStaticFunction();\n" +
-        		  "  myString = internalClass.someMethod();\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-            		"\n" +
-            		"\n" +
-            		"\n" +
-            		"/**\n" +
-            		" * Reflection\n" +
-            		" *\n" +
-            		" * @return {Object.<string, Function>}\n" +
-            		" */\n" +
-            		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-            		"  return {\n" +
-					"    variables: function () {return {};},\n" +
-					"    accessors: function () {return {};},\n" +
-            		"    methods: function () {\n" +
-            		"      return {\n" +
-            		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-            		"      };\n" +
-            		"    }\n" +
-            		"  };\n" +
-            		"};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass = function() {\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @export\n" +
-        		  " * @type {string}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @export\n" +
-        		  " * @return {string}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +
-        		  "  return \"bar\";\n" +
-        		  "};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @export\n" +
-        		  " * @return {string}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.someMethod = function() {\n" +
-        		  "  return \"baz\";\n" +
-        		  "};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-				"    variables: function () {\n" +
-				"      return {\n" +
-				"        '|someString': { type: 'String'}\n" +
-				"      };\n" +
-				"    },\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"goog.provide('foo.bar.baz.A.InternalClass');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
+				"  var /** @type {string} */ myString = foo.bar.baz.A.InternalClass.someString;\n" +
+				"  myString = foo.bar.baz.A.InternalClass.someStaticFunction();\n" +
+				"  myString = internalClass.someMethod();\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
-				"        '|someStaticFunction': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
-        		"        'someMethod': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n");
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @type {string}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @return {string}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +
+				"  return \"bar\";\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @return {string}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.someMethod = function() {\n" +
+				"  return \"baz\";\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };"
+		);
     }
 
     @Test
@@ -762,130 +844,130 @@ public class TestRoyalePackage extends TestGoogPackage
         							  "}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		  " * foo.bar.baz.A\n" +
-        		  " *\n" +
-        		  " * @fileoverview\n" +
-        		  " *\n" +
-        		  " * @suppress {checkTypes|accessControls}\n" +
-        		  " */\n" +
-        		  "\n" +
-        		  "goog.provide('foo.bar.baz.A');\n" +
-        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A = function() {\n" +
-        		  "  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
-        		  "  this.myString = internalClass.someString;\n" +
-        		  "  internalClass.someString = this.myString;\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		  "\n" +
-        		  "\n" +
-                  "foo.bar.baz.A.prototype.get__myString = function() {\n" +
-                  "  return null;\n" +
-                  "};\n" +
-        		  "\n" +
-        		  "\n" +
-                  "foo.bar.baz.A.prototype.set__myString = function(value) {\n" +
-                  "};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
-                  "/**\n  * @export\n  * @type {string} */\n" +
-                  "myString: {\n" +
-                  "get: foo.bar.baz.A.prototype.get__myString,\n" +
-                  "set: foo.bar.baz.A.prototype.set__myString}}\n" +
-                  ");\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-            		"\n" +
-            		"\n" +
-            		"\n" +
-            		"/**\n" +
-            		" * Reflection\n" +
-            		" *\n" +
-            		" * @return {Object.<string, Function>}\n" +
-            		" */\n" +
-            		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-            		"  return {\n" +
-					"    variables: function () {return {};},\n" +
-            		"    accessors: function () {\n" +
-            		"      return {\n" +
-            		"        'myString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A'}\n" +
-            		"      };\n" +
-            		"    },\n" +
-            		"    methods: function () {\n" +
-            		"      return {\n" +
-            		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-            		"      };\n" +
-            		"    }\n" +
-            		"  };\n" +
-            		"};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass = function() {\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
-        		  "\n" +
-        		  "\n" +
-                  "foo.bar.baz.A.InternalClass.prototype.get__someString = function() {\n" +
-                  "  return null;\n" +
-                  "};\n" +
-        		  "\n" +
-        		  "\n" +
-                  "foo.bar.baz.A.InternalClass.prototype.set__someString = function(value) {\n" +
-                  "};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
-                  "/**\n  * @export\n  * @type {string} */\n" +
-                  "someString: {\n" +
-                  "get: foo.bar.baz.A.InternalClass.prototype.get__someString,\n" +
-                  "set: foo.bar.baz.A.InternalClass.prototype.set__someString}}\n" +
-                  ");\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"goog.provide('foo.bar.baz.A.InternalClass');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
+				"  this.myString = internalClass.someString;\n" +
+				"  internalClass.someString = this.myString;\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"foo.bar.baz.A.prototype.get__myString = function() {\n" +
+				"  return null;\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"foo.bar.baz.A.prototype.set__myString = function(value) {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
+				"/**\n" +
+				"  * @export\n" +
+				"  * @type {string} */\n" +
+				"myString: {\n" +
+				"get: foo.bar.baz.A.prototype.get__myString,\n" +
+				"set: foo.bar.baz.A.prototype.set__myString}}\n" +
+				");\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    variables: function () {return {};},\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"        'someString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n");
+				"    accessors: function () {\n" +
+				"      return {\n" +
+				"        'myString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
+				"\n" +
+				"\n" +
+				"foo.bar.baz.A.InternalClass.prototype.get__someString = function() {\n" +
+				"  return null;\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"foo.bar.baz.A.InternalClass.prototype.set__someString = function(value) {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
+				"/**\n" +
+				"  * @export\n" +
+				"  * @type {string} */\n" +
+				"someString: {\n" +
+				"get: foo.bar.baz.A.InternalClass.prototype.get__someString,\n" +
+				"set: foo.bar.baz.A.InternalClass.prototype.set__someString}}\n" +
+				");\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };"
+		);
     }
 
     @Test
@@ -908,134 +990,144 @@ public class TestRoyalePackage extends TestGoogPackage
         							  "}");
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		  " * foo.bar.baz.A\n" +
-        		  " *\n" +
-        		  " * @fileoverview\n" +
-        		  " *\n" +
-        		  " * @suppress {checkTypes|accessControls}\n" +
-        		  " */\n" +
-        		  "\n" +
-        		  "goog.provide('foo.bar.baz.A');\n" +
-        		  "goog.provide('foo.bar.baz.A.ITestInterface');\n" +
-        		  "goog.provide('foo.bar.baz.A.InternalClass');\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A = function() {\n" +
-        		  "  var /** @type {foo.bar.baz.A.ITestInterface} */ internalClass = org.apache.royale.utils.Language.as(new foo.bar.baz.A.InternalClass(), foo.bar.baz.A.ITestInterface);\n" +
-        		  "  internalClass.test();\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
-            		"\n" +
-            		"\n" +
-            		"\n" +
-            		"/**\n" +
-            		" * Reflection\n" +
-            		" *\n" +
-            		" * @return {Object.<string, Function>}\n" +
-            		" */\n" +
-            		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-            		"  return {\n" +
-					"    variables: function () {return {};},\n" +
-					"    accessors: function () {return {};},\n" +
-            		"    methods: function () {\n" +
-            		"      return {\n" +
-            		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
-            		"      };\n" +
-            		"    }\n" +
-            		"  };\n" +
-            		"};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @interface\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.ITestInterface = function() {\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A.ITestInterface', foo.bar.baz.A.ITestInterface);\n" +
-        		  "foo.bar.baz.A.ITestInterface.prototype.test = function() {\n" +
-        		  "};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.ITestInterface.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface', kind: 'interface' }] };\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"goog.provide('foo.bar.baz.A.ITestInterface');\n" +
+				"goog.provide('foo.bar.baz.A.InternalClass');\n" +
 				"\n" +
 				"\n" +
 				"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  var /** @type {foo.bar.baz.A.ITestInterface} */ internalClass = org.apache.royale.utils.Language.as(new foo.bar.baz.A.InternalClass(), foo.bar.baz.A.ITestInterface);\n" +
+				"  internalClass.test();\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
 				"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.ITestInterface'}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @constructor\n" +
-        		  " * @implements {foo.bar.baz.A.ITestInterface}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass = function() {\n" +
-        		  "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * @export\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.test = function() {\n" +
-        		  "};\n" +
-        		  "\n" +
-        		  "\n" +
-        		  "/**\n" +
-        		  " * Metadata\n" +
-        		  " *\n" +
-        		  " * @type {Object.<string, Array.<Object>>}\n" +
-        		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
-            		"\n" +
-            		"\n" +
-            		"\n" +
-            		"/**\n" +
-            		" * Reflection\n" +
-            		" *\n" +
-            		" * @return {Object.<string, Function>}\n" +
-            		" */\n" +
-            		"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-            		"  return {\n" +
-					"    variables: function () {return {};},\n" +
-					"    accessors: function () {return {};},\n" +
-            		"    methods: function () {\n" +
-            		"      return {\n" +
-            		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
-            		"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
-            		"      };\n" +
-            		"    }\n" +
-            		"  };\n" +
-            		"};\n"
-        		  );
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @interface\n" +
+				" */\n" +
+				"foo.bar.baz.A.ITestInterface = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A.ITestInterface', foo.bar.baz.A.ITestInterface);\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.test = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface', kind: 'interface' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.ITestInterface'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" * @implements {foo.bar.baz.A.ITestInterface}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.test = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };"
+		);
     }
 
 	@Test
@@ -1075,7 +1167,13 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @constructor\n" +
 				" */\n" +
 				"foo.bar.A.Internal = function() {\n" +
-				"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.A.Internal', foo.bar.A.Internal);\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.A.Internal', foo.bar.A.Internal);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
@@ -1091,22 +1189,8 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-        		"  };\n" +
-        		"};\n");
+				"foo.bar.A.Internal.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };"
+		);
 	}
 	
 	@Test

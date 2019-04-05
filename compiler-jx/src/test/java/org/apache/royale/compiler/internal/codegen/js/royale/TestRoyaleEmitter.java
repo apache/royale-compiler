@@ -59,92 +59,98 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
 	        assertOutWithMetadata("/**\n" +
-        		" * com.example.components.MyEventTarget\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('com.example.components.MyEventTarget');\n" +
-        		"\n" +
-        		"goog.require('custom.TestImplementation');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" * @extends {custom.TestImplementation}\n" +
-        		" */\n" +
-        		"com.example.components.MyEventTarget = function() {\n" +
-        		"  com.example.components.MyEventTarget.base(this, 'constructor');\n" +
-        		"  if (foo() != 42) {\n" +
-        		"    bar();\n" +
-        		"  }\n" +
-        		"};\n" +
-        		"goog.inherits(com.example.components.MyEventTarget, custom.TestImplementation);\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('com.example.components.MyEventTarget', com.example.components.MyEventTarget);\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @private\n" +
-        		" * @type {string}\n" +
-        		" */\n" +
-        		"com.example.components.MyEventTarget.prototype._privateVar = \"do \";\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @export\n" +
-        		" * @type {number}\n" +
-        		" */\n" +
-        		"com.example.components.MyEventTarget.prototype.publicProperty = 100;\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @export\n" +
-        		" * @param {string} value\n" +
-        		" * @return {string}\n" +
-        		" */\n" +
-        		"com.example.components.MyEventTarget.prototype.myFunction = function(value) {\n" +
-        		"  return \"Don't \" + this._privateVar + value;\n" +
-        		"};\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"com.example.components.MyEventTarget.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget', kind: 'class' }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"com.example.components.MyEventTarget.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"        'publicProperty': { type: 'Number'}\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {return {};},\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"        'MyEventTarget': { type: '', declaredBy: 'com.example.components.MyEventTarget'},\n" +
-        		"        'myFunction': { type: 'String', declaredBy: 'com.example.components.MyEventTarget', parameters: function () { return [  { index: 1, type: 'String', optional: false } ]; }}\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n");
+					" * com.example.components.MyEventTarget\n" +
+					" *\n" +
+					" * @fileoverview\n" +
+					" *\n" +
+					" * @suppress {checkTypes|accessControls}\n" +
+					" */\n" +
+					"\n" +
+					"goog.provide('com.example.components.MyEventTarget');\n" +
+					"\n" +
+					"goog.require('custom.TestImplementation');\n" +
+					"\n" +
+					"\n" +
+					"\n" +
+					"/**\n" +
+					" * @constructor\n" +
+					" * @extends {custom.TestImplementation}\n" +
+					" */\n" +
+					"com.example.components.MyEventTarget = function() {\n" +
+					"  com.example.components.MyEventTarget.base(this, 'constructor');\n" +
+					"  if (foo() != 42) {\n" +
+					"    bar();\n" +
+					"  }\n" +
+					"};\n" +
+					"goog.inherits(com.example.components.MyEventTarget, custom.TestImplementation);\n" +
+					"\n" +
+					"\n" +
+					"/**\n" +
+					" * Prevent renaming of class. Needed for reflection.\n" +
+					" */\n" +
+					"goog.exportSymbol('com.example.components.MyEventTarget', com.example.components.MyEventTarget);\n" +
+					"\n" +
+					"\n" +
+					"/**\n" +
+					" * @private\n" +
+					" * @type {string}\n" +
+					" */\n" +
+					"com.example.components.MyEventTarget.prototype._privateVar = \"do \";\n" +
+			"\n" +
+			"\n" +
+			"/**\n" +
+			" * @export\n" +
+			" * @type {number}\n" +
+			" */\n" +
+			"com.example.components.MyEventTarget.prototype.publicProperty = 100;\n" +
+			"\n" +
+			"\n" +
+			"/**\n" +
+			" * @export\n" +
+			" * @param {string} value\n" +
+			" * @return {string}\n" +
+			" */\n" +
+			"com.example.components.MyEventTarget.prototype.myFunction = function(value) {\n" +
+			"  return \"Don't \" + this._privateVar + value;\n" +
+		"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {\n" +
+				"      return {\n" +
+				"        'publicProperty': { type: 'Number', get_set: function (/** com.example.components.MyEventTarget */ inst, /** * */ v) {return v !== undefined ? inst.publicProperty = v : inst.publicProperty;}}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'MyEventTarget': { type: '', declaredBy: 'com.example.components.MyEventTarget'},\n" +
+				"        'myFunction': { type: 'String', declaredBy: 'com.example.components.MyEventTarget', parameters: function () { return [ { index: 1, type: 'String', optional: false } ]; }}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
     }
 
     @Override
@@ -156,49 +162,55 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
         assertOutWithMetadata("/**\n" +
-        		" * com.example.components.TestInterface\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('com.example.components.TestInterface');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @interface\n" +
-        		" */\ncom.example.components.TestInterface = function() {\n" +
-        		"};\n" +
-          		"\n" +
+				" * com.example.components.TestInterface\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('com.example.components.TestInterface');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @interface\n" +
+				" */\ncom.example.components.TestInterface = function() {\n" +
+				"};\n" +
+				"\n" +
 				"\n" +
 				"/**\n" +
 				" * Prevent renaming of class. Needed for reflection.\n" +
 				" */\n" +
 				"goog.exportSymbol('com.example.components.TestInterface', com.example.components.TestInterface);\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"com.example.components.TestInterface.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface', kind: 'interface' }] };\n" +
 				"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-        		"    accessors: function () {return {};},\n" +
-        		"    methods: function () {return {};}\n" +
-        		"  };\n" +
-        		"};\n");
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"com.example.components.TestInterface.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface', kind: 'interface' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {return {};}\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
     }
 
     @Override
@@ -254,7 +266,13 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"    accessors: function () {return {};},\n" +
 				"    methods: function () {return {};}\n" +
 				"  };\n" +
-				"};\n");
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
     }
     
     @Test
@@ -283,9 +301,9 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"\n" +
 				"\n" +
 				"/**\n" +
-        	    " * <inject_html>\n" +
+				" * <inject_html>\n" +
 				" * This will be injected.\n" +
-        		" * </inject_html>\n" +
+				" * </inject_html>\n" +
 				" * @constructor\n" +
 				" */\n" +
 				"com.example.components.TestClass = function() {\n" +
@@ -322,7 +340,13 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"      };\n" +
 				"    }\n" +
 				"  };\n" +
-				"};\n");
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
     }
     
 

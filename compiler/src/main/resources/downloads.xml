@@ -166,7 +166,7 @@
     <property name="jflex.name" value="jflex"/>
     <property name="jflex.version" value="1.6.0"/>
     <!-- property name="jflex.version" value="1.5.1"/ -->
-    <property name="jflex.server" value="http://jflex.de"/>
+    <property name="jflex.server" value="https://jflex.de"/>
     <property name="jflex.folder" value="."/>
     <property name="jflex.filename" value="${jflex.name}-${jflex.version}.tar.gz"/>
     <property name="jflex.md5" value="df8cc9ca50b549bf705bd23479c100dc"/>
@@ -193,10 +193,10 @@
     <!--  lzma -->
     <property name="lzma.name" value="lzma"/>
     <property name="lzma.version" value="9.20"/>
-    <property name="lzma.server" value="http://www.java2s.com"/>
-    <property name="lzma.folder" value="Code/JarDownload/lzma"/>
-    <property name="lzma.filename" value="${lzma.name}-${lzma.version}.jar.zip"/>
-    <property name="lzma.md5" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
+    <property name="lzma.server" value="${maven.search.url}"/>
+    <property name="lzma.folder" value="org/b1/pack/lzma-sdk-4j/9.22.0"/>
+    <property name="lzma.filename" value="lzma-sdk-4j-9.22.0.jar"/>
+    <property name="lzma.md5" value="15fe7f01f4a37ea0f93e6ff5736406fd"/>
     <antcall target="download-dependency">
       <param name="name" value="${lzma.name}-sdk"/>
       <param name="version" value="${lzma.version}"/>

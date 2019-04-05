@@ -124,7 +124,7 @@ public class CompileASMojo
     @Override
     protected boolean includeLibrary(Artifact library) {
         String classifier = library.getClassifier();
-        return (classifier == null) && !("provided".equalsIgnoreCase(library.getScope()));
+        return (classifier == null) && !("runtime".equalsIgnoreCase(library.getScope()));
     }
     
     @Override
@@ -138,7 +138,7 @@ public class CompileASMojo
     protected boolean includeLibrarySWF(Artifact library) {
         String classifier = library.getClassifier();
         return "swf".equalsIgnoreCase(classifier) ||
-        ((classifier == null) && "provided".equalsIgnoreCase(library.getScope()));
+        ((classifier == null) && "runtime".equalsIgnoreCase(library.getScope()));
     }
 
 }

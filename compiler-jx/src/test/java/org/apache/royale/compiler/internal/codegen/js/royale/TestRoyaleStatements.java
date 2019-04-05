@@ -21,11 +21,13 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogStatements;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IForLoopNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IIfNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
@@ -47,6 +49,7 @@ public class TestRoyaleStatements extends TestGoogStatements
     {
         backend = createBackend();
         project = new RoyaleJSProject(workspace, backend);
+        project.config = new JSGoogConfiguration();
         super.setUp();
     }
     
@@ -90,10 +93,91 @@ public class TestRoyaleStatements extends TestGoogStatements
     @Test
     public void testVarDeclaration_withType()
     {
-        IVariableNode node = (IVariableNode) getNode("var a:int;",
+        IFunctionNode node = (IFunctionNode) getNode("var a:int;",
+            IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedPositiveNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = 123.4;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = 0");
+        assertOut("var /** @type {boolean} */ a = true");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedNegativeNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = -123;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = true");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedZeroNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = 0;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = false");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedDecimalNumber()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = 0.123;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = true");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedNull()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = null;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = false");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeBooleanAndAssignedUndefined()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Boolean = undefined;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = false");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeIntAndAssignedHex()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:int = 0xabc;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0xabc");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeUintAndAssignedHex()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:uint = 0xabc;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0xabc");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeNumberAndAssignedHex()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:Number = 0xabc;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0xabc");
     }
 
     @Test
@@ -121,6 +205,69 @@ public class TestRoyaleStatements extends TestGoogStatements
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = 4294967173");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedStringLiteral()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = \"hi\";",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = \"hi\"");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedNull()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = null;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = null");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedUndefined()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = undefined;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = null");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedStringVar()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:String = b }var b:String;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = this.b");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedAnyTypeVar()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:String = b }var b:*;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = org.apache.royale.utils.Language.string(this.b)");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeStringAndAssignedToStringFunctionCall()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:String = b.toString(); }var b:Object;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = this.b.toString()");
+    }
+
+    @Test
+    public void testVarDeclaration_withTypeNumberAndAssignedDateProperty()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:Number = b.fullYear; }var b:Date;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = this.b.getFullYear()");
     }
 
     //----------------------------------
@@ -573,7 +720,8 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "RoyaleTest_A = function() {\n" +
         		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
         		              "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
-        		              "  var self = this;\n" +
+                              "  var self = this;\n" +
+                              "  var /** @type {number} */ len = 0;\n" +
             		          "  try {\n" +
         		              "    a;\n" +
         		              "  } catch (e) {\n" +
@@ -590,7 +738,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              "  } finally {\n" +
         		              "  }\n" +
         		              "  if (d) {\n" +
-        		              "    var /** @type {number} */ len = 0;\n" +
+        		              "    //var /** @type {number} */ len = 0;\n" +
         		              "    for (var /** @type {number} */ i = 0; i < len; i++)\n" +
         		              "      break;\n" +
         		              "  }\n" +
@@ -654,7 +802,13 @@ public class TestRoyaleStatements extends TestGoogStatements
                                 "  accessors: function () {return {};},\n" +
                                 "  methods: function () {return {};}\n" +
         		        		"};\n" +
-        		        		"};\n");
+                                "};\n" +
+                                "/**\n" +
+                                " * @export\n" +
+                                " * @const\n" +
+                                " * @type {number}\n" +
+                                " */\n" +
+                                "RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
     }
 
     @Override

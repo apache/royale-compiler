@@ -46,7 +46,7 @@
     
     <target name="jflex-download" description="Copies JFlex from JFlex website">
         <echo message="Be patient. This takes a few minutes..." />
-        <get src="http://jflex.de/${jflex.filename}.zip" dest="${jflex.temp.filename}" verbose="false" />
+        <get src="https://jflex.de/${jflex.filename}.zip" dest="${jflex.temp.filename}" verbose="false" />
         <unzip dest="${jflex.root}" src="${jflex.temp.filename}" />
     </target>
 

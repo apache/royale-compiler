@@ -788,7 +788,16 @@ public class MethodBodySemanticChecker
 
             IDefinition def = func.getDefinition();
 
-            if ( !( def.hasModifier(ASModifier.NATIVE ) || def.hasModifier(ASModifier.DYNAMIC) || func.isConstructor() ) )
+            if ( project.getAllowAbstractClasses()
+                    && def.isAbstract()
+                    && SemanticUtils.canBeAbstract(iNode, currentScope.getProject()))
+            {
+                if ( func.hasBody() )
+                {
+                    addProblem(new AbstractMethodWithBodyProblem(SemanticUtils.getFunctionProblemNode(func)));
+                }
+            }
+            else if ( !( def.hasModifier(ASModifier.NATIVE ) || def.hasModifier(ASModifier.DYNAMIC) || func.isConstructor() ) )
             {
                 if ( !func.hasBody() )
                 {
@@ -1795,7 +1804,7 @@ public class MethodBodySemanticChecker
             IExpressionNode site = ((IMemberAccessExpressionNode)nameNode).getRightOperandNode();
             def = ((IFunctionCallNode)iNode).resolveCalledExpression(project);
             checkDeprecated(site, def);
-            if (def == null)
+            if (def == null || def.isAbstract())
             {
             	String methodName = null;
             	if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
@@ -2190,7 +2199,7 @@ public class MethodBodySemanticChecker
     {
         if ( SemanticUtils.isInFunction(iNode) )
         {
-            if ( SemanticUtils.functionMustReturnValue(iNode, this.project) )
+            if ( SemanticUtils.functionMustReturnValue(iNode, currentScope.getProject().getAllowAbstractClasses(), this.project) )
                 addProblem(new ReturnMustReturnValueProblem(iNode));
         }
         else if ( isInClassDefinition(iNode) )
@@ -2229,7 +2238,9 @@ public class MethodBodySemanticChecker
         if  ( 
                 il.size() > 0 &&
                 il.lastElement() == ABCGeneratingReducer.synthesizedReturnVoid && 
-                SemanticUtils.functionMustReturnValue(iNode, this.project)
+                SemanticUtils.functionMustReturnValue(iNode,
+                    currentScope.getProject().getAllowAbstractClasses(),
+                    this.project)
             )
         {
             for ( IBasicBlock b: mbi.getCfg().blocksInControlFlowOrder() )
@@ -2465,7 +2476,10 @@ public class MethodBodySemanticChecker
                 }
                 else if( modifier == ASModifier.ABSTRACT )
                 {
-                    currentScope.addProblem(new AbstractOutsideClassProblem(site));
+                    if(currentScope.getProject().getAllowAbstractClasses())
+                    {
+                        currentScope.addProblem(new AbstractOutsideClassProblem(site));
+                    }
                 }
             }
         }

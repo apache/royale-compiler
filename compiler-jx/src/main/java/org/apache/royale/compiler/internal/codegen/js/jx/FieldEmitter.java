@@ -145,7 +145,7 @@ public class FieldEmitter extends JSSubEmitter implements
             	}
             }
         	getModel().inStaticInitializer = false;
-        	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) || 
+        	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) ||
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
         			isPackageOrFileMember)
 	        {
@@ -164,7 +164,30 @@ public class FieldEmitter extends JSSubEmitter implements
 	        {
 	        	hasComplexStaticInitializers = true;
 	        }
-        }        
+	        
+	        if (!isPackageOrFileMember  && !ndef.isStatic() && !EmitterUtils.isScalar(vnode)
+                    && getProject() instanceof RoyaleJSProject
+                    && ((RoyaleJSProject) getProject()).config != null
+                    && ((RoyaleJSProject) getProject()).config.getJsDefaultInitializers()
+            )
+	        {
+	            //this value will actually be initialized inside the constructor.
+                //but if default initializers is set, we define it on the prototype with null value first.
+	            //Why?: this needs to be defined on the prototype to support reflection
+                //otherwise the constructor initializers will create the new property value on 'this' and
+                //there is no runtime clue to separate what is 'dynamic' and what is 'inherited'
+                //these clues throughout the prototype chain are important for runtime identification
+                //of dynamic fields.
+                //runtime checks will only work accurately using this technique if the entire inheritance chain
+                //for the reflection target is compiled with default js initializers, because it permits
+                //inspection of the prototype chain to determine all the sealed members, and isolate them
+                //from whatever else is defined as 'own' properties on the instance (which can be assumed to be
+                // 'dynamic' properties).
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                write(ASEmitterTokens.NULL);
+            }
+        }
         if (vnode == null && def != null)
         {
             String defName = def.getQualifiedName();
@@ -199,12 +222,17 @@ public class FieldEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
                         write(IASKeywordConstants.FALSE);
+                        
+                    } else if (defName.equals("*")) {
+                        //setting the value to *undefined* is needed  to create the field
+                        //on the prototype - this is important for reflection purposes
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.UNDEFINED);
                     }
-                    else if (!defName.equals("*"))
+                    else
                     {
-                        //type * is meant to default to undefined, so it
-                        //doesn't need to be initialized, but everything
-                        //else should default to null
+                        //everything else should default to null
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
                         write(IASKeywordConstants.NULL);

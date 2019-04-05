@@ -88,3 +88,9 @@ Test.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+Test.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

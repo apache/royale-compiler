@@ -82,8 +82,14 @@ Test.prototype.ROYALE_REFLECTION_INFO = function () {
     methods: function () {
       return {
         'Test': { type: '', declaredBy: 'Test'},
-        'doSomething': { type: 'interfaces.IC', declaredBy: 'Test', parameters: function () { return [  { index: 1, type: 'interfaces.IC', optional: false } ]; }}
+        'doSomething': { type: 'interfaces.IC', declaredBy: 'Test', parameters: function () { return [ { index: 1, type: 'interfaces.IC', optional: false } ]; }}
       };
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+Test.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

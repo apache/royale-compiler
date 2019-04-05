@@ -38,6 +38,7 @@ import static org.apache.royale.abc.ABCConstants.*;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.IMetaInfo;
 import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
@@ -68,6 +69,7 @@ import org.apache.royale.compiler.problems.InvalidOverrideProblem;
 import org.apache.royale.compiler.problems.NamespaceInInterfaceProblem;
 import org.apache.royale.compiler.problems.NativeUsedInInterfaceProblem;
 import org.apache.royale.compiler.problems.StaticOutsideClassProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 import org.apache.royale.compiler.problems.UnknownInterfaceProblem;
 import org.apache.royale.compiler.problems.BadAccessInterfaceMemberProblem;
 import org.apache.royale.compiler.problems.InterfaceNamespaceAttributeProblem;
@@ -429,44 +431,54 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
      */
     protected void verifyFunctionModifiers(FunctionNode f)
     {
-        ModifiersSet modifiersSet = f.getModifiers();
-        if (modifiersSet == null)
-            return;
-
-        ASModifier[] modifiers = modifiersSet.getAllModifiers();
         IExpressionNode site = f.getNameExpressionNode();
-        for (ASModifier modifier : modifiers)
+
+        ModifiersSet modifiersSet = f.getModifiers();
+        if (modifiersSet != null)
         {
-            if( modifier == ASModifier.STATIC )
+            ASModifier[] modifiers = modifiersSet.getAllModifiers();
+            for (ASModifier modifier : modifiers)
             {
-                this.interfaceScope.addProblem(new StaticOutsideClassProblem(site));
+                if( modifier == ASModifier.STATIC )
+                {
+                    this.interfaceScope.addProblem(new StaticOutsideClassProblem(site));
+                }
+                else if ( modifier == ASModifier.OVERRIDE )
+                {
+                    interfaceScope.addProblem(new InvalidOverrideProblem(site));
+                }
+                else if( modifier == ASModifier.FINAL )
+                {
+                    interfaceScope.addProblem(new FinalOutsideClassProblem(site));
+                }
+                else if( modifier == ASModifier.NATIVE )
+                {
+                    interfaceScope.addProblem(new NativeUsedInInterfaceProblem(site));
+                }
+                else if( modifier == ASModifier.VIRTUAL )
+                {
+                    interfaceScope.addProblem(new VirtualOutsideClassProblem(site));
+                }
+                else if ( modifier == ASModifier.DYNAMIC )
+                {
+                    //  Allow this and continue.
+                }
             }
-            else if ( modifier == ASModifier.OVERRIDE )
-            {
-                interfaceScope.addProblem(new InvalidOverrideProblem(site));
-            }
-            else if( modifier == ASModifier.FINAL )
-            {
-                interfaceScope.addProblem(new FinalOutsideClassProblem(site));
-            }
-            else if( modifier == ASModifier.NATIVE )
-            {
-                interfaceScope.addProblem(new NativeUsedInInterfaceProblem(site));
-            }
-            else if( modifier == ASModifier.VIRTUAL )
-            {
-                interfaceScope.addProblem(new VirtualOutsideClassProblem(site));
-            }
-            else if( modifier == ASModifier.ABSTRACT )
+            interfaceScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(f);
+        }
+
+        IDefinition functionDef = f.getDefinition();
+        if (functionDef.isAbstract())
+        {
+            if (interfaceScope.getProject().getAllowAbstractClasses())
             {
                 interfaceScope.addProblem(new AbstractOutsideClassProblem(site));
             }
-            else if ( modifier == ASModifier.DYNAMIC )
+            else
             {
-                //  Allow this and continue.
+                interfaceScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
             }
         }
-        interfaceScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(f);
     }
 
     /**

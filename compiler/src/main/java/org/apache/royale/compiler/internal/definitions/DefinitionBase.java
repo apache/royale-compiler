@@ -549,6 +549,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     private static DefinitionBase getContainingToplevelDefinition(DefinitionBase definition)
     {
         ASScope currentContainingScope = definition.getContainingASScope();
+        if (currentContainingScope == null)
+        {
+            // With some synthetic definitions you can't find a containint top level definition.
+            // This happens with Vector<T>, for example. In this case, return null
+            return null;
+        }
         DefinitionBase currentDefinition = definition;
 
         IScopedDefinition containingDefinition = currentContainingScope.getContainingDefinition();
@@ -557,10 +563,11 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             currentDefinition = (DefinitionBase)containingDefinition;
             currentContainingScope = currentDefinition.getContainingASScope();
             
-            // With some synthetic definitions you can't find a containint top level definition.
-            // This happens with Vector<T>, for example. In this case, return null
             if (currentContainingScope == null)
-                return null;                    
+            {
+                // See comment above
+                return null;
+            }
             
             containingDefinition = currentContainingScope.getContainingDefinition();
         }
