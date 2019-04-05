@@ -148,51 +148,19 @@ public class ASScopeCache
         IDefinition result = map.get(name);
         if (result != null)
         {
+            // We found a cached result - we're done
+        	// after making sure it has a dependency
         	if (result instanceof ITypeDefinition)
         	{
 	        	ICompilationUnit from = scope.getFileScope().getCompilationUnit();
 	            assert result.isInProject(project);
 	            
 	            String qname = result.getQualifiedName();
-            	WeakReference<ICompilationUnit> cuRef = compilationUnitMap.get(result);
-            	if (cuRef == null)
-            	{
-		            // We found a cached result - we're done
-		            Collection<WeakReference<ICompilationUnit>> units = project.getWorkspace().getCompilationUnits(result.getContainingFilePath());
-		            for (WeakReference<ICompilationUnit> unit : units)
-		            {
-		            	ICompilationUnit cu = unit.get();
-		            	if (cu != null)
-		            	{
-		            		List<String> qnames = null;
-							try {
-								qnames = cu.getQualifiedNames();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							if (qnames != null)
-							{
-			            		for (String q : qnames)
-			            		{
-			            			if (q.contentEquals(qname))
-			            			{
-			            				cuRef = unit;
-			            				compilationUnitMap.put(result, unit);
-			            				break;
-			            			}
-			            		}
-							}
-		            	}
-		            	if (cuRef != null)
-		            		break;
-		            }
-            	}
-            	if (cuRef != null)
-            	{
-            		ICompilationUnit to = cuRef.get();
+	            ICompilationUnit to = ((ASProjectScope)project.getScope()).getCompilationUnitForDefinition(result);
+	            if (to == null && !(qname.contentEquals("void") || qname.contentEquals("*")))
+	            	System.out.println("No compilation unit for " + qname);	
+	            if (to != null)
 	            	project.addDependency(from, to, dt, qname);
-	            }
         	}
             return result;
         }
