@@ -95,6 +95,11 @@ public class DebuggerUtil
     		return 0;
     	}
     	
+        @Override
+        public void setLastModified(long fileDate) {
+            // TODO Auto-generated method stub
+        }
+
     	public boolean isOpenDocument()
     	{
     		return false;
