@@ -118,6 +118,39 @@
         <module>compiler-build-tools</module>
         <module>compiler-jburg-types</module>
       </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.5.3</version>
+            <configuration>
+              <providerImplementations>
+                <git>jgit</git>
+              </providerImplementations>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-provider-jgit</artifactId>
+                <version>1.11.2-SNAPSHOT</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-api</artifactId>
+                <version>1.11.2-SNAPSHOT</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
         <id>main</id>
