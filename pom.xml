@@ -619,6 +619,11 @@
                 <placement>a</placement>
                 <head>Requires Project:</head>
               </tag>
+              <tag>
+                <name>pre</name>
+                <placement>X</placement>
+                <head></head>
+              </tag>
             </tags>
             <!-- TODO: This should only be a measure of last resort -->
             <failOnError>false</failOnError>
