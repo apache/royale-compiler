@@ -290,6 +290,7 @@
                 target directories. We don't want that.
             -->
             <exclude>**/target/**</exclude>
+            <exclude>**/release-dir/**</exclude>
             <!-- Stuff an Ant build might have left behind. -->
             <exclude>lib/**</exclude>
             <!--
