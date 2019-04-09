@@ -124,6 +124,16 @@ public class AnnotateClass
                 } catch(Exception e) {
                     // Ignore.
                 }
+                try {
+                    inputStreamReader.close();
+                } catch(Exception e) {
+                    // Ignore.
+                }
+                try {
+                    fileInputStream.close();
+                } catch(Exception e) {
+                    // Ignore.
+                }
             }
 
             // Remove the original file.
