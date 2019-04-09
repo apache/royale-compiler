@@ -118,12 +118,33 @@
         <fail message="Could not create artifact folder"
         unless="artifact.folder.found"/>
     </target>
+    
+    <target name="download-artifacts-utils" if="utils">
+        <get src="http://apacheroyaleci.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_002a_if_utils/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive_utils.zip" />
+    </target>
+    
     <target name="download-artifacts" if="artifactfolder">
+        <antcall target="download-artifacts-utils" />
         <get src="http://apacheroyaleci.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
     </target>
+
+    <target name="unzip-artifacts-utils" if="utils">
+        <mkdir dir="${artifactfolder}/artifacts" />
+        <unzip src="${artifactfolder}/archive_utils.zip" dest="${artifactfolder}/artifacts"/>
+    </target>
     <target name="unzip-artifacts" if="artifactfolder">
+        <antcall target="unzip-artifacts-utils" />
         <mkdir dir="${artifactfolder}/artifacts" />
         <unzip src="${artifactfolder}/archive.zip" dest="${artifactfolder}/artifacts"/>
+    </target>
+    <target name="build-source-utils" if="utils">
+        <!-- build these modules -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+            <arg value="clean" />
+            <arg value="install" />
+            <arg value="-P" />
+            <arg value="-main,utils" />
+        </exec>
     </target>
     <target name="build-source" >
         <mkdir dir="${artifactfolder}/sources" />
@@ -131,12 +152,11 @@
             <cutdirsmapper dirs="1" />
         </unzip>
         
+        <antcall target="build-source-utils" />
         <!-- build these modules -->
         <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
             <arg value="clean" />
             <arg value="install" />
-            <!--<arg value="-P" />
-            <arg value="-main,utils" />-->
         </exec>
     </target>
     
@@ -151,7 +171,110 @@
             unless="artifact.folder.found"/>
     </target>
     
-    <target name="validate-bits">
+    <target name="get-utils-version">
+        <xmlproperty file="${artifactfolder}/sources/compiler-jburg-types/pom.xml" prefix="jburg" />
+        <property name="utils.version" value="${jburg.project.version}" />
+        <echo>utils version is ${utils.version}</echo>
+    </target>
+    
+    <target name="check-for-utils" unless="utils">
+        <available file="${artifactfolder}/sources/compiler-jburg-types/target/compiler-jburg-types-${utils.version}.jar" property="utils" value="true" />
+    </target>
+
+    <target name="validate-bits" depends="get-artifact-folder,get-utils-version,compare-jars">
+    </target>
+    
+    <target name="write-out-maven-utils-jars-list" if="utils" >
+        <delete file="${artifactfolder}/jars.txt" />
+        <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
+         to skip in the rat-check of the binaries and which jars to examine before approval -->
+        <property name="jars-list-with-utils" value="compiler-jburg-types,compiler-build-tools,${jars-list}"/>
+        <echo file="${artifactfolder}/jars.txt" message="${jars-list-with-utils}"/>
+    </target>
+    
+    <target name="write-out-maven-jars-list" >
+        <delete file="${artifactfolder}/jars.txt" />
+        <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
+         to skip in the rat-check of the binaries and which jars to examine before approval -->
+        <property name="jars-list" value="compiler,compiler-common,compiler-externc,compiler-jx,compiler-test-utils,swfutils,debugger,flex-compiler-oem,royale-ant-tasks,royale-maven-plugin"/>
+        <echo file="${artifactfolder}/jars.txt" message="${jars-list}"/>
+        <antcall target="write-out-maven-utils-jars-list" />
+    </target>
+
+    <target name="compare-jars" depends="write-out-maven-jars-list">
+        <!-- comma delimited list, no spaces, not one file per line -->
+        <copy file="${artifactfolder}/jars.txt" tofile="${artifactfolder}/loop.txt" />
+        <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false" >
+            <property name="artifactfolder" value="${artifactfolder}" />
+            <property name="release.version" value="${release.version}" />
+            <property name="utils.version" value="${utils.version}" />
+        </ant>
+    </target>
+    
+    <target name="get-jar-version" >
+        <condition property="jar.version" value="${utils.version}"
+            else="${release.version}">
+            <or>
+                <equals arg1="${thisFile}" arg2="compiler-jburg-types" />
+                <equals arg1="${thisFile}" arg2="compiler-build-tools" />
+            </or>
+        </condition>
+    </target>
+    
+    <target name="loopOnce" >
+        <!-- make a copy of the list so we can munge it to
+         get the first item in the list -->
+        <delete file="${artifactfolder}/loop1.txt" />
+        <copy file="${artifactfolder}/loop.txt" tofile="${artifactfolder}/loop1.txt" />
+        <loadfile srcFile="${artifactfolder}/loop.txt" property="checkiflast" />
+        <condition property="islast" value="true">
+            <not>
+                <contains string="${checkiflast}" substring="," />
+            </not>
+        </condition>
+        <antcall target="notlast" />
+        <antcall target="lastone" />
+    </target>
+    <target name="notlast" unless="islast">
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="echoFile" />
+        <replaceregexp file="${artifactfolder}/loop1.txt" match="^(.*),(.*)" replace="\2" />
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="thisFile" />
+        <antcall target="compare_files" />
+        <replaceregexp file="${artifactfolder}/loop.txt" match="^(.*),(.*)" replace="\1" />
+        <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false">
+            <property name="artifactfolder" value="${artifactfolder}" />
+            <property name="release.version" value="${release.version}" />
+            <property name="utils.version" value="${utils.version}" />
+        </ant>
+    </target>
+    <target name="lastone" if="islast">
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="thisFile" />
+        <antcall target="compare_files" />
+        <delete file="${artifactfolder}/loop.txt" />
+        <delete file="${artifactfolder}/loop1.txt" />
+    </target>
+
+    <target name="compare_files" depends="get-jar-version">
+        <echo>comparing ${thisFile}-${jar.version}</echo>
+        <fail message="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
+            <condition>
+                <not>
+                    <resourceexists><file file="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
+                </not>
+            </condition>
+        </fail>
+        <fail message="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar does not exist" >
+            <condition>
+                <not>
+                    <resourceexists><file file="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar"/></resourceexists>
+                </not>
+            </condition>
+        </fail>
+        <condition property="filesmatch" value="true">
+              <filesmatch file1="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
+                file2="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar" />
+        </condition>
+        <fail message="${thisFile}-${jar.version}.jar does not match" unless="filesmatch" />
     </target>
     
     <target name="Release_Step_003_Sign" depends="get-artifact-folder">
