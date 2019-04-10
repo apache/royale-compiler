@@ -299,6 +299,10 @@
                 as the typedefs build will handle all content in that directory
             -->
             <exclude>royale-typedefs/**</exclude>
+            <!-- This file is used to get reproducible builds.  See royale-maven-plugin/pom.xml
+                 for more info.
+             -->
+            <exclude>**/src/main/sisu/javax.inject.Named</exclude>
           </excludes>
         </configuration>
         <dependencies>
