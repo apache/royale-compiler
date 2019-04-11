@@ -361,6 +361,7 @@ public class EmitterUtils
             else
             {
                 boolean isFileOrPackageMember = false;
+                boolean isLocalFunction = false;
                 if(nodeDef instanceof FunctionDefinition)
                 {
                     FunctionClassification classification = ((FunctionDefinition) nodeDef).getFunctionClassification();
@@ -370,13 +371,20 @@ public class EmitterUtils
                         isFileOrPackageMember = true;
                     }
                     else if (!identifierIsMemberAccess && classification == FunctionClassification.CLASS_MEMBER &&
-                    		isClassMember(project, nodeDef, thisClass))
-                    	return true;
+                            isClassMember(project, nodeDef, thisClass))
+                    {
+                        return true;
+                    }
+                    else if (classification == FunctionClassification.LOCAL)
+                    {
+                        isLocalFunction = true;
+                    }
                 }
                 return parentNodeId == ASTNodeID.FunctionCallID
                         && !(nodeDef instanceof AccessorDefinition)
                         && !identifierIsMemberAccess
-                        && !isFileOrPackageMember;
+                        && !isFileOrPackageMember
+                        && !isLocalFunction;
             }
         }
         else
