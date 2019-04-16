@@ -584,7 +584,7 @@
         <plugin>
           <groupId>io.github.zlika</groupId>
           <artifactId>reproducible-build-maven-plugin</artifactId>
-          <version>0.8</version>
+          <version>0.9</version>
           <executions>
             <execution>
               <goals>
