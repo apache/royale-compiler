@@ -67,6 +67,7 @@ import org.apache.royale.compiler.problems.CircularTypeReferenceProblem;
 import org.apache.royale.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
 import org.apache.royale.compiler.problems.ConstructorIsGetterSetterProblem;
 import org.apache.royale.compiler.problems.ConstructorIsStaticProblem;
+import org.apache.royale.compiler.problems.ConstructorMustBePublicOrPrivateProblem;
 import org.apache.royale.compiler.problems.ConstructorMustBePublicProblem;
 import org.apache.royale.compiler.problems.DuplicateClassDefinitionProblem;
 import org.apache.royale.compiler.problems.DynamicNotOnClassProblem;
@@ -982,9 +983,21 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             // It is ok to omit the namespace
             // We must check the AST, as CM treats all ctors as public no matter what the user typed in
             // so the FunctionDefinition will always be in the public namespace
-            if( node.getActualNamespaceNode() != null &&
-                    node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC)
-                problems.add(new ConstructorMustBePublicProblem(node.getActualNamespaceNode()));
+            if (classScope.getProject().getAllowPrivateConstructors())
+            {
+                if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC
+                        && !func.isPrivate())
+                {
+                    problems.add(new ConstructorMustBePublicOrPrivateProblem(node.getActualNamespaceNode()));
+                }
+            }
+            else if( node.getActualNamespaceNode() != null )
+            {
+                if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC || func.isPrivate())
+                {
+                    problems.add(new ConstructorMustBePublicProblem(node.getActualNamespaceNode()));
+                }
+            }
 
             // A constructor cannot be static
             if( func.isStatic() )

@@ -1530,6 +1530,28 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-private-constructors' option
+    //
+
+    private boolean allowPrivateConstructors = false;
+
+    public boolean getCompilerAllowPrivateConstructors()
+    {
+        return allowPrivateConstructors;
+    }
+
+    /**
+     * Whether the compiler will allow constructors to be private.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-private-constructors" })
+    @RoyaleOnly
+    public void setCompilerAllowPrivateConstructors(ConfigurationValue cv, boolean allow)
+    {
+        this.allowPrivateConstructors = allow;
+    }
+
+    //
     // 'compiler.actionscript-file-encoding' option
     //
 

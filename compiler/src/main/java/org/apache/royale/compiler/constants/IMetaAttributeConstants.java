@@ -213,6 +213,9 @@ public interface IMetaAttributeConstants
 
     // [RoyaleAbstract]
     static final String ATTRIBUTE_ABSTRACT = "RoyaleAbstract";
+
+    // [RoyalePrivateConstructor]
+    static final String ATTRIBUTE_PRIVATE_CONSTRUCTOR = "RoyalePrivateConstructor";
 	
 	/**
 	 * List of metadata tags that do not inherit
@@ -226,6 +229,7 @@ public interface IMetaAttributeConstants
 		    ATTRIBUTE_DISCOURAGED_FOR_PROFILE,
             ATTRIBUTE_EXCLUDECLASS,
             ATTRIBUTE_ABSTRACT,
+            ATTRIBUTE_PRIVATE_CONSTRUCTOR,
         })));
 }
 

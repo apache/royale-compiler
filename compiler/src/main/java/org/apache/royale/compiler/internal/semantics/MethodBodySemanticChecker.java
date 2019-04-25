@@ -70,6 +70,7 @@ import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -85,6 +86,7 @@ import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.internal.as.codegen.ABCGeneratingReducer;
@@ -2025,7 +2027,8 @@ public class MethodBodySemanticChecker
             }
             else if ( def instanceof ClassDefinition )
             {
-                // pass
+                IClassDefinition classDef = (IClassDefinition) def;
+                checkPrivateConstructorNewExpr(call_node, null, classDef, classDef.getConstructor());
             }
             else if ( def instanceof GetterDefinition )
             {
@@ -2040,6 +2043,12 @@ public class MethodBodySemanticChecker
                     case INTERFACE_MEMBER:
                         addProblem(new MethodCannotBeConstructorProblem(call_node));
                         break;
+                }
+
+                if (func_def.isConstructor())
+                {
+                    IDefinition class_def = func_def.getParent();
+                    checkPrivateConstructorNewExpr(call_node, null, class_def, func_def);
                 }
             }
             else if (def == null)
@@ -2087,8 +2096,10 @@ public class MethodBodySemanticChecker
 
             if ( ctor instanceof FunctionDefinition )
             {
-                FunctionDefinition func = (FunctionDefinition)ctor;
-                checkFormalsVsActuals(iNode, func, args);
+                FunctionDefinition func_def = (FunctionDefinition)ctor;
+                checkFormalsVsActuals(iNode, func_def, args);
+                
+                checkPrivateConstructorNewExpr(iNode, class_binding, class_def, func_def);
             }
         }
         else if ( def instanceof GetterDefinition )
@@ -2100,7 +2111,12 @@ public class MethodBodySemanticChecker
 
             IFunctionDefinition.FunctionClassification func_type = func_def.getFunctionClassification();
 
-            if ( func_type.equals(IFunctionDefinition.FunctionClassification.CLASS_MEMBER) || func_type.equals(IFunctionDefinition.FunctionClassification.INTERFACE_MEMBER) )
+            if (func_def.isConstructor())
+            {
+                IDefinition class_def = func_def.getParent();
+                checkPrivateConstructorNewExpr(iNode, class_binding, class_def, func_def);
+            }
+            else if ( func_type.equals(IFunctionDefinition.FunctionClassification.CLASS_MEMBER) || func_type.equals(IFunctionDefinition.FunctionClassification.INTERFACE_MEMBER) )
             {
                 addProblem(new MethodCannotBeConstructorProblem(
                     roundUpUsualSuspects(class_binding, iNode)
@@ -2131,6 +2147,47 @@ public class MethodBodySemanticChecker
         }
 
         checkReference(class_binding);
+    }
+
+    private void checkPrivateConstructorNewExpr(IASNode iNode, Binding class_binding, IDefinition classDef, IFunctionDefinition funcDef)
+    {
+        if (!project.getAllowPrivateConstructors() || !funcDef.isPrivate())
+        {
+            return;
+        }
+
+        IScopedNode enclosingScope = iNode.getContainingScope();
+        
+        if (enclosingScope != null)
+        {
+            boolean needsProblem = true;
+            IASScope currentScope = enclosingScope.getScope();
+            while (currentScope != null)
+            {
+                IDefinition currentDef = currentScope.getDefinition();
+                if (currentDef instanceof IClassDefinition)
+                {
+                    needsProblem = !classDef.equals(currentScope.getDefinition());
+                    break;
+                }
+                currentScope = currentScope.getContainingScope();
+            }
+            if(needsProblem)
+            {
+                if(class_binding != null)
+                {
+                    addProblem(new InaccessibleConstructorReferenceProblem(
+                        roundUpUsualSuspects(class_binding, iNode), classDef.getQualifiedName()
+                    ));
+                }
+                else
+                {
+                    addProblem(new InaccessibleConstructorReferenceProblem(
+                        iNode, classDef.getQualifiedName()
+                    ));
+                }
+            }
+        }
     }
 
     /**

@@ -313,6 +313,16 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
     protected void setConstructor(IFunctionDefinition constructor)
     {
         this.constructor = constructor;
+
+        if(this.constructor.isPrivate()
+                && this.constructor.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR) == null)
+        {
+            // ensures that the constructor remains private when compiled into
+            // a library because the metadata is how private constructors are
+            // stored in the bytecode
+            MetaTag privateMetaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR, new IMetaTagAttribute[0]);
+            addMetaTag(privateMetaTag);
+        }
     }
 
     @Override

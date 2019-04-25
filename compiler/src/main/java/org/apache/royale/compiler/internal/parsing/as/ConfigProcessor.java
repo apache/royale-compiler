@@ -170,6 +170,12 @@ public class ConfigProcessor
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+        @Override
+        public boolean getAllowPrivateConstructors() {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
 
     /**

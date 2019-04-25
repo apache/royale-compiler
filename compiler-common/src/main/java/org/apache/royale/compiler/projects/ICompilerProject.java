@@ -275,6 +275,11 @@ public interface ICompilerProject
      /**
       * @return True if abstract classes are allowed.
       */
-      boolean getAllowAbstractClasses();
+     boolean getAllowAbstractClasses();
+     
+     /**
+      * @return True if private constructors are allowed.
+      */
+     boolean getAllowPrivateConstructors();
 
 }

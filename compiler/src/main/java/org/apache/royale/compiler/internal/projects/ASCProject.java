@@ -92,4 +92,10 @@ public class ASCProject extends CompilerProject implements IASCProject
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean getAllowPrivateConstructors() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

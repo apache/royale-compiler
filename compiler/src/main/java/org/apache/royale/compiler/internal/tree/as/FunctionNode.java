@@ -36,8 +36,10 @@ import org.apache.royale.compiler.common.ASImportTarget;
 import org.apache.royale.compiler.common.IImportTarget;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.references.IReference;
@@ -74,6 +76,7 @@ import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.workspaces.IWorkspace;
 
 import com.google.common.base.Predicate;
@@ -364,8 +367,30 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         
         if (isConstructor())
         {
-            if (namespaceNode != null && namespaceNode.getName().equals(INamespaceConstants.public_))
+            if (namespaceNode != null
+                    && (namespaceNode.getName().equals(INamespaceConstants.public_) || namespaceNode.getName().equals(INamespaceConstants.private_)))
+            {
+                // if the existing node is already public or private, return it
                 return namespaceNode;
+            }
+            IASNode parentNode = getParent();
+            if (parentNode instanceof IDefinitionNode)
+            {
+                IDefinitionNode defNode = (IDefinitionNode) parentNode;
+                IMetaTagNode[] metaTagNodes = defNode.getMetaTags().getTagsByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR);
+                if (metaTagNodes != null && metaTagNodes.length > 0)
+                {
+                    // if the parent class has [RoyalePrivateConstructor]
+                    // metadata, the constructor should be considered private
+                    // and we should generate a fake namespace node
+                    NamespaceIdentifierNode priv = new NamespaceIdentifierNode(INamespaceConstants.private_);
+                    priv.span(-1, -1, -1, -1);
+                    priv.setDecorationTarget(this);
+                    return priv;
+                }
+            }
+            // if there is no namespace node, the namespace defaults to public
+            // and we'll generate a fake node
             NamespaceIdentifierNode pub = new NamespaceIdentifierNode(INamespaceConstants.public_);
             pub.span(-1, -1, -1, -1);
             pub.setDecorationTarget(this);
@@ -382,11 +407,12 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         if (ns != null)
         {
             String nameString = ns.getName();
-            // If public, just return it.
-            if (nameString.equals(INamespaceConstants.public_))
+            // If public or private, just return it.
+            if (nameString.equals(INamespaceConstants.public_) || nameString.equals(INamespaceConstants.private_))
                 return nameString;
 
-            // Otherwise, check to see if we are a constructor.
+            // Otherwise, check to see if we are a constructor and always return
+            // public
             if (isConstructor())
                 return INamespaceConstants.public_;
             
@@ -649,8 +675,16 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                         classNode.constructorNode = this;
                     }
                 }
+                // if the namespace reference is private, don't change it
+                if(!(funcDef.getNamespaceReference() instanceof INamespaceDefinition.IPrivateNamespaceDefinition))
+                {
+                    funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
+                }
             }
-            funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
+            else
+            {
+                funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
+            }
         }
     }
 

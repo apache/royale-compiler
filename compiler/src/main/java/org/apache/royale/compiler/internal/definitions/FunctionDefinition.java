@@ -296,6 +296,29 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
     }
 
     @Override
+    public boolean isPrivate()
+    {
+        if (super.isPrivate())
+        {
+            return true;
+        }
+        if (isConstructor())
+        {
+            IDefinition parent = getParent();
+            if (parent == null)
+            {
+                return false;
+            }
+            // if the construcutor does not have a private namespace, the parent
+            // class may have [RoyalePrivateConstructor] metadata instead. this
+            // is how private constructors are stored in bytecode.
+            IMetaTag[] metaTags = parent.getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR);
+            return metaTags != null && metaTags.length > 0;
+        }
+        return false;
+    }
+
+    @Override
     public boolean overridesAncestor(ICompilerProject project)
     {
         return (resolveOverriddenFunction(project) != null);

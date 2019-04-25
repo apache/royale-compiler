@@ -265,6 +265,7 @@ public class RoyaleProjectConfigurator extends Configurator
 
             project.setAllowImportAliases(configuration.getCompilerAllowImportAliases());
             project.setAllowAbstractClasses(configuration.getCompilerAllowAbstractClasses());
+            project.setAllowPrivateConstructors(configuration.getCompilerAllowPrivateConstructors());
             
             DataTranscoder.embedClassName = configuration.getByteArrayEmbedClass();
         }

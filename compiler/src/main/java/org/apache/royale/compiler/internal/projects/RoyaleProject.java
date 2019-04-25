@@ -2460,6 +2460,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	allowAbstractClasses = allow;
     }
 
+    private boolean allowPrivateConstructors = false;
+    
+    /**
+     * Indicates if private constructors are allowed.
+     */
+    @Override
+    public boolean getAllowPrivateConstructors()
+    {
+    	return allowPrivateConstructors;
+    }
+    public void setAllowPrivateConstructors(boolean allow)
+    {
+    	allowPrivateConstructors = allow;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;
