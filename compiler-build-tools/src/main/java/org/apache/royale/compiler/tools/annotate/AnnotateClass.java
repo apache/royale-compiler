@@ -138,7 +138,19 @@ public class AnnotateClass
 
             // Remove the original file.
             if(!file.delete()) {
-                throw new AnnotateClassDeleteException("Error deleting original file at: " + file.getPath());
+                // wait a bit then retry on Windows
+                if (file.exists())
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        Thread.sleep(500);
+                        System.gc();
+                        if (file.delete())
+                           break;
+                    }
+                    if (file.exists())
+                        throw new AnnotateClassDeleteException("Error deleting original file at: " + file.getPath());
+                }
             }
 
             // Rename the temp file to the name of the original file.
