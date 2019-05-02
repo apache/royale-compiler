@@ -1314,6 +1314,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testFunctionCallCustomNamespace()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.custom_namespace; public class B {custom_namespace function b() { custom_namespace::b(); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  this.http_$$ns_apache_org$2017$custom$namespace__b();\n}");
+    }
+
+    @Test
     public void testFunctionMemberFullyQualified()
     {
         IFunctionNode node = (IFunctionNode) getNode(

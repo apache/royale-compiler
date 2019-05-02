@@ -34,10 +34,14 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
@@ -322,6 +326,22 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     	write("XML.conversion");
                         getEmitter().emitArguments(node.getArgumentsNode());
                     	return;
+                    }
+                    else if (nameNode.getNodeID() == ASTNodeID.NamespaceAccessExpressionID && def instanceof FunctionDefinition)
+                    {
+                    	if (fjs.isCustomNamespace((FunctionDefinition)def))
+                    	{
+                    		write(ASEmitterTokens.THIS);
+                    		NamespaceIdentifierNode nin = (NamespaceIdentifierNode)nameNode.getChild(0);
+                    		NamespaceDefinition nsDef = (NamespaceDefinition)nin.resolve(getProject());
+                    		IdentifierNode idNode = (IdentifierNode)nameNode.getChild(1);
+                    		String propName = idNode.getName();
+                			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+                			String s = nsDef.getURI();
+                			write(JSRoyaleEmitter.formatNamespacedProperty(s, propName, true));
+                            getEmitter().emitArguments(node.getArgumentsNode());
+                            return;
+                    	}
                     }
                 }
                 else if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID && ((JSRoyaleEmitter)getEmitter()).isProxy(((MemberAccessExpressionNode)nameNode).getLeftOperandNode()) && def == null)
