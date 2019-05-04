@@ -718,12 +718,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         else if (name.equals(IASLanguageConstants._int)
                 || name.equals(IASLanguageConstants.uint))
             result = IASLanguageConstants.Number;
-
-        boolean isBuiltinFunction = name.matches("Vector\\.<.*>");
-        if (isBuiltinFunction)
-        {
-        	result = IASLanguageConstants.Array;
+        else if (name.equals(IASLanguageConstants.Vector) || name.equals("__AS3__.vec.Vector")) {
+            result = JSRoyaleEmitterTokens.VECTOR.getToken();
         }
+        
         return result;
     }
 
@@ -925,10 +923,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                         newNode = EmitterUtils.insertArgumentsAt(node, 1, new NumericLiteralNode("0"));
             		}
     			}
-        		else if (def.getParent() != null && def.getParent() instanceof AppliedVectorDefinition)
-        		{
-                    newNode = EmitterUtils.insertArgumentsAt(node, 1, new NumericLiteralNode("0"));
-        		}
     		}
     	}
         if (len == 1)
@@ -947,10 +941,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                         newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("1"));
                     }
                 }
-        		else if (def.getParent() != null && def.getParent() instanceof AppliedVectorDefinition)
-        		{
-                    newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("1"));
-        		}
             }
             else if (def != null && def.getBaseName().equals("parseInt"))
             {
@@ -1479,12 +1469,32 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	String vectorClassName = ((RoyaleJSProject)project).config == null ? null : ((RoyaleJSProject)project).config.getJsVectorEmulationClass();
         	if (vectorClassName != null)
         	{
-        		writeToken(ASEmitterTokens.NEW);
         		write(vectorClassName);
         		return;
         	}
         }
-        write(JSRoyaleEmitterTokens.VECTOR);
+        Boolean written = false;
+        if (node instanceof TypedExpressionNode) {
+            startMapping(node);
+            write(ASEmitterTokens.PAREN_OPEN);
+            /*write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write("synthVector");*/
+            write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            //the element type of the Vector:
+            write(node.getTypeNode().resolve(project).getQualifiedName());
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            endMapping(node);
+            written = true;
+        }
+
+        if (!written) {
+            write(JSRoyaleEmitterTokens.VECTOR);
+        }
         if (getModel().inStaticInitializer)
         {
         	if (!staticUsedNames.contains(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()))

@@ -1220,7 +1220,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; var f:Array = [b]; c(f[0]); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Array} */ f = [org.apache.royale.utils.Language.closure(this.b, this, 'b')];\n  c(f[0]);\n}");
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Array} */ f = [org.apache.royale.utils.Language.closure(this.b, this, 'b')];\n  c(/* implicit cast */ org.apache.royale.utils.Language.as(f[0], Function, true));\n}");
     }
     
     @Test
@@ -1512,7 +1512,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a as int");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("org.apache.royale.utils.Language.as(a, Number)");
+        assertOut("org.apache.royale.utils.Language.as(a, org.apache.royale.utils.Language.synthType('int'))");
     }
 
     @Test
@@ -1520,7 +1520,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a as uint");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("org.apache.royale.utils.Language.as(a, Number)");
+        assertOut("org.apache.royale.utils.Language.as(a, org.apache.royale.utils.Language.synthType('uint'))");
     }
 
     @Test
@@ -1530,7 +1530,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
     }
 
     @Test

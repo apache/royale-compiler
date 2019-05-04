@@ -122,8 +122,8 @@ public class NativeUtils
         unescape("unescape"),
         window("window"),
 
-        // (erikdebruin) These aren't strictly 'native' to JS, but the 
-        //               Publisher provides global functions, so, for all 
+        // (erikdebruin) These aren't strictly 'native' to JS, but the
+        //               Publisher provides global functions, so, for all
         //               intends and purposes they behave like they are.
         _int("int"),
         trace("trace"),
@@ -154,6 +154,25 @@ public class NativeUtils
         }
     }
     
+    public enum SyntheticJSType
+    {
+        _int("int"),
+        uint("uint"),
+        Vector("Vector");
+        
+        private final String value;
+    
+        SyntheticJSType(String value)
+        {
+            this.value = value;
+        }
+    
+        public String getValue()
+        {
+            return value;
+        }
+    }
+    
     public static boolean isNative(String type)
     {
         for (NativeASType test : NativeASType.values())
@@ -174,6 +193,25 @@ public class NativeUtils
                 return true;
         }
         return false;
+    }
+    
+    public static boolean isSyntheticJSType(String type)
+    {
+        for (SyntheticJSType test : SyntheticJSType.values())
+        {
+            if (test.getValue().equals(type)) {
+                return true;
+            }
+        }
+        if (type.startsWith("Vector.<")) {
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean isVector(String type)
+    {
+        return type != null && type.startsWith("Vector.<");
     }
 
 }

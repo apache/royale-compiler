@@ -108,8 +108,12 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             endMapping(node.getNameExpressionNode());
         }
-
-        startMapping(node);
+        if (node.getMetaTags() != null) {
+            //offset mapping by any metadata tags that will be in the first child node
+            startMapping(node.getChild(1));
+        } else {
+            startMapping(node);
+        }
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
