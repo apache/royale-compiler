@@ -115,7 +115,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 {
                     VectorLiteralNode vectorLiteralNode = (VectorLiteralNode) node.getChild(1);
                     String vectorClassName = (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass());
-                    SourceLocation mappingLocation = null;
+                    SourceLocation mappingLocation;
                     if (vectorClassName != null)
                     {
                     	writeToken(ASEmitterTokens.NEW);
@@ -150,10 +150,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     mappingLocation.setEndColumn(mappingLocation.getColumn()+1);
                     startMapping(mappingLocation);
                     write("[");
-                   
-                    /*mappingLocation = new SourceLocation(vectorLiteralNode.getContentsNode());
-                    mappingLocation.setLine(vectorLiteralNode.getContentsNode().getLine());
-                    mappingLocation.setColumn(vectorLiteralNode.getContentsNode().getColumn() + 1);*/
+                    
                     endMapping(mappingLocation);
                     ContainerNode contentsNode = vectorLiteralNode.getContentsNode();
                     int len = contentsNode.getChildCount();
