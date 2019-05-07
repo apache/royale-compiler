@@ -760,11 +760,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             //catch leftovers: remaining implicit coercion of loosely typed assigned values to strongly typed context
             //assignment to Class definitions is excluded because there is no 'Class' type in JS
             //Possibility: 'Class' could be implemented as a synthType
-            boolean needsCoercion = true;
-            
-            if (((RoyaleJSProject)project).config.getJsNoComplexImplicitCoercions()) {
-                needsCoercion = false;
-            }
+            boolean needsCoercion = ((RoyaleJSProject)project).config.getJsComplexImplicitCoercions();
     
             IDocEmitter docEmitter = getDocEmitter();
             if (docEmitter instanceof JSRoyaleDocEmitter)

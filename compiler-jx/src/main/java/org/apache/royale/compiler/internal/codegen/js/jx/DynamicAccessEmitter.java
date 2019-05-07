@@ -113,11 +113,8 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 			if (node.getNodeID().equals(ASTNodeID.ArrayIndexExpressionID)){
 				if (node.getParent() instanceof BinaryOperatorAssignmentNode) {
 					if (node.getLeftOperandNode().resolveType(getProject()) instanceof AppliedVectorDefinition) {
-						boolean suppressVectorIndexCheck = false;
-						if (((RoyaleJSProject)getProject()).config.getJsNoVectorIndexChecks()) {
-							//wrapVectorIndex = false;
-							suppressVectorIndexCheck = true;
-						}
+						boolean suppressVectorIndexCheck = !(((RoyaleJSProject)getProject()).config.getJsVectorIndexChecks());
+
 						IDocEmitter docEmitter = getEmitter().getDocEmitter();
 						if (docEmitter instanceof JSRoyaleDocEmitter)
 						{

@@ -464,18 +464,18 @@ public class JSConfiguration extends Configuration
     
     
     //
-    // 'js-no-complex-implicit-coercions'
+    // 'js-complex-implicit-coercions'
     //
     
-    private boolean jsNoComplexImplicitCoercions = false;
+    private boolean jsComplexImplicitCoercions = true;
     
-    public boolean getJsNoComplexImplicitCoercions()
+    public boolean getJsComplexImplicitCoercions()
     {
-        return jsNoComplexImplicitCoercions;
+        return jsComplexImplicitCoercions;
     }
     
     /**
-     * Support for avoiding more complex implicit assignment coercions
+     * Support for including/avoiding more complex implicit assignment coercions
      * example
      * var array:Array = [new MyClass()];
      * var myOtherClass:MyOtherClass = array[0];
@@ -493,22 +493,22 @@ public class JSConfiguration extends Configuration
      * in other compiler targets (for example, swf bytecode) if the same source code is shared between targets.
      */
     @Config(advanced = true)
-    @Mapping("js-no-complex-implicit-coercions")
-    public void setJsNoComplexImplicitCoercions(ConfigurationValue cv, boolean value)
+    @Mapping("js-complex-implicit-coercions")
+    public void setJsComplexImplicitCoercions(ConfigurationValue cv, boolean value)
             throws ConfigurationException
     {
-        jsNoComplexImplicitCoercions = value;
+        jsComplexImplicitCoercions = value;
     }
     
     //
-    // 'js-no-resolve-uncertain'
+    // 'js-resolve-uncertain'
     //
     
-    private boolean jsNoResolveUncertain = false;
+    private boolean jsResolveUncertain = true;
     
-    public boolean getJsNoResolveUncertain()
+    public boolean getJsResolveUncertain()
     {
-        return jsNoResolveUncertain;
+        return jsResolveUncertain;
     }
     
     /**
@@ -531,22 +531,22 @@ public class JSConfiguration extends Configuration
      * doc comment compiler directive.
      */
     @Config(advanced = true)
-    @Mapping("js-no-resolve-uncertain")
-    public void setJsNoResolveUncertain(ConfigurationValue cv, boolean value)
+    @Mapping("js-resolve-uncertain")
+    public void setJsResolveUncertain(ConfigurationValue cv, boolean value)
             throws ConfigurationException
     {
-        jsNoResolveUncertain = value;
+        jsResolveUncertain = value;
     }
     
     //
-    // 'js-no-vector-index-checks'
+    // 'js-vector-index-checks'
     //
     
-    private boolean jsNoVectorIndexChecks = false;
+    private boolean jsVectorIndexChecks = true;
     
-    public boolean getJsNoVectorIndexChecks()
+    public boolean getJsVectorIndexChecks()
     {
-        return jsNoVectorIndexChecks;
+        return jsVectorIndexChecks;
     }
     
     /**
@@ -571,11 +571,11 @@ public class JSConfiguration extends Configuration
      * doc comment compiler  directive.
      */
     @Config(advanced = true)
-    @Mapping("js-no-vector-index-checks")
-    public void setJsNoVectorIndexChecks(ConfigurationValue cv, boolean value)
+    @Mapping("js-vector-index-checks")
+    public void setJsVectorIndexChecks(ConfigurationValue cv, boolean value)
             throws ConfigurationException
     {
-        jsNoVectorIndexChecks = value;
+        jsVectorIndexChecks = value;
     }
     
 }

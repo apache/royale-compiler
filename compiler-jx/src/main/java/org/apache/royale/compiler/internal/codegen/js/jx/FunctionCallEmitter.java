@@ -502,13 +502,10 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
     
     private boolean shouldResolveUncertain(IExpressionNode nameNode, boolean forceExplicit) {
         //default if not avoided globally
-        boolean should = true;
+        boolean should = ((RoyaleJSProject)getProject()).config.getJsResolveUncertain();
         //just in case:
         if (!(getProject() instanceof RoyaleJSProject)) return false;
-        if (((RoyaleJSProject)getProject()).config.getJsNoResolveUncertain()) {
-            //start with global toggle
-            should = false;
-        }
+
         IDocEmitter docEmitter = getEmitter().getDocEmitter();
         if (docEmitter instanceof JSRoyaleDocEmitter)
         {
