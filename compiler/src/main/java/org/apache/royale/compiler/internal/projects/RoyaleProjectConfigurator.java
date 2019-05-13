@@ -266,6 +266,8 @@ public class RoyaleProjectConfigurator extends Configurator
             project.setAllowImportAliases(configuration.getCompilerAllowImportAliases());
             project.setAllowAbstractClasses(configuration.getCompilerAllowAbstractClasses());
             
+            project.setSwfDebugfileAlias(configuration.getSwfDebugfileAlias());
+            
             DataTranscoder.embedClassName = configuration.getByteArrayEmbedClass();
         }
     }

@@ -58,6 +58,7 @@ import org.apache.royale.compiler.internal.projects.ASProject;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
@@ -1168,6 +1169,12 @@ public abstract class CompilationUnitBase implements ICompilationUnit
             rootPath = getAbsoluteFilename().replace(File.separatorChar + filenameNoPath, "");
         else
             rootPath = getAbsoluteFilename().replace(File.separatorChar + packagePath + File.separatorChar + filenameNoPath, "");
+        if (asProject instanceof RoyaleProject)
+        {
+        	String swfDebugfileAlias = ((RoyaleProject)asProject).getSwfDebugfileAlias();
+        	if (swfDebugfileAlias != null)
+        		rootPath = swfDebugfileAlias;
+        }
 
         String encodedPath = rootPath + ';' + packagePath + ';' + getFilenameNoPath();
 

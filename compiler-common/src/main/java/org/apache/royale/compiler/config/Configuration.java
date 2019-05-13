@@ -5572,6 +5572,24 @@ public class Configuration
     }
 
     //
+    // 'swf-debugfile-alias' option
+    //
+
+    private String swfDebugfileAlias;
+
+    public String getSwfDebugfileAlias()
+    {
+        return swfDebugfileAlias;
+    }
+
+    @Config
+    @Arguments("filename")
+    public void setSwfDebugfileAlias(ConfigurationValue val, String output) throws ConfigurationException
+    {
+        this.swfDebugfileAlias = output;
+    }
+
+    //
     // 'dump-config-file' option from ToolsConfiguration
     //
 
