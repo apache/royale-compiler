@@ -1438,6 +1438,9 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 		{
 			return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode());
 		}
+		else if (leftDef != null && leftDef.getBaseName().equals("*") && obj instanceof DynamicAccessNode) {
+            return isXML(((DynamicAccessNode)obj).getLeftOperandNode());
+        }
 		return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
     }
 
@@ -1477,9 +1480,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         if (node instanceof TypedExpressionNode) {
             startMapping(node);
             write(ASEmitterTokens.PAREN_OPEN);
-            /*write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("synthVector");*/
             write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
             write(ASEmitterTokens.PAREN_OPEN);
             write(ASEmitterTokens.SINGLE_QUOTE);
