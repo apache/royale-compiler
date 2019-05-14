@@ -188,6 +188,7 @@ public class ASDOC extends MXMLC implements FlexTool
         {
             final ISWCWriter swcWriter = new SWCWriter(outputOptionValue, useCompression,
                     targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
+                    targetSettings.getSWFMetadataDate(), targetSettings.getSWFMetadataDateFormat(),
                     SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
             swcWriter.write(swc);
             final File outputFile = new File(outputOptionValue);
