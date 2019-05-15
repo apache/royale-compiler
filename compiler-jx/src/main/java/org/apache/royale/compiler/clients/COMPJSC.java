@@ -479,6 +479,13 @@ public class COMPJSC extends MXMLJSC
 	                    	if (metadataDate != null)
 	                    	{
 	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+	                    		// strip off timezone.  Zip format doesn't store timezone
+	                    		// and the goal is to have the same date and time regardless
+	                    		// of which timezone the build machine is using.
+	                    		int c = metadataDate.lastIndexOf(" ");
+	                    		metadataDate = metadataDate.substring(0,  c);
+	                    		c = metadataFormat.lastIndexOf(" ");
+	                    		metadataFormat = metadataFormat.substring(0, c);
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
 	                    			fileDate = sdf.parse(metadataDate).getTime();
@@ -521,6 +528,13 @@ public class COMPJSC extends MXMLJSC
                 	if (metadataDate != null)
                 	{
                 		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+                		// strip off timezone.  Zip format doesn't store timezone
+                		// and the goal is to have the same date and time regardless
+                		// of which timezone the build machine is using.
+                		int c = metadataDate.lastIndexOf(" ");
+                		metadataDate = metadataDate.substring(0,  c);
+                		c = metadataFormat.lastIndexOf(" ");
+                		metadataFormat = metadataFormat.substring(0, c);
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
                 			fileDate = sdf.parse(metadataDate).getTime();
