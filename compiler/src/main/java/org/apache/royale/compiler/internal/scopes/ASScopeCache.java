@@ -38,10 +38,7 @@ import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.collect.MapMaker;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -125,11 +122,6 @@ public class ASScopeCache
      */
     private SoftReference<Set<IASLanguageConstants.BuiltinType>> builtinTypeDependencyCache;
 
-    /**
-     * Cache the CompilationUnit for a Definition
-     */
-    private HashMap<IDefinition, WeakReference<ICompilationUnit>> compilationUnitMap = new HashMap<IDefinition, WeakReference<ICompilationUnit>>();
-    
     /**
      * Version of findProperty that uses a cache. Checks the cache first, and
      * only queries the scope if the we don't have a cached result.
