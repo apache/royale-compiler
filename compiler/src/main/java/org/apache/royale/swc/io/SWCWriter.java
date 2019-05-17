@@ -20,6 +20,7 @@
 package org.apache.royale.swc.io;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,6 +31,7 @@ import java.io.Writer;
 import java.security.DigestOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -135,15 +137,25 @@ public class SWCWriter extends SWCWriterBase
         assert path != null : "Expect SWF path";
 
         ZipEntry ze = new ZipEntry(path);
-    	ze.setTime(fileDate);        
-        zipOutputStream.putNextEntry(ze);
-
-        final DigestOutputStream digestStream = getDigestOutputStream(library, zipOutputStream);
-
+    	ze.setTime(fileDate);
+    	ze.setMethod(ZipEntry.STORED);
+    	
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ISWFWriter swfWriter = swfWriterFactory.createSWFWriter(swf,
                 getLibrarySWFCompression(), enableDebug, enableTelemetry);
-        swfWriter.writeTo(digestStream != null ? digestStream : zipOutputStream);
+        swfWriter.writeTo(baos);
         swfWriter.close();
+        ze.setSize(baos.size());
+        ze.setCompressedSize(baos.size());
+        CRC32 crc = new CRC32();
+        crc.reset();
+        crc.update(baos.toByteArray());
+        ze.setCrc(crc.getValue());
+        zipOutputStream.putNextEntry(ze);        
+
+        final DigestOutputStream digestStream = getDigestOutputStream(library, zipOutputStream);
+        baos.writeTo(digestStream != null ? digestStream : zipOutputStream);
+        
         zipOutputStream.closeEntry();
         
         if (digestStream != null) {
