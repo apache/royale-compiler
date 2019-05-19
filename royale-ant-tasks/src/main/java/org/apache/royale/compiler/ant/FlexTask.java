@@ -308,9 +308,9 @@ public abstract class FlexTask extends Java
 
             try
             {
-                Method toolMethod = toolClass.getMethod(toolMethodName, new Class[] {String[].class});
+                Method toolMethod = toolClass.getMethod(toolMethodName, String[].class);
                 Object result = toolMethod.invoke(null, new Object[] {cmdline.getArguments()});
-                exitCode = ((Integer)result).intValue();
+                exitCode = ((Integer)result);
             }
             catch (Exception e)
             {
@@ -337,9 +337,9 @@ public abstract class FlexTask extends Java
     	
     	try
     	{
-			Method toolFailureMethod = toolClass.getMethod(toolFailureMethodName, new Class[] {int.class});
-			Object result = toolFailureMethod.invoke(null, new Object[] {exitCode});
-			fatal = ((Boolean)result).booleanValue();
+			Method toolFailureMethod = toolClass.getMethod(toolFailureMethodName, int.class);
+			Object result = toolFailureMethod.invoke(null, exitCode);
+			fatal = ((Boolean)result);
 		}
     	catch (Exception e)
     	{
