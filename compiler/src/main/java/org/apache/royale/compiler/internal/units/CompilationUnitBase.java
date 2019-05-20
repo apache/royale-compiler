@@ -1008,16 +1008,19 @@ public abstract class CompilationUnitBase implements ICompilationUnit
     {
         String absoluteFileName = getAbsoluteFilename();
         final String filename = FilenameUtils.getName(absoluteFileName).replace('.', '_');
+        if (definitionPromises.isEmpty())
+        {
+        	// conditional compilation units may not have definitionpromises
+            String encodedName = StringEncoder.stringToHashCodeString(absoluteFileName);
+            encodedName +=  ":" + filename;
+            return encodedName;
+        }
         // we used to use the absolute path, but it would be different
         // on different machines and we want builds to be binary reproducible.
         // So we will use the first definition's QName as that should be unique
         IDefinition def0 = getDefinitionPromises().get(0);
         final String encodedQName = StringEncoder.stringToHashCodeString(def0.getQualifiedName());
         String encodedName = encodedQName + ":" + filename;
-        if (definitionPromises.isEmpty())
-        {
-            return encodedName;
-        }
 
         try
         {
