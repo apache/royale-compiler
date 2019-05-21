@@ -37,16 +37,17 @@ public class RoyaleUnitSocketThread implements Callable<Object>
    private static final String END_OF_SUCCESS = "status=\"success\" />";
    private static final String END_OF_FAILURE = "</testcase>";
    private static final String END_OF_IGNORE = "<skipped /></testcase>";
+   private static final String END_OF_TEST_RUN = "<endOfTestRun/>";
 
    // XML attribute labels
    private static final String SUITE_ATTRIBUTE = "classname";
 
    private File reportDir;
 
-   private RoyaleUnitSocketServer server;
+   private IRoyaleUnitServer server;
    private Map<String, Report> reports;
 
-   public RoyaleUnitSocketThread(RoyaleUnitSocketServer server, File reportDir, Map<String, Report> reports)
+   public RoyaleUnitSocketThread(IRoyaleUnitServer server, File reportDir, Map<String, Report> reports)
    {
       this.server = server;
       this.reportDir = reportDir;
@@ -89,13 +90,37 @@ public class RoyaleUnitSocketThread implements Callable<Object>
     */
    private void parseInboundMessages() throws IOException
    {
-      String request = null;
-
-      while ((request = server.readNextTokenFromSocket()) != null)
+      while (true)
       {
-         // If the string is a failure, process the report
-         if (request.endsWith(END_OF_FAILURE) || request.endsWith(END_OF_SUCCESS) || request.endsWith(END_OF_IGNORE))
+         if (server.isPending())
          {
+            //try again later
+            try
+            {
+               Thread.sleep(100);
+            }
+            catch(Exception e) {}
+            continue;
+         }
+
+         if (server.getException() != null)
+         {
+            throw new BuildException(server.getException());
+         }
+
+         String request = server.readNextTokenFromSocket();
+         if (request == null)
+         {
+            break;
+         }
+         else if (request.equals(END_OF_TEST_RUN))
+         {
+            // The client has declared that the test run is complete
+            break;
+         }
+         else if (request.endsWith(END_OF_FAILURE) || request.endsWith(END_OF_SUCCESS) || request.endsWith(END_OF_IGNORE))
+         {
+            // Process all other known requests
             processTestReport(request);
          }
          else

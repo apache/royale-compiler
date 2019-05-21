@@ -27,6 +27,8 @@
 
           Licenses:
               dom4j (1.6.1) - BSD
+              Java-WebSocket (1.4.0) - MIT
+              slf4j-api (1.7.25) - MIT
   -->
 
   <!-- this script supports the usingDownloadCache property and
@@ -82,6 +84,36 @@
       <param name="dest.filename" value="${dom4j.name}.jar"/>
       <param name="license.use.url" value="https://raw.githubusercontent.com/dom4j/dom4j/master/LICENSE"/>
       <param name="license.cacheName" value="dom4j-LICENSE.txt"/>
+    </antcall>
+
+    <!--  Java-WebSocket -->
+    <property name="javawebsocket.name" value="java-websocket"/>
+    <property name="javawebsocket.version" value="1.4.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${javawebsocket.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/java-websocket/Java-WebSocket/${javawebsocket.version}"/>
+      <param name="src.filename" value="Java-WebSocket-${javawebsocket.version}.jar"/>
+      <param name="src.checksum" value="59c1134b8c50ace9e074e9f1d5da4aaa"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${javawebsocket.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/TooTallNate/Java-WebSocket/master/LICENSE"/>
+      <param name="license.cacheName" value="${javawebsocket.name}-LICENSE.txt"/>
+    </antcall>
+
+    <!--  slf4j-api -->
+    <property name="slf4j.name" value="slf4j-api"/>
+    <property name="slf4j.version" value="1.7.25"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${slf4j.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/slf4j/slf4j-api/${slf4j.version}"/>
+      <param name="src.filename" value="slf4j-api-${slf4j.version}.jar"/>
+      <param name="src.checksum" value="caafe376afb7086dcbee79f780394ca3"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${slf4j.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/qos-ch/slf4j/master/LICENSE.txt"/>
+      <param name="license.cacheName" value="${slf4j.name}-LICENSE.txt"/>
     </antcall>
   </target>
 

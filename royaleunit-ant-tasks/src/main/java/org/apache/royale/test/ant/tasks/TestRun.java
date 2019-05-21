@@ -25,6 +25,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.royale.test.ant.RoyaleUnitSocketServer;
 import org.apache.royale.test.ant.RoyaleUnitSocketThread;
+import org.apache.royale.test.ant.RoyaleUnitWebSocketServer;
+import org.apache.royale.test.ant.IRoyaleUnitServer;
 import org.apache.royale.test.ant.LoggingUtil;
 import org.apache.royale.test.ant.launcher.commands.player.AdlCommand;
 import org.apache.royale.test.ant.launcher.commands.player.PlayerCommand;
@@ -65,7 +67,7 @@ public class TestRun
          
          //start the execution context
          context.start();
-         
+      
          //launch the player
          Process process = player.launch();
 
@@ -138,9 +140,18 @@ public class TestRun
       LoggingUtil.log("Setting up server process ...");
 
       // Create server for use by thread
-      RoyaleUnitSocketServer server = new RoyaleUnitSocketServer(configuration.getPort(), 
-            configuration.getSocketTimeout(), configuration.getServerBufferSize(), 
-            configuration.usePolicyFile());
+      IRoyaleUnitServer server = null;
+      if(configuration.getPlayer().equals("html"))
+      {
+         server = new RoyaleUnitWebSocketServer(
+            configuration.getPort(), configuration.getSocketTimeout());
+      }
+      else
+      {
+         server = new RoyaleUnitSocketServer(configuration.getPort(), 
+               configuration.getSocketTimeout(), configuration.getServerBufferSize(), 
+               configuration.usePolicyFile());
+      }
 
       // Get handle to specialized object to run in separate thread.
       Callable<Object> operation = new RoyaleUnitSocketThread(server,

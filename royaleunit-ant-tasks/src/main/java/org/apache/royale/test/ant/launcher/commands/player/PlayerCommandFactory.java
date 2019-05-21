@@ -42,7 +42,7 @@ public class PlayerCommandFactory
       DefaultPlayerCommand defaultInstance = null;
       
       //choose player
-      if (player.equals("flash"))
+      if (player.equals("flash") || player.equals("html"))
       {
          FlashPlayerCommand fpCommand = new FlashPlayerCommand();
          fpCommand.setLocalTrusted(localTrusted);

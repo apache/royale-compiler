@@ -32,7 +32,7 @@ public class TaskConfiguration
 {
    private final String DEFAULT_WORKING_PATH = ".";
    private final String DEFAULT_REPORT_PATH = ".";
-   private final List<String> VALID_PLAYERS = Arrays.asList(new String[]{"flash", "air"});
+   private final List<String> VALID_PLAYERS = Arrays.asList(new String[]{"flash", "air", "html"});
    
    private String player = "flash";
    private File reportDir = null;

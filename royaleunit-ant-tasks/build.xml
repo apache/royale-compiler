@@ -112,7 +112,7 @@
         <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
         <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
         <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-        <attribute name="Class-Path" value="dom4j.jar"/>
+        <attribute name="Class-Path" value="dom4j.jar java-websocket.jar slf4j-api.jar"/>
       </manifest>
       <fileset dir="${royaleunittasks}/src/main/resources" includes="royaleUnitTasks.tasks"/>
       <fileset dir="${royaleunittasks}/src/main/resources" includes="TestRunner.template"/>

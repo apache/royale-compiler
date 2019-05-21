@@ -31,7 +31,7 @@ import org.apache.tools.ant.BuildException;
 /**
  * Class responsible for managing the connections to the test runner and any boiler plate in the network interactivity. 
  */
-public class RoyaleUnitSocketServer
+public class RoyaleUnitSocketServer implements IRoyaleUnitServer
 {
    
    private static final char NULL_BYTE = '\u0000';
@@ -47,7 +47,6 @@ public class RoyaleUnitSocketServer
       + "</cross-domain-policy>";
    
    private static final String START_OF_TEST_RUN_ACK = "<startOfTestRunAck/>";
-   private static final String END_OF_TEST_RUN = "<endOfTestRun/>";
    private static final String END_OF_TEST_RUN_ACK = "<endOfTestRunAck/>";
    
    private int port;
@@ -85,6 +84,16 @@ public class RoyaleUnitSocketServer
       {
          throw new BuildException("Socket timeout waiting for royaleunit report", e);
       }
+   }
+
+   public boolean isPending()
+   {
+      return false;
+   }
+
+   public Exception getException()
+   {
+      return null;
    }
    
    /**
@@ -197,11 +206,6 @@ public class RoyaleUnitSocketServer
       //Did we recieve a message that the test run is over? Tell the user we have nothing more.
       String token = buffer.toString();
       
-      if(token.equals(END_OF_TEST_RUN))
-      {
-         return null;
-      }
-      
       return token;
    }
    
@@ -218,7 +222,7 @@ public class RoyaleUnitSocketServer
    /**
     * Stops the socket server, notifying the test runner, and closing the appropriate connections.
     */
-   public void stop() throws IOException
+   public void stop() throws IOException, InterruptedException
    {
       LoggingUtil.log("\nStopping server ...");
       
