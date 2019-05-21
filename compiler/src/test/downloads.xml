@@ -130,7 +130,7 @@
     <target name="junit-download-jar" depends="junit-jar-check" unless="junit.jar.exists"
             description="Downloads the JUnit jar.">
         <antcall target="download-jar">
-            <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=junit/junit/4.10"/>
+            <param name="srcUrl" value="https://search.maven.org/remotecontent?filepath=junit/junit/4.10"/>
             <param name="srcJarFile" value="junit-4.10.jar"/>
             <param name="destDir" value="${external.lib.dir}"/>
             <param name="destJarFile" value="junit-4.10.jar"/>
