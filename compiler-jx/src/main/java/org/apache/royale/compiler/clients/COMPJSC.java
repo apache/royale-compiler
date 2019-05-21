@@ -509,8 +509,10 @@ public class COMPJSC extends MXMLJSC
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                System.out.println("Writing file: " + sourceMapFile);     	
-                                zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
+                                System.out.println("Writing file: " + sourceMapFile);
+                                ze = new ZipEntry(sourceMapFile);
+    	                    	ze.setTime(fileDate);
+                                zipOutputStream.putNextEntry(ze);
                                 sourceMapTemp.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
                                 zipOutputStream.closeEntry();
