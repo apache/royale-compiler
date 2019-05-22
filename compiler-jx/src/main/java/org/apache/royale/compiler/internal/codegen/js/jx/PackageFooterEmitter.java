@@ -80,7 +80,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    {
 			boolean isInterface = tnode instanceof IInterfaceNode;
 			boolean isDynamic = tnode instanceof IClassNode && tnode.hasModifier(ASModifier.DYNAMIC);
-	    	boolean isInternalClass  = !isInterface && tnode instanceof IClassNode && getEmitter().getModel().isInternalClass(tnode.getQualifiedName());
 			/*
 		     * Metadata
 		     *
@@ -199,17 +198,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	
 			String typeName = getEmitter().formatQualifiedName(tnode.getQualifiedName());
 	
-			if (!isInternalClass) {
-				emitReflectionData(
-						typeName,
-						reflectionKind,
-						varData,
-						accessorData,
-						methodData,
-						metadata);
-			}
+			emitReflectionData(
+					typeName,
+					reflectionKind,
+					varData,
+					accessorData,
+					methodData,
+					metadata);
 			
-		    if (!isInterface && !isInternalClass) {
+		    if (!isInterface) {
 		    	emitReflectionRegisterInitialStaticFields(typeName, (ClassDefinition) tnode.getDefinition());
 			}
 		   

@@ -531,7 +531,32 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
 		);
     }
 
@@ -815,7 +840,45 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {\n" +
+				"      return {\n" +
+				"        '|someString': { type: 'String', get_set: function (/** * */ v) {return v !== undefined ? foo.bar.baz.A.InternalClass.someString = v : foo.bar.baz.A.InternalClass.someString;}}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
+				"        '|someStaticFunction': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
+				"        'someMethod': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"/**\n" +
+				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {Array<string>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(foo.bar.baz.A.InternalClass);\n"
 		);
     }
 
@@ -966,7 +1029,36 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {\n" +
+				"      return {\n" +
+				"        'someString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
 		);
     }
 
@@ -1126,7 +1218,33 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
+				"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
 		);
     }
 
@@ -1189,7 +1307,35 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };"
+				"foo.bar.A.Internal.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {return {};}\n" +
+				"  };\n" +
+				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"/**\n" +
+				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {Array<string>}\n" +
+				" */\n" +
+				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(foo.bar.A.Internal);\n"
 		);
 	}
 	

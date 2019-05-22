@@ -100,3 +100,32 @@ MainClass.InternalClass.prototype.foo = null;
  * @type {Object.<string, Array.<Object>>}
  */
 MainClass.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass', kind: 'class' }] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+        'foo': { type: 'OtherClass', get_set: function (/** MainClass.InternalClass */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}
+      };
+    },
+    accessors: function () {return {};},
+    methods: function () {
+      return {
+        'InternalClass': { type: '', declaredBy: 'MainClass.InternalClass'}
+      };
+    }
+  };
+};
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
