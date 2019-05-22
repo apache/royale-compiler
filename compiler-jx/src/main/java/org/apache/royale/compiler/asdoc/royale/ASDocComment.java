@@ -134,7 +134,7 @@ public class ASDocComment implements IASDocComment
             			tags = new ArrayList<IASDocTag>();
             			tagMap.put(tagName, tags);
             		}
-            		tags.add(new ASDocTag(tagName, line.substring(after + 1)));
+            		tags.add(new ASDocTag(tagName, line.substring(after + 1).trim()));
             	}            		
             }
         }

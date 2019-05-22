@@ -582,7 +582,12 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                
 
             }
-            emitPublic(node);
+            if (!(node.getASDocComment() instanceof ASDocComment
+                    && ((ASDocComment)node.getASDocComment()).commentNoEnd()
+                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()))) {
+                emitPublic(node);
+            }
+            
         }
 
         if (node.isConst())
