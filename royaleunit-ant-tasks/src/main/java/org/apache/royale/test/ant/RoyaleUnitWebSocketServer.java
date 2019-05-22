@@ -86,14 +86,12 @@ public class RoyaleUnitWebSocketServer extends WebSocketServer implements IRoyal
     @Override
     public void onMessage(WebSocket connection, String message)
     {
-        System.out.println("received message from "	+ connection.getRemoteSocketAddress() + ": " + message);
         queue.add(message);
     }
 
     @Override
     public void onError(WebSocket connection, Exception ex)
     {
-        LoggingUtil.log("an error occured on connection " + connection.getRemoteSocketAddress()  + ":" + ex);
         resultException = ex;
     }
     
