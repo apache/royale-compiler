@@ -20,9 +20,9 @@ import java.io.IOException;
 
 public interface IRoyaleUnitServer
 {
-	public void start() throws IOException;
-	public void stop() throws IOException, InterruptedException;
-	public boolean isPending();
-	public String readNextTokenFromSocket() throws IOException;
-	public Exception getException();
+    public void start() throws IOException;
+    public void stop() throws IOException, InterruptedException;
+    public boolean isPending();
+    public String readNextTokenFromSocket() throws IOException;
+    public Exception getException();
 }

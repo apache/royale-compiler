@@ -31,123 +31,123 @@ import org.java_websocket.server.WebSocketServer;
 
 public class RoyaleUnitWebSocketServer extends WebSocketServer implements IRoyaleUnitServer
 {
-	private static final String START_OF_TEST_RUN_ACK = "<startOfTestRunAck/>";
-	private static final String END_OF_TEST_RUN_ACK = "<endOfTestRunAck/>";
+    private static final String START_OF_TEST_RUN_ACK = "<startOfTestRunAck/>";
+    private static final String END_OF_TEST_RUN_ACK = "<endOfTestRunAck/>";
 
-	public RoyaleUnitWebSocketServer(int port, int timeout)
-	{
-		super(new InetSocketAddress(port));
-		this.timeout = timeout;
-	}
+    public RoyaleUnitWebSocketServer(int port, int timeout)
+    {
+        super(new InetSocketAddress(port));
+        this.timeout = timeout;
+    }
 
-	private int timeout;
-	private Timer timeoutTimer;
-	private List<String> queue = new ArrayList<String>();
-	private Exception resultException;
+    private int timeout;
+    private Timer timeoutTimer;
+    private List<String> queue = new ArrayList<String>();
+    private Exception resultException;
 
-	public Exception getException()
-	{
-		return resultException;
-	}
+    public Exception getException()
+    {
+        return resultException;
+    }
 
-	@Override
-	public void stop() throws IOException, InterruptedException
-	{
-		LoggingUtil.log("\nStopping server ...");
-		
-		for(WebSocket socket : getConnections())
-		{
-			sendTestRunEndAcknowledgement(socket);
-		}
-		super.stop();
-	}
+    @Override
+    public void stop() throws IOException, InterruptedException
+    {
+        LoggingUtil.log("\nStopping server ...");
+        
+        for(WebSocket socket : getConnections())
+        {
+            sendTestRunEndAcknowledgement(socket);
+        }
+        super.stop();
+    }
 
-	@Override
-	public void onOpen(WebSocket connection, ClientHandshake handshake)
-	{
-		if(timeoutTimer != null)
-		{
-			timeoutTimer.cancel();
-			timeoutTimer = null;
-		}
+    @Override
+    public void onOpen(WebSocket connection, ClientHandshake handshake)
+    {
+        if(timeoutTimer != null)
+        {
+            timeoutTimer.cancel();
+            timeoutTimer = null;
+        }
 
-		LoggingUtil.log("Client connected.");
-		LoggingUtil.log("Receiving data ...");
-		
-		sendTestRunStartAcknowledgement(connection);
-	}
+        LoggingUtil.log("Client connected.");
+        LoggingUtil.log("Receiving data ...");
+        
+        sendTestRunStartAcknowledgement(connection);
+    }
 
-	@Override
-	public void onClose(WebSocket connection, int code, String reason, boolean remote)
-	{
-		Thread.currentThread().interrupt();
-	}
+    @Override
+    public void onClose(WebSocket connection, int code, String reason, boolean remote)
+    {
+        Thread.currentThread().interrupt();
+    }
 
-	@Override
-	public void onMessage(WebSocket connection, String message)
-	{
-		System.out.println("received message from "	+ connection.getRemoteSocketAddress() + ": " + message);
-		queue.add(message);
-	}
+    @Override
+    public void onMessage(WebSocket connection, String message)
+    {
+        System.out.println("received message from "	+ connection.getRemoteSocketAddress() + ": " + message);
+        queue.add(message);
+    }
 
-	@Override
-	public void onError(WebSocket connection, Exception ex)
-	{
-		LoggingUtil.log("an error occured on connection " + connection.getRemoteSocketAddress()  + ":" + ex);
-		resultException = ex;
-	}
-	
-	@Override
-	public void onStart()
-	{
-		LoggingUtil.log("Starting server ...");
-		LoggingUtil.log("Waiting for client connection ...");
+    @Override
+    public void onError(WebSocket connection, Exception ex)
+    {
+        LoggingUtil.log("an error occured on connection " + connection.getRemoteSocketAddress()  + ":" + ex);
+        resultException = ex;
+    }
+    
+    @Override
+    public void onStart()
+    {
+        LoggingUtil.log("Starting server ...");
+        LoggingUtil.log("Waiting for client connection ...");
 
-		timeoutTimer = new Timer();
-		timeoutTimer.schedule(new TimerTask()
-		{
-			public void run()
-			{
-				resultException = new BuildException("Socket timeout waiting for royaleunit report");
-			}
-		}, timeout);
-	}
+        timeoutTimer = new Timer();
+        timeoutTimer.schedule(new TimerTask()
+        {
+            public void run()
+            {
+                resultException = new BuildException("Socket timeout waiting for royaleunit report");
+            }
+        }, timeout);
+    }
 
-	public boolean isPending()
-	{
-	   return resultException == null && queue.size() == 0;
-	}
+    public boolean isPending()
+    {
+       return resultException == null && queue.size() == 0;
+    }
    
-	/**
-	 * Reads tokens from the web socket
-	 */
-	public String readNextTokenFromSocket() throws IOException
-	{
-		return queue.remove(0);
-	}
+    /**
+     * Reads tokens from the web socket
+     */
+    public String readNextTokenFromSocket() throws IOException
+    {
+        return queue.remove(0);
+    }
    
-	private void sendOutboundMessage(WebSocket connection, String message)
-	{
-		connection.send(message);
-	}
+    private void sendOutboundMessage(WebSocket connection, String message)
+    {
+        connection.send(message);
+    }
 
-	/**
-	 * Generate and send message to inform test runner to begin sending test data
-	 */
-	private void sendTestRunStartAcknowledgement(WebSocket connection)
-	{
-	   LoggingUtil.log("Sending acknowledgement to player to start sending test data ...\n");
-	   
-	   sendOutboundMessage(connection, START_OF_TEST_RUN_ACK);
-	}
+    /**
+     * Generate and send message to inform test runner to begin sending test data
+     */
+    private void sendTestRunStartAcknowledgement(WebSocket connection)
+    {
+       LoggingUtil.log("Sending acknowledgement to player to start sending test data ...\n");
+       
+       sendOutboundMessage(connection, START_OF_TEST_RUN_ACK);
+    }
    
-	/**
-	 * Sends the end of test run to the listener to close the connection
-	 */
-	private void sendTestRunEndAcknowledgement(WebSocket connection)
-	{
-	   LoggingUtil.log("End of test data reached, sending acknowledgement to player ...");
-	   
-	   sendOutboundMessage(connection, END_OF_TEST_RUN_ACK);
-	}
+    /**
+     * Sends the end of test run to the listener to close the connection
+     */
+    private void sendTestRunEndAcknowledgement(WebSocket connection)
+    {
+       LoggingUtil.log("End of test data reached, sending acknowledgement to player ...");
+       
+       sendOutboundMessage(connection, END_OF_TEST_RUN_ACK);
+    }
 }

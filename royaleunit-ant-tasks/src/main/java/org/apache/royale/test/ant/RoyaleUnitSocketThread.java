@@ -33,151 +33,151 @@ import org.apache.royale.test.ant.report.Suite;
  */
 public class RoyaleUnitSocketThread implements Callable<Object>
 {
-   // Messages from CIListener
-   private static final String END_OF_SUCCESS = "status=\"success\" />";
-   private static final String END_OF_FAILURE = "</testcase>";
-   private static final String END_OF_IGNORE = "<skipped /></testcase>";
-   private static final String END_OF_TEST_RUN = "<endOfTestRun/>";
+    // Messages from CIListener
+    private static final String END_OF_SUCCESS = "status=\"success\" />";
+    private static final String END_OF_FAILURE = "</testcase>";
+    private static final String END_OF_IGNORE = "<skipped /></testcase>";
+    private static final String END_OF_TEST_RUN = "<endOfTestRun/>";
 
-   // XML attribute labels
-   private static final String SUITE_ATTRIBUTE = "classname";
+    // XML attribute labels
+    private static final String SUITE_ATTRIBUTE = "classname";
 
-   private File reportDir;
+    private File reportDir;
 
-   private IRoyaleUnitServer server;
-   private Map<String, Report> reports;
+    private IRoyaleUnitServer server;
+    private Map<String, Report> reports;
 
-   public RoyaleUnitSocketThread(IRoyaleUnitServer server, File reportDir, Map<String, Report> reports)
-   {
-      this.server = server;
-      this.reportDir = reportDir;
-      this.reports = reports;
-   }
+    public RoyaleUnitSocketThread(IRoyaleUnitServer server, File reportDir, Map<String, Report> reports)
+    {
+        this.server = server;
+        this.reportDir = reportDir;
+        this.reports = reports;
+    }
 
-   /**
-    * When excuted, the thread will start the socket server and wait for inbound data and delegate reporting
-    */
-   //TODO: Clean up exception handling
-   public Object call() throws Exception
-   {
-      try
-      {
-         server.start();
-         parseInboundMessages();
-      }
-      catch (IOException e)
-      {
-         throw new BuildException("error receiving report from royaleunit", e);
-      }
-      finally
-      {
-         try
-         {
-            server.stop();
-         }
-         catch (IOException e)
-         {
-            throw new BuildException("could not close client/server socket");
-         }
-      }
-
-      //All done, let the process that spawned me know I've returned.
-      return null;
-   }
-
-   /**
-    * Used to iterate and interpret byte sent over the socket.
-    */
-   private void parseInboundMessages() throws IOException
-   {
-      while (true)
-      {
-         if (server.isPending())
-         {
-            //try again later
+    /**
+     * When excuted, the thread will start the socket server and wait for inbound data and delegate reporting
+     */
+    //TODO: Clean up exception handling
+    public Object call() throws Exception
+    {
+        try
+        {
+            server.start();
+            parseInboundMessages();
+        }
+        catch (IOException e)
+        {
+            throw new BuildException("error receiving report from royaleunit", e);
+        }
+        finally
+        {
             try
             {
-               Thread.sleep(100);
+                server.stop();
             }
-            catch(Exception e) {}
-            continue;
-         }
+            catch (IOException e)
+            {
+                throw new BuildException("could not close client/server socket");
+            }
+        }
 
-         if (server.getException() != null)
-         {
-            throw new BuildException(server.getException());
-         }
+        //All done, let the process that spawned me know I've returned.
+        return null;
+    }
 
-         String request = server.readNextTokenFromSocket();
-         if (request == null)
-         {
-            break;
-         }
-         else if (request.equals(END_OF_TEST_RUN))
-         {
-            // The client has declared that the test run is complete
-            break;
-         }
-         else if (request.endsWith(END_OF_FAILURE) || request.endsWith(END_OF_SUCCESS) || request.endsWith(END_OF_IGNORE))
-         {
-            // Process all other known requests
-            processTestReport(request);
-         }
-         else
-         {
-            throw new BuildException("command [" + request + "] not understood");
-         }
-      }
-   }
+    /**
+     * Used to iterate and interpret byte sent over the socket.
+     */
+    private void parseInboundMessages() throws IOException
+    {
+        while (true)
+        {
+            if (server.isPending())
+            {
+                //try again later
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch(Exception e) {}
+                continue;
+            }
 
-   /**
-    * Process the test report.
-    * 
-    * @param report
-    *           String that represents a complete test
-    */
-   private void processTestReport(String xml)
-   {
-      // Convert the string report into an XML document
-      Document test = parseReport(xml);
+            if (server.getException() != null)
+            {
+                throw new BuildException(server.getException());
+            }
 
-      // Find the name of the suite
-      String suiteName = test.getRootElement().attributeValue(SUITE_ATTRIBUTE);
+            String request = server.readNextTokenFromSocket();
+            if (request == null)
+            {
+                break;
+            }
+            else if (request.equals(END_OF_TEST_RUN))
+            {
+                // The client has declared that the test run is complete
+                break;
+            }
+            else if (request.endsWith(END_OF_FAILURE) || request.endsWith(END_OF_SUCCESS) || request.endsWith(END_OF_IGNORE))
+            {
+                // Process all other known requests
+                processTestReport(request);
+            }
+            else
+            {
+                throw new BuildException("command [" + request + "] not understood");
+            }
+        }
+    }
 
-      // Convert all instances of :: for file support
-      suiteName = suiteName.replaceAll("::", ".");
+    /**
+     * Process the test report.
+     * 
+     * @param report
+     *           String that represents a complete test
+     */
+    private void processTestReport(String xml)
+    {
+        // Convert the string report into an XML document
+        Document test = parseReport(xml);
 
-      if (!reports.containsKey(suiteName))
-      {
-         reports.put(suiteName, new Report(new Suite(suiteName)));
-      }
+        // Find the name of the suite
+        String suiteName = test.getRootElement().attributeValue(SUITE_ATTRIBUTE);
 
-      // Fetch report, add test, and write to disk
-      Report report = reports.get(suiteName);
-      report.addTest(test);
+        // Convert all instances of :: for file support
+        suiteName = suiteName.replaceAll("::", ".");
 
-      report.save(reportDir);
-   }
+        if (!reports.containsKey(suiteName))
+        {
+            reports.put(suiteName, new Report(new Suite(suiteName)));
+        }
 
-   /**
-    * Parse the parameter String and returns it as a document
-    * 
-    * @param report
-    *           String
-    * @return Document
-    */
-   private Document parseReport(String report)
-   {
-      try
-      {
-         final Document document = DocumentHelper.parseText(report);
+        // Fetch report, add test, and write to disk
+        Report report = reports.get(suiteName);
+        report.addTest(test);
 
-         return document;
-      }
-      catch (DocumentException e)
-      {
-         LoggingUtil.log(report);
-         throw new BuildException("Error parsing report.", e);
-      }
-   }
+        report.save(reportDir);
+    }
+
+    /**
+     * Parse the parameter String and returns it as a document
+     * 
+     * @param report
+     *           String
+     * @return Document
+     */
+    private Document parseReport(String report)
+    {
+        try
+        {
+            final Document document = DocumentHelper.parseText(report);
+
+            return document;
+        }
+        catch (DocumentException e)
+        {
+            LoggingUtil.log(report);
+            throw new BuildException("Error parsing report.", e);
+        }
+    }
 }
