@@ -46,4 +46,13 @@ public class DocEmitterUtils
         // TODO (mschmalle)
         ((JSRoyaleDocEmitter)emitter.getDocEmitter()).setClassIgnoreList(ignoreList);
     }
+    
+    
+    public static Boolean hasSuppressExport(JSRoyaleEmitter emitter, String doc)
+    {
+
+        String ignoreToken = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
+        int index = doc.indexOf(ignoreToken);
+        return index != -1;
+    }
 }

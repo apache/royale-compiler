@@ -357,7 +357,7 @@ public class JSClosureCompilerWrapper
         		"asparam", "asreturn", "asreturns", "asprivate",
         		"royaleignoreimport", "royaleignorecoercion", "royaleemitcoercion",
                 "royalesuppresscompleximplicitcoercion","royalesuppressresolveuncertain",
-                "royalesuppressvectorindexcheck",
+                "royalesuppressvectorindexcheck","royalesuppressexport", "royalesuppressclosure",
                 "royalenoimplicitstringconversion","royaledebug"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }

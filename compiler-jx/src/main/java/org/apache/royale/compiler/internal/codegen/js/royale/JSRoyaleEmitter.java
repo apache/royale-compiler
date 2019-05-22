@@ -1085,7 +1085,8 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
 	public void emitClosureStart()
     {
-        ICompilerProject project = getWalker().getProject();;
+        if (getDocEmitter() instanceof JSRoyaleDocEmitter && ((JSRoyaleDocEmitter) getDocEmitter()).getSuppressClosure()) return;
+        ICompilerProject project = getWalker().getProject();
         if (project instanceof RoyaleJSProject)
         	((RoyaleJSProject)project).needLanguage = true;
         getModel().needLanguage = true;
@@ -1096,6 +1097,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     @Override
 	public void emitClosureEnd(IASNode node, IDefinition nodeDef)
     {
+        if (getDocEmitter() instanceof JSRoyaleDocEmitter && ((JSRoyaleDocEmitter) getDocEmitter()).getSuppressClosure()) return;
     	write(ASEmitterTokens.COMMA);
     	write(ASEmitterTokens.SPACE);
     	write(ASEmitterTokens.SINGLE_QUOTE);

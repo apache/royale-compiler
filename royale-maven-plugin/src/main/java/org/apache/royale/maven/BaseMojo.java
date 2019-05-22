@@ -236,7 +236,9 @@ public abstract class BaseMojo
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
         if(additionalCompilerOptions != null) {
-            if (additionalCompilerOptions.contains("\n")) additionalCompilerOptions = additionalCompilerOptions.replace("\n", "");
+            if (additionalCompilerOptions.contains("\n")) {
+                additionalCompilerOptions = additionalCompilerOptions.replace("\n", "");
+            }
             if (additionalCompilerOptions.contains(";"))
             {
                 String[] options = additionalCompilerOptions.split(";");

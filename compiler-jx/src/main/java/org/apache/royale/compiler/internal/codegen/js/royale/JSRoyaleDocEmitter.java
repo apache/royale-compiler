@@ -57,6 +57,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     public boolean emitStringConversions = true;
     private boolean emitExports = true;
     private boolean exportProtected = false;
+    
+    private boolean suppressClosure = false;
 
     public JSRoyaleDocEmitter(IJSEmitter emitter)
     {
@@ -71,6 +73,14 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     public void setClassIgnoreList(List<String> value)
     {
         this.classIgnoreList = value;
+    }
+    
+    public Boolean getSuppressClosure() {
+        return suppressClosure;
+    }
+    
+    public Boolean getEmitExports() {
+        return emitExports;
     }
 
     @Override
@@ -131,6 +141,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         ignoreList = null;
         localSettings = null;
         emitStringConversions = true;
+        suppressClosure = false;
 
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
@@ -245,6 +256,15 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                                 .getToken();
                         if (docText.contains(suppressVectorIndexCheck))
                             loadLocalSettings(docText,suppressVectorIndexCheck, "true");
+                        
+                        String suppressClosureToken = JSRoyaleEmitterTokens.SUPPRESS_CLOSURE.getToken();
+    
+                        if (docText.contains(suppressClosureToken))
+                            suppressClosure = true;
+                        
+                        String suppressExport = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
+                        if (docText.contains(suppressExport))
+                            emitExports = false;
                         
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }

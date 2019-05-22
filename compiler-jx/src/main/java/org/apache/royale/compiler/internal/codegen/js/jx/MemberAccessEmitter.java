@@ -26,6 +26,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -212,6 +213,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 								parentNodeId != ASTNodeID.ArrayIndexExpressionID;
 				}
 			}
+			
+			if (needClosure
+					&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+					&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+				needClosure = false;
         	if (needClosure)
         		getEmitter().emitClosureStart();
 
@@ -274,6 +280,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
 							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
 							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+		
+				if (needClosure
+						&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+						&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+					needClosure = false;
         		
         	}
         }

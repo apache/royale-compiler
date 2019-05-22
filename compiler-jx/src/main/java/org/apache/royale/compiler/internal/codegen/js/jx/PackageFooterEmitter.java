@@ -76,7 +76,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
         JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
         .getDocEmitter();
 
-	    if (!getEmitter().getModel().isExterns)
+	    if (!getEmitter().getModel().isExterns && doc.getEmitExports())
 	    {
 			boolean isInterface = tnode instanceof IInterfaceNode;
 			boolean isDynamic = tnode instanceof IClassNode && tnode.hasModifier(ASModifier.DYNAMIC);
