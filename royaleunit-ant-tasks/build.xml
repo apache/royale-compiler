@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project name="royaleunit-ant-tasks" default="main" basedir=".">
+
+  <!-- 
+
+      PROPERTIES
+
+  -->
+
+  <!-- The 'royaleunittasks' property is the absolute path, with forward slashes, -->
+  <!-- to the 'compiler' directory that contains this file. -->
+  <!-- All input paths are expressed as absolute paths starting with ${royaleunittasks}. -->
+  <pathconvert property="royaleunittasks" dirsep="/">
+      <path location="${basedir}"/>
+  </pathconvert>
+
+  <!-- The 'env' property contains all the environment variables -->
+  <property environment="env"/>
+  
+  <!-- Properties can be overridden locally by loading a local.properties file -->
+  <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
+  <property file="${royaleunittasks}/local.properties"/>
+  <property file="${royaleunittasks}/../build.properties"/>
+  <property name="javadoc.params" value="" />
+  
+  <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
+  <!-- where a Royale SDK is built -->
+  <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
+  <property name="sdk" value="${royaleunittasks}/../compiler-jx/lib"/>
+
+  <!-- Options for <javac> tasks -->
+  <property name="javac.debug" value="true"/>
+  <property name="javac.deprecation" value="false"/>
+  <property name="javac.src" value="1.6"/>
+
+  <!-- JAR manifest entries -->
+  <property name="manifest.sealed" value="false"/>
+  <property name="manifest.Implementation-Title" value="Apache Royale - RoyaleUnit Ant Tasks"/>
+  <property name="manifest.Implementation-Version" value="${release.version}"/>
+  <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+
+  <property name="royaleunittasks.ant.binaries" value="**/*.class"/>
+  
+  <!-- env.BUILD_NUMBER is set by Jenkins CI -->
+  <condition property="build.number" value="nightly-${env.BUILD_NUMBER}">
+      <isset property="env.BUILD_NUMBER"/>
+  </condition>
+      
+  <!--
+
+      CLASSPATHS
+
+  -->
+
+  <path id="classpath">
+      <fileset dir="${sdk}" includes="**/*.jar"/>
+  </path>
+
+  <target name="download" description="Downloads third-party JARs">
+      <ant antfile="${royaleunittasks}/src/main/resources/downloads.xml" dir="${royaleunittasks}/src/main/resources" inheritAll="false"/>
+  </target>
+
+  <target name="compile" description="compile" depends="download">
+    <mkdir dir="${royaleunittasks}/target/classes"/>
+    <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
+            includes="**/*.java" destdir="${royaleunittasks}/target/classes" classpathref="classpath" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
+        <src path="${royaleunittasks}/src/main/java"/>
+        <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
+    </javac>
+    <copy todir="${royaleunittasks}/target/classes">
+        <fileset dir="${royaleunittasks}/src/main/resources" includes="**/*.properties"/>
+    </copy>
+  </target>
+  
+  <target name="set.royale.royaleunittasks.jar.uptodate">
+    <uptodate property="royale.royaleunittasks.jar.uptodate"
+              targetfile="${sdk}/royaleUnitTasks.jar">
+      <srcfiles dir="${royaleunittasks}/target/classes">
+        <include name="**/*.class"/>
+        <include name="**/*.properties"/>
+      </srcfiles>
+    </uptodate>
+  </target>
+  
+  <target name="royale.royaleunittasks.jar" depends="set.royale.royaleunittasks.jar.uptodate" unless="royale.royaleunittasks.jar.uptodate">
+    <mkdir dir="${royaleunittasks}/target/classes/META-INF"/>
+    <copy file="${basedir}/../LICENSE.base" tofile="${royaleunittasks}/target/classes/META-INF/LICENSE"/>
+    <copy file="${basedir}/../NOTICE.base" tofile="${royaleunittasks}/target/classes/META-INF/NOTICE"/>
+    <mkdir dir="${sdk}"/>
+    <jar file="${sdk}/royaleUnitTasks.jar" basedir="${royaleunittasks}/target/classes" >
+      <include name="META-INF/LICENSE"/>
+      <include name="META-INF/NOTICE"/>
+      <manifest>
+        <attribute name="Sealed" value="${manifest.sealed}"/>
+        <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+        <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+        <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+        <attribute name="Class-Path" value="dom4j.jar java-websocket.jar slf4j-api.jar"/>
+      </manifest>
+      <fileset dir="${royaleunittasks}/src/main/resources" includes="royaleUnitTasks.tasks"/>
+      <fileset dir="${royaleunittasks}/src/main/resources" includes="TestRunner.template"/>
+      <fileset dir="${royaleunittasks}/src/main/resources" includes="royaleUnitDescriptor.template"/>
+      <fileset dir="${royaleunittasks}/target/classes" includes="${royaleunittasks.ant.binaries}"/>
+    </jar>
+  </target>
+
+  <target name="jar" depends="compile,royale.royaleunittasks.jar"
+        description="Creates JAR files"/>
+    
+  <!--
+
+      SDK
+
+  -->
+  
+  <target name="sdk" depends="jar, test" description="Builds the royaleUnitTasks.jar"/>
+
+  <target name="main" depends="sdk" description="Default target - Builds the royaleUnitTasks.jar">
+    <tstamp>
+      <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
+    </tstamp>
+    <echo>RoyaleUnit Ant Tasks main completed on ${build.datetime}</echo>
+  </target>
+
+  <target name="test" depends="jar" description="Runs JUnit tests">
+      <!--<ant dir="src/test" />-->
+  </target>
+  
+  <!--
+
+      CLEANUP
+
+  -->
+
+  <target name="clean" description="clean">
+    <ant antfile="${basedir}/src/main/resources/downloads.xml" target="clean" dir="${basedir}" />
+      <delete dir="${royaleunittasks}/target" failonerror="false"/>
+      <delete file="${sdk}/royaleUnitTasks.jar" failonerror="false"/>
+  </target>
+
+  <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
+  </target>
+</project>

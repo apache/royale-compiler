@@ -1,0 +1,396 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project name="downloads" default="main" basedir=".">
+    <echo>basedir is ${basedir}</echo>
+    <echo>ROYALE_COMPILER_HOME is ${ROYALE_COMPILER_HOME}</echo>
+    
+  <!--
+      Notes:
+          For Apache, the JARS must be removed from the repository.
+
+          Licenses:
+              dom4j (1.6.1) - BSD
+              Java-WebSocket (1.4.0) - MIT
+              slf4j-api (1.7.25) - MIT
+  -->
+
+  <!-- this script supports the usingDownloadCache property and
+       downloadCacheFolder property to cache downloads in the
+       folder specified by downloadCacheFolder.  This can make
+       a huge difference in future runs although there is some
+       risk around caching bad downloads and/or needing to
+       clean up the cache -->
+
+  <property name="ROYALE_COMPILER_HOME" location="${basedir}/../../../../compiler-jx"/>
+  <echo>ROYALE_COMPILER_HOME is ${ROYALE_COMPILER_HOME}</echo>
+
+  <property name="lib.dir" value="${ROYALE_COMPILER_HOME}/lib"/>
+  <property name="download.dir" value="${ROYALE_COMPILER_HOME}/in"/>
+
+  <property file="${ROYALE_COMPILER_HOME}/local.properties"/>
+
+  <property name="maven.search.url" value="https://repo1.maven.org/maven2"/>
+
+  <property file="${ROYALE_COMPILER_HOME}/env.properties"/>
+  <property environment="env"/>
+  <property file="${ROYALE_COMPILER_HOME}/local.properties"/>
+  <property file="${ROYALE_COMPILER_HOME}/build.properties"/>
+
+
+  <!--
+      Because the downloads requires a network connection and the JARs don't change very often,
+      they are each downloaded only if they don't already exist. 
+  -->
+  <target name="main" depends="prepare, all" description="Downloads all the required thirdparty JARs"/>
+  
+  <target name="prepare">
+    <echo message="Making lib directory ${lib.dir}"/>
+    <mkdir dir="${lib.dir}"/>
+  </target>
+
+  <!--
+      Downloads
+  -->
+
+  <target name="all" description="Downloads and copies all dependencies to the lib directory.">
+
+    <!--  dom4j -->
+    <property name="dom4j.name" value="dom4j"/>
+    <property name="dom4j.version" value="1.6.1"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${dom4j.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="dom4j/dom4j/${dom4j.version}"/>
+      <param name="src.filename" value="dom4j-${dom4j.version}.jar"/>
+      <param name="src.checksum" value="4d8f51d3fe3900efc6e395be48030d6d"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${dom4j.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/dom4j/dom4j/master/LICENSE"/>
+      <param name="license.cacheName" value="dom4j-LICENSE.txt"/>
+    </antcall>
+
+    <!--  Java-WebSocket -->
+    <property name="javawebsocket.name" value="java-websocket"/>
+    <property name="javawebsocket.version" value="1.4.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${javawebsocket.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/java-websocket/Java-WebSocket/${javawebsocket.version}"/>
+      <param name="src.filename" value="Java-WebSocket-${javawebsocket.version}.jar"/>
+      <param name="src.checksum" value="59c1134b8c50ace9e074e9f1d5da4aaa"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${javawebsocket.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/TooTallNate/Java-WebSocket/master/LICENSE"/>
+      <param name="license.cacheName" value="${javawebsocket.name}-LICENSE.txt"/>
+    </antcall>
+
+    <!--  slf4j-api -->
+    <property name="slf4j.name" value="slf4j-api"/>
+    <property name="slf4j.version" value="1.7.25"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${slf4j.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/slf4j/slf4j-api/${slf4j.version}"/>
+      <param name="src.filename" value="slf4j-api-${slf4j.version}.jar"/>
+      <param name="src.checksum" value="caafe376afb7086dcbee79f780394ca3"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${slf4j.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/qos-ch/slf4j/master/LICENSE.txt"/>
+      <param name="license.cacheName" value="${slf4j.name}-LICENSE.txt"/>
+    </antcall>
+  </target>
+
+
+
+  <!--
+      Utilities
+  -->
+
+  <target name="check-dependency" description="Checks if project jar is in lib directory.">
+    <echo>checking for ${lib.dir}/${dest.folder}/${name}.jar</echo>
+    <available file="${lib.dir}/${dest.folder}/${name}.jar" property="project.jar.exists"/>
+  </target>
+
+  <target name="echo-project-jar">
+    <echo file="${basedir}/project.properties">project.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+    <replace file="${basedir}/project.properties" token="{0}" value="${srcPath}"/>
+    <replace file="${basedir}/project.properties" token="{1}" value="${srcDomain}"/>
+    <property file="${basedir}/project.properties"/>
+    <delete file="${basedir}/project.properties"/>
+    <echo>${project.echo}</echo>
+  </target>
+  
+  <target name="download-dependency" depends="check-dependency" unless="project.jar.exists" description="Downloads a jar + license to the lib directory.">
+    <antcall target="echo-project-jar">
+      <param name="srcDomain" value="${src.server}"/>
+      <param name="srcPath" value="${src.folder}/${src.filename}"/>
+    </antcall>
+    <mkdir dir="${lib.dir}/${dest.folder}"/>
+
+    <antcall target="download-apache-license" />
+    <antcall target="download-other-license" />
+
+    <!-- ant_on_air in Installer 3.1 doesn't support 'or' yet -->
+    <condition property="project.download.jar">
+      <and>
+          <not>
+              <contains string="${src.filename}" substring=".tar" />
+          </not>
+          <not>
+              <contains string="${src.filename}" substring=".zip" />
+          </not>
+      </and>
+    </condition>
+    
+    <antcall target="download-dependency-jar">
+      <param name="server" value="${src.server}"/>
+      <param name="folder" value="${src.folder}"/>
+      <param name="srcFileName" value="${src.filename}"/>
+      <param name="destDir" value="${lib.dir}/${dest.folder}"/>
+      <param name="destFile" value="${dest.filename}"/>
+      <param name="checksum" value="${src.checksum}"/>
+    </antcall>
+
+    <antcall target="download-dependency-zip">
+      <param name="server" value="${src.server}"/>
+      <param name="folder" value="${src.folder}"/>
+      <param name="srcFileName" value="${src.filename}"/>
+      <param name="srcJarPath" value="${src.jarPath}"/>
+      <param name="destDir" value="${lib.dir}/${dest.folder}"/>
+      <param name="destFile" value="${dest.filename}"/>
+      <param name="checksum" value="${src.checksum}"/>
+    </antcall>
+  </target>
+
+  <target name="download-apache-license" if="license.use.apache" description="Downloads the Apache license to the lib directory.">
+    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.html" ignoreerrors="true"/>
+    <antcall target="get-from-cache-if-needed" >
+        <param name="srcFile" value="LICENSE-2.0.html" />
+        <param name="destFile" value="${name}-LICENSE.html" />
+        <param name="destDir" value="${lib.dir}/${dest.folder}" />
+    </antcall>
+    <antcall target="fail-if-not-found" >
+        <param name="destFile" value="${name}-LICENSE.html" />
+        <param name="destDir" value="${lib.dir}/${dest.folder}" />
+    </antcall>
+  </target>
+  
+  <target name="download-other-license" if="license.use.url" description="Downloads a non-Apache license to the lib directory.">
+    <get src="${license.use.url}" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.txt" ignoreerrors="true"/>
+    <antcall target="get-from-cache-if-needed" >
+        <param name="srcFile" value="${license.cacheName}" />
+        <param name="destFile" value="${name}-LICENSE.txt" />
+        <param name="destDir" value="${lib.dir}/${dest.folder}" />
+    </antcall>
+    <antcall target="fail-if-not-found" >
+        <param name="destFile" value="${name}-LICENSE.txt" />
+        <param name="destDir" value="${lib.dir}/${dest.folder}" />
+    </antcall>
+  </target>
+  
+  <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
+    <antcall target="download-jar">
+      <param name="srcDomain" value="${server}"/>
+      <param name="srcFolder" value="${folder}"/>
+      <param name="cacheFolder" value="${folder}"/>
+      <param name="srcFile" value="${srcFileName}"/>
+      <param name="md5" value="${checksum}"/>
+    </antcall>
+  </target>
+
+  <target name="download-dependency-zip" unless="project.download.jar" description="Downloads a zip to the lib directory.">
+    <antcall target="download-zip">
+      <param name="srcDomain" value="${server}"/>
+      <param name="srcFolder" value="${folder}"/>
+      <param name="srcFile" value="${srcFileName}"/>
+      <param name="srcJarPath" value="${srcJarPath}"/>
+      <param name="md5" value="${checksum}"/>
+    </antcall>
+  </target>
+    
+  <!--
+      Download a zip or gz file, extracts the jar file, and optionally copies the jar
+      file to a different location and optinally verifies the checksum and optionally
+      caches the file, and optionally pulls the file from the cache instead of downloading.  
+      If the checksum fails, this script fails.
+
+      Params are:
+          srcDomain - the domain
+          srcFolder - path to file
+          srcFile - a .gz file for untar with gzip, else unzip
+          [md5]
+          [srcJarPath] - both src and dest required for the copy
+          [destJarFile]
+
+      Note: This is purposely coded without <if><else><then> so that a dependency on
+      ant-contrib.jar isn't required.        
+  -->
+  <target name="download-zip" depends="check-cache" description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">
+    <mkdir dir="${download.dir}"/>
+    <antcall target="get-if-not-cached">
+      <param name="destDir" value="${download.dir}"/>
+      <param name="destFile" value="${srcFile}"/>
+      <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+    </antcall>
+    <antcall target="copy-if-cached">
+      <param name="destDir" value="${download.dir}"/>
+      <param name="destFile" value="${srcFile}"/>
+    </antcall>
+    <condition property="zip.compressed">
+      <matches string="${srcFile}" pattern="^*.zip$"/>
+    </condition>
+    <antcall target="untar-file"/>
+    <antcall target="unzip-file"/>
+    <condition property="destination.known">
+      <and>
+        <isset property="srcJarPath"/>
+        <isset property="destDir"/>
+        <isset property="destFile"/>
+      </and>
+    </condition>
+    <antcall target="copy-downloaded-jar"/>
+  </target>
+
+  <target name="download-bz2" depends="check-cache" description="Downloads bz2, and optionally verifies checksum and copies extracted jar.">
+    <mkdir dir="${download.dir}"/>
+    <antcall target="get-if-not-cached">
+      <param name="dest" value="${download.dir}/${srcFile}"/>
+      <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+    </antcall>
+    <antcall target="copy-if-cached">
+      <param name="dest" value="${download.dir}/${srcFile}"/>
+    </antcall>
+    <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="bzip2"/>
+    <condition property="destination.known">
+      <and>
+        <isset property="srcJarPath"/>
+        <isset property="destJarFile"/>
+      </and>
+    </condition>
+    <antcall target="copy-downloaded-jar"/>
+  </target>
+
+  <!--
+      Download a jar file and optionally verify the checksum.
+      If the checksum fails, this script fails.
+        
+      Params are:
+          srcDomain
+          srcFolder
+          srcFile
+          destJarFile
+          [md5]
+  -->
+  <target name="download-jar" depends="check-cache" description="Downloads jar, and optionally verifies checksum.">
+    <antcall target="get-if-not-cached">
+      <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+    </antcall>
+    <antcall target="copy-if-cached" />
+  </target>
+
+  <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
+    <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="gzip"/>
+  </target>
+
+  <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
+    <unzip src="${download.dir}/${srcFile}" dest="${download.dir}/temp"/>
+  </target>
+
+  <target name="get-if-not-cached" unless="found-in-cache">
+    <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${destDir}/${destFile}" ignoreerrors="true"/>
+    <!-- this is a different cache for the CI servers.  It tries the network first, then the cache if failure -->
+    <antcall target="get-from-cache-if-needed" />
+    <antcall target="fail-if-not-found" />
+    <antcall target="check-sum">
+      <param name="message" value="Checksum mismatch for ${destDir}/${destFile}"/>
+    </antcall>
+    <antcall target="put-in-cache"/>
+  </target>
+
+  <target name="copy-if-cached" if="found-in-cache">
+    <!-- this string comes from the Royale en_US.properties because for now, this
+         target won't get called unless this script is called from the Royale install -->
+    <echo>${INFO_USING_CACHED_FILE} ${downloadCacheFolder}/${srcFolder}/${srcFile}</echo>
+    <copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${destDir}/${destFile}" overwrite="true"/>
+  </target>
+
+  <target name="check-cache" if="usingDownloadCache">
+      <echo>${downloadCacheFolder} ${srcFolder} ${srcFile}</echo>
+    <available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache"/>
+  </target>
+
+  <target name="put-in-cache" if="usingDownloadCache">
+    <copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${destDir}/${destFile}"/>
+  </target>
+
+  <target name="check-sum" if="md5" description="Verifies MD5 checksum, and fails if checksum doesn't match">
+    <checksum file="${destDir}/${destFile}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
+    <fail message="${message}">
+      <condition>
+        <equals arg1="${we.failed}" arg2="false"/>
+      </condition>
+    </fail>
+  </target>
+
+  <target name="copy-downloaded-jar" if="destination.known">
+    <mkdir dir="${lib.dir}"/>
+    <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destDir}/${destFile}" verbose="true"/>
+  </target>
+
+  <target name="fail-with-message" if="we.failed" description="Conditionally fails with the specified message">
+    <fail message="${message}"/>
+  </target>
+
+    <target name="fail-if-not-found">
+        <fail message="${destDir}/${destFile} could not be downloaded or found in cache">
+            <condition>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="double-check-file" >
+        <echo>${env.ROYALE_DOWNLOAD_CACHE}</echo>
+        <condition property="still-no-file" value="true">
+            <and>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+                <isset property="env.ROYALE_DOWNLOAD_CACHE" />
+            </and>
+        </condition>
+        <echo>Need file: ${still_no_file}</echo>
+    </target>
+    <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
+        <copy file="${env.ROYALE_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
+    </target>
+
+
+  <!--
+      Cleanup
+  -->
+  <target name="clean" description="Removes thirdparty downloads.">
+    <delete failonerror="false" includeEmptyDirs="true">
+      <fileset dir="${download.dir}"/>
+    </delete>
+  </target>
+</project>

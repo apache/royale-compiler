@@ -133,6 +133,7 @@
             <module>debugger</module>
             <module>flex-compiler-oem</module>
             <module>royale-ant-tasks</module>
+            <module>royaleunit-ant-tasks</module>
             <!--<module>royale-maven-extension</module>-->
             <module>royale-maven-plugin</module>
         </modules>
