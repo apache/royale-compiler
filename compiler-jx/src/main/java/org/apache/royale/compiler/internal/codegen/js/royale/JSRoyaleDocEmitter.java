@@ -106,7 +106,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         	RoyaleJSProject fjp = (RoyaleJSProject)((IASEmitter)emitter).getWalker().getProject();
         	String vectorClassName = fjp.config == null ? null : fjp.config.getJsVectorEmulationClass();
         	if (vectorClassName != null) return vectorClassName;
-        	return IASLanguageConstants.Array;
+        	return super.convertASTypeToJS(name, pname);
         }
         
         name = super.convertASTypeToJS(name, pname);
@@ -381,7 +381,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                     settings.remove(settingItem);
                 }
                 settings.add(settingItem);
-                System.out.println("---Adding setting "+settingToken+":"+settingItem);
+                //System.out.println("---Adding setting "+settingToken+":"+settingItem);
             }
 
             index = doc.indexOf(settingToken, index + endIndex);
@@ -597,7 +597,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         if (def != null)
             packageName = def.getPackageName();
 
-        emitType(node, project.getActualPackageName(packageName));
+        emitType(node, project.getActualPackageName(packageName), project);
 
         end();
     }

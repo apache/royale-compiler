@@ -139,7 +139,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Array.<Foo>}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -148,7 +148,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Array.<Array.<Array.<Foo>>>}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override

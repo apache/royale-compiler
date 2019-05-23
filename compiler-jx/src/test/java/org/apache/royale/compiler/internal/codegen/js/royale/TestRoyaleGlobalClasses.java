@@ -389,7 +389,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(['Hello', 'World'])");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(['Hello', 'World'])");
     }
 
     @Test
@@ -397,7 +397,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce']([])");
+        assertOut("var /** @type {Array.<string>} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce']([])");
     }
 
     @Test
@@ -405,7 +405,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.synthVector('int')['coerce']([0, 1, 2, 3])");
+        assertOut("var /** @type {Array.<number>} */ a = org.apache.royale.utils.Language.synthVector('int')['coerce']([0, 1, 2, 3])");
     }
 
     @Test
@@ -413,7 +413,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new <String>[\"one\", \"two\", \"three\";");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce']([\"one\", \"two\", \"three\"])");
+        assertOut("var /** @type {Array.<string>} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce']([\"one\", \"two\", \"three\"])");
     }
     
     @Test
@@ -421,7 +421,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))()");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))()");
     }
 
     @Test
@@ -430,7 +430,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World');");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))('Hello', 'World')");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))('Hello', 'World')");
     }
 
     @Test
@@ -439,7 +439,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World', 'Three');");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))('Hello', 'World', 'Three')");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))('Hello', 'World', 'Three')");
     }
 
     @Test
@@ -447,7 +447,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(30)");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(30)");
     }
 
     @Test
@@ -456,7 +456,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, 40);");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(30, 40)");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(30, 40)");
     }
 
     @Test
@@ -465,7 +465,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
         //MXMLC does not report an error.  Should we?
-        assertOut("var /** @type {Array} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(['Hello', 'World'])");
+        assertOut("var /** @type {Array.<string>} */ a = new (org.apache.royale.utils.Language.synthVector('String'))(['Hello', 'World'])");
     }
     
     @Test

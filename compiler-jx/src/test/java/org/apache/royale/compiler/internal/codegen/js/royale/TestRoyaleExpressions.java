@@ -1272,7 +1272,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array} */ a = null;\n  return a.length;\n}");
+        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array.<string>} */ a = null;\n  return a.length;\n}");
     }
 
     //----------------------------------

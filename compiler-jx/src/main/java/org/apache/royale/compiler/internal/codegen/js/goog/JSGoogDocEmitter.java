@@ -39,6 +39,7 @@ import org.apache.royale.compiler.internal.codegen.js.JSSharedData;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.TypedExpressionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
@@ -128,7 +129,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         if (def != null)
             packageName = def.getPackageName();
 
-        emitType(node, packageName);
+        emitType(node, packageName, project);
 
         end();
     }
@@ -257,15 +258,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                     packageName = ((ITypeDefinition) type).getPackageName();
                 }
             }
-
-            emitTypeShort(node, project.getActualPackageName(packageName));
+            emitTypeShort(node, project.getActualPackageName(packageName), project);
         }
         else
         {
             writeNewline();
             begin();
             emitConst(node);
-            emitType(node, project.getActualPackageName(packageName));
+            emitType(node, project.getActualPackageName(packageName), project);
             end();
         }
     }
@@ -361,9 +361,18 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitType(IASNode node, String packageName)
+    public void emitType(IASNode node, String packageName, ICompilerProject project)
     {
         String type = ((IVariableNode) node).getVariableType();
+        if (((IVariableNode) node).getVariableTypeNode() instanceof TypedExpressionNode) {
+            ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(((IVariableNode) node).getVariableTypeNode())).getTypeNode().resolveType(project);
+            if (elemenTypeDef != null) {
+                type = "Vector.<" +
+                        convertASTypeToJS(elemenTypeDef.getQualifiedName(),"")
+                        +">";
+                packageName = "";
+            }
+        }
         emitJSDocLine(JSGoogDocEmitterTokens.TYPE.getToken(),
                 convertASTypeToJS(type, packageName));
     }
@@ -375,9 +384,18 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 convertASTypeToJS(type, packageName));
     }
 
-    public void emitTypeShort(IASNode node, String packageName)
+    public void emitTypeShort(IASNode node, String packageName, ICompilerProject project)
     {
         String type = ((IVariableNode) node).getVariableType();
+        if (((IVariableNode) node).getVariableTypeNode() instanceof TypedExpressionNode) {
+            ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(((IVariableNode) node).getVariableTypeNode())).getTypeNode().resolveType(project);
+            if (elemenTypeDef != null) {
+                type = "Vector.<" +
+                        convertASTypeToJS(elemenTypeDef.getQualifiedName(),"")
+                        +">";
+                packageName = "";
+            }
+        }
         writeToken(JSDocEmitterTokens.JSDOC_OPEN);
         write(ASEmitterTokens.ATSIGN);
         writeToken(JSGoogDocEmitterTokens.TYPE);
@@ -494,16 +512,18 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         	// is a vector so convert the element type
         	String elementType = name.substring(8, name.length() - 1);
         	elementType = convertASTypeToJSType(elementType, pname);
-        	name = "Vector.<" + elementType + ">";
+        	name = "Array.<" + elementType + ">";
         }
-        IASGlobalFunctionConstants.BuiltinType[] builtinTypes = IASGlobalFunctionConstants.BuiltinType
-                .values();
-        for (IASGlobalFunctionConstants.BuiltinType builtinType : builtinTypes)
-        {
-            if (name.equalsIgnoreCase(builtinType.getName()))
+        else {
+            IASGlobalFunctionConstants.BuiltinType[] builtinTypes = IASGlobalFunctionConstants.BuiltinType
+                    .values();
+            for (IASGlobalFunctionConstants.BuiltinType builtinType : builtinTypes)
             {
-                isBuiltinFunction = true;
-                break;
+                if (name.equalsIgnoreCase(builtinType.getName()))
+                {
+                    isBuiltinFunction = true;
+                    break;
+                }
             }
         }
 

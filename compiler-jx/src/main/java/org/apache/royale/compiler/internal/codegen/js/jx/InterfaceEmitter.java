@@ -26,9 +26,11 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.tree.as.TypedExpressionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IAccessorNode;
@@ -114,6 +116,14 @@ public class InterfaceEmitter extends JSSubEmitter implements
                 	ITypeDefinition typeDef = typeNode.resolveType(project);
                 	String packageName = typeDef.getPackageName();
                 	packageName = project.getActualPackageName(packageName);
+                    if (typeNode instanceof TypedExpressionNode) {
+                        propType = "Vector.<" +
+                                JSGoogDocEmitter.convertASTypeToJSType(
+                                        ((TypedExpressionNode)typeNode).getTypeNode().resolveType(project).getQualifiedName(),
+                                        "")
+                                +">";
+                        packageName = "";
+                    }
                     write(JSDocEmitterTokens.JSDOC_OPEN);
                     write(ASEmitterTokens.SPACE);
                     fjs.getDocEmitter().emitType(propType, packageName);
