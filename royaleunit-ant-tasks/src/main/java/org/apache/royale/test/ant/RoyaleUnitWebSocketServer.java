@@ -54,6 +54,12 @@ public class RoyaleUnitWebSocketServer extends WebSocketServer implements IRoyal
     public void stop() throws IOException, InterruptedException
     {
         LoggingUtil.log("\nStopping server ...");
+
+        if(timeoutTimer != null)
+        {
+            timeoutTimer.cancel();
+            timeoutTimer = null;
+        }
         
         for(WebSocket socket : getConnections())
         {

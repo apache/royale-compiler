@@ -55,7 +55,7 @@ public class TestRun
     public void run() throws BuildException
     {
         configuration.log();
-        
+
         try
         {
             // setup daemon
@@ -71,11 +71,16 @@ public class TestRun
             //launch the player
             Process process = player.launch();
 
-            // block until daemon is completely done with all test data
-            daemon.get();
-
-            //stop the execution context now that socket thread is done
-            context.stop(process);
+            try
+            {
+                // block until daemon is completely done with all test data
+                daemon.get();
+            }
+            finally
+            {
+                //stop the execution context now that socket thread is done
+                context.stop(process);
+            }
 
             // print summaries and check for failure
             analyzeReports();
