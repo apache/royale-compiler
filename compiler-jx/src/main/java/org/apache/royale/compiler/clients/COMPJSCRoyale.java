@@ -210,17 +210,11 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                         	InputStream input = zipFile.getInputStream(entry);
                         	ZipEntry ze = new ZipEntry(entry.getName());
 	                        long fileDate = System.currentTimeMillis();
+	                        long zipFileDate = fileDate;
 	                    	String metadataDate = targetSettings.getSWFMetadataDate();
 	                    	if (metadataDate != null)
 	                    	{
 	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
-	                    		// strip off timezone.  Zip format doesn't store timezone
-	                    		// and the goal is to have the same date and time regardless
-	                    		// of which timezone the build machine is using.
-	                    		int c = metadataDate.lastIndexOf(" ");
-	                    		metadataDate = metadataDate.substring(0,  c);
-	                    		c = metadataFormat.lastIndexOf(" ");
-	                    		metadataFormat = metadataFormat.substring(0, c);
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
 	                    			fileDate = sdf.parse(metadataDate).getTime();
@@ -230,8 +224,24 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                			} catch (IllegalArgumentException e1) {
 	                				e1.printStackTrace();
 	                			}
+	                    		// strip off timezone.  Zip format doesn't store timezone
+	                    		// and the goal is to have the same date and time regardless
+	                    		// of which timezone the build machine is using.
+	                    		int c = metadataDate.lastIndexOf(" ");
+	                    		metadataDate = metadataDate.substring(0,  c);
+	                    		c = metadataFormat.lastIndexOf(" ");
+	                    		metadataFormat = metadataFormat.substring(0, c);
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			zipFileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
 	                    	}
-	                    	ze.setTime(fileDate);
+	                    	ze.setTime(zipFileDate);
                         	zipOutputStream.putNextEntry(ze);
                         	IOUtils.copy(input, zipOutputStream);
                             zipOutputStream.flush();
@@ -361,17 +371,11 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                     false).getPath();
 	                        System.out.println("Writing file: " + outputClassFile);     	
 	                        long fileDate = System.currentTimeMillis();
+	                        long zipFileDate = fileDate;
 	                    	String metadataDate = targetSettings.getSWFMetadataDate();
 	                    	if (metadataDate != null)
 	                    	{
 	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
-	                    		// strip off timezone.  Zip format doesn't store timezone
-	                    		// and the goal is to have the same date and time regardless
-	                    		// of which timezone the build machine is using.
-	                    		int c = metadataDate.lastIndexOf(" ");
-	                    		metadataDate = metadataDate.substring(0,  c);
-	                    		c = metadataFormat.lastIndexOf(" ");
-	                    		metadataFormat = metadataFormat.substring(0, c);
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
 	                    			fileDate = sdf.parse(metadataDate).getTime();
@@ -381,9 +385,25 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                			} catch (IllegalArgumentException e1) {
 	                				e1.printStackTrace();
 	                			}
+	                    		// strip off timezone.  Zip format doesn't store timezone
+	                    		// and the goal is to have the same date and time regardless
+	                    		// of which timezone the build machine is using.
+	                    		int c = metadataDate.lastIndexOf(" ");
+	                    		metadataDate = metadataDate.substring(0,  c);
+	                    		c = metadataFormat.lastIndexOf(" ");
+	                    		metadataFormat = metadataFormat.substring(0, c);
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			zipFileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
 	                    	}
 	                    	ZipEntry ze = new ZipEntry(outputClassFile);
-	                    	ze.setTime(fileDate);
+	                    	ze.setTime(zipFileDate);
 	                        zipOutputStream.putNextEntry(ze);
 	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
@@ -397,7 +417,7 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                     false).getPath();
                                 System.out.println("Writing file: " + sourceMapFile);  
                                 ze = new ZipEntry(sourceMapFile);
-    	                    	ze.setTime(fileDate);
+    	                    	ze.setTime(zipFileDate);
                                 zipOutputStream.putNextEntry(ze);
                                 sourceMapTemp.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
@@ -420,10 +440,20 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                 {
                 	zipFile.close();
                     long fileDate = System.currentTimeMillis();
+                    long zipFileDate = fileDate;
                 	String metadataDate = targetSettings.getSWFMetadataDate();
                 	if (metadataDate != null)
                 	{
                 		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+                		try {
+                			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			fileDate = sdf.parse(metadataDate).getTime();
+                		} catch (ParseException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			} catch (IllegalArgumentException e1) {
+            				e1.printStackTrace();
+            			}
                 		// strip off timezone.  Zip format doesn't store timezone
                 		// and the goal is to have the same date and time regardless
                 		// of which timezone the build machine is using.
@@ -433,7 +463,7 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                 		metadataFormat = metadataFormat.substring(0, c);
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                			fileDate = sdf.parse(metadataDate).getTime();
+                			zipFileDate = sdf.parse(metadataDate).getTime();
                 		} catch (ParseException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();
@@ -446,7 +476,7 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                 		"    <files>\n" + fileList.toString() + "    </files>" + 
                 		catalog.substring(libraryIndex + 13);
                 	ZipEntry ze = new ZipEntry(SWCReader.CATALOG_XML);
-                	ze.setTime(fileDate);
+                	ze.setTime(zipFileDate);
                     zipOutputStream.putNextEntry(ze);
                 	zipOutputStream.write(catalog.getBytes());
                     zipOutputStream.flush();
