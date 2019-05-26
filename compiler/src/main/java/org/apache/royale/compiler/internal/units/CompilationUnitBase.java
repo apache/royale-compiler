@@ -1176,7 +1176,10 @@ public abstract class CompilationUnitBase implements ICompilationUnit
         {
         	String swfDebugfileAlias = ((RoyaleProject)asProject).getSwfDebugfileAlias();
         	if (swfDebugfileAlias != null)
+        	{
         		rootPath = swfDebugfileAlias;
+        		packagePath = packagePath.replace('\\', '/');
+        	}
         }
 
         String encodedPath = rootPath + ';' + packagePath + ';' + getFilenameNoPath();
