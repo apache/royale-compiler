@@ -473,6 +473,7 @@ public class COMPJSC extends MXMLJSC
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
+                    		outputClassFile = outputClassFile.replace('\\', '/');
 	                        System.out.println("Writing file: " + outputClassFile);     	
 	                        long fileDate = System.currentTimeMillis();
 	                        long zipFileDate = fileDate;
