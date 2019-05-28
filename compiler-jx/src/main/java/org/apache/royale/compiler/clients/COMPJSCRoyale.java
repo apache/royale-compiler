@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -209,6 +210,10 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                             System.out.println("Copy " + entry.getName());
                         	InputStream input = zipFile.getInputStream(entry);
                         	ZipEntry ze = new ZipEntry(entry.getName());
+                        	ze.setMethod(ZipEntry.STORED);
+                        	ze.setSize(entry.getSize());
+                        	ze.setCompressedSize(entry.getCompressedSize());
+                        	ze.setCrc(entry.getCrc());
 	                        long fileDate = System.currentTimeMillis();
 	                        long zipFileDate = fileDate;
 	                    	String metadataDate = targetSettings.getSWFMetadataDate();
@@ -405,8 +410,19 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                    	}
 	                    	ZipEntry ze = new ZipEntry(outputClassFile);
 	                    	ze.setTime(zipFileDate);
+	                    	ze.setMethod(ZipEntry.STORED);
+	                    	
+	                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	                        temp.writeTo(baos);
+	                        ze.setSize(baos.size());
+	                        ze.setCompressedSize(baos.size());
+	                        CRC32 crc = new CRC32();
+	                        crc.reset();
+	                        crc.update(baos.toByteArray());
+	                        ze.setCrc(crc.getValue());
+
 	                        zipOutputStream.putNextEntry(ze);
-	                        temp.writeTo(zipOutputStream);
+	                        baos.writeTo(zipOutputStream);
                             zipOutputStream.flush();
                             zipOutputStream.closeEntry();
 	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + fileDate + "\"/>\n");
@@ -419,8 +435,19 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                 System.out.println("Writing file: " + sourceMapFile);  
                                 ze = new ZipEntry(sourceMapFile);
     	                    	ze.setTime(zipFileDate);
+    	                    	ze.setMethod(ZipEntry.STORED);
+    	                    	
+    	                        baos = new ByteArrayOutputStream();
+                                sourceMapTemp.writeTo(baos);
+    	                        ze.setSize(baos.size());
+    	                        ze.setCompressedSize(baos.size());
+    	                        crc = new CRC32();
+    	                        crc.reset();
+    	                        crc.update(baos.toByteArray());
+    	                        ze.setCrc(crc.getValue());
+                                
                                 zipOutputStream.putNextEntry(ze);
-                                sourceMapTemp.writeTo(zipOutputStream);
+    	                        baos.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
                                 zipOutputStream.closeEntry();
                                 fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + fileDate + "\"/>\n");
@@ -478,8 +505,19 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                 		catalog.substring(libraryIndex + 13);
                 	ZipEntry ze = new ZipEntry(SWCReader.CATALOG_XML);
                 	ze.setTime(zipFileDate);
+                	ze.setMethod(ZipEntry.STORED);
+                	
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                	baos.write(catalog.getBytes());
+                    ze.setSize(baos.size());
+                    ze.setCompressedSize(baos.size());
+                    CRC32 crc = new CRC32();
+                    crc.reset();
+                    crc.update(baos.toByteArray());
+                    ze.setCrc(crc.getValue());
+                	
                     zipOutputStream.putNextEntry(ze);
-                	zipOutputStream.write(catalog.getBytes());
+                    baos.writeTo(zipOutputStream);
                     zipOutputStream.flush();
                     zipOutputStream.closeEntry();
                     zipOutputStream.flush();

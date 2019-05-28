@@ -121,10 +121,22 @@ public class SWCWriter extends SWCWriterBase
     {
     	ZipEntry ze = new ZipEntry(CATALOG_XML);
     	ze.setTime(fileDate);
-        zipOutputStream.putNextEntry(ze);
-        final Writer catalogXMLWriter = new OutputStreamWriter(zipOutputStream);
+    	ze.setMethod(ZipEntry.STORED);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Writer catalogXMLWriter = new OutputStreamWriter(baos);
         writeCatalogXML(swc, catalogXMLWriter);
         catalogXMLWriter.flush();
+        ze.setSize(baos.size());
+        ze.setCompressedSize(baos.size());
+        CRC32 crc = new CRC32();
+        crc.reset();
+        crc.update(baos.toByteArray());
+        ze.setCrc(crc.getValue());
+        zipOutputStream.putNextEntry(ze);
+        
+        baos.writeTo(zipOutputStream);
+        
         zipOutputStream.closeEntry();
     }
 
@@ -168,10 +180,22 @@ public class SWCWriter extends SWCWriterBase
     {
     	ZipEntry ze = new ZipEntry(fileEntry.getPath());
     	ze.setTime(fileDate);        
-        zipOutputStream.putNextEntry(ze);
+    	ze.setMethod(ZipEntry.STORED);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream fileInputStream = fileEntry.createInputStream();
-        IOUtils.copy(fileInputStream, zipOutputStream);
+        IOUtils.copy(fileInputStream, baos);
         fileInputStream.close();
+        
+        ze.setSize(baos.size());
+        ze.setCompressedSize(baos.size());
+        CRC32 crc = new CRC32();
+        crc.reset();
+        crc.update(baos.toByteArray());
+        ze.setCrc(crc.getValue());
+        zipOutputStream.putNextEntry(ze);
+        
+        baos.writeTo(zipOutputStream);
         zipOutputStream.closeEntry();
     }
 
