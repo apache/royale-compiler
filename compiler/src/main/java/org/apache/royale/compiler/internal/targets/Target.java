@@ -369,7 +369,20 @@ public abstract class Target implements ITarget
                     return Collections.emptySet();
             }
         }
-        return visitedSet;
+        TreeSet<ICompilationUnit> sortedSet = new TreeSet<ICompilationUnit>(new Comparator<ICompilationUnit>()
+        {
+            @Override
+            public int compare(ICompilationUnit o1, ICompilationUnit o2)
+            {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        sortedSet.addAll(visitedSet);
+        System.out.println("visited set");
+        for (ICompilationUnit visited : sortedSet)
+        	System.out.println(visited.getName());
+        System.out.println("end visited set");
+        return sortedSet;
     }
     
     protected DirectDependencies getDirectDependencies(ICompilationUnit cu) throws InterruptedException
