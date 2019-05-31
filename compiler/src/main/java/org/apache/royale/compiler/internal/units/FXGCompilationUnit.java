@@ -52,6 +52,7 @@ import org.apache.royale.compiler.internal.fxg.sax.FXGSAXParser;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.FXGFileScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
@@ -64,6 +65,7 @@ import org.apache.royale.compiler.internal.units.requests.ASFileScopeRequestResu
 import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResult;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.InternalCompilerProblem2;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
 import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
 import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
@@ -95,7 +97,16 @@ public class FXGCompilationUnit extends CompilationUnitBase
         public GeneratedSourceFileSpecfication(String name, String content)
         {
             this.reader = new StringReader(content);
-            this.name = FilenameNormalization.normalize(name);
+            String alias = null;
+            ICompilerProject project = FXGCompilationUnit.this.getProject();
+            if (project instanceof RoyaleProject)
+            {
+            	alias = ((RoyaleProject)project).getSwfDebugfileAlias();
+            }
+            if (alias != null)
+            	this.name = alias + "/" + name;
+            else
+            	this.name = FilenameNormalization.normalize(name);
         }
 
         private final StringReader reader;
