@@ -456,7 +456,21 @@ public class SWCCompilationUnit extends CompilationUnitBase
      */
     protected static String getLinkReportName(ICompilationUnit cu)
     {
-        StringBuilder reportBuilder = new StringBuilder(cu.getAbsoluteFilename());
+    	String absoluteFileName = cu.getAbsoluteFilename();
+    	ICompilerProject project = cu.getProject();
+    	if (project instanceof RoyaleProject)
+    	{
+    		String alias = ((RoyaleProject)project).getSwfDebugfileAlias();
+    		if (alias != null)
+    		{
+    			// clip off path to SWC
+    			int slash = absoluteFileName.lastIndexOf("/");
+    			int backslash = absoluteFileName.lastIndexOf("\\");
+    			int lastSep = slash > backslash ? slash : backslash;
+    			absoluteFileName = absoluteFileName.substring(slash + 1);
+    		}
+    	}
+        StringBuilder reportBuilder = new StringBuilder(absoluteFileName);
         reportBuilder.append('(');
         
         ArrayList<String> definitionQnames = new ArrayList<String>(cu.getDefinitionPromises().size());
