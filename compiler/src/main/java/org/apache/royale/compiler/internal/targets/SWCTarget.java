@@ -695,6 +695,9 @@ public class SWCTarget extends Target implements ISWCTarget
         rootCompilationUnits.addAll(getIncludeLibrariesCompilationUnits());
         
         Target.RootedCompilationUnits units = new Target.RootedCompilationUnits(rootCompilationUnits, problems);
+        Set<ICompilationUnit> unitSet = units.getUnits();
+        for (ICompilationUnit cu : unitSet)
+        	System.out.println(cu.getName());
         return units;
     }
     
