@@ -467,7 +467,7 @@ public class SWCCompilationUnit extends CompilationUnitBase
     			int slash = absoluteFileName.lastIndexOf("/");
     			int backslash = absoluteFileName.lastIndexOf("\\");
     			int lastSep = slash > backslash ? slash : backslash;
-    			absoluteFileName = absoluteFileName.substring(slash + 1);
+    			absoluteFileName = absoluteFileName.substring(lastSep + 1);
     		}
     	}
         StringBuilder reportBuilder = new StringBuilder(absoluteFileName);
