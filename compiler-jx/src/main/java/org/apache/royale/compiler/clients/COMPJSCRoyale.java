@@ -320,15 +320,17 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 
                             ByteArrayOutputStream temp = new ByteArrayOutputStream();
                             ByteArrayOutputStream sourceMapTemp = null;
-	                        if (project.config.getSourceMap())
+                            
+                            boolean isExterns = false;
+	                        if (writer instanceof JSWriter)
+	                        	isExterns = ((JSWriter)writer).isExterns();
+	                        
+                            if (project.config.getSourceMap())
 	                        {
                                 sourceMapTemp = new ByteArrayOutputStream();
 	                        }
                             writer.writeTo(temp, sourceMapTemp, null);
 
-                            boolean isExterns = false;
-	                        if (writer instanceof JSWriter)
-	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
