@@ -230,6 +230,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     
     public void emitSourceMapDirective(ITypeNode node)
     {
+        sourceMapDirectiveEmitter.isExterns = getModel().isExterns;
         sourceMapDirectiveEmitter.emit(node);
     }
 

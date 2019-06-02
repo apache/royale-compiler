@@ -40,6 +40,8 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
         super(emitter);
     }
 
+    public boolean isExterns = false;
+
     @Override
     public void emit(ITypeNode node)
     {
@@ -56,7 +58,7 @@ public class SourceMapDirectiveEmitter extends JSSubEmitter implements
             }
         }
 
-        if (sourceMap)
+        if (sourceMap && !isExterns)
         {
             String name = node.getName() + EXTENSION_JS;
             if (node instanceof IMXMLDocumentNode)
