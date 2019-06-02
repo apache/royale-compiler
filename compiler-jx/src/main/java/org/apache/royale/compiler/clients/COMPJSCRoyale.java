@@ -341,7 +341,6 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                             zipOutputStream.flush();
                             zipOutputStream.closeEntry();
 	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
-                                System.out.println("Writing file: " + sourceMapFile);     	
                             
                             // if the file is @externs DON'T create source map file
                             boolean createSourceMapFile = false;
@@ -355,6 +354,7 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                         cu.getQualifiedNames().get(0),
                                         isExterns ? externsOut : jsOut,
                                         false).getPath();
+                                    System.out.println("Writing file: " + sourceMapFile);     	
                                     zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
                                     sourceMapTemp.writeTo(zipOutputStream);
                                     zipOutputStream.flush();
