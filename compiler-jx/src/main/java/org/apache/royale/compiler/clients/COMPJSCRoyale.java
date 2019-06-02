@@ -341,18 +341,26 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                             zipOutputStream.flush();
                             zipOutputStream.closeEntry();
 	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
-                            if(sourceMapTemp != null)
-                            {
-                                String sourceMapFile = getOutputSourceMapFile(
-                                    cu.getQualifiedNames().get(0),
-                                    isExterns ? externsOut : jsOut,
-                                    false).getPath();
                                 System.out.println("Writing file: " + sourceMapFile);     	
-                                zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
-                                sourceMapTemp.writeTo(zipOutputStream);
-                                zipOutputStream.flush();
-                                zipOutputStream.closeEntry();
-                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                            
+                            // if the file is @externs DON'T create source map file
+                            boolean createSourceMapFile = false;
+                            if (writer instanceof JSWriter)
+                                createSourceMapFile = !((JSWriter)writer).isExterns();
+                            if(createSourceMapFile)
+                            { 
+                                if(sourceMapTemp != null)
+                                {
+                                    String sourceMapFile = getOutputSourceMapFile(
+                                        cu.getQualifiedNames().get(0),
+                                        isExterns ? externsOut : jsOut,
+                                        false).getPath();
+                                    zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
+                                    sourceMapTemp.writeTo(zipOutputStream);
+                                    zipOutputStream.flush();
+                                    zipOutputStream.closeEntry();
+                                    fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                                }
                             }
 	                        writer.close();
                     	}
