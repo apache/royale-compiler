@@ -37,7 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
-
+import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
 import org.apache.royale.swc.ISWCLibrary;
@@ -184,8 +184,19 @@ public class SWCWriter extends SWCWriterBase
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream fileInputStream = fileEntry.createInputStream();
-        IOUtils.copy(fileInputStream, baos);
-        fileInputStream.close();
+        String name = fileEntry.getPath();
+        if (name.endsWith(".css")) // add other text files here
+        {
+        	FileSpecification.NoCRLFInputStream filteredInputStream = 
+        			new FileSpecification.NoCRLFInputStream(fileInputStream);
+        	IOUtils.copy(filteredInputStream, baos);
+        	filteredInputStream.close();
+        }
+        else
+        {
+        	IOUtils.copy(fileInputStream, baos);
+        	fileInputStream.close();
+        }
         
         ze.setSize(baos.size());
         ze.setCompressedSize(baos.size());

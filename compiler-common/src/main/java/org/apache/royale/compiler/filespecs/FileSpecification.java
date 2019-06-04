@@ -140,11 +140,11 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
 		fileHandle.setLastModified(fileDate);
 	}
 	
-	class NoCRLFInputStream extends FilterInputStream
+	public static class NoCRLFInputStream extends FilterInputStream
 	{
-		public NoCRLFInputStream(BufferedInputStream strm)
+		public NoCRLFInputStream(InputStream fileInputStream)
 		{
-			super(strm);
+			super(fileInputStream);
 		}
 		
 		/**
