@@ -30,6 +30,7 @@ import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.abc.semantics.Nsset;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.fxg.flex.FlexFXG2SWFTranscoder;
 import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
 import org.apache.royale.compiler.internal.config.RoyaleTargetSettings;
@@ -267,7 +268,8 @@ public class RoyaleProjectConfigurator extends Configurator
             project.setAllowAbstractClasses(configuration.getCompilerAllowAbstractClasses());
             
             project.setSwfDebugfileAlias(configuration.getSwfDebugfileAlias());
-            
+            if (configuration.getSwfDebugfileAlias() != null)
+            	FileSpecification.useCRLFFilter = true;
             DataTranscoder.embedClassName = configuration.getByteArrayEmbedClass();
         }
     }
