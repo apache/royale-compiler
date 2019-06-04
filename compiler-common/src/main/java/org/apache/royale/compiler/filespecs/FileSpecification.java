@@ -120,11 +120,11 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
 	    final BOM bom = getBOM(strm);
         strm.skip(bom.pattern.length);
         
-        final NoCRLFInputStream input = new NoCRLFInputStream(strm);
-
-        final Reader reader = new BufferedReader(
-                new InputStreamReader(useCRLFFilter ? input : strm, bom.charset));
-        input.close();
+        final InputStreamReader inputSR = useCRLFFilter ? 
+        		new InputStreamReader(new NoCRLFInputStream(strm), bom.charset) :
+                new InputStreamReader(strm, bom.charset);
+        			
+        final Reader reader = new BufferedReader(inputSR);
         return reader;
 	}
 
