@@ -304,6 +304,27 @@ public class ControlFlowGraph implements IFlowgraph
      */
     public void traverseGraph(IFlowGraphVisitor visitor)
     {
+    	if (mbi.getMethodInfo() != null &&
+    			mbi.getMethodInfo().getMethodName() != null &&
+    			mbi.getMethodInfo().getMethodName().contentEquals("dispatchEvent") &&
+    			mbi.getMethodInfo().getParamNames().contains("event1"))
+    	{
+    		Iterator<IBasicBlock> blocks = this.blocksInControlFlowOrder().iterator();
+    		int blockCount = 0;
+    		while (blocks.hasNext())
+    		{
+    			blockCount++;
+    			blocks.next();
+    		}
+    		IBasicBlock[] blocklist = new IBasicBlock[blockCount];
+    		blocks = this.blocksInControlFlowOrder().iterator();
+    		blockCount = 0;
+    		while (blocks.hasNext())
+    		{
+    			blocklist[blockCount++] = blocks.next();
+    		}    		
+    		System.out.println("blockCount is: " + blockCount);
+    	}
         for (IBasicBlock b : this.blocksInControlFlowOrder())
         {
             if (visitor.visitBlock(b))
