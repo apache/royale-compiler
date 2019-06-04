@@ -175,7 +175,7 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
 				return -1;
 			
 			int j = 0;
-			for (int i = 0; i < n; i++)
+			for (int i = 0; i < retval; i++)
 			{
 				byte c = temp[i];
 				if (c == '\r')
@@ -183,7 +183,7 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
 				else
 					b[j++] = c;
 			}
-			while (j < n)
+			while (j < retval)
 			{
 				int extra = super.read(b, j, 1);
 				if (extra == -1)
