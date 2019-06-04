@@ -304,6 +304,7 @@ public class ControlFlowGraph implements IFlowgraph
      */
     public void traverseGraph(IFlowGraphVisitor visitor)
     {
+    	boolean diagnostics = false;
     	if (mbi.getMethodInfo() != null &&
     			mbi.getMethodInfo().getMethodName() != null &&
     			mbi.getMethodInfo().getMethodName().contentEquals("dispatchEvent") &&
@@ -324,16 +325,34 @@ public class ControlFlowGraph implements IFlowgraph
     			blocklist[blockCount++] = blocks.next();
     		}    		
     		System.out.println("blockCount is: " + blockCount);
+    		diagnostics = true;
     	}
+    	int blockIndex = 0;
         for (IBasicBlock b : this.blocksInControlFlowOrder())
         {
+        	if (diagnostics)
+        	{
+        		System.out.println("block " + blockIndex);
+        		System.out.println(b.getInstructions());
+        	}
             if (visitor.visitBlock(b))
             {
+            	if (diagnostics)
+            		System.out.println("visiting block: " + blockIndex);
                 for (Instruction i : b.getInstructions())
                     visitor.visitInstruction(i);
 
                 visitor.visitEnd(b);
+                if (diagnostics)
+                {
+                	if (visitor instanceof FrameCountVisitor)
+                	{
+                		System.out.println("max_scope is now:" + ((FrameCountVisitor)visitor).max_scope);
+                		System.out.println("scpDepth is now:" + ((FrameCountVisitor)visitor).scpdepth);
+                	}
+                }
             }
+    		blockIndex++;
         }
     }
 
