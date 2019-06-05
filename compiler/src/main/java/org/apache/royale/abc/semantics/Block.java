@@ -59,6 +59,12 @@ public class Block implements IBasicBlock
     }
 
     /**
+     * block number assigned by ControlFlowGraph.  So far,
+     * only used to try to guarantee order in lists/collections
+     */
+    public int blocknum;
+    
+    /**
      * Add a successor to this block.
      * 
      * @param succ - the successor block.
