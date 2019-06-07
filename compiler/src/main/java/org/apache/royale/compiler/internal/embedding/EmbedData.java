@@ -407,6 +407,18 @@ public class EmbedData implements IEmbedData
             problems.add(new EmbedNoSourceAttributeProblem(location));
             return false;
         }
+        String uniqueName = source;
+        List<File> sourcePaths = ((IASProject)project).getSourcePath();
+        for (File sourcePath : sourcePaths)
+        {
+        	String sourcePathString = sourcePath.getAbsolutePath();
+        	if (source.startsWith(sourcePathString))
+        	{
+        		uniqueName = source.substring(sourcePathString.length());
+        		uniqueName = uniqueName.replace("\\", "/");
+        		break;
+        	}
+        }
 
         // also check that we have a mimetype set, as don't know what transcoder
         // to create without it!
@@ -490,6 +502,8 @@ public class EmbedData implements IEmbedData
         if (transcoder == null)
             return false;
 
+        transcoder.hashCodeSourceName = uniqueName;
+        
         // there were problems with the transcoder because of attribute settings
         // so don't return it, and let the user deal with the errors
         if (!transcoder.analyze(location, problems))
