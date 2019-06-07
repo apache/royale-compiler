@@ -535,7 +535,10 @@ public class EmbedData implements IEmbedData
         String filename = FilenameUtils.getName(source);
         filename = filename.replace(".", "_");
         String qname = filename + "$" + StringEncoder.stringToMD5String(uniqueName);
-
+        transcoder.hashCodeSourceName = uniqueName;
+        System.out.println("Embed UniqueName: " + uniqueName);
+        System.out.println("Embed QName: " + qname);
+        
         // add the transcoder hashCode to the end of the QName to ensure
         // two embed data's with the same source, but different attributes
         // don't clash
