@@ -72,6 +72,11 @@ public class DynamicAccessNode extends BinaryOperatorNodeBase implements IDynami
     @Override
     public boolean isDynamicExpression(ICompilerProject project)
     {
+        ITypeDefinition leftType = getLeftOperandNode().resolveType(project);
+        if (leftType instanceof IAppliedVectorDefinition)
+        {
+            return super.isDynamicExpression(project);
+        }
         return true;
     }
     
