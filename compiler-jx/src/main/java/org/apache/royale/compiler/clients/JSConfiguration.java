@@ -56,6 +56,9 @@ public class JSConfiguration extends Configuration
 {
     public JSConfiguration()
     {
+        setCompilerAllowAbstractClasses(null, true);
+        setCompilerAllowPrivateConstructors(null, true);
+        setCompilerAllowImportAliases(null, true);
     }
 
     //
