@@ -2568,13 +2568,13 @@ public class MethodBodySemanticChecker
 
         ExpressionNodeBase typeNode = var.getTypeNode();
         IExpressionNode currentTypeNode = typeNode;
+        IDefinition vectorType = project.getBuiltinType(IASLanguageConstants.BuiltinType.VECTOR);
         while (currentTypeNode instanceof ITypedExpressionNode)
         {
             ITypedExpressionNode typedNode = (ITypedExpressionNode) currentTypeNode;
             IExpressionNode collectionNode = typedNode.getCollectionNode();
             IDefinition collectionType = collectionNode.resolve(project);
-            if (collectionType != null
-                    && !collectionType.getQualifiedName().equals(IASLanguageConstants.Vector_qname))
+            if (!vectorType.equals(collectionType))
             {
                 currentScope.addProblem(new TypeParametersWithNonParameterizedTypeProblem(collectionNode));
             }
