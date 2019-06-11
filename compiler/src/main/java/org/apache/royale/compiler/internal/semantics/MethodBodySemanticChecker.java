@@ -87,6 +87,7 @@ import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.internal.as.codegen.ABCGeneratingReducer;
@@ -2563,6 +2564,22 @@ public class MethodBodySemanticChecker
                     location = nameExpression;
                 this.currentScope.addProblem( new VariableHasNoTypeDeclarationProblem(location, var.getShortName()));
             }
+        }
+
+        ExpressionNodeBase typeNode = var.getTypeNode();
+        IExpressionNode currentTypeNode = typeNode;
+        while (currentTypeNode instanceof ITypedExpressionNode)
+        {
+            ITypedExpressionNode typedNode = (ITypedExpressionNode) currentTypeNode;
+            IExpressionNode collectionNode = typedNode.getCollectionNode();
+            IDefinition collectionType = collectionNode.resolve(project);
+            if (collectionType != null
+                    && !collectionType.getQualifiedName().equals(IASLanguageConstants.Vector_qname))
+            {
+                currentScope.addProblem(new TypeParametersWithNonParameterizedTypeProblem(collectionNode));
+            }
+            //keep checking while there are nested types
+            currentTypeNode = typedNode.getTypeNode();
         }
 
         // check if thise is an assignment in this declaration.
