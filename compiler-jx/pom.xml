@@ -33,6 +33,11 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.9</version>
+      </plugin>
       <!-- Make the surefire execute all unit-tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

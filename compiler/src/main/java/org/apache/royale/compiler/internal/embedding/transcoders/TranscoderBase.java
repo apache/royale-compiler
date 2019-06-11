@@ -79,6 +79,7 @@ public abstract class TranscoderBase implements ITranscoder
     protected String baseClassQName;
     protected String source;
     private EmbedMIMEType mimeType;
+    public String hashCodeSourceName;
 
     /**
      * Transcode the embedded asset
@@ -354,7 +355,7 @@ public abstract class TranscoderBase implements ITranscoder
     public int hashCode()
     {
         int hashCode = 0;
-        hashCode = source.hashCode();
+        hashCode = hashCodeSourceName.hashCode();
         hashCode ^= baseClassQName.hashCode();
         hashCode ^= mimeType.toString().hashCode(); // the toString() gives us a reproducible hash code
 

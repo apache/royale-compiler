@@ -3190,9 +3190,13 @@ public class JBurgGenerator implements JBurgTokenTypes
      */
     String getCostingFunctionForRule(JBurgRule rule)
     {
-        return String.format("getCostForRule_%h", rule);
+        if ( ! ruleNumber.containsKey(rule) )
+            ruleNumber.put(rule, String.format("getCostForRule%x", ruleNumber.size()));
+        return ruleNumber.get(rule);
     }
 
+    private Map<JBurgRule,String> ruleNumber = new HashMap<JBurgRule, String>();
+    
     /**
      *  Emit the cache field and accessor function for a cached 
      *    result of a cost function call.

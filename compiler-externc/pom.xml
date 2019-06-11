@@ -35,6 +35,11 @@
   <build>
     <plugins>
         <plugin>
+            <groupId>io.github.zlika</groupId>
+            <artifactId>reproducible-build-maven-plugin</artifactId>
+            <version>0.9</version>
+        </plugin>
+        <plugin>
             <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-build-tools</artifactId>
             <version>${compiler-build-tools.version}</version>

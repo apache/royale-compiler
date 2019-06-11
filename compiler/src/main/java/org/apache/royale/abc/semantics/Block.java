@@ -48,7 +48,7 @@ public class Block implements IBasicBlock
     /**
      * Successors to this block.
      */
-    private Set<IBasicBlock> successors = Collections.emptySet();
+    private Collection<IBasicBlock> successors = Collections.emptySet();
 
     /**
      * @return successors of this block.
@@ -59,6 +59,12 @@ public class Block implements IBasicBlock
     }
 
     /**
+     * block number assigned by ControlFlowGraph.  So far,
+     * only used to try to guarantee order in lists/collections
+     */
+    public int blocknum;
+    
+    /**
      * Add a successor to this block.
      * 
      * @param succ - the successor block.
@@ -66,7 +72,7 @@ public class Block implements IBasicBlock
     void addSuccessor(IBasicBlock succ)
     {
         if (this.successors.size() == 0)
-            this.successors = new HashSet<IBasicBlock>();
+            this.successors = new ArrayList<IBasicBlock>();
 
         this.successors.add(succ);
     }

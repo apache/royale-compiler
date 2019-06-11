@@ -69,61 +69,11 @@
     </condition>
     <property name="CRLF" value="%0A" />
     
-    <fail message="The my.name property is not set to the RM's name"
-    unless="my.name"/>
-    
-    <fail message="The ANT_HOME environment variable is not set."
-        unless="env.ANT_HOME"/>
-		
-	<available file="${svn.dist.dev}"
-		type="dir" 
-		property="dist.dev" value="${svn.dist.dev}" />
-    
-	<fail message="The svn.dist.dev property is not set to the working copy for https://dist.apache.org/repos/dist/dev."
-        unless="dist.dev"/>
-				
-	<available file="${svn.site}"
-		type="dir" 
-		property="site" value="${svn.site}" />
-    
-	<fail message="The svn.site property is not set to the working copy for https://royale.apache.org."
-        unless="site"/>
-				
-	<available file="${env.AIR_HOME}"
-		type="dir" 
-		property="AIR_HOME" value="${env.AIR_HOME}" />
+    <condition property="mvn" value="mvn.cmd">
+        <isset property="isWindows" />
+    </condition>
+    <property name="mvn" value="mvn" />
 
-    <fail message="The AIR_HOME property is not set in environment or command-line."
-        unless="AIR_HOME"/>
-		
-    <available file="${env.PLAYERGLOBAL_HOME}"
-        type="dir"
-        property="PLAYERGLOBAL_HOME" value="${env.PLAYERGLOBAL_HOME}" />
-    
-    <fail message="The PLAYERGLOBAL_HOME property is not set in environment or command-line."
-        unless="PLAYERGLOBAL_HOME"/>
-    
-    <available file="${env.FLASHPLAYER_DEBUGGER}"
-        type="dir"
-        property="FLASHPLAYER_DEBUGGER" value="${env.FLASHPLAYER_DEBUGGER}" />
-    
-    <available file="${env.FLASHPLAYER_DEBUGGER}"
-        type="file"
-        property="FLASHPLAYER_DEBUGGER" value="${env.FLASHPLAYER_DEBUGGER}" />
-    
-    <fail message="The FLASHPLAYER_DEBUGGER property is not set in environment or command-line."
-        unless="FLASHPLAYER_DEBUGGER"/>
-        
-    <available file="${env.ProgramFiles}/Mozilla Firefox/firefox.exe"
-		type="file"
-		property="browser" value="${env.ProgramFiles}/Mozilla Firefox/firefox.exe" />
-    <available file="${env.ProgramFiles(x86)}/Mozilla Firefox/firefox.exe"
-		type="file"
-		property="browser" value="${env.ProgramFiles(x86)}/Mozilla Firefox/firefox.exe" />
-    <available file="/Applications/Firefox.app/Contents/MacOS/firefox"
-		type="file"
-		property="browser" value="/Applications/Firefox.app/Contents/MacOS/firefox" />
-        
     <available file="${env.ANT_HOME}/lib/${apache.rat.jar}"
         type="file"
         property="apache.rat.found"/>
@@ -131,49 +81,9 @@
         type="file"
         property="apache.rat.tasks.found"/>
 		
-    <fail message="Could not locate Firefox.  Please specify a browser with
-    -Dbrowser=&lt;path-to-browser&gt;"
-        unless="browser"/>
+    <fail message="The release version number is not set.  Specify -Drelease.version=&lt;release version (e.g. 0.9.0, 1.0.0, etc)&gt;"
+        unless="release.version"/>
         
-    <available file="${env.ProgramFiles}/SlikSVN/bin/svn.exe"
-		type="file"
-		property="svn" value="${env.ProgramFiles}/SlikSVN/bin/svn.exe" />
-    <available file="${env.ProgramFiles(x86)}/SlikSVN/bin/svn.exe"
-		type="file"
-		property="svn" value="${env.ProgramFiles}/SlikSVN/bin/svn.exe" />
-    <available file="/opt/subversion/bin/svn"
-		type="file"
-		property="svn" value="/opt/subversion/bin/svn" />
-    <fail message="Could not locate SVN command-line.  Please specify the path to SVN with
-    -Dsvn=&lt;path-to-svn&gt;"
-        unless="svn"/>
-                
-    <available file="${env.ProgramFiles}/Git/bin/git.exe"
-		type="file"
-		property="git" value="${env.ProgramFiles}/Git/bin/git.exe" />
-    <available file="${env.ProgramFiles(x86)}/Git/bin/git.exe"
-		type="file"
-		property="git" value="${env.ProgramFiles(x86)}/Git/bin/git.exe" />
-    <available file="/usr/local/git/bin/git"
-		type="file"
-		property="git" value="/usr/local/git/bin/git" />
-    <fail message="Could not locate Git command-line.  Please specify the path to Git with
-    -Dgit=&lt;path-to-git&gt;"
-        unless="git"/>
-        
-    <available file="${env.ANT_HOME}/lib/${apache.rat.jar}"
-        type="file"
-        property="apache.rat.found"/>
-    <available file="${env.ANT_HOME}/lib/${apache.rat.tasks.jar}"
-        type="file"
-        property="apache.rat.tasks.found"/>
-		
-    <fail message="Could not locate Firefox.  Please specify a browser with
-    -Dbrowser=&lt;path-to-browser&gt;"
-        unless="browser"/>
-    <fail message="The release candidate number is not set.  Specify -Drc=&lt;rc number (e.g. 1, 2, 3, etc)&gt;"
-    unless="rc"/>
-	
 	<target name="install-rat" depends="install-rat.jar,install-rat.tasks.jar" />
 	<target name="install-rat.jar" unless="apache.rat.found">
 		<get src="${apache.rat.url}/${apache.rat.jar}" dest="${env.ANT_HOME}/lib/${apache.rat.jar}" />
@@ -195,6 +105,259 @@
         </exec>
     </target>
 
+    <target name="Release_Step_003" depends="get-temp-folder,download-artifacts,unzip-artifacts,build-source,validate-bits">
+    </target>
+    <target name="get-temp-folder">
+        <input
+        message="Enter a temporary folder to store the downloaded artifacts:"
+        addproperty="artifactfolder"/>
+        <mkdir dir="${artifactfolder}" />
+        <available file="${artifactfolder}"
+        type="dir"
+        property="artifact.folder.found"/>
+        <fail message="Could not create artifact folder"
+        unless="artifact.folder.found"/>
+    </target>
+    
+    <target name="download-artifacts-utils" if="utils">
+        <get src="http://apacheroyaleci.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_002a_if_utils/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive_utils.zip" />
+    </target>
+    
+    <target name="download-artifacts" if="artifactfolder">
+        <antcall target="download-artifacts-utils" />
+        <get src="http://apacheroyaleci.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
+    </target>
+
+    <target name="unzip-artifacts-utils" if="utils">
+        <mkdir dir="${artifactfolder}/artifacts" />
+        <unzip src="${artifactfolder}/archive_utils.zip" dest="${artifactfolder}/artifacts"/>
+    </target>
+    <target name="unzip-artifacts" if="artifactfolder">
+        <antcall target="unzip-artifacts-utils" />
+        <mkdir dir="${artifactfolder}/artifacts" />
+        <unzip src="${artifactfolder}/archive.zip" dest="${artifactfolder}/artifacts"/>
+    </target>
+    <target name="build-source-utils" if="utils">
+        <!-- build these modules -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+            <arg value="clean" />
+            <arg value="install" />
+            <arg value="-P" />
+            <arg value="-main,utils" />
+        </exec>
+    </target>
+    <target name="build-source" >
+        <mkdir dir="${artifactfolder}/sources" />
+        <unzip src="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" dest="${artifactfolder}/sources" >
+            <cutdirsmapper dirs="1" />
+        </unzip>
+        
+        <antcall target="build-source-utils" />
+        <!-- build these modules -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+            <arg value="clean" />
+            <arg value="install" />
+        </exec>
+    </target>
+    
+    <target name="get-artifact-folder" unless="artifactfolder">
+        <input
+            message="Enter the temporary folder to store the downloaded artifacts:"
+            addproperty="artifactfolder"/>
+        <available file="${artifactfolder}"
+            type="dir"
+            property="artifact.folder.found"/>
+        <fail message="Could not find artifact folder"
+            unless="artifact.folder.found"/>
+    </target>
+    
+    <target name="get-utils-version">
+        <xmlproperty file="${artifactfolder}/sources/compiler-jburg-types/pom.xml" prefix="jburg" />
+        <property name="utils.version" value="${jburg.project.version}" />
+        <echo>utils version is ${utils.version}</echo>
+    </target>
+    
+    <target name="check-for-utils" unless="utils">
+        <available file="${artifactfolder}/sources/compiler-jburg-types/target/compiler-jburg-types-${utils.version}.jar" property="utils" value="true" />
+    </target>
+
+    <target name="validate-bits" depends="get-artifact-folder,get-utils-version,compare-jars">
+    </target>
+    
+    <target name="write-out-maven-utils-jars-list" if="utils" >
+        <delete file="${artifactfolder}/jars.txt" />
+        <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
+         to skip in the rat-check of the binaries and which jars to examine before approval -->
+        <property name="jars-list-with-utils" value="compiler-jburg-types,compiler-build-tools,${jars-list}"/>
+        <echo file="${artifactfolder}/jars.txt" message="${jars-list-with-utils}"/>
+    </target>
+    
+    <target name="write-out-maven-jars-list" >
+        <delete file="${artifactfolder}/jars.txt" />
+        <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
+         to skip in the rat-check of the binaries and which jars to examine before approval -->
+        <property name="jars-list" value="compiler,compiler-common,compiler-externc,compiler-jx,compiler-test-utils,swfutils,debugger,flex-compiler-oem,royale-ant-tasks,royale-maven-plugin"/>
+        <echo file="${artifactfolder}/jars.txt" message="${jars-list}"/>
+        <antcall target="write-out-maven-utils-jars-list" />
+    </target>
+
+    <target name="compare-jars" depends="write-out-maven-jars-list">
+        <!-- comma delimited list, no spaces, not one file per line -->
+        <copy file="${artifactfolder}/jars.txt" tofile="${artifactfolder}/loop.txt" />
+        <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false" >
+            <property name="artifactfolder" value="${artifactfolder}" />
+            <property name="release.version" value="${release.version}" />
+            <property name="utils.version" value="${utils.version}" />
+        </ant>
+    </target>
+    
+    <target name="get-jar-version" >
+        <condition property="jar.version" value="${utils.version}"
+            else="${release.version}">
+            <or>
+                <equals arg1="${thisFile}" arg2="compiler-jburg-types" />
+                <equals arg1="${thisFile}" arg2="compiler-build-tools" />
+            </or>
+        </condition>
+    </target>
+    
+    <target name="loopOnce" >
+        <!-- make a copy of the list so we can munge it to
+         get the first item in the list -->
+        <delete file="${artifactfolder}/loop1.txt" />
+        <copy file="${artifactfolder}/loop.txt" tofile="${artifactfolder}/loop1.txt" />
+        <loadfile srcFile="${artifactfolder}/loop.txt" property="checkiflast" />
+        <condition property="islast" value="true">
+            <not>
+                <contains string="${checkiflast}" substring="," />
+            </not>
+        </condition>
+        <antcall target="notlast" />
+        <antcall target="lastone" />
+    </target>
+    <target name="notlast" unless="islast">
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="echoFile" />
+        <replaceregexp file="${artifactfolder}/loop1.txt" match="^(.*),(.*)" replace="\2" />
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="thisFile" />
+        <antcall target="compare_files" />
+        <replaceregexp file="${artifactfolder}/loop.txt" match="^(.*),(.*)" replace="\1" />
+        <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false">
+            <property name="artifactfolder" value="${artifactfolder}" />
+            <property name="release.version" value="${release.version}" />
+            <property name="utils.version" value="${utils.version}" />
+        </ant>
+    </target>
+    <target name="lastone" if="islast">
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="thisFile" />
+        <antcall target="compare_files" />
+        <delete file="${artifactfolder}/loop.txt" />
+        <delete file="${artifactfolder}/loop1.txt" />
+    </target>
+
+    <target name="compare_files" depends="get-jar-version">
+        <echo>comparing ${thisFile}-${jar.version}</echo>
+        <fail message="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
+            <condition>
+                <not>
+                    <resourceexists><file file="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
+                </not>
+            </condition>
+        </fail>
+        <fail message="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar does not exist" >
+            <condition>
+                <not>
+                    <resourceexists><file file="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar"/></resourceexists>
+                </not>
+            </condition>
+        </fail>
+        <condition property="filesmatch" value="true">
+              <filesmatch file1="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
+                file2="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar" />
+        </condition>
+        <fail message="${thisFile}-${jar.version}.jar does not match" unless="filesmatch" />
+    </target>
+    
+    <target name="Release_Step_003_Sign" depends="get-artifact-folder">
+        <fail message="release.version not specified"
+            unless="release.version"/>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}.pom" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-common" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-externc" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-tests.jar" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-jx" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-test-utils" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="debugger" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="flex-compiler-oem" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="royale-ant-tasks" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="royale-maven-plugin" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="swfutils" />
+        </antcall>
+    </target>
+    
+    <target name="sign-jar-artifacts">
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
+        </antcall>
+    </target>
+    
+    <target name="sign-file">
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${file}.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${file}" />
+        </exec>
+    </target>
+    
+    <target name="Release_Step_003_Upload" depends="get-artifact-folder">
+        <fail message="release.version not specified"
+            unless="release.version"/>
+        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+            <arg value="wagon:upload" />
+            <arg value="-X" />
+            <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/checkout/release-dir" />
+            <arg value="-P" />
+            <arg value="upload-release-to-staging,-main" />
+        </exec>
+    </target>
+    
     <target name="main" depends="install-rat,credentials" description="Perform required release approval steps">
 		<antcall target="check-new-version" />
 		<exec executable="${git}" dir="${basedir}" failonerror="true" >

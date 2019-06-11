@@ -95,7 +95,7 @@
     <property name="closure.dest.filename" value="${closure.dest.name}.jar"/>
     <antcall target="download-dependency-closure">
       <param name="name" value="${closure.name}"/>
-      <param name="src.server" value="http://dl.google.com"/>
+      <param name="src.server" value="https://dl.google.com"/>
       <param name="src.folder" value="closure-compiler"/>
       <param name="src.filename" value="compiler-${closure.version}.zip"/>
       <param name="src.checksum" value="c67fdbf6512d1de6bbb84a69ed3d5b87"/>

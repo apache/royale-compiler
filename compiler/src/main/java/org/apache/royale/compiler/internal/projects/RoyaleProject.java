@@ -380,6 +380,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     private String objectProxyClass;
     private String xmlWatcherClass;
     private Name xmlWatcherClassName;
+    private String swfDebugfileAlias;
     
     /**
      * The fully-qualified name of the runtime class
@@ -2569,5 +2570,15 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 	public File getLinkReport(Configuration config) {
 		return config.getLinkReport();
 	}
+
+    public String getSwfDebugfileAlias()
+    {
+        return swfDebugfileAlias;
+    }
+    
+    public void setSwfDebugfileAlias(String swfDebugfileAlias)
+    {
+        this.swfDebugfileAlias = swfDebugfileAlias;
+    }
 
 }

@@ -26,11 +26,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -343,7 +346,13 @@ public class COMPJSC extends MXMLJSC
                         {
                             System.out.println("Copy " + entry.getName());
                         	InputStream input = zipFile.getInputStream(entry);
-                        	zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
+                        	ZipEntry ze = new ZipEntry(entry.getName());
+                        	ze.setMethod(ZipEntry.STORED);
+                        	ze.setTime(entry.getTime());
+                        	ze.setSize(entry.getSize());
+                        	ze.setCompressedSize(entry.getCompressedSize());
+                        	ze.setCrc(entry.getCrc());
+                        	zipOutputStream.putNextEntry(ze);
                         	IOUtils.copy(input, zipOutputStream);
                             zipOutputStream.flush();
                         	zipOutputStream.closeEntry();
@@ -471,24 +480,83 @@ public class COMPJSC extends MXMLJSC
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
+                    		outputClassFile = outputClassFile.replace('\\', '/');
 	                        System.out.println("Writing file: " + outputClassFile);     	
-	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
-	                        temp.writeTo(zipOutputStream);
+	                        long fileDate = System.currentTimeMillis();
+	                        long zipFileDate = fileDate;
+	                    	String metadataDate = targetSettings.getSWFMetadataDate();
+	                    	if (metadataDate != null)
+	                    	{
+	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			fileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    		// strip off timezone.  Zip format doesn't store timezone
+	                    		// and the goal is to have the same date and time regardless
+	                    		// of which timezone the build machine is using.
+	                    		int c = metadataDate.lastIndexOf(" ");
+	                    		metadataDate = metadataDate.substring(0,  c);
+	                    		c = metadataFormat.lastIndexOf(" ");
+	                    		metadataFormat = metadataFormat.substring(0, c);
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			zipFileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    	}
+	                    	ZipEntry ze = new ZipEntry(outputClassFile);
+	                    	ze.setTime(zipFileDate);
+	                    	ze.setMethod(ZipEntry.STORED);
+	                    	
+	                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	                        temp.writeTo(baos);
+	                        ze.setSize(baos.size());
+	                        ze.setCompressedSize(baos.size());
+	                        CRC32 crc = new CRC32();
+	                        crc.reset();
+	                        crc.update(baos.toByteArray());
+	                        ze.setCrc(crc.getValue());
+
+	                        zipOutputStream.putNextEntry(ze);
+	                        baos.writeTo(zipOutputStream);
                             zipOutputStream.flush();
 	                        zipOutputStream.closeEntry();
-	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + fileDate + "\"/>\n");
                             if(sourceMapTemp != null)
                             {
                                 String sourceMapFile = getOutputSourceMapFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                System.out.println("Writing file: " + sourceMapFile);     	
-                                zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
-                                sourceMapTemp.writeTo(zipOutputStream);
+                                System.out.println("Writing file: " + sourceMapFile);
+                                ze = new ZipEntry(sourceMapFile);
+    	                    	ze.setTime(zipFileDate);
+    	                    	ze.setMethod(ZipEntry.STORED);
+    	                    	
+    	                        baos = new ByteArrayOutputStream();
+                                sourceMapTemp.writeTo(baos);
+    	                        ze.setSize(baos.size());
+    	                        ze.setCompressedSize(baos.size());
+    	                        crc = new CRC32();
+    	                        crc.reset();
+    	                        crc.update(baos.toByteArray());
+    	                        ze.setCrc(crc.getValue());
+                                
+                                zipOutputStream.putNextEntry(ze);
+    	                        baos.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
                                 zipOutputStream.closeEntry();
-                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + fileDate + "\"/>\n");
                             }
                             writer.close();
                         }
@@ -497,12 +565,57 @@ public class COMPJSC extends MXMLJSC
                 if (packingSWC)
                 {
                 	zipFile.close();
+                    long fileDate = System.currentTimeMillis();
+                    long zipFileDate = fileDate;
+                	String metadataDate = targetSettings.getSWFMetadataDate();
+                	if (metadataDate != null)
+                	{
+                		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+                		try {
+                			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			fileDate = sdf.parse(metadataDate).getTime();
+                		} catch (ParseException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			} catch (IllegalArgumentException e1) {
+            				e1.printStackTrace();
+            			}
+                		// strip off timezone.  Zip format doesn't store timezone
+                		// and the goal is to have the same date and time regardless
+                		// of which timezone the build machine is using.
+                		int c = metadataDate.lastIndexOf(" ");
+                		metadataDate = metadataDate.substring(0,  c);
+                		c = metadataFormat.lastIndexOf(" ");
+                		metadataFormat = metadataFormat.substring(0, c);
+                		try {
+                			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			zipFileDate = sdf.parse(metadataDate).getTime();
+                		} catch (ParseException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			} catch (IllegalArgumentException e1) {
+            				e1.printStackTrace();
+            			}
+                	}
                 	int libraryIndex = catalog.indexOf("</libraries>");
                 	catalog = catalog.substring(0, libraryIndex + 13) +
                 		"    <files>\n" + fileList.toString() + "    </files>" + 
                 		catalog.substring(libraryIndex + 13);
-                    zipOutputStream.putNextEntry(new ZipEntry(SWCReader.CATALOG_XML));
-                	zipOutputStream.write(catalog.getBytes());
+                	ZipEntry ze = new ZipEntry(SWCReader.CATALOG_XML);
+                	ze.setTime(zipFileDate);
+                	ze.setMethod(ZipEntry.STORED);
+                	
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                	baos.write(catalog.getBytes());
+                    ze.setSize(baos.size());
+                    ze.setCompressedSize(baos.size());
+                    CRC32 crc = new CRC32();
+                    crc.reset();
+                    crc.update(baos.toByteArray());
+                    ze.setCrc(crc.getValue());
+                	
+                    zipOutputStream.putNextEntry(ze);
+                    baos.writeTo(zipOutputStream);
                     zipOutputStream.flush();
                     zipOutputStream.closeEntry();
                     zipOutputStream.flush();

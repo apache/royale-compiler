@@ -123,4 +123,10 @@ public class ZipFileSpecification implements IZipFileSpecification {
 	{
 		return false;
 	}
+
+	@Override
+	public void setLastModified(long fileDate) {
+		// TODO Auto-generated method stub
+		
+	}
 }

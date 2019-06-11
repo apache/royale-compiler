@@ -29,6 +29,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -788,6 +790,23 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 			fw = new FileWriter(outputClassFile, false);
 			fw.write(sb.toString());
 			fw.close();
+			long fileDate = 0;
+        	String metadataDate = targetSettings.getSWFMetadataDate();
+        	if (metadataDate != null)
+        	{
+        		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+        		try {
+        			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+        			fileDate = sdf.parse(metadataDate).getTime();
+        		} catch (ParseException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (IllegalArgumentException e1) {
+    				e1.printStackTrace();
+    			}
+        		outputClassFile.setLastModified(fileDate);
+        	}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

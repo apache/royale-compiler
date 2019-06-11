@@ -26,9 +26,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
@@ -366,7 +369,20 @@ public abstract class Target implements ITarget
                     return Collections.emptySet();
             }
         }
-        return visitedSet;
+        TreeSet<ICompilationUnit> sortedSet = new TreeSet<ICompilationUnit>(new Comparator<ICompilationUnit>()
+        {
+            @Override
+            public int compare(ICompilationUnit o1, ICompilationUnit o2)
+            {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        sortedSet.addAll(visitedSet);
+        System.out.println("visited set");
+        for (ICompilationUnit visited : sortedSet)
+        	System.out.println(visited.getName());
+        System.out.println("end visited set");
+        return sortedSet;
     }
     
     protected DirectDependencies getDirectDependencies(ICompilationUnit cu) throws InterruptedException
@@ -766,11 +782,19 @@ public abstract class Target implements ITarget
         {
             assert units != null;
             assert problems != null;
-            this.units = units;
+            this.units = new TreeSet<ICompilationUnit>(new Comparator<ICompilationUnit>()
+            {
+                @Override
+                public int compare(ICompilationUnit o1, ICompilationUnit o2)
+                {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+            this.units.addAll(units);
             this.problems = problems;
         }
         
-        private final Set<ICompilationUnit> units;
+        private final SortedSet<ICompilationUnit> units;
         private final Iterable<ICompilerProblem> problems;
         
         public Set<ICompilationUnit> getUnits()

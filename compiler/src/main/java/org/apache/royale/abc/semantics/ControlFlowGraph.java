@@ -23,10 +23,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.graph.IBasicBlock;
@@ -34,6 +37,8 @@ import org.apache.royale.abc.graph.IFlowgraph;
 import org.apache.royale.abc.graph.algorithms.DepthFirstPreorderIterator;
 import org.apache.royale.abc.graph.algorithms.DominatorTree;
 import org.apache.royale.abc.visitors.IFlowGraphVisitor;
+import org.apache.royale.compiler.css.ICSSDocument;
+import org.apache.royale.compiler.internal.projects.LibraryPathManager;
 
 /**
  * A ControlFlowGraph represents the flow of control through a sequence of
@@ -190,7 +195,24 @@ public class ControlFlowGraph implements IFlowgraph
 
         // We've seen all the instructions now, so we can compute the blocks that
         // each label corresponds to, and fill in the rest of the graph
-        for (Map.Entry<Block, Collection<Label>> entry : successor_labels.entrySet())
+        Set<Entry<Block, Collection<Label>>> entries = successor_labels.entrySet();
+        ArrayList<Entry<Block, Collection<Label>>> listOfEntries = new ArrayList<Entry<Block, Collection<Label>>>();
+        for (Map.Entry<Block, Collection<Label>> entry : entries)
+        	listOfEntries.add(entry);
+        Collections.sort(listOfEntries, new Comparator<Entry<Block, Collection<Label>>>()
+        {
+            /**
+             * Sort by blocknum.
+             */
+            @Override
+            public int compare(Entry<Block, Collection<Label>> o1, Entry<Block, Collection<Label>> o2)
+            {
+            	int block1 = o1.getKey().blocknum;
+            	int block2 = o2.getKey().blocknum;
+                return block1 - block2;
+            }
+        });
+        for (Map.Entry<Block, Collection<Label>> entry : listOfEntries)
             for (Label target_label : entry.getValue())
             {
                 IBasicBlock target_block = getBlock(target_label);
@@ -259,6 +281,7 @@ public class ControlFlowGraph implements IFlowgraph
     private Block newBlock()
     {
         Block result = new Block();
+        result.blocknum = blocks.size();
         blocks.add(result);
         return result;
     }
@@ -304,15 +327,55 @@ public class ControlFlowGraph implements IFlowgraph
      */
     public void traverseGraph(IFlowGraphVisitor visitor)
     {
+    	boolean diagnostics = false;
+    	if (mbi.getMethodInfo() != null &&
+    			mbi.getMethodInfo().getMethodName() != null &&
+    			mbi.getMethodInfo().getMethodName().contentEquals("dispatchEvent") &&
+    			mbi.getMethodInfo().getParamNames().contains("event1"))
+    	{
+    		Iterator<IBasicBlock> blocks = this.blocksInControlFlowOrder().iterator();
+    		int blockCount = 0;
+    		while (blocks.hasNext())
+    		{
+    			blockCount++;
+    			blocks.next();
+    		}
+    		IBasicBlock[] blocklist = new IBasicBlock[blockCount];
+    		blocks = this.blocksInControlFlowOrder().iterator();
+    		blockCount = 0;
+    		while (blocks.hasNext())
+    		{
+    			blocklist[blockCount++] = blocks.next();
+    		}    		
+    		System.out.println("blockCount is: " + blockCount);
+    		diagnostics = true;
+    	}
+    	int blockIndex = 0;
         for (IBasicBlock b : this.blocksInControlFlowOrder())
         {
+        	if (diagnostics)
+        	{
+        		System.out.println("block " + blockIndex);
+        		System.out.println(b.getInstructions());
+        	}
             if (visitor.visitBlock(b))
             {
+            	if (diagnostics)
+            		System.out.println("visiting block: " + blockIndex);
                 for (Instruction i : b.getInstructions())
                     visitor.visitInstruction(i);
 
                 visitor.visitEnd(b);
+                if (diagnostics)
+                {
+                	if (visitor instanceof FrameCountVisitor)
+                	{
+                		System.out.println("max_scope is now:" + ((FrameCountVisitor)visitor).max_scope);
+                		System.out.println("scpDepth is now:" + ((FrameCountVisitor)visitor).scpdepth);
+                	}
+                }
             }
+    		blockIndex++;
         }
     }
 

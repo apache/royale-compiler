@@ -22,6 +22,8 @@ package org.apache.royale.compiler.internal.targets;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -318,6 +320,22 @@ public class SWCTarget extends Target implements ISWCTarget
         
         if (contents != null)
         {
+        	long fileDate = 0;
+        	String metadataDate = targetSettings.getSWFMetadataDate();
+        	if (metadataDate != null)
+        	{
+        		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+        		try {
+        			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+        			fileDate = sdf.parse(metadataDate).getTime();
+        		} catch (ParseException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (IllegalArgumentException e1) {
+    				e1.printStackTrace();
+    			}
+        		fileSpec.setLastModified(fileDate);
+        	}
             swc.addFile(path, fileSpec.getLastModified(), contents);
         }
         else    
@@ -532,7 +550,22 @@ public class SWCTarget extends Target implements ISWCTarget
         for (final IDefinition def : fsResult.getExternallyVisibleDefinitions())
         {
             script.addDefinition(def.getQualifiedName());
-            script.setLastModified(cu.getSyntaxTreeRequest().get().getLastModified());
+            long mod = cu.getSyntaxTreeRequest().get().getLastModified();
+        	String metadataDate = targetSettings.getSWFMetadataDate();
+        	if (metadataDate != null)
+        	{
+        		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+        		try {
+        			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+        			mod = sdf.parse(metadataDate).getTime();
+        		} catch (ParseException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (IllegalArgumentException e1) {
+    				e1.printStackTrace();
+    			}
+        	}            
+            script.setLastModified(mod);
             
             if (definitionsToBuild != null)
                 definitionsToBuild.add(def);
@@ -661,7 +694,11 @@ public class SWCTarget extends Target implements ISWCTarget
         rootCompilationUnits.addAll(getIncludesCompilationUnits());
         rootCompilationUnits.addAll(getIncludeLibrariesCompilationUnits());
         
-        return new Target.RootedCompilationUnits(rootCompilationUnits, problems);
+        Target.RootedCompilationUnits units = new Target.RootedCompilationUnits(rootCompilationUnits, problems);
+        Set<ICompilationUnit> unitSet = units.getUnits();
+        for (ICompilationUnit cu : unitSet)
+        	System.out.println(cu.getName());
+        return units;
     }
     
     @Override

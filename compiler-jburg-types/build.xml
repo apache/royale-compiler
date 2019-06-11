@@ -66,8 +66,10 @@
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler-jburg-types}/src/main/java"/>
             <include name="org/apache/royale/compiler/internal/as/codegen/IASNodeAdapter.java"/>
+            <include name="jburg/burg/JBurgGenerator.java"/>
             <classpath>
                 <pathelement location="${compiler-jburg-types}/../compiler/lib/external/jburg.jar"/>
+                <pathelement location="${compiler-jburg-types}/../compiler/lib/external/antlr.jar"/>
             </classpath>
         </javac>
 	</target>

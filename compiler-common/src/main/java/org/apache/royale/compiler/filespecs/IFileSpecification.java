@@ -49,6 +49,13 @@ public interface IFileSpecification
 	 */
 	long getLastModified();
 	
+
+	/**
+	 * Set the last modified timestamp of the file
+	 * @param fileDate	the last modified timestamp
+	 */
+	void setLastModified(long fileDate);
+	
     /**
      * @return true if this file specification refers to an open document and
      * the {@link #createReader()} method returns a reader that reads the live

@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -47,6 +48,8 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
 		super(path);
 	}
 
+	public static boolean useCRLFFilter = false;
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -116,9 +119,12 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
         final BufferedInputStream strm = new BufferedInputStream(new FileInputStream(file));
 	    final BOM bom = getBOM(strm);
         strm.skip(bom.pattern.length);
-
-        final Reader reader = new BufferedReader(
-                new InputStreamReader(strm, bom.charset));
+        
+        final InputStreamReader inputSR = useCRLFFilter ? 
+        		new InputStreamReader(new NoCRLFInputStream(strm), bom.charset) :
+                new InputStreamReader(strm, bom.charset);
+        			
+        final Reader reader = new BufferedReader(inputSR);
         return reader;
 	}
 
@@ -127,4 +133,106 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
     {
         return new BufferedInputStream(new FileInputStream(getFileHandle()));
     }
+
+	@Override
+	public void setLastModified(long fileDate) {
+		File fileHandle = getFileHandle();
+		fileHandle.setLastModified(fileDate);
+	}
+	
+	public static class NoCRLFInputStream extends FilterInputStream
+	{
+		public NoCRLFInputStream(InputStream fileInputStream)
+		{
+			super(fileInputStream);
+		}
+		
+		/**
+		 * if we read a CR, just skip it, assuming it will
+		 * be followed by an LF
+		 */
+		@Override
+		public int read() throws IOException
+		{
+			int retval = super.read();
+			if (retval == '\r')
+				retval = super.read();
+			return retval;
+		}
+		
+		/**
+		 * if we read a CR, just skip it, assuming it will
+		 * be followed by an LF
+		 * @throws IOException 
+		 */
+		@Override
+		public int read(byte[] b) throws IOException
+		{
+			int n = b.length;
+			byte[] temp = new byte[b.length];
+			int retval = super.read(temp);
+			if (retval == -1)
+				return -1;
+			
+			int j = 0;
+			for (int i = 0; i < retval; i++)
+			{
+				byte c = temp[i];
+				if (c == '\r')
+					continue;
+				else
+					b[j++] = c;
+			}
+			while (j < retval)
+			{
+				int extra = super.read(b, j, 1);
+				if (extra == -1)
+					break;
+				byte c = b[j];
+				if (c == '\r')
+					continue;
+				else
+				    j++;
+			}
+			return j;
+		}
+
+		/**
+		 * if we read a CR, just skip it, assuming it will
+		 * be followed by an LF
+		 * @throws IOException 
+		 */
+		@Override
+		public int read(byte[] b, int off, int len) throws IOException
+		{
+			byte[] temp = new byte[len];
+			int retval = super.read(temp, off, len);
+			if (retval == -1)
+				return -1;
+			if (retval == 0)
+				return 0;
+			
+			int j = 0;
+			for (int i = off; i < retval; i++)
+			{
+				byte c = temp[i];
+				if (c == '\r')
+					continue;
+				else
+					b[off + j++] = c;
+			}
+//			System.out.println(new String(b));
+			while (j < retval)
+			{
+				int extra = super.read(b, off + j, 1);
+				if (extra == -1)
+					break;
+				byte c = b[off + j];
+				if (c == '\r')
+					continue;
+				j++;
+			}
+			return j;
+		}
+	}
 }

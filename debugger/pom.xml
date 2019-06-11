@@ -33,6 +33,11 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.9</version>
+      </plugin>
       <!--
 Do all the JBurg code generation.
 -->
@@ -63,15 +68,16 @@ Do all the JBurg code generation.
           <!--debug>true</debug-->
         </configuration>
         <dependencies>
-          <dependency>
-            <groupId>net.sourceforge.jburg</groupId>
-            <artifactId>jburg</artifactId>
-            <version>1.10.3</version>
-          </dependency>
+            <!-- this needs to be first in order to patch jburg -->
           <dependency>
             <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
             <version>${compiler-build-tools.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.jburg</groupId>
+            <artifactId>jburg</artifactId>
+            <version>1.10.3</version>
           </dependency>
         </dependencies>
       </plugin>

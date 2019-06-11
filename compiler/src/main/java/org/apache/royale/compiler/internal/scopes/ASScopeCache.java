@@ -25,6 +25,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinitionBase;
@@ -32,6 +33,7 @@ import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
 import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 import com.google.common.collect.MapMaker;
 
@@ -138,8 +140,20 @@ public class ASScopeCache
         IDefinition result = map.get(name);
         if (result != null)
         {
-            assert result.isInProject(project);
             // We found a cached result - we're done
+        	// after making sure it has a dependency
+        	if (result instanceof ITypeDefinition)
+        	{
+	        	ICompilationUnit from = scope.getFileScope().getCompilationUnit();
+	            assert result.isInProject(project);
+	            
+	            String qname = result.getQualifiedName();
+	            ICompilationUnit to = ((ASProjectScope)project.getScope()).getCompilationUnitForDefinition(result);
+	            if (to == null && !(qname.contentEquals("void") || qname.contentEquals("*")))
+	            	System.out.println("No compilation unit for " + qname);	
+	            if (to != null)
+	            	project.addDependency(from, to, dt, qname);
+        	}
             return result;
         }
 

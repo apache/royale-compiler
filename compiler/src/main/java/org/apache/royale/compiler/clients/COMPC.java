@@ -200,6 +200,7 @@ public class COMPC extends MXMLC implements FlexTool
             	System.out.println("output swc as file");
             final ISWCWriter swcWriter = new SWCWriter(outputOptionValue, useCompression,
                     targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
+                    targetSettings.getSWFMetadataDate(), targetSettings.getSWFMetadataDateFormat(),
                     SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
             if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
             	System.out.println("attempting to write swc");

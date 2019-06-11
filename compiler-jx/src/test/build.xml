@@ -181,24 +181,7 @@
             </assertions>
         </junit>
     </target>
-    
-    <target name="copyLastSuccessfulBuild" depends="check_asjs, get_asjs" />
-    <target name="check_asjs" >
-        <available file="${env.ASJS_HOME}/frameworks/libs/Network.swc"
-            type="file"
-            property="asjs.ok"
-            value="true" />
-    </target>
-    <target name="get_asjs" unless="asjs.ok" >
-        <get src="http://apacheflexbuild.cloudapp.net:8080/job/royale-asjs/lastSuccessfulBuild/artifact/out/apache-royale-flexjs-0.9.0-bin.zip" dest="${compiler}/target/junit-temp/royale.zip"/>
-        <unzip src="${compiler}/target/junit-temp/royale.zip" dest="${env.ASJS_HOME}">
-            <patternset>
-                <include name="frameworks/libs/*.swc"/>
-            </patternset>
-        </unzip>
-        <delete file="${compiler}/target/junit-temp/royale.zip" />
-    </target>
- 
+     
     <target name="main" depends="unit.tests, integration.tests"/>
     <target name="all" depends="unit.tests, integration.tests, typedef.tests, integration.tests.asjs"/>
 
