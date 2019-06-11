@@ -356,6 +356,8 @@ public class JSClosureCompilerWrapper
         		"playerversion", "langversion", "copy", "span", "para", "throw", "tiptext",
         		"asparam", "asreturn", "asreturns", "asprivate",
         		"royaleignoreimport", "royaleignorecoercion", "royaleemitcoercion",
+                "royalesuppresscompleximplicitcoercion","royalesuppressresolveuncertain",
+                "royalesuppressvectorindexcheck","royalesuppressexport", "royalesuppressclosure",
                 "royalenoimplicitstringconversion","royaledebug"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }

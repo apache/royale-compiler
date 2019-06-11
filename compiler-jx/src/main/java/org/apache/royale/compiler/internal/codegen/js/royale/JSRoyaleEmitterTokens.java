@@ -35,6 +35,7 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     ROYALE_CLASS_INFO_CLASS_KIND("class"),
     ROYALE_CLASS_INFO_INTERFACE_KIND("interface"),
     ROYALE_CLASS_INFO_IS_DYNAMIC("isDynamic"),
+    ROYALE_SYNTH_TAG_FIELD_NAME("SYNTH_TAG_FIELD"),
     GOOG_EXPORT_PROPERTY("goog.exportProperty"),
     GOOG_EXPORT_SYMBOL("goog.exportSymbol"),
     INDENT("  "),
@@ -49,7 +50,12 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     IGNORE_COERCION("@royaleignorecoercion"),
     IGNORE_IMPORT("@royaleignoreimport"),
     IGNORE_STRING_COERCION("@royalenoimplicitstringconversion"),
+    SUPPRESS_EXPORT("@royalesuppressexport"),
+    SUPPRESS_CLOSURE("@royalesuppressclosure"),
     SUPPRESS_PUBLIC_VAR_WARNING("@royalesuppresspublicvarwarning"),
+    SUPPRESS_COMPLEX_IMPLICIT_COERCION("@royalesuppresscompleximplicitcoercion"),
+    SUPPRESS_RESOLVE_UNCERTAIN("@royalesuppressresolveuncertain"),
+    SUPPRESS_VECTOR_INDEX_CHECK("@royalesuppressvectorindexcheck"),
     DEBUG_COMMENT("@royaledebug"),
     DEBUG_RETURN("if(!goog.DEBUG)return;"),
     PREINCREMENT("preincrement"),
@@ -65,7 +71,10 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     JSX("JSX"),
-    VECTOR("org.apache.royale.utils.Language.Vector"),
+    VECTOR(LANGUAGE_QNAME.getToken() + ".Vector"),
+    SYNTH_TYPE(LANGUAGE_QNAME.getToken() + ".synthType"),
+    SYNTH_VECTOR(LANGUAGE_QNAME.getToken() + ".synthVector"),
+    VECTOR_INDEX_CHECK_METHOD_NAME(LANGUAGE_QNAME.getToken() + ".CHECK_INDEX"),
     ;
 
     private String token;

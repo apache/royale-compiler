@@ -67,6 +67,8 @@ public class ClassEmitter extends JSSubEmitter implements
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && keepASDoc)
             DocEmitterUtils.loadImportIgnores(fjs, asDoc.commentNoEnd());
+        
+        boolean suppressExport = (asDoc != null && DocEmitterUtils.hasSuppressExport(fjs, asDoc.commentNoEnd()));
 
         IClassDefinition definition = node.getDefinition();
 
@@ -131,7 +133,7 @@ public class ClassEmitter extends JSSubEmitter implements
             }
         }
 
-  	    if (!getEmitter().getModel().isExterns)
+  	    if (!getEmitter().getModel().isExterns && !suppressExport)
   	    {
   	        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
   	        .getDocEmitter();

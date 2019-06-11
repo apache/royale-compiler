@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -30,10 +31,10 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
-import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -100,7 +101,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             {
                 IASNode lnode = leftSide.getChild(0);
                 IASNode rnode = leftSide.getChild(1);
-                IDefinition rnodeDef = (rnode instanceof IIdentifierNode) ? 
+                IDefinition rnodeDef = (rnode instanceof IIdentifierNode) ?
                 		((IIdentifierNode) rnode).resolve(getWalker().getProject()) :
                 		null;
                 boolean isDynamicAccess = rnode instanceof DynamicAccessNode;
@@ -117,7 +118,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         else
                         	write(getEmitter().formatQualifiedName(
                         		getModel().getCurrentClass().getQualifiedName()));
-                        			
+                        		
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSGoogEmitterTokens.SUPERCLASS);
                         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -391,10 +392,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
     			}
             }
-			
-            super_emitBinaryOperator(node, isAssignment);
+		
+			super_emitBinaryOperator(node, isAssignment);
         }
     }
+    
 
     private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean isAssignment)
     {
@@ -431,8 +433,28 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
         else
         {
-            getWalker().walk(node.getLeftOperandNode());
-
+			if (isAssignment
+					&& (getProject() instanceof RoyaleJSProject && ((RoyaleJSProject) getProject()).config != null && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass() == null)
+					&& node.getLeftOperandNode() instanceof MemberAccessExpressionNode
+					&& ((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode() instanceof IdentifierNode
+					&& ((IdentifierNode) ((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode()).getName().equals("length")
+					&& ((MemberAccessExpressionNode) node.getLeftOperandNode()).getLeftOperandNode().resolveType(getProject()) instanceof AppliedVectorDefinition)
+			{
+				//for default Vector implementation, when setting length, we need to set it on the associated 'synthType' instance which tags the native
+				//Array representation of the Vector. This allows running 'setter' code because it is not possible to override the native length setter on Array
+				//unless using a different approach, like es6 Proxy.
+				//this code inserts the extra access name for setting length, e.g. myVectInstance['_synthType'].length = assignedValue
+				//the dynamic access field name is a constant on Language, so it can be different/shorter in release build
+				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getLeftOperandNode());
+				write(ASEmitterTokens.SQUARE_OPEN);
+				write(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+				write(ASEmitterTokens.MEMBER_ACCESS);
+				write(JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME);
+				write(ASEmitterTokens.SQUARE_CLOSE);
+				write(ASEmitterTokens.MEMBER_ACCESS);
+				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode());
+			}
+            else getWalker().walk(node.getLeftOperandNode());
             startMapping(node, node.getLeftOperandNode());
             
             if (id != ASTNodeID.Op_CommaID)
@@ -469,12 +491,14 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			}
 			else
 			{
+				
 				getWalker().walk(node.getRightOperandNode());
+				
 				if (node.getNodeID() == ASTNodeID.Op_InID &&
 						((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
 				{
 					write(".elementNames()");
-				}   
+				}
 				else if (node.getNodeID() == ASTNodeID.Op_InID &&
 						((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
 				{

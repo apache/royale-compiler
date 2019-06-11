@@ -26,6 +26,7 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -34,21 +35,14 @@ import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.GetterNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.NamespaceAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.royale.compiler.utils.ASNodeUtils;
+
+import javax.sound.midi.SysexMessage;
 
 public class MemberAccessEmitter extends JSSubEmitter implements
         ISubEmitter<IMemberAccessExpressionNode>
@@ -199,21 +193,6 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		return;
         	}
         }
-		else if (def.getParent() instanceof AppliedVectorDefinition)
-		{
-        	if (def.getBaseName().equals("removeAt"))
-        	{
-        		writeLeftSide(node, leftNode, rightNode);
-        		write(".splice");
-        		return;
-        	}
-        	else if (def.getBaseName().equals("insertAt"))
-        	{
-        		writeLeftSide(node, leftNode, rightNode);
-        		write(".splice");
-        		return;
-        	}				
-		}
     	else if (rightNode instanceof NamespaceAccessExpressionNode)
     	{
 			boolean isStatic = false;
@@ -234,6 +213,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 								parentNodeId != ASTNodeID.ArrayIndexExpressionID;
 				}
 			}
+			
+			if (needClosure
+					&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+					&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+				needClosure = false;
         	if (needClosure)
         		getEmitter().emitClosureStart();
 
@@ -296,6 +280,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
 							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
 							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+		
+				if (needClosure
+						&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+						&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+					needClosure = false;
         		
         	}
         }

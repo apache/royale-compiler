@@ -19,20 +19,30 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
+import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
+import org.apache.royale.compiler.utils.NativeUtils;
 
 public class DynamicAccessEmitter extends JSSubEmitter implements
         ISubEmitter<IDynamicAccessNode>
@@ -98,8 +108,52 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SQUARE_OPEN);
         endMapping(node);
+        boolean wrapVectorIndex = false;
+        if (getProject() instanceof RoyaleJSProject) {
+			if (node.getNodeID().equals(ASTNodeID.ArrayIndexExpressionID)){
+				if (node.getParent() instanceof BinaryOperatorAssignmentNode) {
+					if (node.getLeftOperandNode().resolveType(getProject()) instanceof AppliedVectorDefinition) {
+						boolean suppressVectorIndexCheck = !(((RoyaleJSProject)getProject()).config.getJsVectorIndexChecks());
+
+						IDocEmitter docEmitter = getEmitter().getDocEmitter();
+						if (docEmitter instanceof JSRoyaleDocEmitter)
+						{
+							JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
+							//check for local toggle
+							suppressVectorIndexCheck = royaleDocEmitter.getLocalSettingAsBoolean(
+									JSRoyaleEmitterTokens.SUPPRESS_VECTOR_INDEX_CHECK, suppressVectorIndexCheck);
+							
+							if (!suppressVectorIndexCheck) {
+								//check for individual specified suppression, based on variable name
+								if (leftOperandNode instanceof IdentifierNode) {
+									if (royaleDocEmitter.getLocalSettingIncludesString(
+											JSRoyaleEmitterTokens.SUPPRESS_VECTOR_INDEX_CHECK,
+											((IdentifierNode) leftOperandNode).getName()
+									)){
+										suppressVectorIndexCheck = true;
+									}
+								}
+							}
+						}
+						if (!suppressVectorIndexCheck) {
+							getModel().needLanguage = true;
+							((RoyaleJSProject) getProject()).needLanguage = true;
+							getWalker().walk(leftOperandNode);
+							write(ASEmitterTokens.SQUARE_OPEN);
+							write(JSRoyaleEmitterTokens.VECTOR_INDEX_CHECK_METHOD_NAME);
+							write(ASEmitterTokens.SQUARE_CLOSE);
+							write(ASEmitterTokens.PAREN_OPEN);
+							wrapVectorIndex = true;
+						}
+					}
+				}
+			}
+		}
         
         getWalker().walk(rightOperandNode);
+        if (wrapVectorIndex) {
+        	write(ASEmitterTokens.PAREN_CLOSE);
+		}
         if (type != null && type.getQualifiedName().contentEquals(IASLanguageConstants.QName))
         	write(".objectAccessFormat()");
         startMapping(node, rightOperandNode);

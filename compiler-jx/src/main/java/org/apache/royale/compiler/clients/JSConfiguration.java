@@ -457,13 +457,128 @@ public class JSConfiguration extends Configuration
     }
 
     /**
-     * The class to use instead of Array for handling Vector.
+     * The class to use instead of default Vector implementation for handling Vector.
      */
     @Config(advanced = true)
     public void setJsVectorEmulationClass(ConfigurationValue cv, String b)
     {
     	jsVectorEmulationClass = b;
     }
-
-
+    
+    
+    //
+    // 'js-complex-implicit-coercions'
+    //
+    
+    private boolean jsComplexImplicitCoercions = true;
+    
+    public boolean getJsComplexImplicitCoercions()
+    {
+        return jsComplexImplicitCoercions;
+    }
+    
+    /**
+     * Support for including/avoiding more complex implicit assignment coercions
+     * example
+     * var array:Array = [new MyClass()];
+     * var myOtherClass:MyOtherClass = array[0];
+     *
+     * In the above example, the compiler will (by default) output an implicit coercion
+     * that is equivalent in actionscript to:
+     * var myOtherClass:MyOtherClass = MyOtherClass(array[0]);
+     *
+     * By setting this configuration option to false, the implicit coercion code in situations similar to the above
+     * is not generated (other primitive implicit coercions, such as int/uint/Number/String and Boolean coercions remain)
+     * This is a global setting for the current source code being compiled, it is possible to leave it on and specifically avoid it via doc
+     * settings. The doc comment compiler directive for that is: @royalesuppresscompleximplicitcoercion
+     * Another option is to add the explicit coercions in code and then avoid their output
+     * via specific @royaleignorecoercion doc comment directives. Doing so however may add extra unwanted output
+     * in other compiler targets (for example, swf bytecode) if the same source code is shared between targets.
+     */
+    @Config(advanced = true)
+    @Mapping("js-complex-implicit-coercions")
+    public void setJsComplexImplicitCoercions(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsComplexImplicitCoercions = value;
+    }
+    
+    //
+    // 'js-resolve-uncertain'
+    //
+    
+    private boolean jsResolveUncertain = true;
+    
+    public boolean getJsResolveUncertain()
+    {
+        return jsResolveUncertain;
+    }
+    
+    /**
+     * Support for avoiding more overhead of resolving instantiations from
+     * unknown constructors
+     * example
+     * var myClass:Class = String;
+     * var myString:* = new myClass("test");
+     *
+     * In the above example, the compiler will (by default) output
+     * a call to a Language.resolveUncertain method which wraps the 'new myClass("test")'
+     *
+     *
+     * This normalizes the return value for some primitive constructors, so that (for example)
+     * strict equality and inequality operators provide the same results between compiler
+     * targets.
+     * In situations where it is certain that the resolveUncertain method is not needed,
+     * this option provides a way to switch it off 'globally' for the current source code being compiled.
+     * It can also be switched off or on locally using the '@royalesuppressresolveuncertain'
+     * doc comment compiler directive.
+     */
+    @Config(advanced = true)
+    @Mapping("js-resolve-uncertain")
+    public void setJsResolveUncertain(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsResolveUncertain = value;
+    }
+    
+    //
+    // 'js-vector-index-checks'
+    //
+    
+    private boolean jsVectorIndexChecks = true;
+    
+    public boolean getJsVectorIndexChecks()
+    {
+        return jsVectorIndexChecks;
+    }
+    
+    /**
+     * Support for avoiding more overhead of adding checks into
+     * assignments via Vector index access
+     * example
+     * var myVector:Vector.<int> = new Vector.<int>();
+     * myVector[0] = 42;
+     *
+     * In the above example, the compiler will (by default) wrap
+     * the '0' inside myVector[0] with a method call on the vector instance
+     * that checks to see if the index is valid for the Vector it is being used against
+     *
+     * This check will throw an error if the index is out of range, and the
+     * range checking differs if the Vector is 'fixed' or non-'fixed'
+     *
+     * In situations where it is certain that the index will always be valid for Vector instance
+     * being targeted, or where all cases in a given codebase are certain to be valid, it is possible
+     * to avoid the overhead of this check. This is especially important in loops.
+     * This config setting affects the global setting for the current source code being compiled.
+     * It can be adjusted locally within code, using the '@royalesuppressvectorindexcheck'
+     * doc comment compiler  directive.
+     */
+    @Config(advanced = true)
+    @Mapping("js-vector-index-checks")
+    public void setJsVectorIndexChecks(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsVectorIndexChecks = value;
+    }
+    
 }

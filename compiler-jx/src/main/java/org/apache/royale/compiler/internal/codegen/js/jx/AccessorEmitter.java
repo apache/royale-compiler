@@ -105,7 +105,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (emitExports)
                     	writeNewline("  * @export");
                     if (p.type != null)
-                    	writeNewline("  * @type {"+JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+                    	writeNewline("  * @type {"+ JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
                     else
                     	writeNewline("  */");
                     write(getEmitter().formatQualifiedName(qname));
@@ -321,7 +321,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 if (emitExports)
                 	writeNewline("  * @export");
                 if (p.type != null)
-                	writeNewline("  * @type {"+JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+					writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
                 else
                 	writeNewline("  */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
@@ -483,7 +483,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (emitExports)
                     	writeNewline("  * @export");
                     if (p.type != null)
-                    	writeNewline("  * @type {"+JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+                    	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
                     else
                     	writeNewline("  */");
                     write(getEmitter().formatQualifiedName(qname));
@@ -602,7 +602,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 if (emitExports)
                 	writeNewline("  * @export");
                 if (p.type != null)
-                	writeNewline("  * @type {"+JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+                	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
                 else
                 	writeNewline("  */");
                 write(propName);

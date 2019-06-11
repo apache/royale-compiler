@@ -39,6 +39,7 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
 import org.apache.royale.compiler.css.ICSSRule;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -116,7 +117,7 @@ public class RoyaleJSProject extends RoyaleProject
         	if (defNode instanceof IClassNode || defNode instanceof IInterfaceNode)
         	{
 	        	String defname = def.getQualifiedName();
-		        IASDocComment asDoc = (defNode instanceof IClassNode) ? 
+		        IASDocComment asDoc = (defNode instanceof IClassNode) ?
 		        						(IASDocComment) ((IClassNode)defNode).getASDocComment() :
 		        						(IASDocComment) ((IInterfaceNode)defNode).getASDocComment();
 		        if (asDoc != null && (asDoc instanceof ASDocComment))
@@ -163,7 +164,7 @@ public class RoyaleJSProject extends RoyaleProject
         super.addDependency(from, to, dt, qname);
     }
     
-    private synchronized void updateRequiresMap(ICompilationUnit from, ICompilationUnit to, 
+    private synchronized void updateRequiresMap(ICompilationUnit from, ICompilationUnit to,
     																		DependencyType dt, String qname)
     {
         HashMap<String, DependencyType> reqs;
@@ -188,10 +189,10 @@ public class RoyaleJSProject extends RoyaleProject
             if (qname.equals("XML"))
                 needXML = true;
             reqs.put(qname, dt);
-        }    	
+        }
     }
 
-    private synchronized void updateJSModulesMap(ICompilationUnit from, ICompilationUnit to, 
+    private synchronized void updateJSModulesMap(ICompilationUnit from, ICompilationUnit to,
 			DependencyType dt, String qname)
     {
         HashMap<String, DependencyType> reqs;
@@ -219,7 +220,7 @@ public class RoyaleJSProject extends RoyaleProject
         }
     }
     
-    private synchronized void updateInterfacesMap(ICompilationUnit from, ICompilationUnit to, 
+    private synchronized void updateInterfacesMap(ICompilationUnit from, ICompilationUnit to,
 			DependencyType dt, String qname)
     {
         HashMap<String, String> interfacesArr;
@@ -530,6 +531,15 @@ public class RoyaleJSProject extends RoyaleProject
         }
         return false;
 	}
+    
+    @Override
+    public boolean isParameterCountMismatchAllowed(IFunctionDefinition func,
+                                                   int formalCount, int actualCount) {
+        if ((func.getBaseName().equals("int") || func.getBaseName().equals("uint")) && func.isConstructor()) {
+            if (actualCount == 1) return true;
+        }
+        return super.isParameterCountMismatchAllowed(func, formalCount, actualCount);
+    }
 	
     /**
      * List of compiler defines so it can be overridden
