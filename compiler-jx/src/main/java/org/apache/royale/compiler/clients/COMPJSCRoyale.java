@@ -427,7 +427,6 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        baos.writeTo(zipOutputStream);
                             zipOutputStream.flush();
                             zipOutputStream.closeEntry();
-<<<<<<< HEAD
                             fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + fileDate + "\"/>\n");
                             
                             // if the file is @externs DON'T create source map file
