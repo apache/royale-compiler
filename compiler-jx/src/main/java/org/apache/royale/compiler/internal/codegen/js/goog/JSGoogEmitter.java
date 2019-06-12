@@ -954,7 +954,15 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         else
         {
-            getWalker().walk(node);
+            if (definition instanceof IFunctionDefinition &&
+            		node.getNodeID() == ASTNodeID.NamespaceAccessExpressionID)
+            {
+            	// can't do normal walk.  Need to generate closure
+            	// so walk just the right operand
+            	getWalker().walk(node.getChild(1));
+            }
+            else
+            	getWalker().walk(node);
         }
     }
 

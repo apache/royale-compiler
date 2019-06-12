@@ -1144,6 +1144,26 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
     
     @Test
+    public void testCustomNamespaceMethodAsParameter()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; c(b); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b'));\n}");
+    }
+    
+    @Test
+    public void testCustomNamespaceMethodAsParameterWithoutUse()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; c(custom_namespace::b); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b'));\n}");
+    }
+    
+    @Test
     public void testCustomNamespaceMethodAsVariable()
     {
         IFunctionNode node = (IFunctionNode) getNode(
