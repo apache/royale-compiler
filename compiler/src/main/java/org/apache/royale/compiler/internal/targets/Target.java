@@ -378,10 +378,10 @@ public abstract class Target implements ITarget
             }
         });
         sortedSet.addAll(visitedSet);
-        System.out.println("visited set");
-        for (ICompilationUnit visited : sortedSet)
-        	System.out.println(visited.getName());
-        System.out.println("end visited set");
+//        System.out.println("visited set");
+//        for (ICompilationUnit visited : sortedSet)
+//        	System.out.println(visited.getName());
+//        System.out.println("end visited set");
         return sortedSet;
     }
     
