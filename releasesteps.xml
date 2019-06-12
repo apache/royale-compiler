@@ -319,8 +319,18 @@
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="swfutils" />
         </antcall>
+        <antcall target="sign-utils" />
     </target>
-    
+
+    <target name="sign-utils" depends="get-utils-version,check-for-utils" if="utils">
+        <antcall target="sign-utils-jar-artifacts" >
+            <param name="jarname" value="compiler-build-tools" />
+        </antcall>
+        <antcall target="sign-utils-jar-artifacts" >
+            <param name="jarname" value="compiler-jburg-types" />
+        </antcall>
+    </target>
+
     <target name="sign-jar-artifacts">
         <antcall target="sign-file" >
             <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
@@ -335,6 +345,22 @@
             <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
         </antcall>
     </target>
+    
+    <target name="sign-utils-jar-artifacts">
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}.pom" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}-javadoc.jar" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}-sources.jar" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}.jar" />
+        </antcall>
+    </target>
+    
     
     <target name="sign-file">
         <exec executable="gpg">
