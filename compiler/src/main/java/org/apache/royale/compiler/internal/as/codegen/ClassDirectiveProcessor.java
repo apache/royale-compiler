@@ -983,17 +983,17 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             // It is ok to omit the namespace
             // We must check the AST, as CM treats all ctors as public no matter what the user typed in
             // so the FunctionDefinition will always be in the public namespace
-            if (classScope.getProject().getAllowPrivateConstructors())
+            if( node.getActualNamespaceNode() != null )
             {
-                if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC
-                        && !func.isPrivate())
+                if (classScope.getProject().getAllowPrivateConstructors())
                 {
-                    problems.add(new ConstructorMustBePublicOrPrivateProblem(node.getActualNamespaceNode()));
+                    if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC
+                            && !func.isPrivate())
+                    {
+                        problems.add(new ConstructorMustBePublicOrPrivateProblem(node.getActualNamespaceNode()));
+                    }
                 }
-            }
-            else if( node.getActualNamespaceNode() != null )
-            {
-                if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC || func.isPrivate())
+                else if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC || func.isPrivate())
                 {
                     problems.add(new ConstructorMustBePublicProblem(node.getActualNamespaceNode()));
                 }
