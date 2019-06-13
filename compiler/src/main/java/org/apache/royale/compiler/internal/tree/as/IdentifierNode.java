@@ -315,7 +315,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     @Override
     public IDefinition resolve(ICompilerProject project)
     {
-    	if (idDef != null)
+    	if (DefinitionBase.getPerformanceCachingEnabled() && idDef != null)
     		return idDef;
     	
         ASScope asScope = getASScope();
