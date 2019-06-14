@@ -348,6 +348,7 @@ public class EmbedData implements IEmbedData
             }
             else if (EmbedAttribute.ADV_ANTI_ALIASING.equals(key) ||
                     EmbedAttribute.EMBED_AS_CFF.equals(key) ||
+                    EmbedAttribute.UNICODE_RANGE.equals(key) ||
                     EmbedAttribute.FONT_FAMILY.equals(key) ||
                     EmbedAttribute.FONT_NAME.equals(key) ||
                     EmbedAttribute.FONT_STYLE.equals(key) ||
