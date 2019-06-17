@@ -729,15 +729,34 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         	IDeprecationInfo dep = def.getDeprecationInfo();
             writeNewline("  \"deprecated\": {");
             indentPush();
-            write("  \"message\":  \"");
-            write(dep.getMessage());
-            writeNewline("\",");
-            write("  \"replacement\":  \"");
-            write(dep.getReplacement());
-            writeNewline("\",");
-            write("  \"since\":  \"");
-            write(dep.getSince());
-            writeNewline("\"}");
+            String comma = "";
+            String msg = dep.getMessage();
+            if (msg != null)
+            {
+	            write("  \"message\":  \"");
+	            write(msg);
+	            write("\"");
+	            comma = ",";
+            }
+            String replace = dep.getReplacement();
+            if (replace != null)
+            {
+            	writeNewline(comma);
+            	write("  \"replacement\":  \"");
+            	write(replace);
+	            write("\"");
+	            comma = ",";
+            }
+            String since = dep.getSince();
+            if (since != null)
+            {
+	            writeNewline("\",");
+	            write("  \"since\":  \"");
+	            write(since);
+	            write("\"");
+	            comma = ",";
+            }
+            writeNewline("}");
         }
         else
         {
