@@ -121,6 +121,9 @@ public class ASDocComment implements IASDocComment
             		tagMap = new HashMap<String, List<IASDocTag>>();
             	
             	int after = line.indexOf(" ", at + 1);
+            	int tabAfter = line.indexOf("\t", at + 1);
+            	if (tabAfter != -1 && after != -1 && tabAfter < after)
+            		after = tabAfter;
             	if (after == -1)
             	{
             		tagMap.put(line.substring(at + 1), null);
