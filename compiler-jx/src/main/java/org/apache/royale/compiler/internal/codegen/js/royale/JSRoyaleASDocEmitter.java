@@ -195,7 +195,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 	        }
 	        else if (pnode instanceof IClassNode)
 	        {
-	        	getWalker().walk(pnode);
+	        	//getWalker().walk(pnode); don't emit internal classes outside of a package
 	        }
 	        else if (pnode instanceof IInterfaceNode)
 	        {
@@ -233,6 +233,9 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     @Override
     public void emitClass(IClassNode node)
     {
+    	if (!node.getDefinition().isPublic())
+    		return;
+    	
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         writeNewline("{ \"type\": \"class\",");
         write("  \"qname\": \"");
