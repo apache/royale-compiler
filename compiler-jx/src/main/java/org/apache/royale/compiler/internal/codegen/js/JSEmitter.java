@@ -775,8 +775,14 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             {
                 JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
                 //check for local toggle
-                needsCoercion = royaleDocEmitter.getLocalSettingAsBoolean(
-                        JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION, needsCoercion);
+                if (needsCoercion) needsCoercion = !(royaleDocEmitter.getLocalSettingAsBoolean(
+                        JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION, false));
+                else {
+                    if (royaleDocEmitter.hasLocalSetting(JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION.getToken())) {
+                        needsCoercion = !(royaleDocEmitter.getLocalSettingAsBoolean(
+                                JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION, false));
+                    }
+                }
                 if (needsCoercion) {
                     //check for individual specified suppression
                     

@@ -351,9 +351,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
     }
     
-    /**
-     *
-     */
     private void loadLocalSettings(String doc, String settingToken, String defaultSetting)
     {
         if (localSettings == null) localSettings = new HashMap<String, List<String>>();
@@ -383,8 +380,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 settings.add(settingItem);
                 //System.out.println("---Adding setting "+settingToken+":"+settingItem);
             }
-
-            index = doc.indexOf(settingToken, index + endIndex);
+            index = doc.indexOf(settingToken, index +  settingToken.length());
         }
     }
     

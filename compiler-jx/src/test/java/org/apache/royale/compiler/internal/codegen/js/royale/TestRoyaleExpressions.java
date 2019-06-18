@@ -1552,6 +1552,71 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
     }
+    
+     @Test
+     public void testVisitAsMemberVariableSuppressComplexImplicitCoercionA()
+     {
+         IFunctionNode node = (IFunctionNode) getNode(
+                 "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
+                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+         asBlockWalker.visitFunction(node);
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+     }
+    
+     @Test
+     public void testVisitAsMemberVariableSuppressComplexImplicitCoercionB()
+     {
+         IFunctionNode node = (IFunctionNode) getNode(
+                 "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion true\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
+                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+         asBlockWalker.visitFunction(node);
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion true\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+     }
+    
+     @Test
+     public void testVisitAsMemberVariableSuppressComplexImplicitCoercionC()
+     {
+         IFunctionNode node = (IFunctionNode) getNode(
+                 "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion foo.bar.B\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
+                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+         asBlockWalker.visitFunction(node);
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion foo.bar.B\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+     }
+    
+    
+     @Test
+     public void testVisitAsMemberVariableSuppressComplexImplicitCoercionD()
+     {
+         //using config level setting to suppress the output by default
+         try{
+             project.config.setJsComplexImplicitCoercions(null,false);
+         } catch (ConfigurationException e) {
+             e.printStackTrace();
+         }
+         
+         IFunctionNode node = (IFunctionNode) getNode(
+                 "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
+                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+         asBlockWalker.visitFunction(node);
+         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+     }
+    
+     @Test
+     public void testVisitAsMemberVariableSuppressComplexImplicitCoercionE()
+     {
+         //using config level setting to suppress the output by default
+         try{
+             project.config.setJsComplexImplicitCoercions(null,false);
+         } catch (ConfigurationException e) {
+             e.printStackTrace();
+         }
+         //reverse the config level suppression (with 'false')
+         IFunctionNode node = (IFunctionNode) getNode(
+                 "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion false\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
+                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+         asBlockWalker.visitFunction(node);
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion false\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
+     }
 
     @Test
     public void testVisitJSDoc()
