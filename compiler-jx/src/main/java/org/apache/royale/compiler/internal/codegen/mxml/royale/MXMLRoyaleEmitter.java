@@ -1803,7 +1803,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	int n = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (instance.id != null)
+            if (instance.id != null || instance.hasLocalId)
             {
             	n++;
             }
