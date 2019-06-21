@@ -321,7 +321,12 @@ public class AccessorEmitter extends JSSubEmitter implements
                 if (emitExports)
                 	writeNewline("  * @export");
                 if (p.type != null)
-					writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
+                {
+                	String typeName = p.type.getBaseName();
+                	if (getModel().isInternalClass(typeName))
+    					typeName = getModel().getInternalClasses().get(typeName);
+					writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "} */");
+                }
                 else
                 	writeNewline("  */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;

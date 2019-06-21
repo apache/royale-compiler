@@ -283,6 +283,109 @@ public class TestRoyaleClass extends TestGoogClass
         assertOut(expected);
     }
 
+    @Test
+    public void testInnerClassReferencingInnerClass()
+    {
+    	FileNode node = (FileNode)getNode("package org.apache.royale {\npublic class B {public function B() {}; }} class A {public function get a():A {return null}}", FileNode.class, 0);
+        asBlockWalker.visitFile(node);
+        String expected = "/**\n * org.apache.royale.B\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.royale.B');\ngoog.provide('org.apache.royale.B.A');\n\n\n\n" +
+                          "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.B', org.apache.royale.B);" +
+                          "\n\n\n/**\n" + 
+                          " * Metadata\n" + 
+                          " *\n" + 
+                          " * @type {Object.<string, Array.<Object>>}\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'B', qName: 'org.apache.royale.B', kind: 'class' }] };\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "/**\n" + 
+                          " * Reflection\n" + 
+                          " *\n" + 
+                          " * @return {Object.<string, Function>}\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.prototype.ROYALE_REFLECTION_INFO = function () {\n" + 
+                          "  return {\n" + 
+                          "    variables: function () {return {};},\n" + 
+                          "    accessors: function () {return {};},\n" + 
+                          "    methods: function () {\n" + 
+                          "      return {\n" + 
+                          "        'B': { type: '', declaredBy: 'org.apache.royale.B'}\n" + 
+                          "      };\n" + 
+                          "    }\n" + 
+                          "  };\n" + 
+                          "};\n" + 
+                          "/**\n" + 
+                          " * @export\n" + 
+                          " * @const\n" + 
+                          " * @type {number}\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "/**\n" + 
+                          " * @constructor\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.A = function() {\n" + 
+                          "};\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "/**\n" + 
+                          " * Prevent renaming of class. Needed for reflection.\n" + 
+                          " */\n" + 
+                          "goog.exportSymbol('org.apache.royale.B.A', org.apache.royale.B.A);\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "org.apache.royale.B.A.prototype.get__a = function() {\n" + 
+                          "  return null;\n" + 
+                          "};\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "Object.defineProperties(org.apache.royale.B.A.prototype, /** @lends {org.apache.royale.B.A.prototype} */ {\n" + 
+                          "/**\n" + 
+                          "  * @export\n" + 
+                          "  * @type {org.apache.royale.B.A} */\n" + 
+                          "a: {\n" + 
+                          "get: org.apache.royale.B.A.prototype.get__a}}\n" + 
+                          ");\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "/**\n" + 
+                          " * Metadata\n" + 
+                          " *\n" + 
+                          " * @type {Object.<string, Array.<Object>>}\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'org.apache.royale.B.A', kind: 'class' }] };\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "\n" + 
+                          "/**\n" + 
+                          " * Reflection\n" + 
+                          " *\n" + 
+                          " * @return {Object.<string, Function>}\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" + 
+                          "  return {\n" + 
+                          "    variables: function () {return {};},\n" + 
+                          "    accessors: function () {\n" + 
+                          "      return {\n" + 
+                          "        'a': { type: 'org.apache.royale.B.A', access: 'readonly', declaredBy: 'org.apache.royale.B.A'}\n" + 
+                          "      };\n" + 
+                          "    },\n" + 
+                          "    methods: function () {return {};}\n" + 
+                          "  };\n" + 
+                          "};\n" + 
+                          "/**\n" + 
+                          " * @export\n" + 
+                          " * @const\n" + 
+                          " * @type {number}\n" + 
+                          " */\n" + 
+                          "org.apache.royale.B.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" + 
+                          "";
+        assertOutWithMetadata(expected);
+    }
+
     @Override
     @Test
     public void testExtendsConstructor_withArguments()
