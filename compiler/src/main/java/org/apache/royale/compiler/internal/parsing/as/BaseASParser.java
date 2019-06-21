@@ -1520,7 +1520,18 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                     (NamespaceIdentifierNode)left,
                     (ASToken)op,
                     (IdentifierNode)right);
-            result = (ExpressionNodeBase) evaluateConstNodeExpression(cn);
+            IASNode possibleResult = evaluateConstNodeExpression(cn);
+            //it's possible for evaluateConstNodeExpression() to return null
+            //if that happens, fall back to the same behavior as the final
+            //else to avoid a null reference exception -JT
+            if (possibleResult != null)
+            {
+                result = (ExpressionNodeBase) possibleResult;
+            }
+            else
+            {
+                result = new NamespaceAccessExpressionNode(left, op, right);
+            }
         }
         else
         {
