@@ -1252,6 +1252,8 @@ public class TestRoyalePackage extends TestGoogPackage
 	public void testPackageQualified_ClassAndInternalStaticConst()
 	{
 		IFileNode node = compileAS("package foo.bar {\n" +
+				//adding an unneeded import node here exposed a failing test at one point:
+				"import foo.bar.*\n" +
 				"public function A():Number {\n" +
 				"    return Internal.x;\n" +
 				"}}\n" +

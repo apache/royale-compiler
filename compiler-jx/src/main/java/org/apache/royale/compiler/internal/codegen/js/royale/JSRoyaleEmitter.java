@@ -72,7 +72,6 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.D
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
-import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
@@ -83,6 +82,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
+import org.apache.royale.compiler.problems.FilePrivateItemsWithMainVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -311,7 +311,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 			sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
 			boolean firstDependency = true;
 			for (String staticName : staticUsedNames)
-			{					
+			{
 				if (!firstDependency)
 					sb.append(",");
 				firstDependency = false;
@@ -458,7 +458,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             emitHoistedVariablesCodeBlock(node);
 
         setEmittingHoistedNodes(node, false);
-    }   
+    }
 
     protected void emitHoistedFunctionsCodeBlock(IFunctionNode node)
     {
@@ -627,7 +627,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
 		INamespaceDefinition nsDef = def.getNamespaceReference().resolveNamespaceReference(getWalker().getProject());
 		String uri = nsDef.getURI();
-		if (!def.getNamespaceReference().isLanguageNamespace() && !uri.equals(INamespaceConstants.AS3URI) && 
+		if (!def.getNamespaceReference().isLanguageNamespace() && !uri.equals(INamespaceConstants.AS3URI) &&
 						!nsDef.getBaseName().equals(ASEmitterTokens.PRIVATE.getToken()))
 			return true;
 		return false;
@@ -695,7 +695,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	else if (!isDoc)
     	{
         	if (getModel().inStaticInitializer)
-        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) 
+        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name)
         				&& !isExternal(name) && !getModel().getCurrentClass().getQualifiedName().equals(name)
         				&& (getModel().primaryDefinitionQName == null
         					|| !getModel().primaryDefinitionQName.equals(name)))
@@ -728,76 +728,89 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     //--------------------------------------------------------------------------
     // Package Level
     //--------------------------------------------------------------------------
-
+    
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
-    	IPackageNode packageNode = definition.getNode();
-    	IFileNode fileNode = (IFileNode) packageNode.getAncestorOfType(IFileNode.class);
+        IPackageNode packageNode = definition.getNode();
+        IFileNode fileNode = (IFileNode) packageNode.getAncestorOfType(IFileNode.class);
         int nodeCount = fileNode.getChildCount();
         String mainClassName = null;
+        Boolean mainClassNameisVar = false;
+        IASNode firstInternalContent = null;
         for (int i = 0; i < nodeCount; i++)
         {
-	        IASNode pnode = fileNode.getChild(i);
-
-	        if (pnode instanceof IPackageNode)
-	        {
-	        	IScopedNode snode = ((IPackageNode)pnode).getScopedNode();
-	            int snodeCount = snode.getChildCount();
-	            for (int j = 0; j < snodeCount; j++)
-	            {
-	    	        IASNode cnode = snode.getChild(j);
-	    	        if (cnode instanceof IClassNode)
-	    	        {
-	    	        	mainClassName = ((IClassNode)cnode).getQualifiedName();
-	    	        	break;
-	    	        }
-	    	        else if (j == 0)
-	    	        {
-	    	            if (cnode instanceof IFunctionNode)
-	    	            {
-	    	                mainClassName = ((IFunctionNode)cnode).getQualifiedName();
-	    	            }
-	    	            else if (cnode instanceof INamespaceNode)
-	    	            {
-	    	            	mainClassName = ((INamespaceNode)cnode).getQualifiedName();
-	    	            }
-	    	            else if (cnode instanceof IVariableNode)
-	    	            {
-	    	            	mainClassName = ((IVariableNode)cnode).getQualifiedName();
-	    	            }
-	    	        	
-	    	        }
-	            }
-	        }
-	        else if (pnode instanceof IClassNode)
-	        {
-	        	String className = ((IClassNode)pnode).getQualifiedName();
-	        	getModel().getInternalClasses().put(className, mainClassName + "." + className);
-	        }
-	        else if (pnode instanceof IInterfaceNode)
-	        {
-	        	String className = ((IInterfaceNode)pnode).getQualifiedName();
-	        	getModel().getInternalClasses().put(className, mainClassName + "." + className);
-	        }
+            IASNode pnode = fileNode.getChild(i);
+            
+            if (pnode instanceof IPackageNode)
+            {
+                IScopedNode snode = ((IPackageNode)pnode).getScopedNode();
+                int snodeCount = snode.getChildCount();
+                for (int j = 0; j < snodeCount; j++)
+                {
+                    //there can only be one externally visible definition of either class, namespace, variable or function
+                    //and package scope does not permit other class level access modifiers, otherwise a compiler error has already occurred.
+                    //So mainClassName is derived from the first instance of any of these.
+                    IASNode cnode = snode.getChild(j);
+                    if (cnode instanceof IClassNode)
+                    {
+                        mainClassName = ((IClassNode)cnode).getQualifiedName();
+                        break;
+                    }
+                    else if (cnode instanceof IFunctionNode)
+                    {
+                        mainClassName = ((IFunctionNode)cnode).getQualifiedName();
+                        break;
+                    }
+                    else if (cnode instanceof INamespaceNode)
+                    {
+                        mainClassName = ((INamespaceNode)cnode).getQualifiedName();
+                        break;
+                    }
+                    else if (cnode instanceof IVariableNode)
+                    {
+                        mainClassName = ((IVariableNode)cnode).getQualifiedName();
+                        mainClassNameisVar = true;
+                        break;
+                    }
+                }
+            }
+            else if (pnode instanceof IClassNode)
+            {
+                String className = ((IClassNode)pnode).getQualifiedName();
+                getModel().getInternalClasses().put(className, mainClassName + "." + className);
+                if (firstInternalContent == null) firstInternalContent = pnode;
+            }
+            else if (pnode instanceof IInterfaceNode)
+            {
+                String className = ((IInterfaceNode)pnode).getQualifiedName();
+                getModel().getInternalClasses().put(className, mainClassName + "." + className);
+                if (firstInternalContent == null) firstInternalContent = pnode;
+            }
             else if (pnode instanceof IFunctionNode)
             {
                 String className = ((IFunctionNode)pnode).getQualifiedName();
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
+                if (firstInternalContent == null) firstInternalContent = pnode;
             }
             else if (pnode instanceof INamespaceNode)
             {
                 String className = ((INamespaceNode)pnode).getQualifiedName();
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
+                if (firstInternalContent == null) firstInternalContent = pnode;
             }
             else if (pnode instanceof IVariableNode)
             {
                 String className = ((IVariableNode)pnode).getQualifiedName();
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
+                if (firstInternalContent == null) firstInternalContent = pnode;
             }
         }
-
+        if (mainClassNameisVar && firstInternalContent != null) {
+            getProblems().add(new FilePrivateItemsWithMainVarWarningProblem(firstInternalContent));
+        }
         packageHeaderEmitter.emit(definition);
+        
     }
 
     @Override
@@ -1247,10 +1260,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
         			write("node.");
             	write("attribute(");
-        		getWalker().walk(parentNode.getRightOperandNode());        		
+        		getWalker().walk(parentNode.getRightOperandNode());
             	write(")");
         	}
-        		
+        	
         	return;
         }
 
