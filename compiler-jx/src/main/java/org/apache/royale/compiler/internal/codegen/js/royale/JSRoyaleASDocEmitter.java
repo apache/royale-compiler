@@ -623,7 +623,11 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     	List<String> tagList = project.tags;
     	asDoc.compile();
         write("  \"description\": \"");
-    	write(asDoc.getDescription());
+        String d = asDoc.getDescription();
+		d = d.replace("\t", " ");
+		d = d.replace("\"", "&quot;");
+		d = d.replace("\\", "\\\\");
+    	write(d);
 		write("\"");
     	Map<String, List<IASDocTag>> tags = asDoc.getTags();
     	if (tags != null)
@@ -657,7 +661,11 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     					if (!firstOne) write(", ");
     					firstOne = false;
     					write("\"");
-    					write(value.getDescription().trim());
+    					d = value.getDescription().trim();
+    					d = d.replace("\t", " ");
+    					d = d.replace("\"", "&quot;");
+    					d = d.replace("\\", "\\\\");
+    					write(d);
     					write("\"");
     				}
     			}
@@ -728,7 +736,6 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     	writeNewline(",");
         if (def.isDeprecated())
         {
-        	writeNewline(",");
         	IDeprecationInfo dep = def.getDeprecationInfo();
             writeNewline("  \"deprecated\": {");
             indentPush();
