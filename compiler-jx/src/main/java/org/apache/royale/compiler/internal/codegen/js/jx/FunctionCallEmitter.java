@@ -515,6 +515,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         getEmitter().emitArguments(node.getArgumentsNode());
                     	return;
                     }
+                    else if (def.getBaseName().equals(IASLanguageConstants.XMLList))
+                    {
+                        write("XMLList.conversion");
+                        getEmitter().emitArguments(node.getArgumentsNode());
+                        return;
+                    }
                     else if (def.getQualifiedName().equals(IASLanguageConstants.Object)) {
                         //'resolveUncertain' always output here
                         //unless a) there are no arguments

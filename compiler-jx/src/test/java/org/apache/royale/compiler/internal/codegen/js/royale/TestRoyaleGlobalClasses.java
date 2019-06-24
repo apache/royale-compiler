@@ -1346,7 +1346,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IForLoopNode node = getForLoopNode("var a:*;for each (var p:XML in XMLList(a)) var i:int = p.length();");
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = XMLList(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = (p.length()) >> 0;}\n");
+        assertOut("var foreachiter0_target = XMLList.conversion(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = (p.length()) >> 0;}\n");
     }
     
     @Test
