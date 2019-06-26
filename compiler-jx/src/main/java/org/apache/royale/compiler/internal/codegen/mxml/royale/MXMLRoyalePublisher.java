@@ -187,11 +187,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // The source directory is the source path entry containing the Main class.
         List<File> sourcePaths = project.getSourcePath();
         String targetFile = configuration.getTargetFile().toLowerCase();
-    	System.out.println("find project folder for " + targetFile);
+    	if (googConfiguration.isVerbose())
+        {
+            System.out.println("find project folder for " + targetFile);
+        }
         File imageSrcDir = null;
         for (File sp : sourcePaths)
         {
-        	System.out.println("checking source path " + sp.getAbsolutePath());
+        	if (googConfiguration.isVerbose())
+            {
+                System.out.println("checking source path " + sp.getAbsolutePath());
+            }
         	String lowercasePath = sp.getAbsolutePath().toLowerCase();
         	if (targetFile.startsWith(lowercasePath))
         		imageSrcDir = sp;
@@ -199,7 +205,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         if (imageSrcDir == null)
         {
         	imageSrcDir = new File(configuration.getTargetFile()).getAbsoluteFile().getParentFile();
-        	System.out.println("not found on source path, using parent file " + imageSrcDir.getAbsolutePath());
+        	if (googConfiguration.isVerbose())
+            {
+                System.out.println("not found on source path, using parent file " + imageSrcDir.getAbsolutePath());
+            }
         }
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
         String qName = null;
@@ -395,7 +404,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                         String code = IOUtils.toString(is, "UTF-8");
                         is.close();
                         JarSourceFile externFile = new JarSourceFile(key, code,true);
-                        System.out.println("using extern: " + key);
+                        if (googConfiguration.isVerbose())
+                        {
+                            System.out.println("using extern: " + key);
+                        }
                         compilerWrapper.addJSExternsFile(externFile);
 
                         // Write the extern into the filesystem.
@@ -432,11 +444,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         	return false; // some error occurred
         for (String file : fileList) {
             compilerWrapper.addJSSourceFile(file);
-            System.out.println("using source file: " + file);            
+            if (googConfiguration.isVerbose())
+            {            
+                System.out.println("using source file: " + file);
+            }
         }
         for (String file : sourceExternFiles) {
         	compilerWrapper.addJSExternsFile(file);
-            System.out.println("using extern file: " + file);            
+            if (googConfiguration.isVerbose())
+            {
+                System.out.println("using extern file: " + file);
+            }
         }
 
 
@@ -502,6 +520,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
             compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
+            compilerWrapper.setVerbose(googConfiguration.isVerbose());
 
             ok = compilerWrapper.compile();
 
@@ -527,7 +546,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     		if ((sourceFile.getOriginalPath().endsWith("goog/deps.js") || sourceFile.getOriginalPath().endsWith("goog\\deps.js")) &&
         		!(sourceFile.getOriginalPath().endsWith("third_party/goog/deps.js") || sourceFile.getOriginalPath().endsWith("third_party\\goog\\deps.js")))
     			depsFile = sourceFile;
-    		System.out.println("originalPath: " + sourceFile.getOriginalPath());
+            if (googConfiguration.isVerbose())
+            {
+                System.out.println("originalPath: " + sourceFile.getOriginalPath());
+            }
     		fileMap.put(sourceFile.getOriginalPath(), sourceFile);
     	}
     	
@@ -564,7 +586,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         for (int i = n - 1; i >= 0; i--)
         {
         	String fileName = sortedFiles.get(i);
-        	System.out.println("sorted filename: " + fileName);
+        	if (googConfiguration.isVerbose())
+            {
+                System.out.println("sorted filename: " + fileName);
+            }
         	if (seen.contains(fileName)) 
         		continue;
         	seen.add(fileName);

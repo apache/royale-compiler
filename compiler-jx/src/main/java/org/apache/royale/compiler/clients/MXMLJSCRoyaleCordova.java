@@ -344,7 +344,10 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	

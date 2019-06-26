@@ -188,9 +188,9 @@ public class COMPJSC extends MXMLJSC
 
             if (continueCompilation)
             {
-            	List<String> targets = config.getCompilerTargets();
-            	for (String target : targets)
-            		System.out.println("target:" + target);
+                List<String> targets = config.getCompilerTargets();
+                for (String target : targets)
+                    System.out.println("target:" + target);
             	targetloop:
             	for (String target : config.getCompilerTargets())
             	{
@@ -198,7 +198,7 @@ public class COMPJSC extends MXMLJSC
             		switch (JSTargetType.fromString(target))
 	                {
 	                case SWF:
-	                	System.out.println("COMPC");
+                        System.out.println("COMPC");
 	                    COMPC compc = new COMPC();
 	                    mxmlc = compc;
 	                    compc.configurationClass = JSGoogCompcConfiguration.class;
@@ -210,7 +210,7 @@ public class COMPJSC extends MXMLJSC
 	                    }
 	                    break;
 	                case JS_ROYALE:
-	                	System.out.println("COMPCJSCRoyale");
+                        System.out.println("COMPCJSCRoyale");
 	                	COMPJSCRoyale royale = new COMPJSCRoyale();
 	                	lastCompiler = royale;
 	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
@@ -344,7 +344,10 @@ public class COMPJSC extends MXMLJSC
                         if (!entry.getName().contains("js/out") &&
                         	!entry.getName().contains(SWCReader.CATALOG_XML))
                         {
-                            System.out.println("Copy " + entry.getName());
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Copy " + entry.getName());
+                            }
                         	InputStream input = zipFile.getInputStream(entry);
                         	ZipEntry ze = new ZipEntry(entry.getName());
                         	ze.setMethod(ZipEntry.STORED);
@@ -405,7 +408,10 @@ public class COMPJSC extends MXMLJSC
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -447,7 +453,10 @@ public class COMPJSC extends MXMLJSC
                     	}
                     	else
                     	{
-	                        System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+                            }
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -481,7 +490,10 @@ public class COMPJSC extends MXMLJSC
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
                     		outputClassFile = outputClassFile.replace('\\', '/');
-	                        System.out.println("Writing file: " + outputClassFile);     	
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + outputClassFile);     	
+                            }
 	                        long fileDate = System.currentTimeMillis();
 	                        long zipFileDate = fileDate;
 	                    	String metadataDate = targetSettings.getSWFMetadataDate();
@@ -538,7 +550,10 @@ public class COMPJSC extends MXMLJSC
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                System.out.println("Writing file: " + sourceMapFile);
+                                if (config.isVerbose())
+                                {
+                                    System.out.println("Writing file: " + sourceMapFile);
+                                }
                                 ze = new ZipEntry(sourceMapFile);
     	                    	ze.setTime(zipFileDate);
     	                    	ze.setMethod(ZipEntry.STORED);

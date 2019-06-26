@@ -70,11 +70,15 @@ public class GoogDepsWriter {
 		removeCirculars = config.getRemoveCirculars();
 		sourceMaps = config.getSourceMap();
 		otherPaths = config.getSDKJSLib();
+		verbose = config.isVerbose();
 		otherPaths.add(new File(outputFolder.getParent(), "royale/Royale/src").getPath());
 		this.swcs = swcs;
-		for (ISWC swc : swcs)
+		if (verbose)
 		{
-			System.out.println("using SWC: " + swc.getSWCFile().getAbsolutePath());
+			for (ISWC swc : swcs)
+			{
+				System.out.println("using SWC: " + swc.getSWCFile().getAbsolutePath());
+			}
 		}
 	}
 	
@@ -86,6 +90,7 @@ public class GoogDepsWriter {
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
 	private boolean sourceMaps = false;
+	private boolean verbose = false;
 	private ArrayList<GoogDep> dps;
 	private DependencyGraph graph;
 	private CompilerProject project;
@@ -336,7 +341,10 @@ public class GoogDepsWriter {
 							&& !dep.equals(staticOwner))
 					{
 						ownerInfo.fileInfo.staticDeps.add(dep);
-						System.out.println(staticClass + " used in static initializer of " + staticOwner + " so make " + dep + " a static dependency");
+						if (verbose)
+						{
+							System.out.println(staticClass + " used in static initializer of " + staticOwner + " so make " + dep + " a static dependency");
+						}
 						// all things added here should get added to graph in sortFunction
 					}
 				}
@@ -416,7 +424,10 @@ public class GoogDepsWriter {
 		
 		if (removeCirculars)
 			removeRequires(current);
-        System.out.println("Dependencies calculated for '" + current.className + "'");
+		if (verbose)
+		{
+			System.out.println("Dependencies calculated for '" + current.className + "'");
+		}
 
 		ICompilationUnit unit = null;
 		
@@ -454,7 +465,10 @@ public class GoogDepsWriter {
 								requireMap.put(className, base);
 								requireMap2.put(base, className);
 							}
-							System.out.println(current.className + " depends on " + className);
+							if (verbose)
+							{
+								System.out.println(current.className + " depends on " + className);
+							}
 							graph.addDependency(unit, base, DependencyType.INHERITANCE);
 						}
 						if (!visited.containsKey(className))
@@ -479,7 +493,10 @@ public class GoogDepsWriter {
 						requireMap.put(staticDep, base);
 						requireMap2.put(base, staticDep);
 					}
-					System.out.println(current.className + " static initialization depends on " + staticDep);
+					if (verbose)
+					{
+						System.out.println(current.className + " static initialization depends on " + staticDep);
+					}
 					graph.addDependency(unit, base, DependencyType.INHERITANCE);
 				}
 			}
@@ -706,7 +723,10 @@ public class GoogDepsWriter {
                         	// don't remove the require if some class needs it at static initialization
                         	// time
 //                        	suppressCount++;
-                        	System.out.println(gd.filePath + " removing require: " + s);
+							if (verbose)
+							{
+								System.out.println(gd.filePath + " removing require: " + s);
+							}
                     		if (!firstDependency)
                     			sb.append(",");
                     		sb.append(s);
@@ -738,7 +758,10 @@ public class GoogDepsWriter {
             			line += "('" + dep + "');";
             			finalLines.add(lastRequireLine++, line);
 						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, new File(gd.filePath).getName(), lastRequireLine);
-            			System.out.println("adding require for static dependency " + dep + " to " + className);
+            			if (verbose)
+						{
+							System.out.println("adding require for static dependency " + dep + " to " + className);
+						}
             		}
             	}
             }
@@ -1260,7 +1283,10 @@ public class GoogDepsWriter {
 									        File.separator + assetFileName);
 							        FileUtils.copyFile(assetFile, destFile);
 
-							        System.out.println("Copied assets of the '" + nameOfClass + "' class");
+							        if (verbose)
+									{
+										System.out.println("Copied assets of the '" + nameOfClass + "' class");
+									}
 						        }
 					        }
     				    }
@@ -1339,7 +1365,10 @@ public class GoogDepsWriter {
     		    				inStream.close();
     		    				outStream.flush();
     		    				outStream.close();
-						        System.out.println("Copied asset " + assetName);
+						        if (verbose)
+								{
+									System.out.println("Copied asset " + assetName);
+								}
     						}
     					}
     				}

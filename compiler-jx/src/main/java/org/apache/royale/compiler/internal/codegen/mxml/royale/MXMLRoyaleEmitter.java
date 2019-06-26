@@ -183,8 +183,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         {
         	asEmitterUsedNames.remove(usedName);
         }
-        System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
-        System.out.println(currentClassName + " mxml: " + usedNames.toString());
+        RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
+        if (fjp.config == null || fjp.config.isVerbose())
+        {
+            System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
+            System.out.println(currentClassName + " mxml: " + usedNames.toString());
+        }
         usedNames.addAll(asEmitterUsedNames);
 
         boolean foundXML = false;

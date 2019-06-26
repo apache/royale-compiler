@@ -90,6 +90,7 @@ public class JSClosureCompilerWrapper
     private String propertyMapInputPath;
     private boolean skipTypeInference;
     private boolean sourceMap = false;
+    private boolean verbose = false;
     
     public String targetFilePath;
     
@@ -117,13 +118,21 @@ public class JSClosureCompilerWrapper
     {
         sourceMap = enabled;
     }
+
+    public void setVerbose(boolean enabled)
+    {
+        verbose = enabled;
+    }
     
     public boolean compile()
     {
-    	System.out.println("list of source files");
-    	for (SourceFile file : jsSourceFiles_)
-    		System.out.println(file.getName());
-    	System.out.println("end of list of source files");
+        if (verbose)
+        {
+            System.out.println("list of source files");
+            for (SourceFile file : jsSourceFiles_)
+                System.out.println(file.getName());
+            System.out.println("end of list of source files");
+        }
     	File outputFolder = new File(targetFilePath).getParentFile();
         if (variableMapInputPath != null)
         {

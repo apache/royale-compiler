@@ -207,7 +207,10 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                         if (!entry.getName().contains("js/out") &&
                         	!entry.getName().contains(SWCReader.CATALOG_XML))
                         {
-                            System.out.println("Copy " + entry.getName());
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Copy " + entry.getName());
+                            }
                         	InputStream input = zipFile.getInputStream(entry);
                         	ZipEntry ze = new ZipEntry(entry.getName());
                         	ze.setMethod(ZipEntry.STORED);
@@ -300,7 +303,10 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -341,7 +347,10 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                     	}
                     	else
                     	{
-	                        System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+                            }
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -377,7 +386,10 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
                     		outputClassFile = outputClassFile.replace('\\', '/');
-	                        System.out.println("Writing file: " + outputClassFile);     	
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + outputClassFile);     	
+                            }
 	                        long fileDate = System.currentTimeMillis();
 	                        long zipFileDate = fileDate;
 	                    	String metadataDate = targetSettings.getSWFMetadataDate();
@@ -441,7 +453,10 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                                                                   cu.getQualifiedNames().get(0),
                                                                                   isExterns ? externsOut : jsOut,
                                                                                   false).getPath();
-                                    System.out.println("Writing file: " + sourceMapFile);
+                                    if (config.isVerbose())
+                                    {
+                                        System.out.println("Writing file: " + sourceMapFile);
+                                    }
                                     ze = new ZipEntry(sourceMapFile);
                                     ze.setTime(zipFileDate);
                                     ze.setMethod(ZipEntry.STORED);

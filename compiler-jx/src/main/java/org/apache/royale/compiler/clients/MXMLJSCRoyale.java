@@ -378,8 +378,11 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                    {
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-	                        System.out.println("Compiling file: " + outputClassFile);
+    
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -458,8 +461,11 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     private void generateExternsReport(File externsReportFile,
 			List<ICompilationUnit> reachableCompilationUnits,
 			ProblemQuery problems) {
-    	
-        System.out.println("Generating externs report: " + externsReportFile.getAbsolutePath());
+        
+        if (config.isVerbose())
+        {
+            System.out.println("Generating externs report: " + externsReportFile.getAbsolutePath());
+        }
         
     	ArrayList<String> packageNames = new ArrayList<String>();
     	ArrayList<String> partNames = new ArrayList<String>();
@@ -652,8 +658,11 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             	sb.append(" */\n");
                 sb.append(cdef.getQualifiedName() + " = function() {}\n");
             }
-    	}
-        System.out.println("Writing externs report: " + externsReportFile.getAbsolutePath());
+        }
+        if (config.isVerbose())
+        {
+            System.out.println("Writing externs report: " + externsReportFile.getAbsolutePath());
+        }
         FileWriter fw;
 		try {
 			fw = new FileWriter(externsReportFile, false);
@@ -783,8 +792,11 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 			e.printStackTrace();
 		}
 		final File outputClassFile = getOutputClassFile(
-				bundleClassName, outputFolder);
-		System.out.println("Generating resource file: " + outputClassFile);
+                bundleClassName, outputFolder);
+        if (config.isVerbose())
+        {
+            System.out.println("Generating resource file: " + outputClassFile);
+        }
 		FileWriter fw;
 		try {
 			fw = new FileWriter(outputClassFile, false);

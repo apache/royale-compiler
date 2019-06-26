@@ -843,10 +843,13 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 
     public void outputIndex(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	final File indexFile = new File(outputFolder, "index" + getMiddle(project) + ".json");
-	BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
-	out.write("{  \"index\": [");
-	System.out.println("Compiling file: " + indexFile);
+		final File indexFile = new File(outputFolder, "index" + getMiddle(project) + ".json");
+		BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
+		out.write("{  \"index\": [");
+		if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + indexFile);
+		}
     	Set<String> keys = project.index.keySet();
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
@@ -1034,10 +1037,13 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 
     public void outputClasses(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	final File indexFile = new File(outputFolder, "classes" + getMiddle(project) + ".json");
-	BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
+		final File indexFile = new File(outputFolder, "classes" + getMiddle(project) + ".json");
+		BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
         out.write("{  \"classes\": [");
-	System.out.println("Compiling file: " + indexFile);
+		if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + indexFile);
+		}
     	Set<String> keys = project.classes.keySet();
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
@@ -1097,7 +1103,10 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 	    final File listFile = new File(outputFolder, "classlist" + getMiddle(project) + ".json");
 	    out = new BufferedWriter(new FileWriter(listFile));
 		out.write("{  \"classnames\": [");
-	    System.out.println("Compiling file: " + listFile);
+	    if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + listFile);
+		}
     	firstLine = true;
     	
     	for (String key : keyList)
@@ -1128,7 +1137,10 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
 			final File commentaryFile = new File(outputFolder, "commentary" + getMiddle(project) + ".json");
 			BufferedWriter commentaryWriter = new BufferedWriter(new FileWriter(commentaryFile));
 			commentaryWriter.write("{ \"list\": [");
-			System.out.println("Building commentary comparison file: "+commentaryFile);
+			if (project.config.isVerbose())
+			{
+				System.out.println("Building commentary comparison file: "+commentaryFile);
+			}
 			
 			firstLine = true;
 			int index = 0;
@@ -1159,10 +1171,13 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     
     public void outputTags(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	final File indexFile = new File(outputFolder, "tags" + getMiddle(project) + ".json");
-	BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
-	out.write("{  \"tags\": [");
-	System.out.println("Compiling file: " + indexFile);
+		final File indexFile = new File(outputFolder, "tags" + getMiddle(project) + ".json");
+		BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
+		out.write("{  \"tags\": [");
+		if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + indexFile);
+		}
     	Collections.sort(project.tags);
     	boolean firstLine = true;
     	for (String tag : project.tags)

@@ -203,7 +203,10 @@ public class COMPJSCNative extends MXMLJSCNative
                         if (!entry.getName().contains("js/out") &&
                         	!entry.getName().contains(SWCReader.CATALOG_XML))
                         {
-                            System.out.println("Copy " + entry.getName());
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Copy " + entry.getName());
+                            }
                         	InputStream input = zipFile.getInputStream(entry);
                         	zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
                         	IOUtils.copy(input, zipOutputStream);
@@ -258,7 +261,10 @@ public class COMPJSCNative extends MXMLJSCNative
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -300,7 +306,10 @@ public class COMPJSCNative extends MXMLJSCNative
                     	}
                     	else
                     	{
-	                        System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+                            }
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -334,7 +343,10 @@ public class COMPJSCNative extends MXMLJSCNative
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-	                        System.out.println("Writing file: " + outputClassFile);     	
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + outputClassFile);     	
+                            }
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
 	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
@@ -346,7 +358,10 @@ public class COMPJSCNative extends MXMLJSCNative
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                System.out.println("Writing file: " + sourceMapFile);     	
+                                if (config.isVerbose())
+                                {
+                                    System.out.println("Writing file: " + sourceMapFile);
+                                }
                                 zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
                                 sourceMapTemp.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
