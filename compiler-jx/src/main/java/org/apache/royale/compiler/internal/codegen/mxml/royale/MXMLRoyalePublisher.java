@@ -367,18 +367,24 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // Prepare the closure compilation.
         /////////////////////////////////////////////////////////////////////////////////
 
-        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
-
-
-        /////////////////////////////////////////////////////////////////////////////////
-        // Add all the closure lib files to the compilation unit.
-        /////////////////////////////////////////////////////////////////////////////////
-
-        for (SourceFile closureSourceFile : closureSourceFiles) {
-            compilerWrapper.addJSSourceFile(closureSourceFile);
+        JSClosureCompilerWrapper compilerWrapper = null;
+        if (configuration.release())
+        {
+            compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
         }
 
-        writeExportedNames(compilerWrapper);
+        if (compilerWrapper != null)
+        {
+            /////////////////////////////////////////////////////////////////////////////////
+            // Add all the closure lib files to the compilation unit.
+            /////////////////////////////////////////////////////////////////////////////////
+
+            for (SourceFile closureSourceFile : closureSourceFiles) {
+                compilerWrapper.addJSSourceFile(closureSourceFile);
+            }
+
+            writeExportedNames(compilerWrapper);
+        }
 
         /////////////////////////////////////////////////////////////////////////////////
         // Add all the externs to the compilation
@@ -390,29 +396,32 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         List<ISWC> allswcs = new ArrayList<ISWC>();
         allswcs.addAll(swcs);
         allswcs.addAll(themeSWCs);
-        for (ISWC swc : allswcs)
+        if (compilerWrapper != null)
         {
-            Map<String, ISWCFileEntry> files = swc.getFiles();
-            for (String key : files.keySet())
+            for (ISWC swc : allswcs)
             {
-                if (key.startsWith(ROYALE_EXTERNS))
+                Map<String, ISWCFileEntry> files = swc.getFiles();
+                for (String key : files.keySet())
                 {
-                    ISWCFileEntry fileEntry = swc.getFile(key);
-                    if (fileEntry != null)
+                    if (key.startsWith(ROYALE_EXTERNS))
                     {
-                        InputStream is = fileEntry.createInputStream();
-                        String code = IOUtils.toString(is, "UTF-8");
-                        is.close();
-                        JarSourceFile externFile = new JarSourceFile(key, code,true);
-                        if (googConfiguration.isVerbose())
+                        ISWCFileEntry fileEntry = swc.getFile(key);
+                        if (fileEntry != null)
                         {
-                            System.out.println("using extern: " + key);
-                        }
-                        compilerWrapper.addJSExternsFile(externFile);
+                            InputStream is = fileEntry.createInputStream();
+                            String code = IOUtils.toString(is, "UTF-8");
+                            is.close();
+                            JarSourceFile externFile = new JarSourceFile(key, code,true);
+                            if (googConfiguration.isVerbose())
+                            {
+                                System.out.println("using extern: " + key);
+                            }
+                            compilerWrapper.addJSExternsFile(externFile);
 
-                        // Write the extern into the filesystem.
-                        // FIXME: I don't know why we need to do this.
-                        //FileUtils.write(new File(intermediateDir, key), externFile.getCode());
+                            // Write the extern into the filesystem.
+                            // FIXME: I don't know why we need to do this.
+                            //FileUtils.write(new File(intermediateDir, key), externFile.getCode());
+                        }
                     }
                 }
             }
@@ -429,31 +438,35 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // js files of used dependencies.
         ArrayList<String> sourceExternFiles = new ArrayList<String>();
         ArrayList<String> fileList = gdw.getListOfFiles(project, sourceExternFiles, problems);
-        for (String sourceExtern : project.sourceExterns)
-        {
-        	String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
-        	File sourceExternFile = new File(intermediateDir, sourceExternFileName);
-        	if (sourceExternFile.exists())
-        	{
-        		String sourceExternPath = sourceExternFile.getAbsolutePath();
-        		if (!sourceExternFiles.contains(sourceExternPath))
-        			sourceExternFiles.add(sourceExternPath);
-        	}
-        }
         if (fileList == null)
-        	return false; // some error occurred
-        for (String file : fileList) {
-            compilerWrapper.addJSSourceFile(file);
-            if (googConfiguration.isVerbose())
-            {            
-                System.out.println("using source file: " + file);
-            }
-        }
-        for (String file : sourceExternFiles) {
-        	compilerWrapper.addJSExternsFile(file);
-            if (googConfiguration.isVerbose())
+            return false; // some error occurred
+        
+        if (compilerWrapper != null)
+        {
+            for (String sourceExtern : project.sourceExterns)
             {
-                System.out.println("using extern file: " + file);
+                String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
+                File sourceExternFile = new File(intermediateDir, sourceExternFileName);
+                if (sourceExternFile.exists())
+                {
+                    String sourceExternPath = sourceExternFile.getAbsolutePath();
+                    if (!sourceExternFiles.contains(sourceExternPath))
+                        sourceExternFiles.add(sourceExternPath);
+                }
+            }
+            for (String file : fileList) {
+                compilerWrapper.addJSSourceFile(file);
+                if (googConfiguration.isVerbose())
+                {            
+                    System.out.println("using source file: " + file);
+                }
+            }
+            for (String file : sourceExternFiles) {
+                compilerWrapper.addJSExternsFile(file);
+                if (googConfiguration.isVerbose())
+                {
+                    System.out.println("using extern file: " + file);
+                }
             }
         }
 
@@ -514,7 +527,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // If we are doing a release build, let the closure compiler do it's job.
         /////////////////////////////////////////////////////////////////////////////////
 
-        if (configuration.release()) {
+        if (compilerWrapper != null) {
             boolean ok = true;
             final File projectReleaseMainFile = new File(releaseDir, outputFileName);
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
