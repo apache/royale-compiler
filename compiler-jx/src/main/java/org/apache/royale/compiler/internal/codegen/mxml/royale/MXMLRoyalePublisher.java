@@ -619,23 +619,23 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     	for (String dep : deps)
     	{
     		int open = dep.indexOf("[");
-    		int close = dep.indexOf("]");
+    		int close = dep.indexOf("]", open + 1);
 			String list = dep.substring(open + 1, close);
 			String[] parts = list.split(",");
-			ArrayList<String> provideds = new ArrayList<String>();
 			for (String part : parts)
 			{
 				part = part.trim();
-				if (part.startsWith("'"))
-					part = part.substring(1, part.length() - 1);
-				provideds.add(part);    				
+                if (part.startsWith("'"))
+                {
+                    part = part.substring(1, part.length() - 1);
+                }
+                if(part.equals(name))
+                {
+                    open = dep.indexOf("'");
+                    close = dep.indexOf("'", open + 1);
+                    return dep.substring(open + 1, close);    
+                }
 			}
-    		if (provideds.contains(name))
-    		{
-    			open = dep.indexOf("'");
-    			close = dep.indexOf("'", open + 1);
-    			return dep.substring(open + 1, close);    			
-    		}
     	}
     	return null;
     }
@@ -645,35 +645,40 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     	for (String dep : deps)
     	{
     		int open = dep.indexOf("[");
-    		int close = dep.indexOf("]");
+    		int close = dep.indexOf("]", open + 1);
 			String list = dep.substring(open + 1, close);
 			String[] parts = list.split(",");
-			ArrayList<String> provideds = new ArrayList<String>();
 			for (String part : parts)
 			{
 				part = part.trim();
-				if (part.startsWith("'"))
-					part = part.substring(1, part.length() - 1);
-				provideds.add(part);    				
+                if (part.startsWith("'"))
+                {
+                    part = part.substring(1, part.length() - 1);
+                }
+                
+                if(part.equals(name))
+                {
+                    open = dep.indexOf("[", close + 1);
+                    close = dep.indexOf("]", open + 1);
+                    if (open + 1 == close)
+                    {
+                        return null;
+                    }
+                    String list2 = dep.substring(open + 1, close);
+                    String[] parts2 = list2.split(",");
+                    ArrayList<String> reqs = new ArrayList<String>();
+                    for (String part2 : parts2)
+                    {
+                        part2 = part2.trim();
+                        if (part2.startsWith("'"))
+                        {
+                            part2 = part2.substring(1, part2.length() - 1);
+                        }
+                        reqs.add(part2);    				
+                    }
+                    return reqs;
+                }				
 			}
-    		if (provideds.contains(name))
-    		{
-    			open = dep.indexOf("[", close + 1);
-    			close = dep.indexOf("]", open + 1);
-    			if (open + 1 == close)
-    				return null;
-    			String list2 = dep.substring(open + 1, close);
-    			String[] parts2 = list2.split(",");
-    			ArrayList<String> reqs = new ArrayList<String>();
-    			for (String part : parts2)
-    			{
-    				part = part.trim();
-    				if (part.startsWith("'"))
-    					part = part.substring(1, part.length() - 1);
-    				reqs.add(part);    				
-    			}
-    			return reqs;
-    		}
     	}
     	return null;
     }    
