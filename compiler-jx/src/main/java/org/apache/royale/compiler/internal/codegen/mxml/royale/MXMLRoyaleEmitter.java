@@ -206,14 +206,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             String line = lines[i];
     		if (stillSearching)
     		{
-                int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-                if (c != -1)
+                if (provideIndex == -1 || !sawRequires)
                 {
-                    // if zero requires are found, require Language after the
-                    // call to goog.provide
-                    provideIndex = i + 1;
+                    int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+                    if (c != -1)
+                    {
+                        // if zero requires are found, require Language after the
+                        // call to goog.provide
+                        provideIndex = i + 1;
+                    }
                 }
-	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 	            if (c > -1)
 	            {
 	                int c2 = line.indexOf(")");
