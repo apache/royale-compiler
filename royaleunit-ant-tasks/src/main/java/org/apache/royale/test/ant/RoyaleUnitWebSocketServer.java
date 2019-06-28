@@ -38,6 +38,10 @@ public class RoyaleUnitWebSocketServer extends WebSocketServer implements IRoyal
     {
         super(new InetSocketAddress(port));
         this.timeout = timeout;
+        //because we may be running many sets of tests in a short period of
+        //time, and the socket can end up in a timeout state after it is closed,
+        //this allows us to reuse the same port again quickly
+        this.setReuseAddr(true);
     }
 
     private int timeout;
