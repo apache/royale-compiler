@@ -1494,9 +1494,9 @@ public class GoogDepsWriter {
 			{
 				builder.append(", ");
 			}
-			builder.append("''");
+			builder.append("'");
 			builder.append(dep);
-			builder.append("''");
+			builder.append("'");
 			hasDeps = true;
 		}
 	}
