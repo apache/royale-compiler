@@ -479,12 +479,21 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // is generated here so it can be used for outputting the html templates.
         String depsFileData = gdw.generateDeps(project, problems);
 
+        // FOR MODULES: this generate inject_html lines for js to be added to __deps.js
+        String moduleAdditionHTML = "";
+
         if (project.isModule(mainClassQName))
         {
+            for (String s : gdw.additionalHTML)
+            {
+                moduleAdditionHTML += "document.head.innerHTML += '"+ s.trim() + "';";
+            }
+            
         	// need better test someday
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
-            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData, false);
+            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + moduleAdditionHTML + "\n", false);
             gdw.needCSS = true;
+            writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
         }
         else
         {
@@ -536,6 +545,14 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             compilerWrapper.setVerbose(googConfiguration.isVerbose());
 
             ok = compilerWrapper.compile();
+
+            // FOR MODULES: add moduleAdditionHTML to main js release file too
+            if (project.isModule(mainClassQName))
+            {
+                StringBuilder appendString = new StringBuilder();
+                appendString.append(moduleAdditionHTML);
+                writeFile(projectReleaseMainFile, appendString.toString(), true);
+            }
 
             appendSourceMapLocation(projectReleaseMainFile, projectName);
             
