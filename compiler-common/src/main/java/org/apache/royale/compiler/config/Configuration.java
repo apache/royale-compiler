@@ -3308,11 +3308,11 @@ public class Configuration
     public boolean debug()
     {
         // the debug() in as3 and mxml configuration maps to stacktraceLineNumbers
-        return verboseStacktraces;
+        return generateDebugTags;
     }
 
     public boolean release() {
-        return !verboseStacktraces;
+        return !generateDebugTags;
     }
 
     @Config
