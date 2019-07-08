@@ -330,15 +330,18 @@ public class COMPJSCNative extends MXMLJSCNative
 
                             ByteArrayOutputStream temp = new ByteArrayOutputStream();
                             ByteArrayOutputStream sourceMapTemp = null;
-	                        if (project.config.getSourceMap())
+                            
+                            boolean isExterns = false;
+	                        if (writer instanceof JSWriter)
+	                        	isExterns = ((JSWriter)writer).isExterns();
+
+                            // if the file is @externs DON'T create source map file
+	                        if (project.config.getSourceMap() && !isExterns)
 	                        {
                                 sourceMapTemp = new ByteArrayOutputStream();
 	                        }
                             writer.writeTo(temp, sourceMapTemp, null);
 
-                            boolean isExterns = false;
-	                        if (writer instanceof JSWriter)
-	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,

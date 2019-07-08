@@ -375,7 +375,8 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                        if (writer instanceof JSWriter)
 	                        	isExterns = ((JSWriter)writer).isExterns();
 	                        
-                            if (project.config.getSourceMap())
+                            // if the file is @externs DON'T create source map file
+                            if (project.config.getSourceMap() && !isExterns)
 	                        {
                                 sourceMapTemp = new ByteArrayOutputStream();
 	                        }
@@ -441,41 +442,34 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                             zipOutputStream.closeEntry();
                             fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + fileDate + "\"/>\n");
                             
-                            // if the file is @externs DON'T create source map file
-                            boolean createSourceMapFile = false;
-                            if (writer instanceof JSWriter)
-                                createSourceMapFile = !((JSWriter)writer).isExterns();
-                            if(createSourceMapFile)
-                            { 
-                                if(sourceMapTemp != null)
+                            if(sourceMapTemp != null)
+                            {
+                                String sourceMapFile = getOutputSourceMapFile(
+                                                                                cu.getQualifiedNames().get(0),
+                                                                                isExterns ? externsOut : jsOut,
+                                                                                false).getPath();
+                                if (config.isVerbose())
                                 {
-                                    String sourceMapFile = getOutputSourceMapFile(
-                                                                                  cu.getQualifiedNames().get(0),
-                                                                                  isExterns ? externsOut : jsOut,
-                                                                                  false).getPath();
-                                    if (config.isVerbose())
-                                    {
-                                        System.out.println("Writing file: " + sourceMapFile);
-                                    }
-                                    ze = new ZipEntry(sourceMapFile);
-                                    ze.setTime(zipFileDate);
-                                    ze.setMethod(ZipEntry.STORED);
-                                    
-                                    baos = new ByteArrayOutputStream();
-                                    sourceMapTemp.writeTo(baos);
-                                    ze.setSize(baos.size());
-                                    ze.setCompressedSize(baos.size());
-                                    crc = new CRC32();
-                                    crc.reset();
-                                    crc.update(baos.toByteArray());
-                                    ze.setCrc(crc.getValue());
-                                    
-                                    zipOutputStream.putNextEntry(ze);
-                                    baos.writeTo(zipOutputStream);
-                                    zipOutputStream.flush();
-                                    zipOutputStream.closeEntry();
-                                    fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + fileDate + "\"/>\n");
+                                    System.out.println("Writing file: " + sourceMapFile);
                                 }
+                                ze = new ZipEntry(sourceMapFile);
+                                ze.setTime(zipFileDate);
+                                ze.setMethod(ZipEntry.STORED);
+                                
+                                baos = new ByteArrayOutputStream();
+                                sourceMapTemp.writeTo(baos);
+                                ze.setSize(baos.size());
+                                ze.setCompressedSize(baos.size());
+                                crc = new CRC32();
+                                crc.reset();
+                                crc.update(baos.toByteArray());
+                                ze.setCrc(crc.getValue());
+                                
+                                zipOutputStream.putNextEntry(ze);
+                                baos.writeTo(zipOutputStream);
+                                zipOutputStream.flush();
+                                zipOutputStream.closeEntry();
+                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + fileDate + "\"/>\n");
                             }
 	                        writer.close();
                     	}
