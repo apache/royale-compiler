@@ -380,9 +380,6 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
                 if (imp.equals(cname))
                     continue;
-
-                if (project.sourceExterns.contains(imp))
-                	continue;
                 
                 if (NativeUtils.isNative(imp))
                 {
