@@ -410,6 +410,11 @@ public class SWCCompilationUnit extends CompilationUnitBase
     {
         return swc.isANE();
     }
+
+    public ISWC getSWC()
+    {
+        return swc;
+    }
     
     @Override
     public String getName()
