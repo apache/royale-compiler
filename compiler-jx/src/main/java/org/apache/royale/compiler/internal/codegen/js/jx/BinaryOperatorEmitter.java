@@ -23,7 +23,11 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -87,11 +91,44 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
             IDefinition dnode = (node.getRightOperandNode())
                     .resolve(getProject());
-            if (dnode != null)
-                write(getEmitter()
-                        .formatQualifiedName(dnode.getQualifiedName()));
-            else
-                getWalker().walk(node.getRightOperandNode());
+			if (dnode != null)
+			{
+				String dnodeQname = dnode.getQualifiedName();
+                boolean isPackageOrFileMember = false;
+                if (dnode instanceof IVariableDefinition)
+                {
+                    IVariableDefinition variable = (IVariableDefinition) dnode;
+                    VariableClassification classification = variable.getVariableClassification();
+                    if (classification == VariableClassification.PACKAGE_MEMBER ||
+                            classification == VariableClassification.FILE_MEMBER)
+                    {
+                        isPackageOrFileMember = true;
+                    }
+                }
+                else if (dnode instanceof IFunctionDefinition)
+                {
+                    IFunctionDefinition func = (IFunctionDefinition) dnode;
+                    FunctionClassification classification = func.getFunctionClassification();
+                    if (classification == FunctionClassification.PACKAGE_MEMBER ||
+                            classification == FunctionClassification.FILE_MEMBER)
+                    {
+                        isPackageOrFileMember = true;
+                    }
+                }
+				else if(dnode instanceof ITypeDefinition)
+				{
+					isPackageOrFileMember = true;
+				}
+				if(isPackageOrFileMember)
+				{
+					dnodeQname = getEmitter().formatQualifiedName(dnodeQname);
+				}
+                write(dnodeQname);
+			}
+			else
+			{
+				getWalker().walk(node.getRightOperandNode());
+			}
         }
         else
         {
