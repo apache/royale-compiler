@@ -130,7 +130,7 @@ public class FunctionReference extends BaseReference {
 
         braces = " { " + returns + " }";
 
-        sb.append("    ");
+        sb.append(indent);
         sb.append(publicModifier);
         sb.append(staticValue);
         sb.append("function ");
