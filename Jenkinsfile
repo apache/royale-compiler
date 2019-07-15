@@ -23,7 +23,7 @@
 
 // Run only on the windows-2012-1 agent as this is the only one setup to fully
 // support Royale builds.
-node('windows-2012-1') {
+node('jenkins-win-he-de-1') {
 
     currentBuild.result = "SUCCESS"
 
