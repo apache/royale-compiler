@@ -102,9 +102,9 @@ public class TestBase implements ITestBase
 
     protected File tempDir;
 
-    private List<File> sourcePaths = new ArrayList<File>();
-    private List<File> libraries = new ArrayList<File>();
-    private List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
+    protected List<File> sourcePaths = new ArrayList<File>();
+    protected List<File> libraries = new ArrayList<File>();
+    protected List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 
     @Before
     public void setUp()
@@ -695,7 +695,7 @@ public class TestBase implements ITestBase
         	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
     		libraries.add(new File(jsSwcPath));
         	String customSwcPath = FilenameNormalization.normalize("../compiler/target/custom.swc");
-    		libraries.add(new File(customSwcPath));        	
+    		libraries.add(new File(customSwcPath));
         }
         addNamespaceMappings(namespaceMappings);
 

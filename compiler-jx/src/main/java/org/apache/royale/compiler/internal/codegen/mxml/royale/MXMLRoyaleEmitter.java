@@ -249,11 +249,15 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                             if (subDocumentNames.contains(usedName)) continue;
                             if (royaleProject != null)
                             {
+                                if (!isGoogProvided(usedName))
+                                {
+                                    continue;
+                                }
                             	ICompilationUnit cu = royaleProject.resolveQNameToCompilationUnit(usedName);
-                            	if (cu != null && royaleProject.isExternalLinkage(cu))
-                            		continue;
-                            	if (cu == null)
-                            		System.out.println("didn't find CompilationUnit for " + usedName);
+                                if (cu == null)
+                                {
+                                    System.out.println("didn't find CompilationUnit for " + usedName);
+                                }
                             }
                             namesToAdd.add(usedName);
                         }
@@ -311,10 +315,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	boolean firstOne = true;
 		            	for (String mixin : mixins)
 		            	{
-		            		if (isExternal(mixin))
-		            			continue;
-		            		if (!firstOne)
-		            			mixinInject += ", ";
+                            if (!isGoogProvided(mixin))
+                            {
+                                continue;
+                            }
+                            if (!firstOne)
+                            {
+                                mixinInject += ", ";
+                            }
 		            		mixinInject += mixin;
 		            		firstOne = false;
 		                    StringBuilder appendString = new StringBuilder();
@@ -340,10 +348,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	boolean firstOne = true;
 		            	for (String className : aliases.keySet())
 		            	{
-		            		if (isExternal(className))
-		            			continue;
-		            		if (!firstOne)
-		            			aliasInject += ", ";
+                            if (!isGoogProvided(className))
+                            {
+                                continue;
+                            }
+                            if (!firstOne)
+                            {
+                                aliasInject += ", ";
+                            }
 		            		aliasInject += "\"" + className + "\": ";
 		            		String alias = aliases.get(className);
 		            		aliasInject += "\"" + alias + "\"";
@@ -373,8 +385,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	locales.toArray(localeNames);
 		            	for (String locale : localeNames)
 		            	{
-		            		if (!firstOne)
-		            			localeInject += ", ";
+                            if (!firstOne)
+                            {
+                                localeInject += ", ";
+                            }
 		            		localeInject += "\"" + locale + "\"";
 		            		firstOne = false;
 		            	}
@@ -390,8 +404,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		            	boolean firstOne = true;
 		            	for (String bundle : bundles)
 		            	{
-		            		if (!firstOne)
-		            			bundleInject += ", ";
+                            if (!firstOne)
+                            {
+                                bundleInject += ", ";
+                            }
 		            		bundleInject += "\"" + bundle + "\"";
 		            		firstOne = false;
 		            	}
@@ -1535,7 +1551,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             for (IExpressionNode param : params)
             {
                 if (!firstone)
+                {
                     sb.append(ASEmitterTokens.COMMA.getToken());
+                }
                 firstone = false;
                 sb.append(asEmitter.stringifyNode(param));
             }
@@ -3012,12 +3030,18 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
-    	if (inStaticInitializer)
-    		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && !isExternal(name))
-    			staticUsedNames.add(name);
+        if (inStaticInitializer)
+        {
+            if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && isGoogProvided(name))
+            {
+                staticUsedNames.add(name);
+            }
+        }
 
-		if (useName && !usedNames.contains(name) && !isExternal(name))
-			usedNames.add(name);
+        if (useName && !usedNames.contains(name) && isGoogProvided(name))
+        {
+            usedNames.add(name);
+        }
      	return name;
     }
 
@@ -3242,14 +3266,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         //System.out.println("mxml implements "+list);
         interfaceList = list.toString();
     }
-
-	boolean isExternal(String className)
+    
+	boolean isGoogProvided(String className)
 	{
         ICompilerProject project = getMXMLWalker().getProject();
-		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
-		if (cu == null) return false; // unit testing
-
-		return ((RoyaleJSProject)project).isExternalLinkage(cu);
+		return ((RoyaleJSProject)project).isGoogProvided(className);
 	}
 
 	@Override

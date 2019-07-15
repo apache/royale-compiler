@@ -35,6 +35,7 @@ import org.apache.royale.compiler.tree.as.IInterfaceNode;
 import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.ITestAdapter;
 import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.Ignore;
@@ -54,6 +55,19 @@ public class ASTestBase extends TestBase
 
         asEmitter = backend.createEmitter(writer);
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
+    }
+
+    @Override
+    protected void addDependencies()
+    {
+        if (libraries.size() == 0)
+        {
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
+    		libraries.add(new File(jsSwcPath));
+        	String customSwcPath = FilenameNormalization.normalize("../compiler-jx/target/custom.swc");
+    		libraries.add(new File(customSwcPath));
+        }
+        super.addDependencies();
     }
 
     @Override

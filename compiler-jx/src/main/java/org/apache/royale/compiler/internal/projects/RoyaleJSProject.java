@@ -64,9 +64,11 @@ import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 import org.apache.royale.compiler.tree.as.IInterfaceNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.swc.ISWC;
 
 import com.google.common.collect.ImmutableList;
 
@@ -180,14 +182,18 @@ public class RoyaleJSProject extends RoyaleProject
             // inheritance is important so remember it
             if (reqs.get(qname) != DependencyType.INHERITANCE)
             {
-                if (!isExternalLinkage(to))
+                if (isGoogProvided(qname))
+                {
                     reqs.put(qname, dt);
+                }
             }
         }
-        else if (!isExternalLinkage(to) || qname.equals("Namespace"))
+        else if (isGoogProvided(qname) || qname.equals("Namespace"))
         {
             if (qname.equals("XML"))
+            {
                 needXML = true;
+            }
             reqs.put(qname, dt);
         }
     }
@@ -236,10 +242,13 @@ public class RoyaleJSProject extends RoyaleProject
 
         if (!interfacesArr.containsKey(qname))
         {
-            if (!isExternalLinkage(to))
-            	interfacesArr.put(qname, qname);
+            if (isGoogProvided(qname))
+            {
+                interfacesArr.put(qname, qname);
+            }
         }
     }
+
     public boolean needLanguage;
     public boolean needCSS;
     public boolean needXML;
@@ -272,6 +281,65 @@ public class RoyaleJSProject extends RoyaleProject
             //it's safe to ignore an exception here
         }
         return null;
+    }
+
+    public boolean isExterns(String qname)
+    {
+		ICompilationUnit cu = resolveQNameToCompilationUnit(qname);
+        if (cu == null)
+        {
+            return false;
+        }
+        if (cu.getCompilationUnitType().equals(ICompilationUnit.UnitType.SWC_UNIT))
+        {
+            return !isGoogProvided(qname);
+        }
+        else if (!cu.getCompilationUnitType().equals(ICompilationUnit.UnitType.AS_UNIT))
+        {
+            return false;
+        }
+
+        IDefinition def = resolveQNameToDefinition(qname);
+        if (def == null)
+        {
+            return false;
+        }
+
+        IDefinitionNode node = def.getNode();
+        if (!(node instanceof IDocumentableDefinitionNode))
+        {
+            return false;
+        }
+
+        IDocumentableDefinitionNode docNode = (IDocumentableDefinitionNode) node;
+        IASDocComment comment = docNode.getASDocComment();
+        if (!(comment instanceof ASDocComment))
+        {
+            return false;
+        }
+        ASDocComment royaleComment = (ASDocComment) comment;
+        return royaleComment.commentNoEnd().contains(JSRoyaleEmitterTokens.EXTERNS.getToken());
+    }
+
+    public boolean isGoogProvided(String qname)
+    {
+		ICompilationUnit cu = resolveQNameToCompilationUnit(qname);
+        if (cu == null)
+        {
+            //TODO: maybe this this should be false because we can't actually
+            //check whether it's a goog.provide() object or not
+            return true;
+        }
+        
+        if (cu.getCompilationUnitType().equals(ICompilationUnit.UnitType.SWC_UNIT))
+        {
+            SWCCompilationUnit swcUnit = (SWCCompilationUnit) cu;
+            ISWC swc = swcUnit.getSWC();
+            String qnameFilePath = "js/out/" + qname.replace('.', '/') + ".js";
+            return swc.getFile(qnameFilePath) != null;
+        }
+
+        return !isExterns(qname);
     }
 
     public boolean isExternalLinkage(ICompilationUnit cu)

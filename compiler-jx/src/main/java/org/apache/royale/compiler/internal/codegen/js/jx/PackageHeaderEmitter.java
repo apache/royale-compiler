@@ -392,9 +392,13 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     continue;
                 }
 
+                if(!project.isGoogProvided(imp))
+                {
+                    continue;
+                }
+
                 if (writtenRequires.indexOf(imp) == -1)
                 {
-
                     /* goog.require('x');\n */
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);

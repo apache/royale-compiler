@@ -19,6 +19,7 @@
 package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import org.apache.royale.compiler.clients.MXMLJSC;
@@ -57,6 +58,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
+		assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
         
@@ -79,6 +81,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
+		assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
         
@@ -94,6 +97,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
+		assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -109,6 +113,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
+		assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 

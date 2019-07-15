@@ -18,6 +18,8 @@
  */
 package org.apache.royale.compiler.internal.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.List;
 
@@ -98,6 +100,7 @@ public class RoyaleTestBase extends TestBase
                 + code + "]]></fx:Script></basic:Application>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         return findFirstASDescendantOfType(node, type);
     }
@@ -113,6 +116,7 @@ public class RoyaleTestBase extends TestBase
         }
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         return findFirstDescendantOfType(node, type);
     }

@@ -311,7 +311,9 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
                 final File swcFile = new File(compilationUnit.getAbsoluteFilename());
                 final ICSSDocument defaultCSS = cssManager.getDefaultCSS(swcFile);
                 if (defaultCSS != null)
+                {
                     result.put(defaultCSS, swcFile);
+                }
             }
         }
         return result;

@@ -18,6 +18,8 @@
  */
 package org.apache.royale.compiler.internal.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.List;
 
@@ -51,6 +53,19 @@ public class MXMLTestBase extends TestBase
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
         mxmlBlockWalker = backend.createMXMLWalker(project, errors,
                 mxmlEmitter, asEmitter, asBlockWalker);
+    }
+
+    @Override
+    protected void addDependencies()
+    {
+        if (libraries.size() == 0)
+        {
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
+    		libraries.add(new File(jsSwcPath));
+        	String customSwcPath = FilenameNormalization.normalize("../compiler-jx/target/custom.swc");
+    		libraries.add(new File(customSwcPath));
+        }
+        super.addDependencies();
     }
 
     @Override
@@ -103,6 +118,7 @@ public class MXMLTestBase extends TestBase
                     + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         if (wrapLevel >= WRAP_LEVEL_NODE) // for now: attributes
         {

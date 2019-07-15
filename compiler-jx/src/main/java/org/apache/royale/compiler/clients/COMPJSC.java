@@ -49,7 +49,6 @@ import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.royale.compiler.internal.codegen.js.JSWriter;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
@@ -478,8 +477,10 @@ public class COMPJSC extends MXMLJSC
                             ByteArrayOutputStream sourceMapTemp = null;
 
                             boolean isExterns = false;
-	                        if (writer instanceof JSWriter)
-	                        	isExterns = ((JSWriter)writer).isExterns();
+                            if(cu.getDefinitionPromises().size() > 0)
+                            {
+                                isExterns = project.isExterns(cu.getDefinitionPromises().get(0).getQualifiedName());
+                            }
 
                             // if the file is @externs DON'T create source map file
                             if (project.config.getSourceMap() && !isExterns)

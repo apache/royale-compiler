@@ -699,12 +699,12 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	{
         	if (getModel().inStaticInitializer)
         		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name)
-        				&& !isExternal(name) && !getModel().getCurrentClass().getQualifiedName().equals(name)
+        				&& isGoogProvided(name) && !getModel().getCurrentClass().getQualifiedName().equals(name)
         				&& (getModel().primaryDefinitionQName == null
         					|| !getModel().primaryDefinitionQName.equals(name)))
         			staticUsedNames.add(name);
     		
-    		if (!usedNames.contains(name) && !isExternal(name))
+    		if (!usedNames.contains(name) && isGoogProvided(name))
     			usedNames.add(name);
     	}
         return name;
@@ -1524,13 +1524,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         getModel().needLanguage = true;
     }
     
-	boolean isExternal(String className)
+	boolean isGoogProvided(String className)
 	{
         ICompilerProject project = getWalker().getProject();
-		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
-		if (cu == null) return false; // unit testing
-		
-		return ((RoyaleJSProject)project).isExternalLinkage(cu);
+		return ((RoyaleJSProject)project).isGoogProvided(className);
 	}
 
 }
