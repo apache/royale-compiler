@@ -76,12 +76,6 @@ public class CompileJSMojo
     }
 
     @Override
-    protected boolean isForceSwcExternalLibraryPath() {
-        // The forceSwcExternalLibraryPath should only apply to Flash compilations.
-        return false;
-    }
-
-    @Override
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
         args.add("-compiler.targets=SWF,JSRoyale");
