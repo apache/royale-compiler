@@ -70,7 +70,7 @@ public class MXMLWriter extends JSWriter
 
         try
         {
-            out.write(mxmlEmitter.postProcess(writer.toString()).getBytes());
+            out.write(mxmlEmitter.postProcess(writer.toString()).getBytes("utf8"));
         }
         catch (IOException e)
         {
@@ -101,7 +101,7 @@ public class MXMLWriter extends JSWriter
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".mxml", ".js");
                 String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
-                sourceMapOut.write(sourceMap.getBytes());
+                sourceMapOut.write(sourceMap.getBytes("utf8"));
             } catch (Exception e)
             {
                 e.printStackTrace();

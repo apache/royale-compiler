@@ -77,7 +77,7 @@ public class ASWriter implements IASWriter
 
         try
         {
-            out.write(writer.toString().getBytes());
+            out.write(writer.toString().getBytes("utf8"));
         }
         catch (IOException e)
         {

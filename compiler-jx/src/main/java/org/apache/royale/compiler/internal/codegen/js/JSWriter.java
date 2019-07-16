@@ -99,7 +99,7 @@ public class JSWriter implements IJSWriter
         
         try
         {
-            jsOut.write(emitter.postProcess(writer.toString()).getBytes());
+            jsOut.write(emitter.postProcess(writer.toString()).getBytes("utf8"));
         }
         catch (IOException e)
         {
@@ -130,7 +130,7 @@ public class JSWriter implements IJSWriter
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".as", ".js");
                 String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
-                jsSourceMapOut.write(sourceMap.getBytes());
+                jsSourceMapOut.write(sourceMap.getBytes("utf8"));
             } catch (Exception e)
             {
                 e.printStackTrace();
