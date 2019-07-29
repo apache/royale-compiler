@@ -62,7 +62,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
 
         if (cnode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
             cnode = cnode.getChild(0);
-
+        String postCallAppend = null;
         ASTNodeID id = cnode.getNodeID();
         if (id != ASTNodeID.SuperID)
         {
@@ -415,6 +415,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                     //removeAt
                                     spliceArg = new NumericLiteralNode("1");
                                     node.getArgumentsNode().addChild(spliceArg, 1);
+                                    postCallAppend = "[0]";
                                 }
                             } else {
                                 //default Vector implementation
@@ -578,6 +579,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
 
                 getEmitter().emitArguments(node.getArgumentsNode());
     
+                if (postCallAppend != null) {
+                    write(postCallAppend);
+                }
                 //end wrap resolve
                 if (wrapResolve) {
                     write(ASEmitterTokens.PAREN_CLOSE);

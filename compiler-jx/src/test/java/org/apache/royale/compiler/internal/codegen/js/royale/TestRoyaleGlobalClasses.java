@@ -517,7 +517,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IBinaryOperatorNode node = getBinaryNode("var a:Vector.<String> = new Vector.<String>(); a.removeAt(2)");
         IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
         asBlockWalker.visitFunctionCall(parentNode);
-        assertOut("a.splice(2, 1)");
+        assertOut("a.splice(2, 1)[0]");
     }
 
     @Test
