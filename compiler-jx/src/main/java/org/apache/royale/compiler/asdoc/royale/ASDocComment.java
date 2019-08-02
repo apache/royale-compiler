@@ -99,6 +99,7 @@ public class ASDocComment implements IASDocComment
         	sb.append(line.trim());
         else
         	sb.append(line + "\n");
+        boolean inPre = false;
         for (int i = 1; i < n - 1; i++)
         {
             line = lines[i];
@@ -106,6 +107,10 @@ public class ASDocComment implements IASDocComment
             int at = line.indexOf("@");
             if (at == -1)
             {
+            	if (line.contains("<pre>"))
+            		inPre = true;
+            	if (line.contains("</pre>"))
+            		inPre = false;
 	            sb.append(" ");
 	            if (star > -1)
 	            {
@@ -114,6 +119,8 @@ public class ASDocComment implements IASDocComment
 	            	else
 	            		sb.append(line.substring(star + 1) + "\n");
 	            }
+	            if (inPre)
+	            	sb.append("\\n");
             }
             else
             {

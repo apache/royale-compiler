@@ -625,7 +625,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         write("  \"description\": \"");
         String d = asDoc.getDescription();
 		d = d.replace("\t", " ");
-		d = d.replace("\"", "&quot;");
+		d = d.replace("\\\"", "&quot;");
 		d = d.replace("\\", "\\\\");
     	write(d);
 		write("\"");
@@ -663,7 +663,7 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     					write("\"");
     					d = value.getDescription().trim();
     					d = d.replace("\t", " ");
-    					d = d.replace("\"", "&quot;");
+    					d = d.replace("\\\"", "&quot;");
     					d = d.replace("\\", "\\\\");
     					write(d);
     					write("\"");
