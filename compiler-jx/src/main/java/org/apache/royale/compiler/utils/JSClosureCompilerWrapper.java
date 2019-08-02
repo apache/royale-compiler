@@ -50,7 +50,7 @@ import com.google.javascript.jscomp.WarningLevel;
 public class JSClosureCompilerWrapper
 {
 
-    public JSClosureCompilerWrapper(List<String> args)
+    public JSClosureCompilerWrapper(List<String> args) throws IOException
     {
         Compiler.setLoggingLevel(Level.INFO);
 
@@ -490,14 +490,16 @@ public class JSClosureCompilerWrapper
 
     private static class CompilerOptionsParser extends CommandLineRunner
     {
-    	public CompilerOptionsParser(String[] args)
-    	{
-    		super(args);
-    	}
-    	
-    	public CompilerOptions getOptions()
-    	{
-    		return createOptions();
-    	}
+        public CompilerOptionsParser(String[] args)
+        {
+            super(args);
+        }
+        
+        public CompilerOptions getOptions() throws IOException
+        {
+            CompilerOptions options = createOptions();
+            setRunOptions(options);
+            return options;
+        }
     }
 }
