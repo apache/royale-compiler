@@ -25,7 +25,9 @@ import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
@@ -126,12 +128,12 @@ public class FieldEmitter extends JSSubEmitter implements
             String vnodeString = getEmitter().stringifyNode(vnode);
             if (ndef.isStatic() && vnode instanceof FunctionCallNode)
             {
-            	FunctionCallNode fcn = (FunctionCallNode)vnode;
+                FunctionCallNode fcn = (FunctionCallNode)vnode;
             	if (fcn.getNameNode() instanceof IdentifierNode)
             	{
+            		IDefinition d = fcn.getNameNode().resolve(getProject());
             		// assume this is a call to static method in the class
             		// otherwise it would be a memberaccessexpression?
-            		IDefinition d = (IDefinition)fcn.getNameNode().resolve(getProject());
             		if (d instanceof FunctionDefinition)
             		{
             			FunctionDefinition fd = (FunctionDefinition)d;
@@ -141,7 +143,22 @@ public class FieldEmitter extends JSSubEmitter implements
     	            		// re-emit it to collect static initializer class references in usedNames
     	            		getEmitter().stringifyNode(m);
                 		}
-            		}
+                    }
+                    //it could also be a constructor
+                    else if (d instanceof IClassDefinition)
+                    {
+                        IClassDefinition classDef = (IClassDefinition) d;
+                        IFunctionDefinition constructorDef = classDef.getConstructor();
+                        if (constructorDef != null)
+                        {
+                            IASNode m = constructorDef.getNode();
+                            if (m != null)
+                            {
+                                // re-emit it to collect static initializer class references in usedNames
+                                getEmitter().stringifyNode(m);
+                            }
+                        }
+                    }
             	}
             }
         	getModel().inStaticInitializer = false;
