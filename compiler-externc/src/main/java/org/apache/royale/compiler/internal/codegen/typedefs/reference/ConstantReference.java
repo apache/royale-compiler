@@ -74,7 +74,17 @@ public class ConstantReference extends BaseReference
         if (getQualifiedName().equals("undefined"))
         {
             sb.append(indent);
-            sb.append("public const undefined:* = 0;\n");
+            sb.append("public const undefined:* = void 0;\n");
+        }
+        else if (getQualifiedName().equals("NaN"))
+        {
+            sb.append(indent);
+            sb.append("public const NaN:Number = 0/0;\n");
+        }
+        else if (getQualifiedName().equals("Infinity"))
+        {
+            sb.append(indent);
+            sb.append("public const Infinity:Number = 1/0;\n");
         }
         else
         {

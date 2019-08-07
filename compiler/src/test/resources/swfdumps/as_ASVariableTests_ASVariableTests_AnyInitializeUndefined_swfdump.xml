@@ -67,15 +67,15 @@ public class %0 extends Object
     //  max_regs     2            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  14           
+    //  code_length  12           
     bb0
       succs=[]
       0      getlocal0                       
       1      pushscope                       
       2      findpropstrict  assertEqual     
       3      pushstring      "null"          
-      4      pushbyte                     0  
-      5      pushbyte                     0  
+      4      pushundefined                   
+      5      pushundefined                   
       6      callpropvoid                    
       7      returnvoid                      
   }
@@ -108,7 +108,7 @@ public class %0 extends Object
       0      returnvoid      
   }
 
-  public static const foo:* = 0
+  public static const foo:*
 }
 
 function script0$init():*

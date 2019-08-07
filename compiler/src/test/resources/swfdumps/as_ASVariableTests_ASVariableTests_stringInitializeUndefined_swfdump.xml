@@ -74,7 +74,7 @@ public class %0 extends Object
       1      pushscope                       
       2      findpropstrict  assertEqual     
       3      pushstring      "null"          
-      4      pushbyte                     0  
+      4      getlex          foo
       5      pushnull                        
       6      callpropvoid                    
       7      returnvoid                      
@@ -108,7 +108,7 @@ public class %0 extends Object
       0      returnvoid      
   }
 
-  public static const foo:String = "0"
+  public static const foo:String
 }
 
 function script0$init():*
