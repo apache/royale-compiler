@@ -19,9 +19,12 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
+import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
@@ -37,6 +40,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.*;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorDivisionAssignmentNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -76,12 +80,43 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 && !identifierIsAccessorFunction;
         boolean emitName = true;
     	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
+        RoyaleJSProject project = (RoyaleJSProject)getWalker().getProject();
     	boolean isCustomNamespace = false;
     	boolean isStatic = nodeDef != null && nodeDef.isStatic();
         if (nodeDef instanceof FunctionDefinition &&
           	  fjs.isCustomNamespace((FunctionDefinition)nodeDef))
-          	isCustomNamespace = true;
+              isCustomNamespace = true;
 
+        if (isStatic
+                && nodeDef instanceof IConstantDefinition
+                && project != null && project.config != null
+                && project.config.getInlineConstants())
+        {
+            IConstantDefinition constDef = (IConstantDefinition) nodeDef;
+            Object initialValue = constDef.resolveInitialValue(project);
+            if (initialValue != null)
+            {
+                startMapping(parentNode);
+                if(initialValue instanceof String)
+                {
+                    write("\"" + initialValue + "\"");
+                }
+                else if(initialValue == ABCConstants.UNDEFINED_VALUE)
+                {
+                    write(IASLanguageConstants.UNDEFINED);
+                }
+                else if(initialValue == ABCConstants.NULL_VALUE)
+                {
+                    write(IASLanguageConstants.NULL);
+                }
+                else
+                {
+                    write(initialValue.toString());
+                }
+                endMapping(parentNode);
+                return;
+            }
+        }
         if (isStatic)
         {
             String sname = nodeDef.getParent().getQualifiedName();

@@ -512,4 +512,23 @@ public class JSGoogConfiguration extends JSConfiguration
         return ret;
     }
 
+    //
+    // 'inline-constants'
+    //
+
+    private boolean inlineConstants = false;
+
+    public boolean getInlineConstants()
+    {
+        return inlineConstants;
+    }
+
+    @Config
+    @Mapping("inline-constants")
+    public void setInlineConstants(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	inlineConstants = value;
+    }
+
 }
