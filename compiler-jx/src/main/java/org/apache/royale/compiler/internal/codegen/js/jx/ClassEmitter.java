@@ -70,6 +70,8 @@ public class ClassEmitter extends JSSubEmitter implements
         
         boolean suppressExport = (asDoc != null && DocEmitterUtils.hasSuppressExport(fjs, asDoc.commentNoEnd()));
 
+        getModel().suppressExports = suppressExport;
+
         IClassDefinition definition = node.getDefinition();
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();

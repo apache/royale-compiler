@@ -76,6 +76,7 @@ public class JSSessionModel
         public ArrayList<IFunctionNode> methods;
         public IClassDefinition classDefinition;
         public ImplicitBindableImplementation bindableImplementation;
+        public Boolean suppressExports;
     }
     
     public JSSessionModel()
@@ -92,6 +93,8 @@ public class JSSessionModel
     public boolean inE4xFilter = false;
 
     public boolean inStaticInitializer = false;
+    
+    public boolean suppressExports = false;
     
     private LinkedHashMap<String, PropertyNodes> propertyMap = new LinkedHashMap<String, PropertyNodes>();
 
@@ -150,7 +153,9 @@ public class JSSessionModel
         context.vars = vars;
         context.methods = methods;
         context.bindableImplementation = implicitBindableImplementation;
+        context.suppressExports = suppressExports;
         stack.push(context);
+        suppressExports = false; //always defaults to false
         this.currentClass = currentClass;
         bindableVars = new HashMap<String, BindableVarInfo>();
         staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
@@ -174,6 +179,7 @@ public class JSSessionModel
         vars = context.vars;
         methods = context.methods;
         implicitBindableImplementation = context.bindableImplementation;
+        suppressExports = context.suppressExports;
     }
 
     public HashMap<String, PropertyNodes> getPropertyMap()

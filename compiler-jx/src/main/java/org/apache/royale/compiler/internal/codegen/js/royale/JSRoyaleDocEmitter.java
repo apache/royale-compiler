@@ -131,10 +131,14 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
     	RoyaleJSProject fjp = (RoyaleJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
+        boolean suppressExports = false;
+        if (emitter instanceof JSRoyaleEmitter) {
+            suppressExports = ((JSRoyaleEmitter) emitter).getModel().suppressExports;
+        }
         if (fjp.config != null)
         {
-        	emitExports = fjp.config.getExportPublicSymbols();
-        	exportProtected = fjp.config.getExportProtectedSymbols();
+        	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
+        	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
         }
         
         coercionList = null;
