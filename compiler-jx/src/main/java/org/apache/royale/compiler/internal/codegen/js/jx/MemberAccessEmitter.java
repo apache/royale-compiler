@@ -23,6 +23,7 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -32,7 +33,6 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
-import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.*;
@@ -41,8 +41,6 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.royale.compiler.utils.ASNodeUtils;
-
-import javax.sound.midi.SysexMessage;
 
 public class MemberAccessEmitter extends JSSubEmitter implements
         ISubEmitter<IMemberAccessExpressionNode>
@@ -177,6 +175,13 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		return;
         	}
         }
+		else if(def.getParent() instanceof IPackageDefinition)
+		{
+			//this is a fully qualified name, and we should output it directly
+			//because we don't want it to be treated as dynamic access
+			write(fjs.formatQualifiedName(def.getQualifiedName()));
+			return;
+		}
         else if (def.getParent() != null &&
         		def.getParent().getQualifiedName().equals("Array"))
         {
@@ -260,7 +265,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				getEmitter().emitClosureEnd(leftNode, def);
 			}
     		return;
-    	}
+		}
         boolean isCustomNamespace = false;
         if (def instanceof FunctionDefinition && node.getOperator() == OperatorType.MEMBER_ACCESS)
         	isCustomNamespace = fjs.isCustomNamespace((FunctionDefinition)def);
