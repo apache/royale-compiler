@@ -316,6 +316,9 @@
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="royale-maven-plugin" />
         </antcall>
+		 <antcall target="sign-jar-artifacts">
+            <param name="jarname" value="royaleunit-ant-tasks" />
+        </antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="swfutils" />
         </antcall>
