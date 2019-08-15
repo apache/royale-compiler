@@ -1212,10 +1212,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         for (IMXMLMetadataNode metadataTag : metadataNodes)
         {
         	IMetaTagNode[] tags = metadataTag.getMetaTagNodes();
-        	for (IMetaTagNode tag : tags)
-        	{
-        		metadataTagNodes.add(tag);
-        	}
+        	//tags (MetaTagNodes) can be null if the parent node is empty (or content is commented out)
+        	if (tags != null) {
+                for (IMetaTagNode tag : tags)
+                {
+                    metadataTagNodes.add(tag);
+                }
+            }
         }
         IMetaTagNode[] metaDataTags = new IMetaTagNode[metadataTagNodes.size()];
 
