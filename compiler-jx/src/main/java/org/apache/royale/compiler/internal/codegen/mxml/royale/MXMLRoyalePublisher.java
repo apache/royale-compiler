@@ -18,6 +18,7 @@
  */
 package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
+import com.google.common.io.Files;
 import com.google.javascript.jscomp.SourceFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -52,6 +53,7 @@ import org.apache.royale.swc.ISWCManager;
 import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
@@ -98,6 +100,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     private String outputPathParameter;
     private String moduleOutput;
     private boolean useStrictPublishing;
+    private List<String> additionalHTML = new ArrayList<String>();
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
     										String mainClassQName, 
@@ -441,35 +444,41 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         if (fileList == null)
             return false; // some error occurred
         
-        if (compilerWrapper != null)
+        for (String sourceExtern : project.sourceExterns)
         {
-            for (String sourceExtern : project.sourceExterns)
+            String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
+            File sourceExternFile = new File(intermediateDir, sourceExternFileName);
+            if (sourceExternFile.exists())
             {
-                String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
-                File sourceExternFile = new File(intermediateDir, sourceExternFileName);
-                if (sourceExternFile.exists())
-                {
-                    String sourceExternPath = sourceExternFile.getAbsolutePath();
-                    if (!sourceExternFiles.contains(sourceExternPath))
-                        sourceExternFiles.add(sourceExternPath);
-                }
+                String sourceExternPath = sourceExternFile.getAbsolutePath();
+                if (!sourceExternFiles.contains(sourceExternPath))
+                    sourceExternFiles.add(sourceExternPath);
             }
-            for (String file : fileList) {
+        }
+        for (String file : fileList)
+        {
+            if (compilerWrapper != null)
+            {
                 compilerWrapper.addJSSourceFile(file);
                 if (googConfiguration.isVerbose())
                 {            
                     System.out.println("using source file: " + file);
                 }
             }
-            for (String file : sourceExternFiles) {
+            collectFileAdditionalHTML(file);
+        }
+        for (String file : sourceExternFiles)
+        {
+            if (compilerWrapper != null)
+            {
                 compilerWrapper.addJSExternsFile(file);
                 if (googConfiguration.isVerbose())
                 {
                     System.out.println("using extern file: " + file);
                 }
             }
+            collectFileAdditionalHTML(file);
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////
         // Generate the index.html for loading the application.
@@ -484,7 +493,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         if (project.isModule(mainClassQName))
         {
-            for (String s : gdw.additionalHTML)
+            for (String s : additionalHTML)
             {
                 moduleAdditionHTML += "document.head.innerHTML += '"+ s.trim() + "';";
             }
@@ -501,17 +510,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
-	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, gdw.additionalHTML);
+	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
 	            } else {
-	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, gdw.additionalHTML);
+	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
 	            }
 	        }
 	        // Create the index.html for the release-js version.
 	        if (configuration.release()) {
 	            if (template != null) {
-	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, gdw.additionalHTML);
+	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, additionalHTML);
 	            } else {
-	                writeHTML("release", projectName, mainClassQName, releaseDir, null, gdw.additionalHTML);
+	                writeHTML("release", projectName, mainClassQName, releaseDir, null, additionalHTML);
 	            }
 	        }
         }        
@@ -630,6 +639,84 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         	list.add(sf);
         }
         return list;
+    }
+
+    private void collectFileAdditionalHTML(String filePath)
+    {
+        List<String> fileLines;
+        try
+        {
+            fileLines = Files.readLines(new File(filePath), Charset.defaultCharset());
+        }
+        catch(IOException e)
+        {
+            return;
+        }
+        collectAdditionalHTML(fileLines, filePath);
+    }
+
+    private void collectAdditionalHTML(List<String> lines, String filePath)
+    {
+        boolean inDocComment = false;
+        boolean inConstructor = false;
+        boolean inInjectHTML = false;
+	    for (int i = 0; i < lines.size(); i++)
+	    {
+            String line = lines.get(i);
+            if (inDocComment)
+            {
+                if (inInjectHTML)
+                {
+                    if (line.indexOf("</inject_html>") > -1)
+                    {
+                        inInjectHTML = false;
+                        continue;
+                    }
+                    line = line.trim();
+                    if (line.startsWith("*"))
+                        line = line.substring(1);
+                    additionalHTML.add(line);
+                    continue;
+                }
+                int c = line.indexOf("<inject_html>");
+                if (c != -1)
+                {
+                    inInjectHTML = true;
+                    continue;
+                }
+                if (!inConstructor)
+                {
+                    c = line.indexOf("@constructor");
+                    if(c != -1)
+                    {
+                        inConstructor = true;
+                        continue;
+                    }
+                }
+                c = line.indexOf("*/");
+                if(c != -1)
+                {
+                    if(inConstructor)
+                    {
+                        //we're done
+                        break;
+                    }
+                    inInjectHTML = false;
+                    inDocComment = false;
+                    inConstructor = false;
+                }
+
+            }
+            else
+            {
+                int c = line.indexOf("/**");
+                if(c != -1)
+                {
+                    inDocComment = true;
+                    continue;
+                }
+            }
+        }
     }
     
     private void sortClosureFile(List<String> deps, String entryPoint, List<String> sortedFiles)

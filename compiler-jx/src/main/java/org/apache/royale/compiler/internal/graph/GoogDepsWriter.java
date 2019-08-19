@@ -325,8 +325,6 @@ public class GoogDepsWriter {
 		addDeps(mainName);
 		return true;
 	}
-	
-    public ArrayList<String> additionalHTML = new ArrayList<String>();
     
     private HashMap<String, GoogDep> visited = new HashMap<String, GoogDep>();
     
@@ -1091,7 +1089,6 @@ public class GoogDepsWriter {
 	    fi.suppressLine = -1;
 	    fi.fileoverviewLine = -1;
 	    fi.googProvideLine = -1;
-		boolean inInjectHTML = false;
 	    for (int i = 0; i < n; i++)
 	    {
 	        String line = lines.get(i);
@@ -1103,24 +1100,6 @@ public class GoogDepsWriter {
 	        }
 	        else
 	        {
-		        if (inInjectHTML)
-	            {
-	                if (line.indexOf("</inject_html>") > -1)
-	                {
-	                    inInjectHTML = false;
-	                    continue;
-	                }
-	            	line = line.trim();
-	            	if (line.startsWith("*"))
-	            		line = line.substring(1);
-				    additionalHTML.add(line);
-				    continue;
-	            }
-                c = line.indexOf("<inject_html>");
-                if (c > -1)
-                {
-                    inInjectHTML = true;
-                }
 		        c = line.indexOf("@constructor");
 		        if (c > -1)
 		        {
