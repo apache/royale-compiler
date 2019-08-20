@@ -361,7 +361,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // the application will not be able to run.
         for(SourceFile closureSourceFile : closureSourceFiles) {
             FileUtils.write(new File(new File(intermediateDir, "library/closure"),
-                    closureSourceFile.getName()), closureSourceFile.getCode());
+                    closureSourceFile.getName()), closureSourceFile.getCode(), Charset.forName("utf8"));
         }
         closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
 
@@ -649,7 +649,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         List<String> fileLines;
         try
         {
-            fileLines = Files.readLines(new File(filePath), Charset.defaultCharset());
+            fileLines = Files.readLines(new File(filePath), Charset.forName("utf8"));
         }
         catch(IOException e)
         {

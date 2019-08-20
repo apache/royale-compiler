@@ -546,7 +546,7 @@ public class GoogDepsWriter {
         List<String> fileLines;
 		try {
 			File mainFile = new File(main.filePath);
-			fileLines = Files.readLines(mainFile, Charset.defaultCharset());
+			fileLines = Files.readLines(mainFile, Charset.forName("utf8"));
 
 			SourceMapConsumerV3 sourceMapConsumer = null;
 			File sourceMapFile = null;
@@ -555,7 +555,7 @@ public class GoogDepsWriter {
 				sourceMapFile = new File(main.filePath + ".map");
 				if (sourceMapFile.exists())
 				{
-					String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+					String sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
 					sourceMapConsumer = new SourceMapConsumerV3();
 					try
 					{
@@ -643,7 +643,7 @@ public class GoogDepsWriter {
 		depMap.put(gd.className, gd);
         List<String> fileLines;
 		try {
-			fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
+			fileLines = Files.readLines(new File(gd.filePath), Charset.forName("utf8"));
             FileInfo fi = getFileInfo(fileLines, className);
 			gd.fileInfo = fi;
 		} catch (IOException e) {
@@ -694,7 +694,7 @@ public class GoogDepsWriter {
         {
 			gd = depMap.get(className);
 			File depFile = new File(gd.filePath);
-            List<String> fileLines = Files.readLines(depFile, Charset.defaultCharset());
+            List<String> fileLines = Files.readLines(depFile, Charset.forName("utf8"));
 			ArrayList<String> finalLines = new ArrayList<String>();
 			
 			SourceMapConsumerV3 sourceMapConsumer = null;
@@ -704,7 +704,7 @@ public class GoogDepsWriter {
 				sourceMapFile = new File(gd.filePath + ".map");
 				if (sourceMapFile.exists())
 				{
-					String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+					String sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
 					sourceMapConsumer = new SourceMapConsumerV3();
 					try
 					{
