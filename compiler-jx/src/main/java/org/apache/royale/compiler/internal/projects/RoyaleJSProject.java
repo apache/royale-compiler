@@ -133,7 +133,14 @@ public class RoyaleJSProject extends RoyaleProject
 		        }
         	}
         }
-        // IDefinition def = to.getDefinitionPromises().get(0);
+        if (to.getCompilationUnitType() == UnitType.SWC_UNIT)
+        {
+            if (!isGoogProvided(def.getQualifiedName()))
+            {
+                SWCCompilationUnit swcUnit = (SWCCompilationUnit) to;
+                swcExterns.add(swcUnit.getSWC());
+            }
+        }
         boolean isInterface = (actualDef instanceof InterfaceDefinition) && (dt == DependencyType.INHERITANCE);
         if (!isInterface)
         {
@@ -258,6 +265,9 @@ public class RoyaleJSProject extends RoyaleProject
 
     // definitions that had @externs in the source
     public ArrayList<String> sourceExterns = new ArrayList<String>();
+
+    // swcs that contain referenced externs
+    public Set<ISWC> swcExterns = new HashSet<ISWC>();
     
     // definitions that should be considered external linkage
     public Collection<String> unitTestExterns;
