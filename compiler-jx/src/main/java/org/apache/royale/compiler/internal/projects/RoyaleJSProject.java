@@ -33,6 +33,7 @@ import org.apache.royale.compiler.asdoc.IASDocComment;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.clients.JSConfiguration;
 import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
@@ -101,6 +102,24 @@ public class RoyaleJSProject extends RoyaleProject
     private IBackend backend;
 
     public ICompilationUnit mainCU;
+
+    @Override
+    public void addDependency(ICompilationUnit from, ICompilationUnit to, DependencyTypeSet dt, String qname)
+    {
+        if (to.getCompilationUnitType() == UnitType.SWC_UNIT)
+        {
+            List<IDefinition> dp = to.getDefinitionPromises();
+            if(dp.size() > 0)
+            {
+                if (!isGoogProvided(dp.get(0).getQualifiedName()))
+                {
+                    SWCCompilationUnit swcUnit = (SWCCompilationUnit) to;
+                    swcExterns.add(swcUnit.getSWC());
+                }
+            }
+        }
+        super.addDependency(from, to, dt, qname);
+    }
 
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to,
