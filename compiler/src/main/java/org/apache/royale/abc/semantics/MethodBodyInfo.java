@@ -219,13 +219,6 @@ public class MethodBodyInfo
         FrameCountVisitor counts = new FrameCountVisitor(this, diagnosticsVisitor, this.initial_scope);
         getCfg().traverseGraph(counts);
 
-        if (this.getMethodInfo().getMethodName() != null &&
-        		this.getMethodInfo().getMethodName().contentEquals("dispatchEvent") &&
-        		this.getMethodInfo().getParamNames() != null &&
-        		this.getMethodInfo().getParamNames().contains("event1"))
-        {
-        	System.out.println("ComputedFrameCounts: " + counts.max_scope + " " + this.max_scope );
-        }
         // Grrr..  TODO when we tighten up the max_stack,
         // max_scope, etc for code we read out of the flex
         // framework we seem to break that code.

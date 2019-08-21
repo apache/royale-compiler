@@ -19,6 +19,8 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
+import java.util.List;
+
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
@@ -55,9 +57,11 @@ public class ClassEmitter extends JSSubEmitter implements
     @Override
     public void emit(IClassNode node)
     {
-    	boolean keepASDoc = false;
+        boolean keepASDoc = false;
+        boolean verbose = false;
         RoyaleJSProject project = (RoyaleJSProject)getEmitter().getWalker().getProject();
         keepASDoc = project.config != null && project.config.getKeepASDoc();
+        verbose = project.config != null && project.config.isVerbose();
     	
         getModel().pushClass(node.getDefinition());
 
@@ -66,7 +70,16 @@ public class ClassEmitter extends JSSubEmitter implements
         
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && keepASDoc)
-            DocEmitterUtils.loadImportIgnores(fjs, asDoc.commentNoEnd());
+        {
+            List<String> ignoreList = DocEmitterUtils.loadImportIgnores(fjs, asDoc.commentNoEnd());
+            if(verbose)
+            {
+                for(String ignorable : ignoreList)
+                {
+                    System.out.println("Found ignorable: " + ignorable);
+                }
+            }
+        }
         
         boolean suppressExport = (asDoc != null && DocEmitterUtils.hasSuppressExport(fjs, asDoc.commentNoEnd()));
 

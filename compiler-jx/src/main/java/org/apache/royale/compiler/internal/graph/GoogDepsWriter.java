@@ -325,8 +325,6 @@ public class GoogDepsWriter {
 		addDeps(mainName);
 		return true;
 	}
-	
-    public ArrayList<String> additionalHTML = new ArrayList<String>();
     
     private HashMap<String, GoogDep> visited = new HashMap<String, GoogDep>();
     
@@ -548,7 +546,7 @@ public class GoogDepsWriter {
         List<String> fileLines;
 		try {
 			File mainFile = new File(main.filePath);
-			fileLines = Files.readLines(mainFile, Charset.defaultCharset());
+			fileLines = Files.readLines(mainFile, Charset.forName("utf8"));
 
 			SourceMapConsumerV3 sourceMapConsumer = null;
 			File sourceMapFile = null;
@@ -557,7 +555,7 @@ public class GoogDepsWriter {
 				sourceMapFile = new File(main.filePath + ".map");
 				if (sourceMapFile.exists())
 				{
-					String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+					String sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
 					sourceMapConsumer = new SourceMapConsumerV3();
 					try
 					{
@@ -645,7 +643,7 @@ public class GoogDepsWriter {
 		depMap.put(gd.className, gd);
         List<String> fileLines;
 		try {
-			fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
+			fileLines = Files.readLines(new File(gd.filePath), Charset.forName("utf8"));
             FileInfo fi = getFileInfo(fileLines, className);
 			gd.fileInfo = fi;
 		} catch (IOException e) {
@@ -696,7 +694,7 @@ public class GoogDepsWriter {
         {
 			gd = depMap.get(className);
 			File depFile = new File(gd.filePath);
-            List<String> fileLines = Files.readLines(depFile, Charset.defaultCharset());
+            List<String> fileLines = Files.readLines(depFile, Charset.forName("utf8"));
 			ArrayList<String> finalLines = new ArrayList<String>();
 			
 			SourceMapConsumerV3 sourceMapConsumer = null;
@@ -706,7 +704,7 @@ public class GoogDepsWriter {
 				sourceMapFile = new File(gd.filePath + ".map");
 				if (sourceMapFile.exists())
 				{
-					String sourceMapContents = FileUtils.readFileToString(sourceMapFile);
+					String sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
 					sourceMapConsumer = new SourceMapConsumerV3();
 					try
 					{
@@ -1091,7 +1089,6 @@ public class GoogDepsWriter {
 	    fi.suppressLine = -1;
 	    fi.fileoverviewLine = -1;
 	    fi.googProvideLine = -1;
-		boolean inInjectHTML = false;
 	    for (int i = 0; i < n; i++)
 	    {
 	        String line = lines.get(i);
@@ -1103,24 +1100,6 @@ public class GoogDepsWriter {
 	        }
 	        else
 	        {
-		        if (inInjectHTML)
-	            {
-	                if (line.indexOf("</inject_html>") > -1)
-	                {
-	                    inInjectHTML = false;
-	                    continue;
-	                }
-	            	line = line.trim();
-	            	if (line.startsWith("*"))
-	            		line = line.substring(1);
-				    additionalHTML.add(line);
-				    continue;
-	            }
-                c = line.indexOf("<inject_html>");
-                if (c > -1)
-                {
-                    inInjectHTML = true;
-                }
 		        c = line.indexOf("@constructor");
 		        if (c > -1)
 		        {
