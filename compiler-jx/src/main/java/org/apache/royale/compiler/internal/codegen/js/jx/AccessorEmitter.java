@@ -763,6 +763,7 @@ public class AccessorEmitter extends JSSubEmitter implements
             fjs.emitParameters(node.getParametersContainerNode());
             //writeNewline();
             fjs.emitMethodScope(node.getScopedNode());
+			writeNewline();
         }
     }
 }
