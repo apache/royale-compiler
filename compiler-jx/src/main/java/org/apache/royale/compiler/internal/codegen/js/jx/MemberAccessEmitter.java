@@ -95,30 +95,38 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         							rightNode.getNodeID() != ASTNodeID.Op_AtID &&
         							!((rightNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID) && 
         									(((DynamicAccessNode)rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID));
-        		if (descendant || child)
-	        	{
-	        		writeLeftSide(node, leftNode, rightNode);
-	        		if (descendant)
-	        			write(".descendants('");
-	        		if (child)
-	        			write(".child('");	        			
-	        		String s = fjs.stringifyNode(rightNode);
-	        		int dot = s.indexOf('.');
-	        		if (dot != -1)
-	        		{
-	        			String name = s.substring(0, dot);
-	        			String afterDot = s.substring(dot);
-	        			write(name);
-	        			write("')");
-	        			write(afterDot);
-	        		}
-	        		else
-	        		{
-	        			write(s);
-	        			write("')");
-	        		}
-	        		return;
-	        	}
+        		if (descendant || child) {
+					writeLeftSide(node, leftNode, rightNode);
+					if (descendant)
+						write(".descendants(");
+					if (child)
+						write(".child(");
+					String closeMethodCall = "')";
+					String s = "";
+					if (rightNode instanceof INamespaceAccessExpressionNode) {
+						//use a QName to support the namespace access
+						write("new QName(");
+						NamespaceIdentifierNode namespaceIdentifierNode = (NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode();
+						s = fjs.stringifyNode(namespaceIdentifierNode);
+						write(s + ", '");
+						rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+						closeMethodCall = "'))";
+					} else write("'"); //normal string name for child
+			
+					s = fjs.stringifyNode(rightNode);
+					int dot = s.indexOf('.');
+					if (dot != -1) {
+						String name = s.substring(0, dot);
+						String afterDot = s.substring(dot);
+						write(name);
+						write(closeMethodCall);
+						write(afterDot);
+					} else {
+						write(s);
+						write(closeMethodCall);
+					}
+					return;
+				}
         	}
         	else if (isProxy)
         	{
