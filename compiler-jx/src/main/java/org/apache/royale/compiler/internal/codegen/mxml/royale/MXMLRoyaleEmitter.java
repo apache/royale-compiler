@@ -1335,8 +1335,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private void outputBindingInfoAsData(String cname, BindingDatabase bindingDataBase)
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-        .getASEmitter();
-
+                .getASEmitter();
+        
         writeNewline("/**");
         writeNewline(" * @export"); // must export or else GCC will remove it
         writeNewline(" */");
@@ -1345,9 +1345,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
         writeNewline(bindingInfo.size() + ","); // number of bindings
-
+        boolean hadOutput = false;
         for (BindingInfo bi : bindingInfo)
         {
+            if (hadOutput) writeNewline(ASEmitterTokens.COMMA.getToken());
+            hadOutput = true;
             String s;
             IMXMLNode node = bi.node;
             if (node instanceof IMXMLSingleDataBindingNode)
@@ -1438,7 +1440,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
             if (s == null)
             {
-                writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
+                write(ASEmitterTokens.NULL.getToken());
             }
             else if (s.contains("."))
             {
@@ -1451,17 +1453,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     String part = parts[i];
                     write(", " + ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
                 }
-                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+                write(ASEmitterTokens.SQUARE_CLOSE.getToken());
             }
             else
-                writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
-                        ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+                write(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
+                        ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
-
+        
         if (watcherChains != null)
         {
             int count = watcherChains.size();
+            if (hadOutput) {
+                if (count > 0) writeNewline(ASEmitterTokens.COMMA);
+                else writeNewline();
+            }
             for (Entry<Object, WatcherInfoBase> entry : watcherChains)
             {
                 count--;
@@ -1469,6 +1476,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 encodeWatcher(watcherInfoBase);
                 if (count > 0) writeNewline(ASEmitterTokens.COMMA);
             }
+        } else {
+            if (hadOutput) writeNewline();
         }
 
         writeNewline( ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
