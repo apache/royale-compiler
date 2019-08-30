@@ -21,8 +21,11 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
@@ -104,13 +107,44 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 					String closeMethodCall = "')";
 					String s = "";
 					if (rightNode instanceof INamespaceAccessExpressionNode) {
-						//use a QName to support the namespace access
-						write("new QName(");
 						NamespaceIdentifierNode namespaceIdentifierNode = (NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode();
-						s = fjs.stringifyNode(namespaceIdentifierNode);
-						write(s + ", '");
-						rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
-						closeMethodCall = "'))";
+						IDefinition nsDef =  namespaceIdentifierNode.resolve(getProject());
+						if (nsDef instanceof INamespaceDefinition
+								&& ((INamespaceDefinition)nsDef).getNamespaceClassification().equals(INamespaceDefinition.NamespaceClassification.LANGUAGE)) {
+							//deal with built-ins
+							String name = ((NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode()).getName();
+							if (name.equals(INamespaceConstants.ANY)) {
+								//let the internal support within 'QName' class deal with it
+								write("new QName('*', '");
+								//only stringify the right node at the next step (it is the localName part)
+								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+								closeMethodCall = "'))";
+							} else if (name.equals(IASKeywordConstants.PUBLIC)
+									|| name.equals(IASKeywordConstants.PROTECTED)) {
+								//@todo check this, but both public and protected appear to have the effect of skipping the namespace part in swf, so just use default namespace
+								write("/* as3 " + name + " */ '");
+								//skip the namespace to just output the name
+								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+							} else {
+								//this is an unlikely condition, but do something that should give same results as swf...
+								//private, internal namespaces used in an XML context (I don't think this makes sense)
+								//@todo check this, but it seems like it should never match anything in a valid XML query
+								write("new QName('");
+								//provide an 'unlikely' 'uri':
+								write("_as3Lang_" + fjs.stringifyNode(namespaceIdentifierNode));
+								write(s + "', '");
+								//only stringify the right node at the next step (it is the localName part)
+								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+								closeMethodCall = "'))";
+							}
+						} else {
+							write("new QName(");
+							s = fjs.stringifyNode(namespaceIdentifierNode);
+							write(s + ", '");
+							//only stringify the right node at the next step (it is the localName part)
+							rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+							closeMethodCall = "'))";
+						}
 					} else write("'"); //normal string name for child
 			
 					s = fjs.stringifyNode(rightNode);
