@@ -768,19 +768,26 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
     {
         Set<String> states = new HashSet<String>();
 
-        // Iterate over this class and its superclasses.
-        for (IClassDefinition c : classIterable(project, true))
+        // Iterate over the superclasses first, but don't worry about duplicates
+        // yet. The superclasses will find their own duplicates!
+        for (IClassDefinition c : classIterable(project, false))
         {
             for (String state : c.getSkinStates(problems))
             {
-                if (states.contains(state))
-                {
-                    ICompilerProblem problem = new DuplicateSkinStateProblem(c, state);
-                    problems.add(problem);
-                }
-
                 states.add(state);
             }
+        }
+        // Then, add the states from this class and check for duplicates that
+        // specifically come from this class
+        for (String state : getSkinStates(problems))
+        {
+            if (states.contains(state))
+            {
+                ICompilerProblem problem = new DuplicateSkinStateProblem(this, state);
+                problems.add(problem);
+            }
+
+            states.add(state);
         }
 
         return states.toArray(new String[states.size()]);
