@@ -1,3 +1,18 @@
+Apache Royale Compiler 0.9.6
+=================
+
+ - Added -allow-abstract-classes compiler option to enable abstract keyword for classes and methods.
+ - Added -allow-private-constructors compiler option to enable classes with private constructors.
+ - Added -allow-import-aliases compiler option to enable import renaming syntax.
+ - Added -verbose compiler option to reduce console output by default.
+ - Added RoyaleUnit tasks for Apache Ant.
+ - Fix incorrect compiler error when unicodeRange value is specified for Embed metadata.
+ - Fix missing compiler error when adding type parameters to classes other the Vector.
+ - Fix missing compiler error for intantiation of a variable with new that is not typed as Class or Function.
+ - Fix missing compiler warning for missing types on function parameter.
+ - Fix internal cache that broke IDEs that use compiler to provide code intelligence.
+ - Fix automatic type coercion in generated JS so that it better matches SWF behavior.
+
 Apache Royale Compiler 0.9.4
 =================
  
