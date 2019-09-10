@@ -2377,7 +2377,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 						for (int i = 0; i < n; i++)
 						{
 							String item = paramMap[i];
-							if (expectedDefinition.getQualifiedName().equals(item))
+							if (((ITypeDefinition)expectedDefinition).isInstanceOf(item, this))
 							{
 								String alts = altparamMap[i];
 								String[] altList;
