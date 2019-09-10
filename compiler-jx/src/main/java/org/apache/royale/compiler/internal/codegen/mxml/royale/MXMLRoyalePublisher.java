@@ -458,9 +458,9 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                     sourceExternFiles.add(sourceExternPath);
             }
         }
-        for (String file : fileList)
+        if (compilerWrapper != null)
         {
-            if (compilerWrapper != null)
+            for (String file : fileList)
             {
                 compilerWrapper.addJSSourceFile(file);
                 if (googConfiguration.isVerbose())
@@ -468,7 +468,6 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                     System.out.println("using source file: " + file);
                 }
             }
-            collectFileAdditionalHTML(file);
         }
         for (String file : sourceExternFiles)
         {
@@ -482,6 +481,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             }
             collectFileAdditionalHTML(file);
         }
+        additionalHTML.addAll(gdw.additionalHTML);
 
         /////////////////////////////////////////////////////////////////////////////////
         // Generate the index.html for loading the application.
@@ -505,7 +505,9 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
             writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + moduleAdditionHTML + "\n", false);
             gdw.needCSS = true;
-            writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            if (configuration.release()) {
+            	writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            }
         }
         else
         {

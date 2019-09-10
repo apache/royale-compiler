@@ -469,6 +469,19 @@
                 <exclude name="target/META-INF/**"/>
             </fileset>
         </copy>
+        <copy todir="${staging-dir}/royaleunit-ant-tasks" includeEmptyDirs="false">
+            <fileset dir="${basedir}/royaleunit-ant-tasks">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="target/classes/**"/>
+                <exclude name="target/flex/**"/>
+                <exclude name="target/flash/**"/>
+                <exclude name="target/generated-sources/**"/>
+                <exclude name="target/META-INF/**"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="stage-source-jx"
