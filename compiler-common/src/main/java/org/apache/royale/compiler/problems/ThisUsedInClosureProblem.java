@@ -29,6 +29,8 @@ public final class ThisUsedInClosureProblem extends SemanticWarningProblem
 {
     public static final String DESCRIPTION =
         "Encountered ${THIS} keyword within closure. Value of ${THIS} will not be the same as enclosing scope.";
+    
+    public static final int warningCode = 20000;
 
     public ThisUsedInClosureProblem(IASNode site)
     {

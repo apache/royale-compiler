@@ -209,4 +209,9 @@ public interface IASWarningConstants
      * Possible usage of the ActionScript 2.0 <code>XML</code> class.
      */
     static final int XML_CLASS_HAS_CHANGED = 3573;
+
+    /**
+     * Keyword this within closure.
+     */
+    static final int THIS_WITHIN_CLOSURE = 20000;
 }

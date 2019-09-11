@@ -4053,6 +4053,24 @@ public class Configuration
     }
 
     //
+    // 'compiler.warn-this-within-closure' option
+    //
+
+    private boolean warn_this_within_closure = true;
+
+    public boolean warn_this_within_closure()
+    {
+        return warn_this_within_closure;
+    }
+
+    @Config(advanced = true)
+    @Mapping({ "compiler", "warn-this-within-closure" })
+    public void setCompilerWarnThisWithinClosure(ConfigurationValue cv, boolean b)
+    {
+        warn_this_within_closure = b;
+    }
+
+    //
     // compiler.generate-abstract-syntax-tree
     //
 
