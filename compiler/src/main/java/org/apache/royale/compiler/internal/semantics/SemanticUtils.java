@@ -129,6 +129,7 @@ import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
@@ -1321,6 +1322,21 @@ public class SemanticUtils
         return 
             (iNode instanceof ILanguageIdentifierNode) &&
             (((ILanguageIdentifierNode)iNode).getKind() == LanguageIdentifierKind.THIS);
+    }
+
+    /**
+     *  Is this function node contained within another function node?
+     *  @param iNode - the node of interest.
+     *  @return true if the function node is a closure
+     */
+    public static boolean isFunctionClosure(IFunctionNode functionNode)
+    {
+        IScopedNode containingScope = functionNode.getContainingScope();
+        if (containingScope == null)
+        {
+            return false;
+        }
+        return containingScope.getParent() instanceof IFunctionNode;
     }
 
     /**
