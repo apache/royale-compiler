@@ -789,6 +789,14 @@ public class MethodBodySemanticChecker
         {
             FunctionNode func = (FunctionNode)iNode;
 
+            if (SemanticUtils.isFunctionClosure(func))
+            {
+                for (IASNode thisNode : findThisIdentifierNodes(func))
+                {
+                    addProblem(new ThisUsedInClosureProblem(thisNode));
+                }
+            }
+
             IDefinition def = func.getDefinition();
 
             if ( project.getAllowAbstractClasses()
@@ -808,6 +816,24 @@ public class MethodBodySemanticChecker
                 }
             }
         }
+    }
+
+    private static List<IASNode> findThisIdentifierNodes(IASNode iNode)
+    {
+        List<IASNode> result = new ArrayList<IASNode>();
+        for(int i = 0, count = iNode.getChildCount(); i < count; i++)
+        {
+            IASNode child = iNode.getChild(i);
+            if(SemanticUtils.isThisKeyword(child))
+            {
+                result.add(child);
+            }
+            else if(!child.isTerminal() && !(child instanceof IFunctionNode))
+            {
+                result.addAll(findThisIdentifierNodes(child));
+            }
+        }
+        return result;
     }
 
     public void checkNativeMethod(IASNode iNode)
