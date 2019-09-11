@@ -99,7 +99,13 @@ public class JSWriter implements IJSWriter
         
         try
         {
-            jsOut.write(emitter.postProcess(writer.toString()).getBytes("utf8"));
+            String emitted = writer.toString();
+            if(!isExterns)
+            {
+                //nothing to post-process in externs
+                emitted = emitter.postProcess(emitted);
+            }
+            jsOut.write(emitted.getBytes("utf8"));
         }
         catch (IOException e)
         {
