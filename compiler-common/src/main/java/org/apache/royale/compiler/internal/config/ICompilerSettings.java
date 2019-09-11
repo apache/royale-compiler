@@ -547,6 +547,11 @@ public interface ICompilerSettings extends IWriteOnlyProjectSettings
      * Possible usage of the ActionScript 2.0 <code>XML</code> class.
      */
     int WARN_XML_CLASS_HAS_CHANGED = IASWarningConstants.XML_CLASS_HAS_CHANGED;
+
+    /**
+     * Keyword this within closure.
+     */
+    int WARN_THIS_WITHIN_CLOSURE = IASWarningConstants.THIS_WITHIN_CLOSURE;
      
     /**
      * Enables checking of the following ActionScript warnings:
@@ -588,6 +593,7 @@ public interface ICompilerSettings extends IWriteOnlyProjectSettings
      * --compiler.warn-slow-text-field-addition
      * --compiler.warn-unlikely-function-value
      * --compiler.warn-xml-class-has-changed
+     * --compiler.warn-this-within-closure
      * </pre>
      * 
      * @param warningCode Warning code.
@@ -629,6 +635,7 @@ public interface ICompilerSettings extends IWriteOnlyProjectSettings
      * @see #WARN_SLOW_TEXTFIELD_ADDITION
      * @see #WARN_UNLIKELY_FUNCTION_VALUE
      * @see #WARN_XML_CLASS_HAS_CHANGED
+     * @see #WARN_THIS_WITHIN_CLOSURE
      */
     void checkActionScriptWarning(int warningCode, boolean b);
 

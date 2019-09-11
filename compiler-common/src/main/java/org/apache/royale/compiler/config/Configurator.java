@@ -2300,6 +2300,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * --compiler.warn-slow-text-field-addition
      * --compiler.warn-unlikely-function-value
      * --compiler.warn-xml-class-has-changed
+     * --compiler.warn-this-within-closure
      * </pre>
      * 
      * @param warningCode warning code
@@ -2340,6 +2341,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * @see #WARN_SLOW_TEXTFIELD_ADDITION
      * @see #WARN_UNLIKELY_FUNCTION_VALUE
      * @see #WARN_XML_CLASS_HAS_CHANGED
+     * @see #WARN_THIS_WITHIN_CLOSURE
      */
     @Override
     public void checkActionScriptWarning(int warningCode, boolean b)
@@ -2455,6 +2457,9 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             break;
         case WARN_XML_CLASS_HAS_CHANGED:
             key = COMPILER_WARN_XML_CLASS_HAS_CHANGED;
+            break;
+        case WARN_THIS_WITHIN_CLOSURE:
+            key = COMPILER_WARN_THIS_WITHIN_CLOSURE;
             break;
         }
         

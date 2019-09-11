@@ -41,6 +41,7 @@ import org.apache.royale.compiler.problems.OverlappingSourcePathProblem;
 import org.apache.royale.compiler.problems.ScopedToDefaultNamespaceProblem;
 import org.apache.royale.compiler.problems.SemanticWarningProblem;
 import org.apache.royale.compiler.problems.StrictSemanticsProblem;
+import org.apache.royale.compiler.problems.ThisUsedInClosureProblem;
 import org.apache.royale.compiler.problems.VariableHasNoTypeDeclarationProblem;
 
 /**
@@ -65,6 +66,7 @@ import org.apache.royale.compiler.problems.VariableHasNoTypeDeclarationProblem;
  * -warn-instanceof-changes
  * -warn-missing-namespace-decl
  * -warn-no-type-decl
+ * -warn-this-within-closure
  * 
  */
 public class ProblemSettingsFilter implements IProblemFilter
@@ -186,6 +188,8 @@ public class ProblemSettingsFilter implements IProblemFilter
                 ICompilerSettings.WARN_MISSING_NAMESPACE_DECL);
         setShowActionScriptWarning(VariableHasNoTypeDeclarationProblem.class, 
                 ICompilerSettings.WARN_NO_TYPE_DECL);
+        setShowActionScriptWarning(ThisUsedInClosureProblem.class, 
+                ICompilerSettings.WARN_THIS_WITHIN_CLOSURE);
     }
 
     /**
