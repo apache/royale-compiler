@@ -33,7 +33,7 @@ import org.apache.royale.compiler.tree.ASTNodeID;
  */
 public final class ConfigConditionBlockNode extends BlockNode
 {
-    private final boolean enabled;
+    private boolean enabled;
 
     /**
      * Create a enabled or disabled configuration config block.
@@ -57,6 +57,24 @@ public final class ConfigConditionBlockNode extends BlockNode
             return super.getChildCount();
         else
             return 0;
+    }
+
+    @Override
+    protected void fillInOffsets()
+    {
+        boolean oldEnabled = enabled;
+        enabled = true;
+        super.fillInOffsets();
+        enabled = oldEnabled;
+    }
+
+    @Override
+    public void normalize(boolean fillInOffsets)
+    {
+        boolean oldEnabled = enabled;
+        enabled = true;
+        super.normalize(fillInOffsets);
+        enabled = oldEnabled;
     }
     
     @Override
