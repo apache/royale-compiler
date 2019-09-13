@@ -71,7 +71,11 @@ public class FullNameNode extends MemberAccessExpressionNode implements IIdentif
         super(left, operator, right);
         
         if (right != null)
+        {
             setEnd(right.getAbsoluteEnd());
+            setEndLine(right.getEndLine());
+            setEndColumn(right.getEndColumn());
+        }
     }
 
     protected FullNameNode(MemberAccessExpressionNode node)
@@ -145,7 +149,11 @@ public class FullNameNode extends MemberAccessExpressionNode implements IIdentif
         super.setRightOperandNode(right);
         
         if (right != null)
+        {
             setEnd(right.getAbsoluteEnd());
+            setEndLine(right.getEndLine());
+            setEndColumn(right.getEndColumn());
+        }
     }
     
     //
