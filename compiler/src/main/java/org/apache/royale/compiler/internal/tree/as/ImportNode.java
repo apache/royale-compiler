@@ -88,7 +88,7 @@ public class ImportNode extends FixedChildrenNode implements IImportNode
      */
     public ImportNode(ExpressionNodeBase targetImportNode)
     {
-        this.targetImportNode = targetImportNode;
+        this.setImportTarget(targetImportNode);
         importKind = ImportKind.AS_SCOPED_IMPORT;
     }
 
@@ -257,6 +257,13 @@ public class ImportNode extends FixedChildrenNode implements IImportNode
     public void setImportTarget(ExpressionNodeBase targetImportNode)
     {
         this.targetImportNode = targetImportNode;
+
+        if (targetImportNode != null)
+        {
+            setEnd(targetImportNode.getAbsoluteEnd());
+            setEndLine(targetImportNode.getEndLine());
+            setEndColumn(targetImportNode.getEndColumn());
+        }
     }
 
     /**
