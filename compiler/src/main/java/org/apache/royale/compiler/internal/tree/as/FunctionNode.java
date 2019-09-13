@@ -384,7 +384,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                     // metadata, the constructor should be considered private
                     // and we should generate a fake namespace node
                     NamespaceIdentifierNode priv = new NamespaceIdentifierNode(INamespaceConstants.private_);
-                    priv.span(-1, -1, -1, -1);
+                    priv.span(-1, -1, -1, -1, -1, -1);
                     priv.setDecorationTarget(this);
                     return priv;
                 }
@@ -392,7 +392,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             // if there is no namespace node, the namespace defaults to public
             // and we'll generate a fake node
             NamespaceIdentifierNode pub = new NamespaceIdentifierNode(INamespaceConstants.public_);
-            pub.span(-1, -1, -1, -1);
+            pub.span(-1, -1, -1, -1, -1, -1);
             pub.setDecorationTarget(this);
             return pub;
         }

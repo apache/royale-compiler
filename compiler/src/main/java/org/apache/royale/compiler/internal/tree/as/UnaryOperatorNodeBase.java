@@ -148,7 +148,7 @@ public abstract class UnaryOperatorNodeBase extends OperatorNodeBase implements 
     {
         if (operandNode == null && operatorStart != -1)
         {
-            span(operatorStart, operatorStart + 1, -1, -1);
+            span(operatorStart, operatorStart + 1, -1, -1, -1, -1);
         }
         else
         {

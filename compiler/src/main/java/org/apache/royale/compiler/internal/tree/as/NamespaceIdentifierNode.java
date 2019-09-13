@@ -79,7 +79,7 @@ public class NamespaceIdentifierNode extends IdentifierNode implements INamespac
     {
         super(node.getName());
         
-        span(node.getAbsoluteStart(), node.getAbsoluteEnd(), node.getLine(), node.getColumn());
+        span(node.getAbsoluteStart(), node.getAbsoluteEnd(), node.getLine(), node.getColumn(), node.getEndLine(), node.getEndColumn());
         setSourcePath(node.getSourcePath());
     }
 

@@ -1573,7 +1573,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         }
         else
         {
-            block.span(blockToken.getStart() + 1, blockToken.getStart() + 1, blockToken.getLine(), blockToken.getColumn());
+            block.span(blockToken.getStart() + 1, blockToken.getStart() + 1, blockToken.getLine(), blockToken.getColumn(), blockToken.getLine(), blockToken.getColumn());
         }
     }
 

@@ -172,7 +172,7 @@ public final class ParameterNode extends BaseVariableNode implements IParameterN
         if (typeNode == null && isRest())
         {
             typeNode = new IdentifierNode(IASLanguageConstants.Array);
-            typeNode.span(-1, -1, -1, -1);
+            typeNode.span(-1, -1, -1, -1, -1, -1);
             return;
         }
         
