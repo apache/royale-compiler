@@ -198,14 +198,14 @@ class VectorInformation
         //add the fixed getter/setter pair
         GetterNode fixGetter = new GetterNode(null, null, new IdentifierNode("fixed"));
         NamespaceIdentifierNode pub = new NamespaceIdentifierNode(INamespaceConstants.public_);
-        pub.span(-1, -1, -1, -1);
+        pub.span(-1, -1, -1, -1, -1, -1);
         fixGetter.setNamespace(pub);
         fixGetter.setType(null, new IdentifierNode(IASLanguageConstants.Boolean));
         retVal[2] = fixGetter;
 
         SetterNode fixSetter = new SetterNode(null, null, new IdentifierNode("fixed"));
         pub = new NamespaceIdentifierNode(INamespaceConstants.public_);
-        pub.span(-1, -1, -1, -1);
+        pub.span(-1, -1, -1, -1, -1, -1);
         fixSetter.setNamespace(pub);
         fixSetter.setType(null, new IdentifierNode(IASLanguageConstants.void_));
         ParameterNode value = new ParameterNode(new IdentifierNode("value"));

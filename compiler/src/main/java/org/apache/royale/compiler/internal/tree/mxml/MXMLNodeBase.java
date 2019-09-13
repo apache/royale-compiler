@@ -689,6 +689,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param end The ending offset of this node.
      * @param line The number of the line on which this node starts.
      * @param column This number of the column at which this node starts.
+     * @deprecated Use setLocation(String,int,int,int,int,int,int) instead
      */
     public void setLocation(String sourcePath, int start, int end, int line, int column)
     {

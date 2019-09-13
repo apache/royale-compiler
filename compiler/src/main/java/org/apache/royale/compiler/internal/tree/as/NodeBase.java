@@ -483,13 +483,28 @@ public abstract class NodeBase extends SourceLocation implements IASNode
      * @param start start offset for the node
      * @param end end offset for the node
      * @param line line number for the node
+     * @deprecated Use span(int,int,int,int,int,int) instead so that endLine and endColumn are included
      */
     public final void span(int start, int end, int line, int column)
+    {
+        span(start, end, line, column, -1, -1);
+    }
+
+    /**
+     * Set the start and end offsets of the node. Used during parsing.
+     * 
+     * @param start start offset for the node
+     * @param end end offset for the node
+     * @param line line number for the node
+     */
+    public final void span(int start, int end, int line, int column, int endLine, int endColumn)
     {
         setStart(start);
         setEnd(end);
         setLine(line);
         setColumn(column);
+        setEndLine(endLine);
+        setEndColumn(endColumn);
     }
 
     public Collection<ICompilerProblem> runPostProcess(EnumSet<PostProcessStep> set, ASScope containingScope)
