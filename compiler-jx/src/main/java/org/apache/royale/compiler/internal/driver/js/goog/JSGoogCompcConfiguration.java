@@ -459,6 +459,25 @@ public class JSGoogCompcConfiguration extends JSConfiguration
             throws ConfigurationException
     {
     	warnPublicVars = value;
-    }    
+    }
+
+    //
+    // 'inline-constants'
+    //
+
+    private boolean inlineConstants = false;
+
+    public boolean getInlineConstants()
+    {
+        return inlineConstants;
+    }
+
+    @Config
+    @Mapping("inline-constants")
+    public void setInlineConstants(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	inlineConstants = value;
+    }
 
 }
