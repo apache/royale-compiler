@@ -23,11 +23,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.6-SNAPSHOT</version>
   </parent>
 
   <artifactId>compiler</artifactId>
-  <version>0.9.8-SNAPSHOT</version>
+  <version>0.9.6-SNAPSHOT</version>
 
   <name>Apache Royale: Compiler: Compiler</name>
   <description>The Apache Royale Compiler</description>
@@ -538,7 +538,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.8-SNAPSHOT</version>
+      <version>0.9.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.flex</groupId>
@@ -590,13 +590,13 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.8-SNAPSHOT</version>
+      <version>0.9.6-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.8-SNAPSHOT</version>
+      <version>0.9.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
