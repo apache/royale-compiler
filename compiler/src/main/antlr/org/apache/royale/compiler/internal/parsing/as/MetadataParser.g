@@ -386,12 +386,22 @@ other[MetaTagsNode parent] returns [MetaTagNode node]
 
 unknownProperty[MetaTagNode node]
     { 
-    	String attr = null; 
+    	String attr = null;
     }
-    :( attrName:TOKEN_ATTR_UNKNOWN 
-    	{ attr = getText(attrName); }
-    )? 
+
+    : { LA(1) == TOKEN_ATTR_UNKNOWN && LA(2) != TOKEN_STRING }? unknownPropertyNameOnly[node]	
+	| (
+		( attrName:TOKEN_ATTR_UNKNOWN 
+    		{ attr = getText(attrName); }
+    	)? 
     
-    stringVal:TOKEN_STRING 
-		{ node.addToMap(attr, getText(stringVal)); } 
+    	stringVal:TOKEN_STRING 
+			{ node.addToMap(attr, getText(stringVal)); } 
+	)
     ;
+
+unknownPropertyNameOnly[MetaTagNode node]
+
+	: attrName:TOKEN_ATTR_UNKNOWN 
+    	{ node.addToMap(getText(attrName), ""); }
+	;
