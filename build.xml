@@ -258,6 +258,7 @@
 
         <copy todir="${staging-dir}" includeEmptyDirs="false">
             <fileset dir="${basedir}">
+                <include name=".mvn/extensions.xml"/>
                 <include name="build.xml"/>
                 <include name="build.properties"/>
                 <include name="env-template.properties"/>

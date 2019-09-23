@@ -241,6 +241,18 @@
             </plugins>
         </build>
     </profile>
+    <profile>
+        <id>test-using-swf</id>
+        <dependencies>
+            <dependency>
+                <groupId>com.adobe.flash.framework</groupId>
+                <artifactId>playerglobal</artifactId>
+                <version>${flash.version}</version>
+                <type>swc</type>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </profile>
   </profiles>
 
   <build>
