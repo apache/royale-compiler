@@ -3401,4 +3401,121 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 			}
 		}
 	}
+	
+	@Override
+	public void emitWebServiceMethod(IMXMLWebServiceOperationNode node) {
+        MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("i");
+        String propName = null;
+        int l = node.getChildCount();
+        for (int k = 0; k < l; k++)
+        {
+        	IASNode child = node.getChild(k);
+        	if (child.getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+        	{
+        		IMXMLPropertySpecifierNode propNode = (IMXMLPropertySpecifierNode)child;
+        		if (propNode.getName().equals("name"))
+        		{
+        			// assume StringNode with LiteralNode
+        			IMXMLStringNode literalNode = (IMXMLStringNode)propNode.getChild(0);
+        			propName = literalNode.getValue();
+        			break;
+        		}
+        	}
+        }
+    	MXMLDescriptorSpecifier propertySpecifier = new MXMLDescriptorSpecifier();
+    	propertySpecifier.isProperty = true;
+    	propertySpecifier.name = propName;
+    	propertySpecifier.parent = currentInstance;
+    	currentInstance.propertySpecifiers.add(propertySpecifier);
+        moveDown(false, null, propertySpecifier);
+
+		emitInstance(node);
+
+		moveUp(false, false);
+    	// build out the argument list if any
+    	int n = node.getChildCount();
+    	for (int i = 0; i < n; i++)
+    	{
+    		IASNode childNode = node.getChild(i);
+    		if (childNode.getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+    		{
+    			IMXMLPropertySpecifierNode propNode = (IMXMLPropertySpecifierNode)childNode;
+    			if (propNode.getName().equals("arguments"))
+    			{
+    				ArrayList<String> argList = new ArrayList<String>();
+    				childNode = propNode.getChild(0); // this is an MXMLObjectNode
+    				n = childNode.getChildCount();
+    				for (i = 0; i < n; i++)
+    				{
+    					IASNode argNode = childNode.getChild(i);
+    					propNode = (IMXMLPropertySpecifierNode)argNode;
+    					argList.add(propNode.getName());
+    				}
+    				if (argList.size() > 0)
+    				{
+    					StringBuilder list = new StringBuilder();
+    					list.append("[");
+    					int m = argList.size();
+    					for (int j = 0; j < m; j++)
+    					{
+    						if (j > 0)
+    							list.append(",");
+    						list.append("'" + argList.get(j) + "'");
+    					}
+    					list.append("]");
+
+    			        MXMLDescriptorSpecifier operationInstance = propertySpecifier.propertySpecifiers.get(0);
+
+    			        MXMLDescriptorSpecifier argListSpecifier = new MXMLDescriptorSpecifier();
+    			        argListSpecifier.isProperty = true;
+    			        argListSpecifier.name = "argumentNames";
+    			        argListSpecifier.parent = operationInstance;
+    			        argListSpecifier.value = list.toString();
+				        if (operationInstance != null)
+				        	operationInstance.propertySpecifiers.add(argListSpecifier);
+    				}
+    				break;
+    			}
+    		}
+    	}
+	}
+
+	@Override
+	public void emitWebService(IMXMLWebServiceNode node) {
+		emitInstance(node);
+		// now search for Operations, and add an Object that contains them
+		int n = node.getChildCount();
+		MXMLDescriptorSpecifier objectSpecifier = null;
+		MXMLDescriptorSpecifier propertySpecifier = null;
+		for (int i = 0; i < n; i++)
+		{
+			IASNode child = node.getChild(i);
+			if (child.getNodeID() == ASTNodeID.MXMLWebServiceOperationID)
+			{
+		        MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
+		        MXMLDescriptorSpecifier currentInstance =
+		        	currentPropertySpecifier.propertySpecifiers.get(currentPropertySpecifier.propertySpecifiers.size() - 1);
+
+		        if (objectSpecifier == null)
+		        {
+		        	propertySpecifier = new MXMLDescriptorSpecifier();
+		        	propertySpecifier.isProperty = true;
+		        	propertySpecifier.name = "operations";
+		        	propertySpecifier.parent = currentInstance;
+
+			        if (currentInstance != null)
+			        	currentInstance.propertySpecifiers.add(propertySpecifier);
+			        objectSpecifier = new MXMLDescriptorSpecifier();
+			        objectSpecifier.isProperty = false;
+			        objectSpecifier.name = formatQualifiedName(IASLanguageConstants.Object);
+			        objectSpecifier.parent = propertySpecifier;
+			        propertySpecifier.propertySpecifiers.add(objectSpecifier);
+			        instances.add(objectSpecifier);
+		        }
+	            moveDown(false, objectSpecifier, null);
+                getMXMLWalker().walk(child); // RemoteObjectMethod
+	            moveUp(false, true);
+			}
+		}
+	}
 }

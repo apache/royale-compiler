@@ -48,6 +48,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 import org.apache.royale.compiler.visitor.IBlockVisitor;
 import org.apache.royale.compiler.visitor.mxml.IMXMLBlockVisitor;
@@ -164,6 +166,12 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLRemoteObjectMethodID:
             visitor.visitRemoteObjectMethod((IMXMLRemoteObjectMethodNode) node);
             break;
+        case MXMLWebServiceID:
+            visitor.visitWebService((IMXMLWebServiceNode) node);
+            break;
+        case MXMLWebServiceOperationID:
+            visitor.visitWebServiceMethod((IMXMLWebServiceOperationNode) node);
+            break;
         case MXMLApplicationID:
         case MXMLBindingAttributeID:
         case MXMLClassID:
@@ -183,8 +191,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLReparentID:
         //case MXMLRepeaterID:
         case MXMLResourceID:
-        case MXMLWebServiceID:
-        case MXMLWebServiceOperationID:
         default:
             throw new IllegalArgumentException(
                     "No handler specified for nodes of type '"

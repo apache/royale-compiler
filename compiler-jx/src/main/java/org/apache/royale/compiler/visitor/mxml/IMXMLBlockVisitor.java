@@ -48,6 +48,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.visitor.IBlockVisitor;
 
@@ -143,4 +145,8 @@ public interface IMXMLBlockVisitor extends IBlockVisitor
     void visitRemoteObjectMethod(IMXMLRemoteObjectMethodNode node);
 
 	void visitRemoteObject(IMXMLRemoteObjectNode node);
+
+	void visitWebServiceMethod(IMXMLWebServiceOperationNode node);
+
+	void visitWebService(IMXMLWebServiceNode node);
 }
