@@ -1233,12 +1233,20 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     		        if (ASNodeUtils.hasParenOpen(node))
     		            write(ASEmitterTokens.PAREN_OPEN);
 
+    		        IExpressionNode rightNode = obj.getRightOperandNode();
     	            String s = stringifyNode(obj.getLeftOperandNode());
+    	            boolean needsQuotes = rightNode.getNodeID() != ASTNodeID.Op_AtID;
     	            write(s);
-    	            write(".removeChild('");
-    	            s = stringifyNode(obj.getRightOperandNode());
+    	            write(".removeChild(");
+    	            if (needsQuotes)
+    	            	write("'");
+    	            else
+    	            	write(s + ".");
+    	            s = stringifyNode(rightNode);
     	            write(s);
-    	            write("')");
+    	            if (needsQuotes)
+    	            	write("'");
+    	            write(")");
     		        if (ASNodeUtils.hasParenClose(node))
     		            write(ASEmitterTokens.PAREN_CLOSE);
     		        return;

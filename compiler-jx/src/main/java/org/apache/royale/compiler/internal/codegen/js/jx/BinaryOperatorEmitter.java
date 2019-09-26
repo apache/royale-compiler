@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
@@ -246,7 +247,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 {
                 	DynamicAccessNode dyn = (DynamicAccessNode)rnode;
                 	ITypeDefinition type = dyn.getRightOperandNode().resolveType(getProject());
-                	if (type.isInstanceOf("String", getProject()) || type.isInstanceOf("Object", getProject()))
+                	if (type.isInstanceOf("String", getProject()) || type.isInstanceOf("Object", getProject())
+                			|| type == getProject().getBuiltinType(BuiltinType.ANY_TYPE))
         			{
                 		String field;
                     	if (node.getNodeID() == ASTNodeID.Op_AssignId)

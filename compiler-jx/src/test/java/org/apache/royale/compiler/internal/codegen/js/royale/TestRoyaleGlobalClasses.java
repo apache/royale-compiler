@@ -948,6 +948,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLDeleteAttribute()
+    {
+        IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.@attr1;");
+        asBlockWalker.visitUnaryOperator(node);
+        assertOut("a.removeChild(a.attribute('attr1'))");
+    }
+    
+    @Test
     public void testXMLDeleteChain()
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.child.grandchild;");
@@ -1231,6 +1239,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     public void testXMLSetAttributeBracketPropObject()
     {
         IBinaryOperatorNode node = getBinaryNode("var z:Object = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@[z] = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setAttribute(z, 'foo')");
+    }
+    
+    @Test
+    public void testXMLSetAttributeBracketPropStar()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var z:* = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@[z] = 'foo'");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a.setAttribute(z, 'foo')");
     }
