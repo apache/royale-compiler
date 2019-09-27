@@ -849,6 +849,22 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLLiteralMultilineNoSemicolon()
+    {
+        IVariableNode node = getVariable("var a:XML = <top />\nvar foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( '<top />')");
+    }
+    
+    @Test
+    public void testXMLLiteralMultilineNoSemicolonWithAttribute()
+    {
+        IVariableNode node = getVariable("var a:XML = <top attr1='cat'/>\nvar foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'/>\")");
+    }
+    
+    @Test
     public void testXMLLiteralWithTemplate()
     {
         VariableNode node = (VariableNode)getNode("private function get tagname():String { return 'name'; };\n" +
