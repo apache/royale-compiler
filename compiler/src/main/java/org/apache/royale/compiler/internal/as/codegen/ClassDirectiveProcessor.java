@@ -21,10 +21,7 @@ package org.apache.royale.compiler.internal.as.codegen;
 
 import static org.apache.royale.abc.ABCConstants.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.instructionlist.InstructionList;
@@ -51,48 +48,16 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
-import org.apache.royale.compiler.definitions.IAccessorDefinition;
-import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.definitions.IConstantDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IInterfaceDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
-import org.apache.royale.compiler.problems.AbstractOutsideClassProblem;
-import org.apache.royale.compiler.problems.BadAccessAbstractMethodProblem;
-import org.apache.royale.compiler.problems.CircularTypeReferenceProblem;
-import org.apache.royale.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
-import org.apache.royale.compiler.problems.ConstructorIsGetterSetterProblem;
-import org.apache.royale.compiler.problems.ConstructorIsStaticProblem;
-import org.apache.royale.compiler.problems.ConstructorMustBePublicOrPrivateProblem;
-import org.apache.royale.compiler.problems.ConstructorMustBePublicProblem;
-import org.apache.royale.compiler.problems.DuplicateClassDefinitionProblem;
-import org.apache.royale.compiler.problems.DynamicNotOnClassProblem;
-import org.apache.royale.compiler.problems.FinalOutsideClassProblem;
-import org.apache.royale.compiler.problems.ForwardReferenceToBaseClassProblem;
-import org.apache.royale.compiler.problems.FunctionNotMarkedOverrideProblem;
-import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
-import org.apache.royale.compiler.problems.InvalidOverrideProblem;
-import org.apache.royale.compiler.problems.MultipleContructorDefinitionsProblem;
-import org.apache.royale.compiler.problems.NativeVariableProblem;
-import org.apache.royale.compiler.problems.OverrideFinalProblem;
-import org.apache.royale.compiler.problems.OverrideNotFoundProblem;
-import org.apache.royale.compiler.problems.StaticAndOverrideProblem;
-import org.apache.royale.compiler.problems.StaticNamespaceDefinitionProblem;
-import org.apache.royale.compiler.problems.SyntaxProblem;
-import org.apache.royale.compiler.problems.VirtualOutsideClassProblem;
+import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.ICommonClassNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
@@ -112,13 +77,8 @@ import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.MethodBodySemanticChecker;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
-import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
-import org.apache.royale.compiler.internal.tree.as.ClassNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionNode;
-import org.apache.royale.compiler.internal.tree.as.ImportNode;
-import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
-import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.utils.ASTUtil;
+import org.apache.royale.utils.ArrayLikeUtil;
 
 /**
  * A ClassDirectiveProcessor generates an ABC class
@@ -620,8 +580,16 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     Integer.toString(ctorDef.getNameStart()), true);
             if (metaTag != null)
                 metaTags = MetaTag.addMetaTag(metaTags, metaTag);
-        }        
-
+        }
+    
+        if (ArrayLikeUtil.definitionIsArrayLike(classDefinition)) {
+            ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+            boolean valid = ArrayLikeUtil.validateArrayLikeDefinition(classDefinition, classScope.getProject(), problems);
+            if (!valid){
+                classScope.getProject().getProblems().addAll(problems);
+            }
+        }
+        
         this.classScope.processMetadata(tv, metaTags);
         tv.visitEnd();
         
@@ -816,7 +784,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         final boolean is_constructor = func.isConstructor();
         
         ICompilerProject project = classScope.getProject();
-        
+        ASTUtil.processFunctionNode(func, project, false);
         boolean isBindable = false;
         if (funcDef instanceof AccessorDefinition)
         {

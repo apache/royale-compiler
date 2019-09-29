@@ -16,12 +16,12 @@
  *  limitations under the License.
  *
  */
-
 package org.apache.royale.compiler.internal.tree.as;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
@@ -34,6 +34,24 @@ import org.apache.royale.compiler.tree.as.IForLoopNode;
 
 public class ForLoopNode extends FixedChildrenNode implements IForLoopNode
 {
+    
+    /**
+     * Support for an externally defined loop mutation (AST manipulation)
+     */
+    public static interface ILoopMutation{
+        IForLoopNode.ForLoopKind getKind();
+        IForLoopNode getLoopTarget();
+        boolean mutatesConditionals();
+        boolean mutatesContents();
+        boolean isValid();
+        IExpressionNode getIterationTarget();
+        List<NodeBase> getAnalyzeRequests();
+        void prepareConditionals(boolean firstUse, FunctionCallNode factoryFuncCall);
+        void prepareContent();
+        void processConditionals(ASScope scope, Collection<ICompilerProblem> problems);
+        void processContents(ASScope scope, Collection<ICompilerProblem> problems);
+    }
+    
     /**
      * Constructor.
      */
@@ -125,6 +143,10 @@ public class ForLoopNode extends FixedChildrenNode implements IForLoopNode
         // Put header statements into the current block
         conditionsStatementsNode.analyze(set, scope, problems);
         contentsNode.analyze(set, scope, problems);
+        // add for-each kind for subsequent post-processing step at function scope level
+        if (kind == ForLoopKind.FOR_EACH) {
+            scope.addForEach(this);
+        }
     }
     
     //
@@ -171,4 +193,36 @@ public class ForLoopNode extends FixedChildrenNode implements IForLoopNode
     {
         return contentsNode;
     }
+    
+    //special case for mutating loop in post-process stage, after definitions are available
+    public Collection<ICompilerProblem> processMutation(ILoopMutation mutation, ASScope scope) {
+        assert mutation != null && mutation.getLoopTarget() == this : "Loop mutation is not aligned with target for mutation";
+        Collection<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+        if (mutation.isValid()) {
+            IForLoopNode.ForLoopKind newKind = mutation.getKind();
+            if (kind != newKind) {
+                //handle anything related to that change
+                kind = newKind;
+            }
+            if (mutation.mutatesConditionals()) {
+                //handle anything related to that change
+                mutation.processConditionals(scope, problems);
+            }
+            if (mutation.mutatesContents()) {
+                //handle anything related to that change
+                mutation.processContents(scope, problems);
+            }
+            List<NodeBase> analyzeRequests = mutation.getAnalyzeRequests();
+            if (analyzeRequests != null) {
+                EnumSet<PostProcessStep> set = EnumSet.of(
+                        PostProcessStep.POPULATE_SCOPE);
+                for (NodeBase node: analyzeRequests) {
+                    node.analyze(set,scope, problems);
+                }
+            }
+            
+        }
+        return problems;
+    }
 }
+

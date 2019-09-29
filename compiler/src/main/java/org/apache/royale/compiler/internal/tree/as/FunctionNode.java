@@ -832,7 +832,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             assert openT != null : "Expected '{' token.";
 
             final String sourcePath = getSourcePath();
-            assert sourcePath != null && !sourcePath.isEmpty() : "Souce path not set.";
+            assert sourcePath != null && !sourcePath.isEmpty() : "Source path not set.";
 
             final FileNode fileNode = (FileNode)getAncestorOfType(FileNode.class);
             assert fileNode != null : "FileNode not found: function " + getName();

@@ -58,7 +58,7 @@ public class RoyaleProjectConfigurator extends Configurator
     /**
      * These imports will eventually come from royale-config.xml.
      * <p>
-     * Note taht we include AIR-specific imports even for non-AIR projects.
+     * Note that we include AIR-specific imports even for non-AIR projects.
      * This does not cause compiler warnings about unknown imports
      * in non-AIR projects because the implicit imports don't get
      * semantically checked.

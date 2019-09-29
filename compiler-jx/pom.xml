@@ -86,7 +86,7 @@
           <excludes>
             <exclude>**/TestRoyaleFile.java</exclude>
             <exclude>**/TestRoyaleMXML*.java</exclude>
-            <exclude>**/TestSourceMap*.java</exclude>
+            <exclude>**/TestSourceMapMXML*.java</exclude>
             <exclude>**/TestMXML*.java</exclude>
             <exclude>**/TestRoyaleClass.java</exclude>
             <exclude>**/TestTypedefsCompile.java</exclude>

@@ -148,15 +148,14 @@ public abstract class TreeNode extends NodeBase
     {
         if (children instanceof List)
         {
-            //TODO update offsets
-            CheapArray.replace(position, child, emptyNodeArray);
+            ((List) children).add(position, child);
         }
         else
         {
             ArrayList<IASNode> newArray = new ArrayList<IASNode>();
             Collections.addAll(newArray, (IASNode[])children);
             newArray.add(position, child);
-            children = newArray.toArray();
+            children = CheapArray.toArray(newArray, emptyNodeArray);
         }
         child.setParent(this);
     }
@@ -245,7 +244,7 @@ public abstract class TreeNode extends NodeBase
         if (child != null)
         {
             //use safe remove call
-            CheapArray.remove(child, children, emptyNodeArray);
+            children = CheapArray.remove(child, children, emptyNodeArray);
             child.setParent(null);
         }
     }

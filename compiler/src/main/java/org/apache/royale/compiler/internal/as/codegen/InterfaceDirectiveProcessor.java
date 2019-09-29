@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.as.codegen;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.royale.abc.ABCConstants;
@@ -80,6 +81,7 @@ import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.utils.ArrayLikeUtil;
 
 /**
  *  The InterfaceDirectiveProcessor translates an InterfaceNode AST
@@ -252,6 +254,13 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
         setup_insns.addInstruction(OP_initproperty, interfaceName);
         
         ITraitVisitor tv = this.interfaceScope.getGlobalScope().traitsVisitor.visitClassTrait(TRAIT_Class, interfaceName, 0, cinfo);
+        if (ArrayLikeUtil.definitionIsArrayLike(interfDef)) {
+            ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+            boolean valid = ArrayLikeUtil.validateArrayLikeDefinition(interfDef, this.interfaceScope.getProject(), problems);
+            if (!valid){
+                this.interfaceScope.getProject().getProblems().addAll(problems);
+            }
+        }
         this.interfaceScope.processMetadata(tv, interfDef.getAllMetaTags());
         tv.visitEnd();
     }

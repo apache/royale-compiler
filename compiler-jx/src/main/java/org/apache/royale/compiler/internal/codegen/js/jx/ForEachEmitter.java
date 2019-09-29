@@ -35,7 +35,6 @@ import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IForLoopNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.IVariableExpressionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
@@ -117,6 +116,15 @@ public class ForEachEmitter extends JSSubEmitter implements
                 isProxy = true;
             }
         }
+        else if (obj.getNodeID() == ASTNodeID.Op_DescendantsID)
+        {
+            //it should always be XMLList... but check anyway
+            if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
+            {
+                write(".elementNames()");
+                isXML = true;
+            }
+        }
         else if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
         {
             if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
@@ -164,19 +172,28 @@ public class ForEachEmitter extends JSSubEmitter implements
         writeNewline();
         write(ASEmitterTokens.BLOCK_OPEN);
         writeNewline();
-        startMapping(childNode);
+        
         if (childNode instanceof IVariableExpressionNode)
         {
+            startMapping(childNode);
             write(ASEmitterTokens.VAR);
             write(ASEmitterTokens.SPACE);
-            write(((IVariableNode) childNode.getChild(0)).getName());
+            write(((IVariableNode) childNode.getChild(0)).getName()); //it's always a local var
+            //putting this in here instead of common code following the 2 blocks to keep sourcemap tests passing
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.SPACE);
+            endMapping(childNode);
         }
-        else
-            write(((IIdentifierNode) childNode).getName());
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.EQUAL);
-        write(ASEmitterTokens.SPACE);
-        endMapping(childNode);
+        else { //IdentifierNode
+            getWalker().walk(childNode); //we need to walk here, to deal with non-local var identifiers
+            startMapping(childNode);
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.SPACE);
+            endMapping(childNode);
+        }
+      
         startMapping(rnode);
         write(targetName);
         if (isXML)

@@ -40,6 +40,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.utils.ASTUtil;
 
 public class MethodEmitter extends JSSubEmitter implements
         ISubEmitter<IFunctionNode>
@@ -63,7 +64,8 @@ public class MethodEmitter extends JSSubEmitter implements
         ICompilerProject project = getWalker().getProject();
 
         fjs.getDocEmitter().emitMethodDoc(node, project);
-
+        ASTUtil.processFunctionNode(fn, project, true);
+        
         boolean isConstructor = node.isConstructor();
 
         boolean addingBindableImplementsSupport = isConstructor &&

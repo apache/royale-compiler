@@ -52,6 +52,7 @@ import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IForLoopNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.workspaces.IWorkspace;
@@ -69,6 +70,8 @@ public abstract class ASScope extends ASScopeBase
 
     protected static final NamespaceDefinition.IUseNamespaceDirective[] EMPTY_USE_ARRAY =
             new NamespaceDefinition.IUseNamespaceDirective[0];
+    
+    private static IForLoopNode[] EMPTY_FOREACH_ARRAY = new IForLoopNode[0];
 
     /**
      * Constructor
@@ -122,7 +125,20 @@ public abstract class ASScope extends ASScopeBase
     private NamespaceDefinition.INamespaceDirective lastNamespaceDirective;
 
     private boolean inWith = false;
-
+    
+    private Object forEachs = null;
+    public boolean getHasForEach(){
+        return forEachs != null;
+    }
+    public void addForEach(IForLoopNode value){
+        if (forEachs == null) forEachs = CheapArray.create(1);
+        CheapArray.add(value, forEachs);
+    }
+    public IForLoopNode[] getForEachs(boolean remove){
+        IForLoopNode[] returnForEachs = (IForLoopNode[]) CheapArray.toArray(forEachs, EMPTY_FOREACH_ARRAY);
+        if (remove) forEachs = null;
+        return returnForEachs;
+    }
     /**
      * Sets the scope which lexically contains this scope.
      * 
