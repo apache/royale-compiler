@@ -22,6 +22,8 @@ package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import java.io.File;
 import java.io.FilterWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,6 +82,7 @@ import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -92,6 +95,7 @@ import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.royale.swc.ISWC;
 
 import com.google.common.base.Joiner;
+import com.google.common.io.Files;
 import com.google.debugging.sourcemap.FilePosition;
 
 /**
@@ -463,6 +467,95 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            			}
 	            		}
 	            	}
+	            	String servicesPath = royaleProject.getServicesXMLPath();
+	            	if (servicesPath != null)
+	            	{
+	            		File servicesFile = new File(servicesPath);
+	            		if (!servicesFile.exists())
+	            		{
+	            			FileNotFoundProblem prob = new FileNotFoundProblem(servicesPath);
+	            			royaleProject.getProblems().add(prob);
+	            		}
+	            		else
+	            		{
+	            			// should use XML parser to skip over comments
+	            			// but this will work for now
+	            	        List<String> fileLines = null;
+	            			try {
+	            				fileLines = Files.readLines(new File(servicesPath), Charset.forName("utf8"));
+	            			} catch (IOException e) {
+	            				// TODO Auto-generated catch block
+	            				e.printStackTrace();
+	            			}
+	            			StringBuffer sb = new StringBuffer();
+	            			boolean inComment = false;
+	            			boolean inChannels = false;
+	            			for (String s : fileLines)
+	            			{
+	            	    		s = s.trim();
+	            	    		if (s.contains("<!--"))
+	            	    		{
+	            	    			if (!s.contains("-->"))
+	            	    				inComment = true;
+	            	    			continue;
+	            	    		}
+	            	    		if (inComment)
+	            	    		{
+	            	    			if (s.contains("-->"))
+	            	    				inComment = false;
+	            	    			continue;
+	            	    		}
+	            				if (s.contains("service-include"))
+	            				{
+	            					int c = s.indexOf("file-path");
+	            					c = s.indexOf("\"", c);
+	            					int c2 = s.indexOf("\"", c + 1);
+	            					String filePath = s.substring(c + 1, c2);
+	            					File subFile = new File(servicesFile.getParentFile(), filePath);
+	    	            	        List<String> subfileLines;
+	    	            			try {
+	    	            				subfileLines = Files.readLines(subFile, Charset.forName("utf8"));
+		    	            			s = getSubFileContent(subfileLines);
+		    	            			sb.append(s);
+	    	            			} catch (IOException e) {
+	    	            				// TODO Auto-generated catch block
+	    	            				e.printStackTrace();
+	    	            			}
+	            				}
+	            				else 
+	            				{
+	            					sb.append(s + " ");
+	            					if (s.contains("<channel-definition"))
+	            						inChannels = true;
+	            					if (s.contains("<endpoint"))
+	            						inChannels = false;
+	            					if (inChannels && s.contains("class"))
+	            					{
+		            					int c = s.indexOf("class");
+		            					c = s.indexOf("\"", c);
+		            					int c2 = s.indexOf("\"", c + 1);
+		            					String className = s.substring(c + 1, c2);
+		    		                    StringBuilder appendString = new StringBuilder();
+		    		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		    		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		    		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		    		                    appendString.append(className);
+		    		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		    		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		    		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+		    	                        finalLines.add(endRequires, appendString.toString());
+		    	                        addLineToMappings(endRequires);
+		                                endRequires++;
+	            					}
+	            				}
+	            			}
+        					String servicesInject = sep + "\"servicesConfig\"" + ": ";
+        					servicesInject += "'" + sb.toString().trim() + "'";
+    		            	sep = ",\n";
+    		            	infoInject += servicesInject;
+
+	            		}
+	            	}
 	            	infoInject += "}};";
                     finalLines.add(infoInject);
                     int newLineIndex = 0;
@@ -529,7 +622,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	return Joiner.on("\n").join(finalLines);
     }
 
-    public void startMapping(ISourceLocation node)
+    private String getSubFileContent(List<String> subfileLines) {
+    	StringBuffer sb = new StringBuffer();
+    	for (String s : subfileLines)
+    	{
+    		s = s.trim();
+    		if (s.startsWith("<?xml"))
+    			continue;
+    		else
+    		{
+    			sb.append(s + " ");
+    		}
+    	}
+    	return sb.toString();
+	}
+
+	public void startMapping(ISourceLocation node)
     {
         startMapping(node, node.getLine(), node.getColumn());
     }
