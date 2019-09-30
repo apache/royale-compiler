@@ -41,6 +41,7 @@ import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.tree.as.ConfigConditionBlockNode;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.ParameterNode;
@@ -77,6 +78,16 @@ public class EmitterUtils
             IASNode child = scope.getChild(i);
             if (child instanceof ITypeNode)
                 return (ITypeNode) child;
+            else if (child.getNodeID() == ASTNodeID.ConfigBlockID)
+            {
+            	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)child;
+            	if (configNode.getChildCount() > 0)
+            	{
+            		child = configNode.getChild(0);
+                    if (child instanceof ITypeNode)
+                        return (ITypeNode) child;
+            	}
+            }
         }
         return null;
     }
