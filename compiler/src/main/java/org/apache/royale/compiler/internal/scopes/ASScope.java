@@ -71,7 +71,7 @@ public abstract class ASScope extends ASScopeBase
     protected static final NamespaceDefinition.IUseNamespaceDirective[] EMPTY_USE_ARRAY =
             new NamespaceDefinition.IUseNamespaceDirective[0];
     
-    private static IForLoopNode[] EMPTY_FOREACH_ARRAY = new IForLoopNode[0];
+    private static IForLoopNode[] EMPTY_LOOPCHECK_ARRAY = new IForLoopNode[0];
 
     /**
      * Constructor
@@ -126,18 +126,18 @@ public abstract class ASScope extends ASScopeBase
 
     private boolean inWith = false;
     
-    private Object forEachs = null;
-    public boolean getHasForEach(){
-        return forEachs != null;
+    private Object loopChecks = null;
+    public boolean getHasLoopCheck(){
+        return loopChecks != null;
     }
-    public void addForEach(IForLoopNode value){
-        if (forEachs == null) forEachs = CheapArray.create(1);
-        CheapArray.add(value, forEachs);
+    public void addLoopCheck(IForLoopNode value){
+        if (loopChecks == null) loopChecks = CheapArray.create(1);
+        CheapArray.add(value, loopChecks);
     }
-    public IForLoopNode[] getForEachs(boolean remove){
-        IForLoopNode[] returnForEachs = (IForLoopNode[]) CheapArray.toArray(forEachs, EMPTY_FOREACH_ARRAY);
-        if (remove) forEachs = null;
-        return returnForEachs;
+    public IForLoopNode[] getLoopChecks(boolean remove){
+        IForLoopNode[] returnLoopChecks = (IForLoopNode[]) CheapArray.toArray(loopChecks, EMPTY_LOOPCHECK_ARRAY);
+        if (remove) loopChecks = null;
+        return returnLoopChecks;
     }
     /**
      * Sets the scope which lexically contains this scope.

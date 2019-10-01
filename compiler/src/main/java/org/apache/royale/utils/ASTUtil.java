@@ -32,9 +32,9 @@ public class ASTUtil {
             return;
         }
         ArrayLikeUtil.preProcessGetterSetters(project, funcNode.getScopedNode(), null);
-        if (funcNode.getDefinition().getContainedScope().getHasForEach()) {
+        if (funcNode.getDefinition().getContainedScope().getHasLoopCheck()) {
             //pre-process for 'ArrayLike' for-each mutations
-            ArrayLikeUtil.preProcessForEachLoops(funcNode.getDefinition().getContainedScope(), project, dynamicTarget);
+            ArrayLikeUtil.preProcessLoopChecks(funcNode.getDefinition().getContainedScope(), project, dynamicTarget);
         }
        
     }

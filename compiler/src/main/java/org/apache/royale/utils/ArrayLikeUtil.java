@@ -277,23 +277,25 @@ public class ArrayLikeUtil
      * @param project
      * @param useDynamicAccess
      */
-    public static void preProcessForEachLoops(ASScope searchScope,ICompilerProject project, boolean useDynamicAccess) {
+    public static void preProcessLoopChecks(ASScope searchScope,ICompilerProject project, boolean useDynamicAccess) {
 
         ScopedBlockNode funcScopeNode = (ScopedBlockNode) searchScope.getScopeNode();
         
-        IForLoopNode[] forEachs = searchScope.getForEachs(true);
-        List<IForLoopNode> forEachList = Arrays.asList(forEachs);
+        IForLoopNode[] forLoops = searchScope.getLoopChecks(true);
+        List<IForLoopNode> forLoopList = Arrays.asList(forLoops);
         boolean importAdded = false;
         ArrayList<String> usedIterators = new ArrayList<String>();
-        for (IForLoopNode loopNode : forEachList) {
+        for (IForLoopNode loopNode : forLoopList) {
             int depth = 0;
             IASNode nodeCheck = loopNode;
             while (nodeCheck.getParent() != null && nodeCheck.getParent() != funcScopeNode) {
-                if (nodeCheck.getParent() instanceof IForLoopNode && forEachList.indexOf(nodeCheck.getParent()) != -1) {
+                if (nodeCheck.getParent() instanceof IForLoopNode && forLoopList.indexOf(nodeCheck.getParent()) != -1) {
                     depth++;
                 }
                 nodeCheck = nodeCheck.getParent();
             }
+            //are we dealing with a regular for..in or a for each..in loop:
+            boolean isForeach = loopNode.getKind() == IForLoopNode.ForLoopKind.FOR_EACH;
             //create a valid name for the iterator at the current depth of for-each loops, re-using previous declared variables, where possible
             String arrIter = ARRAY_LIKE_FOREACH_ITERATOR_VARNAME_BASE + depth;
             IDefinition targetType;
@@ -376,7 +378,7 @@ public class ArrayLikeUtil
                 IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(targetType, project);
                 IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
         
-                //change the loop node to: for(arrIter:Object = arrayLike(instance,"{lengthCheck}","{getterCheck}" or (null if getterCheck=="[]"), Boolean(lengthAccess=="method")); arrIter.hasNext();)
+                //change the loop node to: for(arrIter:Object = arrayLike(instance,"{lengthCheck}","{getterCheck}" or (null if getterCheck=="[]"), Boolean(lengthAccess=="method"), Boolean(!isForEach)); arrIter.hasNext();)
                 // {
                 // {!alreadyUsed: var} originalName{!alreadyUsed: :OriginalType} =  arrIter.getNext();
                 // {originalBody Loop body}
@@ -413,6 +415,14 @@ public class ArrayLikeUtil
                 metaArg = new LiteralNode(ILiteralNode.LiteralType.BOOLEAN, ArrayLikeUtil.getLengthAccessArg(arrayLikeTag).equals("method") ? "true" : "false");
                 metaArg.setSynthetic(true); //may not be needed
                 specificIteratorFunc.getArgumentsNode().addItem(metaArg);
+                
+                //distinguish whether this iterator is values (for each(x in y)) or keys (regular for (x in y))
+                if (!isForeach) {
+                    //we add an extra boolean true indicating that we only want to iterate over keys (and not values)
+                    metaArg = new LiteralNode(ILiteralNode.LiteralType.BOOLEAN, "true");
+                    metaArg.setSynthetic(true); //may not be needed
+                    specificIteratorFunc.getArgumentsNode().addItem(metaArg);
+                }
         
                 mutation.prepareConditionals(!alreadyUsed, specificIteratorFunc);
                 mutation.prepareContent();

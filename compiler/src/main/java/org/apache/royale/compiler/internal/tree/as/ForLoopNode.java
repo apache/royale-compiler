@@ -144,8 +144,10 @@ public class ForLoopNode extends FixedChildrenNode implements IForLoopNode
         conditionsStatementsNode.analyze(set, scope, problems);
         contentsNode.analyze(set, scope, problems);
         // add for-each kind for subsequent post-processing step at function scope level
-        if (kind == ForLoopKind.FOR_EACH) {
-            scope.addForEach(this);
+        if (kind == ForLoopKind.FOR_EACH
+                //also support for - in loops:
+                || conditionsStatementsNode.getChildCount() == 1 && conditionsStatementsNode.getChild(0).getNodeID() == ASTNodeID.Op_InID) {
+            scope.addLoopCheck(this);
         }
     }
     
