@@ -1182,7 +1182,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.attribute('attr2') == 'fish')})");
+        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(/** @type {XML} */ node){return (node.attribute('attr2') == 'fish')})");
     }
     
     @Test
@@ -1192,7 +1192,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.child('year') == '2016')})");
+        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(/** @type {XML} */ node){return (node.child('year') == '2016')})");
     }
     
     @Test
@@ -1200,7 +1200,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("private var attribute:Function; private function test() {var a:XMLList; a = a.(attribute('name').length())};", IBinaryOperatorNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = a.filter(function(node){return (node.attribute('name').length())})");
+        assertOut("a = a.filter(function(/** @type {XML} */ node){return (node.attribute('name').length())})");
     }
     
     @Test
@@ -1264,7 +1264,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a.(@id==3).@height = '100px'");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.filter(function(node){return (node.attribute('id') == 3)}).setAttribute('height', '100px')");
+        assertOut("a.filter(function(/** @type {XML} */ node){return (node.attribute('id') == 3)}).setAttribute('height', '100px')");
     }
     
     @Test

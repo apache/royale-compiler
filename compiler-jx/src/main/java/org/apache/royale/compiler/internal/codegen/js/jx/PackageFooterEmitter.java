@@ -447,6 +447,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
                 String ns = fnNode.getNamespace();
                 if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
                 {
+                	if (getModel().suppressedExportNodes.contains(fnNode)) continue;
                 	MethodData data = new MethodData();
 					data.isStatic = isStatic;
                 	methodData.add(data);

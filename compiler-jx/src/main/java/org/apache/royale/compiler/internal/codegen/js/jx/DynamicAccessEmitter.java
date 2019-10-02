@@ -79,6 +79,15 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         		isProxy = fjs.isProxy((IExpressionNode)leftOperandNode);
 	    	if (isXML)
 	    	{
+				if (type == null) {
+	    			//this can happen if myThing is of type Object or AnyType (*)
+					//with example: myXml.somethingChild[myThing.id]
+	    			//use Stringify with 'child' method, which has support for attributes vs elements
+					write(".child('' +");
+						getWalker().walk(rightOperandNode);
+					write(")");
+					return;
+				}
 				if (type.isInstanceOf("String", getProject()))
 				{
 					String field = fjs.stringifyNode(rightOperandNode);

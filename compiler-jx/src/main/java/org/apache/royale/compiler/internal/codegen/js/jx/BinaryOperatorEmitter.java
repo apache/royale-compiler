@@ -39,11 +39,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class BinaryOperatorEmitter extends JSSubEmitter implements
@@ -428,6 +424,23 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
     			}
             }
+            
+			if (id == ASTNodeID.Op_EqualID) {
+				//QName == QName
+				if (leftDef != null && leftDef.getQualifiedName().equals("QName")) {
+					IDefinition rightDef = node.getRightOperandNode().resolveType(getProject());
+					if (rightDef != null && rightDef.getQualifiedName().equals("QName")) {
+						//handle non-strict equality a little differently
+						write("QName.equality(");
+						getWalker().walk(node.getLeftOperandNode());
+						write(",");
+						getWalker().walk(node.getRightOperandNode());
+						write(")");
+						return;
+					}
+				}
+			}
+			
 		
 			super_emitBinaryOperator(node, isAssignment);
         }

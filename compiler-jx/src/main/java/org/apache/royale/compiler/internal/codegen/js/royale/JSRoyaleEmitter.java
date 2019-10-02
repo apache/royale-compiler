@@ -79,39 +79,15 @@ import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.problems.FilePrivateItemsWithMainVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IAccessorNode;
-import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IEmbedNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFileNode;
-import org.apache.royale.compiler.tree.as.IForLoopNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
-import org.apache.royale.compiler.tree.as.IGetterNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.IInterfaceNode;
-import org.apache.royale.compiler.tree.as.ILiteralNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.royale.compiler.tree.as.INamespaceNode;
-import org.apache.royale.compiler.tree.as.IPackageNode;
-import org.apache.royale.compiler.tree.as.IScopedNode;
-import org.apache.royale.compiler.tree.as.ISetterNode;
-import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
-import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 import com.google.common.base.Joiner;
@@ -587,25 +563,58 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitNamespace(INamespaceNode node)
     {
     	needNamespace = true;
-        write(formatQualifiedName(node.getQualifiedName()));
+    	if (node.getContainingScope().getScope() instanceof PackageScope) {
+            startMapping(node);
+            write(formatQualifiedName(node.getQualifiedName()));
+            endMapping(node);
+        } else if (node.getContainingScope().getScope() instanceof FunctionScope){
+            writeToken(ASEmitterTokens.VAR);
+            write("/** @type {"+IASLanguageConstants.Namespace+"} */");
+            startMapping(node);
+            write(node.getName());
+            endMapping(node);
+        } else {
+    	    //class member - static scope
+            if (!(node.getDefinition().getParent() instanceof IClassDefinition)) {
+                startMapping(node);
+                write(node.getQualifiedName());
+                endMapping(node);
+            } else {
+                write(node.getDefinition().getParent().getQualifiedName());
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                startMapping(node);
+                write(node.getName());
+                endMapping(node);
+            }
+        }
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         writeToken(ASEmitterTokens.NEW);
+        startMapping(node);
         write(IASLanguageConstants.Namespace);
+        endMapping(node);
         write(ASEmitterTokens.PAREN_OPEN);
         if (!staticUsedNames.contains(IASLanguageConstants.Namespace))
         	staticUsedNames.add(IASLanguageConstants.Namespace);
         IExpressionNode uriNode = node.getNamespaceURINode();
         if (uriNode == null)
         {
+            startMapping(node);
             write(ASEmitterTokens.SINGLE_QUOTE);
             write(node.getName());
             write(ASEmitterTokens.SINGLE_QUOTE);
+            endMapping(node);
         }
         else
         	getWalker().walk(uriNode);
         write(ASEmitterTokens.PAREN_CLOSE);
-        write(ASEmitterTokens.SEMICOLON);
+    }
+    
+    @Override
+    public void emitUseNamespace(IUseNamespaceNode node)
+    {
+        write("//use namespace ");
+        getWalker().walk(node.getTargetNamespaceNode());
     }
 
     public boolean isCustomNamespace(FunctionNode node)
@@ -981,13 +990,35 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
     	getWalker().walk(node.getLeftOperandNode());
     	getModel().inE4xFilter = true;
-    	write(".filter(function(node){return (");
     	String s = stringifyNode(node.getRightOperandNode());
     	if (s.startsWith("(") && s.endsWith(")"))
     		s = s.substring(1, s.length() - 1);
-    	write(s);
-    	write(")})");
+        if (s.contains("this")) {
+            //it *could* be in some string content, but most likely is an actual 'this' reference
+            //so always bind to 'this' to correctly resolve the external references for the instance scope of the original code.
+            write(".filter((function(/** @type {XML} */ node){return (");
+            write(s);
+            write(")})");
+            write(".bind(this))");
+        } else {
+            write(".filter(function(/** @type {XML} */ node){return (");
+            write(s);
+            write(")})");
+        }
     	getModel().inE4xFilter = false;
+    }
+    
+    @Override
+    public  void emitE4XDefaultNamespaceDirective(IDefaultXMLNamespaceNode node){
+        //leave a comment at the original code location
+        write("// e4x default namespace active: ");
+        getWalker().walk(node.getKeywordNode());
+        write(" = ");
+        getWalker().walk(node.getExpressionNode());
+        //register the namespace for the current function scope (and only for function scopes (observed behavior) )
+        if (node.getContainingScope().getScope() instanceof FunctionScope) {
+            getModel().registerDefaultXMLNamespace(((FunctionScope)node.getContainingScope().getScope()), node.getExpressionNode());
+        }
     }
 
     @Override
@@ -1253,9 +1284,39 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	{
         		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
         			write("node.");
-            	write("attribute('");
-        		getWalker().walk(node.getOperandNode());
-            	write("')");
+            	write("attribute(");
+            	if (op instanceof INamespaceAccessExpressionNode) {
+            	    //parent.@ns::attributeName
+                    write("XML.createAttributeQName(");
+                    write("new QName(");
+                    getWalker().walk(((INamespaceAccessExpressionNode) op).getLeftOperandNode());
+                    write(",'");
+                    getWalker().walk(((INamespaceAccessExpressionNode) op).getRightOperandNode());
+                    write("')");
+                    write(")");
+                } else {
+            	    if (getModel().defaultXMLNamespaceActive
+                            && op instanceof IIdentifierNode
+                            && node.getContainingScope().getScope() instanceof FunctionScope
+                            && getModel().getDefaultXMLNamespace((FunctionScope)(node.getContainingScope().getScope())) !=null) {
+            	        //apply default namespace to this attributes query
+                        //parent.@attributeName (with default xml namespace set in scope)
+                        write("XML.swfCompatibleQuery(");
+            	        write("new QName(");
+                        getWalker().walk(getModel().getDefaultXMLNamespace((FunctionScope)(node.getContainingScope().getScope())));
+                        write(",'");
+                        getWalker().walk(node.getOperandNode());
+                        write("')");
+                        write(", true"); //attribute flag
+                        write(")");
+                    } else {
+            	        //default namespace is ''
+            	        write("'");
+                        getWalker().walk(node.getOperandNode());
+                        write("'");
+                    }
+                }
+            	write(")");
         	}
         	else if (node.getParent().getNodeID() == ASTNodeID.ArrayIndexExpressionID)
         	{

@@ -59,7 +59,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         INamespaceNode node = (INamespaceNode) getNode("public namespace foo;",
         		INamespaceNode.class, WRAP_LEVEL_NONE);
         asBlockWalker.visitNamespace(node);
-        assertOut("foo = new Namespace('foo');");
+        assertOut("foo = new Namespace('foo')");
     }
     
     @Test
@@ -68,7 +68,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         INamespaceNode node = (INamespaceNode) getNode("public namespace foo = 'bar';",
         		INamespaceNode.class, WRAP_LEVEL_NONE);
         asBlockWalker.visitNamespace(node);
-        assertOut("foo = new Namespace('bar');");
+        assertOut("foo = new Namespace('bar')");
     }
     
     @Test

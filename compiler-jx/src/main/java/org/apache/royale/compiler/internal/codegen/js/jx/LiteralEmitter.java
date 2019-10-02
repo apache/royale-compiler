@@ -30,6 +30,7 @@ import org.apache.royale.compiler.common.IMetaInfo;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.royale.compiler.internal.tree.as.XMLLiteralNode;
@@ -139,7 +140,21 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                        s = "\"" + s + "\"";
 	                    }
 	                    // use formatQualifiedName to get XML in the usedNames dependencies
-	                    s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
+                        if (getModel().defaultXMLNamespaceActive &&
+                                xmlNode.getContainingScope().getScope() instanceof FunctionScope &&
+                                getModel().getDefaultXMLNamespace((FunctionScope)(xmlNode.getContainingScope().getScope())) != null) {
+                                    s = getEmitter().formatQualifiedName("XML")
+                                    + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                                    + "constructWithDefaultXmlNS"
+                                    + "("
+                                    + s
+                                    //we need to append the default ns arg:
+                                    +","
+                                    + getEmitter().stringifyNode(getModel().getDefaultXMLNamespace((FunctionScope)(xmlNode.getContainingScope().getScope())))
+                                    +")";
+                            
+                        }
+	                    else s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
 	                }
                 }
                 else

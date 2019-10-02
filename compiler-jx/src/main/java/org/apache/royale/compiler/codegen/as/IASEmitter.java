@@ -25,47 +25,7 @@ import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.INestingEmitter;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IBlockNode;
-import org.apache.royale.compiler.tree.as.ICatchNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
-import org.apache.royale.compiler.tree.as.IEmbedNode;
-import org.apache.royale.compiler.tree.as.IForLoopNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
-import org.apache.royale.compiler.tree.as.IGetterNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.IIfNode;
-import org.apache.royale.compiler.tree.as.IImportNode;
-import org.apache.royale.compiler.tree.as.IInterfaceNode;
-import org.apache.royale.compiler.tree.as.IIterationFlowNode;
-import org.apache.royale.compiler.tree.as.IKeywordNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.ILiteralContainerNode;
-import org.apache.royale.compiler.tree.as.ILiteralNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceNode;
-import org.apache.royale.compiler.tree.as.INumericLiteralNode;
-import org.apache.royale.compiler.tree.as.IObjectLiteralValuePairNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IReturnNode;
-import org.apache.royale.compiler.tree.as.ISetterNode;
-import org.apache.royale.compiler.tree.as.ISwitchNode;
-import org.apache.royale.compiler.tree.as.ITernaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IThrowNode;
-import org.apache.royale.compiler.tree.as.ITryNode;
-import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IUseNamespaceNode;
-import org.apache.royale.compiler.tree.as.IVariableExpressionNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
-import org.apache.royale.compiler.tree.as.IWhileLoopNode;
-import org.apache.royale.compiler.tree.as.IWithNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 import org.apache.royale.compiler.visitor.IBlockWalker;
@@ -366,6 +326,8 @@ public interface IASEmitter extends INestingEmitter
     void emitContainer(IContainerNode node);
 
     void emitE4XFilter(IMemberAccessExpressionNode node);
+    
+    void emitE4XDefaultNamespaceDirective(IDefaultXMLNamespaceNode node);
 
     void emitUseNamespace(IUseNamespaceNode node);
 

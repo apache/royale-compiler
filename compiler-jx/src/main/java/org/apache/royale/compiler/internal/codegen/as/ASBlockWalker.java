@@ -453,8 +453,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitDefaultXMLNamespace(IDefaultXMLNamespaceNode node)
     {
         debug("visitDefaultXMLNamespace()");
-        walk(node.getKeywordNode()); // default xml namespace
-        walk(node.getExpressionNode()); // "http://ns.whatever.com"
+        emitter.emitE4XDefaultNamespaceDirective(node);
     }
 
     @Override

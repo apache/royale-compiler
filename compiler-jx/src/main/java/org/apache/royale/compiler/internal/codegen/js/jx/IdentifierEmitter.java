@@ -41,9 +41,6 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
-import org.apache.royale.compiler.internal.tree.as.BinaryOperatorDivisionAssignmentNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -73,7 +70,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
         IASNode parentNode = node.getParent();
         ASTNodeID parentNodeId = parentNode.getNodeID();
         IASNode grandparentNode = parentNode.getParent();
-        ASTNodeID grandparentNodeId = (parentNode != null) ? grandparentNode.getNodeID() : null;
+  //      ASTNodeID grandparentNodeId = (parentNode != null) ? grandparentNode.getNodeID() : null;
 
         boolean identifierIsAccessorFunction = nodeDef instanceof AccessorDefinition;
         boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
@@ -292,10 +289,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 emitName = false;
             }
         }
-
-        //IDefinition parentDef = (nodeDef != null) ? nodeDef.getParent() : null;
-        //boolean isNative = (parentDef != null)
-        //        && NativeUtils.isNative(parentDef.getBaseName());
+        
         if (emitName)
         {
             if (nodeDef != null)
@@ -389,8 +383,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 endMapping(node);
             }
-            else if (grandparentNodeId == ASTNodeID.E4XFilterID &&
-            		(!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.Op_DescendantsID)))
+            else if (getModel().inE4xFilter && EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node) /* swapped this out to allow for deeper nesting inside the filter expression ... instead of original:grandparentNodeId == ASTNodeID.E4XFilterID*/
+            		&& (!(parentNodeId == ASTNodeID.MemberAccessExpressionID
+                    || parentNodeId == ASTNodeID.Op_DescendantsID
+                    || parentNodeId == ASTNodeID.FunctionCallID)))
             {
                 startMapping(node);
                 write("child('");

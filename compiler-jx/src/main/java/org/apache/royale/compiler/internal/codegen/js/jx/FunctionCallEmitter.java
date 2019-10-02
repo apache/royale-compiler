@@ -37,6 +37,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
@@ -78,7 +79,19 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 if (nameNode instanceof IdentifierNode
                         && (((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.String)
                         || ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.Boolean)
-                        || ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.Number)))
+                        || ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.Number)
+                        || (
+                            (
+                                ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.QName) ||
+                                ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.XML)
+                            )
+                            //use an alternate 'constructor' if there is an alternate default namespace
+                            && getModel().defaultXMLNamespaceActive
+                            && node.getContainingScope().getScope() instanceof FunctionScope
+                            && getModel().getDefaultXMLNamespace((FunctionScope)node.getContainingScope().getScope()) != null
+                        )
+                    )
+                )
                 {
                     omitNew = true;
                 }
@@ -228,6 +241,45 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             write(JSRoyaleEmitterTokens.UNDERSCORE);
                         write(def.getQualifiedName());
                         endMapping(nameNode);
+                    } else if( def.getQualifiedName().equals("QName")
+                            && getModel().defaultXMLNamespaceActive
+                            //is the execution context relevant
+                            && node.getContainingScope().getScope() instanceof FunctionScope
+                            && getModel().getDefaultXMLNamespace(((FunctionScope)node.getContainingScope().getScope()))!=null
+                    ) {
+    
+                        IExpressionNode alternateDefaultNS = getModel().getDefaultXMLNamespace(((FunctionScope)node.getContainingScope().getScope()));
+                        
+                        write("QName.createWithDefaultNamespace");
+                        endMapping(nameNode);
+                        startMapping(node.getArgumentsNode());
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        endMapping(node.getArgumentsNode());
+                        write("/* compiler-added default namespace: */ ");
+                        getEmitter().getWalker().walk(alternateDefaultNS);
+                        
+                        int argCount = node.getArgumentsNode().getChildCount();
+                        if (argCount>0)
+                            write(",");
+                        
+                        ((FunctionCallArgumentsEmitter) ((JSRoyaleEmitter) getEmitter()).functionCallArgumentsEmitter).emitContents(node.getArgumentsNode());
+    
+                        startMapping(node.getArgumentsNode());
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        endMapping(node.getArgumentsNode());
+                        return;
+                    } else if( def.getQualifiedName().equals("XML")
+                            && node.getArgumentsNode().getChildCount() == 1
+                            && getModel().defaultXMLNamespaceActive
+                            //is the execution context relevant
+                            && node.getContainingScope().getScope() instanceof FunctionScope
+                            && getModel().getDefaultXMLNamespace(((FunctionScope)node.getContainingScope().getScope()))!=null
+                    ){
+                        write("XML.constructWithDefaultXmlNS");
+                        //patch in the defaultNS arg (at position 1.
+                        EmitterUtils.createDefaultNamespaceArg(node.getArgumentsNode(),1,getModel().getDefaultXMLNamespace(((FunctionScope)node.getContainingScope().getScope())));
+                        getEmitter().emitArguments(node.getArgumentsNode());
+                        return;
                     }
                     else
                     {
@@ -513,6 +565,16 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     else if (def.getBaseName().equals(IASLanguageConstants.XML))
                     {
                     	write("XML.conversion");
+                    	if (getModel().defaultXMLNamespaceActive) {
+                    	    //add the default namespace as a second param
+                            if (node.getContainingScope().getScope() instanceof FunctionScope) {
+                                IExpressionNode defaultNS =  getModel().getDefaultXMLNamespace((FunctionScope)(node.getContainingScope().getScope()));
+                                if (defaultNS != null) {
+                                    //append the 'default' namespace as a second argument in the conversion function. Only applies if parsing is required.
+                                    EmitterUtils.createDefaultNamespaceArg(node.getArgumentsNode(), 1, defaultNS);
+                                }
+                            }
+                        }
                         getEmitter().emitArguments(node.getArgumentsNode());
                     	return;
                     }

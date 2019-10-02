@@ -267,8 +267,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                             suppressClosure = true;
                         
                         String suppressExport = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
-                        if (docText.contains(suppressExport))
+                        if (docText.contains(suppressExport)) {
                             emitExports = false;
+                            if (IASKeywordConstants.PUBLIC.equals(ns)) // suppress it for reflection data checks:
+                                ((JSRoyaleEmitter) (emitter)).getModel().suppressedExportNodes.add(node);
+                        }
                         
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
@@ -441,6 +444,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             ignoreList.add(ignore);
             index = doc.indexOf(ignoreToken, index + endIndex);
         }
+    }
+    
+    public boolean hasIgnore(String qName) {
+        return ignoreList !=null && qName != null && ignoreList.contains(qName);
     }
     
     private void loadKeepers(String doc)

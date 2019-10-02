@@ -35,15 +35,10 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IAccessorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 
 public class ClassEmitter extends JSSubEmitter implements
         ISubEmitter<IClassNode>
@@ -192,6 +187,9 @@ public class ClassEmitter extends JSSubEmitter implements
                     writeNewline();
                     getEmitter().emitMethod((IFunctionNode) dnode);
                     write(ASEmitterTokens.SEMICOLON);
+                    if (getModel().defaultXMLNamespaceActive) {
+                        getModel().registerDefaultXMLNamespace((FunctionScope) ((IFunctionNode) dnode).getScopedNode().getScope(), null);
+                    }
                 }
             }
             else if (dnode.getNodeID() == ASTNodeID.GetterID
@@ -211,6 +209,14 @@ public class ClassEmitter extends JSSubEmitter implements
                 writeNewline();
                 writeNewline();
                 getEmitter().emitField((IVariableNode) dnode);
+                startMapping(dnode, dnode);
+                write(ASEmitterTokens.SEMICOLON);
+                endMapping(dnode);
+            } else if (dnode.getNodeID() == ASTNodeID.NamespaceID) {
+                writeNewline();
+                writeNewline();
+                writeNewline();
+                getEmitter().emitNamespace((INamespaceNode) dnode);
                 startMapping(dnode, dnode);
                 write(ASEmitterTokens.SEMICOLON);
                 endMapping(dnode);
