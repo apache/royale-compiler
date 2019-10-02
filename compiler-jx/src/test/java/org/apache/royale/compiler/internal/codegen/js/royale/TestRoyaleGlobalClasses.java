@@ -946,6 +946,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testXMLSingleDotBracketQName()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var q:QName; var b:XMLList = a[q];");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(2);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.child(q)");
+    }
+    
+    @Test
     public void testXMLSingleDotChain()
     {
         IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a.child.grandchild;");

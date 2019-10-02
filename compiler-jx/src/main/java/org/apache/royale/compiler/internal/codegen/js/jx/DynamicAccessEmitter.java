@@ -90,7 +90,13 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 					else
 						write(".child(" + field + ")");
 					return;
-				}    		
+				}
+				else if (type.isInstanceOf("QName", getProject()))
+				{
+					String field = fjs.stringifyNode(rightOperandNode);					
+					write(".child(" + field + ")");
+					return;
+				}
 	    	}
         	else if (isProxy)
         	{
