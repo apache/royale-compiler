@@ -146,7 +146,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -206,7 +205,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -268,7 +266,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -342,7 +339,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +

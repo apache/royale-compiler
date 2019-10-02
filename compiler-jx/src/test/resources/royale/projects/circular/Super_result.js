@@ -71,14 +71,12 @@ Super.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
 Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
 /**
  * Provide reflection support for distinguishing dynamic fields on class object (static)
- * @export
  * @const
  * @type {Array<string>}
  */

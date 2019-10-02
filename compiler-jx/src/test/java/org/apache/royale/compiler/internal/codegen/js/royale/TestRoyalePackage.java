@@ -107,7 +107,6 @@ public class TestRoyalePackage extends TestGoogPackage
         		"  };\n" +
         		"};\n"+
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -161,7 +160,6 @@ public class TestRoyalePackage extends TestGoogPackage
         		"  };\n" +
         		"};\n"+
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -225,7 +223,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -296,7 +293,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -360,7 +356,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -432,7 +427,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -505,7 +499,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -552,7 +545,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -623,7 +615,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -698,7 +689,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -789,7 +779,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -867,14 +856,12 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"/**\n" +
 				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {Array<string>}\n" +
 				" */\n" +
@@ -984,7 +971,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -1054,7 +1040,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -1136,7 +1121,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -1184,7 +1168,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -1240,7 +1223,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -1326,14 +1308,12 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
 				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
 				"/**\n" +
 				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {Array<string>}\n" +
 				" */\n" +

@@ -804,7 +804,6 @@ public class TestRoyaleStatements extends TestGoogStatements
         		        		"};\n" +
                                 "};\n" +
                                 "/**\n" +
-                                " * @export\n" +
                                 " * @const\n" +
                                 " * @type {number}\n" +
                                 " */\n" +

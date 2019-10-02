@@ -556,7 +556,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		//add compiletime descriptor flags
 		//doc emitter-ish:
 		writeNewline("/**");
-		writeNewline(" * @export");
 		writeNewline(" * @const");
 		writeNewline(" * @type {number}");
 		writeNewline(" */");
@@ -1075,7 +1074,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			//doc emitter-ish:
 			writeNewline("/**");
 			writeNewline(" * Provide reflection support for distinguishing dynamic fields on class object (static)");
-			writeNewline(" * @export");
 			writeNewline(" * @const");
 			writeNewline(" * @type {Array<string>}");
 			writeNewline(" */");
