@@ -43,6 +43,7 @@ public class JSSessionModel
         public IGetterNode getter;
         public ISetterNode setter;
         public ITypeDefinition type;
+        public boolean suppressExport;
     }
 
     public static class BindableVarInfo

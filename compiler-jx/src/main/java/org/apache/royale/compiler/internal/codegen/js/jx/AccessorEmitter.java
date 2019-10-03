@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ASModifier;
@@ -124,8 +125,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.MEMBER_ACCESS);
                     	write(propName);
                     }
-                    write(ASEmitterTokens.SEMICOLON);                	
-                	
+                    write(ASEmitterTokens.SEMICOLON);
                 }
                 else
                 {
@@ -318,7 +318,8 @@ public class AccessorEmitter extends JSSubEmitter implements
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
             	writeNewline("/**");
-                if (emitExports)
+            	//if either one is marked as suppressed, both are considered to be
+                if (emitExports && !(p.suppressExport))
                 	writeNewline("  * @export");
                 if (p.type != null)
                 {
@@ -604,7 +605,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
             	writeNewline("/**");
-                if (emitExports)
+                if (emitExports && !p.suppressExport)
                 	writeNewline("  * @export");
                 if (p.type != null)
                 	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
@@ -672,7 +673,11 @@ public class AccessorEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-
+        boolean suppress = !getModel().suppressExports &&
+				node.getASDocComment() != null &&
+				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken());
+       if (suppress) getModel().suppressedExportNodes.add(node);
+				
         IDefinition def = node.getDefinition();
         ModifiersSet modifierSet = def.getModifiers();
         boolean isStatic = (modifierSet != null && modifierSet
@@ -689,6 +694,7 @@ public class AccessorEmitter extends JSSubEmitter implements
             map.put(name, p);
         }
         p.getter = node;
+		if (!p.suppressExport) p.suppressExport = suppress;
         ICompilerProject project = (ICompilerProject)getWalker().getProject();
         if (project != null)
         	p.type = node.getDefinition().resolveReturnType(project);
@@ -701,6 +707,10 @@ public class AccessorEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) fjs.getDocEmitter();
+		boolean suppress = !getModel().suppressExports &&
+				node.getASDocComment() != null &&
+				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken());
+		if (suppress) getModel().suppressedExportNodes.add(node);
 
         IFunctionDefinition def = node.getDefinition();
         ModifiersSet modifierSet = def.getModifiers();
@@ -718,6 +728,7 @@ public class AccessorEmitter extends JSSubEmitter implements
             map.put(name, p);
         }
         p.setter = node;
+        if (!p.suppressExport) p.suppressExport = suppress;
         ICompilerProject project = (ICompilerProject)getWalker().getProject();
         if (project != null)
         {

@@ -296,6 +296,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					//todo consider outputting consts, none output for now
 					continue;
 				}
+				//explicit exclusion from reflection data:
+				if (getModel().suppressedExportNodes.contains(varNode)) {
+					continue;
+				}
                 if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC )))
                 {
                 	name = varNode.getName();
@@ -380,15 +384,23 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
+                boolean suppressed = getModel().suppressedExportNodes.contains(fnNode);
 
                 if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
                 {
 					String accessorName = fnNode.getName();
                 	AccessorData data = accessorMap.get(accessorName);
 					if (data == null) {
+						if (suppressed) continue;
 						data = new AccessorData();
+					} else {
+						if (suppressed) {
+							accessorData.remove(data);
+							accessorMap.remove(accessorName);
+							continue;
+						}
 					}
-                	data.name = fnNode.getName();
+                	data.name = accessorName;
 
                 	if (!accessorData.contains(data)) accessorData.add(data);
             	    if (dnode.getNodeID() == ASTNodeID.GetterID) {

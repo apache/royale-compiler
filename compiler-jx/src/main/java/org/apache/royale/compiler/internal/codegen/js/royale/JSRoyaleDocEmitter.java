@@ -589,12 +589,16 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                
 
             }
-            if (!(node.getASDocComment() instanceof ASDocComment
+            boolean avoidExport = (node.getASDocComment() instanceof ASDocComment
                     && ((ASDocComment)node.getASDocComment()).commentNoEnd()
-                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()))) {
-                emitPublic(node);
-            }
+                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
             
+            if (!avoidExport) {
+                emitPublic(node);
+            } else {
+                //we should also remove it from reflection data... provide a check here for that.
+                ((JSRoyaleEmitter)emitter).getModel().suppressedExportNodes.add(node);
+            }
         }
 
         if (node.isConst())
