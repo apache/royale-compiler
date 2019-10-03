@@ -467,6 +467,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            			}
 	            		}
 	            	}
+	            	String contextRoot = royaleProject.getServciesContextRoot();
+	            	if (contextRoot != null)
+	            	{
+    					String contextInject = sep + "\"contextRoot\"" + ": ";
+    					contextInject += "'" + contextRoot.trim() + "'";
+		            	sep = ",\n";
+		            	infoInject += contextInject;
+	            	}
 	            	String servicesPath = royaleProject.getServicesXMLPath();
 	            	if (servicesPath != null)
 	            	{
