@@ -1351,77 +1351,12 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      */
     public boolean isXMLList(MemberAccessExpressionNode obj)
     {
-    	IExpressionNode leftNode = obj.getLeftOperandNode();
-    	IExpressionNode rightNode = obj.getRightOperandNode();
-    	ASTNodeID rightID = rightNode.getNodeID();
-		if (rightID == ASTNodeID.IdentifierID)
-		{
-			IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
-			if (rightDef != null)
-			{
-				if (SemanticUtils.isXMLish(rightDef, getWalker().getProject()))
-				{
-					return isLeftNodeXMLish(leftNode);
-				}
-				return false;
-			}
-			return isLeftNodeXMLish(leftNode);
-		}
-		else if (rightID == ASTNodeID.Op_AtID)
-			return true;
-		return false;
+		return EmitterUtils.isXMLList(obj, getWalker().getProject());
     }
 
     public boolean isLeftNodeXMLish(IExpressionNode leftNode)
     {
-    	ASTNodeID leftID = leftNode.getNodeID();
-		if (leftID == ASTNodeID.IdentifierID)
-		{
-			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
-			if (leftDef != null)
-				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
-		}
-		else if (leftID == ASTNodeID.MemberAccessExpressionID || leftID == ASTNodeID.Op_DescendantsID)
-		{
-			MemberAccessExpressionNode maen = (MemberAccessExpressionNode)leftNode;
-	    	IExpressionNode rightNode = maen.getRightOperandNode();
-	    	ASTNodeID rightID = rightNode.getNodeID();
-			if (rightID == ASTNodeID.IdentifierID)
-			{
-				IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
-				if (rightDef != null)
-				{
-					return SemanticUtils.isXMLish(rightDef, getWalker().getProject());
-				}
-			}
-			leftNode = maen.getLeftOperandNode();
-			return isLeftNodeXMLish(leftNode);
-		}
-		else if (leftID == ASTNodeID.FunctionCallID)
-		{
-			FunctionCallNode fcn = (FunctionCallNode)leftNode;
-			String fname = fcn.getFunctionName();
-			if (fname.equals("XML") || fname.equals("XMLList"))
-				return true;
-		}
-		else if (leftID == ASTNodeID.Op_AsID)
-		{
-			BinaryOperatorAsNode boan = (BinaryOperatorAsNode)leftNode;
-			String fname = ((IdentifierNode)boan.getChild(1)).getName();
-			if (fname.equals("XML") || fname.equals("XMLList"))
-				return true;
-		}
-		else if (leftID == ASTNodeID.ArrayIndexExpressionID)
-		{
-			leftNode = (IExpressionNode)(leftNode.getChild(0));
-			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
-			if (leftDef != null)
-				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
-
-		}
-		else if (leftID == ASTNodeID.E4XFilterID)
-			return true;
-    	return false;
+    	return EmitterUtils.isLeftNodeXMLish(leftNode, getWalker().getProject());
     }
 
     /**
@@ -1511,16 +1446,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      */
     public boolean isXML(IExpressionNode obj)
     {
-		// See if the left side is XML or XMLList
-		IDefinition leftDef = obj.resolveType(getWalker().getProject());
-		if (leftDef == null && obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-		{
-			return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode());
-		}
-		else if (leftDef != null && leftDef.getBaseName().equals("*") && obj instanceof DynamicAccessNode) {
-            return isXML(((DynamicAccessNode)obj).getLeftOperandNode());
-        }
-		return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
+		return EmitterUtils.isXML(obj, getWalker().getProject());
     }
 
     public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)

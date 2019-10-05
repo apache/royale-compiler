@@ -25,10 +25,7 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.IPackageDefinition;
-import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -42,6 +39,7 @@ import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -66,7 +64,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
 
-        IASNode leftNode = node.getLeftOperandNode();
+        IExpressionNode leftNode = node.getLeftOperandNode();
         IASNode rightNode = node.getRightOperandNode();
 
     	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
@@ -82,20 +80,37 @@ public class MemberAccessEmitter extends JSSubEmitter implements
     		return;
         }
         IDefinition def = node.resolve(getProject());
-        if (def == null)
+        //extra check to cope with e4x member access identifier nodes that resolve
+		//to instance member function definitions
+		//but should not be interpreted as such. e.g. xml.child.descendant
+		//should be output as xml.child('child').child('descendant')
+		//we also need to check we are not currently compiling the XML or XMLList class to avoid any
+		//possible internal references being treated incorrectly
+        boolean forceXmlCheck =(def != null
+				&& node.getRightOperandNode().getNodeID() == ASTNodeID.IdentifierID
+				&& SemanticUtils.isXMLish(def.getParent(), getProject())
+				&& def instanceof IFunctionDefinition
+				&& !def.isStatic()
+				&& !(getModel().getCurrentClass() != null && (getModel().getCurrentClass().getQualifiedName().equals("XML") || getModel().getCurrentClass().getQualifiedName().equals("XMLList")))
+		);
+        if (def == null || forceXmlCheck)
         {
         	IASNode parentNode = node.getParent();
         	// could be XML
         	boolean isXML = false;
         	boolean isProxy = false;
         	if (leftNode instanceof MemberAccessExpressionNode)
-        		isXML = fjs.isLeftNodeXMLish((MemberAccessExpressionNode)leftNode);
-        	else if (leftNode instanceof IExpressionNode)
-        		isXML = fjs.isXML((IExpressionNode)leftNode);
-        	if (leftNode instanceof MemberAccessExpressionNode)
-        		isProxy = fjs.isProxy((MemberAccessExpressionNode)leftNode);
-        	else if (leftNode instanceof IExpressionNode)
-        		isProxy = fjs.isProxy((IExpressionNode)leftNode);
+        		isXML = fjs.isLeftNodeXMLish(leftNode);
+        	else if (leftNode != null)
+        		isXML = fjs.isXML(leftNode);
+
+			if (!isXML) {
+				if (leftNode instanceof MemberAccessExpressionNode)
+					isProxy = fjs.isProxy(leftNode);
+				else if (leftNode instanceof IExpressionNode)
+					isProxy = fjs.isProxy((IExpressionNode)leftNode);
+			}
+			
         	if (isXML)
         	{
         		boolean descendant = (node.getOperator() == OperatorType.DESCENDANT_ACCESS);

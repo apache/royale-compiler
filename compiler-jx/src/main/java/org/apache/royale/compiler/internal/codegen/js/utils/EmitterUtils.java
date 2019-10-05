@@ -805,7 +805,7 @@ public class EmitterUtils
             if (rightID == ASTNodeID.IdentifierID)
             {
                 IDefinition rightDef = rightNode.resolveType(project);
-                if (rightDef != null)
+                if (rightDef != null && rightDef != project.getBuiltinType(BuiltinType.ANY_TYPE))
                 {
                     return SemanticUtils.isXMLish(rightDef, project);
                 }
