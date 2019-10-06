@@ -258,6 +258,7 @@
 
         <copy todir="${staging-dir}" includeEmptyDirs="false">
             <fileset dir="${basedir}">
+                <include name=".mvn/extensions.xml"/>
                 <include name="build.xml"/>
                 <include name="build.properties"/>
                 <include name="env-template.properties"/>
@@ -458,6 +459,19 @@
     <target name="stage-ant-tasks">
         <copy todir="${staging-dir}/royale-ant-tasks" includeEmptyDirs="false">
             <fileset dir="${basedir}/royale-ant-tasks">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="target/classes/**"/>
+                <exclude name="target/flex/**"/>
+                <exclude name="target/flash/**"/>
+                <exclude name="target/generated-sources/**"/>
+                <exclude name="target/META-INF/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${staging-dir}/royaleunit-ant-tasks" includeEmptyDirs="false">
+            <fileset dir="${basedir}/royaleunit-ant-tasks">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
