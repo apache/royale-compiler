@@ -505,7 +505,9 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
             writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + moduleAdditionHTML + "\n", false);
             gdw.needCSS = true;
-            writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            if (configuration.release()) {
+            	writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            }
         }
         else
         {

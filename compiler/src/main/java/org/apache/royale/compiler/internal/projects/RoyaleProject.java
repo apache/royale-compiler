@@ -2349,27 +2349,50 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 		{
 			if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
 			{
-				IMetaTagAttribute attr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_ALTPARAMS);
-				if (attr != null)
+				IMetaTagAttribute altattr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_ALTPARAMS);
+				if (altattr != null)
 				{
-					// format is expectedQName:allowedQName,expectedQName:allowedQName.
-					// we don't know which parameter it is so we're assuming for now that any mapping
-					// applies to all occurences of that type in the parameter list
-					String paramList = attr.getValue();
-					String[] paramMap;
-					if (paramList.contains(","))
-						paramMap = paramList.split(",");
+					String altparamList = altattr.getValue();
+					String[] altparamMap;
+					if (altparamList.contains(","))
+						altparamMap = altparamList.split(",");
 					else
 					{
-						paramMap = new String[1];
-						paramMap[0] = paramList;
+						altparamMap = new String[1];
+						altparamMap[0] = altparamList;
 					}
-					for (String item : paramMap)
+					IMetaTagAttribute attr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_PARAMS);
+					if (attr != null)
 					{
-						String[] parts = item.split(":");
-						if (expectedDefinition.getQualifiedName().equals(parts[0]))
-							if (((ITypeDefinition)actualDefinition).isInstanceOf(parts[1], this))
-								return true;
+						String paramList = attr.getValue();
+						String[] paramMap;
+						if (paramList.contains(","))
+							paramMap = paramList.split(",");
+						else
+						{
+							paramMap = new String[1];
+							paramMap[0] = paramList;
+						}
+						int n = paramMap.length;
+						for (int i = 0; i < n; i++)
+						{
+							String item = paramMap[i];
+							if (((ITypeDefinition)expectedDefinition).isInstanceOf(item, this))
+							{
+								String alts = altparamMap[i];
+								String[] altList;
+								if (alts.contains(":"))
+									altList = alts.split(":");
+								else
+								{
+									altList = new String[1];
+									altList[0] = alts;
+								}
+								for (String alt : altList)
+									if (((ITypeDefinition)actualDefinition).isInstanceOf(alt, this))
+										return true;
+							}
+						}
 					}
 				}
 			}

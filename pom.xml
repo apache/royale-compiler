@@ -28,7 +28,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.6-SNAPSHOT</version>
+  <version>0.9.7-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -53,8 +53,8 @@
 
     <jburgTypesRequired>true</jburgTypesRequired>
     <skipgpg>false</skipgpg>
-    <compiler-build-tools.version>1.1.0-SNAPSHOT</compiler-build-tools.version>
-    <compiler-jburg-types.version>1.1.0-SNAPSHOT</compiler-jburg-types.version>
+    <compiler-build-tools.version>1.1.0</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
@@ -240,6 +240,18 @@
                 </plugin>
             </plugins>
         </build>
+    </profile>
+    <profile>
+        <id>test-using-swf</id>
+        <dependencies>
+            <dependency>
+                <groupId>com.adobe.flash.framework</groupId>
+                <artifactId>playerglobal</artifactId>
+                <version>${flash.version}</version>
+                <type>swc</type>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
     </profile>
   </profiles>
 
