@@ -161,6 +161,7 @@
 
     <target name="clean" description="clean">
         <delete dir="${compiler-externc}/target/classes"/>
+        <delete file="${compiler-externc}/target/js.swc"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">

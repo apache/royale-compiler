@@ -199,6 +199,36 @@ public class TestSourceMapExpressions extends SourceMapTestBase
         assertMapping(node, 0, 4, 0, 4, 0, 5); // b
     }
 
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentLiteral()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a = 123.2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 1); // a
+        assertMapping(node, 0, 1, 0, 1, 0, 4); // =
+        assertMapping(node, 0, 4, 0, 4, 0, 9); // 123.2
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentLiteralWithCompileTimeIntCoercion()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:int;a = 123.2");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 1); // a
+        assertMapping(node, 0, 1, 0, 1, 0, 4); // =
+        assertMapping(node, 0, 4, 0, 4, 0, 7); // 123
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_AssignmentLiteralWithCompileTimeUintCoercion()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:uint;a = -123");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 1); // a
+        assertMapping(node, 0, 1, 0, 1, 0, 4); // =
+        assertMapping(node, 0, 4, 0, 4, 0, 14); // 4294967173
+    }
+
     //----------------------------------
     // Bitwise
     //----------------------------------

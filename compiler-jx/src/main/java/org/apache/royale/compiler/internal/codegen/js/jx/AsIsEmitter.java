@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IAppliedVectorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -29,12 +30,14 @@ import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.utils.NativeUtils;
 
 public class AsIsEmitter extends JSSubEmitter
 {
@@ -53,7 +56,7 @@ public class AsIsEmitter extends JSSubEmitter
                 .resolve(getProject()) : null;
         if (id != ASTNodeID.Op_IsID && dnode != null)
         {
-            boolean emit = coercion ? 
+            boolean emit = coercion ?
             		!((RoyaleJSProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_FUNCTION_COERCIONS.getToken()) :
                 	!((RoyaleJSProject)getProject()).config.getJSOutputOptimizations().contains(JSRoyaleEmitterTokens.SKIP_AS_COERCIONS.getToken());
             			
@@ -147,7 +150,7 @@ public class AsIsEmitter extends JSSubEmitter
         getEmitter().getModel().needLanguage = true;
         if (node instanceof IBinaryOperatorNode)
         {
-            IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node; 
+            IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
             startMapping(node, binaryOperatorNode.getLeftOperandNode());
         }
         else
@@ -181,7 +184,29 @@ public class AsIsEmitter extends JSSubEmitter
         if (dnode instanceof IClassDefinition)
         {
             startMapping(right);
-            write(getEmitter().formatQualifiedName(((JSRoyaleEmitter)getEmitter()).convertASTypeToJS(dnode.getQualifiedName())));
+            if (NativeUtils.isSyntheticJSType(dnode.getQualifiedName())) {
+                JSRoyaleEmitterTokens langMethod;
+                String synthName;
+                if (NativeUtils.isVector(dnode.getQualifiedName()) && dnode instanceof IAppliedVectorDefinition) {
+                    langMethod = JSRoyaleEmitterTokens.SYNTH_VECTOR;
+                    synthName = getEmitter().formatQualifiedName(((IAppliedVectorDefinition) dnode).resolveElementType(project).getQualifiedName());
+                } else {
+                    //non-vector, e.g. int/uint
+                    langMethod = JSRoyaleEmitterTokens.SYNTH_TYPE;
+                    synthName = getEmitter().formatQualifiedName(dnode.getQualifiedName());
+                }
+                write(langMethod);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(synthName);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                if (project instanceof RoyaleJSProject)
+                    ((RoyaleJSProject)project).needLanguage = true;
+                getEmitter().getModel().needLanguage = true;
+            } else {
+                write(getEmitter().formatQualifiedName(((JSRoyaleEmitter)getEmitter()).convertASTypeToJS(dnode.getQualifiedName())));
+            }
             endMapping(right);
         }
         else

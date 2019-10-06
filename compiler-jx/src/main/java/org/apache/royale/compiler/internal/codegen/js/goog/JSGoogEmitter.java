@@ -44,17 +44,13 @@ import org.apache.royale.compiler.internal.codegen.js.JSEmitter;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.VariableUsedBeforeDeclarationProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -186,6 +182,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             ITypeNode tnode = EmitterUtils.findTypeNode(definition.getNode());
             if (tnode != null)
             {
+            	getModel().primaryDefinitionQName = formatQualifiedName(type.getQualifiedName());
                 getWalker().walk(tnode); // IClassNode | IInterfaceNode
             }
             return;
@@ -703,7 +700,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         boolean isLocal = false;
         if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
             isLocal = true;
-        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal)
+        boolean isPackage = false;
+        if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.PACKAGE_MEMBER)
+        isPackage = true;
+        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal && !isPackage)
             emitSelfReference(node);
 
         if (node.isConstructor()
@@ -954,22 +954,15 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         else
         {
-            // AJH need Language.bind here and maybe not require
-            // that the node is a MemberAccessExpression
-            if (definition instanceof FunctionDefinition &&
-                    !((FunctionDefinition)definition).isStatic() &&
-                    (!(definition instanceof AccessorDefinition)) &&
-                    node instanceof MemberAccessExpressionNode &&
-                    ((MemberAccessExpressionNode)node).getLeftOperandNode().getNodeID() != ASTNodeID.SuperID)
+            if (definition instanceof IFunctionDefinition &&
+            		node.getNodeID() == ASTNodeID.NamespaceAccessExpressionID)
             {
-                emitClosureStart();
-                getWalker().walk(node);
-                writeToken(ASEmitterTokens.COMMA);
-                getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
-                emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode(), definition);
+            	// can't do normal walk.  Need to generate closure
+            	// so walk just the right operand
+            	getWalker().walk(node.getChild(1));
             }
             else
-                getWalker().walk(node);
+            	getWalker().walk(node);
         }
     }
 

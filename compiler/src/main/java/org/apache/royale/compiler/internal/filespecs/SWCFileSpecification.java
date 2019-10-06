@@ -139,4 +139,10 @@ public class SWCFileSpecification implements IBinaryFileSpecification
 
         return new BufferedReader(new InputStreamReader(bufferedStrm, bom.charset));
     }
+
+	@Override
+	public void setLastModified(long fileDate) {
+		// TODO Auto-generated method stub
+		
+	}
 }

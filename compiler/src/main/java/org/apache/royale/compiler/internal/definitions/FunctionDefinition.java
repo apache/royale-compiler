@@ -41,9 +41,10 @@ import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.problems.AmbiguousReferenceProblem;
 import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -268,6 +269,53 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
             return false;
 
         return true;
+    }
+
+    @Override
+    public boolean isAbstract()
+    {
+        if(super.isAbstract())
+        {
+            return true;
+        }
+        IMetaTag[] metaTags = getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_ABSTRACT);
+        return metaTags != null && metaTags.length > 0;
+    }
+
+    /**
+     * Utility to mark a definition as abstract. This method should only ever be
+     * called during construction or initialization of a definition.
+     */
+    @Override
+    public void setAbstract()
+    {
+        super.setAbstract();
+
+        MetaTag abstractMetaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_ABSTRACT, new IMetaTagAttribute[0]);
+        addMetaTag(abstractMetaTag);
+    }
+
+    @Override
+    public boolean isPrivate()
+    {
+        if (super.isPrivate())
+        {
+            return true;
+        }
+        if (isConstructor())
+        {
+            IDefinition parent = getParent();
+            if (parent == null)
+            {
+                return false;
+            }
+            // if the construcutor does not have a private namespace, the parent
+            // class may have [RoyalePrivateConstructor] metadata instead. this
+            // is how private constructors are stored in bytecode.
+            IMetaTag[] metaTags = parent.getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR);
+            return metaTags != null && metaTags.length > 0;
+        }
+        return false;
     }
 
     @Override
@@ -651,6 +699,12 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         {
         	if (!definition.isPrivate()) return true;
             return findPrivates;
+        }
+        
+        @Override
+        public boolean test(IDefinition input)
+        {
+            return apply(input);
         }
     }
 

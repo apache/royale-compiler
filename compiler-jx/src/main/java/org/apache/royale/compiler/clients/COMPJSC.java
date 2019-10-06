@@ -26,11 +26,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -46,7 +49,6 @@ import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.royale.compiler.internal.codegen.js.JSWriter;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
@@ -167,7 +169,8 @@ public class COMPJSC extends MXMLJSC
      * @param args command line arguments
      * @return exit code
      */
-    private int _mainNoExit(final String[] args,
+    @SuppressWarnings("incomplete-switch")
+	private int _mainNoExit(final String[] args,
             List<ICompilerProblem> outProblems)
     {
     	System.out.println("args:");
@@ -184,9 +187,9 @@ public class COMPJSC extends MXMLJSC
 
             if (continueCompilation)
             {
-            	List<String> targets = config.getCompilerTargets();
-            	for (String target : targets)
-            		System.out.println("target:" + target);
+                List<String> targets = config.getCompilerTargets();
+                for (String target : targets)
+                    System.out.println("target:" + target);
             	targetloop:
             	for (String target : config.getCompilerTargets())
             	{
@@ -194,7 +197,7 @@ public class COMPJSC extends MXMLJSC
             		switch (JSTargetType.fromString(target))
 	                {
 	                case SWF:
-	                	System.out.println("COMPC");
+                        System.out.println("COMPC");
 	                    COMPC compc = new COMPC();
 	                    mxmlc = compc;
 	                    compc.configurationClass = JSGoogCompcConfiguration.class;
@@ -206,7 +209,7 @@ public class COMPJSC extends MXMLJSC
 	                    }
 	                    break;
 	                case JS_ROYALE:
-	                	System.out.println("COMPCJSCRoyale");
+                        System.out.println("COMPCJSCRoyale");
 	                	COMPJSCRoyale royale = new COMPJSCRoyale();
 	                	lastCompiler = royale;
 	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
@@ -340,9 +343,18 @@ public class COMPJSC extends MXMLJSC
                         if (!entry.getName().contains("js/out") &&
                         	!entry.getName().contains(SWCReader.CATALOG_XML))
                         {
-                            System.out.println("Copy " + entry.getName());
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Copy " + entry.getName());
+                            }
                         	InputStream input = zipFile.getInputStream(entry);
-                        	zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
+                        	ZipEntry ze = new ZipEntry(entry.getName());
+                        	ze.setMethod(ZipEntry.STORED);
+                        	ze.setTime(entry.getTime());
+                        	ze.setSize(entry.getSize());
+                        	ze.setCompressedSize(entry.getCompressedSize());
+                        	ze.setCrc(entry.getCrc());
+                        	zipOutputStream.putNextEntry(ze);
                         	IOUtils.copy(input, zipOutputStream);
                             zipOutputStream.flush();
                         	zipOutputStream.closeEntry();
@@ -395,7 +407,10 @@ public class COMPJSC extends MXMLJSC
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -437,7 +452,10 @@ public class COMPJSC extends MXMLJSC
                     	}
                     	else
                     	{
-	                        System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+                            }
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -457,37 +475,107 @@ public class COMPJSC extends MXMLJSC
 	                        problems.addAll(errors);
 	                        ByteArrayOutputStream temp = new ByteArrayOutputStream();
                             ByteArrayOutputStream sourceMapTemp = null;
-	                        if (project.config.getSourceMap())
+
+                            boolean isExterns = false;
+                            if(cu.getDefinitionPromises().size() > 0)
+                            {
+                                isExterns = project.isExterns(cu.getDefinitionPromises().get(0).getQualifiedName());
+                            }
+
+                            // if the file is @externs DON'T create source map file
+                            if (project.config.getSourceMap() && !isExterns)
 	                        {
                                 sourceMapTemp = new ByteArrayOutputStream();
 	                        }
                             writer.writeTo(temp, sourceMapTemp, null);
 
-                            boolean isExterns = false;
-	                        if (writer instanceof JSWriter)
-	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-	                        System.out.println("Writing file: " + outputClassFile);     	
-	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
-	                        temp.writeTo(zipOutputStream);
+                    		outputClassFile = outputClassFile.replace('\\', '/');
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + outputClassFile);     	
+                            }
+	                        long fileDate = System.currentTimeMillis();
+	                        long zipFileDate = fileDate;
+	                    	String metadataDate = targetSettings.getSWFMetadataDate();
+	                    	if (metadataDate != null)
+	                    	{
+	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			fileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    		// strip off timezone.  Zip format doesn't store timezone
+	                    		// and the goal is to have the same date and time regardless
+	                    		// of which timezone the build machine is using.
+	                    		int c = metadataDate.lastIndexOf(" ");
+	                    		metadataDate = metadataDate.substring(0,  c);
+	                    		c = metadataFormat.lastIndexOf(" ");
+	                    		metadataFormat = metadataFormat.substring(0, c);
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			zipFileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    	}
+	                    	ZipEntry ze = new ZipEntry(outputClassFile);
+	                    	ze.setTime(zipFileDate);
+	                    	ze.setMethod(ZipEntry.STORED);
+	                    	
+	                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	                        temp.writeTo(baos);
+	                        ze.setSize(baos.size());
+	                        ze.setCompressedSize(baos.size());
+	                        CRC32 crc = new CRC32();
+	                        crc.reset();
+	                        crc.update(baos.toByteArray());
+	                        ze.setCrc(crc.getValue());
+
+	                        zipOutputStream.putNextEntry(ze);
+	                        baos.writeTo(zipOutputStream);
                             zipOutputStream.flush();
 	                        zipOutputStream.closeEntry();
-	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + fileDate + "\"/>\n");
                             if(sourceMapTemp != null)
                             {
                                 String sourceMapFile = getOutputSourceMapFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                System.out.println("Writing file: " + sourceMapFile);     	
-                                zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
-                                sourceMapTemp.writeTo(zipOutputStream);
+                                if (config.isVerbose())
+                                {
+                                    System.out.println("Writing file: " + sourceMapFile);
+                                }
+                                ze = new ZipEntry(sourceMapFile);
+    	                    	ze.setTime(zipFileDate);
+    	                    	ze.setMethod(ZipEntry.STORED);
+    	                    	
+    	                        baos = new ByteArrayOutputStream();
+                                sourceMapTemp.writeTo(baos);
+    	                        ze.setSize(baos.size());
+    	                        ze.setCompressedSize(baos.size());
+    	                        crc = new CRC32();
+    	                        crc.reset();
+    	                        crc.update(baos.toByteArray());
+    	                        ze.setCrc(crc.getValue());
+                                
+                                zipOutputStream.putNextEntry(ze);
+    	                        baos.writeTo(zipOutputStream);
                                 zipOutputStream.flush();
                                 zipOutputStream.closeEntry();
-                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                                fileList.append("        <file path=\"" + sourceMapFile + "\" mod=\"" + fileDate + "\"/>\n");
                             }
                             writer.close();
                         }
@@ -496,12 +584,57 @@ public class COMPJSC extends MXMLJSC
                 if (packingSWC)
                 {
                 	zipFile.close();
+                    long fileDate = System.currentTimeMillis();
+                    long zipFileDate = fileDate;
+                	String metadataDate = targetSettings.getSWFMetadataDate();
+                	if (metadataDate != null)
+                	{
+                		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+                		try {
+                			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			fileDate = sdf.parse(metadataDate).getTime();
+                		} catch (ParseException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			} catch (IllegalArgumentException e1) {
+            				e1.printStackTrace();
+            			}
+                		// strip off timezone.  Zip format doesn't store timezone
+                		// and the goal is to have the same date and time regardless
+                		// of which timezone the build machine is using.
+                		int c = metadataDate.lastIndexOf(" ");
+                		metadataDate = metadataDate.substring(0,  c);
+                		c = metadataFormat.lastIndexOf(" ");
+                		metadataFormat = metadataFormat.substring(0, c);
+                		try {
+                			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			zipFileDate = sdf.parse(metadataDate).getTime();
+                		} catch (ParseException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			} catch (IllegalArgumentException e1) {
+            				e1.printStackTrace();
+            			}
+                	}
                 	int libraryIndex = catalog.indexOf("</libraries>");
                 	catalog = catalog.substring(0, libraryIndex + 13) +
                 		"    <files>\n" + fileList.toString() + "    </files>" + 
                 		catalog.substring(libraryIndex + 13);
-                    zipOutputStream.putNextEntry(new ZipEntry(SWCReader.CATALOG_XML));
-                	zipOutputStream.write(catalog.getBytes());
+                	ZipEntry ze = new ZipEntry(SWCReader.CATALOG_XML);
+                	ze.setTime(zipFileDate);
+                	ze.setMethod(ZipEntry.STORED);
+                	
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                	baos.write(catalog.getBytes());
+                    ze.setSize(baos.size());
+                    ze.setCompressedSize(baos.size());
+                    CRC32 crc = new CRC32();
+                    crc.reset();
+                    crc.update(baos.toByteArray());
+                    ze.setCrc(crc.getValue());
+                	
+                    zipOutputStream.putNextEntry(ze);
+                    baos.writeTo(zipOutputStream);
                     zipOutputStream.flush();
                     zipOutputStream.closeEntry();
                     zipOutputStream.flush();

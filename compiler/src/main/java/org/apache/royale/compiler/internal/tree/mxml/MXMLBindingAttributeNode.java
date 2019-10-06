@@ -83,6 +83,11 @@ class MXMLBindingAttributeNode extends MXMLNodeBase implements IMXMLBindingAttri
         return attributeName;
     }
 
+    public void setName(String s)
+    {
+    	attributeName = s;
+    }
+    
     @Override
     public int getChildCount()
     {

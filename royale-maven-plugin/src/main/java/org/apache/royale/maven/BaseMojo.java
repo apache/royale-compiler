@@ -236,16 +236,22 @@ public abstract class BaseMojo
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
         if(additionalCompilerOptions != null) {
+            if (additionalCompilerOptions.contains("\n")) {
+                additionalCompilerOptions = additionalCompilerOptions.replace("\n", "");
+            }
             if (additionalCompilerOptions.contains(";"))
             {
                 String[] options = additionalCompilerOptions.split(";");
                 for (String option : options)
                 {
-                    args.add(option);
+                    if (option.trim().length() > 0)
+                        args.add(option.trim());
                 }
             }
-            else
-                args.add(additionalCompilerOptions);
+            else {
+                if (additionalCompilerOptions.trim().length() > 0)
+                    args.add(additionalCompilerOptions.trim());
+            }
         }
         return args;
     }
@@ -331,11 +337,17 @@ public abstract class BaseMojo
     }
 
     protected List<Artifact> getJSLibraries(List<Artifact> artifacts) {
-        return internalGetLibrariesJS(artifacts);
+        if(!isForceSwcExternalLibraryPath()) {
+            return internalGetLibrariesJS(artifacts);
+        }
+        return Collections.emptyList();
     }
     
     protected List<Artifact> getSWFLibraries(List<Artifact> artifacts) {
-        return internalGetLibrariesSWF(artifacts);
+        if(!isForceSwcExternalLibraryPath()) {
+            return internalGetLibrariesSWF(artifacts);
+        }
+        return Collections.emptyList();
     }
     
     protected List<Artifact> getThemeLibraries(List<Artifact> artifacts) {
@@ -374,6 +386,9 @@ public abstract class BaseMojo
                 }
             }
         }
+        if(isForceSwcExternalLibraryPath()) {
+            externalLibraries.addAll(internalGetLibrariesJS(artifacts));
+        }
         return externalLibraries;
     }
     
@@ -386,6 +401,9 @@ public abstract class BaseMojo
                     externalLibraries.add(artifact);
                 }
             }
+        }
+        if(isForceSwcExternalLibraryPath()) {
+            externalLibraries.addAll(internalGetLibrariesSWF(artifacts));
         }
         return externalLibraries;
     }

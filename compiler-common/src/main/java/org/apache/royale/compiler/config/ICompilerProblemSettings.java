@@ -157,6 +157,7 @@ public interface ICompilerProblemSettings
       * --compiler.warn-slow-text-field-addition
       * --compiler.warn-unlikely-function-value
       * --compiler.warn-xml-class-has-changed
+      * --compiler.warn-this-within-closure
       * </pre>
       * 
       * @param warningCode warning code, one of:
@@ -198,6 +199,7 @@ public interface ICompilerProblemSettings
       * <li> WARN_SLOW_TEXTFIELD_ADDITION
       * <li> WARN_UNLIKELY_FUNCTION_VALUE
       * <li> WARN_XML_CLASS_HAS_CHANGED
+      * <li> WARN_THIS_WITHIN_CLOSURE
       * </ul>
       * </p>
       */

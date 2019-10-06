@@ -30,6 +30,7 @@ import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ModifiersSet;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -45,6 +46,7 @@ import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.PackageNode;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.royale.compiler.problems.AbstractOutsideClassProblem;
 import org.apache.royale.compiler.problems.DynamicNotOnClassProblem;
 import org.apache.royale.compiler.problems.EmbedOnlyOnClassesAndVarsProblem;
 import org.apache.royale.compiler.problems.FinalOutsideClassProblem;
@@ -54,6 +56,7 @@ import org.apache.royale.compiler.problems.NativeNotOnFunctionProblem;
 import org.apache.royale.compiler.problems.NativeVariableProblem;
 import org.apache.royale.compiler.problems.OverrideOutsideClassProblem;
 import org.apache.royale.compiler.problems.StaticOutsideClassProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 import org.apache.royale.compiler.problems.VirtualOutsideClassProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
@@ -320,30 +323,47 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
      */
     protected void verifyClassModifiers(ClassNode c)
     {
-        ModifiersSet modifiersSet = c.getModifiers();
-        if (modifiersSet == null)
-            return;
-
-        ASModifier[] modifiers = modifiersSet.getAllModifiers();
         IExpressionNode site = c.getNameExpressionNode();
-        for (ASModifier modifier : modifiers)
+
+        ModifiersSet modifiersSet = c.getModifiers();
+        if (modifiersSet != null)
         {
-            // final allowed on a class
-            if( modifier == ASModifier.FINAL || modifier == ASModifier.DYNAMIC)
+            ASModifier[] modifiers = modifiersSet.getAllModifiers();
+            for (ASModifier modifier : modifiers)
             {
-                continue;
+                // final, dynamic, and abstract allowed on a class
+                if( modifier == ASModifier.FINAL || modifier == ASModifier.DYNAMIC || modifier == ASModifier.ABSTRACT)
+                {
+                    continue;
+                }
+                // native generates different error for class/interface
+                else if (modifier == ASModifier.NATIVE)
+                {
+                    currentScope.addProblem(new NativeNotOnFunctionProblem(site) );
+                }
+                else
+                {
+                    verifyModifier(site, modifier);
+                }
             }
-            // native generates different error for class/interface
-            else if (modifier == ASModifier.NATIVE)
+            currentScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(c);
+        }
+
+        IDefinition classDef = c.getDefinition();
+        if (classDef.isAbstract())
+        {
+            if (currentScope.getProject().getAllowAbstractClasses())
             {
-                currentScope.addProblem(new NativeNotOnFunctionProblem(site) );
+                if(!SemanticUtils.canBeAbstract(c, currentScope.getProject()))
+                {
+                    currentScope.addProblem(new AbstractOutsideClassProblem(site) );
+                }
             }
             else
             {
-                verifyModifier(site, modifier);
+                currentScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
             }
         }
-        currentScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(c);
     }
 
     /**
@@ -408,6 +428,17 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
             currentScope.addProblem(new OverrideOutsideClassProblem(site));
         else if( modifier == ASModifier.VIRTUAL )
             currentScope.addProblem(new VirtualOutsideClassProblem(site));
+        else if( modifier == ASModifier.ABSTRACT )
+        {
+            if(currentScope.getProject().getAllowAbstractClasses())
+            {
+                currentScope.addProblem(new AbstractOutsideClassProblem(site));
+            }
+            else
+            {
+                currentScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
+            }
+        }
     }
 
     /**

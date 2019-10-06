@@ -18,6 +18,8 @@
  */
 package org.apache.royale.compiler.internal.codegen.mxml;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.royale.compiler.internal.test.MXMLTestBase;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.junit.Test;
@@ -33,6 +35,7 @@ public class TestMXMLApplication extends MXMLTestBase
                 + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -48,6 +51,7 @@ public class TestMXMLApplication extends MXMLTestBase
                 + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -64,6 +68,7 @@ public class TestMXMLApplication extends MXMLTestBase
                 + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -80,6 +85,7 @@ public class TestMXMLApplication extends MXMLTestBase
                 + "    ]]></fx:Script>" + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -99,6 +105,7 @@ public class TestMXMLApplication extends MXMLTestBase
                 + "    </fx:Declarations>" + "</custom:TestInstance>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         mxmlBlockWalker.visitFile(node);
 

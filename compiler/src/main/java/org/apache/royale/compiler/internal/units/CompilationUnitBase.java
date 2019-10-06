@@ -58,6 +58,7 @@ import org.apache.royale.compiler.internal.projects.ASProject;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
@@ -1005,13 +1006,21 @@ public abstract class CompilationUnitBase implements ICompilationUnit
      */
     private String computeName()
     {
-        final String filename = FilenameUtils.getName(getAbsoluteFilename()).replace('.', '_');
-        final String encodedAbsolutePath = StringEncoder.stringToHashCodeString(getAbsoluteFilename());
-        String encodedName = encodedAbsolutePath + ":" + filename;
+        String absoluteFileName = getAbsoluteFilename();
+        final String filename = FilenameUtils.getName(absoluteFileName).replace('.', '_');
         if (definitionPromises.isEmpty())
         {
+        	// conditional compilation units may not have definitionpromises
+            String encodedName = StringEncoder.stringToHashCodeString(absoluteFileName);
+            encodedName +=  ":" + filename;
             return encodedName;
         }
+        // we used to use the absolute path, but it would be different
+        // on different machines and we want builds to be binary reproducible.
+        // So we will use the first definition's QName as that should be unique
+        IDefinition def0 = getDefinitionPromises().get(0);
+        final String encodedQName = StringEncoder.stringToHashCodeString(def0.getQualifiedName());
+        String encodedName = encodedQName + ":" + filename;
 
         try
         {
@@ -1163,6 +1172,15 @@ public abstract class CompilationUnitBase implements ICompilationUnit
             rootPath = getAbsoluteFilename().replace(File.separatorChar + filenameNoPath, "");
         else
             rootPath = getAbsoluteFilename().replace(File.separatorChar + packagePath + File.separatorChar + filenameNoPath, "");
+        if (asProject instanceof RoyaleProject)
+        {
+        	String swfDebugfileAlias = ((RoyaleProject)asProject).getSwfDebugfileAlias();
+        	if (swfDebugfileAlias != null)
+        	{
+        		rootPath = swfDebugfileAlias;
+        		packagePath = packagePath.replace('\\', '/');
+        	}
+        }
 
         String encodedPath = rootPath + ';' + packagePath + ';' + getFilenameNoPath();
 

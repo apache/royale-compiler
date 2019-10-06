@@ -50,18 +50,24 @@ import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
+import org.apache.royale.compiler.problems.AbstractOutsideClassProblem;
+import org.apache.royale.compiler.problems.BadAccessAbstractMethodProblem;
 import org.apache.royale.compiler.problems.CircularTypeReferenceProblem;
 import org.apache.royale.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
 import org.apache.royale.compiler.problems.ConstructorIsGetterSetterProblem;
 import org.apache.royale.compiler.problems.ConstructorIsStaticProblem;
+import org.apache.royale.compiler.problems.ConstructorMustBePublicOrPrivateProblem;
 import org.apache.royale.compiler.problems.ConstructorMustBePublicProblem;
 import org.apache.royale.compiler.problems.DuplicateClassDefinitionProblem;
 import org.apache.royale.compiler.problems.DynamicNotOnClassProblem;
@@ -77,6 +83,7 @@ import org.apache.royale.compiler.problems.OverrideFinalProblem;
 import org.apache.royale.compiler.problems.OverrideNotFoundProblem;
 import org.apache.royale.compiler.problems.StaticAndOverrideProblem;
 import org.apache.royale.compiler.problems.StaticNamespaceDefinitionProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 import org.apache.royale.compiler.problems.VirtualOutsideClassProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -85,6 +92,7 @@ import org.apache.royale.compiler.tree.as.ICommonClassNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
@@ -467,6 +475,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         initInstructions.addInstruction(OP_initproperty, className);
         
         implementedInterfaceSemanticChecks(class_definition);
+        implementedAbstractClassSemanticChecks(class_definition);
 
         processResourceBundles(class_definition, project, classScope.getProblems());
     }
@@ -956,6 +965,8 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
         FunctionDefinition func = node.getDefinition();
 
+        verifyFunctionNamespace(node, func);
+
         Collection<ICompilerProblem> problems = classScope.getProblems();
 
         // code model has some peculiar ideas about what makes a function a constructor or not
@@ -972,9 +983,21 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             // It is ok to omit the namespace
             // We must check the AST, as CM treats all ctors as public no matter what the user typed in
             // so the FunctionDefinition will always be in the public namespace
-            if( node.getActualNamespaceNode() != null &&
-                    node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC)
-                problems.add(new ConstructorMustBePublicProblem(node.getActualNamespaceNode()));
+            if( node.getActualNamespaceNode() != null )
+            {
+                if (classScope.getProject().getAllowPrivateConstructors())
+                {
+                    if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC
+                            && !func.isPrivate())
+                    {
+                        problems.add(new ConstructorMustBePublicOrPrivateProblem(node.getActualNamespaceNode()));
+                    }
+                }
+                else if (node.getActualNamespaceNode().getName() != IASKeywordConstants.PUBLIC || func.isPrivate())
+                {
+                    problems.add(new ConstructorMustBePublicProblem(node.getActualNamespaceNode()));
+                }
+            }
 
             // A constructor cannot be static
             if( func.isStatic() )
@@ -1064,37 +1087,131 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             }
         }
     }
+    
+    /**
+     * Check the class definition for various errors related to extended
+     * abstract classes, such as making sure that all abstract methods are
+     * implemented
+     * 
+     * @param cls  the class definition to check
+     */
+    void implementedAbstractClassSemanticChecks(ClassDefinition cls)
+    {
+        if(!classScope.getProject().getAllowAbstractClasses())
+        {
+            //don't do these checks if abstract classes aren't enabled
+            return;
+        }
+        if(cls.isAbstract())
+        {
+            // concrete classes don't need to implement abstract methods
+            return;
+        }
+        Iterator<IClassDefinition> it = cls.classIterator(classScope.getProject(), false);
+        while( it.hasNext() )
+        {
+            IClassDefinition otherClass = it.next();
+            if(!otherClass.isAbstract())
+            {
+                //if a subclass is already concrete, then we don't need to check
+                //this class for abstract methods too
+                break;
+            }
+
+            if( otherClass instanceof ClassDefinition && otherClass.isAbstract())
+            {
+                ((ClassDefinition)otherClass).validateClassImplementsAllMethods(classScope.getProject(), cls, classScope.getProblems());
+            }
+        }
+    }
+
+    /**
+    * Verify that abstract function has an appropriate namespace. If it doesn't,
+    * print the appropriate error
+    *
+    * @param func is the function node do be analyzed
+    * @param func_def is the definition for func
+    */
+    private void verifyFunctionNamespace(FunctionNode func, FunctionDefinition func_def)
+    {
+        if(!classScope.getProject().getAllowAbstractClasses())
+        {
+            //if abstract classes aren't allowed, other errors should take
+            //precedence
+            return;
+        }
+
+        if(!func_def.isAbstract())
+        {
+            return;
+        }
+
+        INamespaceDecorationNode nsNode = func.getActualNamespaceNode();
+        
+        // if we have no "actual" node, then there is no namespace in front of our function
+        if (nsNode != null)
+        {
+            if (!INamespaceConstants.internal_.equals(nsNode.getName()))
+            {
+                INamespaceReference ns_ref = func_def.getNamespaceReference();
+                INamespaceDefinition ns_def = ns_ref.resolveNamespaceReference(classScope.getProject());
+                if (ns_def != null && ns_def instanceof INamespaceDefinition.IPrivateNamespaceDefinition)
+                {
+                    classScope.addProblem(new BadAccessAbstractMethodProblem(func));
+                }
+            }
+        }
+    }
+
     /**
      */
     protected void verifyFunctionModifiers(FunctionNode f)
     {
-        ModifiersSet modifiersSet = f.getModifiers();
-        if (modifiersSet == null)
-            return;
-
         IExpressionNode site = f.getNameExpressionNode();
-        if( modifiersSet.hasModifier(ASModifier.STATIC) )
+        IDefinition functionDef = f.getDefinition();
+
+        boolean isStatic = false; //used below
+        ModifiersSet modifiersSet = f.getModifiers();
+        if (modifiersSet != null)
         {
-            if( modifiersSet.hasModifier(ASModifier.FINAL) )
+            isStatic = modifiersSet.hasModifier(ASModifier.STATIC);
+            if(isStatic)
             {
-                classScope.addProblem(new FinalOutsideClassProblem(site) );
+                if( modifiersSet.hasModifier(ASModifier.FINAL) )
+                {
+                    classScope.addProblem(new FinalOutsideClassProblem(site) );
+                }
+                if( modifiersSet.hasModifier(ASModifier.OVERRIDE) )
+                {
+                    classScope.addProblem(new StaticAndOverrideProblem(site) );
+                }
+                if( modifiersSet.hasModifier(ASModifier.DYNAMIC) )
+                {
+                    classScope.addProblem(new DynamicNotOnClassProblem(site) );
+                }
+                if( modifiersSet.hasModifier(ASModifier.VIRTUAL) )
+                {
+                    classScope.addProblem(new VirtualOutsideClassProblem(site) );
+                }
             }
-            if( modifiersSet.hasModifier(ASModifier.OVERRIDE) )
+            classScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(f);
+            // Functions in a class allow all modifiers
+        }
+
+        if (functionDef.isAbstract())
+        {
+            if (classScope.getProject().getAllowAbstractClasses())
             {
-                classScope.addProblem(new StaticAndOverrideProblem(site) );
+                if (!SemanticUtils.canBeAbstract(f, classScope.getProject()))
+                {
+                    classScope.addProblem(new AbstractOutsideClassProblem(site) );
+                }
             }
-            if( modifiersSet.hasModifier(ASModifier.DYNAMIC) )
+            else
             {
-                classScope.addProblem(new DynamicNotOnClassProblem(site) );
-            }
-            if( modifiersSet.hasModifier(ASModifier.VIRTUAL) )
-            {
-                classScope.addProblem(new VirtualOutsideClassProblem(site) );
+                classScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
             }
         }
-        classScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(f);
-        // Functions in a class allow all modifiers
-        return;
     }
 
     protected void verifyVariableModifiers(VariableNode v)
@@ -1126,6 +1243,17 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             else if( modifier == ASModifier.VIRTUAL )
             {
                 classScope.addProblem(new VirtualOutsideClassProblem(site));
+            }
+            else if( modifier == ASModifier.ABSTRACT )
+            {
+                if(classScope.getProject().getAllowAbstractClasses())
+                {
+                    classScope.addProblem(new AbstractOutsideClassProblem(site));
+                }
+                else
+                {
+                    classScope.addProblem(new SyntaxProblem(site, IASKeywordConstants.ABSTRACT));
+                }
             }
         }
         classScope.getMethodBodySemanticChecker().checkForDuplicateModifiers(v);

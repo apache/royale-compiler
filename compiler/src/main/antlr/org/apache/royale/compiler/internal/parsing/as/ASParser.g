@@ -212,7 +212,7 @@ attributedDefinition[ContainerNode c]
 
 /**
  * Matches an attribute such as:
- * - Modifiers: dynamic, final, native, override, static, virtual.
+ * - Modifiers: dynamic, final, native, override, static, virtual, abstract.
  * - Namespace names.
  * - Reserved namespace names: internal, private, public, protected.
  *
@@ -580,6 +580,7 @@ modifierAttribute returns [ModifierNode modifierNode]
         |   TOKEN_MODIFIER_STATIC
         |   TOKEN_MODIFIER_NATIVE
         |   TOKEN_MODIFIER_VIRTUAL
+        |   TOKEN_MODIFIER_ABSTRACT
         )
         { modifierNode = new ModifierNode((ASToken) modifierT);	}
 	;
@@ -1884,6 +1885,7 @@ caseClause[ContainerNode swb]
  			b = t.getContentsNode();
  		}
  		caseStatementList[b]
+        |   asDocComment
  	;
  	exception catch [RecognitionException ex] {handleParsingError(ex);  }
 

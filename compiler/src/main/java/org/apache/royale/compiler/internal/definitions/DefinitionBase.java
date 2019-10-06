@@ -108,6 +108,18 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     protected static final short FLAG_DEPRECATED = 1 << 13;
     protected static final short FLAG_DECLARED_IN_CONTROL_FLOW = 1 << 14;
 
+    private static boolean performanceCachingEnabled = false;
+
+    public static boolean getPerformanceCachingEnabled()
+    {
+        return performanceCachingEnabled;
+    }
+
+    public static void setPerformanceCachingEnabled(boolean enable)
+    {
+        performanceCachingEnabled = enable;
+    }
+
     /**
      * Constructor.
      * 
@@ -243,7 +255,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public IDefinition getParent()
     {
-    	if (parentDef != null)
+    	if (getPerformanceCachingEnabled() && parentDef != null)
     		return parentDef;
     	
         IASScope scope = getContainingScope();
@@ -257,8 +269,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         while ((scope != null) && (scope.getDefinition() == null))
             scope = scope.getContainingScope();
 
-        parentDef = scope != null ? scope.getDefinition() : null;
-        return parentDef;
+        IDefinition result = scope != null ? scope.getDefinition() : null;
+        if (getPerformanceCachingEnabled())
+            parentDef = result;
+        return result;
     }
 
     @Override
@@ -535,6 +549,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     private static DefinitionBase getContainingToplevelDefinition(DefinitionBase definition)
     {
         ASScope currentContainingScope = definition.getContainingASScope();
+        if (currentContainingScope == null)
+        {
+            // With some synthetic definitions you can't find a containint top level definition.
+            // This happens with Vector<T>, for example. In this case, return null
+            return null;
+        }
         DefinitionBase currentDefinition = definition;
 
         IScopedDefinition containingDefinition = currentContainingScope.getContainingDefinition();
@@ -543,10 +563,11 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             currentDefinition = (DefinitionBase)containingDefinition;
             currentContainingScope = currentDefinition.getContainingASScope();
             
-            // With some synthetic definitions you can't find a containint top level definition.
-            // This happens with Vector<T>, for example. In this case, return null
             if (currentContainingScope == null)
-                return null;                    
+            {
+                // See comment above
+                return null;
+            }
             
             containingDefinition = currentContainingScope.getContainingDefinition();
         }
@@ -687,6 +708,21 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         flags |= FLAG_STATIC;
     }
 
+    // instead of increasing the size of "flags" from a short to int, I added
+    // a boolean variable instead. feel free to change this, if desired. -JT
+    private boolean abstractFlag = false;
+
+    @Override
+    public boolean isAbstract()
+    {
+        return abstractFlag;
+    }
+
+    public void setAbstract()
+    {
+        abstractFlag = true;
+    }
+
     @Override
     public boolean hasModifier(ASModifier modifier)
     {
@@ -717,6 +753,10 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             // Ignore "virtual" modifier.
             return false;
         }
+        else if (modifier == ASModifier.ABSTRACT)
+        {
+            return abstractFlag;
+        }
         else
         {
             assert false : "Unknown modifier: " + modifier;
@@ -738,6 +778,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             result.addModifier(ASModifier.DYNAMIC);
         if ((flags & FLAG_NATIVE) != 0)
             result.addModifier(ASModifier.NATIVE);
+        if (abstractFlag)
+            result.addModifier(ASModifier.ABSTRACT);
         return result;
     }
 
@@ -759,6 +801,9 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
 
         else if (modifier == ASModifier.NATIVE)
             flags |= FLAG_NATIVE;
+
+        else if (modifier == ASModifier.ABSTRACT)
+            setAbstract();
 
         else
             assert false;

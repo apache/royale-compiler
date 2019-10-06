@@ -265,6 +265,21 @@ public interface ICompilerProject
     /**
      * @return True if a subclass can have a private API with the same name as a private API in its base classes.
      */
-	boolean getAllowPrivateNameConflicts();
+     boolean getAllowPrivateNameConflicts();
+     
+    /**
+     * @return True if import aliases are allowed.
+     */
+     boolean getAllowImportAliases();
+     
+     /**
+      * @return True if abstract classes are allowed.
+      */
+     boolean getAllowAbstractClasses();
+     
+     /**
+      * @return True if private constructors are allowed.
+      */
+     boolean getAllowPrivateConstructors();
 
 }

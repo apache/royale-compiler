@@ -1485,6 +1485,73 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-import-aliases' option
+    //
+
+    private boolean allowImportAliases = false;
+
+    public boolean getCompilerAllowImportAliases()
+    {
+        return allowImportAliases;
+    }
+
+    /**
+     * Whether the compiler will allow imports to include an optional alias for
+     * the definition name.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-import-aliases" })
+    @RoyaleOnly
+    public void setCompilerAllowImportAliases(ConfigurationValue cv, boolean allow)
+    {
+        this.allowImportAliases = allow;
+    }
+
+    //
+    // 'compiler.allow-abstract-classes' option
+    //
+
+    private boolean allowAbstractClasses = false;
+
+    public boolean getCompilerAllowAbstractClasses()
+    {
+        return allowAbstractClasses;
+    }
+
+    /**
+     * Whether the compiler will allow classes to be abstract.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-abstract-classes" })
+    @RoyaleOnly
+    public void setCompilerAllowAbstractClasses(ConfigurationValue cv, boolean allow)
+    {
+        this.allowAbstractClasses = allow;
+    }
+
+    //
+    // 'compiler.allow-private-constructors' option
+    //
+
+    private boolean allowPrivateConstructors = false;
+
+    public boolean getCompilerAllowPrivateConstructors()
+    {
+        return allowPrivateConstructors;
+    }
+
+    /**
+     * Whether the compiler will allow constructors to be private.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-private-constructors" })
+    @RoyaleOnly
+    public void setCompilerAllowPrivateConstructors(ConfigurationValue cv, boolean allow)
+    {
+        this.allowPrivateConstructors = allow;
+    }
+
+    //
     // 'compiler.actionscript-file-encoding' option
     //
 
@@ -3241,11 +3308,11 @@ public class Configuration
     public boolean debug()
     {
         // the debug() in as3 and mxml configuration maps to stacktraceLineNumbers
-        return verboseStacktraces;
+        return generateDebugTags;
     }
 
     public boolean release() {
-        return !verboseStacktraces;
+        return !generateDebugTags;
     }
 
     @Config
@@ -3986,6 +4053,24 @@ public class Configuration
     }
 
     //
+    // 'compiler.warn-this-within-closure' option
+    //
+
+    private boolean warn_this_within_closure = true;
+
+    public boolean warn_this_within_closure()
+    {
+        return warn_this_within_closure;
+    }
+
+    @Config(advanced = true)
+    @Mapping({ "compiler", "warn-this-within-closure" })
+    public void setCompilerWarnThisWithinClosure(ConfigurationValue cv, boolean b)
+    {
+        warn_this_within_closure = b;
+    }
+
+    //
     // compiler.generate-abstract-syntax-tree
     //
 
@@ -4569,6 +4654,11 @@ public class Configuration
     //
 
     public String date = null;
+    
+    public String getMetadataDate()
+    {
+    	return date;
+    }
 
     @Config
     @Mapping({ "metadata", "date" })
@@ -4576,6 +4666,25 @@ public class Configuration
     public void setMetadataDate(ConfigurationValue cv, String text)
     {
         date = text;
+    }
+
+    //
+    // 'metadata.dateFormat' option
+    //
+
+    public String dateFormat = null;
+    
+    public String getMetadataDateFormat()
+    {
+    	return dateFormat;
+    }
+
+    @Config
+    @Mapping({ "metadata", "dateFormat" })
+    @Arguments("text")
+    public void setMetadataDateFormat(ConfigurationValue cv, String text)
+    {
+        dateFormat = text;
     }
 
     //
@@ -5500,6 +5609,24 @@ public class Configuration
     public void setOutput(ConfigurationValue val, String output) throws ConfigurationException
     {
         this.output = getOutputPath(val, output);
+    }
+
+    //
+    // 'swf-debugfile-alias' option
+    //
+
+    private String swfDebugfileAlias;
+
+    public String getSwfDebugfileAlias()
+    {
+        return swfDebugfileAlias;
+    }
+
+    @Config
+    @Arguments("filename")
+    public void setSwfDebugfileAlias(ConfigurationValue val, String output) throws ConfigurationException
+    {
+        this.swfDebugfileAlias = output;
     }
 
     //

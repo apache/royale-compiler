@@ -464,7 +464,8 @@ public class LanguageIdentifierNode extends IdentifierNode implements ILanguageI
      * 
      * @return The Context that this expression occurs in
      */
-    public Context getContext()
+    @SuppressWarnings("incomplete-switch")
+	public Context getContext()
     {
         IASNode p = getParent();
 

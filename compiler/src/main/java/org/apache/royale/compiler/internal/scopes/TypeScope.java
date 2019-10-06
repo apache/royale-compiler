@@ -662,5 +662,11 @@ public class TypeScope extends ASScope
         {
             return findStatics == definition.isStatic();
         }
+        
+        @Override
+        public boolean test(IDefinition input)
+        {
+            return apply(input);
+        }
     }
 }

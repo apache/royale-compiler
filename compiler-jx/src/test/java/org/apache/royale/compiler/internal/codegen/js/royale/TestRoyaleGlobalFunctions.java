@@ -100,11 +100,20 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a = Array(['Hello', 'World'])");
     }
+    
+    @Override
+    @Test
+    public void testObject()
+    {
+        IVariableNode node = getVariable("var a:Object = Object(\"1\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Object} */ a = org.apache.royale.utils.Language.resolveUncertain(Object(\"1\"))");
+    }
 
     @Test
     public void testParseInt()
     {
-        IVariableNode node = getVariable("var a:int = parseInt('1.8');");
+        IVariableNode node = getVariable("var a:Number = parseInt('1.8');");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = parseInt('1.8', undefined)");
     }
@@ -112,7 +121,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     @Test
     public void testParseIntTwoArgs()
     {
-        IVariableNode node = getVariable("var a:int = parseInt('1.8', 16);");
+        IVariableNode node = getVariable("var a:Number = parseInt('1.8', 16);");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = parseInt('1.8', 16)");
     }
@@ -159,6 +168,24 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array.<string>} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce'](['Hello', 'World'])");
+    }
+    
+    @Test
+    public void testCustomVector()
+    {
+        project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(['Hello', 'World'], 'String')");
+    }
+    
+    @Test
+    public void testCustomVectorAsArray()
+    {
+        project.config.setJsVectorEmulationClass(null, "Array");
+        IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a = ['Hello', 'World'].slice()");
     }
 
@@ -184,8 +211,29 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(30);");
         asBlockWalker.visitVariable(node);
         // MXMLC doesn't report an error either.  Maybe we should. 
+        assertOut("var /** @type {Array.<string>} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce'](30)");
+    }
+    
+    @Test
+    public void testCustomVectorSizeArg()
+    {
+        project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(30);");
+        asBlockWalker.visitVariable(node);
+        // MXMLC doesn't report an error either.  Maybe we should.
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String')");
+    }
+    
+    @Test
+    public void testCustomVectorAsArraySizeArg()
+    {
+        project.config.setJsVectorEmulationClass(null, "Array");
+        IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(30);");
+        asBlockWalker.visitVariable(node);
+        // MXMLC doesn't report an error either.  Maybe we should.
         assertOut("var /** @type {Array} */ a = 30.slice()");
     }
+    
 
     @Test
     public void testVectorNumberArgs()
@@ -200,7 +248,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = ['Hello', 'World'].slice()");
+        assertOut("var /** @type {Array.<string>} */ a = org.apache.royale.utils.Language.synthVector('String')['coerce'](['Hello', 'World'])");
     }
 
     @Override
@@ -234,7 +282,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         // (erikdebruin) E4X in Javascript is obsolete.
         //               Ref.: https://developer.mozilla.org/en-US/docs/E4X
         
-        assertOut("var /** @type {XMLList} */ a = XMLList('<!-- comment -->')");
+        assertOut("var /** @type {XMLList} */ a = XMLList.conversion('<!-- comment -->')");
     }
 
     @Test

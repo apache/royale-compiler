@@ -19,9 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.mxml;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -72,7 +70,7 @@ public class MXMLWriter extends JSWriter
 
         try
         {
-            out.write(mxmlEmitter.postProcess(writer.toString()).getBytes());
+            out.write(mxmlEmitter.postProcess(writer.toString()).getBytes("utf8"));
         }
         catch (IOException e)
         {
@@ -82,11 +80,19 @@ public class MXMLWriter extends JSWriter
         if (sourceMapOut != null)
         {
             String sourceMapFilePath = null;
+            String sourceRoot = null;
             if (sourceMapFile != null)
             {
                 sourceMapFilePath = sourceMapFile.getAbsolutePath();
                 convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, sourceMapFile);
             }
+            else
+            {
+                sourceRoot = System.getProperty("user.dir");
+                convertMappingSourcePathsToRelative((IMappingEmitter) mxmlEmitter, new File(sourceRoot, "test.js.map"));
+                sourceRoot = convertSourcePathToURI(sourceRoot);
+            }
+            convertMappingSourcePathsToURI((IMappingEmitter) mxmlEmitter);
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter((IMappingEmitter) mxmlEmitter);
@@ -94,8 +100,8 @@ public class MXMLWriter extends JSWriter
             {
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".mxml", ".js");
-                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, null);
-                sourceMapOut.write(sourceMap.getBytes());
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
+                sourceMapOut.write(sourceMap.getBytes("utf8"));
             } catch (Exception e)
             {
                 e.printStackTrace();

@@ -23,10 +23,7 @@ import java.util.ArrayList;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.royale.compiler.definitions.IAccessorDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
-import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -211,8 +208,17 @@ public class FunctionCallNode extends ExpressionNodeBase implements IFunctionCal
             //  new foo() returns the * type
             if (getNewKeywordNode() != null)
                 return project.getBuiltinType(BuiltinType.ANY_TYPE);
-            else
-                return ((IFunctionDefinition)calledFunction).resolveReturnType(project);
+            else {
+                //special case: removeAt on a Vector needs to resolve its return type to type 'T' (element type), not 'Object' (as it does with Array method)
+                if (calledFunction.getQualifiedName().equals("removeAt")
+                    && calledFunction.getContainingScope() != null
+                    && calledFunction.getContainingScope().getDefinition() instanceof IAppliedVectorDefinition)
+                {
+                    return ((IAppliedVectorDefinition)(calledFunction.getContainingScope().getDefinition())).resolveElementType(project);
+                } else {
+                    return ((IFunctionDefinition)calledFunction).resolveReturnType(project);
+                }
+            }
         }
         else if (calledFunction instanceof ITypeDefinition)
         {

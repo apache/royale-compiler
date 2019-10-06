@@ -1520,7 +1520,18 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                     (NamespaceIdentifierNode)left,
                     (ASToken)op,
                     (IdentifierNode)right);
-            result = (ExpressionNodeBase) evaluateConstNodeExpression(cn);
+            IASNode possibleResult = evaluateConstNodeExpression(cn);
+            //it's possible for evaluateConstNodeExpression() to return null
+            //if that happens, fall back to the same behavior as the final
+            //else to avoid a null reference exception -JT
+            if (possibleResult != null)
+            {
+                result = (ExpressionNodeBase) possibleResult;
+            }
+            else
+            {
+                result = new NamespaceAccessExpressionNode(left, op, right);
+            }
         }
         else
         {
@@ -1562,7 +1573,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         }
         else
         {
-            block.span(blockToken.getStart() + 1, blockToken.getStart() + 1, blockToken.getLine(), blockToken.getColumn());
+            block.span(blockToken.getStart() + 1, blockToken.getStart() + 1, blockToken.getLine(), blockToken.getColumn(), blockToken.getLine(), blockToken.getColumn());
         }
     }
 
@@ -2329,7 +2340,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
     }
 
     private static final ImmutableSet<String> CONTEXTUAL_RESERVED_KEYWORD_MODIFIERS =
-            ImmutableSet.of("dynamic", "final", "native", "static", "override");
+            ImmutableSet.of("dynamic", "final", "native", "static", "override", "abstract");
 
     /**
      * Recover from {@link CanNotInsertSemicolonProblem} after an expression
@@ -2854,6 +2865,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 case TOKEN_MODIFIER_OVERRIDE:
                 case TOKEN_MODIFIER_STATIC:
                 case TOKEN_MODIFIER_VIRTUAL:
+                case TOKEN_MODIFIER_ABSTRACT:
                     return true;
             }
         }

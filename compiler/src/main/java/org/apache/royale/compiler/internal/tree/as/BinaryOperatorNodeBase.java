@@ -282,7 +282,7 @@ public abstract class BinaryOperatorNodeBase extends OperatorNodeBase implements
     protected void fillInOffsets()
     {
         if (rightOperandNode == null && leftOperandNode == null && operatorStart != -1)
-            span(operatorStart, operatorStart + 1, -1, -1);
+            span(operatorStart, operatorStart + 1, -1, -1, -1, -1);
         else
             super.fillInOffsets();
     }

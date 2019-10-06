@@ -21,10 +21,14 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 
 public class FunctionCallArgumentsEmitter extends JSSubEmitter implements
         ISubEmitter<IContainerNode>
@@ -41,11 +45,38 @@ public class FunctionCallArgumentsEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.PAREN_OPEN);
         endMapping(node);
 
+        IParameterDefinition[] paramDefs = null;
+        IFunctionCallNode functionCallNode = (IFunctionCallNode) node.getAncestorOfType(IFunctionCallNode.class);
+        if (functionCallNode != null)
+        {
+            IDefinition calledDef = functionCallNode.resolveCalledExpression(getProject());
+            if (calledDef instanceof IFunctionDefinition)
+            {
+                IFunctionDefinition functionDef = (IFunctionDefinition) calledDef;
+                paramDefs = functionDef.getParameters();
+            }
+        }
+
         int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
             IExpressionNode argumentNode = (IExpressionNode) node.getChild(i);
-            getWalker().walk(argumentNode);
+            IDefinition paramTypeDef = null;
+            if (paramDefs != null && paramDefs.length > i)
+            {
+                IParameterDefinition paramDef = paramDefs[i];
+                if (paramDef.isRest())
+                {
+                    paramDef = null;
+                }
+                if (paramDef != null)
+                {
+                    paramTypeDef = paramDef.resolveType(getProject());
+                }
+            }
+
+            getEmitter().emitAssignmentCoercion(argumentNode, paramTypeDef);
+
             if (i < len - 1)
             {
                 //we're mapping the comma to the container, but we use the

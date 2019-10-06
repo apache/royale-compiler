@@ -72,7 +72,8 @@ class LabelScopeControlFlowContext extends ControlFlowContext
      * @param labelMap Map to populate with found labels
      * @param node Node to search from.
      */
-    private static void populateLabelMap(Multimap<String, LabeledStatementNode> labelMap, IASNode node)
+    @SuppressWarnings("incomplete-switch")
+	private static void populateLabelMap(Multimap<String, LabeledStatementNode> labelMap, IASNode node)
     {
         ASTNodeID nodeID = node.getNodeID();
         

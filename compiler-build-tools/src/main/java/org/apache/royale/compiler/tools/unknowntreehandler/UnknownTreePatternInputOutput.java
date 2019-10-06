@@ -230,7 +230,10 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
         output.println("public class " + this.className);
         output.println("{");
         output.println();
-        output.println("    //  Patterns generated " + new java.util.Date().toString() + " from " + src_file_name.replaceAll("\\\\", "/"));
+        String src = src_file_name.replaceAll("\\\\", "/");
+        int c = src.indexOf("compiler/src");
+        src = src.substring(c);
+        output.println("    //  Patterns generated from " + src);
         output.println("    public static Map<ASTNodeID, ArrayList<UnknownTreeFinding.Template> > allTemplates = new HashMap<ASTNodeID, ArrayList<UnknownTreeFinding.Template>>();");
 
         output.println("    static");

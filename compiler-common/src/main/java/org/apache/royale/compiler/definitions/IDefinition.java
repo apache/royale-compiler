@@ -268,6 +268,13 @@ public interface IDefinition
     boolean isStatic();
 
     /**
+     * Is this definition marked as <code>abstract</code>?
+     * 
+     * @return <code>true</code> if the definition is <code>abstract</code>.
+     */
+    boolean isAbstract();
+
+    /**
      * Determines whether the specified modifier is present on this definition.
      * See {@link ASModifier} for the list of modifiers.
      * 

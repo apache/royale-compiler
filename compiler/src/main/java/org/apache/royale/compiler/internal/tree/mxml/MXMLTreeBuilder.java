@@ -137,6 +137,7 @@ public class MXMLTreeBuilder
         this.compilationUnit = compilationUnit;
         this.fileSpecGetter = fileSpecGetter;
         project = compilationUnit.getProject();
+        factoryDef = (ITypeDefinition) project.resolveQNameToDefinition(project.getFactoryInterface());
         projectScope = (ASProjectScope)project.getScope();
         workspace = (Workspace)project.getWorkspace();
         this.qname = qname;
@@ -154,6 +155,8 @@ public class MXMLTreeBuilder
     private final IFileSpecificationGetter fileSpecGetter;
 
     private final RoyaleProject project;
+    
+    private final ITypeDefinition factoryDef;
 
     private final ASProjectScope projectScope;
 
@@ -664,7 +667,7 @@ public class MXMLTreeBuilder
         String typeName = (type != null) ? type.getQualifiedName() : "";
 
         // For a property of type IFactory, create an MXMLFactoryNode.
-        if (typeName.equals(project.getFactoryInterface()))
+        if (type != null && type.isInstanceOf(factoryDef, project))
         {
             if (flags.contains(TextParsingFlags.ALLOW_BINDING))
             {
@@ -791,7 +794,7 @@ public class MXMLTreeBuilder
 
         return instanceNode;
     }
-
+    
     /**
      * Reads an external file specified by a <code>source</code> attribute.
      * 

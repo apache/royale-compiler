@@ -198,7 +198,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
                 if (!SemanticUtils.isValidTypeConversion(expectedType, exprType, project, builder.getCompilationUnit().isInvisible()))
                 {
                     ICompilerProblem problem = new ImplicitCoercionToUnrelatedTypeProblem(
-                            expressionNode, exprType.getBaseName(), expectedType.getBaseName());
+                            expressionNode, exprType.getQualifiedName(), expectedType.getQualifiedName());
                     builder.addProblem(problem);
                 }
             }

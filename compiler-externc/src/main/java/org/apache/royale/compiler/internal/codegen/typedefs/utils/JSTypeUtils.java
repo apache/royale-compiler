@@ -29,7 +29,9 @@ import org.apache.royale.compiler.internal.codegen.typedefs.reference.ReferenceM
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.NamedType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
+import com.google.javascript.rhino.jstype.JSType.Nullability;
 
 public class JSTypeUtils
 {
@@ -92,7 +94,7 @@ public class JSTypeUtils
     public static String toEnumTypeString(BaseReference reference)
     {
         JSTypeExpression enumParameterType = reference.getComment().getEnumParameterType();
-        String overrideStringType = transformType(reference.getModel().evaluate(enumParameterType).toAnnotationString());
+        String overrideStringType = transformType(reference.getModel().evaluate(enumParameterType).toAnnotationString(Nullability.EXPLICIT));
 
         return overrideStringType;
     }
@@ -166,6 +168,10 @@ public class JSTypeUtils
         else if (type.equals("None"))
         {
             return "* /* " + type + " */";
+        }
+        else if (jsType.isTemplatizedType())
+        {
+        	return ((TemplatizedType)jsType).getReferencedType().toString();
         }
         else
         {

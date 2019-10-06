@@ -184,6 +184,8 @@
     <macrodef name="annotate.class">
         <attribute name="file"/>
         <attribute name="annotation"/>
+        <attribute name="datestart"/>
+        <attribute name="dateend"/>
         <sequential>
             <java classname="org.apache.royale.compiler.tools.annotate.AnnotateClass" fork="false">
                 <classpath>
@@ -193,6 +195,8 @@
                 </classpath>
                 <arg value="@{file}"/>
                 <arg value="@{annotation}"/>
+                <arg value="@{datestart}"/>
+                <arg value="@{dateend}"/>
             </java>
         </sequential>
     </macrodef>
@@ -289,9 +293,9 @@
         <antlr2 input="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.g"
                 output="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as"/>
         <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASParser.java"
-                        annotation='@SuppressWarnings("unused")'/>
+                        annotation='@SuppressWarnings("unused")' datestart="" dateend=""/>
         <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/ASTokenTypes.java"
-                        annotation='@SuppressWarnings("unused")'/>   
+                        annotation='@SuppressWarnings("unused")' datestart="" dateend=""/>
     </target>
 	
 	<target name="set.metadata.parser.uptodate">
@@ -309,9 +313,9 @@
         <antlr2 input="${compiler}/src/main/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.g"
                 output="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as"/>
         <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataParser.java"
-                         annotation='@SuppressWarnings("all")'/>    
+                         annotation='@SuppressWarnings("all")' datestart="" dateend=""/>
         <annotate.class file="${compiler}/target/generated-sources/antlr/org/apache/royale/compiler/internal/parsing/as/MetadataTokenTypes.java"
-                         annotation='@SuppressWarnings("unused")'/>    
+                         annotation='@SuppressWarnings("unused")' datestart="" dateend=""/>
     </target>
     
     <target name="set.css.lexer.and.parser.uptodate">
@@ -324,10 +328,10 @@
     	<echo message="Generating CSSLexer and CSSParser"/>
         <antlr3 input="${compiler}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSS.g"
                 output="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css"/>
-        <!--<annotate.class file="${compiler}/generated/src/org/apache/royale/compiler/internal/css/CSSLexer.java"
-                        annotation='@SuppressWarnings("unused")'/>-->
-        <!--<annotate.class file="${compiler}/generated/src/org/apache/royale/compiler/internal/css/CSSParser.java"
-                        annotation='@SuppressWarnings("unused")'/>-->
+        <annotate.class file="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css/CSSLexer.java"
+                        annotation='@SuppressWarnings("all")' datestart="// $ANTLR 3.5.2 ***CSS.g" dateend=""/>
+        <annotate.class file="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css/CSSParser.java"
+                        annotation='@SuppressWarnings("all")' datestart="// $ANTLR 3.5.2 ***CSS.g" dateend=""/>
     </target>
         
     <target name="set.css.tree.uptodate">
@@ -340,8 +344,9 @@
     	<echo message="Generating CSSTree"/>
         <antlr3 input="${compiler}/src/main/antlr3/org/apache/royale/compiler/internal/css/CSSTree.g"
                 output="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css"/>
-        <!--<annotate.class file="${compiler}/generated/src/org/apache/royale/compiler/internal/css/CSSTree.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>-->        
+        <annotate.class file="${compiler}/target/generated-sources/antlr3/org/apache/royale/compiler/internal/css/CSSTree.java"
+                        annotation='@SuppressWarnings("all")'
+                        datestart="// $ANTLR 3.5.2 ***CSSTree.g" dateend=""/>
     </target>
         
     <target name="antlr" depends="as.parser, metadata.parser, css.lexer.and.parser, css.tree"
@@ -385,7 +390,7 @@
         <jburg input="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/as/codegen/cmc.jbg"
                output="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java"/>
         <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/as/codegen/CmcEmitter.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>		
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused", "incomplete-switch"})' datestart="/*  Generated" dateend=" by JBurg"/>
 	</target>
 	
 	<target name="set.css.emitter.uptodate">
@@ -404,7 +409,7 @@
         <jburg input="${compiler}/src/main/jburg/org/apache/royale/compiler/internal/css/codegen/css.jbg"
                output="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java"/>
         <annotate.class file="${compiler}/target/generated-sources/jburg/org/apache/royale/compiler/internal/css/codegen/CSSEmitter.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>	
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused", "incomplete-switch"})' datestart="/*  Generated" dateend=" by JBurg"/>
 	</target>
 	
 	<target name="jburg" depends="cmc.emitter, css.emitter"

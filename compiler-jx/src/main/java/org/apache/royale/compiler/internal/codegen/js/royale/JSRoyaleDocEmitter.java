@@ -19,10 +19,10 @@
 
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
@@ -37,20 +37,14 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.PublicVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
@@ -59,8 +53,12 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     private List<String> classIgnoreList;
     private List<String> ignoreList;
     private List<String> coercionList;
+    private Map<String,List<String>> localSettings;
     public boolean emitStringConversions = true;
     private boolean emitExports = true;
+    private boolean exportProtected = false;
+    
+    private boolean suppressClosure = false;
 
     public JSRoyaleDocEmitter(IJSEmitter emitter)
     {
@@ -75,6 +73,14 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     public void setClassIgnoreList(List<String> value)
     {
         this.classIgnoreList = value;
+    }
+    
+    public Boolean getSuppressClosure() {
+        return suppressClosure;
+    }
+    
+    public Boolean getEmitExports() {
+        return emitExports;
     }
 
     @Override
@@ -96,9 +102,19 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 return IASLanguageConstants.Object;
         }
         if (name.matches("Vector\\.<.*>"))
-        	return IASLanguageConstants.Array;
+        {
+        	RoyaleJSProject fjp = (RoyaleJSProject)((IASEmitter)emitter).getWalker().getProject();
+        	String vectorClassName = fjp.config == null ? null : fjp.config.getJsVectorEmulationClass();
+        	if (vectorClassName != null) return vectorClassName;
+        	return super.convertASTypeToJS(name, pname);
+        }
         
         name = super.convertASTypeToJS(name, pname);
+        if (name.equals(IASLanguageConstants.Boolean.toLowerCase())
+                || name.equals(IASLanguageConstants.String.toLowerCase())
+                || name.equals(IASLanguageConstants.Number.toLowerCase()))
+            return name;
+
         return formatQualifiedName(name);
     }
 
@@ -115,12 +131,21 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
     	RoyaleJSProject fjp = (RoyaleJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
+        boolean suppressExports = false;
+        if (emitter instanceof JSRoyaleEmitter) {
+            suppressExports = ((JSRoyaleEmitter) emitter).getModel().suppressExports;
+        }
         if (fjp.config != null)
-        	emitExports = fjp.config.getExportPublicSymbols();
+        {
+        	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
+        	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
+        }
         
         coercionList = null;
         ignoreList = null;
+        localSettings = null;
         emitStringConversions = true;
+        suppressClosure = false;
 
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
@@ -220,6 +245,31 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                         		.getToken();
 		                if (docText.contains(noStringToken))
 		                    emitStringConversions = false;
+    
+                        String noImplicitComplexCoercion = JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION
+                                .getToken();
+                        if (docText.contains(noImplicitComplexCoercion))
+                            loadLocalSettings(docText, noImplicitComplexCoercion, "true");
+		                
+                        String noResolveUncertain = JSRoyaleEmitterTokens.SUPPRESS_RESOLVE_UNCERTAIN
+                                .getToken();
+                        if (docText.contains(noResolveUncertain))
+                            loadLocalSettings(docText,noResolveUncertain, "true");
+		                
+                        String suppressVectorIndexCheck = JSRoyaleEmitterTokens.SUPPRESS_VECTOR_INDEX_CHECK
+                                .getToken();
+                        if (docText.contains(suppressVectorIndexCheck))
+                            loadLocalSettings(docText,suppressVectorIndexCheck, "true");
+                        
+                        String suppressClosureToken = JSRoyaleEmitterTokens.SUPPRESS_CLOSURE.getToken();
+    
+                        if (docText.contains(suppressClosureToken))
+                            suppressClosure = true;
+                        
+                        String suppressExport = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
+                        if (docText.contains(suppressExport))
+                            emitExports = false;
+                        
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
                     else
@@ -303,6 +353,78 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             if (hasDoc)
                 end();
         }
+    }
+    
+    private void loadLocalSettings(String doc, String settingToken, String defaultSetting)
+    {
+        if (localSettings == null) localSettings = new HashMap<String, List<String>>();
+        int index = doc.indexOf(settingToken);
+        List<String> settings = localSettings.containsKey(settingToken) ? localSettings.get(settingToken) : null;
+        while (index != -1)
+        {
+            String setting = doc.substring(index + settingToken.length());
+            int endIndex = setting.indexOf("\n");
+            setting = setting.substring(0, endIndex);
+            setting = setting.trim();
+            if (settings == null) {
+                settings = new ArrayList<String>();
+                localSettings.put(settingToken, settings);
+            }
+            List<String> settingItems = null;
+            if (setting.length() >0) {
+                settingItems = Arrays.asList(setting.split("\\s*(,\\s*)+"));
+            } else {
+                settingItems =  Arrays.asList(defaultSetting);
+            }
+            for (String settingItem: settingItems) {
+                if (settings.contains(settingItem)) {
+                    //change the order to reflect the latest addition
+                    settings.remove(settingItem);
+                }
+                settings.add(settingItem);
+                //System.out.println("---Adding setting "+settingToken+":"+settingItem);
+            }
+            index = doc.indexOf(settingToken, index +  settingToken.length());
+        }
+    }
+    
+    public boolean hasLocalSetting(String settingToken) {
+        if (localSettings == null) return false;
+        return (localSettings.keySet().contains(settingToken));
+    }
+    
+    public boolean getLocalSettingAsBoolean(JSRoyaleEmitterTokens token, Boolean defaultValue) {
+        return getLocalSettingAsBoolean(token.getToken(), defaultValue);
+    }
+    
+    public boolean getLocalSettingAsBoolean(String settingToken, Boolean defaultValue) {
+        boolean setting = defaultValue;
+        if (hasLocalSetting(settingToken)) {
+            for (String stringVal: localSettings.get(settingToken)) {
+                //don't bail out after finding a boolean-ish string val
+                //'last one wins'
+                if (stringVal.equals("false")) setting = false;
+                else if (stringVal.equals("true")) setting = true;
+            }
+        }
+        return setting;
+    }
+    
+    public boolean getLocalSettingIncludesString(JSRoyaleEmitterTokens token, String searchValue) {
+        return getLocalSettingIncludesString(token.getToken(), searchValue);
+    }
+    
+    public boolean getLocalSettingIncludesString(String settingToken, String searchValue) {
+        boolean hasValue = false;
+        if (hasLocalSetting(settingToken)) {
+            for (String stringVal: localSettings.get(settingToken)) {
+                if (stringVal.equals(searchValue)) {
+                    hasValue = true;
+                    break;
+                }
+            }
+        }
+        return hasValue;
     }
 
     private void loadIgnores(String doc)
@@ -405,7 +527,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
             emitProtected(node);
         }
-        else if (ns != null && ns == IASKeywordConstants.PUBLIC)
+        else /*if (ns != null && ns == IASKeywordConstants.PUBLIC)*/
         {
             emitPublic(node);
         }
@@ -437,12 +559,35 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             	if (tag != null)
             		bindable = true;
             }
-            if (warnPublicVars && !node.isConst() && !bindable)
+            if (warnPublicVars && !node.isConst() && !bindable && ns.contentEquals("public"))
             {
+                IASNode warningNode = node;
+                //find "public" child node, which may not be the start of the IVariableNode node because of associated metadata
+                int childCount = node.getChildCount();
+                int index = 0;
+                while (index < childCount) {
+                    IASNode child = node.getChild(index);
+                    if (child instanceof IIdentifierNode && ((IIdentifierNode) child).getName().equals("public")) {
+                        warningNode = child;
+                        break;
+                    }
+                    index++;
+                }
+                
                 if (!suppressedWarning(node, fjp))
-                	fjp.getProblems().add(new PublicVarWarningProblem(node));
+                	fjp.getProblems().add(new PublicVarWarningProblem(node.getSourcePath(),
+                            node.getStart(), node.getEnd(),
+                            warningNode.getLine(), warningNode.getColumn(),
+                            node.getEndLine(), node.getEndColumn()));
+               
+
             }
-            emitPublic(node);
+            if (!(node.getASDocComment() instanceof ASDocComment
+                    && ((ASDocComment)node.getASDocComment()).commentNoEnd()
+                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()))) {
+                emitPublic(node);
+            }
+            
         }
 
         if (node.isConst())
@@ -452,11 +597,20 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         if (def != null)
             packageName = def.getPackageName();
 
-        emitType(node, project.getActualPackageName(packageName));
+        emitType(node, project.getActualPackageName(packageName), project);
 
         end();
     }
 
+    @Override
+    public void emitProtected(IASNode node)
+    {
+    	if (exportProtected)
+    		super.emitPublic(node);
+    	else
+    		super.emitProtected(node);
+    }
+    
     @Override
     public void emitPublic(IASNode node)
     {
@@ -466,7 +620,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     
     private boolean suppressedWarning(IVariableNode node, RoyaleJSProject fjp)
     {
-    	boolean suppressed = false;
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
         String suppressToken = JSRoyaleEmitterTokens.SUPPRESS_PUBLIC_VAR_WARNING
@@ -491,6 +644,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             }
             IClassDefinition cdef = ((IClassNode)classNode).getDefinition();
             if (cdef.isBindable())
+            	return true;
+            if (!cdef.isPublic())
             	return true;
     	}
     	return false;

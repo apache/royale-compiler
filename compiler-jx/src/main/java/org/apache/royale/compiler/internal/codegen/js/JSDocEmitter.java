@@ -29,7 +29,8 @@ import org.apache.royale.compiler.tree.as.IASNode;
 public class JSDocEmitter implements IDocEmitter, IEmitter
 {
 
-    private int currentIndent = 0;
+    @SuppressWarnings("unused")
+	private int currentIndent = 0;
 
     protected IEmitter emitter;
 

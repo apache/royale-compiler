@@ -25,6 +25,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinitionBase;
@@ -32,6 +33,7 @@ import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
 import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 import com.google.common.collect.MapMaker;
 
@@ -131,15 +133,27 @@ public class ASScopeCache
      * @param dt Which type of dependency to introduce when we do the lookup
      * @return The IDefinition for the property, or null if it wasn't found
      */
-    IDefinition findProperty(String name, DependencyType dt)
+    IDefinition findProperty(String name, DependencyType dt, boolean favorTypes)
     {
         ConcurrentMap<String, IDefinition> map = getScopeChainMap();
 
         IDefinition result = map.get(name);
         if (result != null)
         {
-            assert result.isInProject(project);
             // We found a cached result - we're done
+        	// after making sure it has a dependency
+        	if (result instanceof ITypeDefinition)
+        	{
+	        	ICompilationUnit from = scope.getFileScope().getCompilationUnit();
+	            assert result.isInProject(project);
+	            
+	            String qname = result.getQualifiedName();
+	            ICompilationUnit to = ((ASProjectScope)project.getScope()).getCompilationUnitForDefinition(result);
+	            if (to == null && !(qname.contentEquals("void") || qname.contentEquals("*")))
+	            	System.out.println("No compilation unit for " + qname);	
+	            if (to != null)
+	            	project.addDependency(from, to, dt, qname);
+        	}
             return result;
         }
 
@@ -148,6 +162,7 @@ public class ASScopeCache
         // the benefit is that we avoid any sort of locking, which was proving expensive (time wise,
         // and memory wise).
 
+        boolean wasAmbiguous = false;
         IDefinition def = null;
         Set<INamespaceDefinition> namespaceSet = scope.getNamespaceSetForName(project, name);
         // Look for the definition in the scope
@@ -164,7 +179,8 @@ public class ASScopeCache
                 assert def.isInProject(project);
                 break;
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+            	wasAmbiguous = true;
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, favorTypes);
                 if (d != null)
                     def = d;
                 else {
@@ -186,7 +202,7 @@ public class ASScopeCache
             // If the dependency type is null we can't cache the name
             // resolution result, because the name resolution cache will not
             // be properly invalidated when the file containing the definition changes.
-            if (dt != null)
+            if (dt != null && !wasAmbiguous)
             {
                 result = map.putIfAbsent(name, def);
                 if (result == null)
@@ -294,7 +310,7 @@ public class ASScopeCache
                 break;
 
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, false);
                 if (d != null)
                     def = d;
                 else
@@ -361,7 +377,7 @@ public class ASScopeCache
                 assert def.isInProject(project);
                 break;
             default:
-                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
+                IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, false);
                 if (d != null)
                     def = d;
                 else

@@ -28,17 +28,17 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.4</version>
+  <version>0.9.6</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
   <description>The Apache Royale Project</description>
 
   <scm>
-    <connection>scm:git:git@github.com:apache/royale-compiler.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/royale-compiler.git</developerConnection>
-    <url>scm:git:git@github.com:apache/royale-compiler.git</url>
-    <tag>org.apache.royale.compiler-0.9.4-rc2</tag>
+    <connection>scm:git:https://github.com/apache/royale-compiler.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/royale-compiler.git</developerConnection>
+    <url>scm:git:https://github.com/apache/royale-compiler.git</url>
+    <tag>org.apache.royale.compiler-0.9.6-rc3</tag>
   </scm>
 
   <properties>
@@ -52,8 +52,9 @@
     <air.version>20.0</air.version>
 
     <jburgTypesRequired>true</jburgTypesRequired>
-    <compiler-build-tools.version>1.0.0</compiler-build-tools.version>
-    <compiler-jburg-types.version>1.0.0</compiler-jburg-types.version>
+    <skipgpg>false</skipgpg>
+    <compiler-build-tools.version>1.1.0</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
@@ -117,6 +118,39 @@
         <module>compiler-build-tools</module>
         <module>compiler-jburg-types</module>
       </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.5.3</version>
+            <configuration>
+              <providerImplementations>
+                <git>jgit</git>
+              </providerImplementations>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-provider-jgit</artifactId>
+                <version>1.11.2-SNAPSHOT</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-api</artifactId>
+                <version>1.11.2-SNAPSHOT</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
         <id>main</id>
@@ -133,6 +167,7 @@
             <module>debugger</module>
             <module>flex-compiler-oem</module>
             <module>royale-ant-tasks</module>
+            <module>royaleunit-ant-tasks</module>
             <!--<module>royale-maven-extension</module>-->
             <module>royale-maven-plugin</module>
         </modules>
@@ -150,6 +185,28 @@
                 </dependency>
               </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <providerImplementations>
+                        <git>jgit</git>
+                    </providerImplementations>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-jgit</artifactId>
+                        <version>1.11.2-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-api</artifactId>
+                        <version>1.11.2-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
           </plugins>
         </build>
     </profile>
@@ -162,10 +219,51 @@
         <website.path>${project.version}</website.path>
       </properties>
     </profile>
+    <profile>
+        <id>upload-release-to-staging</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>
+        <modules><!-- only run on top-level, not for each module -->
+        </modules>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>wagon-maven-plugin</artifactId>
+                    <version>2.0.0</version>
+                    <configuration>
+                        <includes>**</includes>
+                        <serverId>apache.releases.https</serverId>
+                        <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>test-using-swf</id>
+        <dependencies>
+            <dependency>
+                <groupId>com.adobe.flash.framework</groupId>
+                <artifactId>playerglobal</artifactId>
+                <version>${flash.version}</version>
+                <type>swc</type>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </profile>
   </profiles>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <configuration>
+          <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
+        </configuration>
+      </plugin>
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
         <groupId>org.apache.rat</groupId>
@@ -205,6 +303,7 @@
                 target directories. We don't want that.
             -->
             <exclude>**/target/**</exclude>
+            <exclude>**/release-dir/**</exclude>
             <!-- Stuff an Ant build might have left behind. -->
             <exclude>lib/**</exclude>
             <!--
@@ -213,6 +312,10 @@
                 as the typedefs build will handle all content in that directory
             -->
             <exclude>royale-typedefs/**</exclude>
+            <!-- This file is used to get reproducible builds.  See royale-maven-plugin/pom.xml
+                 for more info.
+             -->
+            <exclude>**/src/main/sisu/javax.inject.Named</exclude>
           </excludes>
         </configuration>
         <dependencies>
@@ -491,6 +594,18 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>io.github.zlika</groupId>
+          <artifactId>reproducible-build-maven-plugin</artifactId>
+          <version>0.9</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>strip-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>

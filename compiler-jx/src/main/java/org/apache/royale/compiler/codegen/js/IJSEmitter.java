@@ -25,6 +25,7 @@ import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 
@@ -45,4 +46,6 @@ public interface IJSEmitter extends IASEmitter, IMappingEmitter
     
     void emitClosureStart();
     void emitClosureEnd(IASNode node, IDefinition nodeDef);
+
+    void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition);
 }

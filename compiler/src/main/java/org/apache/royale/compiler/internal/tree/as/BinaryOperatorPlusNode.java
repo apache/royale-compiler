@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.tree.as;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -83,8 +84,8 @@ public class BinaryOperatorPlusNode extends BinaryOperatorNodeBase
         
         // If we're adding two XML-ish (i.e., XML or XMLList) objects,
         // then the result is XMLList.
-        if (IdentifierNode.isXMLish(leftType, project) &&
-            IdentifierNode.isXMLish(rightType, project))
+        if (SemanticUtils.isXMLish(leftType, project) &&
+            SemanticUtils.isXMLish(rightType, project))
         {
             return project.getBuiltinType(BuiltinType.XMLLIST);
         }

@@ -39,7 +39,7 @@ import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 /**
  * Implementation of the {@code IMXMLBindingNode} interface.
  */
-class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
+public class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
 {
     /**
      * Constructor

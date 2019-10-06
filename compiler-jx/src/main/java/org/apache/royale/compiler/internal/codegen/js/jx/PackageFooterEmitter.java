@@ -37,12 +37,14 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
 import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
@@ -74,13 +76,13 @@ public class PackageFooterEmitter extends JSSubEmitter implements
         JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter()
         .getDocEmitter();
 
-		boolean isInterface = tnode instanceof IInterfaceNode;
-
-	    if (!getEmitter().getModel().isExterns)
+	    if (!getEmitter().getModel().isExterns && doc.getEmitExports())
 	    {
-		    /*
+			boolean isInterface = tnode instanceof IInterfaceNode;
+			boolean isDynamic = tnode instanceof IClassNode && tnode.hasModifier(ASModifier.DYNAMIC);
+			/*
 		     * Metadata
-		     * 
+		     *
 		     * @type {Object.<string, Array.<Object>>}
 		     */
 		    writeNewline();
@@ -123,7 +125,19 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			write(ASEmitterTokens.SINGLE_QUOTE);
 			if (isInterface) write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_INTERFACE_KIND);
 			else write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_CLASS_KIND);
-			writeToken(ASEmitterTokens.SINGLE_QUOTE);
+			//writeToken(ASEmitterTokens.SINGLE_QUOTE);
+			
+			if (isDynamic) {
+				//only add the 'isDynamic' tag when it is needed
+				write(ASEmitterTokens.SINGLE_QUOTE);
+				writeToken(ASEmitterTokens.COMMA);
+				write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_IS_DYNAMIC);
+				writeToken(ASEmitterTokens.COLON);
+				write(ASEmitterTokens.TRUE);
+			} else {
+				writeToken(ASEmitterTokens.SINGLE_QUOTE);
+			}
+			
 		    write(ASEmitterTokens.BLOCK_CLOSE);
 		    write(ASEmitterTokens.SQUARE_CLOSE);
 	
@@ -184,14 +198,18 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	
 			String typeName = getEmitter().formatQualifiedName(tnode.getQualifiedName());
 	
-		    emitReflectionData(
-		    		typeName,
+			emitReflectionData(
+					typeName,
 					reflectionKind,
-		    		varData,
-		    		accessorData,
-		    		methodData,
-		    		metadata);
-		    
+					varData,
+					accessorData,
+					methodData,
+					metadata);
+			
+		    if (!isInterface) {
+		    	emitReflectionRegisterInitialStaticFields(typeName, (ClassDefinition) tnode.getDefinition());
+			}
+		   
 		    emitExportProperties(typeName, exportProperties, exportSymbols);
 	    }
     }
@@ -249,7 +267,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     	methodData = new ArrayList<MethodData>();
     	/*
 	     * Reflection
-	     * 
+	     *
 	     * @return {Object.<string, Function>}
 	     */
         IDefinitionNode[] dnodes;
@@ -278,14 +296,14 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					//todo consider outputting consts, none output for now
 					continue;
 				}
-                if (ns == IASKeywordConstants.PUBLIC || isInterface)
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC )))
                 {
                 	name = varNode.getName();
 
 					IMetaTagsNode metaData = varNode.getMetaTags();
 					//first deal with 'Bindable' upgrades to getters/setters
 					if (!isInterface && bindableVars.containsKey(name)
-							&& bindableVars.get(name).namespace == IASKeywordConstants.PUBLIC) {
+							&& bindableVars.get(name).namespace.equals(IASKeywordConstants.PUBLIC)) {
 
 						AccessorData bindableAccessor = new AccessorData();
 						bindableAccessor.name = name;
@@ -347,7 +365,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			staticEventDispatcher.isStatic = true;
 			accessorData.add(staticEventDispatcher);
 		}
-        
+     
 	    HashMap<String, AccessorData> instanceAccessorMap = new HashMap<String, AccessorData>();
 		HashMap<String, AccessorData> staticAccessorMap = new HashMap<String, AccessorData>();
         for (IDefinitionNode dnode : dnodes)
@@ -362,7 +380,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
-                if (ns == IASKeywordConstants.PUBLIC || isInterface)
+
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
                 {
 					String accessorName = fnNode.getName();
                 	AccessorData data = accessorMap.get(accessorName);
@@ -426,7 +445,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
-                if (ns == IASKeywordConstants.PUBLIC || isInterface)
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
                 {
                 	MethodData data = new MethodData();
 					data.isStatic = isStatic;
@@ -519,6 +538,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	}
 
 	private void emitReflectionDataEnd(String typeName) {
+		JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
+		
 		writeNewline();
 		// close return object
 		write(ASEmitterTokens.BLOCK_CLOSE);
@@ -529,6 +550,28 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		writeNewline();
 		write(ASEmitterTokens.BLOCK_CLOSE);
 		writeNewline(ASEmitterTokens.SEMICOLON);
+		
+		if (config == null) return;
+		//add compiletime descriptor flags
+		//doc emitter-ish:
+		writeNewline("/**");
+		writeNewline(" * @export");
+		writeNewline(" * @const");
+		writeNewline(" * @type {number}");
+		writeNewline(" */");
+		
+		//{typeName}.prototype.ROYALE_REFLECTION_INFO.compileFlags = {int value here};
+		write(typeName);
+		write(ASEmitterTokens.MEMBER_ACCESS);
+		write(JSEmitterTokens.PROTOTYPE);
+		write(ASEmitterTokens.MEMBER_ACCESS);
+		write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
+		write(ASEmitterTokens.MEMBER_ACCESS);
+		writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_COMPILE_TIME_FLAGS);
+		writeToken(ASEmitterTokens.EQUAL);
+		//
+		write(String.valueOf(config.getReflectionFlags()));
+		writeNewline(ASEmitterTokens.SEMICOLON);
 	}
     
     public void emitReflectionData(
@@ -538,7 +581,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     		List<AccessorData> accessorData,
     		List<MethodData> methodData,
     		IMetaTagNode[] metaData
-
     		)
     {
 
@@ -586,13 +628,48 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					write(ASEmitterTokens.SINGLE_QUOTE);
 					write(var.type);
 					write(ASEmitterTokens.SINGLE_QUOTE);
-				//	if (var.isStatic) {
-				//		writeIsStatic();
-				//	}
+					
+					//provide a get_set function that works in release build with public vars
+					writeToken(ASEmitterTokens.COMMA);
+					write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_GET_SET);
+					writeToken(ASEmitterTokens.COLON);
+					writeToken(ASEmitterTokens.FUNCTION);
+					boolean valueIsUntyped = var.type.equals("*");
+					if (valueIsUntyped) {
+						//give the function a local name because a self-reference argument will be used to signify that
+						//it is not being used as a setter (because 'undefined' is a valid possible value to set)
+						write("f");
+					}
+					write(ASEmitterTokens.PAREN_OPEN);
+					
+					if (!var.isStatic) {
+						//instance type parameter
+						writeToken("/** " + typeName + " */");
+						write("inst");
+						writeToken(ASEmitterTokens.COMMA);
+					}
+					//any type for value
+					write("/** * */ v");
+					writeToken(ASEmitterTokens.PAREN_CLOSE);
+					write(ASEmitterTokens.BLOCK_OPEN);
+					String getterSetter;
+					String field = var.isStatic ? typeName + "." + var.name : "inst." + var.name;
+					if (valueIsUntyped) {
+						//to avoid setting when type is '*' set the 'value' param to the function being called, which
+						//causes a 'getter only' result
+						//In the case of no parameter or literal undefined being passed, it will be treated as the value
+						//of undefined to be assigned to the variable field
+						getterSetter = "return v !== f ? "+ field + " = v : " + field + ";";
+					} else {
+						getterSetter = "return v !== undefined ? " + field + " = v : " + field + ";";
+					}
+					write(getterSetter);
+					write(ASEmitterTokens.BLOCK_CLOSE);
+					
 					IMetaTagNode[] tags = var.metaData;
 					if (tags != null) {
-						writeToken(ASEmitterTokens.COMMA);
-						writeMetaData(tags);
+						//writeToken(ASEmitterTokens.COMMA);
+						writeMetaData(tags, true, false);
 					}
 					// close object
 					write(ASEmitterTokens.BLOCK_CLOSE);
@@ -651,9 +728,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				write(ASEmitterTokens.SINGLE_QUOTE);
 				write(accessor.type);
 				write(ASEmitterTokens.SINGLE_QUOTE);
-			//	if (accessor.isStatic) {
-			//		writeIsStatic();
-			//	}
 				writeToken(ASEmitterTokens.COMMA);
 				write("access");
 				writeToken(ASEmitterTokens.COLON);
@@ -669,8 +743,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				IMetaTagNode[] tags = accessor.metaData;
 				if (tags != null)
 				{
-					writeToken(ASEmitterTokens.COMMA);
-					writeMetaData(tags);
+					//writeToken(ASEmitterTokens.COMMA);
+					writeMetaData(tags, true, false);
 				}
 				// close object
 				write(ASEmitterTokens.BLOCK_CLOSE);
@@ -728,9 +802,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				write(ASEmitterTokens.SINGLE_QUOTE);
 				write(method.type);
 				write(ASEmitterTokens.SINGLE_QUOTE);
-			//	if (method.isStatic) {
-			//		writeIsStatic();
-			//	}
 				writeToken(ASEmitterTokens.COMMA);
 				write("declaredBy");
 				writeToken(ASEmitterTokens.COLON);
@@ -747,8 +818,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				IMetaTagNode[] metas = method.metaData;
 				if (metas != null)
 				{
-					writeToken(ASEmitterTokens.COMMA);
-					writeMetaData(metas);
+					//writeToken(ASEmitterTokens.COMMA);
+					writeMetaData(metas, true, false);
 				}
 
 				// close object
@@ -764,18 +835,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			// close method function
 			write(ASEmitterTokens.BLOCK_CLOSE);
 		}
-
-
-
+		
     	if (metaData != null && metaData.length > 0)
     	{
-    		write(ASEmitterTokens.COMMA);
-    	    writeNewline();
-    	    writeMetaData(metaData);
-    	}            	    	
+    		//write(ASEmitterTokens.COMMA);
+    	    //writeNewline();
+    	    writeMetaData(metaData, true, true);
+    	}
 	    
 	    indentPop();
-
 		emitReflectionDataEnd(typeName);
     }
 
@@ -798,13 +866,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		writeToken(ASEmitterTokens.SQUARE_CLOSE);
 	}
 	*/
-    
-	/*private void writeIsStatic() {
-		writeToken(ASEmitterTokens.COMMA);
-		write("isStatic");
-		writeToken(ASEmitterTokens.COLON);
-		writeToken(ASEmitterTokens.TRUE);
-	}*/
+ 
 
 	private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
 		//return {};
@@ -830,7 +892,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		// return [ array of parameter definitions ]
 		writeToken(ASEmitterTokens.RETURN);
 		writeToken(ASEmitterTokens.SQUARE_OPEN);
-		write(ASEmitterTokens.SPACE);
 
 		int len = params.length;
 		for (int i = 0; i < len ; i++) {
@@ -872,102 +933,168 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		// close function
 		write(ASEmitterTokens.BLOCK_CLOSE);
 	}
-    
-    private void writeMetaData(IMetaTagNode[] tags)
-    {
-    	JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
-    	Set<String> allowedNames = config.getCompilerKeepAs3Metadata();
-    	
-	    // metadata: function() {
-		write("metadata");
-	    writeToken(ASEmitterTokens.COLON);
-	    writeToken(ASEmitterTokens.FUNCTION);
-	    write(ASEmitterTokens.PAREN_OPEN);
-	    writeToken(ASEmitterTokens.PAREN_CLOSE);
-	    writeToken(ASEmitterTokens.BLOCK_OPEN);
-	    // return [ array of metadata tags ]
-	    writeToken(ASEmitterTokens.RETURN);
-	    writeToken(ASEmitterTokens.SQUARE_OPEN);
-
+	
+	private ArrayList<IMetaTagNode> getAllowedMetadata(IMetaTagNode[] tags) {
+		JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
+		Set<String> allowedNames = config.getCompilerKeepAs3Metadata();
+		
 		ArrayList<IMetaTagNode> filteredTags = new ArrayList<IMetaTagNode>(tags.length);
 		for (IMetaTagNode tag : tags)
 		{
 			if (allowedNames.contains(tag.getTagName())) filteredTags.add(tag);
-
 		}
-
-	    int count = 0;
+		return filteredTags;
+	}
+	
+	private void writeAllowedMetadata(ArrayList<IMetaTagNode> filteredTags ) {
+		int count = 0;
 		int len = filteredTags.size();
-	    for (IMetaTagNode tag : filteredTags)
-	    {
-
-
-	    	count++;
-    	    // { name: <tag name>
-    	    writeToken(ASEmitterTokens.BLOCK_OPEN);
-    	    write("name");
-    	    writeToken(ASEmitterTokens.COLON);
-    	    write(ASEmitterTokens.SINGLE_QUOTE);
-    	    write(tag.getTagName());
-    	    write(ASEmitterTokens.SINGLE_QUOTE);
-    	    IMetaTagAttribute[] args = tag.getAllAttributes();
-    	    if (args.length > 0)
-    	    {
-        		writeToken(ASEmitterTokens.COMMA);
-        	    
-        	    // args: [
-        	    write("args");
-        	    writeToken(ASEmitterTokens.COLON);
-        	    writeToken(ASEmitterTokens.SQUARE_OPEN);
-        	    
-        	    for (int j = 0; j < args.length; j++)
-        	    {
-        	    	if (j > 0)
-        	    	{
-                		writeToken(ASEmitterTokens.COMMA);
-        	    	}
-        	    	// { key: key, value: value }
-        	    	IMetaTagAttribute arg = args[j];
-            	    writeToken(ASEmitterTokens.BLOCK_OPEN);
-            	    write("key");
-            	    writeToken(ASEmitterTokens.COLON);
-            	    write(ASEmitterTokens.SINGLE_QUOTE);
-            	    String key = arg.getKey();
-            	    write(key == null ? "" : key);
-            	    write(ASEmitterTokens.SINGLE_QUOTE);
-            		writeToken(ASEmitterTokens.COMMA);
-            	    write("value");
-            	    writeToken(ASEmitterTokens.COLON);
-            	    write(ASEmitterTokens.SINGLE_QUOTE);
-            	    write(formatJSStringValue(arg.getValue()));
-            	    write(ASEmitterTokens.SINGLE_QUOTE);
+		
+		// metadata: function() {
+		write("metadata");
+		writeToken(ASEmitterTokens.COLON);
+		writeToken(ASEmitterTokens.FUNCTION);
+		write(ASEmitterTokens.PAREN_OPEN);
+		writeToken(ASEmitterTokens.PAREN_CLOSE);
+		writeToken(ASEmitterTokens.BLOCK_OPEN);
+		// return [ array of metadata tags ]
+		writeToken(ASEmitterTokens.RETURN);
+		writeToken(ASEmitterTokens.SQUARE_OPEN);
+		
+		for (IMetaTagNode tag : filteredTags)
+		{
+			count++;
+			// { name: <tag name>
+			writeToken(ASEmitterTokens.BLOCK_OPEN);
+			write("name");
+			writeToken(ASEmitterTokens.COLON);
+			write(ASEmitterTokens.SINGLE_QUOTE);
+			write(tag.getTagName());
+			write(ASEmitterTokens.SINGLE_QUOTE);
+			IMetaTagAttribute[] args = tag.getAllAttributes();
+			if (args.length > 0)
+			{
+				writeToken(ASEmitterTokens.COMMA);
+				
+				// args: [
+				write("args");
+				writeToken(ASEmitterTokens.COLON);
+				writeToken(ASEmitterTokens.SQUARE_OPEN);
+				
+				for (int j = 0; j < args.length; j++)
+				{
+					if (j > 0)
+					{
+						writeToken(ASEmitterTokens.COMMA);
+					}
+					// { key: key, value: value }
+					IMetaTagAttribute arg = args[j];
+					writeToken(ASEmitterTokens.BLOCK_OPEN);
+					write("key");
+					writeToken(ASEmitterTokens.COLON);
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					String key = arg.getKey();
+					write(key == null ? "" : key);
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					writeToken(ASEmitterTokens.COMMA);
+					write("value");
+					writeToken(ASEmitterTokens.COLON);
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					write(formatJSStringValue(arg.getValue()));
+					write(ASEmitterTokens.SINGLE_QUOTE);
 					write(ASEmitterTokens.SPACE);
-            	    write(ASEmitterTokens.BLOCK_CLOSE);
-        	    }
-        	    // close array of args
+					write(ASEmitterTokens.BLOCK_CLOSE);
+				}
+				// close array of args
 				write(ASEmitterTokens.SPACE);
-        	    write(ASEmitterTokens.SQUARE_CLOSE);
-    	    }
-    	    // close metadata object
+				write(ASEmitterTokens.SQUARE_CLOSE);
+			}
+			// close metadata object
 			write(ASEmitterTokens.SPACE);
-    	    write(ASEmitterTokens.BLOCK_CLOSE);
+			write(ASEmitterTokens.BLOCK_CLOSE);
 			if (count > 0 && count < len)
 			{
 				writeToken(ASEmitterTokens.COMMA);
 			}
-	    }
-	    // close array of metadatas
+		}
+		// close array of metadatas
 		write(ASEmitterTokens.SPACE);
-	    write(ASEmitterTokens.SQUARE_CLOSE);
-	    writeToken(ASEmitterTokens.SEMICOLON);
-	    // close function
-	    write(ASEmitterTokens.BLOCK_CLOSE);
+		write(ASEmitterTokens.SQUARE_CLOSE);
+		writeToken(ASEmitterTokens.SEMICOLON);
+		// close function
+		write(ASEmitterTokens.BLOCK_CLOSE);
+	}
+    
+    private void writeMetaData(IMetaTagNode[] tags, boolean prefixComma, boolean prefixNewline)
+    {
+		ArrayList<IMetaTagNode> filteredTags = getAllowedMetadata(tags);
+		if (filteredTags.size() == 0) {
+			//nothing to write
+			return;
+		}
+		if (prefixNewline) {
+			if (prefixComma) {
+				write(ASEmitterTokens.COMMA);
+			}
+			writeNewline();
+		} else {
+			if (prefixComma) {
+				writeToken(ASEmitterTokens.COMMA);
+			}
+		}
+		writeAllowedMetadata(filteredTags);
     }
 
     private String formatJSStringValue(String value) {
 		//todo: check other possible metadata values for any need for js string escaping etc
     	value = value.replace("'","\\'");
     	return value;
+	}
+	
+	public void emitReflectionRegisterInitialStaticFields(String typeName, IClassDefinition classDef) {
+		//this is only output if the default initializers are enabled (otherwise runtime reflection results are not reliable)
+		//local config check here (instead of call site check) - in case this needs to change in the future:
+		JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
+		if (config == null || !config.getJsDefaultInitializers()) return;
+		
+		boolean needsStaticsList = false;
+		Collection<IDefinitionSet> defs = classDef.getContainedScope().getAllLocalDefinitionSets();
+		for (IDefinitionSet set : defs) {
+			for (int i = 0, l = set.getSize(); i < l; ++i) {
+				IDefinition d = set.getDefinition(i);
+				if (d.isStatic()) {
+					needsStaticsList = true;
+					break;
+				}
+			}
+			if (needsStaticsList) break;
+		}
+		if (needsStaticsList) {
+			//support for reflection on static classes: supports ability to distinguish between initial fields and dynamic fields
+			//doc emitter-ish:
+			writeNewline("/**");
+			writeNewline(" * Provide reflection support for distinguishing dynamic fields on class object (static)");
+			writeNewline(" * @export");
+			writeNewline(" * @const");
+			writeNewline(" * @type {Array<string>}");
+			writeNewline(" */");
+			
+			//{typeName}.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys({typeName});
+			write(typeName);
+			write(ASEmitterTokens.MEMBER_ACCESS);
+			write(JSEmitterTokens.PROTOTYPE);
+			write(ASEmitterTokens.MEMBER_ACCESS);
+			write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
+			write(ASEmitterTokens.MEMBER_ACCESS);
+			writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_INITIAL_STATICS);
+			writeToken(ASEmitterTokens.EQUAL);
+			write("Object.keys");
+			write(ASEmitterTokens.PAREN_OPEN);
+			write(typeName);
+			write(ASEmitterTokens.PAREN_CLOSE);
+			write(ASEmitterTokens.SEMICOLON);
+			writeNewline();
+		}
 	}
     
     public void emitExportProperties(String typeName, ArrayList<String> exportProperties, ArrayList<String> exportSymbols)

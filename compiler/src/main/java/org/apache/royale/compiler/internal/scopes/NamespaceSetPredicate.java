@@ -88,6 +88,12 @@ public class NamespaceSetPredicate implements Predicate<IDefinition>
         return false;
     }
 
+    @Override
+    public boolean test(IDefinition input)
+    {
+        return apply(input);
+    }
+
     /**
      * Does the underlying namespace set contain the namespace passed in
      * @param d the namespace to check

@@ -51,6 +51,7 @@ public interface ICompilerSettingsConstants
     static final String DEFAULT_BACKGROUND_COLOR                             = "--default-background-color";
     static final String DEBUG_PASSWORD                                       = "--debug-password";
     static final String SWF_VERSION                                          = "--swf-version";
+    static final String COMPILER_WARN_THIS_WITHIN_CLOSURE                    = "--compiler.warn-this-within-closure";
     static final String COMPILER_WARN_XML_CLASS_HAS_CHANGED                  = "--compiler.warn-xml-class-has-changed";
     static final String COMPILER_WARN_UNLIKELY_FUNCTION_VALUE                = "--compiler.warn-unlikely-function-value";
     static final String COMPILER_WARN_SLOW_TEXT_FIELD_ADDITION               = "--compiler.warn-slow-text-field-addition";

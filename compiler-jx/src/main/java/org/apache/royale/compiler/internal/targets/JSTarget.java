@@ -149,7 +149,7 @@ public class JSTarget extends Target implements IJSTarget
             //                }
             //            }
             //
-            //            createLinkReport(problems);
+            createLinkReport(problems);
 
             return application;
         }

@@ -33,6 +33,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.DependencyTypeSet;
+import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.exceptions.CircularDependencyException;
 import org.apache.royale.compiler.internal.graph.Graph;
 import org.apache.royale.compiler.internal.graph.GraphEdge;
@@ -43,6 +44,7 @@ import org.apache.royale.compiler.internal.units.InvisibleCompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Class to track dependencies in a {@link CompilerProject}.
@@ -498,6 +500,8 @@ public final class DependencyGraph
             }
         });
     }
+    
+    public CircularDependencyException lastCircularDependencyException;
 
     /**
      * Computes the list of all {@link ICompilationUnit}'s that the specified
@@ -520,6 +524,7 @@ public final class DependencyGraph
         lock.readLock().lock();
         try
         {
+        	lastCircularDependencyException = null;
             final ArrayList<ICompilationUnit> sortedList = new ArrayList<ICompilationUnit>(graph.getVertices().size());
             TopologicalSort.IVisitor<ICompilationUnit, Edge> visitor =
                     new TopologicalSort.IVisitor<ICompilationUnit, Edge>()
@@ -549,6 +554,23 @@ public final class DependencyGraph
             }
             catch (CircularDependencyException e1)
             {
+    			if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.GOOG_DEPS) == CompilerDiagnosticsConstants.GOOG_DEPS)
+    			{
+    				System.out.println("Circular Dependency Found");
+    				@SuppressWarnings("unchecked")
+					ImmutableList<ICompilationUnit> nodes = (ImmutableList<ICompilationUnit>) e1.getCircularDependency();
+    				for (ICompilationUnit node : nodes)
+    				{
+    					try {
+							System.out.println(node.getQualifiedNames().toString());
+						} catch (InterruptedException e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
+    				}
+    				System.out.println("End of Circular Dependency");
+    			}
+    			lastCircularDependencyException = e1;
                 assert false : "CircularDependencyException";
             }
             return sortedList;

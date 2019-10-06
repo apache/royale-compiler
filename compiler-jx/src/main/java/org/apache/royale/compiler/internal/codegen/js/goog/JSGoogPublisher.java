@@ -111,14 +111,14 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 DirectoryFileFilter.DIRECTORY);
         for (File file : files)
         {
-            inputs.add(SourceFile.fromFile(file));
+            inputs.add(SourceFile.fromFile(file.getAbsolutePath()));
         }
 
         copyFile(closureGoogSrcLibDir, closureGoogTgtLibDir);
         copyFile(closureTPSrcLibDir, closureTPTgtLibDir);
 
         final List<SourceFile> deps = new ArrayList<SourceFile>();
-        deps.add(SourceFile.fromFile(depsSrcFile));
+        deps.add(SourceFile.fromFile(depsSrcFile.getAbsolutePath()));
 
         ErrorManager errorManager = new JSGoogErrorManager();
         DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
@@ -322,6 +322,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 {
                     if (!dir.mkdirs())
                     {
+                        jar.close();
                         throw new IOException("Unable to create directory "
                                 + dir.getAbsolutePath());
                     }

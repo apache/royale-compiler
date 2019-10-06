@@ -242,4 +242,10 @@ public class CombinedFile implements IFileSpecification
         // No BOM tag.
         return BOM.NONE;
     }
+
+	@Override
+	public void setLastModified(long fileDate) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -39,6 +39,7 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IEffectDefinition;
@@ -74,6 +75,7 @@ import org.apache.royale.compiler.problems.MissingSkinPartProblem;
 import org.apache.royale.compiler.problems.MissingSkinStateProblem;
 import org.apache.royale.compiler.problems.OnlyOneHostComponentAllowedProblem;
 import org.apache.royale.compiler.problems.SkinPartsMustBePublicProblem;
+import org.apache.royale.compiler.problems.UnimplementedAbstractMethodProblem;
 import org.apache.royale.compiler.problems.WrongSkinPartProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -311,6 +313,16 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
     protected void setConstructor(IFunctionDefinition constructor)
     {
         this.constructor = constructor;
+
+        if(this.constructor.isPrivate()
+                && this.constructor.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR) == null)
+        {
+            // ensures that the constructor remains private when compiled into
+            // a library because the metadata is how private constructors are
+            // stored in the bytecode
+            MetaTag privateMetaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR, new IMetaTagAttribute[0]);
+            addMetaTag(privateMetaTag);
+        }
     }
 
     @Override
@@ -756,19 +768,26 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
     {
         Set<String> states = new HashSet<String>();
 
-        // Iterate over this class and its superclasses.
-        for (IClassDefinition c : classIterable(project, true))
+        // Iterate over the superclasses first, but don't worry about duplicates
+        // yet. The superclasses will find their own duplicates!
+        for (IClassDefinition c : classIterable(project, false))
         {
             for (String state : c.getSkinStates(problems))
             {
-                if (states.contains(state))
-                {
-                    ICompilerProblem problem = new DuplicateSkinStateProblem(c, state);
-                    problems.add(problem);
-                }
-
                 states.add(state);
             }
+        }
+        // Then, add the states from this class and check for duplicates that
+        // specifically come from this class
+        for (String state : getSkinStates(problems))
+        {
+            if (states.contains(state))
+            {
+                ICompilerProblem problem = new DuplicateSkinStateProblem(this, state);
+                problems.add(problem);
+            }
+
+            states.add(state);
         }
 
         return states.toArray(new String[states.size()]);
@@ -1454,5 +1473,62 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
             return true;
         // Some implicit class definition we have never seen before.
         return false;
+    }
+
+    /**
+     * Method to find all the abstract methods declared in this class, and
+     * validate that the concrete class definition passed in implements those
+     * methods, and that they are implemented with compatible signatures
+     * 
+     * @param cls the class definition to check
+     * @param problems a list of problems to report errors to
+     */
+    public void validateClassImplementsAllMethods(ICompilerProject project, ClassDefinition cls, Collection<ICompilerProblem> problems)
+    {
+        ASScope classScope = cls.getContainedScope();
+
+        for (IDefinitionSet defSet : this.getContainedScope().getAllLocalDefinitionSets())
+        {
+            for (int i = 0, l = defSet.getSize(); i < l; ++i)
+            {
+                IDefinition def = defSet.getDefinition(i);
+                if (def instanceof FunctionDefinition && !(def instanceof IAccessorDefinition))
+                {
+                    FunctionDefinition abstractMethod = (FunctionDefinition)def;
+
+                    // Skip any implicit methods added for CM compat
+                    if (abstractMethod.isImplicit())
+                        continue;
+
+                    // Skip the constructor method of the interface.
+                    if (abstractMethod.getBaseName().equals(getBaseName()))
+                        continue;
+
+                    // Skip methods that are static
+                    if (abstractMethod.isStatic())
+                        continue;
+
+                    // Skip methods that aren't abstract
+                    if (!abstractMethod.isAbstract())
+                        continue;
+
+                    INamespaceDefinition ns = abstractMethod.resolveNamespace(project);
+                    if(ns instanceof INamespaceDefinition.IProtectedNamespaceDefinition)
+                    {
+                        ns = cls.getProtectedNamespaceReference();
+                    }
+
+                    IDefinition c = classScope.getQualifiedPropertyFromDef(project, cls, abstractMethod.getBaseName(), ns, false);
+                    if (c == null || c.isAbstract())
+                    {
+                        // Error, didn't implement the method
+                        problems.add(new UnimplementedAbstractMethodProblem(cls,
+                                abstractMethod.getBaseName(),
+                                this.getBaseName(),
+                                cls.getBaseName()));
+                    }
+                }
+            }
+        }
     }
 }

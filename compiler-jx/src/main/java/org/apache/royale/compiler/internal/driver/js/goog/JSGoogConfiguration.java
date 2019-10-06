@@ -46,7 +46,7 @@ import org.apache.royale.compiler.internal.config.annotations.Mapping;
  * configure() method of {@link MXMLJSC}.
  * <p>
  * This class inherits all compiler arguments from the MXMLC compiler.
- * 
+ *
  * @author Erik de Bruin
  */
 public class JSGoogConfiguration extends JSConfiguration
@@ -428,6 +428,26 @@ public class JSGoogConfiguration extends JSConfiguration
 
     
     //
+    // 'export-protected-symbols'
+    //
+
+    private boolean exportProtectedSymbols = false;
+
+    public boolean getExportProtectedSymbols()
+    {
+        return exportProtectedSymbols;
+    }
+
+    @Config
+    @Mapping("export-protected-symbols")
+    public void setExportProtectedSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	exportProtectedSymbols = value;
+    }
+
+    
+    //
     // 'warn-public-vars'
     //
 
@@ -446,6 +466,69 @@ public class JSGoogConfiguration extends JSConfiguration
     	warnPublicVars = value;
     }
 
+    // 'externs-report' option
+    //
+
+    private String externsReportFileName = null;
+
+    public File getExternsReport()
+    {
+        return externsReportFileName != null ? new File(externsReportFileName) : null;
+    }
+
+    /**
+     * Prints externs information to the specified output file. This file is an Google Closure Compiler externs file that contains
+     * all of the public and protected APIs in the final SWF file. The file format output
+     * by this command can be used to write a file for input to the {@code -js-compiler-options="--externs <path-to-this-file>"} option.
+     */
+    @Config(advanced = true)
+    @Mapping("externs-report")
+    @Arguments("filename")
+    public void setExternsReport(ConfigurationValue cv, String filename)
+    {
+        this.externsReportFileName = getOutputPath(cv, filename);
+    }
     
+    
+    /**
+     * Support for reflection data output to represent selected config options
+     * that were used when compiling
+     * @return an integer representation of bit flags representing
+     */
+    public int getReflectionFlags() {
+        int ret = 0;
+        final int WITH_DEFAULT_INITIALIZERS = 1;
+        final int HAS_KEEP_AS3_METADATA = 2;
+        final int HAS_KEEP_CODE_WITH_METADATA = 4;
+        final int HAS_EXPORT_PUBLIC_SYMBOLS = 8;
+        final int EXPORT_PROTECTED_SYMBOLS = 16;
+    
+        if (getJsDefaultInitializers()) ret |= WITH_DEFAULT_INITIALIZERS;
+        if (getCompilerKeepAs3Metadata().size() > 0) ret |= HAS_KEEP_AS3_METADATA;
+        if (getCompilerKeepCodeWithMetadata().size() > 0) ret |= HAS_KEEP_CODE_WITH_METADATA;
+        if (getExportPublicSymbols()) ret |= HAS_EXPORT_PUBLIC_SYMBOLS;
+        if (getExportProtectedSymbols()) ret |= EXPORT_PROTECTED_SYMBOLS;
+        
+        return ret;
+    }
+
+    //
+    // 'inline-constants'
+    //
+
+    private boolean inlineConstants = false;
+
+    public boolean getInlineConstants()
+    {
+        return inlineConstants;
+    }
+
+    @Config
+    @Mapping("inline-constants")
+    public void setInlineConstants(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	inlineConstants = value;
+    }
 
 }

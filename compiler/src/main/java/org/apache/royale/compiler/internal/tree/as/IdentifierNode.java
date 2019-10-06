@@ -104,22 +104,6 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     }
 
     /**
-     * Determine if the definition passed in is one of the XML types (XML or
-     * XMLList) These classes are unrelated, but behave in similar manners.
-     * 
-     * @param def the {@link IDefinition} to check
-     * @param project the {@link ICompilerProject} in which to look up types
-     * @return true if definition is the built-in XML or XMLList type.
-     */
-    public static boolean isXMLish(IDefinition def, ICompilerProject project)
-    {
-        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
-        IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
-        return (xmlDef != null && def == xmlDef) ||
-               (xmlListDef != null && def == xmlListDef);
-    }
-
-    /**
      * Constructor.
      */
     public IdentifierNode(String name)
@@ -323,6 +307,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         return true;
     }
 
+    private IDefinition idDef = null;
     //
     // ExpressionNodeBase overrides
     //
@@ -330,6 +315,9 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     @Override
     public IDefinition resolve(ICompilerProject project)
     {
+    	if (DefinitionBase.getPerformanceCachingEnabled() && idDef != null)
+    		return idDef;
+    	
         ASScope asScope = getASScope();
 
         if (asScope == null)
@@ -391,7 +379,10 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         {
             if (qualifier == null)
             {
-                result = asScope.findProperty(project, name, getDependencyType(), isTypeRef());
+            	DependencyType dt = getDependencyType();
+                result = asScope.findProperty(project, name, dt, isTypeRef());
+                if (result != null && name.equals("graphics") && (result.getParent() instanceof ITypeDefinition) && ((ITypeDefinition)(result.getParent())).isInstanceOf("mx.core.UIComponent", project))
+                	result = asScope.findProperty(project, "royalegraphics", getDependencyType(), isTypeRef());
                 // ASVariableTests_localVarSameNameAsPrivateMethod
                 if (isLegacyCodegen(project) && result != null && getParent().getNodeID() == ASTNodeID.FunctionCallID && result instanceof VariableDefinition)
                 {
@@ -457,6 +448,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         		((RoyaleProject)project).addToAPIReport(result);
         }
         
+        idDef = result;
         return result;
     }
 
@@ -467,7 +459,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
 
         if (def != null)
         {
-            if (isXMLish(def.getParent(), project))
+            if (SemanticUtils.isXMLish(def.getParent(), project))
             {
                 // XML and XMLList members should be treated as '*' because any access could
                 // resolve to some content inside the XML (i.e. it has a child tag named 'name').
@@ -878,7 +870,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         IDefinition result = null;
 
         // Determine baseType, the type of 'a' (the left-hand-side of the member access operator).
-        IDefinition baseType = null;
+        ITypeDefinition baseType = null;
         ExpressionNodeBase baseExpr = getBaseExpression();
         if (baseExpr != null)
         {
@@ -901,7 +893,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    if (!((RoyaleProject)project).useStrictXML() && isXMLish(baseType, project))
+                    if (!((RoyaleProject)project).useStrictXML() && SemanticUtils.isXMLish(baseType, project))
                         return null;
                     
                     if (baseExpr instanceof IdentifierNode)
@@ -920,6 +912,12 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                 }
                 if (qualifier != null)
                     result = asScope.getQualifiedPropertyFromDef(project, baseType, name, qualifier, isSuper);
+                else if (name.equals("graphics") && baseType.isInstanceOf("mx.core.UIComponent", project))
+                {
+                	result = asScope.getPropertyFromDef(project, baseType, "royalegraphics", isSuper);
+                    if (result == null)
+                        result = asScope.getPropertyFromDef(project, baseType, name, isSuper);
+                }
                 else
                     result = asScope.getPropertyFromDef(project, baseType, name, isSuper);
             }
@@ -1031,7 +1029,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             // Can't early bind to XML/XMLList properties as they may be hidden by the unknown contents
             // of the XML itself, i.e. a child tag named 'parent'
             // Matches ASC behavior.
-            if (!isXMLish(def.getParent(), project))
+            if (!SemanticUtils.isXMLish(def.getParent(), project))
                 return true;
         }
         return false;

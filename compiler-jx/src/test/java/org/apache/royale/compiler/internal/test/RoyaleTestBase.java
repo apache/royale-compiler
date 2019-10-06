@@ -18,14 +18,14 @@
  */
 package org.apache.royale.compiler.internal.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
-import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
@@ -100,6 +100,7 @@ public class RoyaleTestBase extends TestBase
                 + code + "]]></fx:Script></basic:Application>";
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         return findFirstASDescendantOfType(node, type);
     }
@@ -115,6 +116,7 @@ public class RoyaleTestBase extends TestBase
         }
 
         IMXMLFileNode node = compileMXML(code);
+        assertNotNull(node);
 
         return findFirstDescendantOfType(node, type);
     }

@@ -18,6 +18,7 @@
  */
 package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
+import com.google.common.io.Files;
 import com.google.javascript.jscomp.SourceFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -29,7 +30,6 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
-import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
@@ -45,7 +45,6 @@ import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
-import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -54,6 +53,7 @@ import org.apache.royale.swc.ISWCManager;
 import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
@@ -100,6 +100,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     private String outputPathParameter;
     private String moduleOutput;
     private boolean useStrictPublishing;
+    private List<String> additionalHTML = new ArrayList<String>();
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
     										String mainClassQName, 
@@ -189,11 +190,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // The source directory is the source path entry containing the Main class.
         List<File> sourcePaths = project.getSourcePath();
         String targetFile = configuration.getTargetFile().toLowerCase();
-    	System.out.println("find project folder for " + targetFile);
+    	if (googConfiguration.isVerbose())
+        {
+            System.out.println("find project folder for " + targetFile);
+        }
         File imageSrcDir = null;
         for (File sp : sourcePaths)
         {
-        	System.out.println("checking source path " + sp.getAbsolutePath());
+        	if (googConfiguration.isVerbose())
+            {
+                System.out.println("checking source path " + sp.getAbsolutePath());
+            }
         	String lowercasePath = sp.getAbsolutePath().toLowerCase();
         	if (targetFile.startsWith(lowercasePath))
         		imageSrcDir = sp;
@@ -201,7 +208,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         if (imageSrcDir == null)
         {
         	imageSrcDir = new File(configuration.getTargetFile()).getAbsoluteFile().getParentFile();
-        	System.out.println("not found on source path, using parent file " + imageSrcDir.getAbsolutePath());
+        	if (googConfiguration.isVerbose())
+            {
+                System.out.println("not found on source path, using parent file " + imageSrcDir.getAbsolutePath());
+            }
         }
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
         String qName = null;
@@ -351,7 +361,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // the application will not be able to run.
         for(SourceFile closureSourceFile : closureSourceFiles) {
             FileUtils.write(new File(new File(intermediateDir, "library/closure"),
-                    closureSourceFile.getName()), closureSourceFile.getCode());
+                    closureSourceFile.getName()), closureSourceFile.getCode(), Charset.forName("utf8"));
         }
         closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
 
@@ -360,18 +370,24 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // Prepare the closure compilation.
         /////////////////////////////////////////////////////////////////////////////////
 
-        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
-
-
-        /////////////////////////////////////////////////////////////////////////////////
-        // Add all the closure lib files to the compilation unit.
-        /////////////////////////////////////////////////////////////////////////////////
-
-        for (SourceFile closureSourceFile : closureSourceFiles) {
-            compilerWrapper.addJSSourceFile(closureSourceFile);
+        JSClosureCompilerWrapper compilerWrapper = null;
+        if (configuration.release())
+        {
+            compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
         }
 
-        writeExportedNames(compilerWrapper);
+        if (compilerWrapper != null)
+        {
+            /////////////////////////////////////////////////////////////////////////////////
+            // Add all the closure lib files to the compilation unit.
+            /////////////////////////////////////////////////////////////////////////////////
+
+            for (SourceFile closureSourceFile : closureSourceFiles) {
+                compilerWrapper.addJSSourceFile(closureSourceFile);
+            }
+
+            writeExportedNames(compilerWrapper);
+        }
 
         /////////////////////////////////////////////////////////////////////////////////
         // Add all the externs to the compilation
@@ -379,6 +395,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 
         // Iterate over all swc dependencies and add all the externs they contain.
         // (Externs are located in a "externs" directory in the root of the SWC)
+        Set<ISWC> swcExterns = project.swcExterns;
         List<ISWC> swcs = project.getLibraries();
         List<ISWC> allswcs = new ArrayList<ISWC>();
         allswcs.addAll(swcs);
@@ -396,18 +413,26 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
                         InputStream is = fileEntry.createInputStream();
                         String code = IOUtils.toString(is, "UTF-8");
                         is.close();
-                        JarSourceFile externFile = new JarSourceFile(key, code,true);
-                        System.out.println("using extern: " + key);
-                        compilerWrapper.addJSExternsFile(externFile);
+                        
+                        if (compilerWrapper != null)
+                        {
+                            JarSourceFile externFile = new JarSourceFile(key, code,true);
+                            if (googConfiguration.isVerbose())
+                            {
+                                System.out.println("using extern: " + key);
+                            }
+                            compilerWrapper.addJSExternsFile(externFile);
+                        }
 
-                        // Write the extern into the filesystem.
-                        // FIXME: I don't know why we need to do this.
-                        //FileUtils.write(new File(intermediateDir, key), externFile.getCode());
+                        if (swcExterns.contains(swc))
+                        {
+                            List<String> lines = IOUtils.readLines(new StringReader(code));
+                            collectAdditionalHTML(lines, swc.getSWCFile().getAbsolutePath() + ":" + key);
+                        }
                     }
                 }
             }
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////
         // Add all files generated by the compiler to the compilation unit.
@@ -419,28 +444,44 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // js files of used dependencies.
         ArrayList<String> sourceExternFiles = new ArrayList<String>();
         ArrayList<String> fileList = gdw.getListOfFiles(project, sourceExternFiles, problems);
+        if (fileList == null)
+            return false; // some error occurred
+        
         for (String sourceExtern : project.sourceExterns)
         {
-        	String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
-        	File sourceExternFile = new File(intermediateDir, sourceExternFileName);
-        	if (sourceExternFile.exists())
-        	{
-        		String sourceExternPath = sourceExternFile.getAbsolutePath();
-        		if (!sourceExternFiles.contains(sourceExternPath))
-        			sourceExternFiles.add(sourceExternPath);
-        	}
+            String sourceExternFileName = sourceExtern.replace(".", "/") + ".js";
+            File sourceExternFile = new File(intermediateDir, sourceExternFileName);
+            if (sourceExternFile.exists())
+            {
+                String sourceExternPath = sourceExternFile.getAbsolutePath();
+                if (!sourceExternFiles.contains(sourceExternPath))
+                    sourceExternFiles.add(sourceExternPath);
+            }
         }
-        if (fileList == null)
-        	return false; // some error occurred
-        for (String file : fileList) {
-            compilerWrapper.addJSSourceFile(file);
-            System.out.println("using source file: " + file);            
+        if (compilerWrapper != null)
+        {
+            for (String file : fileList)
+            {
+                compilerWrapper.addJSSourceFile(file);
+                if (googConfiguration.isVerbose())
+                {            
+                    System.out.println("using source file: " + file);
+                }
+            }
         }
-        for (String file : sourceExternFiles) {
-        	compilerWrapper.addJSExternsFile(file);
-            System.out.println("using extern file: " + file);            
+        for (String file : sourceExternFiles)
+        {
+            if (compilerWrapper != null)
+            {
+                compilerWrapper.addJSExternsFile(file);
+                if (googConfiguration.isVerbose())
+                {
+                    System.out.println("using extern file: " + file);
+                }
+            }
+            collectFileAdditionalHTML(file);
         }
-
+        additionalHTML.addAll(gdw.additionalHTML);
 
         /////////////////////////////////////////////////////////////////////////////////
         // Generate the index.html for loading the application.
@@ -450,14 +491,23 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // is generated here so it can be used for outputting the html templates.
         String depsFileData = gdw.generateDeps(project, problems);
 
+        // FOR MODULES: this generate inject_html lines for js to be added to __deps.js
+        String moduleAdditionHTML = "";
+
         if (project.isModule(mainClassQName))
         {
+            for (String s : additionalHTML)
+            {
+                moduleAdditionHTML += "document.head.innerHTML += '"+ s.trim() + "';";
+            }
+            
         	// need better test someday
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
-            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData, false);
-            Set<String> provideds = computeProvideds(depsFileData);
-            compilerWrapper.setProvideds(provideds);
+            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + moduleAdditionHTML + "\n", false);
             gdw.needCSS = true;
+            if (configuration.release()) {
+            	writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            }
         }
         else
         {
@@ -465,17 +515,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
-	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, gdw.additionalHTML);
+	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
 	            } else {
-	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, gdw.additionalHTML);
+	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
 	            }
 	        }
 	        // Create the index.html for the release-js version.
 	        if (configuration.release()) {
 	            if (template != null) {
-	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, gdw.additionalHTML);
+	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, additionalHTML);
 	            } else {
-	                writeHTML("release", projectName, mainClassQName, releaseDir, null, gdw.additionalHTML);
+	                writeHTML("release", projectName, mainClassQName, releaseDir, null, additionalHTML);
 	            }
 	        }
         }        
@@ -500,40 +550,35 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         // If we are doing a release build, let the closure compiler do it's job.
         /////////////////////////////////////////////////////////////////////////////////
 
-        if (configuration.release()) {
+        if (compilerWrapper != null) {
+            boolean ok = true;
             final File projectReleaseMainFile = new File(releaseDir, outputFileName);
             compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
             compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
+            compilerWrapper.setVerbose(googConfiguration.isVerbose());
 
-            compilerWrapper.compile();
+            ok = compilerWrapper.compile();
+
+            // FOR MODULES: add moduleAdditionHTML to main js release file too
+            if (project.isModule(mainClassQName))
+            {
+                StringBuilder appendString = new StringBuilder();
+                appendString.append(moduleAdditionHTML);
+                writeFile(projectReleaseMainFile, appendString.toString(), true);
+            }
 
             appendSourceMapLocation(projectReleaseMainFile, projectName);
+            
+            if (ok)
+                System.out.println("The project '" + projectName + "' has been successfully compiled and optimized.");
         }
-
-        // if (ok)
-        System.out.println("The project '" + projectName + "' has been successfully compiled and optimized.");
+        else
+        	System.out.println("The project '" + projectName + "' has been successfully compiled.");
 
         return true;
     }
 
-    private Set<String> computeProvideds(String data)
-    {
-    	HashSet<String> set = new HashSet<String>();
-    	String[] lines = data.split("\n");
-    	for (String line : lines)
-    	{
-    		int c = line.indexOf("['");
-    		if (c != -1)
-    		{
-	    		int c2 = line.indexOf("'", c + 2);
-	    		String name = line.substring(c + 2, c2);
-	    		set.add(name);
-    		}
-    	}
-    	return set;
-    }
-    
     protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, String entryPoint)
     {
     	ArrayList<String> sortedFiles = new ArrayList<String>();
@@ -545,7 +590,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     		if ((sourceFile.getOriginalPath().endsWith("goog/deps.js") || sourceFile.getOriginalPath().endsWith("goog\\deps.js")) &&
         		!(sourceFile.getOriginalPath().endsWith("third_party/goog/deps.js") || sourceFile.getOriginalPath().endsWith("third_party\\goog\\deps.js")))
     			depsFile = sourceFile;
-    		System.out.println("originalPath: " + sourceFile.getOriginalPath());
+            if (googConfiguration.isVerbose())
+            {
+                System.out.println("originalPath: " + sourceFile.getOriginalPath());
+            }
     		fileMap.put(sourceFile.getOriginalPath(), sourceFile);
     	}
     	
@@ -557,10 +605,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
             while (true)
             {
 	            String line = in.readLine();
+	            if (line == null)
+	            	break;
 	            if (line.startsWith("//") || line.trim().length() == 0)
 	            	continue;
 	            deps.add(line);
             }
+            in.close();
         }
         catch (Exception e)
         {
@@ -579,7 +630,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         for (int i = n - 1; i >= 0; i--)
         {
         	String fileName = sortedFiles.get(i);
-        	System.out.println("sorted filename: " + fileName);
+        	if (googConfiguration.isVerbose())
+            {
+                System.out.println("sorted filename: " + fileName);
+            }
         	if (seen.contains(fileName)) 
         		continue;
         	seen.add(fileName);
@@ -590,6 +644,84 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         	list.add(sf);
         }
         return list;
+    }
+
+    private void collectFileAdditionalHTML(String filePath)
+    {
+        List<String> fileLines;
+        try
+        {
+            fileLines = Files.readLines(new File(filePath), Charset.forName("utf8"));
+        }
+        catch(IOException e)
+        {
+            return;
+        }
+        collectAdditionalHTML(fileLines, filePath);
+    }
+
+    private void collectAdditionalHTML(List<String> lines, String key)
+    {
+        boolean inDocComment = false;
+        boolean inConstructor = false;
+        boolean inInjectHTML = false;
+	    for (int i = 0; i < lines.size(); i++)
+	    {
+            String line = lines.get(i);
+            if (inDocComment)
+            {
+                if (inInjectHTML)
+                {
+                    if (line.indexOf("</inject_html>") > -1)
+                    {
+                        inInjectHTML = false;
+                        continue;
+                    }
+                    line = line.trim();
+                    if (line.startsWith("*"))
+                        line = line.substring(1);
+                    additionalHTML.add(line);
+                    continue;
+                }
+                int c = line.indexOf("<inject_html>");
+                if (c != -1)
+                {
+                    inInjectHTML = true;
+                    continue;
+                }
+                if (!inConstructor)
+                {
+                    c = line.indexOf("@constructor");
+                    if(c != -1)
+                    {
+                        inConstructor = true;
+                        continue;
+                    }
+                }
+                c = line.indexOf("*/");
+                if(c != -1)
+                {
+                    if(inConstructor)
+                    {
+                        //we're done
+                        break;
+                    }
+                    inInjectHTML = false;
+                    inDocComment = false;
+                    inConstructor = false;
+                }
+
+            }
+            else
+            {
+                int c = line.indexOf("/**");
+                if(c != -1)
+                {
+                    inDocComment = true;
+                    continue;
+                }
+            }
+        }
     }
     
     private void sortClosureFile(List<String> deps, String entryPoint, List<String> sortedFiles)
@@ -609,23 +741,23 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     	for (String dep : deps)
     	{
     		int open = dep.indexOf("[");
-    		int close = dep.indexOf("]");
+    		int close = dep.indexOf("]", open + 1);
 			String list = dep.substring(open + 1, close);
 			String[] parts = list.split(",");
-			ArrayList<String> provideds = new ArrayList<String>();
 			for (String part : parts)
 			{
 				part = part.trim();
-				if (part.startsWith("'"))
-					part = part.substring(1, part.length() - 1);
-				provideds.add(part);    				
+                if (part.startsWith("'"))
+                {
+                    part = part.substring(1, part.length() - 1);
+                }
+                if(part.equals(name))
+                {
+                    open = dep.indexOf("'");
+                    close = dep.indexOf("'", open + 1);
+                    return dep.substring(open + 1, close);    
+                }
 			}
-    		if (provideds.contains(name))
-    		{
-    			open = dep.indexOf("'");
-    			close = dep.indexOf("'", open + 1);
-    			return dep.substring(open + 1, close);    			
-    		}
     	}
     	return null;
     }
@@ -635,35 +767,40 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     	for (String dep : deps)
     	{
     		int open = dep.indexOf("[");
-    		int close = dep.indexOf("]");
+    		int close = dep.indexOf("]", open + 1);
 			String list = dep.substring(open + 1, close);
 			String[] parts = list.split(",");
-			ArrayList<String> provideds = new ArrayList<String>();
 			for (String part : parts)
 			{
 				part = part.trim();
-				if (part.startsWith("'"))
-					part = part.substring(1, part.length() - 1);
-				provideds.add(part);    				
+                if (part.startsWith("'"))
+                {
+                    part = part.substring(1, part.length() - 1);
+                }
+                
+                if(part.equals(name))
+                {
+                    open = dep.indexOf("[", close + 1);
+                    close = dep.indexOf("]", open + 1);
+                    if (open + 1 == close)
+                    {
+                        return null;
+                    }
+                    String list2 = dep.substring(open + 1, close);
+                    String[] parts2 = list2.split(",");
+                    ArrayList<String> reqs = new ArrayList<String>();
+                    for (String part2 : parts2)
+                    {
+                        part2 = part2.trim();
+                        if (part2.startsWith("'"))
+                        {
+                            part2 = part2.substring(1, part2.length() - 1);
+                        }
+                        reqs.add(part2);    				
+                    }
+                    return reqs;
+                }				
 			}
-    		if (provideds.contains(name))
-    		{
-    			open = dep.indexOf("[", close + 1);
-    			close = dep.indexOf("]", open + 1);
-    			if (open + 1 == close)
-    				return null;
-    			String list2 = dep.substring(open + 1, close);
-    			String[] parts2 = list2.split(",");
-    			ArrayList<String> reqs = new ArrayList<String>();
-    			for (String part : parts2)
-    			{
-    				part = part.trim();
-    				if (part.startsWith("'"))
-    					part = part.substring(1, part.length() - 1);
-    				reqs.add(part);    				
-    			}
-    			return reqs;
-    		}
     	}
     	return null;
     }    

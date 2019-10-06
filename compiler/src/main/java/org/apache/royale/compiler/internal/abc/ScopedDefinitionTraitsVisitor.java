@@ -256,7 +256,13 @@ public class ScopedDefinitionTraitsVisitor implements ITraitsVisitor
             public boolean apply(Namespace ns)
             {
                 return ns.getApiVersion() != ABCConstants.NO_API_VERSION;
-            } }); 
+            }
+            @Override
+            public boolean test(Namespace input)
+            {
+                return apply(input);
+            }
+            }); 
     }
     
     public static String getDefinitionName(Name name)

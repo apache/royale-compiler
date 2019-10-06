@@ -22,26 +22,25 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
-import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
-import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
-import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IEmbedNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
+/**
+ * Local variable in a function. For member and static variables of a class, see
+ * FieldEmitter instead.
+ */
 public class VarDeclarationEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>
 {
@@ -59,15 +58,37 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
 
         getModel().getVars().add(node);
         
+        boolean defaultInitializers = false;
+        ICompilerProject project = getProject();
+        if(project instanceof RoyaleJSProject)
+        {
+            RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
+            if(fjsProject.config != null)
+            {
+                defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+            }
+        }
+        boolean needsDefaultValue = EmitterUtils.needsDefaultValue(node, defaultInitializers, getProject());
+
+        IFunctionNode parentFnNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+        boolean isHoisting = fjs.isEmittingHoistedNodes(parentFnNode);
+        
+        if (!(node instanceof ChainedVariableNode) && !isHoisting && needsDefaultValue)
+        {
+            write("//");
+        }
+
         if (!(node instanceof ChainedVariableNode) && !node.isConst())
         {
             fjs.emitMemberKeyword(node);
         }
 
         IExpressionNode variableTypeNode = node.getVariableTypeNode();
+        IDefinition variableDef = null;
         boolean hasVariableType = variableTypeNode.getLine() >= 0;
         if(hasVariableType)
         {
+            variableDef = variableTypeNode.resolve(getProject());
             startMapping(variableTypeNode,
                     variableTypeNode.getLine(),
                     variableTypeNode.getColumn() - 1); //include the :
@@ -83,19 +104,19 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                     nameExpressionNode.getColumn() + nameExpressionNode.getAbsoluteEnd() - nameExpressionNode.getAbsoluteStart());
         }
         IExpressionNode avnode = node.getAssignedValueNode();
-        IDefinition avdef = null;
+        IDefinition avtypedef = null;
         if (avnode != null)
         {
-        	avdef = avnode.resolveType(getWalker().getProject());
+        	avtypedef = avnode.resolveType(getProject());
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
             {
-                fjs.getDocEmitter().emitVarDoc(node, avdef, getWalker().getProject());
+                fjs.getDocEmitter().emitVarDoc(node, avtypedef, getProject());
             }
         }
         else
         {
-            fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
+            fjs.getDocEmitter().emitVarDoc(node, null, getProject());
         }
         endMapping(variableTypeNode);
 
@@ -105,7 +126,12 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         }
 
         fjs.emitDeclarationName(node);
-        if (avnode != null && !(avnode instanceof IEmbedNode))
+
+        if (avnode == null)
+        {
+            emitDefaultInitializer(node, defaultInitializers);
+        }
+        else if(!(avnode instanceof IEmbedNode))
         {
             if (hasVariableType)
             {
@@ -118,141 +144,119 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             endMapping(node);
-            boolean varIsNumber = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
-            		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.Number) ||
-            		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants._int) ||
-            		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.uint)));
-            boolean valIsNumber = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-            										 avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
-            										 avdef.getQualifiedName().equals(IASLanguageConstants.uint)));
-            if (!valIsNumber && avdef == null && avnode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
-            		fjs.isDateProperty(avnode, false))
-            	valIsNumber = true;
-            if (varIsNumber && !valIsNumber && (avdef == null || avdef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
-            {
-        		if (avnode.getNodeID() == ASTNodeID.FunctionCallID)
-        		{
-	            	IExpressionNode fnNameNode = ((FunctionCallNode)avnode).getNameNode();
-	            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-	            	{
-	            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-	            		IExpressionNode rightNode = mae.getRightOperandNode();
-	            		valIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-	            				((IdentifierNode)rightNode).getName().equals("length") &&
-	            				fjs.isXMLList(mae);
-	            	}
-        		}
-        		else if (avnode.getNodeID() == ASTNodeID.ArrayIndexExpressionID)
-        		{
-        			DynamicAccessNode dyn = (DynamicAccessNode)avnode;
-        			IDefinition leftDef = dyn.getLeftOperandNode().resolveType(getProject());
-        			IDefinition rightDef = dyn.getRightOperandNode().resolveType(getProject());
-        			// numeric indexing?
-        			if (rightDef.getQualifiedName().equals(IASLanguageConstants.Number))
-        			{
-        				IMetaTag[] metas = leftDef.getAllMetaTags();
-        				for (IMetaTag meta : metas)
-        				{
-        					if (meta.getTagName().equals("ArrayElementType"))
-        					{
-        						IMetaTagAttribute[] attrs = meta.getAllAttributes();
-        						for (IMetaTagAttribute attr : attrs)
-        						{
-        							String t = attr.getValue();
-            						if (t.equals(IASLanguageConstants.Number))
-            							valIsNumber = true;
-        						}
-        					}
-        				}
-        			}
-        		}
-            }
-            String coercion = "";
-            if (varIsNumber && !valIsNumber)
-            	coercion = "Number(";
-            if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
-                	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
-                	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
-                			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
-                	coercion = "org.apache.royale.utils.Language.string(";
-            write(coercion);
-            fjs.emitAssignedValue(avnode);
-            if (coercion.length() > 0)
-              	write(")");
+            getEmitter().emitAssignmentCoercion(avnode, variableDef);
         }
-        if (avnode == null)
+
+        emitChainedVariables(node, defaultInitializers, isHoisting);
+    }
+
+    private void emitDefaultInitializer(IVariableNode node, boolean defaultInitializers)
+    {
+        IDefinition typedef = null;
+        IExpressionNode enode = node.getVariableTypeNode();
+        if (enode != null)
         {
-            IDefinition typedef = null;
-            IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
-            if (enode != null)
-                typedef = enode.resolveType(getWalker().getProject());
-            if (typedef != null)
+            typedef = enode.resolveType(getProject());
+        }
+        if (typedef != null)
+        {
+            if (node.getParent() != null &&
+                    node.getParent().getParent() != null &&
+                    node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
             {
-                boolean defaultInitializers = false;
-                ICompilerProject project = getProject();
-                if(project instanceof RoyaleJSProject)
+                String defName = typedef.getQualifiedName();
+                if (defName.equals("int") || defName.equals("uint"))
                 {
-                    RoyaleJSProject fjsProject = (RoyaleJSProject) project; 
-                    if(fjsProject.config != null)
-                    {
-                        defaultInitializers = fjsProject.config.getJsDefaultInitializers();
-                    }
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write("0");
                 }
-                if (node.getParent() != null &&
-                        node.getParent().getParent() != null &&
-                        node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
+                else if (defaultInitializers)
                 {
-                    String defName = typedef.getQualifiedName();
-                    if (defName.equals("int") || defName.equals("uint"))
+                    if (defName.equals("Number"))
                     {
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
-                        write("0");
+                        write(IASKeywordConstants.NA_N);
                     }
-                    else if (defaultInitializers)
+                    else if (defName.equals("Boolean"))
                     {
-                        if (defName.equals("Number"))
-                        {
-                            write(ASEmitterTokens.SPACE);
-                            writeToken(ASEmitterTokens.EQUAL);
-                            write(IASKeywordConstants.NA_N);
-                        }
-                        else if (defName.equals("Boolean"))
-                        {
-                            write(ASEmitterTokens.SPACE);
-                            writeToken(ASEmitterTokens.EQUAL);
-                            write(IASKeywordConstants.FALSE);
-                        }
-                        else if (!defName.equals("*"))
-                        {
-                            //type * is meant to default to undefined, so it
-                            //doesn't need to be initialized, but everything
-                            //else should default to null
-                            write(ASEmitterTokens.SPACE);
-                            writeToken(ASEmitterTokens.EQUAL);
-                            write(IASKeywordConstants.NULL);
-                        }
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.FALSE);
                     }
-                }
-            }
-        }
-
-        if (!(node instanceof ChainedVariableNode))
-        {
-            // check for chained variables
-            int len = node.getChildCount();
-            for (int i = 0; i < len; i++)
-            {
-                IASNode child = node.getChild(i);
-                if (child instanceof ChainedVariableNode)
-                {
-                    startMapping(node, node.getChild(i - 1));
-                    writeToken(ASEmitterTokens.COMMA);
-                    endMapping(node);
-                    fjs.emitVarDeclaration((IVariableNode) child);
+                    else if (!defName.equals("*"))
+                    {
+                        //type * is meant to default to undefined, so it
+                        //doesn't need to be initialized, but everything
+                        //else should default to null
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(IASKeywordConstants.NULL);
+                    }
                 }
             }
         }
     }
 
+    private void emitChainedVariables(IVariableNode node, boolean defaultInitializers, boolean isHoisting)
+    {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        if (!(node instanceof ChainedVariableNode))
+        {
+            // check for chained variables
+            int len = node.getChildCount();
+            boolean splitVariables = false;
+            for (int i = 0; i < len; i++)
+            {
+                IASNode child = node.getChild(i);
+                if (child instanceof ChainedVariableNode)
+                {
+                    ChainedVariableNode varChild = (ChainedVariableNode) child;
+                    //if any of them need a default value, they all should be
+                    //split onto different lines
+                    if(EmitterUtils.needsDefaultValue(varChild, defaultInitializers, getProject()))
+                    {
+                        splitVariables = true;
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < len; i++)
+            {
+                IASNode child = node.getChild(i);
+                if (child instanceof ChainedVariableNode)
+                {
+                    if (splitVariables)
+                    {
+                        boolean childNeedsDefault = EmitterUtils.needsDefaultValue((IVariableNode) child, defaultInitializers, getProject());
+                        if (isHoisting && !childNeedsDefault)
+                        {
+                            //this one does not need to be hoisted because it
+                            //already has a default value
+                            continue;
+                        }
+                        startMapping(node, node.getChild(i - 1));
+                        write(ASEmitterTokens.SEMICOLON);
+                        endMapping(node);
+                        writeNewline();
+                        if (!isHoisting && childNeedsDefault)
+                        {
+                            write("//");
+                        }
+                        writeToken(ASEmitterTokens.VAR);
+                    }
+                    else
+                    {
+                        startMapping(node, node.getChild(i - 1));
+                        writeToken(ASEmitterTokens.COMMA);
+                        endMapping(node);
+                    }
+                    fjs.emitVarDeclaration((IVariableNode) child);
+                }
+            }
+            
+        }
+    }
 }

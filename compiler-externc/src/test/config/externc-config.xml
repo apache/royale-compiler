@@ -67,7 +67,6 @@
 
         <path-element>../../../target/downloads/browser/whatwg_encoding.js</path-element>
 
-        <path-element>../../../target/downloads/browser/chrome.js</path-element>
         <!-- path-element>../../../target/downloads/browser/fetchapi.js</path-element>-->
         <path-element>../../../target/downloads/browser/fileapi.js</path-element>
         <path-element>../../../target/downloads/browser/flash.js</path-element>
@@ -107,6 +106,7 @@
     <class-exclude>
         <class>controlRange</class>
         <class>ITemplateArray</class>
+        <class>Symbol</class>
     </class-exclude>
     
     <!-- Object.toString() is excluded by the ExternC compiler.  Otherwise
@@ -155,6 +155,14 @@
     <exclude>
         <class>Document</class>
         <name>createTreeWalker</name>
+    </exclude>
+    <exclude>
+        <class>AsyncGenerator</class>
+        <name>next</name>
+    </exclude>
+    <exclude>
+        <class>Generator</class>
+        <name>next</name>
     </exclude>
     <!-- SVG -->
     <exclude><class>SVGStylable</class><name>className</name></exclude>

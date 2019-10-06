@@ -377,8 +377,7 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 // or a TOKEN_EMPTY_TAG_END token (for />) before returning to the
 // initial state.
 
-
-<MARKUP> "xmlns"?(":"{ID_FOLLOW}*)?
+<MARKUP> "xmlns"(":"{ID_FOLLOW}*)?
 {
 	return buildToken(TOKEN_XMLNS);
 }

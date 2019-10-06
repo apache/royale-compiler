@@ -44,6 +44,7 @@ public enum EmbedAttribute
     // report one problem that font embeddeding is not supported.
     ADV_ANTI_ALIASING("advancedAntiAliasing"),
     EMBED_AS_CFF("embedAsCFF"),
+    UNICODE_RANGE("unicodeRange"),
     FONT_FAMILY("fontFamily"),
     FONT_NAME("fontName"),
     FONT_STYLE("fontStyle"),

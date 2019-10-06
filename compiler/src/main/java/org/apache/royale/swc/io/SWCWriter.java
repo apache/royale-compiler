@@ -20,6 +20,7 @@
 package org.apache.royale.swc.io;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,12 +29,15 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.security.DigestOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
-
+import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
 import org.apache.royale.swc.ISWCLibrary;
@@ -54,9 +58,9 @@ public class SWCWriter extends SWCWriterBase
      * 
      * @param filename path to write the file to.
      */
-    public SWCWriter(final String filename) throws FileNotFoundException
+    public SWCWriter(final String filename, String swcDate, String swcDateFormat) throws FileNotFoundException
     {
-        this(filename, true, true, false, SizeReportWritingSWFWriter.getSWFWriterFactory(null));
+        this(filename, true, true, false, swcDate, swcDateFormat, SizeReportWritingSWFWriter.getSWFWriterFactory(null));
     }
     
     /**
@@ -71,6 +75,7 @@ public class SWCWriter extends SWCWriterBase
             boolean compressLibrarySWF,
             boolean enableDebug,
             boolean enableTelemetry,
+            String metadataDate, String metadataFormat,
             ISWFWriterFactory swfWriterFactory) throws FileNotFoundException
     {
         super(compressLibrarySWF, enableDebug, enableTelemetry, swfWriterFactory);
@@ -80,6 +85,26 @@ public class SWCWriter extends SWCWriterBase
         File outputDirectory = new File(outputFile.getAbsoluteFile().getParent());
         outputDirectory.mkdirs();
         
+    	if (metadataDate != null)
+    	{
+    		// strip off timezone.  Zip format doesn't store timezone
+    		// and the goal is to have the same date and time regardless
+    		// of which timezone the build machine is using.
+    		int c = metadataDate.lastIndexOf(" ");
+    		metadataDate = metadataDate.substring(0,  c);
+    		c = metadataFormat.lastIndexOf(" ");
+    		metadataFormat = metadataFormat.substring(0, c);
+    		try {
+    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+    			fileDate = sdf.parse(metadataDate).getTime();
+    		} catch (ParseException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (IllegalArgumentException e1) {
+    			e1.printStackTrace();
+    		}
+    	}
+    	
         zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(filename)));
         zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
     }
@@ -88,14 +113,30 @@ public class SWCWriter extends SWCWriterBase
      * Target SWC output stream.
      */
     private final ZipOutputStream zipOutputStream;
+    
+    private long fileDate = System.currentTimeMillis();
 
     @Override
     void writeCatalog(final ISWC swc) throws IOException
     {
-        zipOutputStream.putNextEntry(new ZipEntry(CATALOG_XML));
-        final Writer catalogXMLWriter = new OutputStreamWriter(zipOutputStream);
+    	ZipEntry ze = new ZipEntry(CATALOG_XML);
+    	ze.setTime(fileDate);
+    	ze.setMethod(ZipEntry.STORED);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Writer catalogXMLWriter = new OutputStreamWriter(baos);
         writeCatalogXML(swc, catalogXMLWriter);
         catalogXMLWriter.flush();
+        ze.setSize(baos.size());
+        ze.setCompressedSize(baos.size());
+        CRC32 crc = new CRC32();
+        crc.reset();
+        crc.update(baos.toByteArray());
+        ze.setCrc(crc.getValue());
+        zipOutputStream.putNextEntry(ze);
+        
+        baos.writeTo(zipOutputStream);
+        
         zipOutputStream.closeEntry();
     }
 
@@ -107,14 +148,26 @@ public class SWCWriter extends SWCWriterBase
         assert swf != null : "Expect SWF model";
         assert path != null : "Expect SWF path";
 
-        zipOutputStream.putNextEntry(new ZipEntry(path));
-
-        final DigestOutputStream digestStream = getDigestOutputStream(library, zipOutputStream);
-
+        ZipEntry ze = new ZipEntry(path);
+    	ze.setTime(fileDate);
+    	ze.setMethod(ZipEntry.STORED);
+    	
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ISWFWriter swfWriter = swfWriterFactory.createSWFWriter(swf,
                 getLibrarySWFCompression(), enableDebug, enableTelemetry);
-        swfWriter.writeTo(digestStream != null ? digestStream : zipOutputStream);
+        swfWriter.writeTo(baos);
         swfWriter.close();
+        ze.setSize(baos.size());
+        ze.setCompressedSize(baos.size());
+        CRC32 crc = new CRC32();
+        crc.reset();
+        crc.update(baos.toByteArray());
+        ze.setCrc(crc.getValue());
+        zipOutputStream.putNextEntry(ze);        
+
+        final DigestOutputStream digestStream = getDigestOutputStream(library, zipOutputStream);
+        baos.writeTo(digestStream != null ? digestStream : zipOutputStream);
+        
         zipOutputStream.closeEntry();
         
         if (digestStream != null) {
@@ -125,10 +178,35 @@ public class SWCWriter extends SWCWriterBase
     @Override
     void writeFile(final ISWCFileEntry fileEntry) throws IOException
     {
-        zipOutputStream.putNextEntry(new ZipEntry(fileEntry.getPath()));
+    	ZipEntry ze = new ZipEntry(fileEntry.getPath());
+    	ze.setTime(fileDate);        
+    	ze.setMethod(ZipEntry.STORED);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream fileInputStream = fileEntry.createInputStream();
-        IOUtils.copy(fileInputStream, zipOutputStream);
-        fileInputStream.close();
+        String name = fileEntry.getPath();
+        if (name.endsWith(".css")) // add other text files here
+        {
+        	FileSpecification.NoCRLFInputStream filteredInputStream = 
+        			new FileSpecification.NoCRLFInputStream(fileInputStream);
+        	IOUtils.copy(filteredInputStream, baos);
+        	filteredInputStream.close();
+        }
+        else
+        {
+        	IOUtils.copy(fileInputStream, baos);
+        	fileInputStream.close();
+        }
+        
+        ze.setSize(baos.size());
+        ze.setCompressedSize(baos.size());
+        CRC32 crc = new CRC32();
+        crc.reset();
+        crc.update(baos.toByteArray());
+        ze.setCrc(crc.getValue());
+        zipOutputStream.putNextEntry(ze);
+        
+        baos.writeTo(zipOutputStream);
         zipOutputStream.closeEntry();
     }
 

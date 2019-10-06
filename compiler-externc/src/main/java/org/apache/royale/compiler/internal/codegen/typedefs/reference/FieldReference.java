@@ -32,6 +32,7 @@ import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSType.Nullability;
 
 public class FieldReference extends MemberReference
 {
@@ -79,7 +80,7 @@ public class FieldReference extends MemberReference
         {
             jsType = getModel().evaluate(getComment().getType());
         }
-        return jsType != null ? jsType.toAnnotationString() : "Object";
+        return jsType != null ? jsType.toAnnotationString(Nullability.EXPLICIT) : "Object";
     }
 
     public FieldReference(ReferenceModel model, ClassReference classReference, Node node, String name,
@@ -87,7 +88,6 @@ public class FieldReference extends MemberReference
     {
         super(model, classReference, node, name, comment);
         Collection<Marker> markers = comment.getMarkers();
-        Marker[] markerArray = new Marker[markers.size()];
         for (Marker marker : markers)
         {
         	if (marker.getAnnotation().getItem().equals("const"))
@@ -284,7 +284,7 @@ public class FieldReference extends MemberReference
                 sb.append(indent);
                 sb.append(" * @type ");
                 sb.append("{");
-                sb.append(mapBackToJS(getModel().evaluate(type).toAnnotationString(), false));
+                sb.append(mapBackToJS(getModel().evaluate(type).toAnnotationString(Nullability.EXPLICIT), false));
                 sb.append("} ");
                 sb.append("\n");
         	}
@@ -293,7 +293,7 @@ public class FieldReference extends MemberReference
                 sb.append(indent);
                 sb.append(" * @see JSType - ");
                 sb.append("[");
-                sb.append(getModel().evaluate(type).toAnnotationString());
+                sb.append(getModel().evaluate(type).toAnnotationString(Nullability.EXPLICIT));
                 sb.append("] ");
                 String description = getComment().getReturnDescription();
                 if (description != null)

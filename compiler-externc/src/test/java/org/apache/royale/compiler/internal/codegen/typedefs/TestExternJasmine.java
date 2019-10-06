@@ -41,7 +41,7 @@ public class TestExternJasmine extends TypedefsTestBase
                 "jasmine",
                 "jasmine.Clock"};
 
-        assertEquals(9, model.getClasses().size());
+        assertEquals(10, model.getClasses().size());
         for (String className : classes)
         {
             assertTrue(model.hasClass(className));

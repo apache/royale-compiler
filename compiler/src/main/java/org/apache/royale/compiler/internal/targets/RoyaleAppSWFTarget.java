@@ -47,6 +47,7 @@ import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.visitors.IMethodBodyVisitor;
 import org.apache.royale.abc.visitors.IMethodVisitor;
 import org.apache.royale.abc.visitors.ITraitVisitor;
+import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.IEmbedResolver;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.RSLSettings;
@@ -70,6 +71,7 @@ import org.apache.royale.compiler.internal.css.semantics.CSSSemanticAnalyzer;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
@@ -544,6 +546,16 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
 
             // If there's more dependencies introduced by CSS, the loop continues.
             done = !allCompilationUnitsInTarget.addAll(cssDependencies);
+            if (done)
+            {
+            	ClassDefinition rootDef = getRootClassDefinition();
+	            ICompilationUnit rootClassCompilationUnit = project.getScope().getCompilationUnitForDefinition(rootDef);
+	            DependencyGraph graph = royaleProject.getDependencyGraph();
+	            for (ICompilationUnit cu : cssDependencies)
+	            {
+	            	graph.addDependency(rootClassCompilationUnit, cu, DependencyType.EXPRESSION);
+	            }
+            }
         }
 
         delegate.cssCompilationSession.cssDocuments.addAll(activatedStyleSheets.sort());
@@ -841,7 +853,6 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
             
             this.cssCompilationSession = new CSSCompilationSession();
             this.cssCompilationSession.setKeepAllTypeSelectors(targetSettings.keepAllTypeSelectors());
-            this.cssCompilationSession.setExcludeDefaultsCSSFiles(targetSettings.getExcludeDefaultsCSSFiles());
         }
         
         private final IClassDefinition mainApplicationClassDefinition;

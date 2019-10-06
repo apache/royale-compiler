@@ -233,4 +233,10 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      * List of defined variables so it can be overridden
      */
     Map<String, String> getCompilerDefine(Configuration config);
+    
+    /**
+     * The File for the link report
+     */
+    File getLinkReport(Configuration config);
+
 }

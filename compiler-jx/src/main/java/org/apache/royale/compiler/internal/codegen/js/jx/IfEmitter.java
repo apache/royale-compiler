@@ -68,6 +68,13 @@ public class IfEmitter extends JSSubEmitter implements
         {
             emitElse(elseNode);
         }
+        // if no actual work is done in the if clause, and there are no else/elseif causes
+        // emit an empty block.  Closure doesn't like a plain semicolon.
+        if (nodes.length == 0 && elseNode == null && conditional.getChild(1).getChildCount() == 0)
+        {
+        	write(ASEmitterTokens.BLOCK_OPEN);
+        	writeNewline(ASEmitterTokens.BLOCK_CLOSE);
+        }
         
     }
 

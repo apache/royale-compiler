@@ -21,11 +21,16 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -33,19 +38,10 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.D
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.GetterNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.NamespaceAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
@@ -102,30 +98,69 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         							rightNode.getNodeID() != ASTNodeID.Op_AtID &&
         							!((rightNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID) && 
         									(((DynamicAccessNode)rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID));
-        		if (descendant || child)
-	        	{
-	        		writeLeftSide(node, leftNode, rightNode);
-	        		if (descendant)
-	        			write(".descendants('");
-	        		if (child)
-	        			write(".child('");	        			
-	        		String s = fjs.stringifyNode(rightNode);
-	        		int dot = s.indexOf('.');
-	        		if (dot != -1)
-	        		{
-	        			String name = s.substring(0, dot);
-	        			String afterDot = s.substring(dot);
-	        			write(name);
-	        			write("')");
-	        			write(afterDot);
-	        		}
-	        		else
-	        		{
-	        			write(s);
-	        			write("')");
-	        		}
-	        		return;
-	        	}
+        		if (descendant || child) {
+					writeLeftSide(node, leftNode, rightNode);
+					if (descendant)
+						write(".descendants(");
+					if (child)
+						write(".child(");
+					String closeMethodCall = "')";
+					String s = "";
+					if (rightNode instanceof INamespaceAccessExpressionNode) {
+						NamespaceIdentifierNode namespaceIdentifierNode = (NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode();
+						IDefinition nsDef =  namespaceIdentifierNode.resolve(getProject());
+						if (nsDef instanceof INamespaceDefinition
+								&& ((INamespaceDefinition)nsDef).getNamespaceClassification().equals(INamespaceDefinition.NamespaceClassification.LANGUAGE)) {
+							//deal with built-ins
+							String name = ((NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode()).getName();
+							if (name.equals(INamespaceConstants.ANY)) {
+								//let the internal support within 'QName' class deal with it
+								write("new QName('*', '");
+								//only stringify the right node at the next step (it is the localName part)
+								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+								closeMethodCall = "'))";
+							} else if (name.equals(IASKeywordConstants.PUBLIC)
+									|| name.equals(IASKeywordConstants.PROTECTED)) {
+								//@todo check this, but both public and protected appear to have the effect of skipping the namespace part in swf, so just use default namespace
+								write("/* as3 " + name + " */ '");
+								//skip the namespace to just output the name
+								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+							} else {
+								//this is an unlikely condition, but do something that should give same results as swf...
+								//private, internal namespaces used in an XML context (I don't think this makes sense)
+								//@todo check this, but it seems like it should never match anything in a valid XML query
+								write("new QName('");
+								//provide an 'unlikely' 'uri':
+								write("_as3Lang_" + fjs.stringifyNode(namespaceIdentifierNode));
+								write(s + "', '");
+								//only stringify the right node at the next step (it is the localName part)
+								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+								closeMethodCall = "'))";
+							}
+						} else {
+							write("new QName(");
+							s = fjs.stringifyNode(namespaceIdentifierNode);
+							write(s + ", '");
+							//only stringify the right node at the next step (it is the localName part)
+							rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+							closeMethodCall = "'))";
+						}
+					} else write("'"); //normal string name for child
+			
+					s = fjs.stringifyNode(rightNode);
+					int dot = s.indexOf('.');
+					if (dot != -1) {
+						String name = s.substring(0, dot);
+						String afterDot = s.substring(dot);
+						write(name);
+						write(closeMethodCall);
+						write(afterDot);
+					} else {
+						write(s);
+						write(closeMethodCall);
+					}
+					return;
+				}
         	}
         	else if (isProxy)
         	{
@@ -177,10 +212,18 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		write(r.getName());
         		write(ASEmitterTokens.SINGLE_QUOTE);
         		write(ASEmitterTokens.PAREN_CLOSE);
+        		write(".objectAccessFormat()");
         		write(ASEmitterTokens.SQUARE_CLOSE);
         		return;
         	}
         }
+		else if(def.getParent() instanceof IPackageDefinition)
+		{
+			//this is a fully qualified name, and we should output it directly
+			//because we don't want it to be treated as dynamic access
+			write(fjs.formatQualifiedName(def.getQualifiedName()));
+			return;
+		}
         else if (def.getParent() != null &&
         		def.getParent().getQualifiedName().equals("Array"))
         {
@@ -199,6 +242,32 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         }
     	else if (rightNode instanceof NamespaceAccessExpressionNode)
     	{
+			boolean isStatic = false;
+			if (def != null && def.isStatic())
+				isStatic = true;
+			boolean needClosure = false;
+			if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition))
+					&& !def.getBaseName().equals("constructor")) // don't wrap references to obj.constructor
+			{
+				IASNode parentNode = node.getParent();
+				if (parentNode != null)
+				{
+					ASTNodeID parentNodeId = parentNode.getNodeID();
+					// we need a closure if this MAE is the top-level in a chain
+					// of MAE and not in a function call.
+					needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
+								parentNodeId != ASTNodeID.MemberAccessExpressionID &&
+								parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+				}
+			}
+			
+			if (needClosure
+					&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+					&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+				needClosure = false;
+        	if (needClosure)
+        		getEmitter().emitClosureStart();
+
     		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
     		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
     		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
@@ -218,6 +287,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	    		write(r.getName());
 	    		write(ASEmitterTokens.SINGLE_QUOTE);
 	    		write(ASEmitterTokens.PAREN_CLOSE);
+        		write(".objectAccessFormat()");
 	    		write(ASEmitterTokens.SQUARE_CLOSE);
     		}
     		else
@@ -225,8 +295,19 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 write(node.getOperator().getOperatorText());
 	    		write(r.getName());    			
     		}
+        
+			if (needClosure)
+			{
+				write(ASEmitterTokens.COMMA);
+				write(ASEmitterTokens.SPACE);
+				if (leftNode.getNodeID() == ASTNodeID.SuperID)
+					write(ASEmitterTokens.THIS);
+				else
+					writeLeftSide(node, leftNode, rightNode);
+				getEmitter().emitClosureEnd(leftNode, def);
+			}
     		return;
-    	}
+		}
         boolean isCustomNamespace = false;
         if (def instanceof FunctionDefinition && node.getOperator() == OperatorType.MEMBER_ACCESS)
         	isCustomNamespace = fjs.isCustomNamespace((FunctionDefinition)def);
@@ -246,6 +327,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
 							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
 							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+		
+				if (needClosure
+						&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+						&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+					needClosure = false;
         		
         	}
         }

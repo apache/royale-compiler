@@ -31,10 +31,32 @@
 	<property name="maxmem" value="512" />
 	
     <property name="compiler" value="${compiler.tests}/../.."/>
+    <property name="compiler-externc" value="${compiler}/../compiler-externc"/>
 
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler.tests}/downloads.xml" dir="${compiler.tests}"/>
     	<delete dir="${compiler.tests}/in"/>
+    </target>
+    
+    <target name="js.swc">
+        <copy file="${compiler-externc}/src/test/config/compile-as-config.xml"
+        todir="${compiler-externc}/target" />
+        <java jar="${compiler}/lib/compc.jar" fork="true"
+            failonerror="true">
+            <arg value="-targets=SWF"/>
+            <arg value="-load-config=${compiler-externc}/target/compile-as-config.xml" />
+            <arg value="-output=${compiler-externc}/target/js.swc" />
+        </java>
+    </target>
+
+    <target name="custom.swc">
+        <copy file="config/compile-js-config.xml"
+        todir="${compiler}/target" />
+        <java jar="${compiler}/lib/compc.jar" fork="true"
+            failonerror="true">
+            <arg value="-load-config=${compiler}/target/compile-js-config.xml" />
+            <arg value="-output=${compiler}/target/custom.swc" />
+        </java>
     </target>
 
     <target name="compile.unit.tests">
@@ -181,26 +203,9 @@
             </assertions>
         </junit>
     </target>
-    
-    <target name="copyLastSuccessfulBuild" depends="check_asjs, get_asjs" />
-    <target name="check_asjs" >
-        <available file="${env.ASJS_HOME}/frameworks/libs/Network.swc"
-            type="file"
-            property="asjs.ok"
-            value="true" />
-    </target>
-    <target name="get_asjs" unless="asjs.ok" >
-        <get src="http://apacheflexbuild.cloudapp.net:8080/job/royale-asjs/lastSuccessfulBuild/artifact/out/apache-royale-flexjs-0.9.0-bin.zip" dest="${compiler}/target/junit-temp/royale.zip"/>
-        <unzip src="${compiler}/target/junit-temp/royale.zip" dest="${env.ASJS_HOME}">
-            <patternset>
-                <include name="frameworks/libs/*.swc"/>
-            </patternset>
-        </unzip>
-        <delete file="${compiler}/target/junit-temp/royale.zip" />
-    </target>
- 
-    <target name="main" depends="unit.tests, integration.tests"/>
-    <target name="all" depends="unit.tests, integration.tests, typedef.tests, integration.tests.asjs"/>
+     
+    <target name="main" depends="js.swc, custom.swc, unit.tests, integration.tests"/>
+    <target name="all" depends="main, typedef.tests, integration.tests.asjs"/>
 
     <target name="clean">
         <delete dir="${compiler.tests}/bin"/>

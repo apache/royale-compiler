@@ -70,6 +70,8 @@ import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.ICompoundAssignmentNode;
@@ -84,6 +86,8 @@ import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.internal.as.codegen.ABCGeneratingReducer;
@@ -390,18 +394,18 @@ public class MethodBodySemanticChecker
 
         if (!SemanticUtils.isValidTypeConversion(expected_type, actual_type, project, currentScope.getInInvisibleCompilationUnit()))
         {
-            addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, actual_type.getBaseName(), expected_type.getBaseName()));
+            addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, actual_type.getQualifiedName(), expected_type.getQualifiedName()));
         }
         else
         {
             SpecialValue value = getSpecialValue((IExpressionNode)iNode);
             if (value == SpecialValue.UNDEFINED) // test for undefined
             {
-                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASLanguageConstants.UNDEFINED, expected_type.getBaseName()));                
+                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASLanguageConstants.UNDEFINED, expected_type.getQualifiedName()));                
             }
             else if (iNode instanceof LiteralNode && IASKeywordConstants.NULL.equals(((LiteralNode)iNode).getValue())) // test for null
             {
-                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASKeywordConstants.NULL, expected_type.getBaseName()));
+                addProblem(new ImplicitTypeCheckCoercionToUnrelatedTypeProblem(iNode, IASKeywordConstants.NULL, expected_type.getQualifiedName()));
             }
         }
     }
@@ -570,11 +574,11 @@ public class MethodBodySemanticChecker
             {
                 if ( utils.isInstanceOf(expected_type, actual_type) )
                 {
-                    addProblem(new ImplicitCoercionToSubtypeProblem(iNode, actual_type.getBaseName(), expected_type.getBaseName()));
+                    addProblem(new ImplicitCoercionToSubtypeProblem(iNode, actual_type.getQualifiedName(), expected_type.getQualifiedName()));
                 }
                 else
                 {
-                    addProblem(new ImplicitCoercionToUnrelatedTypeProblem(iNode, actual_type.getBaseName(), expected_type.getBaseName()));
+                    addProblem(new ImplicitCoercionToUnrelatedTypeProblem(iNode, actual_type.getQualifiedName(), expected_type.getQualifiedName()));
                 }
             }
         }
@@ -785,9 +789,26 @@ public class MethodBodySemanticChecker
         {
             FunctionNode func = (FunctionNode)iNode;
 
+            if (SemanticUtils.isFunctionClosure(func))
+            {
+                for (IASNode thisNode : findThisIdentifierNodes(func))
+                {
+                    addProblem(new ThisUsedInClosureProblem(thisNode));
+                }
+            }
+
             IDefinition def = func.getDefinition();
 
-            if ( !( def.hasModifier(ASModifier.NATIVE ) || def.hasModifier(ASModifier.DYNAMIC) || func.isConstructor() ) )
+            if ( project.getAllowAbstractClasses()
+                    && def.isAbstract()
+                    && SemanticUtils.canBeAbstract(iNode, currentScope.getProject()))
+            {
+                if ( func.hasBody() )
+                {
+                    addProblem(new AbstractMethodWithBodyProblem(SemanticUtils.getFunctionProblemNode(func)));
+                }
+            }
+            else if ( !( def.hasModifier(ASModifier.NATIVE ) || def.hasModifier(ASModifier.DYNAMIC) || func.isConstructor() ) )
             {
                 if ( !func.hasBody() )
                 {
@@ -795,6 +816,24 @@ public class MethodBodySemanticChecker
                 }
             }
         }
+    }
+
+    private static List<IASNode> findThisIdentifierNodes(IASNode iNode)
+    {
+        List<IASNode> result = new ArrayList<IASNode>();
+        for(int i = 0, count = iNode.getChildCount(); i < count; i++)
+        {
+            IASNode child = iNode.getChild(i);
+            if(SemanticUtils.isThisKeyword(child))
+            {
+                result.add(child);
+            }
+            else if(!child.isTerminal() && !(child instanceof IFunctionNode))
+            {
+                result.addAll(findThisIdentifierNodes(child));
+            }
+        }
+        return result;
     }
 
     public void checkNativeMethod(IASNode iNode)
@@ -941,6 +980,7 @@ public class MethodBodySemanticChecker
     public void checkFunctionDefinition(IFunctionNode iNode, FunctionDefinition def )
     {
         SemanticUtils.checkReturnValueHasNoTypeDeclaration(this.currentScope, iNode, def);
+        SemanticUtils.checkParametersHaveNoTypeDeclaration(this.currentScope, iNode, def);
         
         if (SemanticUtils.isInFunction(iNode))
         {
@@ -1793,6 +1833,21 @@ public class MethodBodySemanticChecker
             IExpressionNode site = ((IMemberAccessExpressionNode)nameNode).getRightOperandNode();
             def = ((IFunctionCallNode)iNode).resolveCalledExpression(project);
             checkDeprecated(site, def);
+            if (def == null || def.isAbstract())
+            {
+            	String methodName = null;
+            	if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            	{
+            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)nameNode;
+            		IExpressionNode rightNode = mae.getRightOperandNode();
+            		if (rightNode.getNodeID() == ASTNodeID.IdentifierID)
+            			methodName = ((IdentifierNode)rightNode).getName();
+            	}
+                assert methodName != null;
+                addProblem(new CallUndefinedMethodProblem( 
+                        iNode, methodName
+                    ));
+            }
         }
 
         if ( this.superState == SuperState.Initial )
@@ -1985,7 +2040,8 @@ public class MethodBodySemanticChecker
      * 
      * @param call_node {@link FunctionCallNode} that has the "new" call.
      */
-    public void checkNewExpr(IASNode call_node)
+    @SuppressWarnings("incomplete-switch")
+	public void checkNewExpr(IASNode call_node)
     {
         final ExpressionNodeBase name = ((FunctionCallNode)call_node).getNameNode();
         if (name instanceof MemberAccessExpressionNode)
@@ -1998,7 +2054,8 @@ public class MethodBodySemanticChecker
             }
             else if ( def instanceof ClassDefinition )
             {
-                // pass
+                IClassDefinition classDef = (IClassDefinition) def;
+                checkPrivateConstructorNewExpr(call_node, null, classDef, classDef.getConstructor());
             }
             else if ( def instanceof GetterDefinition )
             {
@@ -2014,6 +2071,16 @@ public class MethodBodySemanticChecker
                         addProblem(new MethodCannotBeConstructorProblem(call_node));
                         break;
                 }
+
+                if (func_def.isConstructor())
+                {
+                    IDefinition class_def = func_def.getParent();
+                    checkPrivateConstructorNewExpr(call_node, null, class_def, func_def);
+                }
+            }
+            else if (def == null)
+            {
+            	addProblem(new UnresolvedClassReferenceProblem(call_node, func_name.getDisplayString()));
             }
         }
     }
@@ -2025,11 +2092,7 @@ public class MethodBodySemanticChecker
     {
         IDefinition def = class_binding.getDefinition();
 
-        if ( class_binding.isLocal() )
-        {
-            //  No checking required.
-        }
-        else if ( def == null && utils.definitionCanBeAnalyzed(class_binding) && !(class_binding.getName().isTypeName()) )
+        if ( def == null && utils.definitionCanBeAnalyzed(class_binding) && !(class_binding.getName().isTypeName()) )
         {
             // Note: don't have to check accessability because
             // AS3 mandates constructors be public.
@@ -2049,12 +2112,21 @@ public class MethodBodySemanticChecker
         {
             ClassDefinition class_def = (ClassDefinition)def;
 
+            if ( project.getAllowAbstractClasses() && class_def.isAbstract() )
+            {
+                addProblem(new AbstractClassCannotBeInstantiatedProblem(
+                    roundUpUsualSuspects(class_binding, iNode)
+                ));
+            }
+
             IFunctionDefinition ctor = class_def.getConstructor();
 
             if ( ctor instanceof FunctionDefinition )
             {
-                FunctionDefinition func = (FunctionDefinition)ctor;
-                checkFormalsVsActuals(iNode, func, args);
+                FunctionDefinition func_def = (FunctionDefinition)ctor;
+                checkFormalsVsActuals(iNode, func_def, args);
+                
+                checkPrivateConstructorNewExpr(iNode, class_binding, class_def, func_def);
             }
         }
         else if ( def instanceof GetterDefinition )
@@ -2066,15 +2138,83 @@ public class MethodBodySemanticChecker
 
             IFunctionDefinition.FunctionClassification func_type = func_def.getFunctionClassification();
 
-            if ( func_type.equals(IFunctionDefinition.FunctionClassification.CLASS_MEMBER) || func_type.equals(IFunctionDefinition.FunctionClassification.INTERFACE_MEMBER) )
+            if (func_def.isConstructor())
+            {
+                IDefinition class_def = func_def.getParent();
+                checkPrivateConstructorNewExpr(iNode, class_binding, class_def, func_def);
+            }
+            else if ( func_type.equals(IFunctionDefinition.FunctionClassification.CLASS_MEMBER) || func_type.equals(IFunctionDefinition.FunctionClassification.INTERFACE_MEMBER) )
             {
                 addProblem(new MethodCannotBeConstructorProblem(
                     roundUpUsualSuspects(class_binding, iNode)
                 ));
             }
         }
+        else if ( def instanceof IVariableDefinition)
+        {
+            if (class_binding.isLocal())
+            {
+                // Note: previously, local variable bindings were not checked at
+                // all, but actually, variables of most types cannot be used with a
+                // "new" expression -JT
+
+                ITypeDefinition typeDef = def.resolveType(project);
+                if (typeDef != null
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.CLASS, project)
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.FUNCTION, project)
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.OBJECT, project)
+                        && !SemanticUtils.isBuiltin(typeDef, BuiltinType.ANY_TYPE, project))
+                {
+                    addProblem(new CallUndefinedMethodProblem(
+                        roundUpUsualSuspects(class_binding, iNode),
+                        class_binding.getName().getBaseName()
+                    ));
+                }
+            }
+        }
 
         checkReference(class_binding);
+    }
+
+    private void checkPrivateConstructorNewExpr(IASNode iNode, Binding class_binding, IDefinition classDef, IFunctionDefinition funcDef)
+    {
+        if (!project.getAllowPrivateConstructors() || !funcDef.isPrivate())
+        {
+            return;
+        }
+
+        IScopedNode enclosingScope = iNode.getContainingScope();
+        
+        if (enclosingScope != null)
+        {
+            boolean needsProblem = true;
+            IASScope currentScope = enclosingScope.getScope();
+            while (currentScope != null)
+            {
+                IDefinition currentDef = currentScope.getDefinition();
+                if (currentDef instanceof IClassDefinition)
+                {
+                    needsProblem = !classDef.equals(currentScope.getDefinition());
+                    break;
+                }
+                currentScope = currentScope.getContainingScope();
+            }
+            if(needsProblem)
+            {
+                if(class_binding != null)
+                {
+                    addProblem(new InaccessibleConstructorReferenceProblem(
+                        roundUpUsualSuspects(class_binding, iNode), classDef.getQualifiedName()
+                    ));
+                }
+                else
+                {
+                    addProblem(new InaccessibleConstructorReferenceProblem(
+                        iNode, classDef.getQualifiedName()
+                    ));
+                }
+            }
+        }
     }
 
     /**
@@ -2143,7 +2283,7 @@ public class MethodBodySemanticChecker
     {
         if ( SemanticUtils.isInFunction(iNode) )
         {
-            if ( SemanticUtils.functionMustReturnValue(iNode, this.project) )
+            if ( SemanticUtils.functionMustReturnValue(iNode, currentScope.getProject().getAllowAbstractClasses(), this.project) )
                 addProblem(new ReturnMustReturnValueProblem(iNode));
         }
         else if ( isInClassDefinition(iNode) )
@@ -2182,7 +2322,9 @@ public class MethodBodySemanticChecker
         if  ( 
                 il.size() > 0 &&
                 il.lastElement() == ABCGeneratingReducer.synthesizedReturnVoid && 
-                SemanticUtils.functionMustReturnValue(iNode, this.project)
+                SemanticUtils.functionMustReturnValue(iNode,
+                    currentScope.getProject().getAllowAbstractClasses(),
+                    this.project)
             )
         {
             for ( IBasicBlock b: mbi.getCfg().blocksInControlFlowOrder() )
@@ -2218,6 +2360,13 @@ public class MethodBodySemanticChecker
     public void checkImportDirective(IImportNode importNode)
     {
         IASNode site = importNode.getImportNameNode();
+        
+        String importAlias = importNode.getImportAlias();
+        if (importAlias != null && !project.getAllowImportAliases())
+        {
+            //import aliases need to be enabled
+            addProblem(new SyntaxProblem(importNode, "="));
+        }
         
         if (!SemanticUtils.isValidImport(importNode, project, currentScope.getInInvisibleCompilationUnit()))
         {
@@ -2409,6 +2558,13 @@ public class MethodBodySemanticChecker
                 {
                     currentScope.addProblem(new StaticOutsideClassProblem(site));
                 }
+                else if( modifier == ASModifier.ABSTRACT )
+                {
+                    if(currentScope.getProject().getAllowAbstractClasses())
+                    {
+                        currentScope.addProblem(new AbstractOutsideClassProblem(site));
+                    }
+                }
             }
         }
 
@@ -2434,6 +2590,22 @@ public class MethodBodySemanticChecker
                     location = nameExpression;
                 this.currentScope.addProblem( new VariableHasNoTypeDeclarationProblem(location, var.getShortName()));
             }
+        }
+
+        ExpressionNodeBase typeNode = var.getTypeNode();
+        IExpressionNode currentTypeNode = typeNode;
+        IDefinition vectorType = project.getBuiltinType(IASLanguageConstants.BuiltinType.VECTOR);
+        while (currentTypeNode instanceof ITypedExpressionNode)
+        {
+            ITypedExpressionNode typedNode = (ITypedExpressionNode) currentTypeNode;
+            IExpressionNode collectionNode = typedNode.getCollectionNode();
+            IDefinition collectionType = collectionNode.resolve(project);
+            if (!vectorType.equals(collectionType))
+            {
+                currentScope.addProblem(new TypeParametersWithNonParameterizedTypeProblem(collectionNode));
+            }
+            //keep checking while there are nested types
+            currentTypeNode = typedNode.getTypeNode();
         }
 
         // check if thise is an assignment in this declaration.

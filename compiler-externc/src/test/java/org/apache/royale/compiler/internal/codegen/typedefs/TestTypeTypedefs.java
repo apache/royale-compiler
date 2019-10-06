@@ -82,7 +82,7 @@ public class TestTypeTypedefs extends TypedefsTestBase
                 JSTypeUtils.toParamTypeString(reference.getStaticMethod("test4"), "arg1"));
         assertEquals("Object",
                 JSTypeUtils.toParamTypeString(reference.getStaticMethod("test5"), "arg1"));
-        assertEquals("Function /* function (string, boolean): ? */",
+        assertEquals("Function /* function(string, boolean): ? */",
                 JSTypeUtils.toParamTypeString(reference.getStaticMethod("test6"), "arg1"));
     }
 

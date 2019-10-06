@@ -62,3 +62,9 @@ Event.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+Event.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

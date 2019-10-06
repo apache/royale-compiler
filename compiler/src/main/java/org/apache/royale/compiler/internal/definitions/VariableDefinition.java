@@ -221,7 +221,8 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
     	return initializer;
 	}
     
-    public void setInitializer(IExpressionNode initExpr)
+    @SuppressWarnings("incomplete-switch")
+	public void setInitializer(IExpressionNode initExpr)
     {
         if( initExpr != null )
         {

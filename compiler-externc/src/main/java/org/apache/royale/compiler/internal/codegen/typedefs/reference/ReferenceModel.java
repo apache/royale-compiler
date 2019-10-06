@@ -37,6 +37,7 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
 
 public class ReferenceModel
 {
@@ -328,6 +329,10 @@ public class ReferenceModel
             try
             {
                 jsType = expression.evaluate(null, jscompiler.getTypeRegistry());
+                if (jsType.isTemplatizedType())
+                {
+                	jsType = ((TemplatizedType)jsType).getReferencedType();
+                }
             }
             catch (Exception e)
             {

@@ -88,7 +88,8 @@ public class OffsetLookup
      * @param absoluteOffset absolute offset
      * @return The {@code OffsetCue} that applies to the given absolute offset.
      */
-    private OffsetCue findOffsetCue(int absoluteOffset)
+    @SuppressWarnings("deprecation")
+	private OffsetCue findOffsetCue(int absoluteOffset)
     {
         if (offsetCueList.isEmpty() || absoluteOffset < 0)
             return null;
@@ -168,6 +169,12 @@ public class OffsetLookup
                     public boolean apply(OffsetCue cue)
                     {
                         return cue.filename.equals(filename);
+                    }
+                    
+                    @Override
+                    public boolean test(OffsetCue input)
+                    {
+                        return apply(input);
                     }
                 });
 

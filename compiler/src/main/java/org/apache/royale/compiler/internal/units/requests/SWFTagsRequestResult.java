@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.royale.compiler.embedding.IEmbedData;
-import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.units.requests.ISWFTagsRequestResult;

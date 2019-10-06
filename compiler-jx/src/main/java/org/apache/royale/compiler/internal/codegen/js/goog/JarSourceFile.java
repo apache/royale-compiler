@@ -19,7 +19,6 @@
 
 package org.apache.royale.compiler.internal.codegen.js.goog;
 
-import com.google.common.io.CharSource;
 import com.google.javascript.jscomp.Region;
 import com.google.javascript.jscomp.SourceFile;
 
@@ -32,12 +31,16 @@ import java.io.StringReader;
  */
 public class JarSourceFile extends SourceFile {
 
-    private String fileName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3821969963886712441L;
+	private String fileName;
     private boolean isExtern;
     private String code;
 
     public JarSourceFile(String fileName, String code, boolean isExtern) {
-        super(fileName);
+        super(fileName, isExtern ? SourceKind.EXTERN : SourceKind.STRONG);
         this.fileName = fileName;
         this.isExtern = isExtern;
         this.code = code;

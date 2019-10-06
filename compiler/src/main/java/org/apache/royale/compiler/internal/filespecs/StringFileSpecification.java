@@ -77,4 +77,10 @@ public class StringFileSpecification implements IFileSpecification
         return false;
     }
 
+	@Override
+	public void setLastModified(long fileDate) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

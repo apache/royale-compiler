@@ -138,7 +138,8 @@ public class SizeReportWritingSWFWriter extends SWFWriter
         writeSizeReport();
     }
 
-    @Override
+    @SuppressWarnings("incomplete-switch")
+	@Override
     protected void finishTag(ITag tag, IOutputBitStream tagData, IOutputBitStream out)
     {
         int startPos = out.size();

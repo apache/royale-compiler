@@ -41,7 +41,7 @@ public class ASNamespaceTests extends ASFeatureTestsBase
         {
         	imports = new String[]
  	        {
- 	            "import chrome.app;",
+ 	            "import Intl.Collator;",
  	        };        	
         }
         String[] testCode;
@@ -60,10 +60,10 @@ public class ASNamespaceTests extends ASFeatureTestsBase
         else
         {
             testCode = new String[]{
-                	"var foo:app = new app();",
-                	"var bar:chrome.app = new chrome.app();",
-                	"var b1:Boolean = bar is app;",
-                	"var b2:Boolean = foo is chrome.app;",
+                	"var foo:Collator = new Collator();",
+                	"var bar:Intl.Collator = new Intl.Collator();",
+                	"var b1:Boolean = bar is Collator;",
+                	"var b2:Boolean = foo is Intl.Collator;",
                     "assertEqual('package qualifiers', b1, true);",
                     "assertEqual('package qualifiers', b2, true);",
                 };        	

@@ -49,6 +49,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleCordovaBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
@@ -99,7 +100,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_PROBLEMS(0),
         FAILED_WITH_ERRORS(3),
         FAILED_WITH_EXCEPTIONS(4),
         FAILED_WITH_CONFIG_PROBLEMS(5);
@@ -179,6 +180,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
     
     public MXMLJSCRoyaleCordova(IBackend backend)
     {
+        DefinitionBase.setPerformanceCachingEnabled(true);
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
         project = new RoyaleJSProject(workspace, backend);
@@ -342,7 +344,10 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	

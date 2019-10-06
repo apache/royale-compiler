@@ -47,7 +47,6 @@ import org.apache.royale.compiler.internal.embedding.transcoders.PBJTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.SoundTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.TranscoderBase;
 import org.apache.royale.compiler.internal.embedding.transcoders.XMLTranscoder;
-import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.ASProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.SourcePathManager;
@@ -63,6 +62,7 @@ import org.apache.royale.compiler.problems.EmbedUnknownMimeTypeProblem;
 import org.apache.royale.compiler.problems.EmbedUnrecogniedFileTypeProblem;
 import org.apache.royale.compiler.problems.FontEmbeddingNotSupported;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.IASProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -143,6 +143,7 @@ public class EmbedData implements IEmbedData
     private ISWCFileEntry swcSource;
     @SuppressWarnings("unused")
     private SkinClassInfo skinClassInfo;
+    private ICompilerProject project;
 
     /**
      * Add an attribute
@@ -156,6 +157,7 @@ public class EmbedData implements IEmbedData
      */
     public boolean addAttribute(ICompilerProject project, ISourceLocation location, String key, String value, Collection<ICompilerProblem> problems)
     {
+    	this.project = project;
         boolean hadError = false;
         try
         {
@@ -346,6 +348,7 @@ public class EmbedData implements IEmbedData
             }
             else if (EmbedAttribute.ADV_ANTI_ALIASING.equals(key) ||
                     EmbedAttribute.EMBED_AS_CFF.equals(key) ||
+                    EmbedAttribute.UNICODE_RANGE.equals(key) ||
                     EmbedAttribute.FONT_FAMILY.equals(key) ||
                     EmbedAttribute.FONT_NAME.equals(key) ||
                     EmbedAttribute.FONT_STYLE.equals(key) ||
@@ -404,6 +407,18 @@ public class EmbedData implements IEmbedData
         {
             problems.add(new EmbedNoSourceAttributeProblem(location));
             return false;
+        }
+        String uniqueName = source;
+        List<File> sourcePaths = ((IASProject)project).getSourcePath();
+        for (File sourcePath : sourcePaths)
+        {
+        	String sourcePathString = sourcePath.getAbsolutePath();
+        	if (source.startsWith(sourcePathString))
+        	{
+        		uniqueName = source.substring(sourcePathString.length());
+        		uniqueName = uniqueName.replace("\\", "/");
+        		break;
+        	}
         }
 
         // also check that we have a mimetype set, as don't know what transcoder
@@ -488,6 +503,8 @@ public class EmbedData implements IEmbedData
         if (transcoder == null)
             return false;
 
+        transcoder.hashCodeSourceName = uniqueName;
+        
         // there were problems with the transcoder because of attribute settings
         // so don't return it, and let the user deal with the errors
         if (!transcoder.analyze(location, problems))
@@ -518,10 +535,25 @@ public class EmbedData implements IEmbedData
             source = swcSource.getContainingSWCPath().concat(source);
         }
 
+        String uniqueName = source;
+        List<File> sourcePaths = ((IASProject)project).getSourcePath();
+        for (File sourcePath : sourcePaths)
+        {
+        	String sourcePathString = sourcePath.getAbsolutePath();
+        	if (source.startsWith(sourcePathString))
+        	{
+        		uniqueName = source.substring(sourcePathString.length());
+        		uniqueName = uniqueName.replace("\\", "/");
+        		break;
+        	}
+        }
         String filename = FilenameUtils.getName(source);
         filename = filename.replace(".", "_");
-        String qname = filename + "$" + StringEncoder.stringToMD5String(source);
-
+        String qname = filename + "$" + StringEncoder.stringToMD5String(uniqueName);
+        transcoder.hashCodeSourceName = uniqueName;
+//        System.out.println("Embed UniqueName: " + uniqueName);
+//        System.out.println("Embed QName: " + qname);
+        
         // add the transcoder hashCode to the end of the QName to ensure
         // two embed data's with the same source, but different attributes
         // don't clash

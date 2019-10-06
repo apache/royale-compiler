@@ -22,23 +22,15 @@ package org.apache.royale.compiler.internal.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.commons.io.FileUtils;
 
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
-import org.apache.royale.compiler.config.RSLSettings;
 import org.apache.royale.compiler.internal.projects.LibraryPathManager;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.projects.IRoyaleProject;
-import org.apache.royale.compiler.targets.ITargetSettings;
-import org.apache.royale.utils.FilenameNormalization;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Value object of ITargetSettings.
@@ -72,4 +64,14 @@ public class RoyaleTargetSettings extends TargetSettings
 
         return externalLibraryPath;
     }
+    
+    @Override
+    public File getLinkReport()
+    {
+    	if (project != null)
+    		return ((IRoyaleProject)project).getLinkReport(configuration);
+    	
+        return super.getLinkReport();
+    }
+
 }

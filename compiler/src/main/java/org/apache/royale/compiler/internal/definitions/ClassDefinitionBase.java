@@ -32,8 +32,10 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -427,7 +429,23 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 
         if (type instanceof IClassDefinition)
         {
-        	if (baseDefinitions == null)
+            if (!getPerformanceCachingEnabled())
+            {
+                baseDefinitions = null;
+
+                // We're trying to determine whether this class
+                // is derived from a specified class ('type').
+                // Iterate the superclass chain looking for 'type'.
+                Iterator<IClassDefinition> iter = classIterator(project, false);
+                while (iter.hasNext())
+                {
+                    IClassDefinition cls = iter.next();
+                    if (cls == type)
+                        return true;
+                }
+                return false;
+            }
+        	else if (baseDefinitions == null)
         	{
             	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
             		System.out.println("ClassDefinitionBase waiting for lock for " + this.getQualifiedName());
@@ -456,7 +474,24 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
         }
         else if (type instanceof IInterfaceDefinition)
         {
-        	if (implDefinitions == null)
+            if (!getPerformanceCachingEnabled())
+            {
+                implDefinitions = null;
+
+                // We're trying to determine whether this class
+                // implements a specified interface ('type').
+                // Iterate all of the interfaces that this class implements,
+                // looking for 'type'.
+                Iterator<IInterfaceDefinition> iter = interfaceIterator(project);
+                while (iter.hasNext())
+                {
+                    IInterfaceDefinition intf = iter.next();
+                    if (intf == type)
+                        return true;
+                }
+                return false;
+            }
+        	else if (implDefinitions == null)
         	{
             	if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE) == CompilerDiagnosticsConstants.CLASS_DEFINITION_BASE)
             		System.out.println("ClassDefinitionBase waiting for lock for " + this.getQualifiedName());
@@ -501,6 +536,30 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
         }
 
         return interfaces;
+    }
+
+    @Override
+    public boolean isAbstract()
+    {
+        if(super.isAbstract())
+        {
+            return true;
+        }
+        IMetaTag[] metaTags = getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_ABSTRACT);
+        return metaTags != null && metaTags.length > 0;
+    }
+
+    /**
+     * Utility to mark a definition as abstract. This method should only ever be
+     * called during construction or initialization of a definition.
+     */
+    @Override
+    public void setAbstract()
+    {
+        super.setAbstract();
+
+        MetaTag abstractMetaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_ABSTRACT, new IMetaTagAttribute[0]);
+        addMetaTag(abstractMetaTag);
     }
 
     /*

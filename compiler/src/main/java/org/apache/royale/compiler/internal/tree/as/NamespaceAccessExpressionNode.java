@@ -41,7 +41,7 @@ public class NamespaceAccessExpressionNode extends BinaryOperatorNodeBase implem
     {
         super(operator, left instanceof IdentifierNode ? new NamespaceIdentifierNode((IdentifierNode)left) : left, right);
         
-        leftOperandNode.span(left.getAbsoluteStart(), left.getAbsoluteEnd(), left.getLine(), left.getColumn());
+        leftOperandNode.span(left.getAbsoluteStart(), left.getAbsoluteEnd(), left.getLine(), left.getColumn(), left.getEndLine(), left.getEndColumn());
     }
 
     /**

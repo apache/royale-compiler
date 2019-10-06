@@ -61,7 +61,9 @@ public class ProblemResourceBundleGeneratorMojo
 
     @Override
     protected void printEntry(PrintWriter writer, File source, boolean last) {
-        writer.println(getProblemName(source) + "=" + getProblemDescription(source));
+        // don't use println otherwise file has windows line-endings on windows and
+        // won't compare to osx version
+        writer.print(getProblemName(source) + "=" + getProblemDescription(source) + "\n");
     }
 
     private String getProblemName(File sourceFile) {

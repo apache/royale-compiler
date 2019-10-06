@@ -25,6 +25,7 @@ import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.test.ASTestBase;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -35,16 +36,20 @@ public class TestDefaultInitializers extends ASTestBase
     {
         backend = createBackend();
         project = new RoyaleJSProject(workspace, backend);
+        super.setUp();
+    }
+    
+    protected void createConfig(boolean defaultInitializers)
+    {
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	try {
-			config.setJsDefaultInitializers(null, true);
+			config.setJsDefaultInitializers(null, defaultInitializers);
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	project.config = config;
-        super.setUp();
-	}
+    }
 
     protected IBackend createBackend()
     {
@@ -52,121 +57,312 @@ public class TestDefaultInitializers extends ASTestBase
     }
 
     @Test
-    public void testVarDeclaration_withNumberType()
+    public void testVarDeclaration_defaultInitializers_withNumberType()
     {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  //var /** @type {number} */ a = NaN;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_noDefaultInitializers_withNumberType()
+    {
+        createConfig(false);
         IVariableNode node = (IVariableNode) getNode("var a:Number;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = NaN");
+        assertOut("var /** @type {number} */ a");
     }
 
     @Test
-    public void testVarDeclaration_withBooleanType()
+    public void testVarDeclaration_defaultInitializers_withBooleanType()
     {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Boolean;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {boolean} */ a = false;\n  //var /** @type {boolean} */ a = false;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_noDefaultInitializers_withBooleanType()
+    {
+        createConfig(false);
         IVariableNode node = (IVariableNode) getNode("var a:Boolean;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {boolean} */ a = false");
+        assertOut("var /** @type {boolean} */ a");
     }
 
     @Test
-    public void testVarDeclaration_withIntType()
+    public void testVarDeclaration_defaultInitializers_withIntType()
     {
-        IVariableNode node = (IVariableNode) getNode("var a:int;",
-                IVariableNode.class);
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = 0");
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:int;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
-    public void testVarDeclaration_withUintType()
+    public void testVarDeclaration_noDefaultInitializers_withIntType()
     {
-        IVariableNode node = (IVariableNode) getNode("var a:uint;",
-                IVariableNode.class);
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = 0");
+        createConfig(false);
+        IFunctionNode node = (IFunctionNode) getNode("var a:int;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        //an exception that always has an initializer
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
     }
 
     @Test
-    public void testVarDeclaration_withStringType()
+    public void testVarDeclaration_defaultInitializers_withUintType()
     {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:uint;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_noDefaultInitializers_withUintType()
+    {
+        createConfig(false);
+        IFunctionNode node = (IFunctionNode) getNode("var a:uint;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        //an exception that always has an initializer
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = 0;\n  //var /** @type {number} */ a = 0;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withStringType()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:String;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {string} */ a = null;\n  //var /** @type {string} */ a = null;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_noDefaultInitializers_withStringType()
+    {
+        createConfig(false);
         IVariableNode node = (IVariableNode) getNode("var a:String;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ a = null");
+        assertOut("var /** @type {string} */ a");
     }
 
     @Test
-    public void testVarDeclaration_withObjectType()
+    public void testVarDeclaration_defaultInitializers_withObjectType()
     {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Object;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {Object} */ a = null;\n  //var /** @type {Object} */ a = null;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_noDefaultInitializers_withObjectType()
+    {
+        createConfig(false);
         IVariableNode node = (IVariableNode) getNode("var a:Object;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Object} */ a = null");
+        assertOut("var /** @type {Object} */ a");
     }
 
     @Test
-    public void testVarDeclaration_withArrayType()
+    public void testVarDeclaration_defaultInitializers_withArrayType()
     {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Array;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {Array} */ a = null;\n  //var /** @type {Array} */ a = null;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_noDefaultInitializers_withArrayType()
+    {
+        createConfig(false);
         IVariableNode node = (IVariableNode) getNode("var a:Array;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = null");
+        assertOut("var /** @type {Array} */ a");
     }
 
     @Test
-    public void testFieldDeclaration_withNumberType()
+    public void testVarDeclaration_defaultInitializers_withChainedAndAllInitialized()
     {
+        createConfig(true);
+        IVariableNode node = (IVariableNode) getNode("var a:Number = 0, b:Number = 0, c:Number = 0;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0, /** @type {number} */ b = 0, /** @type {number} */ c = 0");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndNoneInitialized()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number, b:Number, c:Number;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  var /** @type {number} */ b = NaN;\n  var /** @type {number} */ c = NaN;\n  //var /** @type {number} */ a = NaN;\n  //var /** @type {number} */ b = NaN;\n  //var /** @type {number} */ c = NaN;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndFirstInitialized()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number = 1, b:Number, c:Number;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ b = NaN;\n  var /** @type {number} */ c = NaN;\n  var /** @type {number} */ a = 1;\n  //var /** @type {number} */ b = NaN;\n  //var /** @type {number} */ c = NaN;\n}");
+    }
+
+    @Test
+    public void testVarDeclaration_defaultInitializers_withChainedAndLastInitialized()
+    {
+        createConfig(true);
+        IFunctionNode node = (IFunctionNode) getNode("var a:Number, b:Number, c:Number = 1;",
+                IFunctionNode.class);
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.royaleTest_a = function() {\n  var /** @type {number} */ a = NaN;\n  var /** @type {number} */ b = NaN;\n  //var /** @type {number} */ a = NaN;\n  //var /** @type {number} */ b = NaN;\n  var /** @type {number} */ c = 1;\n}");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withNumberType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:Number;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = NaN");
     }
 
     @Test
-    public void testFieldDeclaration_withBooleanType()
+    public void testFieldDeclaration_noDefaultInitializers_withNumberType()
     {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:Number;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withBooleanType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:Boolean;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {boolean}\n */\nRoyaleTest_A.prototype.foo = false");
     }
 
     @Test
-    public void testFieldDeclaration_withIntType()
+    public void testFieldDeclaration_noDefaultInitializers_withBooleanType()
     {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:Boolean;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @type {boolean}\n */\nRoyaleTest_A.prototype.foo");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withIntType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:int;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
     }
 
     @Test
-    public void testFieldDeclaration_withUintType()
+    public void testFieldDeclaration_noDefaultInitializers_withIntType()
     {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:int;");
+        asBlockWalker.visitVariable(node);
+        //an exception that always has an initializer
+        assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withUintType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:uint;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
     }
 
     @Test
-    public void testFieldDeclaration_withStringType()
+    public void testFieldDeclaration_noDefaultInitializers_withUintType()
     {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:uint;");
+        asBlockWalker.visitVariable(node);
+        //an exception that always has an initializer
+        assertOut("/**\n * @private\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withStringType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:String;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype.foo = null");
     }
 
     @Test
-    public void testFieldDeclaration_withObjectType()
+    public void testFieldDeclaration_noDefaultInitializers_withStringType()
     {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:String;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype.foo");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withObjectType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:Object;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo = null");
     }
 
     @Test
-    public void testFieldDeclaration_withArrayType()
+    public void testFieldDeclaration_noDefaultInitializers_withObjectType()
     {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:Object;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo");
+    }
+
+    @Test
+    public void testFieldDeclaration_defaultInitializers_withArrayType()
+    {
+        createConfig(true);
         IVariableNode node = getField("private var foo:Array;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo = null");
+    }
+
+    @Test
+    public void testFieldDeclaration_noDefaultInitializers_withArrayType()
+    {
+        createConfig(false);
+        IVariableNode node = getField("private var foo:Array;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo");
     }
 }

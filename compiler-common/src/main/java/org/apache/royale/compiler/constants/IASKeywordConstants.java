@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface IASKeywordConstants
 {
+    static final String ABSTRACT = "abstract";
     static final String AS = "as";
     static final String BREAK = "break";
     static final String CASE = "case";

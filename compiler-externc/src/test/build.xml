@@ -88,7 +88,6 @@
                 <fileset dir="${compiler.externc}/target/test-classes">
                     <!-- externs tests -->
                     <include name="**/TestExternES3.class"/>
-                    <include name="**/TestExternChrome.class"/>
                     <include name="**/TestExternJSMissing.class"/>
                     <include name="**/TestAnnotationEnum.class"/>
                     <include name="**/TestCollectImports.class"/>

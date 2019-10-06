@@ -213,6 +213,9 @@ public class CompilerProblemSettings implements ICompilerProblemSettings
         case ICompilerSettings.WARN_XML_CLASS_HAS_CHANGED:
             warning = configuration.warn_xml_class_has_changed();
             break;
+        case ICompilerSettings.WARN_THIS_WITHIN_CLOSURE:
+            warning = configuration.warn_this_within_closure();
+            break;
         }
         
         return warning;

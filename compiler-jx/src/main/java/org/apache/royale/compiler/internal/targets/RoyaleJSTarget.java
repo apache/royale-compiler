@@ -28,11 +28,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSManager;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.css.semantics.ActivatedStyleSheets;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
@@ -147,7 +149,6 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
     {
         JSCSSCompilationSession cssCompilationSession = (JSCSSCompilationSession) royaleProject.getCSSCompilationSession();
         cssCompilationSession.setKeepAllTypeSelectors(targetSettings.keepAllTypeSelectors());
-        cssCompilationSession.setExcludeDefaultsCSSFiles(targetSettings.getExcludeDefaultsCSSFiles());
         
         // Performance heuristic: let's start compilation on all of the compilation
         // units we know about up front. This is particularly useful on SWC projects where 
@@ -234,6 +235,14 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
 
             // If there's more dependencies introduced by CSS, the loop continues.
             done = !allCompilationUnitsInTarget.addAll(cssDependencies);
+            if (done)
+            {
+	            DependencyGraph graph = royaleProject.getDependencyGraph();
+	            for (ICompilationUnit cu : cssDependencies)
+	            {
+	            	graph.addDependency(mainCU, cu, DependencyType.EXPRESSION);
+	            }
+            }
         }
 
         // add to front so user specified css overrides defaults
@@ -302,7 +311,9 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
                 final File swcFile = new File(compilationUnit.getAbsoluteFilename());
                 final ICSSDocument defaultCSS = cssManager.getDefaultCSS(swcFile);
                 if (defaultCSS != null)
+                {
                     result.put(defaultCSS, swcFile);
+                }
             }
         }
         return result;

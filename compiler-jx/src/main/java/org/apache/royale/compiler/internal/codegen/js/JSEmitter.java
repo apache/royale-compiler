@@ -23,12 +23,21 @@ import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants;
+import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.IEmitter;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.IAppliedVectorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BlockCloseEmitter;
@@ -57,12 +66,18 @@ import org.apache.royale.compiler.internal.codegen.js.jx.TryEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WhileLoopEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WithEmitter;
-import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.ICatchNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IForLoopNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
@@ -86,6 +101,9 @@ import org.apache.royale.compiler.tree.as.IWhileLoopNode;
 import org.apache.royale.compiler.tree.as.IWithNode;
 
 import com.google.debugging.sourcemap.FilePosition;
+
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.utils.NativeUtils;
 
 /**
  * @author Michael Schmalle
@@ -196,6 +214,13 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         startMapping(node);
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
+        String name = fnode.getName();
+        //may have a name, or may be anonymous
+        if(name.length() > 0)
+        {
+            write(ASEmitterTokens.SPACE);
+            write(name);
+        }
         endMapping(node);
         emitParameters(fnode.getParametersContainerNode());
         emitFunctionScope(fnode.getScopedNode());
@@ -203,16 +228,17 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
     public void emitClosureStart()
     {
-    	
+    
     }
 
     public void emitClosureEnd(IASNode node, IDefinition nodeDef)
     {
-    	
+    
     }
     
     public void emitSourceMapDirective(ITypeNode node)
     {
+        sourceMapDirectiveEmitter.isExterns = getModel().isExterns;
         sourceMapDirectiveEmitter.emit(node);
     }
 
@@ -422,6 +448,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
         }
 
+        //prefer forward slash
+        sourcePath = sourcePath.replace('\\', '/');
+
         SourceMapMapping mapping = new SourceMapMapping();
         mapping.sourcePath = sourcePath;
         mapping.sourceStartPosition = new FilePosition(line, column);
@@ -481,7 +510,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     /**
      * Adjusts the line numbers saved in the source map when a line should be
      * removed during post processing.
-     * 
+     *
      * @param lineIndex
      */
     protected void removeLineFromMappings(int lineIndex)
@@ -504,5 +533,391 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		// TODO Auto-generated method stub
 		return className.replace(".", "_") + "_" + name;
 	}
+
+    public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
+    {
+        IDefinition assignedDef = null;
+        IDefinition assignedTypeDef = null;
+        ICompilerProject project = getWalker().getProject();
+        if (assignedNode != null)
+        {
+            assignedDef = assignedNode.resolve(project);
+            assignedTypeDef = assignedNode.resolveType(project);
+            if (project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef))
+            {
+                IDefinition resolvedXMLDef = SemanticUtils.resolveXML(assignedNode, project);
+                if (resolvedXMLDef != null)
+                {
+                    assignedDef = resolvedXMLDef;
+                    assignedTypeDef = SemanticUtils.resolveTypeXML(assignedNode, project);
+                }
+            }
+        }
+		String coercionStart = null;
+        String coercionEnd = null;
+        boolean avoidCoercion = false;
+		if (project.getBuiltinType(BuiltinType.INT).equals(definition))
+		{
+			boolean needsCoercion = false;
+			if (assignedNode instanceof INumericLiteralNode)
+			{
+				INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+                INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                startMapping(assignedNode);
+                if(numericValue.toString().startsWith("0x"))
+                {
+                    //for readability, keep the same formatting
+                    write("0x" + Integer.toHexString(numericValue.toInt32()));
+                }
+                else
+                {
+                    write(Integer.toString(numericValue.toInt32()));
+                }
+                endMapping(assignedNode);
+                return;
+			}
+			else if(assignedNode instanceof BinaryOperatorAsNode)
+            {
+                needsCoercion = true;
+            }
+			else if(!project.getBuiltinType(BuiltinType.INT).equals(assignedTypeDef))
+			{
+				needsCoercion = true;
+			}
+			if (needsCoercion)
+			{
+				coercionStart = "(";
+				coercionEnd = ") >> 0";
+			}
+		}
+		else if (project.getBuiltinType(BuiltinType.UINT).equals(definition))
+		{
+			boolean needsCoercion = false;
+			if (assignedNode instanceof INumericLiteralNode)
+			{
+                INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+                INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                startMapping(assignedNode);
+                if(numericValue.toString().startsWith("0x"))
+                {
+                    //for readability, keep the same formatting
+                    write("0x" + Long.toHexString(numericValue.toUint32()));
+                }
+                else
+                {
+                    write(Long.toString(numericValue.toUint32()));
+                }
+                endMapping(assignedNode);
+                return;
+			}
+            else if(assignedNode instanceof BinaryOperatorAsNode)
+            {
+                needsCoercion = true;
+            }
+			else if(!project.getBuiltinType(BuiltinType.UINT).equals(assignedTypeDef))
+			{
+				needsCoercion = true;
+			}
+			if (needsCoercion)
+			{
+				coercionStart = "(";
+				coercionEnd = ") >>> 0";
+            }
+        }
+        else if (project.getBuiltinType(BuiltinType.NUMBER).equals(definition)
+                && !project.getBuiltinType(BuiltinType.NUMBER).equals(assignedTypeDef)
+                && !project.getBuiltinType(BuiltinType.INT).equals(assignedTypeDef)
+                && !project.getBuiltinType(BuiltinType.UINT).equals(assignedTypeDef))
+        {
+			boolean needsCoercion = true;
+            if (assignedNode instanceof IDynamicAccessNode)
+            {
+                IDynamicAccessNode dynamicAccess = (IDynamicAccessNode) assignedNode;
+                IDefinition dynamicAccessIndexDef = dynamicAccess.getRightOperandNode().resolveType(project);
+                if (project.getBuiltinType(BuiltinType.NUMBER).equals(dynamicAccessIndexDef))
+                {
+                    IDefinition leftDef = dynamicAccess.getLeftOperandNode().resolveType(project);
+                    IMetaTag[] metas = leftDef.getAllMetaTags();
+                    for (IMetaTag meta : metas)
+                    {
+                        if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
+                        {
+                            IMetaTagAttribute[] attrs = meta.getAllAttributes();
+                            for (IMetaTagAttribute attr : attrs)
+                            {
+                                String t = attr.getValue();
+                                if (t.equals(IASLanguageConstants.Number))
+                                {
+                                    needsCoercion = false;
+                                    //explicitly prevent other coercion detection rules from picking this up
+                                    avoidCoercion = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (needsCoercion)
+            {
+                coercionStart = "Number(";
+            }
+        }
+        else if (project.getBuiltinType(BuiltinType.BOOLEAN).equals(definition)
+                && !project.getBuiltinType(BuiltinType.BOOLEAN).equals(assignedTypeDef))
+        {
+            if (project.getBuiltinType(BuiltinType.NULL).equals(assignedTypeDef)
+                    || (assignedDef != null && assignedDef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED)))
+            {
+                //null and undefined are coerced to false
+                startMapping(assignedNode);
+                write(IASLanguageConstants.FALSE);
+                endMapping(assignedNode);
+                return;
+            }
+			if (assignedNode instanceof INumericLiteralNode)
+			{
+                INumericLiteralNode numericLiteral = (INumericLiteralNode) assignedNode;
+                INumericLiteralNode.INumericValue numericValue = numericLiteral.getNumericValue();
+                //zero is coerced to false, and everything else is true
+                String booleanValue = numericValue.toNumber() == 0.0
+                        ? IASLanguageConstants.FALSE
+                        : IASLanguageConstants.TRUE;
+                startMapping(assignedNode);
+                write(booleanValue);
+                endMapping(assignedNode);
+                return;
+			}
+            coercionStart = "!!(";
+        }
+        else if (project.getBuiltinType(BuiltinType.STRING).equals(definition)
+                && !project.getBuiltinType(BuiltinType.STRING).equals(assignedTypeDef)
+                && !project.getBuiltinType(BuiltinType.NULL).equals(assignedTypeDef)
+                && !(project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef)
+                        && SemanticUtils.isToStringFunctionCall(assignedNode, project)))
+        {
+            if(assignedDef != null && assignedDef.getQualifiedName().equals(IASLanguageConstants.UNDEFINED))
+            {
+                //undefined is coerced to null
+                startMapping(assignedNode);
+                write(IASLanguageConstants.NULL);
+                endMapping(assignedNode);
+                return;
+            }
+            boolean emitStringCoercion = true;
+            IDocEmitter docEmitter = getDocEmitter();
+            if (docEmitter instanceof JSRoyaleDocEmitter)
+            {
+                JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
+                emitStringCoercion = royaleDocEmitter.emitStringConversions;
+            }
+            if (emitStringCoercion)
+            {
+                coercionStart = "org.apache.royale.utils.Language.string(";
+            }
+        }
+        if ( assignedDef != null
+                && assignedDef instanceof IAppliedVectorDefinition
+                && assignedNode instanceof TypedExpressionNode) {
+            //assign a Vector class as the assigned value, e.g. var c:Class = Vector.<int>
+            if (project instanceof RoyaleJSProject
+                    && ((RoyaleJSProject)project).config.getJsVectorEmulationClass() != null) {
+                startMapping(assignedNode);
+                write(((RoyaleJSProject)project).config.getJsVectorEmulationClass());
+                endMapping(assignedNode);
+            } else {
+                startMapping(assignedNode);
+                write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                //the element type of the Vector:
+                write(formatQualifiedName(((TypedExpressionNode)assignedNode).getTypeNode().resolve(project).getQualifiedName()));
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                endMapping(assignedNode);
+                if (project instanceof RoyaleJSProject)
+                    ((RoyaleJSProject)project).needLanguage = true;
+                getModel().needLanguage = true;
+            }
+            return;
+        }
+        if (assignedDef instanceof IClassDefinition
+                && assignedNode instanceof IdentifierNode
+                && ((IdentifierNode)assignedNode).getName().equals(IASGlobalFunctionConstants.Vector)
+                && project instanceof RoyaleJSProject
+                && ((RoyaleJSProject)project).config.getJsVectorEmulationClass() == null   ){
+            startMapping(assignedNode);
+            write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
+            write(ASEmitterTokens.PAREN_OPEN);
+            //null to signify not a valid constructor
+            write(ASEmitterTokens.NULL);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            endMapping(assignedNode);
+            if (project instanceof RoyaleJSProject)
+                ((RoyaleJSProject)project).needLanguage = true;
+            getModel().needLanguage = true;
+            return;
+        }
+        if (coercionStart == null
+                && !avoidCoercion
+                && assignedTypeDef !=null
+                && definition !=null
+                && (project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef)
+                || project.getBuiltinType(BuiltinType.OBJECT).equals(assignedTypeDef))
+                && !(project.getBuiltinType(BuiltinType.ANY_TYPE).equals(definition)
+                        || project.getBuiltinType(BuiltinType.OBJECT).equals(definition))) {
+            //catch leftovers: remaining implicit coercion of loosely typed assigned values to strongly typed context
+            //assignment to Class definitions is excluded because there is no 'Class' type in JS
+            //Possibility: 'Class' could be implemented as a synthType
+            boolean needsCoercion = ((RoyaleJSProject)project).config.getJsComplexImplicitCoercions();
+    
+            IDocEmitter docEmitter = getDocEmitter();
+            if (docEmitter instanceof JSRoyaleDocEmitter)
+            {
+                JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
+                //check for local toggle
+                if (needsCoercion) needsCoercion = !(royaleDocEmitter.getLocalSettingAsBoolean(
+                        JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION, false));
+                else {
+                    if (royaleDocEmitter.hasLocalSetting(JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION.getToken())) {
+                        needsCoercion = !(royaleDocEmitter.getLocalSettingAsBoolean(
+                                JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION, false));
+                    }
+                }
+                if (needsCoercion) {
+                    //check for individual specified suppression
+                    
+                    String definitionName = definition.getQualifiedName();
+                    //for Vectors, use the unqualified name to match the source code
+                    if (NativeUtils.isVector(definitionName)) {
+                        definitionName = definition.getBaseName();
+                    }
+                    
+                    if (royaleDocEmitter.getLocalSettingIncludesString(
+                            JSRoyaleEmitterTokens.SUPPRESS_COMPLEX_IMPLICIT_COERCION,
+                            definitionName))
+                    {
+                        needsCoercion = false;
+                    }
+                    
+                }
+            }
+            
+            //Avoid specific compile-time 'fake' class(es)
+            if (needsCoercion && definition.getQualifiedName().equals("org.apache.royale.core.WrappedHTMLElement")) {
+                //*actual* coercion fails here, because this is not actually instantiated, it is
+                //simply a type definition representing the 'wrapped' (or tagged) HTMLElement
+                needsCoercion = false;
+            }
+            
+            //Avoid XML/XMLList:
+            if (needsCoercion && project.getBuiltinType(BuiltinType.XML) != null) {
+                if (project.getBuiltinType(BuiltinType.XML).equals(definition)
+                        || project.getBuiltinType(BuiltinType.XMLLIST).equals(definition)) {
+                    //XML/XMLList has complex output and would need more work
+                    needsCoercion = false;
+                }
+            }
+            
+            //avoid scenario with ArrayElementType specified as metadata definition type - assume it is 'typed'
+            if (needsCoercion && assignedNode instanceof IDynamicAccessNode)
+            {
+                IDynamicAccessNode dynamicAccess = (IDynamicAccessNode) assignedNode;
+                IDefinition dynamicAccessIndexDef = dynamicAccess.getRightOperandNode().resolveType(project);
+                if (project.getBuiltinType(BuiltinType.NUMBER).equals(dynamicAccessIndexDef))
+                {
+                    IDefinition leftDef = dynamicAccess.getLeftOperandNode().resolveType(project);
+                    if (leftDef != null) {
+                        IMetaTag[] metas = leftDef.getAllMetaTags();
+                        for (IMetaTag meta : metas)
+                        {
+                            if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
+                            {
+                                IMetaTagAttribute[] attrs = meta.getAllAttributes();
+                                for (IMetaTagAttribute attr : attrs)
+                                {
+                                    String t = attr.getValue();
+                                    if (t.equals(definition.getQualifiedName()))
+                                    {
+                                        needsCoercion = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (needsCoercion && project.getBuiltinType(BuiltinType.STRING).equals(definition)) {
+                //explicit suppression of String coercion
+                if (docEmitter instanceof JSRoyaleDocEmitter)
+                {
+                    JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
+                    needsCoercion = royaleDocEmitter.emitStringConversions;
+                }
+                if (needsCoercion
+                        && assignedNode instanceof FunctionCallNode
+                        && ((FunctionCallNode) assignedNode).getNameNode() instanceof MemberAccessExpressionNode
+                        && ((MemberAccessExpressionNode)((FunctionCallNode) assignedNode).getNameNode()).getRightOperandNode()  instanceof IdentifierNode
+                        && ((IdentifierNode)(((MemberAccessExpressionNode)((FunctionCallNode) assignedNode).getNameNode()).getRightOperandNode())).getName().equals("toString")) {
+                        //even if toString() is called in an untyped way, assume a call to a method named 'toString' is actually providing a String
+                    needsCoercion = false;
+                }
+            }
+            
+            if (needsCoercion) {
+                //add a comment tag leader, so implicit casts are identifiable in the output
+                coercionStart = "/* implicit cast */ "
+                        + JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                        + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                        + ASEmitterTokens.AS.getToken()
+                        + ASEmitterTokens.PAREN_OPEN.getToken();
+                String coercionTypeString = formatQualifiedName(definition.getQualifiedName());
+                if (NativeUtils.isSyntheticJSType(coercionTypeString)) {
+                    String synthCall;
+                    String synthethicType;
+                    if (NativeUtils.isVector(coercionTypeString)) {
+                        synthCall = JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
+                        synthethicType = formatQualifiedName(coercionTypeString.substring(8, coercionTypeString.length() -1));
+                    } else {
+                        synthCall = JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
+                        synthethicType = coercionTypeString;
+                    }
+                    coercionTypeString = synthCall
+                            + ASEmitterTokens.PAREN_OPEN.getToken()
+                            + ASEmitterTokens.SINGLE_QUOTE.getToken()
+                            + synthethicType
+                            + ASEmitterTokens.SINGLE_QUOTE.getToken()
+                            + ASEmitterTokens.PAREN_CLOSE.getToken();
+                }
+                
+                coercionEnd = ASEmitterTokens.COMMA.getToken()
+                        + ASEmitterTokens.SPACE.getToken()
+                        + coercionTypeString
+                        + ASEmitterTokens.COMMA.getToken()
+                        + ASEmitterTokens.SPACE.getToken()
+                        + ASEmitterTokens.TRUE.getToken()
+                        + ASEmitterTokens.PAREN_CLOSE.getToken();
+                if (project instanceof RoyaleJSProject)
+                    ((RoyaleJSProject)project).needLanguage = true;
+                getModel().needLanguage = true;
+            }
+        }
+
+		if (coercionStart != null)
+		{
+			write(coercionStart);
+        }
+        emitAssignedValue(assignedNode);
+		if (coercionStart != null)
+		{
+			if (coercionEnd != null)
+			{
+				write(coercionEnd);
+			}
+			else
+			{
+				write(")");
+			}
+		}
+    }
 
 }

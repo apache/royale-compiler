@@ -123,7 +123,7 @@ public class UseNamespaceNode extends FixedChildrenNode implements IUseNamespace
             {
                 namespaceNode = new NamespaceIdentifierNode(((IIdentifierNode)namespace).getName());
                 ((NodeBase)namespaceNode).setSourcePath(namespace.getSourcePath());
-                ((NodeBase)namespaceNode).span(namespace.getAbsoluteStart(), namespace.getAbsoluteEnd(), namespace.getLine(), namespace.getColumn());
+                ((NodeBase)namespaceNode).span(namespace.getAbsoluteStart(), namespace.getAbsoluteEnd(), namespace.getLine(), namespace.getColumn(), namespace.getEndLine(), namespace.getEndColumn());
             }
         }
     }

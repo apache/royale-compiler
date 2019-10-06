@@ -38,7 +38,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("function foo():int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function() {\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function() {\n  return -1;\n}");
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {*} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {*} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  return -1;\n}");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {string} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  return -1;\n}");
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String = \"baz\"):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string=} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : \"baz\";\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {string=} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : \"baz\";\n  return -1;\n}");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String, baz:int = null):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethodWithPackage("static const BAR:String = 'bar'; function foo(bar:String = RoyaleTest_A.BAR):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string=} bar\n * @return {number}\n */\nfoo.bar.RoyaleTest_A.prototype.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : foo.bar.RoyaleTest_A.BAR;\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {string=} bar\n * @return {number}\n */\nfoo.bar.RoyaleTest_A.prototype.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : foo.bar.RoyaleTest_A.BAR;\n  return -1;\n}");
     }
 
     @Override
@@ -91,7 +91,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {...} rest\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar, rest) {\n  rest = Array.prototype.slice.call(arguments, 1);\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {string} bar\n * @param {...} rest\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar, rest) {\n  rest = Array.prototype.slice.call(arguments, 1);\n  return -1;\n}");
     }
 
     @Override
@@ -100,7 +100,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("import custom.custom_namespace;custom_namespace function foo(bar:String, baz:int = null):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nRoyaleTest_A.prototype[\"http://ns.apache.org/2017/custom/namespace::foo\"] = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
+        assertOut("/**\n * @export\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
     //--------------------------------------------------------------------------
@@ -147,7 +147,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function RoyaleTest_A(){}; private function foo(value:int):String{return value;}; private function bar():String{if(true){while(i){return this.foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n * @return {string}\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      return this.foo(42);\n    }\n  }\n};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return org.apache.royale.utils.Language.string(value);\n};\n\n\n/**\n * @private\n * @return {string}\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      return this.foo(42);\n    }\n  }\n};");
     }
 
     @Test
@@ -155,7 +155,7 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     {
         IClassNode node = (IClassNode) getNode("public function RoyaleTest_A(){}; private function foo(value:int):String{return value;}; private function bar():void{if(true){while(i){foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return value;\n};\n\n\n/**\n * @private\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      this.foo(42);\n    }\n  }\n};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function(value) {\n  return org.apache.royale.utils.Language.string(value);\n};\n\n\n/**\n * @private\n */\nRoyaleTest_A.prototype.bar = function() {\n  if (true) {\n    while (i) {\n      this.foo(42);\n    }\n  }\n};");
     }
 
     @Override
@@ -204,6 +204,14 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
         IFunctionNode node = getMethod("public function foo():String{const A:String = 'Hello World'; return A;}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function() {\n  \n/**\n * @const\n * @type {string}\n */\nvar A = 'Hello World';\n  return A;\n}");
+    }
+
+    @Test
+    public void testAbstractMethod()
+    {
+        IClassNode node = (IClassNode) getNode("public abstract class A { public abstract function a(arg1:String):Object; }", IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('A', A);\n\n\n/**\n * @export\n * @param {string} arg1\n * @return {Object}\n */\nA.prototype.a = function(arg1) {\n};");
     }
 
     @Override

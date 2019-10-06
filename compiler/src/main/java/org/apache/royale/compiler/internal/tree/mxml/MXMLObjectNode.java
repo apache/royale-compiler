@@ -19,7 +19,6 @@
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -28,7 +27,6 @@ import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 
 /**

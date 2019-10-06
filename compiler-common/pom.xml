@@ -23,14 +23,24 @@
     <parent>
         <groupId>org.apache.royale.compiler</groupId>
         <artifactId>royale-compiler-parent</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.6</version>
     </parent>
 
     <artifactId>compiler-common</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.6</version>
 
     <name>Apache Royale: Compiler: Compiler-Common</name>
     <description>The Apache Royale Compiler Common classes</description>
+  
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>io.github.zlika</groupId>
+              <artifactId>reproducible-build-maven-plugin</artifactId>
+              <version>0.9</version>
+          </plugin>
+      </plugins>
+  </build>
   
   <dependencies>
     <dependency>
@@ -56,7 +66,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>25.1-jre</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>

@@ -401,6 +401,8 @@ public abstract class BaseDefinitionNode extends TreeNode implements IDocumentab
             db.setOverride();
         if (hasModifier(ASModifier.STATIC))
             db.setStatic();
+        if (hasModifier(ASModifier.ABSTRACT))
+            db.setAbstract();
     }
 
     protected void fillInMetadata(DefinitionBase definition)

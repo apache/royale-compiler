@@ -25,7 +25,9 @@ import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
@@ -45,6 +47,10 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 
+/**
+ * Static or member variables of a class. For local variables in a function, see
+ * VarDeclarationEmitter. For accessors, see AccessorEmitter.
+ */
 public class FieldEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>
 {
@@ -103,8 +109,8 @@ public class FieldEmitter extends JSSubEmitter implements
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
             String qname = node.getName();
             IDefinition nodeDef = node.getDefinition();
-        	if (nodeDef != null && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-        		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+            if (nodeDef != null && !nodeDef.isStatic() && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+        			qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
             write(qname);
             endMapping(node.getNameExpressionNode());
         }
@@ -122,12 +128,12 @@ public class FieldEmitter extends JSSubEmitter implements
             String vnodeString = getEmitter().stringifyNode(vnode);
             if (ndef.isStatic() && vnode instanceof FunctionCallNode)
             {
-            	FunctionCallNode fcn = (FunctionCallNode)vnode;
+                FunctionCallNode fcn = (FunctionCallNode)vnode;
             	if (fcn.getNameNode() instanceof IdentifierNode)
             	{
+            		IDefinition d = fcn.getNameNode().resolve(getProject());
             		// assume this is a call to static method in the class
             		// otherwise it would be a memberaccessexpression?
-            		IDefinition d = (IDefinition)fcn.getNameNode().resolve(getProject());
             		if (d instanceof FunctionDefinition)
             		{
             			FunctionDefinition fd = (FunctionDefinition)d;
@@ -137,11 +143,26 @@ public class FieldEmitter extends JSSubEmitter implements
     	            		// re-emit it to collect static initializer class references in usedNames
     	            		getEmitter().stringifyNode(m);
                 		}
-            		}
+                    }
+                    //it could also be a constructor
+                    else if (d instanceof IClassDefinition)
+                    {
+                        IClassDefinition classDef = (IClassDefinition) d;
+                        IFunctionDefinition constructorDef = classDef.getConstructor();
+                        if (constructorDef != null)
+                        {
+                            IASNode m = constructorDef.getNode();
+                            if (m != null)
+                            {
+                                // re-emit it to collect static initializer class references in usedNames
+                                getEmitter().stringifyNode(m);
+                            }
+                        }
+                    }
             	}
             }
         	getModel().inStaticInitializer = false;
-        	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) || 
+        	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) ||
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
         			isPackageOrFileMember)
 	        {
@@ -154,15 +175,36 @@ public class FieldEmitter extends JSSubEmitter implements
 	            write(ASEmitterTokens.SPACE);
 	            writeToken(ASEmitterTokens.EQUAL);
 	            endMapping(node);
-                startMapping(vnode);
-	            write(vnodeString);
-                endMapping(vnode);
+                getEmitter().emitAssignmentCoercion(vnode, node.getVariableTypeNode().resolve(getProject()));
 	        }
 	        else if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className))
 	        {
 	        	hasComplexStaticInitializers = true;
 	        }
-        }        
+	        
+	        if (!isPackageOrFileMember  && !ndef.isStatic() && !EmitterUtils.isScalar(vnode)
+                    && getProject() instanceof RoyaleJSProject
+                    && ((RoyaleJSProject) getProject()).config != null
+                    && ((RoyaleJSProject) getProject()).config.getJsDefaultInitializers()
+            )
+	        {
+	            //this value will actually be initialized inside the constructor.
+                //but if default initializers is set, we define it on the prototype with null value first.
+	            //Why?: this needs to be defined on the prototype to support reflection
+                //otherwise the constructor initializers will create the new property value on 'this' and
+                //there is no runtime clue to separate what is 'dynamic' and what is 'inherited'
+                //these clues throughout the prototype chain are important for runtime identification
+                //of dynamic fields.
+                //runtime checks will only work accurately using this technique if the entire inheritance chain
+                //for the reflection target is compiled with default js initializers, because it permits
+                //inspection of the prototype chain to determine all the sealed members, and isolate them
+                //from whatever else is defined as 'own' properties on the instance (which can be assumed to be
+                // 'dynamic' properties).
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                write(ASEmitterTokens.NULL);
+            }
+        }
         if (vnode == null && def != null)
         {
             String defName = def.getQualifiedName();
@@ -197,12 +239,17 @@ public class FieldEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
                         write(IASKeywordConstants.FALSE);
+                        
+                    } else if (defName.equals("*")) {
+                        //setting the value to *undefined* is needed  to create the field
+                        //on the prototype - this is important for reflection purposes
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.UNDEFINED);
                     }
-                    else if (!defName.equals("*"))
+                    else
                     {
-                        //type * is meant to default to undefined, so it
-                        //doesn't need to be initialized, but everything
-                        //else should default to null
+                        //everything else should default to null
                         write(ASEmitterTokens.SPACE);
                         writeToken(ASEmitterTokens.EQUAL);
                         write(IASKeywordConstants.NULL);
@@ -263,8 +310,8 @@ public class FieldEmitter extends JSSubEmitter implements
         	if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className) && !isPackageOrFileMember)
 	        {
                 writeNewline();
-                write(className
-                        + ASEmitterTokens.MEMBER_ACCESS.getToken());
+                write(className);
+                write(ASEmitterTokens.MEMBER_ACCESS.getToken());
                 write(node.getName());
 	
 	            if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
@@ -278,7 +325,7 @@ public class FieldEmitter extends JSSubEmitter implements
 	            write(vnodeString);
 	            write(ASEmitterTokens.SEMICOLON);
                 return true;
-	        }
+            }
         }
 
         return false;

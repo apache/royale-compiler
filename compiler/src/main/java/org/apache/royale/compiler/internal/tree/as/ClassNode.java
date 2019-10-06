@@ -361,6 +361,16 @@ public class ClassNode extends MemberedNode implements IClassNode
         {
             if (contentsNode.getChild(i) instanceof IDefinitionNode)
                 names.add(((IDefinitionNode)contentsNode.getChild(i)));
+            else if (contentsNode.getChild(i).getNodeID() == ASTNodeID.ConfigBlockID)
+            {
+            	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)contentsNode.getChild(i);
+            	int configChildCount = configNode.getChildCount();
+            	for (int j = 0; j < configChildCount; j++)
+            	{
+                    if (configNode.getChild(j) instanceof IDefinitionNode)
+                        names.add(((IDefinitionNode)configNode.getChild(j)));            		
+            	}            	
+            }
         }
         return names.toArray(new IDefinitionNode[0]);
     }
@@ -503,10 +513,10 @@ public class ClassNode extends MemberedNode implements IClassNode
             // so we'll create one and add it to the ClassNode
             IdentifierNode constructorNameNode = new IdentifierNode(getName());
             constructorNameNode.setReferenceValue(getDefinition());
-            constructorNameNode.span(getNameAbsoluteStart(), getNameAbsoluteEnd(), -1, -1);
+            constructorNameNode.span(getNameAbsoluteStart(), getNameAbsoluteEnd(), -1, -1, -1, -1);
             defaultConstructorNode = new FunctionNode(null, constructorNameNode);
             NamespaceIdentifierNode pub = new NamespaceIdentifierNode(INamespaceConstants.public_);
-            pub.span(-1, -1, -1, -1);
+            pub.span(-1, -1, -1, -1, -1, -1);
             defaultConstructorNode.setNamespace(pub);
             defaultConstructorNode.normalize(true);
             defaultConstructorNode.setParent(contentsNode);

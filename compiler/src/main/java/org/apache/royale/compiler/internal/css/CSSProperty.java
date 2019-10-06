@@ -57,7 +57,7 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
     @Override
     public String toString()
     {
-        if (rawName.equalsIgnoreCase("border"))
+        if (rawName.equalsIgnoreCase("border") && value instanceof CSSArrayPropertyValue)
         {
             CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
             return String.format("%s: %s;", rawName, Joiner.on(" ").join(borderValues.getElements()));

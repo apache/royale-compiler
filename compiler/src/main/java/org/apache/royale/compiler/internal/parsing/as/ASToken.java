@@ -463,6 +463,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_MODIFIER_NATIVE:
             case TOKEN_MODIFIER_OVERRIDE:
             case TOKEN_MODIFIER_STATIC:
+            case TOKEN_MODIFIER_ABSTRACT:
                 return true;
         }
         return false;
@@ -514,6 +515,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_MODIFIER_OVERRIDE:
             case TOKEN_MODIFIER_STATIC:
             case TOKEN_MODIFIER_VIRTUAL:
+            case TOKEN_MODIFIER_ABSTRACT:
             case TOKEN_RESERVED_WORD_GET:
             case TOKEN_RESERVED_WORD_SET:
             case TOKEN_RESERVED_WORD_NAMESPACE:
@@ -655,6 +657,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_MODIFIER_NATIVE:
             case TOKEN_MODIFIER_OVERRIDE:
             case TOKEN_MODIFIER_STATIC:
+            case TOKEN_MODIFIER_ABSTRACT:
                 return true;
         }
         return false;
@@ -918,6 +921,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_MODIFIER_NATIVE:
             case TOKEN_MODIFIER_OVERRIDE:
             case TOKEN_MODIFIER_STATIC:
+            case TOKEN_MODIFIER_ABSTRACT:
                 return ASTokenKind.MODIFIER;
             case HIDDEN_TOKEN_BUILTIN_NS:
             case TOKEN_NAMESPACE_ANNOTATION:

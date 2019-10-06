@@ -101,6 +101,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
             .put(IASKeywordConstants.OVERRIDE, TOKEN_MODIFIER_OVERRIDE)
             .put(IASKeywordConstants.STATIC, TOKEN_MODIFIER_STATIC)
             .put(IASKeywordConstants.VIRTUAL, TOKEN_MODIFIER_VIRTUAL)
+            .put(IASKeywordConstants.ABSTRACT, TOKEN_MODIFIER_ABSTRACT)
             .put(IASKeywordConstants.SET, TOKEN_RESERVED_WORD_SET)
             // Keywords with special token types that affect subsequent blocks
             .put(IASKeywordConstants.CATCH, TOKEN_KEYWORD_CATCH)
@@ -917,6 +918,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_MODIFIER_OVERRIDE:
                 case TOKEN_MODIFIER_STATIC:
                 case TOKEN_MODIFIER_VIRTUAL:
+                case TOKEN_MODIFIER_ABSTRACT:
                 {
                     // previous token is either a modifier or a namespace, or if
                     // null, assume keyword
@@ -938,6 +940,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_MODIFIER_OVERRIDE:
                             case TOKEN_MODIFIER_STATIC:
                             case TOKEN_MODIFIER_VIRTUAL:
+                            case TOKEN_MODIFIER_ABSTRACT:
                             case TOKEN_NAMESPACE_ANNOTATION:
                             case TOKEN_NAMESPACE_NAME:
                             case HIDDEN_TOKEN_BUILTIN_NS:
@@ -1773,6 +1776,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_MODIFIER_OVERRIDE:
                 case TOKEN_MODIFIER_STATIC:
                 case TOKEN_MODIFIER_VIRTUAL:
+                case TOKEN_MODIFIER_ABSTRACT:
                 case TOKEN_KEYWORD_CLASS:
                 case TOKEN_KEYWORD_INTERFACE:
                 case TOKEN_NAMESPACE_ANNOTATION:

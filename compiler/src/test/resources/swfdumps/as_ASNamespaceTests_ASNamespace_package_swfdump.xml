@@ -72,20 +72,20 @@ public class %0 extends Object
       succs=[]
       0       getlocal0                                
       1       pushscope                                
-      2       findpropstrict  chrome::app              
+      2       findpropstrict  Intl::Collator              
       3       constructprop                            
-      4       coerce          chrome::app              
+      4       coerce          Intl::Collator              
       5       setlocal2                                
-      6       findpropstrict  chrome::app              
+      6       findpropstrict  Intl::Collator              
       7       constructprop                            
-      8       coerce          chrome::app              
+      8       coerce          Intl::Collator              
       9       setlocal3                                
       10      getlocal3                                
-      11      getlex          chrome::app              
+      11      getlex          Intl::Collator              
       12      istypelate                               
       13      setlocal                              4  
       14      getlocal2                                
-      15      getlex          chrome::app              
+      15      getlex          Intl::Collator              
       16      istypelate                               
       17      setlocal                              5  
       18      findpropstrict  assertEqual              

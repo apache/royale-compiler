@@ -23,16 +23,57 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.6</version>
   </parent>
 
   <artifactId>compiler-jx</artifactId>
-  <version>0.9.4</version>
+  <version>0.9.6</version>
 
   <name>Apache Royale: Compiler: Compiler-JX</name>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.9</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-externc-resources</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+          <configuration>
+          <outputDirectory>${basedir}/../compiler-externc/target</outputDirectory>
+            <resources>
+              <resource>
+                <directory>${basedir}/../compiler-externc/src/test/config</directory>
+              </resource>
+            </resources>
+          </configuration>
+        </execution>
+        <execution>
+          <id>copy-custom-resources</id>
+          <phase>process-test-resources</phase>
+          <goals>
+            <goal>copy-resources</goal>
+          </goals>
+          <configuration>
+            <outputDirectory>${basedir}/target</outputDirectory>
+            <resources>
+              <resource>
+                <directory>${basedir}/src/test/config</directory>
+              </resource>
+            </resources>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
       <!-- Make the surefire execute all unit-tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -66,6 +107,65 @@
           </excludes>
         </configuration>
       </plugin>
+    
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <executions>
+          <execution>
+              <id>generate-test-js-typedefs</id>
+              <phase>test-compile</phase>
+              <goals>
+                  <goal>exec</goal>
+              </goals>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <arguments>org.apache.royale.compiler.clients.EXTERNC</arguments>
+                      <argument>-load-config+=../compiler-externc/src/test/config/externc-config.xml</argument>
+                  </arguments>
+              </configuration>
+          </execution>
+          <execution>
+              <id>generate-test-js-swc</id>
+              <phase>test-compile</phase>
+              <goals>
+                  <goal>exec</goal>
+              </goals>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <arguments>org.apache.royale.compiler.clients.COMPJSC</arguments>
+                      <argument>-targets=SWF</argument>
+                      <argument>-load-config+=../compiler-externc/target/compile-as-config.xml</argument>
+                      <argument>-output=../compiler-externc/target/js.swc</argument>
+                  </arguments>
+              </configuration>
+          </execution>
+          <execution>
+              <id>generate-test-custom-swc</id>
+              <phase>test-compile</phase>
+              <goals>
+                  <goal>exec</goal>
+              </goals>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <arguments>org.apache.royale.compiler.clients.COMPJSC</arguments>
+                      <argument>-load-config+=target/compile-js-config.xml</argument>
+                      <argument>-output=target/custom.swc</argument>
+                  </arguments>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -73,17 +173,17 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.4</version>
+      <version>0.9.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.4</version>
+      <version>0.9.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.9.4</version>
+      <version>0.9.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -104,7 +204,7 @@
     <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>v20170626</version>
+      <version>v20181210</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
@@ -115,7 +215,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.4</version>
+      <version>0.9.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -127,7 +227,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.4</version>
+      <version>0.9.6</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

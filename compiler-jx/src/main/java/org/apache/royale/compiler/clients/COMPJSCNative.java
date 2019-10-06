@@ -45,7 +45,6 @@ import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.royale.compiler.internal.codegen.js.JSWriter;
 import org.apache.royale.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -203,7 +202,10 @@ public class COMPJSCNative extends MXMLJSCNative
                         if (!entry.getName().contains("js/out") &&
                         	!entry.getName().contains(SWCReader.CATALOG_XML))
                         {
-                            System.out.println("Copy " + entry.getName());
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Copy " + entry.getName());
+                            }
                         	InputStream input = zipFile.getInputStream(entry);
                         	zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
                         	IOUtils.copy(input, zipOutputStream);
@@ -258,7 +260,10 @@ public class COMPJSCNative extends MXMLJSCNative
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder, true);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -300,7 +305,10 @@ public class COMPJSCNative extends MXMLJSCNative
                     	}
                     	else
                     	{
-	                        System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+	                        if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + cu.getQualifiedNames().get(0));
+                            }
 	                    	
 	                        ICompilationUnit unit = cu;
 	
@@ -321,20 +329,28 @@ public class COMPJSCNative extends MXMLJSCNative
 
                             ByteArrayOutputStream temp = new ByteArrayOutputStream();
                             ByteArrayOutputStream sourceMapTemp = null;
-	                        if (project.config.getSourceMap())
+                            
+                            boolean isExterns = false;
+                            if(cu.getDefinitionPromises().size() > 0)
+                            {
+                                isExterns = project.isExterns(cu.getDefinitionPromises().get(0).getQualifiedName());
+                            }
+
+                            // if the file is @externs DON'T create source map file
+	                        if (project.config.getSourceMap() && !isExterns)
 	                        {
                                 sourceMapTemp = new ByteArrayOutputStream();
 	                        }
                             writer.writeTo(temp, sourceMapTemp, null);
 
-                            boolean isExterns = false;
-	                        if (writer instanceof JSWriter)
-	                        	isExterns = ((JSWriter)writer).isExterns();
                     		String outputClassFile = getOutputClassFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-	                        System.out.println("Writing file: " + outputClassFile);     	
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + outputClassFile);     	
+                            }
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
 	                        temp.writeTo(zipOutputStream);
                             zipOutputStream.flush();
@@ -346,7 +362,10 @@ public class COMPJSCNative extends MXMLJSCNative
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                System.out.println("Writing file: " + sourceMapFile);     	
+                                if (config.isVerbose())
+                                {
+                                    System.out.println("Writing file: " + sourceMapFile);
+                                }
                                 zipOutputStream.putNextEntry(new ZipEntry(sourceMapFile));
                                 sourceMapTemp.writeTo(zipOutputStream);
                                 zipOutputStream.flush();

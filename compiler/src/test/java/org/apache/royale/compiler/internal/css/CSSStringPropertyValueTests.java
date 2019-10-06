@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.royale.compiler.css.ICSSPropertyValue;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

@@ -25,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +60,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyT
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -188,7 +191,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_PROBLEMS(0),
         FAILED_WITH_ERRORS(3),
         FAILED_WITH_EXCEPTIONS(4),
         FAILED_WITH_CONFIG_PROBLEMS(5);
@@ -285,6 +288,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     
     public MXMLJSC()
     {
+        DefinitionBase.setPerformanceCachingEnabled(true);
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
         project = new RoyaleJSProject(workspace, null);
@@ -464,8 +468,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     			  arg.startsWith("-compiler.js-library-path") ||
     			  arg.startsWith("-compiler.js-define") ||
     			  arg.startsWith("-js-output") ||
+    			  arg.startsWith("-js-vector-emulation-class") ||
+    			  arg.startsWith("-externs-report") ||
     			  arg.startsWith("-js-load-config") ||
     			  arg.startsWith("-warn-public-vars") ||
+    			  arg.startsWith("-export-protected-symbols") ||
     			  arg.startsWith("-source-map")))
     			list.add(arg);						
     	}
@@ -558,7 +565,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
 	
-	                        System.out.println("Compiling file: " + outputClassFile);
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 
 	                        ICompilationUnit unit = cu;
 	
@@ -596,6 +606,22 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                                 sourceMapOut.close();
                             }
 	                        writer.close();
+	                        long fileDate = 0;
+	                    	String metadataDate = targetSettings.getSWFMetadataDate();
+	                    	if (metadataDate != null)
+	                    	{
+	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+	                    		try {
+	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+	                    			fileDate = sdf.parse(metadataDate).getTime();
+	                    		} catch (ParseException e) {
+	                				// TODO Auto-generated catch block
+	                				e.printStackTrace();
+	                			} catch (IllegalArgumentException e1) {
+	                				e1.printStackTrace();
+	                			}
+	                    		outputClassFile.setLastModified(fileDate);
+	                    	}
 	                    }
 	                }
                 }

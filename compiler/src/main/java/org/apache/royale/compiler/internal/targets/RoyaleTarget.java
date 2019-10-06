@@ -20,8 +20,11 @@
 package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -755,13 +758,28 @@ public abstract class RoyaleTarget
      */
     public void addProductInfoToSWF(ISWF swf)
     {
+    	long compileDate = new Date().getTime();
+    	String rdfDate = targetSettings.getSWFMetadataDate();
+    	String rdfDateFormat = targetSettings.getSWFMetadataDateFormat();
+    	if (rdfDate != null && rdfDateFormat != null)
+    	{
+    		try {
+    			SimpleDateFormat sdf = new SimpleDateFormat(rdfDateFormat);
+    			compileDate = sdf.parse(rdfDate).getTime();
+    		} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e1) {
+				e1.printStackTrace();
+			}
+    	}
         // Add product info to the swf.
         ProductInfoTag productInfo = new ProductInfoTag(Product.ROYALE,
                 Edition.NONE,
                 (byte)Integer.parseInt(VersionInfo.FLEX_MAJOR_VERSION),
                 (byte)Integer.parseInt(VersionInfo.FLEX_MINOR_VERSION),
                 VersionInfo.getBuildLong(),
-                0);
+                compileDate);
         swf.setProductInfo(productInfo);
     }
 }

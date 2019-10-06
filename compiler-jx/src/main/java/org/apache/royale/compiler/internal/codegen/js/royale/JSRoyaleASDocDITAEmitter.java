@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import java.io.File;
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.FilterWriter;
 import java.io.IOException;
@@ -1015,10 +1016,13 @@ public class JSRoyaleASDocDITAEmitter extends JSGoogEmitter implements IJSRoyale
     
     public void outputIndex(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	    final File indexFile = new File(outputFolder, "index.json");
-	    FileWriter out = new FileWriter(indexFile);
+		final File indexFile = new File(outputFolder, "index.json");
+		BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
 		out.write("{  \"index\": [");
-	    System.out.println("Compiling file: " + indexFile);
+		if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + indexFile);
+		}
     	Set<String> keys = project.index.keySet();
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
@@ -1084,10 +1088,13 @@ public class JSRoyaleASDocDITAEmitter extends JSGoogEmitter implements IJSRoyale
 
     public void outputClasses(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	    final File indexFile = new File(outputFolder, "classes.json");
-	    FileWriter out = new FileWriter(indexFile);
+		final File indexFile = new File(outputFolder, "classes.json");
+		BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
 		out.write("{  \"classes\": [");
-	    System.out.println("Compiling file: " + indexFile);
+		if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + indexFile);
+		}
     	Set<String> keys = project.classes.keySet();
     	List<String> keyList = new ArrayList<String>(keys);
     	Collections.sort(keyList);
@@ -1122,10 +1129,13 @@ public class JSRoyaleASDocDITAEmitter extends JSGoogEmitter implements IJSRoyale
     
     public void outputTags(File outputFolder, RoyaleASDocProject project) throws IOException
     {
-	    final File indexFile = new File(outputFolder, "tags.json");
-	    FileWriter out = new FileWriter(indexFile);
+		final File indexFile = new File(outputFolder, "tags.json");
+		BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
 		out.write("{  \"tags\": [");
-	    System.out.println("Compiling file: " + indexFile);
+		if (project.config.isVerbose())
+		{
+			System.out.println("Compiling file: " + indexFile);
+		}
     	Collections.sort(project.tags);
     	boolean firstLine = true;
     	for (String tag : project.tags)

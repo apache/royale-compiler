@@ -174,7 +174,6 @@ public class TypedefsTestUtils
 
         config.addTypedef(coreRoot + "/browser/whatwg_encoding.js");
 
-        config.addTypedef(coreRoot + "/browser/chrome.js");
         //config.addTypedef(coreRoot + "/browser/fetchapi.js");
         config.addTypedef(coreRoot + "/browser/fileapi.js");
         config.addTypedef(coreRoot + "/browser/flash.js");

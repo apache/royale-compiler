@@ -21,24 +21,23 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
-import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
-import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
+import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -91,11 +90,44 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
             IDefinition dnode = (node.getRightOperandNode())
                     .resolve(getProject());
-            if (dnode != null)
-                write(getEmitter()
-                        .formatQualifiedName(dnode.getQualifiedName()));
-            else
-                getWalker().walk(node.getRightOperandNode());
+			if (dnode != null)
+			{
+				String dnodeQname = dnode.getQualifiedName();
+                boolean isPackageOrFileMember = false;
+                if (dnode instanceof IVariableDefinition)
+                {
+                    IVariableDefinition variable = (IVariableDefinition) dnode;
+                    VariableClassification classification = variable.getVariableClassification();
+                    if (classification == VariableClassification.PACKAGE_MEMBER ||
+                            classification == VariableClassification.FILE_MEMBER)
+                    {
+                        isPackageOrFileMember = true;
+                    }
+                }
+                else if (dnode instanceof IFunctionDefinition)
+                {
+                    IFunctionDefinition func = (IFunctionDefinition) dnode;
+                    FunctionClassification classification = func.getFunctionClassification();
+                    if (classification == FunctionClassification.PACKAGE_MEMBER ||
+                            classification == FunctionClassification.FILE_MEMBER)
+                    {
+                        isPackageOrFileMember = true;
+                    }
+                }
+				else if(dnode instanceof ITypeDefinition)
+				{
+					isPackageOrFileMember = true;
+				}
+				if(isPackageOrFileMember)
+				{
+					dnodeQname = getEmitter().formatQualifiedName(dnodeQname);
+				}
+                write(dnodeQname);
+			}
+			else
+			{
+				getWalker().walk(node.getRightOperandNode());
+			}
         }
         else
         {
@@ -105,7 +137,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             {
                 IASNode lnode = leftSide.getChild(0);
                 IASNode rnode = leftSide.getChild(1);
-                IDefinition rnodeDef = (rnode instanceof IIdentifierNode) ? 
+                IDefinition rnodeDef = (rnode instanceof IIdentifierNode) ?
                 		((IIdentifierNode) rnode).resolve(getWalker().getProject()) :
                 		null;
                 boolean isDynamicAccess = rnode instanceof DynamicAccessNode;
@@ -122,7 +154,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         else
                         	write(getEmitter().formatQualifiedName(
                         		getModel().getCurrentClass().getQualifiedName()));
-                        			
+                        		
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSGoogEmitterTokens.SUPERCLASS);
                         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -318,7 +350,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             else if (leftSide.getNodeID() == ASTNodeID.IdentifierID)
             {
     			if ((leftDef != null)
-    				&& IdentifierNode.isXMLish(leftDef, getWalker().getProject()))
+    				&& SemanticUtils.isXMLish(leftDef, getWalker().getProject()))
     			{
                 	if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
                 	{
@@ -396,161 +428,13 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
     			}
             }
-
-            boolean leftIsNumber = (leftDef != null && (leftDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-					  leftDef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					  leftDef.getQualifiedName().equals(IASLanguageConstants.uint)));
-        	IExpressionNode rNode = node.getRightOperandNode();
-        	IDefinition rightDef = rNode.resolveType(getWalker().getProject());
-        	boolean rightIsNumber = (rightDef != null && (rightDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
-					  rightDef.getQualifiedName().equals(IASLanguageConstants._int) ||
-					  rightDef.getQualifiedName().equals(IASLanguageConstants.uint)));
-            if (leftIsNumber && !rightIsNumber && (rightDef == null || rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
-            {
-        		if (rNode.getNodeID() == ASTNodeID.FunctionCallID)
-        		{
-	            	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
-	            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-	            	{
-	            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-	            		IExpressionNode rightNode = mae.getRightOperandNode();
-	            		rightIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-	            				((IdentifierNode)rightNode).getName().equals("length") &&
-	            				fjs.isXMLList(mae);
-	            	}
-        		}
-        		else if (rNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID)
-        		{
-        			DynamicAccessNode dyn = (DynamicAccessNode)rNode;
-        			IDefinition lDef = dyn.getLeftOperandNode().resolveType(getProject());
-        			IDefinition rDef = dyn.getRightOperandNode().resolveType(getProject());
-        			// numeric indexing?
-        			if (rDef.getQualifiedName().equals(IASLanguageConstants.Number))
-        			{
-        				IMetaTag[] metas = lDef.getAllMetaTags();
-        				for (IMetaTag meta : metas)
-        				{
-        					if (meta.getTagName().equals("ArrayElementType"))
-        					{
-        						IMetaTagAttribute[] attrs = meta.getAllAttributes();
-        						for (IMetaTagAttribute attr : attrs)
-        						{
-        							String t = attr.getValue();
-            						if (t.equals(IASLanguageConstants.Number))
-            							rightIsNumber = true;
-        						}
-        					}
-        				}
-        			}
-        		}
-            }
-            String coercion = (leftIsNumber && !rightIsNumber && isAssignment) ? "Number(" : "";
-            if (isAssignment && leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
-            {
-            	if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
-            			rNode.getNodeID() != ASTNodeID.LiteralNullID)
-            	{
-		        	if (rightDef == null ||
-		        			(!(rightDef.getQualifiedName().equals(IASLanguageConstants.String) ||
-		        			  (rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
-		                    		&& rNode.getNodeID() == ASTNodeID.FunctionCallID &&
-		                    		isToString(rNode)) ||
-		        			  // if not an assignment we don't need to coerce numbers
-		        			  (!isAssignment && rightIsNumber) ||
-		        			   rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
-		        	{
-		        		JSRoyaleDocEmitter docEmitter = (JSRoyaleDocEmitter)(getEmitter().getDocEmitter());
-		        		if (docEmitter.emitStringConversions)
-		        		{
-		        			coercion = "org.apache.royale.utils.Language.string(";
-		        		}
-		        	}
-            	}
-            }
-            super_emitBinaryOperator(node, coercion);
-            if (coercion.length() > 0)
-            	write(")");
-            	
-            /*
-            IExpressionNode leftSide = node.getLeftOperandNode();
-
-            IExpressionNode property = null;
-            int leftSideChildCount = leftSide.getChildCount();
-            if (leftSideChildCount > 0)
-            {
-                IASNode childNode = leftSide.getChild(leftSideChildCount - 1);
-                if (childNode instanceof IExpressionNode)
-                    property = (IExpressionNode) childNode;
-                else
-                    property = leftSide;
-            }
-            else
-                property = leftSide;
-
-            IDefinition def = null;
-            if (property instanceof IIdentifierNode)
-                def = ((IIdentifierNode) property).resolve(getWalker()
-                        .getProject());
-
-            boolean isSuper = false;
-            if (leftSide.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            {
-                IASNode cnode = leftSide.getChild(0);
-                ASTNodeID cId = cnode.getNodeID();
-
-                isSuper = cId == ASTNodeID.SuperID;
-            }
-
-            String op = node.getOperator().getOperatorText();
-            boolean isAssignment = op.contains("=") && !op.contains("==") && 
-                                                    !(op.startsWith("<") || 
-                                                            op.startsWith(">") || 
-                                                            op.startsWith("!"));
-
-            if (def instanceof AccessorDefinition && isAssignment)
-            {
-                // this will make the set_foo call
-                getWalker().walk(leftSide);
-            }
-            else if (isSuper) 
-            {
-                emitSuperCall(node, "");
-            }
-            else
-            {
-                if (ASNodeUtils.hasParenOpen(node))
-                    write(ASEmitterTokens.PAREN_OPEN);
-
-                getWalker().walk(leftSide);
-
-                if (node.getNodeID() != ASTNodeID.Op_CommaID)
-                    write(ASEmitterTokens.SPACE);
-
-                writeToken(node.getOperator().getOperatorText());
-
-                getWalker().walk(node.getRightOperandNode());
-
-                if (ASNodeUtils.hasParenClose(node))
-                    write(ASEmitterTokens.PAREN_CLOSE);
-            }
-            */
+		
+			super_emitBinaryOperator(node, isAssignment);
         }
     }
     
-    private boolean isToString(IASNode rNode)
-    {
-    	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
-    	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    	{
-    		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-    		IExpressionNode rightNode = mae.getRightOperandNode();
-    		return rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-    				((IdentifierNode)rightNode).getName().equals("toString");
-    	}
-    	return false;
-    }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercion)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean isAssignment)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -585,8 +469,28 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
         else
         {
-            getWalker().walk(node.getLeftOperandNode());
-
+			if (isAssignment
+					&& (getProject() instanceof RoyaleJSProject && ((RoyaleJSProject) getProject()).config != null && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass() == null)
+					&& node.getLeftOperandNode() instanceof MemberAccessExpressionNode
+					&& ((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode() instanceof IdentifierNode
+					&& ((IdentifierNode) ((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode()).getName().equals("length")
+					&& ((MemberAccessExpressionNode) node.getLeftOperandNode()).getLeftOperandNode().resolveType(getProject()) instanceof AppliedVectorDefinition)
+			{
+				//for default Vector implementation, when setting length, we need to set it on the associated 'synthType' instance which tags the native
+				//Array representation of the Vector. This allows running 'setter' code because it is not possible to override the native length setter on Array
+				//unless using a different approach, like es6 Proxy.
+				//this code inserts the extra access name for setting length, e.g. myVectInstance['_synthType'].length = assignedValue
+				//the dynamic access field name is a constant on Language, so it can be different/shorter in release build
+				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getLeftOperandNode());
+				write(ASEmitterTokens.SQUARE_OPEN);
+				write(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+				write(ASEmitterTokens.MEMBER_ACCESS);
+				write(JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME);
+				write(ASEmitterTokens.SQUARE_CLOSE);
+				write(ASEmitterTokens.MEMBER_ACCESS);
+				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode());
+			}
+            else getWalker().walk(node.getLeftOperandNode());
             startMapping(node, node.getLeftOperandNode());
             
             if (id != ASTNodeID.Op_CommaID)
@@ -617,25 +521,26 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             endMapping(node);
 
-            write(coercion);
-            /*
-            IDefinition definition = node.getRightOperandNode().resolve(getProject());
-        	if (definition instanceof FunctionDefinition &&
-        			(!(definition instanceof AccessorDefinition)))
-        	{
-        	}
-        	else */
-        		getWalker().walk(node.getRightOperandNode());
-                if (node.getNodeID() == ASTNodeID.Op_InID &&
-                        ((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
-                {
-                	write(".elementNames()");
-                }   
-                else if (node.getNodeID() == ASTNodeID.Op_InID &&
-                        ((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
-                {
-                	write(".propertyNames()");
-                }
+			if (isAssignment)
+			{
+				getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()));
+			}
+			else
+			{
+				
+				getWalker().walk(node.getRightOperandNode());
+				
+				if (node.getNodeID() == ASTNodeID.Op_InID &&
+						((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
+				{
+					write(".elementNames()");
+				}
+				else if (node.getNodeID() == ASTNodeID.Op_InID &&
+						((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
+				{
+					write(".propertyNames()");
+				}
+			}
         }
 
         if (ASNodeUtils.hasParenOpen(node))

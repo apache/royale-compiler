@@ -46,7 +46,6 @@ import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
-import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
@@ -1947,6 +1946,12 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
                     }
                 }
                 return true;
+            }
+            
+            @Override
+            public boolean test(IDefinition input)
+            {
+                return apply(input);
             }
 
             /**

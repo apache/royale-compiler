@@ -1465,7 +1465,8 @@ public class SWFWriter implements ISWFWriter
             writeTag(extraTag);
     }
 
-    private boolean writeRawTag(RawTag tag)
+    @SuppressWarnings("incomplete-switch")
+	private boolean writeRawTag(RawTag tag)
     {
         boolean skipTag = false;
         // if writing out an AS3 swf, there are a number of

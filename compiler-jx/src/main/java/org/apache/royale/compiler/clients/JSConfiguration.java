@@ -49,13 +49,16 @@ import com.google.common.collect.ImmutableList;
  * configure() method of {@link MXMLJSC}.
  * <p>
  * This class inherits all compiler arguments from the MXMLC compiler.
- * 
+ *
  * @author Michael Schmalle
  */
 public class JSConfiguration extends Configuration
 {
     public JSConfiguration()
     {
+        setCompilerAllowAbstractClasses(null, true);
+        setCompilerAllowPrivateConstructors(null, true);
+        setCompilerAllowImportAliases(null, true);
     }
 
     //
@@ -123,7 +126,7 @@ public class JSConfiguration extends Configuration
     // 'js-default-initializers'
     //
 
-    private boolean jsDefaultInitializers = false;
+    private boolean jsDefaultInitializers = true;
 
     public boolean getJsDefaultInitializers()
     {
@@ -153,7 +156,7 @@ public class JSConfiguration extends Configuration
      * If the definition of a member cannot be resolved, emit dynamic access
      * instead of normal member access. Ensures that dynamic members aren't
      * renamed.
-     * 
+     *
      * <code>myObject.memberAccess</code> becomes <code>myObject["memberAccess"]</code>
      */
     @Config
@@ -222,7 +225,7 @@ public class JSConfiguration extends Configuration
      * Example: <code>-define=CONFIG::debugging,true</code>
      *
      * In <code>royale-config.xml</code>:<br/>
-     * 
+     *
      * <pre>
      * <royale-config>
      *    <compiler>
@@ -251,7 +254,7 @@ public class JSConfiguration extends Configuration
      * <code>"\"foo\""</code> or <code>"\'foo\'"</code>) or single-quoted (<code>"'foo'"</code>).
      *
      * String values in configuration files need only be single- or double- quoted:<br/>
-     * 
+     *
      * <pre>
      * <royale-config>
      *    <compiler>
@@ -270,18 +273,18 @@ public class JSConfiguration extends Configuration
      *
      * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and <code>''</code> or
      * <code>""</code> in configuration files.
-     * 
+     *
      * Finally, if you have existing definitions in a configuration file, and you would like to add to them with the
      * command-line (let's say most of your build setCompilertings are in the configuration, and that you are adding one
      * temporarily using the command-line), you use the following syntax: <code>-define+=TEST::temporary,false</code>
      * (noting the plus sign)
-     * 
+     *
      * Note that definitions can be overridden/redefined if you use the append ("+=") syntax (on the commandline or in a
      * user config file, for instance) with the same namespace and name, and a new value.
-     * 
+     *
      * Definitions cannot be removed/undefined. You can undefine ALL existing definitions from (e.g. from
      * royale-config.xml) if you do not use append syntax ("=" or append="false").
-     * 
+     *
      * IMPORTANT FOR FLASH BUILDER If you are using "Additional commandline arguments" to "-define", don't use the
      * following syntax though I suggest it above: -define+=CONFIG::foo,"'value'" The trouble is that FB parses the
      * double quotes incorrectly as <"'value'> -- the trailing double-quote is dropped. The solution is to avoid inner
@@ -382,7 +385,7 @@ public class JSConfiguration extends Configuration
     @Arguments("filename")
     public void setJsLoadConfig(ConfigurationValue cv, String filename) throws ConfigurationException
     {
-        
+    
     }
     
     //////////////////////////////////////////////////////////////////////////
@@ -400,7 +403,7 @@ public class JSConfiguration extends Configuration
      * Configures a list of many manifests mapped to a single namespace URI.
      * <namespace> <uri>library:adobe/flex/something</uri> <manifest>something-manifest.xml</manifest>
      * <manifest>something-else-manifest.xml</manifest> ... </namespace>
-     * 
+     *
      * @param cfgval The configuration value context.
      * @param args A List of values for the namespace element, with the first item expected to be the uri and the
      *        remaining are manifest paths.
@@ -442,4 +445,140 @@ public class JSConfiguration extends Configuration
         }
     }
 
+    //
+    // 'js-vector-emulation-class' option
+    //
+
+    private String jsVectorEmulationClass = null;
+
+    public String getJsVectorEmulationClass()
+    {
+        return jsVectorEmulationClass;
+    }
+
+    /**
+     * The class to use instead of default Vector implementation for handling Vector.
+     */
+    @Config(advanced = true)
+    public void setJsVectorEmulationClass(ConfigurationValue cv, String b)
+    {
+    	jsVectorEmulationClass = b;
+    }
+    
+    
+    //
+    // 'js-complex-implicit-coercions'
+    //
+    
+    private boolean jsComplexImplicitCoercions = true;
+    
+    public boolean getJsComplexImplicitCoercions()
+    {
+        return jsComplexImplicitCoercions;
+    }
+    
+    /**
+     * Support for including/avoiding more complex implicit assignment coercions
+     * example
+     * var array:Array = [new MyClass()];
+     * var myOtherClass:MyOtherClass = array[0];
+     *
+     * In the above example, the compiler will (by default) output an implicit coercion
+     * that is equivalent in actionscript to:
+     * var myOtherClass:MyOtherClass = MyOtherClass(array[0]);
+     *
+     * By setting this configuration option to false, the implicit coercion code in situations similar to the above
+     * is not generated (other primitive implicit coercions, such as int/uint/Number/String and Boolean coercions remain)
+     * This is a global setting for the current source code being compiled, it is possible to leave it on and specifically avoid it via doc
+     * settings. The doc comment compiler directive for that is: @royalesuppresscompleximplicitcoercion
+     * Another option is to add the explicit coercions in code and then avoid their output
+     * via specific @royaleignorecoercion doc comment directives. Doing so however may add extra unwanted output
+     * in other compiler targets (for example, swf bytecode) if the same source code is shared between targets.
+     */
+    @Config(advanced = true)
+    @Mapping("js-complex-implicit-coercions")
+    public void setJsComplexImplicitCoercions(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsComplexImplicitCoercions = value;
+    }
+    
+    //
+    // 'js-resolve-uncertain'
+    //
+    
+    private boolean jsResolveUncertain = true;
+    
+    public boolean getJsResolveUncertain()
+    {
+        return jsResolveUncertain;
+    }
+    
+    /**
+     * Support for avoiding more overhead of resolving instantiations from
+     * unknown constructors
+     * example
+     * var myClass:Class = String;
+     * var myString:* = new myClass("test");
+     *
+     * In the above example, the compiler will (by default) output
+     * a call to a Language.resolveUncertain method which wraps the 'new myClass("test")'
+     *
+     *
+     * This normalizes the return value for some primitive constructors, so that (for example)
+     * strict equality and inequality operators provide the same results between compiler
+     * targets.
+     * In situations where it is certain that the resolveUncertain method is not needed,
+     * this option provides a way to switch it off 'globally' for the current source code being compiled.
+     * It can also be switched off or on locally using the '@royalesuppressresolveuncertain'
+     * doc comment compiler directive.
+     */
+    @Config(advanced = true)
+    @Mapping("js-resolve-uncertain")
+    public void setJsResolveUncertain(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsResolveUncertain = value;
+    }
+    
+    //
+    // 'js-vector-index-checks'
+    //
+    
+    private boolean jsVectorIndexChecks = true;
+    
+    public boolean getJsVectorIndexChecks()
+    {
+        return jsVectorIndexChecks;
+    }
+    
+    /**
+     * Support for avoiding more overhead of adding checks into
+     * assignments via Vector index access
+     * example
+     * var myVector:Vector.<int> = new Vector.<int>();
+     * myVector[0] = 42;
+     *
+     * In the above example, the compiler will (by default) wrap
+     * the '0' inside myVector[0] with a method call on the vector instance
+     * that checks to see if the index is valid for the Vector it is being used against
+     *
+     * This check will throw an error if the index is out of range, and the
+     * range checking differs if the Vector is 'fixed' or non-'fixed'
+     *
+     * In situations where it is certain that the index will always be valid for Vector instance
+     * being targeted, or where all cases in a given codebase are certain to be valid, it is possible
+     * to avoid the overhead of this check. This is especially important in loops.
+     * This config setting affects the global setting for the current source code being compiled.
+     * It can be adjusted locally within code, using the '@royalesuppressvectorindexcheck'
+     * doc comment compiler  directive.
+     */
+    @Config(advanced = true)
+    @Mapping("js-vector-index-checks")
+    public void setJsVectorIndexChecks(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        jsVectorIndexChecks = value;
+    }
+    
 }

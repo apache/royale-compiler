@@ -52,6 +52,7 @@ import static org.junit.Assert.fail;
  * 
  * @author Gordon Smith
  */
+@SuppressWarnings("deprecation")
 public class MXMLFeatureTestsBase
 {
 	private static boolean generateResultFile = false;

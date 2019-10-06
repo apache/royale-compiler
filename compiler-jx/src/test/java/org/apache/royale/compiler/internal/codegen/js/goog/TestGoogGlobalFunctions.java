@@ -24,6 +24,7 @@ import org.apache.royale.compiler.internal.codegen.as.TestGlobalFunctions;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -121,6 +122,8 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
         assertOut("var /** @type {boolean} */ a = isNaN(NaN)");
     }
 
+    //isXMLName is in E4X, which is not supported by JavaScript
+    @Ignore
     @Override
     @Test
     public void testIsXMLName()
@@ -209,7 +212,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<string>} */ a = Array(['Hello', 'World'])");
+        assertOut("var /** @type {Array.<string>} */ a = Array(['Hello', 'World'])");
     }
 
     @Override

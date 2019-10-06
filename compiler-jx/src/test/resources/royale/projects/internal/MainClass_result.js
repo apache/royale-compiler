@@ -64,6 +64,12 @@ MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+MainClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
 
 
 
@@ -85,7 +91,7 @@ goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
  * @export
  * @type {OtherClass}
  */
-MainClass.InternalClass.prototype.foo;
+MainClass.InternalClass.prototype.foo = null;
 
 
 /**
@@ -106,7 +112,7 @@ MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
     variables: function () {
       return {
-        'foo': { type: 'OtherClass'}
+        'foo': { type: 'OtherClass', get_set: function (/** MainClass.InternalClass */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}
       };
     },
     accessors: function () {return {};},
@@ -117,3 +123,9 @@ MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

@@ -19,19 +19,13 @@
 
 package org.apache.royale.compiler.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -42,9 +36,11 @@ import com.google.javascript.jscomp.CompilerMapFetcher;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DependencyOptions;
+import com.google.javascript.jscomp.DependencyOptions.DependencyMode;
 import com.google.javascript.jscomp.DiagnosticGroups;
+import com.google.javascript.jscomp.Result;
+import com.google.javascript.jscomp.RoyaleClosurePassConfig;
 import com.google.javascript.jscomp.RoyaleDiagnosticGroups;
-import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.ShowByPathWarningsGuard;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
@@ -54,11 +50,14 @@ import com.google.javascript.jscomp.WarningLevel;
 public class JSClosureCompilerWrapper
 {
 
-    public JSClosureCompilerWrapper(List<String> args)
+    public JSClosureCompilerWrapper(List<String> args) throws IOException
     {
         Compiler.setLoggingLevel(Level.INFO);
 
         compiler_ = new Compiler();
+        jsSourceFiles_ = new ArrayList<SourceFile>();
+        jsExternsFiles_ = new ArrayList<SourceFile>();
+        
         filterOptions(args);
         
         ArrayList<String> splitArgs = new ArrayList<String>();
@@ -76,9 +75,6 @@ public class JSClosureCompilerWrapper
 		splitArgs.toArray(stringArgs);
         options_ = new CompilerOptionsParser(stringArgs).getOptions();
         
-        jsSourceFiles_ = new ArrayList<SourceFile>();
-        jsExternsFiles_ = new ArrayList<SourceFile>();
-        
         initOptions(args);
         initExterns();
 
@@ -93,8 +89,8 @@ public class JSClosureCompilerWrapper
     private String variableMapInputPath;
     private String propertyMapInputPath;
     private boolean skipTypeInference;
-    private Set<String> provideds;
     private boolean sourceMap = false;
+    private boolean verbose = false;
     
     public String targetFilePath;
     
@@ -118,22 +114,25 @@ public class JSClosureCompilerWrapper
         jsSourceFiles_.add(file);
     }
 
-    public void setProvideds(Set<String> set)
-    {
-    	provideds = set;
-    }
-
     public void setSourceMap(boolean enabled)
     {
         sourceMap = enabled;
     }
-    
-    public void compile()
+
+    public void setVerbose(boolean enabled)
     {
-    	System.out.println("list of source files");
-    	for (SourceFile file : jsSourceFiles_)
-    		System.out.println(file.getName());
-    	System.out.println("end of list of source files");
+        verbose = enabled;
+    }
+    
+    public boolean compile()
+    {
+        if (verbose)
+        {
+            System.out.println("list of source files");
+            for (SourceFile file : jsSourceFiles_)
+                System.out.println(file.getName());
+            System.out.println("end of list of source files");
+        }
     	File outputFolder = new File(targetFilePath).getParentFile();
         if (variableMapInputPath != null)
         {
@@ -141,8 +140,6 @@ public class JSClosureCompilerWrapper
         	try {
             	VariableMap map = VariableMap.load(inputFile.getAbsolutePath());
 				CompilerMapFetcher.setVariableMap(options_, map);
-				Set<String> usedVars = getUsedVars(inputFile);
-				compiler_.addExportedNames(usedVars);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -161,9 +158,11 @@ public class JSClosureCompilerWrapper
 			}
         }
 
-
-        compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
-
+        compiler_.setPassConfig(new RoyaleClosurePassConfig(options_, 
+        		jsSourceFiles_.get(jsSourceFiles_.size() - 1).getName(), 
+        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath)));
+        Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
+        
         try
         {
             FileWriter targetFile = new FileWriter(targetFilePath);
@@ -223,65 +222,8 @@ public class JSClosureCompilerWrapper
             System.err.println("Error message: " + message.toString());
         }
         */
-    }
-    
-    private Set<String> getUsedVars(File file)
-    {
-    	HashMap<String, String> vars = new HashMap<String, String>();
-    	
-        try
-        {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-
-            String line = in.readLine();
-
-            while (line != null)
-            {
-                int c = line.indexOf(":");
-                if (c != -1)
-                {
-                	String name = line.substring(0, c);
-                	
-                	String var = line.substring(c + 1).trim();
-                	vars.put(name, var);
-                }
-                line = in.readLine();
-            }
-            
-            // remove all vars that are used by this module
-            // that way they will re-use the names in the
-            // loader
-            for (String name : provideds)
-            {
-            	name = name.replace('.', '$');
-            	Set<String> keys = vars.keySet();
-            	ArrayList<String> remKeys = new ArrayList<String>();
-            	for (String key : keys)
-            	{
-            		if (key.contains(name))
-            		{
-            			remKeys.add(key);
-            		}
-            	}
-            	for (String key : remKeys)
-            	{
-            		vars.remove(key);
-            	}
-            }
-            in.close();
-        }
-        catch (Exception e)
-        {
-            // nothing to see, move along...
-        }
-        HashSet<String> usedVars = new HashSet<String>();
-    	Set<String> keys = vars.keySet();
-    	for (String key : keys)
-    	{
-    		usedVars.add(vars.get(key));
-    	}
-        return usedVars;
-    }
+        return result.success;
+    }    
     
     @SuppressWarnings( "deprecation" )
     private void initExterns()
@@ -307,11 +249,13 @@ public class JSClosureCompilerWrapper
 		final String VARIABLE_MAP = "--variable_map_output_file ";
 		final String PROPERTY_INPUT_MAP = "--property_map_input_file ";
 		final String VARIABLE_INPUT_MAP = "--variable_map_input_file ";
+		final String EXTERNS = "--externs ";
 		String propEntry = null;
 		String varEntry = null;
 		String skipEntry = null;
 		String propInputEntry = null;
 		String varInputEntry = null;
+		ArrayList<String> removeArgs = new ArrayList<String>();
 
     	for (String s : args)
     	{
@@ -344,6 +288,13 @@ public class JSClosureCompilerWrapper
     			skipEntry = s;
     			skipTypeInference = true;
     		}
+    		
+    		if (s.startsWith(EXTERNS))
+    		{
+    			String fileName = s.substring(EXTERNS.length());
+    			addJSExternsFile(fileName);
+    			removeArgs.add(s);
+    		}    			
     	}
     	if (varEntry != null)
     		args.remove(varEntry);
@@ -355,6 +306,10 @@ public class JSClosureCompilerWrapper
     		args.remove(propInputEntry);
     	if (skipEntry != null)
     		args.remove(skipEntry);
+    	for (String s : removeArgs)
+    	{
+    		args.remove(s);
+    	}
     		
     }
     
@@ -407,14 +362,17 @@ public class JSClosureCompilerWrapper
     		WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
         
         String[] asdocTags = new String[] {"productversion", 
-        		"playerversion", "langversion", "copy", 
-        		"asparam", "asreturn", "asprivate",
+        		"playerversion", "langversion", "copy", "span", "para", "throw", "tiptext",
+        		"asparam", "asreturn", "asreturns", "asprivate",
         		"royaleignoreimport", "royaleignorecoercion", "royaleemitcoercion",
+                "royalesuppresscompleximplicitcoercion","royalesuppressresolveuncertain",
+                "royalesuppressvectorindexcheck","royalesuppressexport", "royalesuppressclosure",
                 "royalenoimplicitstringconversion","royaledebug"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
-    public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
+    @SuppressWarnings("deprecation")
+	public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
     {
         if (useStrictPublishing)
         {
@@ -432,10 +390,10 @@ public class JSClosureCompilerWrapper
             options_.setDeadAssignmentElimination(true);
             options_.setInlineConstantVars(true);
             options_.setInlineFunctions(true);
-            options_.setInlineLocalFunctions(true);
-            options_.setCrossModuleCodeMotion(true);
+            options_.setInlineLocalVariables(true);
+            options_.setCrossChunkCodeMotion(true);
             options_.setCoalesceVariableNames(true);
-            options_.setCrossModuleMethodMotion(true);
+            options_.setCrossChunkMethodMotion(true);
             options_.setInlineProperties(true);
             options_.setInlineVariables(true);
             options_.setSmartNameRemoval(true);
@@ -450,8 +408,6 @@ public class JSClosureCompilerWrapper
             options_.setAliasAllStrings(true);
             options_.setConvertToDottedProperties(true);
             options_.setRewriteFunctionExpressions(true);
-            options_.setOptimizeParameters(true);
-            options_.setOptimizeReturns(true);
             options_.setOptimizeCalls(true);
             options_.setOptimizeArgumentsArray(true);
             options_.setGenerateExports(true);
@@ -460,14 +416,11 @@ public class JSClosureCompilerWrapper
                     new String[] { "goog/", "externs/svg.js" },
                     ShowByPathWarningsGuard.ShowType.EXCLUDE));
             
-            DependencyOptions dopts = new DependencyOptions();
-            ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
-            entryPoints.add(ModuleIdentifier.forClosure(projectName));
-            dopts.setDependencyPruning(manageDependencies)
-                 .setDependencySorting(manageDependencies)
-                 .setMoocherDropping(manageDependencies)
-                 .setEntryPoints(entryPoints);
-            options_.setDependencyOptions(dopts);
+            ArrayList<String> entryPoints = new ArrayList<String>();
+            if (manageDependencies)
+            	entryPoints.add(projectName);
+            options_.setDependencyOptions(DependencyOptions.fromFlags(manageDependencies ? DependencyMode.PRUNE_LEGACY : DependencyMode.NONE, 
+            				entryPoints, new ArrayList<String>(), null, manageDependencies, false));
             
             // warnings already activated in previous incarnation
             options_.setWarningLevel(DiagnosticGroups.ACCESS_CONTROLS, CheckLevel.WARNING);
@@ -537,14 +490,16 @@ public class JSClosureCompilerWrapper
 
     private static class CompilerOptionsParser extends CommandLineRunner
     {
-    	public CompilerOptionsParser(String[] args)
-    	{
-    		super(args);
-    	}
-    	
-    	public CompilerOptions getOptions()
-    	{
-    		return createOptions();
-    	}
+        public CompilerOptionsParser(String[] args)
+        {
+            super(args);
+        }
+        
+        public CompilerOptions getOptions() throws IOException
+        {
+            CompilerOptions options = createOptions();
+            setRunOptions(options);
+            return options;
+        }
     }
 }

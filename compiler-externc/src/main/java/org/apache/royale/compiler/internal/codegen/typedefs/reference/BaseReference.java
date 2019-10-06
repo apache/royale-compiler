@@ -32,6 +32,7 @@ import com.google.javascript.rhino.JSDocInfo.StringPosition;
 import com.google.javascript.rhino.JSDocInfo.TypePosition;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType.Nullability;
 
 public abstract class BaseReference
 {
@@ -275,7 +276,7 @@ public abstract class BaseReference
             if (outputJS && parameterType != null)
             {
                 sb.append("{");
-                sb.append(mapBackToJS(getModel().evaluate(parameterType).toAnnotationString(), optional));
+                sb.append(mapBackToJS(getModel().evaluate(parameterType).toAnnotationString(Nullability.EXPLICIT), optional));
                 sb.append("}");
                 sb.append(" ");            	
             }
@@ -292,7 +293,7 @@ public abstract class BaseReference
             if (!outputJS && parameterType != null)
             {
                 sb.append("[");
-                sb.append(getModel().evaluate(parameterType).toAnnotationString());
+                sb.append(getModel().evaluate(parameterType).toAnnotationString(Nullability.EXPLICIT));
                 sb.append("]");
                 sb.append(" ");
             }
@@ -313,9 +314,9 @@ public abstract class BaseReference
                 sb.append(" * @returns ");
                 sb.append("{");
                 if (outputJS)
-                    sb.append(mapBackToJS(getModel().evaluate(returnType).toAnnotationString(), false));
+                    sb.append(mapBackToJS(getModel().evaluate(returnType).toAnnotationString(Nullability.EXPLICIT), false));
                 else
-                	sb.append(getModel().evaluate(returnType).toAnnotationString());
+                	sb.append(getModel().evaluate(returnType).toAnnotationString(Nullability.EXPLICIT));
                 sb.append("} ");
                 String description = getComment().getReturnDescription();
                 if (description != null)

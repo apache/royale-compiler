@@ -95,10 +95,11 @@ public final class AmbiguousDefinition extends DefinitionBase implements IDefini
      * 
      * @param project The Project to use to resolve things
      * @param defs an Array of definitions to compare
+     * @param favorTypes 
      * @return the definition to use as the result of the lookup, if the
      * ambiguity was successfully resolved, otherwise null
      */
-    public static IDefinition resolveAmbiguities(ICompilerProject project, List<IDefinition> defs)
+    public static IDefinition resolveAmbiguities(ICompilerProject project, List<IDefinition> defs, boolean favorTypes)
     {
         IDefinition resolvedDef = null;
 
@@ -111,6 +112,26 @@ public final class AmbiguousDefinition extends DefinitionBase implements IDefini
             resolvedDef = defs.get(0);
         }
 
+        // this is used to favor type definitions over function definitions
+        // when resolving the type of a variable (which can't be a function)
+        if (resolvedDef == null && defs.size() == 2)
+        {
+        	IDefinition def0 = defs.get(0);
+        	IDefinition def1 = defs.get(1);
+        	if (def0 instanceof FunctionDefinition &&
+        			(def1 instanceof ClassDefinition ||
+        			(def1 instanceof InterfaceDefinition)))
+        	{
+        		resolvedDef = favorTypes ? def1 : def0;
+        	}
+        	else if (def1 instanceof FunctionDefinition &&
+        			(def0 instanceof ClassDefinition ||
+        			(def0 instanceof InterfaceDefinition)))
+        	{
+        		resolvedDef = favorTypes ? def0 : def1;
+        	}
+        }
+        
         if (resolvedDef == null)
         {
             // check for redeclared variables and functions

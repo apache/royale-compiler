@@ -36,8 +36,10 @@ import org.apache.royale.compiler.common.ASImportTarget;
 import org.apache.royale.compiler.common.IImportTarget;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.references.IReference;
@@ -74,6 +76,7 @@ import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.workspaces.IWorkspace;
 
 import com.google.common.base.Predicate;
@@ -165,6 +168,12 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
      * Save the problems until later if we were parsed from somewhere we don't have a problems collection
      */
     private Collection<ICompilerProblem> parseProblems;
+
+    /**
+     * Indicates whether we've called rememberLocalFunction() on the parent
+     * function yet (if a parent function even exists in the first place) -JT
+     */
+    private boolean isRemembered = false;
     
     //
     // NodeBase overrides
@@ -203,12 +212,24 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
     @Override
     protected void analyze(EnumSet<PostProcessStep> set, ASScope scope, Collection<ICompilerProblem> problems)
     {
-        if (set.contains(PostProcessStep.POPULATE_SCOPE))
+        if (!isRemembered)
         {
+            //previously, we remembered local functions only during
+            //POPULATE_SCOPE. however, in MXML, functions get created multiple
+            //times, and the second time around, analyze() is NOT called with
+            //POPULATE_SCOPE. this causes our function to be forgotten.
+            //better to check if we've remembered or not no matter which steps
+            //were passed in. -JT
             final IFunctionNode parentFunctionNode = (IFunctionNode)getAncestorOfType(IFunctionNode.class);
             if (parentFunctionNode != null)
+            {
+                isRemembered = true;
                 parentFunctionNode.rememberLocalFunction(this);
-        
+            }
+        }
+
+        if (set.contains(PostProcessStep.POPULATE_SCOPE))
+        {
             FunctionDefinition definition = buildDefinition();
             setDefinition(definition);
 
@@ -346,10 +367,32 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         
         if (isConstructor())
         {
-            if (namespaceNode != null && namespaceNode.getName().equals(INamespaceConstants.public_))
+            if (namespaceNode != null
+                    && (namespaceNode.getName().equals(INamespaceConstants.public_) || namespaceNode.getName().equals(INamespaceConstants.private_)))
+            {
+                // if the existing node is already public or private, return it
                 return namespaceNode;
+            }
+            IASNode parentNode = getParent();
+            if (parentNode instanceof IDefinitionNode)
+            {
+                IDefinitionNode defNode = (IDefinitionNode) parentNode;
+                IMetaTagNode[] metaTagNodes = defNode.getMetaTags().getTagsByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR);
+                if (metaTagNodes != null && metaTagNodes.length > 0)
+                {
+                    // if the parent class has [RoyalePrivateConstructor]
+                    // metadata, the constructor should be considered private
+                    // and we should generate a fake namespace node
+                    NamespaceIdentifierNode priv = new NamespaceIdentifierNode(INamespaceConstants.private_);
+                    priv.span(-1, -1, -1, -1, -1, -1);
+                    priv.setDecorationTarget(this);
+                    return priv;
+                }
+            }
+            // if there is no namespace node, the namespace defaults to public
+            // and we'll generate a fake node
             NamespaceIdentifierNode pub = new NamespaceIdentifierNode(INamespaceConstants.public_);
-            pub.span(-1, -1, -1, -1);
+            pub.span(-1, -1, -1, -1, -1, -1);
             pub.setDecorationTarget(this);
             return pub;
         }
@@ -364,11 +407,12 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         if (ns != null)
         {
             String nameString = ns.getName();
-            // If public, just return it.
-            if (nameString.equals(INamespaceConstants.public_))
+            // If public or private, just return it.
+            if (nameString.equals(INamespaceConstants.public_) || nameString.equals(INamespaceConstants.private_))
                 return nameString;
 
-            // Otherwise, check to see if we are a constructor.
+            // Otherwise, check to see if we are a constructor and always return
+            // public
             if (isConstructor())
                 return INamespaceConstants.public_;
             
@@ -631,8 +675,16 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                         classNode.constructorNode = this;
                     }
                 }
+                // if the namespace reference is private, don't change it
+                if(!(funcDef.getNamespaceReference() instanceof INamespaceDefinition.IPrivateNamespaceDefinition))
+                {
+                    funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
+                }
             }
-            funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
+            else
+            {
+                funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
+            }
         }
     }
 
@@ -902,6 +954,11 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             {
                 return problem.getLine() == line;
             }
+            @Override
+            public boolean test(ICompilerProblem input)
+            {
+                return apply(input);
+            }
         };
     }
 
@@ -916,6 +973,11 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             public boolean apply(ICompilerProblem problem)
             {
                 return problemClass.isInstance(problem);
+            }
+            @Override
+            public boolean test(ICompilerProblem input)
+            {
+                return apply(input);
             }
         };
     }
@@ -1040,19 +1102,5 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             localFunctions = new ArrayList<IFunctionNode>();
         
         localFunctions.add(value);
-    }  
-
-    private boolean emitLocalFunctions;
-    
-    @Override
-    public boolean getEmittingLocalFunctions()
-    {
-        return emitLocalFunctions;
-    }
-    
-    @Override
-    public void setEmittingLocalFunctions(boolean emit)
-    {
-        emitLocalFunctions = emit;
     }
 }

@@ -113,6 +113,11 @@ public abstract class BaseProblemGeneratorMojo extends AbstractMojo
                     {
                         return isProblemClass(input);
                     }
+                    @Override
+                    public boolean test(File input)
+                    {
+                        return apply(input);
+                    }
                 });
     }
 

@@ -19,9 +19,12 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
+import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
@@ -34,17 +37,16 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
-import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
-import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.royale.compiler.internal.definitions.*;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorDivisionAssignmentNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.NativeUtils;
 
 public class IdentifierEmitter extends JSSubEmitter implements
@@ -78,12 +80,43 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 && !identifierIsAccessorFunction;
         boolean emitName = true;
     	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
+        RoyaleJSProject project = (RoyaleJSProject)getWalker().getProject();
     	boolean isCustomNamespace = false;
     	boolean isStatic = nodeDef != null && nodeDef.isStatic();
         if (nodeDef instanceof FunctionDefinition &&
           	  fjs.isCustomNamespace((FunctionDefinition)nodeDef))
-          	isCustomNamespace = true;
+              isCustomNamespace = true;
 
+        if (isStatic
+                && nodeDef instanceof IConstantDefinition
+                && project != null && project.config != null
+                && project.config.getInlineConstants())
+        {
+            IConstantDefinition constDef = (IConstantDefinition) nodeDef;
+            Object initialValue = constDef.resolveInitialValue(project);
+            if (initialValue != null)
+            {
+                startMapping(parentNode);
+                if(initialValue instanceof String)
+                {
+                    write("\"" + initialValue + "\"");
+                }
+                else if(initialValue == ABCConstants.UNDEFINED_VALUE)
+                {
+                    write(IASLanguageConstants.UNDEFINED);
+                }
+                else if(initialValue == ABCConstants.NULL_VALUE)
+                {
+                    write(IASLanguageConstants.NULL);
+                }
+                else
+                {
+                    write(initialValue.toString());
+                }
+                endMapping(parentNode);
+                return;
+            }
+        }
         if (isStatic)
         {
             String sname = nodeDef.getParent().getQualifiedName();
@@ -238,14 +271,14 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                 	Namespace ns = (Namespace)((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject());
                 	INamespaceDefinition nsDef = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveNamespaceReference(getProject());
-        			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+        			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
                 	String nsName = ns.getName();
-                	write("[\"" + nsName + "::" + node.getName() + "\"]");
+                	write(JSRoyaleEmitter.formatNamespacedProperty(nsName, node.getName(), true));
                 }
                 else
                 {
             		String qname = node.getName();
-                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
             		write(qname);
                 }
@@ -310,36 +343,47 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     else if (isCustomNamespace)
                     {
                     	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
-                    	write("[\"" + ns + "::" + qname + "\"]");
+                    	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, true));
                     }
                     else if (identifierIsAccessorFunction && isStatic)
                     {
-                    	write("[\"" +node.getName() + "\"]");                    	
+                    	write("[\"" +node.getName() + "\"]");
                     }
                 	else
                 	{
                 		qname = node.getName();
-                    	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    	if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                     		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
-                		write(qname);
+                    	write(qname);
                 	}
                 }
                 else if (isPackageOrFileMember)
                     write(getEmitter().formatQualifiedName(qname));
                 else if (nodeDef instanceof TypeDefinitionBase)
-                    write(getEmitter().formatQualifiedName(qname));
+                {
+                    if (NativeUtils.isSyntheticJSType(qname) && !(parentNode instanceof IFunctionCallNode)) {
+                        getEmitter().getModel().needLanguage = true;
+                        write(JSRoyaleEmitterTokens.SYNTH_TYPE);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(getEmitter().formatQualifiedName(qname));
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                    }
+                    else write(getEmitter().formatQualifiedName(qname));
+                }
                 else if (isCustomNamespace)
                 {
                 	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
-                	write("[\"" + ns + "::" + qname + "\"]");
+                	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, true));
                 }
                 else if (identifierIsAccessorFunction && isStatic)
                 {
-                	write("[\"" + qname + "\"]");                    	
+                	write("[\"" + qname + "\"]");
                 }
-                else 
+                else
                 {
-                	if (nodeDef != null && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                	if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                     write(qname);
                 }
@@ -352,7 +396,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 write("child('");
                 write(node.getName());
                 write("')");
-                endMapping(node);            	
+                endMapping(node);
             }
             else
             {
@@ -362,5 +406,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
             }
         }
     }
+    
+    
 
 }

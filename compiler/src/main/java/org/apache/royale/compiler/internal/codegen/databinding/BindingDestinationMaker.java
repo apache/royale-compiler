@@ -31,14 +31,21 @@ import org.apache.royale.compiler.internal.as.codegen.Binding;
 import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLConcatenatedDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelRootNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 
 /**
  * Utility class for analyze binding destinations and making
@@ -143,6 +150,42 @@ public class BindingDestinationMaker
                     ret = new InstructionListNode(insns);    // Wrap the IL in a node and return it
                 }
             }
+        }
+        else if (parent instanceof IMXMLStringNode && dbnode instanceof IMXMLConcatenatedDataBindingNode)
+        {
+        	// this is a binding in a literal like a string, such as 'this is {SOME_VAR} times';
+        	// we need to figure out how to set the evaluated value.
+        	// if this binding is not in an array, then other code will use the effectiveID of the string
+        	// and set the value.
+        	// if it is in an array, then figure out the index in the array to set
+        	if (parent.getParent() instanceof IMXMLArrayNode)
+        	{
+        		int index = -1;
+        		int n = parent.getParent().getChildCount();
+        		for (int i = 0; i < n; i++)
+        		{
+        			IASNode child = parent.getParent().getChild(i);
+        			if (child == parent)
+        			{
+        				index = i;
+        				break;
+        			}
+        		}
+        		IdentifierNode arrayNode = new IdentifierNode(((IMXMLArrayNode)parent.getParent()).getEffectiveID());
+        		arrayNode.setSourcePath(parent.getSourcePath());
+        		arrayNode.setColumn(parent.getColumn());
+        		arrayNode.setLine(parent.getLine());
+        		NumericLiteralNode indexNode = new NumericLiteralNode(new Integer(index).toString());
+        		indexNode.setSourcePath(parent.getSourcePath());
+        		indexNode.setColumn(parent.getColumn());
+        		indexNode.setLine(parent.getLine());
+        		DynamicAccessNode mae = new DynamicAccessNode(arrayNode);
+        		mae.setRightOperandNode(indexNode);
+        		mae.setParent((NodeBase) dbnode.getParent());
+        		arrayNode.setParent(mae);
+        		indexNode.setParent(mae);
+        		return mae;
+        	}
         }
         return ret;   
     }

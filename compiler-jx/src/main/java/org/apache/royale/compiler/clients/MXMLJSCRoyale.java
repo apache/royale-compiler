@@ -22,12 +22,15 @@ package org.apache.royale.compiler.clients;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,24 +47,34 @@ import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
-import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
+import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
+import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.units.ResourceBundleCompilationUnit;
@@ -74,6 +87,7 @@ import org.apache.royale.compiler.problems.InternalCompilerProblem;
 import org.apache.royale.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.targets.ITarget;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
@@ -110,7 +124,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_PROBLEMS(0),
         FAILED_WITH_ERRORS(3),
         FAILED_WITH_EXCEPTIONS(4),
         FAILED_WITH_CONFIG_PROBLEMS(5);
@@ -190,6 +204,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     
     public MXMLJSCRoyale(IBackend backend)
     {
+        DefinitionBase.setPerformanceCachingEnabled(true);
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
         project = new RoyaleJSProject(workspace, backend);
@@ -363,8 +378,11 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                    {
 	                        final File outputClassFile = getOutputClassFile(
 	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-	                        System.out.println("Compiling file: " + outputClassFile);
+    
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Compiling file: " + outputClassFile);
+                            }
 	
 	                        ICompilationUnit unit = cu;
 	
@@ -404,6 +422,9 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                        writer.close();
 	                    }
 	                }
+	                File externsReportFile = googConfiguration.getExternsReport();
+	                if (externsReportFile != null)
+	                	generateExternsReport(externsReportFile, reachableCompilationUnits, problems);
                 }
                 
                 if (!config.getCreateTargetWithErrors())
@@ -437,99 +458,374 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         return compilationSuccess && (errs.size() == 0);
     }
 
-    private void outputResourceBundle(ResourceBundleCompilationUnit cu, File outputFolder) {
+    private void generateExternsReport(File externsReportFile,
+			List<ICompilationUnit> reachableCompilationUnits,
+			ProblemQuery problems) {
+        
+        if (config.isVerbose())
+        {
+            System.out.println("Generating externs report: " + externsReportFile.getAbsolutePath());
+        }
+        
+    	ArrayList<String> packageNames = new ArrayList<String>();
+    	ArrayList<String> partNames = new ArrayList<String>();
+    	
+    	StringBuilder sb = new StringBuilder();
+        sb.append("/**\n");
+        sb.append(" * Generated by Apache Royale Compiler\n");
+        sb.append(" *\n");
+        sb.append(" * @fileoverview\n");
+        sb.append(" * @externs\n");
+        sb.append(" *\n");
+        // need to suppress access controls so access to protected/private from defineProperties
+        // doesn't generate warnings.
+        sb.append(" * @suppress {checkTypes|accessControls}\n");
+        sb.append(" */\n");
+
+    	for (ICompilationUnit cu : reachableCompilationUnits)
+    	{
+    		if (project.isExternalLinkage(cu)) continue;
+    		
+            List<IDefinition> dp = cu.getDefinitionPromises();
+
+            if (dp.size() == 0)
+                return;
+
+            IDefinition def = dp.get(0);
+            IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
+            if (actualDef.getPackageName().contains("goog")) continue;
+            if (actualDef instanceof ClassDefinition)
+            {
+            	sb.append("\n\n");
+            	ClassDefinition cdef = (ClassDefinition)actualDef;
+            	String pkgName = cdef.getPackageName();
+            	if (pkgName.length() > 0 && !packageNames.contains(pkgName))
+            	{
+            		packageNames.add(pkgName);
+            		String[] parts = pkgName.split("\\.");
+            		String current = "";
+            		boolean firstOne = true;
+            		for (String part : parts)
+            		{
+            			current += part;
+            			if (partNames.contains(current))
+            			{
+            				firstOne = false;
+        	                current += ".";
+            				continue;
+            			}            			
+            			partNames.add(current);
+        				sb.append("/**\n * @suppress {duplicate}\n * @const\n */\n");
+            			if (firstOne)
+            			{
+            				sb.append("var ");
+            				firstOne = false;
+            			}
+            			sb.append(current);
+            			sb.append(" = {}");
+            			sb.append(ASEmitterTokens.SEMICOLON.getToken() + "\n");
+    	                current += ".";
+            		}
+            	}
+            	sb.append("\n\n");
+            	sb.append("/**\n");
+            	sb.append(" * @constructor\n");
+            	String baseString = cdef.getBaseClassAsDisplayString();
+            	if (baseString.length() > 0)
+            		sb.append(" * @extends {" + baseString + "}\n");
+            	String[] ifaces = cdef.getImplementedInterfacesAsDisplayStrings();
+            	for (String iface : ifaces)
+            		sb.append(" * @implements {" + iface + "}\n");
+            	sb.append(" */\n");
+            	if (pkgName.length() == 0)
+                    sb.append("function " + cdef.getQualifiedName() + "() {}\n");
+            	else
+            		sb.append(cdef.getQualifiedName() + " = function() {}\n");
+                
+            	ASScope cscope = cdef.getContainedScope();
+            	Collection<IDefinitionSet> defSets = cscope.getAllLocalDefinitionSets();
+            	IDefinitionSet[] arrayOfDefSets = new IDefinitionSet[defSets.size()];
+            	defSets.toArray(arrayOfDefSets);
+            	for (IDefinitionSet defSet : arrayOfDefSets)
+            	{
+            		int n = defSet.getSize();
+            		for (int i = 0; i < n; i++)
+            		{
+            			IDefinition api = defSet.getDefinition(i);
+            			String apiName = api.getBaseName();
+            			if (apiName.startsWith("#")) continue; // invalid in externs
+            			if (!api.isOverride() && (api.isProtected() || api.isPublic()))
+            			{
+            				if (!(api instanceof FunctionDefinition) ||
+            						api instanceof AccessorDefinition)
+            				{
+                            	sb.append("\n\n");
+                            	sb.append("/**\n");
+                            	sb.append(" * @type {" + getJSType(api.getTypeAsDisplayString()) + "}\n");
+                            	sb.append(" */\n");
+                            	sb.append(cdef.getQualifiedName() + ".");
+                            	if (!api.isStatic())
+                            		sb.append("prototype.");
+                            	sb.append(api.getBaseName() + ";\n");            					
+            				}
+            				else
+            				{
+            					FunctionDefinition method = (FunctionDefinition)api;
+            					ParameterDefinition[] params = method.getParameters();
+                            	sb.append("\n\n");
+                            	sb.append("/**\n");
+                            	for (ParameterDefinition param : params)
+                            	{
+                            		if (param.getBaseName().isEmpty())
+                            			sb.append(" * @param {*=} opt_rest\n");
+                            		else
+                            			sb.append(" * @param {" + getJSType(param.getTypeAsDisplayString()) + "} " + param.getBaseName() + "\n");
+                            	}
+                            	String ret = getJSType(method.getReturnTypeAsDisplayString());
+                            	if (!ret.equals("void"))
+                            		sb.append(" * @returns {" + ret + "}\n");
+                            	sb.append(" */\n");
+                            	sb.append(cdef.getQualifiedName() + ".");
+                            	if (!api.isStatic())
+                            		sb.append("prototype.");
+                            	sb.append(api.getBaseName());
+                            	sb.append(" = function(");
+                            	int m = params.length;
+                            	for (int j = 0; j < m; j++)
+                            	{
+                            		if (j > 0)
+                            			sb.append(",");
+                            		if (params[j].getBaseName().isEmpty())
+                            			sb.append("opt_rest");
+                            		else
+                            			sb.append(params[j].getBaseName());
+                            	}
+                            	sb.append(") {");
+                            	if (!ret.equals("void"))
+                            	{
+                            		if (ret.equals("number"))
+                            			sb.append(" return 0; ");
+                            		else if (ret.equals("boolean"))
+                            			sb.append(" return false; ");
+                            		else
+                            			sb.append(" return null; ");
+                            	}
+                            	sb.append("};\n");
+            				}
+            			}
+            		}
+            	}            	
+            }
+            else if (actualDef instanceof InterfaceDefinition)
+            {
+            	sb.append("\n\n");
+            	InterfaceDefinition cdef = (InterfaceDefinition)actualDef;
+            	String pkgName = cdef.getPackageName();
+            	if (pkgName.length() > 0 && !packageNames.contains(pkgName))
+            	{
+            		packageNames.add(pkgName);
+            		String[] parts = pkgName.split("\\.");
+            		String current = "";
+            		boolean firstOne = true;
+            		for (String part : parts)
+            		{
+            			current += part;
+            			if (partNames.contains(current))
+            			{
+            				firstOne = false;
+        	                current += ".";
+            				continue;
+            			}            			
+            			partNames.add(current);
+        				sb.append("/**\n * @suppress {duplicate}\n * @const\n */\n");
+            			if (firstOne)
+            			{
+            				sb.append("var ");
+            				firstOne = false;
+            			}
+            			sb.append(current);
+            			sb.append(" = {}");
+            			sb.append(ASEmitterTokens.SEMICOLON.getToken() + "\n");
+    	                current += ".";
+            		}
+            	}
+            	sb.append("\n\n");
+            	sb.append("/**\n");
+            	sb.append(" * @interface\n");
+            	String[] ifaces = cdef.getExtendedInterfacesAsDisplayStrings();
+            	for (String iface : ifaces)
+            		sb.append(" * @extends {" + iface + "}\n");
+            	sb.append(" */\n");
+                sb.append(cdef.getQualifiedName() + " = function() {}\n");
+            }
+        }
+        if (config.isVerbose())
+        {
+            System.out.println("Writing externs report: " + externsReportFile.getAbsolutePath());
+        }
+        FileWriter fw;
+		try {
+			fw = new FileWriter(externsReportFile, false);
+            fw.write(sb.toString());
+            fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+    
+    private String getJSType(String s)
+    {
+    	if (s.contains("__AS3__.vec.Vector"))
+    		return "Array";
+    	return JSGoogDocEmitter.convertASTypeToJSType(s, "");
+    }
+
+	private void outputResourceBundle(ResourceBundleCompilationUnit cu, File outputFolder) {
 		// TODO Auto-generated method stub
         final ISWCManager swcManager = project.getWorkspace().getSWCManager();
         // find the SWC
         final ISWC swc = swcManager.get(new File(cu.getAbsoluteFilename()));
         if (swc != null)
         {
-        	String bundleName = cu.getBundleNameInColonSyntax();
-        	String propFileName = "locale/" + cu.getLocale() + "/" + bundleName + ".properties";
-        	String bundleClassName = cu.getLocale() + "$" + bundleName + "_properties";
-            Map<String, ISWCFileEntry> files = swc.getFiles();
-            for (String key : files.keySet())
+            if (swc.getSWCFile().getAbsolutePath().endsWith(".swc"))
             {
-                if (key.equals(propFileName))
-                {
-                	if (!project.compiledResourceBundleNames.contains(bundleName))
-                		project.compiledResourceBundleNames.add(bundleName);
-                	project.compiledResourceBundleClasses.add(bundleClassName);
-                	StringBuilder sb = new StringBuilder();
-                    ISWCFileEntry fileEntry = swc.getFile(key);
-                    if (fileEntry != null)
-                    {
-                        try {
-							InputStream is = fileEntry.createInputStream();
-							BufferedReader br = new BufferedReader(new InputStreamReader(is));
-							String line;
-							while ((line = br.readLine()) != null)
-							{
-								if (line.contains("="))
-								{
-									if (sb.length() == 0)
-									{
-										sb.append("/**\n");
-										sb.append(" * Generated by Apache Royale Compiler from " + bundleClassName + ".properties\n");
-										sb.append(" * " + bundleClassName + "\n");
-										sb.append(" *\n");
-										sb.append(" * @fileoverview\n");
-										sb.append(" *\n");
-										sb.append(" * @suppress {checkTypes|accessControls}\n");
-										sb.append(" */\n\n");
-										sb.append("goog.provide('" + bundleClassName + "');\n\n");
-										sb.append("goog.require('mx.resources.IResourceBundle');\n");
-										sb.append("goog.require('mx.resources.ResourceBundle');\n\n\n");
-										sb.append("/**\n");
-										sb.append(" * @constructor\n");
-										sb.append(" * @extends {mx.resources.ResourceBundle}\n");
-										sb.append(" * @implements {mx.resources.IResourceBundle}\n");
-										sb.append(" */\n");
-										sb.append(bundleClassName + " = function() {\n");
-										sb.append("    " + bundleClassName + ".base(this, 'constructor');\n");
-										sb.append("};\n");
-										sb.append("goog.inherits(" + bundleClassName + ", mx.resources.ResourceBundle);\n\n");
-										sb.append("/**\n");
-										sb.append(" * Prevent renaming of class. Needed for reflection.\n");
-										sb.append(" */\n");
-										sb.append("goog.exportSymbol('" + bundleClassName + "', " + bundleClassName + ");\n\n");
-										sb.append(bundleClassName + ".prototype.getContent = function() { return {\n");
-									}
-									int c = line.indexOf("=");
-									String propName = line.substring(0, c);
-									String value = line.substring(c + 1);
-									while (value.endsWith("/"))
-									{
-										value = value.substring(0, value.length() - 1);
-										value += br.readLine();
-									}
-									sb.append(propName + ": \"" + value + "\",\n");
-								}
+	        	String bundleName = cu.getBundleNameInColonSyntax();
+	        	String propFileName = "locale/" + cu.getLocale() + "/" + bundleName + ".properties";
+	        	String bundleClassName = cu.getLocale() + "$" + bundleName + "_properties";
+	            Map<String, ISWCFileEntry> files = swc.getFiles();
+	            for (String key : files.keySet())
+	            {
+	                if (key.equals(propFileName))
+	                {
+	                	if (!project.compiledResourceBundleNames.contains(bundleName))
+	                		project.compiledResourceBundleNames.add(bundleName);
+	                	project.compiledResourceBundleClasses.add(bundleClassName);
+	                    ISWCFileEntry fileEntry = swc.getFile(key);
+	                    if (fileEntry != null)
+	                    {
+							InputStream is;
+							try {
+								is = fileEntry.createInputStream();
+								BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			                	writeResourceBundle(br, bundleClassName, outputFolder);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-							sb.append("__end_of_bundle__: 0\n};};\n");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                    }
-                    final File outputClassFile = getOutputClassFile(
-                            bundleClassName, outputFolder);
-                    System.out.println("Generating resource file: " + outputClassFile);
-                    FileWriter fw;
-					try {
-						fw = new FileWriter(outputClassFile, false);
-	                    fw.write(sb.toString());
-	                    fw.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                }
+	                    }
+	                }
+	            }
+            }
+            else
+            {
+            	// it isn't a bundle from a SWC, it is a bundle in the source path
+	        	String bundleName = cu.getBundleNameInColonSyntax();
+	        	String bundleClassName = cu.getLocale() + "$" + bundleName + "_properties";
+            	if (!project.compiledResourceBundleNames.contains(bundleName))
+            		project.compiledResourceBundleNames.add(bundleName);
+            	project.compiledResourceBundleClasses.add(bundleClassName);
+				InputStream is;
+				try {
+					is = new FileInputStream(swc.getSWCFile());
+					BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                	writeResourceBundle(br, bundleClassName, outputFolder);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         }
-
 	}
 
+	private void writeResourceBundle(BufferedReader br, String bundleClassName, File outputFolder)
+	{
+		StringBuilder sb = new StringBuilder();
+		try {
+			String line;
+			while ((line = br.readLine()) != null)
+			{
+				if (line.contains("="))
+				{
+					if (sb.length() == 0)
+					{
+						sb.append("/**\n");
+						sb.append(" * Generated by Apache Royale Compiler from " + bundleClassName + ".properties\n");
+						sb.append(" * " + bundleClassName + "\n");
+						sb.append(" *\n");
+						sb.append(" * @fileoverview\n");
+						sb.append(" *\n");
+						sb.append(" * @suppress {checkTypes|accessControls}\n");
+						sb.append(" */\n\n");
+						sb.append("goog.provide('" + bundleClassName + "');\n\n");
+						sb.append("goog.require('mx.resources.IResourceBundle');\n");
+						sb.append("goog.require('mx.resources.ResourceBundle');\n\n\n");
+						sb.append("/**\n");
+						sb.append(" * @constructor\n");
+						sb.append(" * @extends {mx.resources.ResourceBundle}\n");
+						sb.append(" * @implements {mx.resources.IResourceBundle}\n");
+						sb.append(" */\n");
+						sb.append(bundleClassName + " = function() {\n");
+						sb.append("    " + bundleClassName + ".base(this, 'constructor');\n");
+						sb.append("};\n");
+						sb.append("goog.inherits(" + bundleClassName + ", mx.resources.ResourceBundle);\n\n");
+						sb.append("/**\n");
+						sb.append(" * Prevent renaming of class. Needed for reflection.\n");
+						sb.append(" */\n");
+						sb.append("goog.exportSymbol('" + bundleClassName + "', " + bundleClassName + ");\n\n");
+						sb.append(bundleClassName + ".prototype.getContent = function() { return {\n");
+					}
+					int c = line.indexOf("=");
+					String propName = line.substring(0, c);
+					String value = line.substring(c + 1);
+					while (value.endsWith("/"))
+					{
+						value = value.substring(0, value.length() - 1);
+						value += br.readLine();
+					}
+					sb.append(propName + ": \"" + value + "\",\n");
+				}
+			}
+			sb.append("__end_of_bundle__: 0\n};};\n");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		final File outputClassFile = getOutputClassFile(
+                bundleClassName, outputFolder);
+        if (config.isVerbose())
+        {
+            System.out.println("Generating resource file: " + outputClassFile);
+        }
+		FileWriter fw;
+		try {
+			fw = new FileWriter(outputClassFile, false);
+			fw.write(sb.toString());
+			fw.close();
+			long fileDate = 0;
+        	String metadataDate = targetSettings.getSWFMetadataDate();
+        	if (metadataDate != null)
+        	{
+        		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+        		try {
+        			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+        			fileDate = sdf.parse(metadataDate).getTime();
+        		} catch (ParseException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (IllegalArgumentException e1) {
+    				e1.printStackTrace();
+    			}
+        		outputClassFile.setLastModified(fileDate);
+        	}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 	/**
      * Build target artifact.
      * 

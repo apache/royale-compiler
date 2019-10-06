@@ -198,7 +198,8 @@ class XMLBuilder
      * those are (these are the expressions to set the value in the XML object
      * when the TODO: PropertyChange event fires).
      */
-    void processNode(IMXMLTextData tag,
+    @SuppressWarnings("incomplete-switch")
+	void processNode(IMXMLTextData tag,
                      StringWriter sw)
     {
         switch (tag.getTextType())
@@ -284,6 +285,8 @@ class XMLBuilder
         MXMLBindingNode bindingNode = new MXMLBindingNode(parent);
 
         MXMLBindingAttributeNode target = new MXMLBindingAttributeNode(bindingNode, destExpr);
+        target.setLocation(attr);
+        target.setName(attr.getName());
         destExpr.setParent(target);
         MXMLBindingAttributeNode source = new MXMLBindingAttributeNode(bindingNode, dbnode.getExpressionNode());
 

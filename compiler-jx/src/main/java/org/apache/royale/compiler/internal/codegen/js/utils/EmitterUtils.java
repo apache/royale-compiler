@@ -22,18 +22,15 @@ package org.apache.royale.compiler.internal.codegen.js.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
@@ -44,14 +41,13 @@ import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
-import org.apache.royale.compiler.internal.projects.CompilerProject;
-import org.apache.royale.compiler.internal.scopes.TypeScope;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
@@ -64,6 +60,7 @@ import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableExpressionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.utils.NativeUtils;
 
@@ -364,6 +361,7 @@ public class EmitterUtils
             else
             {
                 boolean isFileOrPackageMember = false;
+                boolean isLocalFunction = false;
                 if(nodeDef instanceof FunctionDefinition)
                 {
                     FunctionClassification classification = ((FunctionDefinition) nodeDef).getFunctionClassification();
@@ -373,13 +371,20 @@ public class EmitterUtils
                         isFileOrPackageMember = true;
                     }
                     else if (!identifierIsMemberAccess && classification == FunctionClassification.CLASS_MEMBER &&
-                    		isClassMember(project, nodeDef, thisClass))
-                    	return true;
+                            isClassMember(project, nodeDef, thisClass))
+                    {
+                        return true;
+                    }
+                    else if (classification == FunctionClassification.LOCAL)
+                    {
+                        isLocalFunction = true;
+                    }
                 }
                 return parentNodeId == ASTNodeID.FunctionCallID
                         && !(nodeDef instanceof AccessorDefinition)
                         && !identifierIsMemberAccess
-                        && !isFileOrPackageMember;
+                        && !isFileOrPackageMember
+                        && !isLocalFunction;
             }
         }
         else
@@ -574,25 +579,22 @@ public class EmitterUtils
         result.setParent((NodeBase) argumentsNode.getParent());
         for (int i = 0; i < originalLength; i++)
         {
-            if(i < originalLength)
+            if(i < index)
             {
                 result.addItem((NodeBase) argumentsNode.getChild(i));
             }
             else
             {
-                int j = i;
-                if (i >= index + extraLength)
+            	if (i == index)
                 {
-                    j -= extraLength;
-                    result.addItem((NodeBase) argumentsNode.getChild(j));
+                    for (IASNode node : nodes)
+                    {
+                    	NodeBase n = (NodeBase) node;
+                    	n.setSourcePath(argumentsNode.getSourcePath());
+                    	result.addItem(n);
+                    }
                 }
-                else
-                {
-                    j -= originalLength;
-                    NodeBase node = (NodeBase) nodes[j];
-                    node.setSourcePath(argumentsNode.getSourcePath());
-                    result.addItem(node);
-                }
+                result.addItem((NodeBase) argumentsNode.getChild(i));
             }
         }
         return result;
@@ -602,6 +604,62 @@ public class EmitterUtils
     {
         return node.getContainerType() == IContainerNode.ContainerType.IMPLICIT
                 || node.getContainerType() == IContainerNode.ContainerType.SYNTHESIZED;
+    }
+
+    public static boolean needsDefaultValue(IVariableNode node, boolean defaultInitializers, ICompilerProject project)
+    {
+        if (node == null)
+        {
+            return false;
+        }
+        if (node instanceof IParameterNode)
+        {
+            return false;
+        }
+        if (node instanceof IAccessorNode)
+        {
+            return false;
+        }
+        IExpressionNode assignedValueNode = node.getAssignedValueNode();
+        if (assignedValueNode != null)
+        {
+            //already has an assigned value, so it doesn't need to be
+            //hoisted
+            return false;
+        }
+        IASNode parentNode = node.getParent();
+        if (parentNode instanceof IVariableExpressionNode)
+        {
+            //ignore for-in loops
+            return false;
+        }
+        IExpressionNode variableTypeNode = node.getVariableTypeNode();
+        if (variableTypeNode == null)
+        {
+            return false;
+        }
+        IDefinition varTypeDef = variableTypeNode.resolve(project);
+        if (varTypeDef == null)
+        {
+            return false;
+        }
+        if (IASLanguageConstants.ANY_TYPE.equals(varTypeDef.getQualifiedName()))
+        {
+            return false;
+        }
+        if (project.getBuiltinType(BuiltinType.ANY_TYPE).equals(varTypeDef)
+                || project.getBuiltinType(BuiltinType.ANY_TYPE).equals(varTypeDef)
+                || project.getBuiltinType(BuiltinType.ANY_TYPE).equals(varTypeDef))
+        {
+            return false;
+        }
+        if (project.getBuiltinType(BuiltinType.INT).equals(varTypeDef)
+                || project.getBuiltinType(BuiltinType.UINT).equals(varTypeDef))
+        {
+            //always true, regardless of -js-default-initializers
+            return true;
+        }
+        return defaultInitializers;
     }
 
 }

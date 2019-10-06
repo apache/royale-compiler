@@ -47,6 +47,12 @@ public class AnnotateClassesMojo
     @Parameter(property="annotation", required=true)
     private String annotation;
 
+    @Parameter(property="dateStart", required=false)
+    private String dateStart = "";
+    
+    @Parameter(property="dateEnd", required=false)
+    private String dateEnd = "";
+    
     public void execute()
         throws MojoExecutionException
     {
@@ -58,7 +64,7 @@ public class AnnotateClassesMojo
             Set<File> candidates = scan.getIncludedSources(directory, null);
             for(File candidate : candidates) {
                 try {
-                    AnnotateClass.processFile(candidate, annotation);
+                    AnnotateClass.processFile(candidate, annotation, dateStart, dateEnd);
                 } catch(AnnotateClass.AnnotateClassDeleteException e) {
                     throw new MojoExecutionException(e.getMessage());
                 } catch(AnnotateClass.AnnotateClassRenameException e) {

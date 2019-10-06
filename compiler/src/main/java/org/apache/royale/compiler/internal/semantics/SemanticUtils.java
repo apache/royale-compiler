@@ -104,6 +104,7 @@ import org.apache.royale.compiler.problems.DeprecatedAPIWithReplacementProblem;
 import org.apache.royale.compiler.problems.DeprecatedAPIWithSinceAndReplacementProblem;
 import org.apache.royale.compiler.problems.DeprecatedAPIWithSinceProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.ParameterHasNoTypeDeclarationProblem;
 import org.apache.royale.compiler.problems.ReturnValueHasNoTypeDeclarationProblem;
 import org.apache.royale.compiler.problems.ScopedToDefaultNamespaceProblem;
 import org.apache.royale.compiler.problems.UnknownSuperclassProblem;
@@ -117,15 +118,18 @@ import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
@@ -835,7 +839,7 @@ public class SemanticUtils
         if (base != null && base.isDynamicExpression(project))
         	return true;
         // the JS version of XML is not currently dynamic so special case it here.
-        if (base != null && base.getNodeID() == ASTNodeID.IdentifierID && IdentifierNode.isXMLish(base.resolveType(project), project))
+        if (base != null && base.getNodeID() == ASTNodeID.IdentifierID && isXMLish(base.resolveType(project), project))
         	return true;
         return false;
     }
@@ -942,6 +946,127 @@ public class SemanticUtils
         }
 
         return null;
+    }
+
+    /**
+     * Resolving the type of an expression on an XMLish object always returns *,
+     * but this function returns the actual resolved type, if available.
+     * 
+     * @param iNode The node you want to resolve
+     * @param project an ICompilerProject for the current project.
+     * @return The type of the underlying expression, or null.
+     */
+    public static IDefinition resolveTypeXML(IExpressionNode iNode, ICompilerProject project)
+    {
+        IDefinition def = resolveXML(iNode, project);
+        if(def == null)
+        {
+            return null;
+        }
+        if (def instanceof IFunctionDefinition)
+        {
+            IFunctionDefinition functionDef = (IFunctionDefinition) def;
+            return functionDef.resolveReturnType(project);
+        }
+        return def.resolveType(project);
+    }
+
+    /**
+     * Resolving an expression on an XMLish object always returns null, but this
+     * function returns the actual resolved definition, if available.
+     * 
+     * @param iNode The node you want to resolve
+     * @param project an ICompilerProject for the current project.
+     * @return The definition of the underlying expression, or null.
+     */
+    public static IDefinition resolveXML(IExpressionNode iNode, ICompilerProject project)
+    {
+        if (iNode instanceof IFunctionCallNode)
+        {
+            IFunctionCallNode functionCall = (IFunctionCallNode) iNode;
+            IExpressionNode nameNode = functionCall.getNameNode();
+            if (nameNode instanceof IMemberAccessExpressionNode)
+            {
+                IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) nameNode;
+                nameNode = memberAccess.getRightOperandNode();
+            }
+            if (nameNode instanceof IIdentifierNode)
+            {
+                IIdentifierNode identifierNode = (IIdentifierNode) nameNode;
+                IDefinition resolvedDef = identifierNode.resolve(project);
+                if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
+                {
+                    if (resolvedDef instanceof IFunctionDefinition
+                            && !(resolvedDef instanceof IAccessorDefinition))
+                    {
+                        //method call on XML or XMLList instance
+                        return resolvedDef;
+                    }
+                }
+            }
+            return null;
+        }
+
+        if (iNode instanceof IIdentifierNode)
+        {
+            IIdentifierNode identifierNode = (IIdentifierNode) iNode;
+            IDefinition resolvedDef = identifierNode.resolve(project);
+            if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
+            {
+                if (resolvedDef.isPrivate() || resolvedDef.isProtected())
+                {
+                    //private/protected member inside the XML or XMLList class
+                    return resolvedDef;
+                }
+            }
+        }
+        if (iNode instanceof IMemberAccessExpressionNode)
+        {
+            IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) iNode;
+            IExpressionNode nameNode = memberAccess.getRightOperandNode();
+            return resolveXML(nameNode, project);
+        }
+        return null;
+    }
+
+    /**
+     * Determine if the definition passed in is one of the XML types (XML or
+     * XMLList) These classes are unrelated, but behave in similar manners.
+     * 
+     * @param def the {@link IDefinition} to check
+     * @param project the {@link ICompilerProject} in which to look up types
+     * @return true if definition is the built-in XML or XMLList type.
+     */
+    public static boolean isXMLish(IDefinition def, ICompilerProject project)
+    {
+        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
+        IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        return (xmlDef != null && def == xmlDef) ||
+               (xmlListDef != null && def == xmlListDef);
+    }
+    
+    /**
+     * Determines if an expression is a toString() function call.
+     */
+    public static boolean isToStringFunctionCall(IExpressionNode node, ICompilerProject project)
+    {
+        if(!(node instanceof IFunctionCallNode))
+        {
+            return false;
+        }
+        IFunctionCallNode functionCall = (IFunctionCallNode) node;
+    	IExpressionNode nameExpression = functionCall.getNameNode();
+    	if (nameExpression instanceof IMemberAccessExpressionNode)
+    	{
+    		IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) nameExpression;
+    		IExpressionNode rightNode = memberAccess.getRightOperandNode();
+            if (rightNode instanceof IIdentifierNode)
+            {
+                IIdentifierNode rightIdentifier = (IIdentifierNode) rightNode;
+                return rightIdentifier.getName().equals("toString");
+            }
+    	}
+    	return false;
     }
 
     /**
@@ -1197,6 +1322,21 @@ public class SemanticUtils
         return 
             (iNode instanceof ILanguageIdentifierNode) &&
             (((ILanguageIdentifierNode)iNode).getKind() == LanguageIdentifierKind.THIS);
+    }
+
+    /**
+     *  Is this function node contained within another function node?
+     *  @param iNode - the node of interest.
+     *  @return true if the function node is a closure
+     */
+    public static boolean isFunctionClosure(IFunctionNode functionNode)
+    {
+        IScopedNode containingScope = functionNode.getContainingScope();
+        if (containingScope == null)
+        {
+            return false;
+        }
+        return containingScope.getParent() instanceof IFunctionNode;
     }
 
     /**
@@ -2492,6 +2632,36 @@ public class SemanticUtils
     }
     
     /**
+     * Checks that a given function's parameters have a type, and logs a problem if not
+     * 
+     * @param scope is the scope where problems are to be logged
+     * @param node is the function node that is being checked (used for location reporting)
+     * @param func is the definition of the function to be checked.
+     */
+    public static void checkParametersHaveNoTypeDeclaration(LexicalScope scope, IFunctionNode node, IFunctionDefinition func)
+    {
+        for (IParameterNode paramNode : node.getParameterNodes())
+        {
+            IExpressionNode paramType = paramNode.getVariableTypeNode();
+
+            // check for parameter type declaration
+            if (paramType == null)
+            {
+                scope.addProblem(new ParameterHasNoTypeDeclarationProblem(paramNode, paramNode.getName(), node.getName()));
+            }
+            else if(paramType.getAbsoluteStart() == -1 && paramType.getAbsoluteEnd() == -1
+                    && paramType instanceof ILanguageIdentifierNode)
+            {
+                ILanguageIdentifierNode identifier = (ILanguageIdentifierNode) paramType;
+                if (identifier.getKind().equals(LanguageIdentifierKind.ANY_TYPE))
+                {
+                    scope.addProblem(new ParameterHasNoTypeDeclarationProblem(paramNode, paramNode.getName(), node.getName()));
+                }
+            }
+        }
+    }
+    
+    /**
      * Checks that a given function definition has a return type, and logs a problem if not
      * 
      * @param scope is the scope where problems are to be logged
@@ -2889,13 +3059,44 @@ public class SemanticUtils
     }
 
     /**
+     *  Can the subject be abstract?
+     *  @param iNode - an AST node in (or at the border of) the function.
+     *  @return true if the definition is allowed to be abstract
+     */
+    public static boolean canBeAbstract(IASNode iNode, ICompilerProject project)
+    {
+        if(iNode instanceof IClassNode)
+        {
+            IClassNode classNode = (IClassNode) iNode;
+            IClassDefinition classDef = classNode.getDefinition();
+            return !classDef.isFinal();
+        }
+        else if(iNode instanceof IFunctionNode)
+        {
+            IFunctionNode funcNode = (IFunctionNode) iNode;
+            IFunctionDefinition funcDef = funcNode.getDefinition();
+            IDefinition parentDef = funcDef.getParent();
+            if (parentDef instanceof IClassDefinition)
+            {
+                return parentDef.isAbstract()
+                        && !funcDef.isStatic()
+                        && !funcDef.isFinal()
+                        && !funcDef.isConstructor()
+                        && !(funcDef instanceof IAccessorDefinition);
+            }
+            return false;
+        }
+        return false;
+    }
+
+    /**
      *  Does the subject function require a non-void return value?
      *  @param iNode - an AST node in (or at the border of) the function.
      *  @return true if the function's definition is known, the definition's
      *    return type is known (and the function is not a constructor),
      *    and the return type is not void or *
      */
-    public static boolean functionMustReturnValue(IASNode iNode, ICompilerProject project)
+    public static boolean functionMustReturnValue(IASNode iNode, boolean allowAbstract, ICompilerProject project)
     {
         FunctionDefinition func_def = SemanticUtils.getFunctionDefinition(iNode);
 
@@ -2908,7 +3109,8 @@ public class SemanticUtils
                 return_type == null ||
                 return_type.equals(ClassDefinition.getVoidClassDefinition()) ||
                 return_type.equals(ClassDefinition.getAnyTypeClassDefinition()) ||
-                func_def.isConstructor()
+                func_def.isConstructor() ||
+                (allowAbstract && canBeAbstract(iNode, project) && func_def.isAbstract())
             );
         }
         else

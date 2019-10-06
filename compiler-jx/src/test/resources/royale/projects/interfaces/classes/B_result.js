@@ -61,3 +61,9 @@ classes.B.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @export
+ * @const
+ * @type {number}
+ */
+classes.B.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;

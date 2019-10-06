@@ -19,6 +19,9 @@
 
 package org.apache.royale.compiler.internal.tree.as;
 
+import org.apache.royale.compiler.definitions.IAppliedVectorDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
@@ -70,7 +73,26 @@ public class DynamicAccessNode extends BinaryOperatorNodeBase implements IDynami
     @Override
     public boolean isDynamicExpression(ICompilerProject project)
     {
+        ITypeDefinition leftType = getLeftOperandNode().resolveType(project);
+        if (leftType instanceof IAppliedVectorDefinition)
+        {
+            return super.isDynamicExpression(project);
+        }
         return true;
+    }
+    
+    @Override
+    public ITypeDefinition resolveType(ICompilerProject project)
+    {
+        ITypeDefinition leftType = getLeftOperandNode().resolveType(project);
+        if (leftType instanceof IAppliedVectorDefinition)
+        {
+            if (SemanticUtils.isNumericType(getRightOperandNode().resolveType(project), project)) {
+                IAppliedVectorDefinition vectorDef = (IAppliedVectorDefinition) leftType;
+                return vectorDef.resolveElementType(project);
+            }
+        }
+        return super.resolveType(project);
     }
     
     //

@@ -72,7 +72,6 @@ import org.apache.royale.compiler.problems.UnknownBreakTargetProblem;
 import org.apache.royale.compiler.problems.UnknownContinueTargetProblem;
 import org.apache.royale.compiler.problems.VoidTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -6415,7 +6414,8 @@ public class ABCGeneratingReducer
      */
     private enum XMLContentState { TagStart, TagLiteral, TagName, Attr, ValueNeedsEquals, Value, TagEnd, ContentLiteral, ContentExpression };
 
-    public InstructionList reduce_XMLContent(IASNode iNode, Vector<InstructionList> exprs)
+    @SuppressWarnings("incomplete-switch")
+	public InstructionList reduce_XMLContent(IASNode iNode, Vector<InstructionList> exprs)
     {
         InstructionList result = createInstructionList(iNode);
 

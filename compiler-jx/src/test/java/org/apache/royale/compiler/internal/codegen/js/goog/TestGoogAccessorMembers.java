@@ -98,10 +98,10 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withBody()
     {
-        ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{trace('haai');}");
+        ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{'haai';}");
         asBlockWalker.visitSetter(node);
         assertOut("Object.defineProperty(\n\tRoyaleTest_A.prototype, \n\t'foo', "
-                + "\n\t{set:function(value) {\n\t\tvar self = this;\n\t\ttrace('haai');\n\t}, configurable:true}\n)");
+                + "\n\t{set:function(value) {\n\t\tvar self = this;\n\t\t'haai';\n\t}, configurable:true}\n)");
     }
 
     @Override

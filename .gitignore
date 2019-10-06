@@ -13,6 +13,10 @@
 *.iws
 *.eml
 
+# VSCode conf files
+**/.vscode/**
+*.code-workspace
+
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
@@ -43,3 +47,6 @@ debugger/generated/
 
 # Asciidoctor related temp files
 ditaa-diagram.*
+
+# JUnit temp files
+junittestcases*.properties

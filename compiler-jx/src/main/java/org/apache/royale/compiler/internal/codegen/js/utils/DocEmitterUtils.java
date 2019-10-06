@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
@@ -27,7 +28,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 
 public class DocEmitterUtils
 {
-    public static void loadImportIgnores(JSRoyaleEmitter emitter, String doc)
+    public static List<String> loadImportIgnores(JSRoyaleEmitter emitter, String doc)
     {
         ArrayList<String> ignoreList = new ArrayList<String>();
         String ignoreToken = JSRoyaleEmitterTokens.IGNORE_IMPORT.getToken();
@@ -39,11 +40,20 @@ public class DocEmitterUtils
             ignorable = ignorable.substring(0, endIndex);
             ignorable = ignorable.trim();
             ignoreList.add(ignorable);
-            System.out.println("Found ignorable: " + ignorable);
             index = doc.indexOf(ignoreToken, index + endIndex);
         }
         
         // TODO (mschmalle)
         ((JSRoyaleDocEmitter)emitter.getDocEmitter()).setClassIgnoreList(ignoreList);
+        return ignoreList;
+    }
+    
+    
+    public static Boolean hasSuppressExport(JSRoyaleEmitter emitter, String doc)
+    {
+
+        String ignoreToken = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
+        int index = doc.indexOf(ignoreToken);
+        return index != -1;
     }
 }

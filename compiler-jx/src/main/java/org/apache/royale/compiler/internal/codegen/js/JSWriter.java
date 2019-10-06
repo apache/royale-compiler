@@ -99,7 +99,13 @@ public class JSWriter implements IJSWriter
         
         try
         {
-            jsOut.write(emitter.postProcess(writer.toString()).getBytes());
+            String emitted = writer.toString();
+            if(!isExterns)
+            {
+                //nothing to post-process in externs
+                emitted = emitter.postProcess(emitted);
+            }
+            jsOut.write(emitted.getBytes("utf8"));
         }
         catch (IOException e)
         {
@@ -109,11 +115,19 @@ public class JSWriter implements IJSWriter
         if (jsSourceMapOut != null)
         {
             String sourceMapFilePath = null;
+            String sourceRoot = null;
             if (sourceMapFile != null)
             {
                 sourceMapFilePath = sourceMapFile.getAbsolutePath();
                 convertMappingSourcePathsToRelative(emitter, sourceMapFile);
             }
+            else
+            {
+                sourceRoot = System.getProperty("user.dir");
+                convertMappingSourcePathsToRelative((IMappingEmitter) emitter, new File(sourceRoot, "test.js.map"));
+                sourceRoot = convertSourcePathToURI(sourceRoot);
+            }
+            convertMappingSourcePathsToURI(emitter);
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter(emitter);
@@ -121,8 +135,8 @@ public class JSWriter implements IJSWriter
             {
                 String fileName = compilationUnitFile.getName();
                 fileName = fileName.replace(".as", ".js");
-                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, null);
-                jsSourceMapOut.write(sourceMap.getBytes());
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
+                jsSourceMapOut.write(sourceMap.getBytes("utf8"));
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -135,13 +149,36 @@ public class JSWriter implements IJSWriter
         List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
         for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
-            mapping.sourcePath = relativePath(mapping.sourcePath, relativeToFile.getAbsolutePath());
+            String relativePath = relativize(mapping.sourcePath, relativeToFile.getAbsolutePath());
+            mapping.sourcePath = relativePath;
         }
+    }
+    
+    protected void convertMappingSourcePathsToURI(IMappingEmitter emitter)
+    {
+        List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
+        for (IMappingEmitter.SourceMapMapping mapping : mappings)
+        {
+            //prefer forward slash because web browser devtools expect it
+            String sourcePath = mapping.sourcePath;
+            sourcePath = convertSourcePathToURI(sourcePath);
+            mapping.sourcePath = sourcePath;
+        }
+    }
+    
+    protected String convertSourcePathToURI(String sourcePath)
+    {
+        File file = new File(sourcePath);
+        if(file.isAbsolute())
+        {
+            sourcePath = "file:///" + sourcePath;
+        }
+        return sourcePath.replace('\\', '/');
     }
 
     //if we ever support Java 7, the java.nio.file.Path relativize() method
     //should be able to replace this method
-    private String relativePath(String filePath, String relativeToFilePath)
+    private String relativize(String filePath, String relativeToFilePath)
     {
         boolean caseInsensitive = System.getProperty("os.name").toLowerCase().startsWith("windows");
         if(caseInsensitive)

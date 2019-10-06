@@ -20,31 +20,29 @@
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants;
+import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
-import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.ContainerNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.NativeUtils;
 
 public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFunctionCallNode>
@@ -60,12 +58,11 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-
         IASNode cnode = node.getChild(0);
 
         if (cnode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
             cnode = cnode.getChild(0);
-
+        String postCallAppend = null;
         ASTNodeID id = cnode.getNodeID();
         if (id != ASTNodeID.SuperID)
         {
@@ -74,16 +71,45 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             def = nameNode.resolve(getProject());
 
             boolean isClassCast = false;
-
+            boolean wrapResolve = false;
             if (node.isNewExpression())
             {
-                if (!(node.getChild(1) instanceof VectorLiteralNode))
+                boolean omitNew = false;
+                if (nameNode instanceof IdentifierNode
+                        && (((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.String)
+                        || ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.Boolean)
+                        || ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.Number)))
                 {
-                    if (def == null || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) ||
-                    					 def.getBaseName().equals(IASGlobalFunctionConstants.uint) ||
-                    					 def instanceof AppliedVectorDefinition))
+                    omitNew = true;
+                }
+                
+                if (!((node.getChild(1) instanceof VectorLiteralNode)))
+                {
+                    if (!omitNew
+                            && ((def == null
+                                || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) || def.getBaseName().equals(IASGlobalFunctionConstants.uint)))
+                                && !(def instanceof AppliedVectorDefinition && (
+                                        ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass()!= null
+                                        && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass().equals("Array"))
+                                ))
+                        )
                     {
-	                    startMapping(node.getNewKeywordNode());
+	                    if (getProject() instanceof RoyaleJSProject
+                                && nameNode.resolveType(getProject()) != null
+                                && nameNode.resolveType(getProject()).getQualifiedName().equals("Class")) {
+        
+	                        wrapResolve = shouldResolveUncertain(nameNode, false);
+                            
+                            if (wrapResolve) {
+                                ((RoyaleJSProject) getProject()).needLanguage = true;
+                                getModel().needLanguage = true;
+                                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                write(ASEmitterTokens.MEMBER_ACCESS);
+                                write("resolveUncertain");
+                                write(ASEmitterTokens.PAREN_OPEN);
+                            }
+                        }
+                        startMapping(node.getNewKeywordNode());
 	                    writeToken(ASEmitterTokens.NEW);
 	                    endMapping(node.getNewKeywordNode());
                     }
@@ -91,7 +117,52 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 else
                 {
                     VectorLiteralNode vectorLiteralNode = (VectorLiteralNode) node.getChild(1);
+                    String vectorEmulationClass = (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass());
+                    SourceLocation mappingLocation;
+                    String elementClassName;
+                    IDefinition elementClass = (((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()));
+                    elementClassName = getEmitter().formatQualifiedName(elementClass.getQualifiedName());
+                    if (vectorEmulationClass != null)
+                    {
+                        if (!vectorEmulationClass.equals("Array")) {
+                            //Explanation:
+                            //this was how it was originally set up, but it assumes the constructor of the emulation
+                            //class can handle first argument being an Array or numeric value...
+                            writeToken(ASEmitterTokens.NEW);
+                            write(vectorEmulationClass);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                        }// otherwise.... if 'Array' is the emulation class, then just use the literal content
+                    } else {
+                        //no 'new' output in this case, just coercion, so map from the start of 'new'
+                        startMapping(node);
+                        write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        //the element type of the Vector:
+                        write(elementClassName);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        write(ASEmitterTokens.SQUARE_OPEN);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write("coerce");
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.SQUARE_CLOSE);
+                        mappingLocation = new SourceLocation(vectorLiteralNode.getCollectionTypeNode());
+                        mappingLocation.setEndColumn(mappingLocation.getEndColumn() + 1);
+                        endMapping(mappingLocation);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        if (getProject() instanceof RoyaleJSProject)
+                            ((RoyaleJSProject)getProject()).needLanguage = true;
+                        getEmitter().getModel().needLanguage = true;
+                      
+                    }
+                    mappingLocation = new SourceLocation(vectorLiteralNode.getContentsNode());
+                    if (mappingLocation.getColumn()>0) mappingLocation.setColumn(mappingLocation.getColumn() -1);
+                    mappingLocation.setEndColumn(mappingLocation.getColumn()+1);
+                    startMapping(mappingLocation);
                     write("[");
+                    
+                    endMapping(mappingLocation);
                     ContainerNode contentsNode = vectorLiteralNode.getContentsNode();
                     int len = contentsNode.getChildCount();
                     for (int i = 0; i < len; i++)
@@ -102,7 +173,25 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             writeToken(ASEmitterTokens.COMMA);
                         }
                     }
+                    mappingLocation = new SourceLocation(vectorLiteralNode.getContentsNode());
+                    mappingLocation.setLine(vectorLiteralNode.getContentsNode().getEndLine());
+                    mappingLocation.setColumn(vectorLiteralNode.getContentsNode().getEndColumn());
+                    mappingLocation.setEndColumn(mappingLocation.getColumn() + 1);
+                    startMapping(mappingLocation);
                     write("]");
+                    endMapping(mappingLocation);
+                    if (vectorEmulationClass != null)
+                    {
+                        if (!vectorEmulationClass.equals("Array")) {
+                            writeToken(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(elementClassName);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                        }
+                    } else {
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                    }
                     return;
                 }
             }
@@ -110,12 +199,15 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 def = node.getNameNode().resolve(getProject());
 
-                isClassCast = (def instanceof ClassDefinition || def instanceof InterfaceDefinition)
+                isClassCast = def != null && (def instanceof ClassDefinition
+                        || def instanceof InterfaceDefinition
+                        || ( def instanceof VariableDefinition && ((VariableDefinition) def).resolveType(getProject()).getBaseName().equals("Class")))
                         && !(NativeUtils.isJSNative(def.getBaseName()))
                         && !def.getBaseName().equals(IASLanguageConstants.XML)
                         && !def.getBaseName().equals(IASLanguageConstants.XMLList);
+                
             }
-
+            
             if (node.isNewExpression())
             {
                 def = node.resolveCalledExpression(getProject());
@@ -156,16 +248,39 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (nameNode.hasParenthesis())
                         write(ASEmitterTokens.PAREN_CLOSE);
                 }
-
-                if (def instanceof AppliedVectorDefinition)
+                if ( def instanceof AppliedVectorDefinition
+                        && (fjs.getWalker().getProject() instanceof RoyaleJSProject)
+                        && (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass() != null))
                 {
-                	ContainerNode args = node.getArgumentsNode();
-                	if (args.getChildCount() == 0)
-                	{
-                    	getEmitter().emitArguments(node.getArgumentsNode());
-                	}
-                	else
-                	{
+                    ContainerNode args = node.getArgumentsNode();
+                    String vectorEmulationClass = ((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass();
+                    if (args.getChildCount() == 0)
+                    {
+                        if (vectorEmulationClass.equals("Array")) {
+                            write(ASEmitterTokens.SQUARE_OPEN);
+                            write(ASEmitterTokens.SQUARE_CLOSE);
+                        } else {
+                            write(ASEmitterTokens.PAREN_OPEN);
+                            write(ASEmitterTokens.SQUARE_OPEN);
+                            write(ASEmitterTokens.SQUARE_CLOSE);
+                            write(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.SPACE);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getQualifiedName());
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                        }
+                    } else {
+                        if (vectorEmulationClass.equals("Array")) {
+                            if (getProject() instanceof RoyaleJSProject)
+                                ((RoyaleJSProject) getProject()).needLanguage = true;
+                            getEmitter().getModel().needLanguage = true;
+                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            startMapping(node.getNameNode());
+                            write("arrayAsVector");
+                            endMapping(node.getNameNode());
+                        }
                         startMapping(node);
                         write(ASEmitterTokens.PAREN_OPEN);
                         endMapping(node);
@@ -173,13 +288,29 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         write(ASEmitterTokens.COMMA);
                         write(ASEmitterTokens.SPACE);
                         write(ASEmitterTokens.SINGLE_QUOTE);
-                        write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getBaseName());
+                        write(((AppliedVectorDefinition) def).resolveElementType(getWalker().getProject()).getQualifiedName());
                         write(ASEmitterTokens.SINGLE_QUOTE);
+                        if (args.getChildCount() == 2 && !vectorEmulationClass.equals("Array")) {
+                            IASNode second = args.getChild(1);
+                            if (second instanceof IExpressionNode) {
+                                ITypeDefinition secondType =
+                                        ((IExpressionNode) second).resolveType(fjs.getWalker().getProject());
+                                if (fjs.getWalker().getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(secondType)) {
+                                    write(ASEmitterTokens.COMMA);
+                                    write(ASEmitterTokens.SPACE);
+                                    getWalker().walk(second);
+                                }
+                            }
+                        }
                         write(ASEmitterTokens.PAREN_CLOSE);
-                	}
+                    }
+                } else {
+                    getEmitter().emitArguments(node.getArgumentsNode());
                 }
-                else
-                	getEmitter().emitArguments(node.getArgumentsNode());
+                //end wrap resolve
+                if (wrapResolve) {
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                }
             }
             else if (!isClassCast)
             {
@@ -220,37 +351,100 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             		}
                     else if (def.getBaseName().equals("sort"))
                 	{
-                		if (def.getParent() != null &&
-                    		def.getParent().getQualifiedName().equals("Array"))
-                		{
-                			IExpressionNode args[] = node.getArgumentNodes();
-                			if (args.length > 0)
-                			{
-                                IExpressionNode optionsParamCheck = args.length == 1 ? args[0] : args[1];
-                                ICompilerProject project = this.getProject();
-                                IDefinition paramCheck = optionsParamCheck.resolveType(project);
-
-                                if (paramCheck.getBaseName().equals(IASLanguageConstants._int)
-                                    || paramCheck.getBaseName().equals(IASLanguageConstants.uint)
-                                    || paramCheck.getBaseName().equals(IASLanguageConstants.Number))
+                	    if (def.getParent() != null) {
+                	        if (def.getParent().getQualifiedName().equals("Array")
+                                || (node.getNameNode() instanceof MemberAccessExpressionNode
+                                    && (((MemberAccessExpressionNode) node.getNameNode()).getLeftOperandNode().resolveType(getProject()) instanceof AppliedVectorDefinition)
+                                    &&  getProject() instanceof RoyaleJSProject
+                                    && (((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass() == null
+                                    || ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals("Array"))))
+                	        {
+                                IExpressionNode args[] = node.getArgumentNodes();
+                                if (args.length > 0)
                                 {
-                                    //deal with specific numeric option argument variations
-                                    //either: Array.sort(option:uint) or Array.sort(compareFunction:Function, option:uint)
-                                    //use our Language sort implementation to support these actionscript-specific method signatures
-                                    if (project instanceof RoyaleJSProject)
-                                        ((RoyaleJSProject) project).needLanguage = true;
-                                    getEmitter().getModel().needLanguage = true;
-                                    write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
-                                    write(ASEmitterTokens.MEMBER_ACCESS);
-                                    write("sort");
-                                    IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
-                                    fjs.emitArguments(newArgs);
-                                    return;
+                                    IExpressionNode optionsParamCheck = args.length == 1 ? args[0] : args[1];
+                                    ICompilerProject project = this.getProject();
+                                    IDefinition paramCheck = optionsParamCheck.resolveType(project);
+            
+                                    if (paramCheck.getBaseName().equals(IASLanguageConstants._int)
+                                            || paramCheck.getBaseName().equals(IASLanguageConstants.uint)
+                                            || paramCheck.getBaseName().equals(IASLanguageConstants.Number))
+                                    {
+                                        //deal with specific numeric option argument variations
+                                        //either: Array.sort(option:uint) or Array.sort(compareFunction:Function, option:uint)
+                                        //use our Language sort implementation to support these actionscript-specific method signatures
+                                        if (project instanceof RoyaleJSProject)
+                                            ((RoyaleJSProject) project).needLanguage = true;
+                                        getEmitter().getModel().needLanguage = true;
+                                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                        write(ASEmitterTokens.MEMBER_ACCESS);
+                                        write("sort");
+                                        IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
+                                        fjs.emitArguments(newArgs);
+                                        return;
+                                    }
                                 }
-                			}
-            			}
+                            }
+                        }
+                	    
             		}
+                    else if ((def.getBaseName().equals("insertAt")
+                                || def.getBaseName().equals("removeAt"))
+                                &&  def.getParent() instanceof AppliedVectorDefinition
+                                && ((getProject() instanceof RoyaleJSProject) && (
+                                    ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass() == null
+                                    || ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals("Array")))
+                           ) {
 
+                            if ((((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass() != null)
+                                && ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals("Array")) {
+                                //use a similar approach to regular 'Array' insertAt/removeAt
+                                //for Array Vector emulation only (not for other custom classes)
+                                //replace the insertAt/removeAt method with 'splice'
+                                IdentifierNode splice = new IdentifierNode("splice");
+                                splice.setSourceLocation(((MemberAccessExpressionNode)node.getNameNode()).getRightOperandNode());
+                                splice.setParent((MemberAccessExpressionNode)node.getNameNode());
+                                ((MemberAccessExpressionNode)node.getNameNode()).setRightOperandNode(splice);
+                                NumericLiteralNode spliceArg;
+                                if (def.getBaseName().equals("insertAt")) {
+                                    //insertAt
+                                    spliceArg = new NumericLiteralNode("0");
+                                    //This works like 'insertAt' itself, pushing the insertee to 3rd position (correct position):
+                                    node.getArgumentsNode().addChild(spliceArg, 1);
+                                } else {
+                                    //removeAt
+                                    spliceArg = new NumericLiteralNode("1");
+                                    node.getArgumentsNode().addChild(spliceArg, 1);
+                                    postCallAppend = "[0]";
+                                }
+                            } else {
+                                //default Vector implementation
+                                //unlike Array implementation of these methods, the synthetic Vector implementation supports these methods at runtime,
+                                //and they behave differently with fixed length vectors compared to the native 'splice' method output which is used to
+                                //support them in Array, however they are not protected from GCL renaming in release builds by any actual class definition,
+                                //so we explicitly 'protect' them here by using DynamicAccess instead of MemberAccess
+                                ExpressionNodeBase leftSide = (ExpressionNodeBase)(((BinaryOperatorNodeBase) (node.getNameNode())).getLeftOperandNode());
+                                LiteralNode dynamicName = new LiteralNode(ILiteralNode.LiteralType.STRING, "'" + def.getBaseName() + "'");
+                                dynamicName.setSourceLocation(((BinaryOperatorNodeBase) (node.getNameNode())).getRightOperandNode());
+                                DynamicAccessNode replacement = new DynamicAccessNode(leftSide);
+                                leftSide.setParent(replacement);
+                                replacement.setSourceLocation(node.getNameNode());
+                                replacement.setRightOperandNode(dynamicName);
+                                dynamicName.setParent(replacement);
+    
+                                FunctionCallNode replacer = new FunctionCallNode(replacement)   ;
+                                replacement.setParent(replacer);
+                                IExpressionNode[] args = node.getArgumentNodes();
+                                for (IExpressionNode arg : args) {
+                                    replacer.getArgumentsNode().addItem((NodeBase) arg);
+                                }
+                                replacer.getArgumentsNode().setParent(replacer);
+                                replacer.getArgumentsNode().setSourceLocation(node.getArgumentsNode());
+                                replacer.setParent((NodeBase) node.getParent());
+                                //swap it out
+                                node = replacer;
+                            }
+                    }
                     else if (def instanceof AppliedVectorDefinition)
                     {
                         IExpressionNode[] argumentNodes = node.getArgumentNodes();
@@ -265,9 +459,54 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     	}
                     	else
                     	{
-                            IExpressionNode argumentNode = argumentNodes[0];
-                            getWalker().walk(argumentNode);
-                            write(".slice()");
+                            String elementClassName = getEmitter().formatQualifiedName(((TypedExpressionNode)nameNode).getTypeNode().resolve(getProject()).getQualifiedName());
+                    	    if (getProject() instanceof RoyaleJSProject
+                                && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass()!= null) {
+                    	        String vectorEmulationClass = ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass();
+                    	        if (vectorEmulationClass.equals("Array")) {
+                    	            //just do a slice copy of the array which is the first argument
+                                    getWalker().walk(node.getArgumentsNode().getChild(0));
+                                    write(ASEmitterTokens.MEMBER_ACCESS);
+                                    write("slice");
+                                    write(ASEmitterTokens.PAREN_OPEN);
+                                    write(ASEmitterTokens.PAREN_CLOSE);
+                                } else {
+                    	            //assume the emulation class can handle an array or numeric value for first constructor arg...
+                                    writeToken(ASEmitterTokens.NEW);
+                                    startMapping(node.getNameNode());
+                                    write(vectorEmulationClass);
+                                    endMapping(node.getNameNode());
+                                    write(ASEmitterTokens.PAREN_OPEN);
+                                    getWalker().walk(node.getArgumentsNode().getChild(0));
+                                    writeToken(ASEmitterTokens.COMMA);
+                                    write(ASEmitterTokens.SINGLE_QUOTE);
+                                    //the element type of the Vector:
+                                    write(elementClassName);
+                                    write(ASEmitterTokens.SINGLE_QUOTE);
+                                    write(ASEmitterTokens.PAREN_CLOSE);
+                                }
+                            } else {
+                    	        //default Vector implementation
+                                startMapping(node.getNameNode());
+                                write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
+                                write(ASEmitterTokens.PAREN_OPEN);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                                //the element type of the Vector:
+                                write(elementClassName);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                                write(ASEmitterTokens.PAREN_CLOSE);
+                                write(ASEmitterTokens.SQUARE_OPEN);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                                write("coerce");
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                                write(ASEmitterTokens.SQUARE_CLOSE);
+                                endMapping(node.getNameNode());
+        
+                                getEmitter().emitArguments(node.getArgumentsNode());
+                                if (getProject() instanceof RoyaleJSProject)
+                                    ((RoyaleJSProject)getProject()).needLanguage = true;
+                                getEmitter().getModel().needLanguage = true;
+                            }
                         }
                         return;
                     }
@@ -276,6 +515,44 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     	write("XML.conversion");
                         getEmitter().emitArguments(node.getArgumentsNode());
                     	return;
+                    }
+                    else if (def.getBaseName().equals(IASLanguageConstants.XMLList))
+                    {
+                        write("XMLList.conversion");
+                        getEmitter().emitArguments(node.getArgumentsNode());
+                        return;
+                    }
+                    else if (def.getQualifiedName().equals(IASLanguageConstants.Object)) {
+                        //'resolveUncertain' always output here
+                        //unless a) there are no arguments
+                        //or b) it is *explicitly* suppressed for 'Object'
+                        if (node.getArgumentNodes().length > 0) {
+                            if (shouldResolveUncertain(nameNode, true)) {
+                                wrapResolve = true;
+                                ((RoyaleJSProject) getProject()).needLanguage = true;
+                                getModel().needLanguage = true;
+                                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                write(ASEmitterTokens.MEMBER_ACCESS);
+                                write("resolveUncertain");
+                                write(ASEmitterTokens.PAREN_OPEN);
+                            }
+                        }
+                    }
+                    else if (nameNode.getNodeID() == ASTNodeID.NamespaceAccessExpressionID && def instanceof FunctionDefinition)
+                    {
+                    	if (fjs.isCustomNamespace((FunctionDefinition)def))
+                    	{
+                    		write(ASEmitterTokens.THIS);
+                    		NamespaceIdentifierNode nin = (NamespaceIdentifierNode)nameNode.getChild(0);
+                    		NamespaceDefinition nsDef = (NamespaceDefinition)nin.resolve(getProject());
+                    		IdentifierNode idNode = (IdentifierNode)nameNode.getChild(1);
+                    		String propName = idNode.getName();
+                			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                			String s = nsDef.getURI();
+                			write(JSRoyaleEmitter.formatNamespacedProperty(s, propName, true));
+                            getEmitter().emitArguments(node.getArgumentsNode());
+                            return;
+                    	}
                     }
                 }
                 else if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID && ((JSRoyaleEmitter)getEmitter()).isProxy(((MemberAccessExpressionNode)nameNode).getLeftOperandNode()) && def == null)
@@ -301,6 +578,14 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             	getWalker().walk(node.getNameNode());
 
                 getEmitter().emitArguments(node.getArgumentsNode());
+    
+                if (postCallAppend != null) {
+                    write(postCallAppend);
+                }
+                //end wrap resolve
+                if (wrapResolve) {
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                }
             }
             else //function-style cast
             {
@@ -311,6 +596,32 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
         {
             fjs.emitSuperCall(node, JSSessionModel.SUPER_FUNCTION_CALL);
         }
+    }
+    
+    
+    private boolean shouldResolveUncertain(IExpressionNode nameNode, boolean forceExplicit) {
+        //default if not avoided globally
+        boolean should = ((RoyaleJSProject)getProject()).config.getJsResolveUncertain();
+        //just in case:
+        if (!(getProject() instanceof RoyaleJSProject)) return false;
+
+        IDocEmitter docEmitter = getEmitter().getDocEmitter();
+        if (docEmitter instanceof JSRoyaleDocEmitter)
+        {
+            JSRoyaleDocEmitter royaleDocEmitter = (JSRoyaleDocEmitter) docEmitter;
+            //look for local boolean toggle, unless forceExplicit is set
+            boolean suppress = !forceExplicit && royaleDocEmitter.getLocalSettingAsBoolean(
+                    JSRoyaleEmitterTokens.SUPPRESS_RESOLVE_UNCERTAIN, !should);
+            //if it is still on, look for sepcific/named 'off' setting based on name node
+            if (!suppress && nameNode !=null) {
+                //check to suppress for indvidual named node
+                if (nameNode instanceof IdentifierNode) {
+                    suppress = royaleDocEmitter.getLocalSettingIncludesString(JSRoyaleEmitterTokens.SUPPRESS_RESOLVE_UNCERTAIN, ((IdentifierNode) nameNode).getName());
+                }
+            }
+            should = !suppress;
+        }
+        return should;
     }
 
 }

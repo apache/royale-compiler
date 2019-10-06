@@ -58,6 +58,19 @@ public class ASTestBase extends TestBase
     }
 
     @Override
+    protected void addDependencies()
+    {
+        if (libraries.size() == 0)
+        {
+        	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
+    		libraries.add(new File(jsSwcPath));
+        	String customSwcPath = FilenameNormalization.normalize("../compiler-jx/target/custom.swc");
+    		libraries.add(new File(customSwcPath));
+        }
+        super.addDependencies();
+    }
+
+    @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
         //sourcePaths.add(new File(FilenameNormalization.normalize(
@@ -192,6 +205,12 @@ public class ASTestBase extends TestBase
     protected IVariableNode getVariable(String code)
     {
         return (IVariableNode) getNode(code, IVariableNode.class);
+    }
+
+    protected IASNode getLocalFunction(String code)
+    {
+        IFunctionNode method = (IFunctionNode) getNode(code, IFunctionNode.class);
+        return (IFunctionNode) findFirstDescendantOfType(method, IFunctionNode.class);
     }
 
 }

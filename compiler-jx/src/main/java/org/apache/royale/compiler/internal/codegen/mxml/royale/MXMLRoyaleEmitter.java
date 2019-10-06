@@ -20,10 +20,6 @@
 package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 
-import static org.apache.royale.abc.ABCConstants.OP_newarray;
-import static org.apache.royale.abc.ABCConstants.OP_pushstring;
-import static org.apache.royale.abc.ABCConstants.OP_pushtrue;
-
 import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
@@ -34,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.royale.abc.semantics.MethodInfo;
@@ -50,6 +47,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingInfo;
@@ -80,6 +78,7 @@ import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -184,8 +183,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         {
         	asEmitterUsedNames.remove(usedName);
         }
-        System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
-        System.out.println(currentClassName + " mxml: " + usedNames.toString());
+        RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
+        if (fjp.config == null || fjp.config.isVerbose())
+        {
+            System.out.println(currentClassName + " as: " + asEmitterUsedNames.toString());
+            System.out.println(currentClassName + " mxml: " + usedNames.toString());
+        }
         usedNames.addAll(asEmitterUsedNames);
 
         boolean foundXML = false;
@@ -203,14 +206,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             String line = lines[i];
     		if (stillSearching)
     		{
-                int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-                if (c != -1)
+                if (provideIndex == -1 || !sawRequires)
                 {
-                    // if zero requires are found, require Language after the
-                    // call to goog.provide
-                    provideIndex = i + 1;
+                    int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+                    if (c != -1)
+                    {
+                        // if zero requires are found, require Language after the
+                        // call to goog.provide
+                        provideIndex = i + 1;
+                    }
                 }
-	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 	            if (c > -1)
 	            {
 	                int c2 = line.indexOf(")");
@@ -243,11 +249,15 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                             if (subDocumentNames.contains(usedName)) continue;
                             if (royaleProject != null)
                             {
+                                if (!isGoogProvided(usedName))
+                                {
+                                    continue;
+                                }
                             	ICompilationUnit cu = royaleProject.resolveQNameToCompilationUnit(usedName);
-                            	if (cu != null && royaleProject.isExternalLinkage(cu))
-                            		continue;
-                            	if (cu == null)
-                            		System.out.println("didn't find CompilationUnit for " + usedName);
+                                if (cu == null)
+                                {
+                                    System.out.println("didn't find CompilationUnit for " + usedName);
+                                }
                             }
                             namesToAdd.add(usedName);
                         }
@@ -301,14 +311,18 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            	Set<String> mixins = royaleProject.mixinClassNames;
 	            	if (mixins.size() > 0)
 	            	{
-		            	String mixinInject = "mixins: [";
+		            	String mixinInject = "\"mixins\": [";
 		            	boolean firstOne = true;
 		            	for (String mixin : mixins)
 		            	{
-		            		if (isExternal(mixin))
-		            			continue;
-		            		if (!firstOne)
-		            			mixinInject += ", ";
+                            if (!isGoogProvided(mixin))
+                            {
+                                continue;
+                            }
+                            if (!firstOne)
+                            {
+                                mixinInject += ", ";
+                            }
 		            		mixinInject += mixin;
 		            		firstOne = false;
 		                    StringBuilder appendString = new StringBuilder();
@@ -330,14 +344,18 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            	Map<String, String> aliases = royaleProject.remoteClassAliasMap;
 	            	if (aliases != null && aliases.size() > 0)
 	            	{
-		            	String aliasInject = sep + "remoteClassAliases: {";
+		            	String aliasInject = sep + "\"remoteClassAliases\": {";
 		            	boolean firstOne = true;
 		            	for (String className : aliases.keySet())
 		            	{
-		            		if (isExternal(className))
-		            			continue;
-		            		if (!firstOne)
-		            			aliasInject += ", ";
+                            if (!isGoogProvided(className))
+                            {
+                                continue;
+                            }
+                            if (!firstOne)
+                            {
+                                aliasInject += ", ";
+                            }
 		            		aliasInject += "\"" + className + "\": ";
 		            		String alias = aliases.get(className);
 		            		aliasInject += "\"" + alias + "\"";
@@ -361,14 +379,16 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                Collection<String> locales = royaleProject.getLocales();
 	                if (locales.size() > 0)
 	                {
-		            	String localeInject = sep + "compiledLocales: [";
+		            	String localeInject = sep + "\"compiledLocales\": [";
 		            	boolean firstOne = true;
 		            	String[] localeNames = new String[locales.size()];
 		            	locales.toArray(localeNames);
 		            	for (String locale : localeNames)
 		            	{
-		            		if (!firstOne)
-		            			localeInject += ", ";
+                            if (!firstOne)
+                            {
+                                localeInject += ", ";
+                            }
 		            		localeInject += "\"" + locale + "\"";
 		            		firstOne = false;
 		            	}
@@ -380,12 +400,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                List<String> bundles = royaleProject.compiledResourceBundleNames;
 	                if (bundles.size() > 0)
 	                {
-		            	String bundleInject = sep + "compiledResourceBundleNames: [";
+		            	String bundleInject = sep + "\"compiledResourceBundleNames\": [";
 		            	boolean firstOne = true;
 		            	for (String bundle : bundles)
 		            	{
-		            		if (!firstOne)
-		            			bundleInject += ", ";
+                            if (!firstOne)
+                            {
+                                bundleInject += ", ";
+                            }
 		            		bundleInject += "\"" + bundle + "\"";
 		            		firstOne = false;
 		            	}
@@ -482,19 +504,26 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
 		if (staticUsedNames.size() > 0)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
-			boolean firstDependency = true;
-			for (String staticName : staticUsedNames)
+			if (staticUsedNames.size() > 1 ||
+					!staticUsedNames.get(0).equals(currentClassName))
 			{
-				if (!firstDependency)
-					sb.append(",");
-				firstDependency = false;
-				sb.append(staticName);
+				StringBuilder sb = new StringBuilder();
+				sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
+				boolean firstDependency = true;
+				for (String staticName : staticUsedNames)
+				{
+					if (currentClassName.equals(staticName))
+						continue;
+					
+					if (!firstDependency)
+						sb.append(",");
+					firstDependency = false;
+					sb.append(staticName);
+				}
+				sb.append("*/");
+				finalLines.add(provideIndex, sb.toString());
+	            addLineToMappings(provideIndex);
 			}
-			sb.append("*/");
-			finalLines.add(provideIndex, sb.toString());
-            addLineToMappings(provideIndex);
 		}
 
     	return Joiner.on("\n").join(finalLines);
@@ -739,6 +768,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     {
         ArrayList<MXMLDescriptorSpecifier> oldDescriptorTree;
         MXMLDescriptorSpecifier oldPropertiesTree;
+        MXMLDescriptorSpecifier oldStateOverrides;
         ArrayList<MXMLEventSpecifier> oldEvents;
         ArrayList<IMXMLScriptNode> oldScripts;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentInstances;
@@ -767,7 +797,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
         oldCurrentPropertySpecifiers = currentPropertySpecifiers;
         currentPropertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
-
+        oldStateOverrides = currentStateOverrides;
+        currentStateOverrides = new MXMLDescriptorSpecifier();
+        
         oldEventCounter = eventCounter;
         eventCounter = 0;
         oldIdCounter = idCounter;
@@ -820,6 +852,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         descriptorTree = oldDescriptorTree;
         propertiesTree = oldPropertiesTree;
+        currentStateOverrides = oldStateOverrides;
         events = oldEvents;
         scripts = oldScripts;
         currentInstances = oldCurrentInstances;
@@ -1174,24 +1207,18 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             data.isStatic = false;
             data.declaredBy = cdef.getQualifiedName();
         }
-
-
-        for (MXMLEventSpecifier event : events)
-        {
-        	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
-        	methodData.add(data);
-        	data.name = event.eventHandler;
-        	data.type = ASEmitterTokens.VOID.getToken();
-    	    data.declaredBy = cdef.getQualifiedName();
-        }
+        
         ArrayList<IMetaTagNode> metadataTagNodes = new ArrayList<IMetaTagNode>();
         for (IMXMLMetadataNode metadataTag : metadataNodes)
         {
         	IMetaTagNode[] tags = metadataTag.getMetaTagNodes();
-        	for (IMetaTagNode tag : tags)
-        	{
-        		metadataTagNodes.add(tag);
-        	}
+        	//tags (MetaTagNodes) can be null if the parent node is empty (or content is commented out)
+        	if (tags != null) {
+                for (IMetaTagNode tag : tags)
+                {
+                    metadataTagNodes.add(tag);
+                }
+            }
         }
         IMetaTagNode[] metaDataTags = new IMetaTagNode[metadataTagNodes.size()];
 
@@ -1202,6 +1229,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         		accessorData,
                 methodData,
                 metadataTagNodes.toArray(metaDataTags));
+	
+		asEmitter.packageFooterEmitter.emitReflectionRegisterInitialStaticFields(
+				formatQualifiedName(cdef.getQualifiedName()),
+				cdef);
+        
         asEmitter.packageFooterEmitter.emitExportProperties(
                 formatQualifiedName(cdef.getQualifiedName()),
                 exportProperties,
@@ -1303,8 +1335,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private void outputBindingInfoAsData(String cname, BindingDatabase bindingDataBase)
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-        .getASEmitter();
-
+                .getASEmitter();
+        
         writeNewline("/**");
         writeNewline(" * @export"); // must export or else GCC will remove it
         writeNewline(" */");
@@ -1313,9 +1345,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
         writeNewline(bindingInfo.size() + ","); // number of bindings
-
+        boolean hadOutput = false;
         for (BindingInfo bi : bindingInfo)
         {
+            if (hadOutput) writeNewline(ASEmitterTokens.COMMA.getToken());
+            hadOutput = true;
             String s;
             IMXMLNode node = bi.node;
             if (node instanceof IMXMLSingleDataBindingNode)
@@ -1325,7 +1359,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
             	if (bdef != null)
             	{
-	            	IDefinition cdef = bdef.getParent();
+	            	//IDefinition cdef = bdef.getParent();
 	            	project.addExportedName(/*cdef.getQualifiedName() + "." + */bdef.getBaseName());
             	}
             }
@@ -1362,8 +1396,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	                String[] parts = s.split("\\.");
 	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
 	                        bi.classDef.getQualifiedName() + ASEmitterTokens.DOUBLE_QUOTE.getToken());
-	                usedNames.add(bi.classDef.getQualifiedName());
-	                staticUsedNames.add(bi.classDef.getQualifiedName());
+	                String qname = bi.classDef.getQualifiedName();
+	                if (!usedNames.contains(qname))
+	                	usedNames.add(qname);
+	                if (!staticUsedNames.contains(qname))
+	                	staticUsedNames.add(qname);
 	                int n = parts.length;
 	                for (int i = 1; i < n; i++)
 	                {
@@ -1391,19 +1428,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                         ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
 
             IExpressionNode destNode = bi.getExpressionNodeForDestination();
-            if (destNode != null)
+            s = bi.getDestinationString();
+            if (destNode != null && s == null)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.append(generateSetterFunction(destNode));
+                sb.append(generateSetterFunction(bi, destNode));
                 writeNewline(sb.toString() + ASEmitterTokens.COMMA.getToken());
             }
             else
                 writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
 
-            s = bi.getDestinationString();
             if (s == null)
             {
-                writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
+                write(ASEmitterTokens.NULL.getToken());
             }
             else if (s.contains("."))
             {
@@ -1416,17 +1453,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     String part = parts[i];
                     write(", " + ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
                 }
-                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+                write(ASEmitterTokens.SQUARE_CLOSE.getToken());
             }
             else
-                writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
-                        ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+                write(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
+                        ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
-
+        
         if (watcherChains != null)
         {
             int count = watcherChains.size();
+            if (hadOutput) {
+                if (count > 0) writeNewline(ASEmitterTokens.COMMA);
+                else writeNewline();
+            }
             for (Entry<Object, WatcherInfoBase> entry : watcherChains)
             {
                 count--;
@@ -1434,37 +1476,70 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 encodeWatcher(watcherInfoBase);
                 if (count > 0) writeNewline(ASEmitterTokens.COMMA);
             }
+        } else {
+            if (hadOutput) writeNewline();
         }
 
         writeNewline( ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
     }
 
-    private String generateSetterFunction(IExpressionNode destNode) {
+    private String generateSetterFunction(BindingInfo bi, IExpressionNode destNode) {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
         	.getASEmitter();
-		String body = asEmitter.stringifyNode(destNode);
-
 		StringBuilder sb = new StringBuilder();
 		sb.append("function (value) { ");
-		int lastGet = body.lastIndexOf("get_");
-		int lastDot = body.lastIndexOf(".");
-		if (lastDot == lastGet - 1)
+		if (destNode instanceof InstructionListNode)
 		{
-			String object = body.substring(0, lastDot);
-			String getter = body.substring(lastDot);
-			String setter = getter.replace("get_", "set_");
-			setter = setter.replace("()", "(value)");
-			body = object + setter;
-			sb.append(body);
+			sb.append(generateDestExpression(bi));
 		}
 		else
 		{
+			String body = asEmitter.stringifyNode(destNode);
 			sb.append(body);
 			sb.append(" = value;");
 		}
-		sb.append(";}");
+		sb.append("}");
 		return sb.toString();
 	}
+    
+    String generateDestExpression(BindingInfo bi)
+    {
+    	StringBuilder sb = new StringBuilder();
+    	MXMLBindingNode node = (MXMLBindingNode)bi.node;
+    	IMXMLBindingAttributeNode destNode = node.getDestinationAttributeNode();
+    	Stack<IASNode> nodeStack = new Stack<IASNode>();
+    	nodeStack.push(node);
+    	IASNode parentNode = node.getParent();
+    	while (!(parentNode instanceof IMXMLInstanceNode))
+    	{
+    		nodeStack.push(parentNode);
+    		parentNode = parentNode.getParent();
+    	}
+    	boolean isXML = parentNode instanceof IMXMLXMLNode;
+    	sb.append("this.");
+    	sb.append(((IMXMLInstanceNode)parentNode).getEffectiveID());
+    	while (nodeStack.size() > 0)
+    	{
+    		IASNode childNode = nodeStack.pop();
+    		int n = parentNode.getChildCount();
+    		int i = 0;
+    		for (; i < n; i++)
+    		{
+    			if (childNode == parentNode.getChild(i))
+    				break;
+    		}
+    		assert i < n;
+    		sb.append("[" + new Integer(i).toString() + "]" );
+    		parentNode = childNode;
+    	}
+    	if (isXML)
+    	{
+    		sb.append(".setAttribute('" + destNode.getName() + "', value);" );
+    	}
+    	else
+    		sb.append("." + destNode.getName() + " = value;");
+    	return sb.toString();
+    }
 
 	private void encodeWatcher(WatcherInfoBase watcherInfoBase)
     {
@@ -1480,19 +1555,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             FunctionWatcherInfo functionWatcherInfo = (FunctionWatcherInfo)watcherInfoBase;
 
             writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + functionWatcherInfo.getFunctionName() +
-                    ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                    ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
             IExpressionNode params[] = functionWatcherInfo.params;
             StringBuilder sb = new StringBuilder();
             sb.append("function() { return [");
             boolean firstone = true;
             for (IExpressionNode param : params)
             {
-                if (firstone)
-                    firstone = false;
-                sb.append(ASEmitterTokens.COMMA.getToken());
+                if (!firstone)
+                {
+                    sb.append(ASEmitterTokens.COMMA.getToken());
+                }
+                firstone = false;
                 sb.append(asEmitter.stringifyNode(param));
             }
             sb.append("]; },");
+            writeNewline(sb.toString());
             outputEventNames(functionWatcherInfo.getEventNames());
             outputBindings(functionWatcherInfo.getBindings());
         }
@@ -1762,7 +1840,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	int n = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (instance.id != null)
+            if (instance.id != null || instance.hasLocalId)
             {
             	n++;
             }
@@ -1997,7 +2075,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             propertiesTree.propertySpecifiers.add(currentInstance);
         }
 
-        instances.add(currentInstance);
+        addInstanceIfNeeded(instances, currentInstance);
 
         IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
         if (pnodes != null)
@@ -2092,7 +2170,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
     }
 
-    public void emitPropertyOverride(IMXMLPropertySpecifierNode propertyNode)
+    private void addInstanceIfNeeded(
+			ArrayList<MXMLDescriptorSpecifier> instances2,
+			MXMLDescriptorSpecifier currentInstance) {
+    	for (MXMLDescriptorSpecifier instance : instances2)
+    		if (instance.id != null && currentInstance.id != null && instance.id.equals(currentInstance.id))
+    			return;
+        instances.add(currentInstance);
+
+	}
+
+	public void emitPropertyOverride(IMXMLPropertySpecifierNode propertyNode)
     {
         RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name propertyOverride = project.getPropertyOverrideClassName();
@@ -2720,7 +2808,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             }
         }
         writeNewline("/**");
-        writeNewline(" * Generated by Apache Royale Compiler from " + sourceName);
+        writeNewline(" * Generated by Apache Royale Compiler from " + sourceName.replace('\\', '/'));
         writeNewline(" * " + cname);
         writeNewline(" *");
         writeNewline(" * @fileoverview");
@@ -2954,16 +3042,23 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
-    	if (inStaticInitializer)
-    		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && !isExternal(name))
-    			staticUsedNames.add(name);
+        if (inStaticInitializer)
+        {
+            if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && isGoogProvided(name))
+            {
+                staticUsedNames.add(name);
+            }
+        }
 
-		if (useName && !usedNames.contains(name) && !isExternal(name))
-			usedNames.add(name);
+        if (useName && !usedNames.contains(name) && isGoogProvided(name))
+        {
+            usedNames.add(name);
+        }
      	return name;
     }
 
-    private void emitComplexInitializers(IASNode node)
+    @SuppressWarnings("incomplete-switch")
+	private void emitComplexInitializers(IASNode node)
     {
     	int n = node.getChildCount();
     	for (int i = 0; i < n; i++)
@@ -2993,16 +3088,17 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	                    write(ASEmitterTokens.MEMBER_ACCESS);
     	                    JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
     	                    .getASEmitter();
-    		    	        ICompilerProject project = getMXMLWalker().getProject();
+    	                    
+    	                    ICompilerProject project = getMXMLWalker().getProject();
     	                    String qname = varnode.getName();
-    	                	if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
-    	                		qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
+    	                		if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
+    	                			qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
     	                    write(qname);
     	                    if (schildID == ASTNodeID.BindableVariableID && !varnode.isConst())
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
-    	                    fjs.getWalker().walk(vnode);
+                            fjs.emitAssignmentCoercion(vnode, varnode.getVariableTypeNode().resolve(getMXMLWalker().getProject()));
     	                    write(ASEmitterTokens.SEMICOLON);
 
     			        }
@@ -3121,9 +3217,15 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (instanceNode instanceof IMXMLStringNode)
     	{
     		IMXMLStringNode stringNode = (IMXMLStringNode)instanceNode;
-            IMXMLLiteralNode valueNode = (IMXMLLiteralNode)(stringNode.getExpressionNode());
-            Object value = valueNode.getValue();
-            return objectToString(value);
+    		IASNode vNode = stringNode.getExpressionNode();
+    		if (vNode instanceof IMXMLLiteralNode)
+    		{
+	            IMXMLLiteralNode valueNode = (IMXMLLiteralNode)vNode;
+	            Object value = valueNode.getValue();
+	            return objectToString(value);
+    		}
+    		else
+    			return "''";
     	}
     	return "";
     }
@@ -3176,14 +3278,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         //System.out.println("mxml implements "+list);
         interfaceList = list.toString();
     }
-
-	boolean isExternal(String className)
+    
+	boolean isGoogProvided(String className)
 	{
         ICompilerProject project = getMXMLWalker().getProject();
-		ICompilationUnit cu = project.resolveQNameToCompilationUnit(className);
-		if (cu == null) return false; // unit testing
-
-		return ((RoyaleJSProject)project).isExternalLinkage(cu);
+		return ((RoyaleJSProject)project).isGoogProvided(className);
 	}
 
 	@Override

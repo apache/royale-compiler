@@ -70,7 +70,7 @@
 
     <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="main" depends="swf, jx, oem, debugger, anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
+    <target name="main" depends="swf, jx, oem, debugger, anttasks, royaleunit.anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
     
@@ -92,6 +92,10 @@
         <ant dir="royale-ant-tasks" target="jar"/>
     </target>
 
+    <target name="royaleunit.anttasks" description="Builds RoyaleUnit ant tasks JAR">
+        <ant dir="royaleunit-ant-tasks" target="jar"/>
+    </target>
+
     <target name="debugger" depends="swfutils" description="Builds FDB JAR">
         <ant dir="debugger" target="jar"/>
     </target>
@@ -106,6 +110,10 @@
 
     <target name="ant.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
         <ant dir="royale-ant-tasks" target="test"/>
+    </target>
+
+    <target name="royaleunit.ant.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
+        <ant dir="royaleunit-ant-tasks" target="test"/>
     </target>
 
     <target name="copyLastSuccessfulBuild" description="Copies last royale-asjs build.">
@@ -130,6 +138,7 @@
         <ant dir="flex-compiler-oem" target="clean"/>
         <ant dir="swfutils" target="clean"/>
         <ant dir="royale-ant-tasks" target="clean"/>
+        <ant dir="royaleunit-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
     </target>
 
@@ -156,6 +165,7 @@
         <ant dir="flex-compiler-oem" target="wipe"/>
         <ant dir="swfutils" target="wipe"/>
         <ant dir="royale-ant-tasks" target="wipe"/>
+        <ant dir="royaleunit-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
@@ -248,6 +258,7 @@
 
         <copy todir="${staging-dir}" includeEmptyDirs="false">
             <fileset dir="${basedir}">
+                <include name=".mvn/extensions.xml"/>
                 <include name="build.xml"/>
                 <include name="build.properties"/>
                 <include name="env-template.properties"/>
@@ -448,6 +459,19 @@
     <target name="stage-ant-tasks">
         <copy todir="${staging-dir}/royale-ant-tasks" includeEmptyDirs="false">
             <fileset dir="${basedir}/royale-ant-tasks">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="target/classes/**"/>
+                <exclude name="target/flex/**"/>
+                <exclude name="target/flash/**"/>
+                <exclude name="target/generated-sources/**"/>
+                <exclude name="target/META-INF/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${staging-dir}/royaleunit-ant-tasks" includeEmptyDirs="false">
+            <fileset dir="${basedir}/royaleunit-ant-tasks">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />

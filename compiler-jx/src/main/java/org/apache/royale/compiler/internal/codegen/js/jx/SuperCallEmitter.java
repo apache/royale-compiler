@@ -73,14 +73,24 @@ public class SuperCallEmitter extends JSSubEmitter
             IClassNode cnode = (IClassNode) node
                     .getAncestorOfType(IClassNode.class);
 
-            IExpressionNode fcNameNode = fcnode.getNameNode();
-            // assume it is memberaccess of the form super.somefunction
-            MemberAccessExpressionNode mae = null;
-            if (fcNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            	mae = (MemberAccessExpressionNode)fcNameNode;
-            if (mae != null
-                    && (mae.getRightOperandNode().getNodeID() == ASTNodeID.GetterID || mae.getRightOperandNode()
-                            .getNodeID() == ASTNodeID.SetterID))
+            boolean isGetterSetter = false;
+            if (fcnode != null)
+            {
+	            IExpressionNode fcNameNode = fcnode.getNameNode();
+	            // assume it is memberaccess of the form super.somefunction
+	            MemberAccessExpressionNode mae = null;
+	            if (fcNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	            	mae = (MemberAccessExpressionNode)fcNameNode;
+	            if (mae != null
+	                    && (mae.getRightOperandNode().getNodeID() == ASTNodeID.GetterID || mae.getRightOperandNode()
+	                            .getNodeID() == ASTNodeID.SetterID))
+	            	isGetterSetter = true;
+            }
+            else if (fnode != null && (fnode.getNodeID() == ASTNodeID.GetterID || fnode.getNodeID() == ASTNodeID.SetterID))
+            {
+            	isGetterSetter = true;            	
+            }
+            if (isGetterSetter)
             {
                 if (cnode == null && thisClass != null)
                     write(getEmitter().formatQualifiedName(
@@ -204,7 +214,6 @@ public class SuperCallEmitter extends JSSubEmitter
         }
 
         boolean usingApply = false;
-        boolean isCustomNamespace = false;
         if (fnode != null && !fnode.isConstructor())
         {
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -226,21 +235,12 @@ public class SuperCallEmitter extends JSSubEmitter
             	if (nsDef.getContainingScope() != null) // was null for flash_proxy in unit test
             		fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
     			String s = nsDef.getURI();
-    			superName = s + "::" + superName;
-    			isCustomNamespace = true;
-            }
-            if (isCustomNamespace)
-            {
-            	write(ASEmitterTokens.SQUARE_OPEN);
-            	write(ASEmitterTokens.SINGLE_QUOTE);
+    			write(JSRoyaleEmitter.formatNamespacedProperty(s, superName, true));
             }
             else
-                write(ASEmitterTokens.MEMBER_ACCESS);
-            write(superName);
-            if (isCustomNamespace)
             {
-            	write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.SQUARE_CLOSE);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(superName);
             }
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.APPLY);

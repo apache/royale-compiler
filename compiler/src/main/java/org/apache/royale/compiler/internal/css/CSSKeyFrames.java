@@ -48,7 +48,8 @@ public class CSSKeyFrames extends CSSNodeBase
 
     private final String id;
 
-    @Override
+    @SuppressWarnings("incomplete-switch")
+	@Override
     public String toString()
     {
         final StringBuilder result = new StringBuilder();

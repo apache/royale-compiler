@@ -20,7 +20,6 @@
 package org.apache.royale.compiler.internal.test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedOutputStream;
@@ -47,6 +46,7 @@ import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
@@ -102,13 +102,15 @@ public class TestBase implements ITestBase
 
     protected File tempDir;
 
-    private List<File> sourcePaths = new ArrayList<File>();
-    private List<File> libraries = new ArrayList<File>();
-    private List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
+    protected List<File> sourcePaths = new ArrayList<File>();
+    protected List<File> libraries = new ArrayList<File>();
+    protected List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 
     @Before
     public void setUp()
     {
+        DefinitionBase.setPerformanceCachingEnabled(true);
+
         errors = new ArrayList<ICompilerProblem>();
 
         if (project == null)
@@ -149,6 +151,7 @@ public class TestBase implements ITestBase
     @After
     public void tearDown()
     {
+        DefinitionBase.setPerformanceCachingEnabled(false);
         backend = null;
         writer = null;
     }
@@ -692,7 +695,7 @@ public class TestBase implements ITestBase
         	String jsSwcPath = FilenameNormalization.normalize("../compiler-externc/target/js.swc");
     		libraries.add(new File(jsSwcPath));
         	String customSwcPath = FilenameNormalization.normalize("../compiler/target/custom.swc");
-    		libraries.add(new File(customSwcPath));        	
+    		libraries.add(new File(customSwcPath));
         }
         addNamespaceMappings(namespaceMappings);
 
