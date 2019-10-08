@@ -39,6 +39,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.common.JSModuleRequireDescription;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -52,7 +53,6 @@ import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.utils.NativeUtils;
-import org.apache.royale.compiler.utils.NodeJSUtils;
 
 public class PackageHeaderEmitter extends JSSubEmitter implements
         ISubEmitter<IPackageDefinition>
@@ -273,7 +273,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 .getCompilationUnitForDefinition(type != null ? type : otherMainDefinition);
         ArrayList<String> requiresList = royaleProject.getRequires(cu);
         ArrayList<String> interfacesList = royaleProject.getInterfaces(cu);
-        ArrayList<String> externalRequiresList = royaleProject.getExternalRequires(cu);
+        ArrayList<JSModuleRequireDescription> externalRequiresList = royaleProject.getExternalRequires(cu);
 
         String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
@@ -442,34 +442,41 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         return emitsInterfaces;
     }
 
-    private boolean emitExternalRequires(List<String> externalRequiresList, List<String> writtenRequires)
+    private boolean emitExternalRequires(List<JSModuleRequireDescription> externalRequiresList, List<String> writtenRequires)
     {
         boolean emitsExternalRequires = false;
         if (externalRequiresList != null)
         {
             Collections.sort(externalRequiresList);
-            for (String nodeJSModuleName : externalRequiresList)
+            for (JSModuleRequireDescription m : externalRequiresList)
             {
-                if (writtenRequires.indexOf(nodeJSModuleName) == -1)
+                // use the qname, if the definition is not in a package
+                String variableName = m.qname;
+                int firstDot = variableName.indexOf('.');
+                if(firstDot != -1)
                 {
-                    String moduleVariableName = NodeJSUtils.convertFromDashesToCamelCase(nodeJSModuleName);
-                    /* var x = require('x');\n */
+                    // otherwise, use the first part of the package name
+                    variableName = variableName.substring(0, firstDot);
+                }
+                if (writtenRequires.indexOf(m.moduleName) == -1)
+                {
+                    /* var xyz = require('xyz');\n */
                     /* var someModule = require('some-module');\n */
                     write(ASEmitterTokens.VAR);
                     write(ASEmitterTokens.SPACE);
-                    write(moduleVariableName);
+                    write(variableName);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.EQUAL);
                     write(ASEmitterTokens.SPACE);
                     write(NodeEmitterTokens.REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(nodeJSModuleName);
+                    write(m.moduleName);
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
 
-                    writtenRequires.add(nodeJSModuleName);
+                    writtenRequires.add(m.moduleName);
 
                     emitsExternalRequires = true;
                 }
