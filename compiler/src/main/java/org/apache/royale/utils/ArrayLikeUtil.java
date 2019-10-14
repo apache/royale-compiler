@@ -323,6 +323,8 @@ public class ArrayLikeUtil
                             if (targetType == null) {
                                 if (left instanceof IMemberAccessExpressionNode || left instanceof IDynamicAccessNode) {
                                     left = ((IBinaryOperatorNode) left).getLeftOperandNode();
+                                } else {
+                                    left = null;
                                 }
                             } else {
                                 if (SemanticUtils.isXMLish(targetType, project)) {
