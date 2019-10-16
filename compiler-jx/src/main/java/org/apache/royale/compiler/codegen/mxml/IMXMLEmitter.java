@@ -47,6 +47,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 import org.apache.royale.compiler.visitor.IBlockWalker;
 
@@ -145,4 +147,9 @@ public interface IMXMLEmitter extends IEmitter
 
 	void emitRemoteObject(IMXMLRemoteObjectNode node);
 
+    //--------------------------------------------------------------------------
+
+    void emitWebServiceMethod(IMXMLWebServiceOperationNode node);
+
+	void emitWebService(IMXMLWebServiceNode node);
 }

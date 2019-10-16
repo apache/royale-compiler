@@ -92,7 +92,7 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                        if (s.contains("'"))
 	                            s = "\"" + s + "\"";
 	                        else
-	                            s = "'" + s + "'";
+	                            s = "'" + s.trim() + "'";
 	                    }
 	                    else
 	                    {
@@ -135,7 +135,7 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                    char c = s.charAt(0);
 	                    if (c == '"')
 	                    {
-	                        s = s.substring(1, s.length() - 1);
+	                        s = s.substring(1, s.length() - 1).trim();
 	                        s = s.replace("\"", "__QUOTE_PLACEHOLDER__");
 	                        s = "\"" + s + "\"";
 	                    }

@@ -43,6 +43,10 @@ import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.internal.tree.as.ConfigConditionBlockNode;
+import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -61,6 +65,16 @@ public class EmitterUtils
             IASNode child = scope.getChild(i);
             if (child instanceof ITypeNode)
                 return (ITypeNode) child;
+            else if (child.getNodeID() == ASTNodeID.ConfigBlockID)
+            {
+            	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)child;
+            	if (configNode.getChildCount() > 0)
+            	{
+            		child = configNode.getChild(0);
+                    if (child instanceof ITypeNode)
+                        return (ITypeNode) child;
+            	}
+            }
         }
         return null;
     }

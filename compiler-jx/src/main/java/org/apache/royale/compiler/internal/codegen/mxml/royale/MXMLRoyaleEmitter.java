@@ -22,6 +22,8 @@ package org.apache.royale.compiler.internal.codegen.mxml.royale;
 
 import java.io.File;
 import java.io.FilterWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,6 +82,7 @@ import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -92,6 +95,7 @@ import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.royale.swc.ISWC;
 
 import com.google.common.base.Joiner;
+import com.google.common.io.Files;
 import com.google.debugging.sourcemap.FilePosition;
 
 /**
@@ -463,6 +467,103 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            			}
 	            		}
 	            	}
+	            	String contextRoot = royaleProject.getServciesContextRoot();
+	            	if (contextRoot != null)
+	            	{
+    					String contextInject = sep + "\"contextRoot\"" + ": ";
+    					contextInject += "'" + contextRoot.trim() + "'";
+		            	sep = ",\n";
+		            	infoInject += contextInject;
+	            	}
+	            	String servicesPath = royaleProject.getServicesXMLPath();
+	            	if (servicesPath != null)
+	            	{
+	            		File servicesFile = new File(servicesPath);
+	            		if (!servicesFile.exists())
+	            		{
+	            			FileNotFoundProblem prob = new FileNotFoundProblem(servicesPath);
+	            			royaleProject.getProblems().add(prob);
+	            		}
+	            		else
+	            		{
+	            			// should use XML parser to skip over comments
+	            			// but this will work for now
+	            	        List<String> fileLines = null;
+	            			try {
+	            				fileLines = Files.readLines(new File(servicesPath), Charset.forName("utf8"));
+	            			} catch (IOException e) {
+	            				// TODO Auto-generated catch block
+	            				e.printStackTrace();
+	            			}
+	            			StringBuffer sb = new StringBuffer();
+	            			boolean inComment = false;
+	            			boolean inChannels = false;
+	            			for (String s : fileLines)
+	            			{
+	            	    		s = s.trim();
+	            	    		if (s.contains("<!--"))
+	            	    		{
+	            	    			if (!s.contains("-->"))
+	            	    				inComment = true;
+	            	    			continue;
+	            	    		}
+	            	    		if (inComment)
+	            	    		{
+	            	    			if (s.contains("-->"))
+	            	    				inComment = false;
+	            	    			continue;
+	            	    		}
+	            				if (s.contains("service-include"))
+	            				{
+	            					int c = s.indexOf("file-path");
+	            					c = s.indexOf("\"", c);
+	            					int c2 = s.indexOf("\"", c + 1);
+	            					String filePath = s.substring(c + 1, c2);
+	            					File subFile = new File(servicesFile.getParentFile(), filePath);
+	    	            	        List<String> subfileLines;
+	    	            			try {
+	    	            				subfileLines = Files.readLines(subFile, Charset.forName("utf8"));
+		    	            			s = getSubFileContent(subfileLines);
+		    	            			sb.append(s);
+	    	            			} catch (IOException e) {
+	    	            				// TODO Auto-generated catch block
+	    	            				e.printStackTrace();
+	    	            			}
+	            				}
+	            				else 
+	            				{
+	            					sb.append(s + " ");
+	            					if (s.contains("<channel-definition"))
+	            						inChannels = true;
+	            					if (s.contains("<endpoint"))
+	            						inChannels = false;
+	            					if (inChannels && s.contains("class"))
+	            					{
+		            					int c = s.indexOf("class");
+		            					c = s.indexOf("\"", c);
+		            					int c2 = s.indexOf("\"", c + 1);
+		            					String className = s.substring(c + 1, c2);
+		    		                    StringBuilder appendString = new StringBuilder();
+		    		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		    		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		    		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		    		                    appendString.append(className);
+		    		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		    		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		    		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+		    	                        finalLines.add(endRequires, appendString.toString());
+		    	                        addLineToMappings(endRequires);
+		                                endRequires++;
+	            					}
+	            				}
+	            			}
+        					String servicesInject = sep + "\"servicesConfig\"" + ": ";
+        					servicesInject += "'" + sb.toString().trim() + "'";
+    		            	sep = ",\n";
+    		            	infoInject += servicesInject;
+
+	            		}
+	            	}
 	            	infoInject += "}};";
                     finalLines.add(infoInject);
                     int newLineIndex = 0;
@@ -529,7 +630,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	return Joiner.on("\n").join(finalLines);
     }
 
-    public void startMapping(ISourceLocation node)
+    private String getSubFileContent(List<String> subfileLines) {
+    	StringBuffer sb = new StringBuffer();
+    	for (String s : subfileLines)
+    	{
+    		s = s.trim();
+    		if (s.startsWith("<?xml"))
+    			continue;
+    		else
+    		{
+    			sb.append(s + " ");
+    		}
+    	}
+    	return sb.toString();
+	}
+
+	public void startMapping(ISourceLocation node)
     {
         startMapping(node, node.getLine(), node.getColumn());
     }
@@ -3374,6 +3490,123 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 		{
 			IASNode child = node.getChild(i);
 			if (child.getNodeID() == ASTNodeID.MXMLRemoteObjectMethodID)
+			{
+		        MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
+		        MXMLDescriptorSpecifier currentInstance =
+		        	currentPropertySpecifier.propertySpecifiers.get(currentPropertySpecifier.propertySpecifiers.size() - 1);
+
+		        if (objectSpecifier == null)
+		        {
+		        	propertySpecifier = new MXMLDescriptorSpecifier();
+		        	propertySpecifier.isProperty = true;
+		        	propertySpecifier.name = "operations";
+		        	propertySpecifier.parent = currentInstance;
+
+			        if (currentInstance != null)
+			        	currentInstance.propertySpecifiers.add(propertySpecifier);
+			        objectSpecifier = new MXMLDescriptorSpecifier();
+			        objectSpecifier.isProperty = false;
+			        objectSpecifier.name = formatQualifiedName(IASLanguageConstants.Object);
+			        objectSpecifier.parent = propertySpecifier;
+			        propertySpecifier.propertySpecifiers.add(objectSpecifier);
+			        instances.add(objectSpecifier);
+		        }
+	            moveDown(false, objectSpecifier, null);
+                getMXMLWalker().walk(child); // RemoteObjectMethod
+	            moveUp(false, true);
+			}
+		}
+	}
+	
+	@Override
+	public void emitWebServiceMethod(IMXMLWebServiceOperationNode node) {
+        MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("i");
+        String propName = null;
+        int l = node.getChildCount();
+        for (int k = 0; k < l; k++)
+        {
+        	IASNode child = node.getChild(k);
+        	if (child.getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+        	{
+        		IMXMLPropertySpecifierNode propNode = (IMXMLPropertySpecifierNode)child;
+        		if (propNode.getName().equals("name"))
+        		{
+        			// assume StringNode with LiteralNode
+        			IMXMLStringNode literalNode = (IMXMLStringNode)propNode.getChild(0);
+        			propName = literalNode.getValue();
+        			break;
+        		}
+        	}
+        }
+    	MXMLDescriptorSpecifier propertySpecifier = new MXMLDescriptorSpecifier();
+    	propertySpecifier.isProperty = true;
+    	propertySpecifier.name = propName;
+    	propertySpecifier.parent = currentInstance;
+    	currentInstance.propertySpecifiers.add(propertySpecifier);
+        moveDown(false, null, propertySpecifier);
+
+		emitInstance(node);
+
+		moveUp(false, false);
+    	// build out the argument list if any
+    	int n = node.getChildCount();
+    	for (int i = 0; i < n; i++)
+    	{
+    		IASNode childNode = node.getChild(i);
+    		if (childNode.getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+    		{
+    			IMXMLPropertySpecifierNode propNode = (IMXMLPropertySpecifierNode)childNode;
+    			if (propNode.getName().equals("arguments"))
+    			{
+    				ArrayList<String> argList = new ArrayList<String>();
+    				childNode = propNode.getChild(0); // this is an MXMLObjectNode
+    				n = childNode.getChildCount();
+    				for (i = 0; i < n; i++)
+    				{
+    					IASNode argNode = childNode.getChild(i);
+    					propNode = (IMXMLPropertySpecifierNode)argNode;
+    					argList.add(propNode.getName());
+    				}
+    				if (argList.size() > 0)
+    				{
+    					StringBuilder list = new StringBuilder();
+    					list.append("[");
+    					int m = argList.size();
+    					for (int j = 0; j < m; j++)
+    					{
+    						if (j > 0)
+    							list.append(",");
+    						list.append("'" + argList.get(j) + "'");
+    					}
+    					list.append("]");
+
+    			        MXMLDescriptorSpecifier operationInstance = propertySpecifier.propertySpecifiers.get(0);
+
+    			        MXMLDescriptorSpecifier argListSpecifier = new MXMLDescriptorSpecifier();
+    			        argListSpecifier.isProperty = true;
+    			        argListSpecifier.name = "argumentNames";
+    			        argListSpecifier.parent = operationInstance;
+    			        argListSpecifier.value = list.toString();
+				        if (operationInstance != null)
+				        	operationInstance.propertySpecifiers.add(argListSpecifier);
+    				}
+    				break;
+    			}
+    		}
+    	}
+	}
+
+	@Override
+	public void emitWebService(IMXMLWebServiceNode node) {
+		emitInstance(node);
+		// now search for Operations, and add an Object that contains them
+		int n = node.getChildCount();
+		MXMLDescriptorSpecifier objectSpecifier = null;
+		MXMLDescriptorSpecifier propertySpecifier = null;
+		for (int i = 0; i < n; i++)
+		{
+			IASNode child = node.getChild(i);
+			if (child.getNodeID() == ASTNodeID.MXMLWebServiceOperationID)
 			{
 		        MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
 		        MXMLDescriptorSpecifier currentInstance =

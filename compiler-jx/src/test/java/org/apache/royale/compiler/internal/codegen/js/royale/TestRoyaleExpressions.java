@@ -536,6 +536,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentCustomNamespaceNoUseNamespace()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "import custom.custom_namespace;public class B {custom_namespace function set b(value:Number):void {}; public function c() { custom_namespace::b = 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.http_$$ns_apache_org$2017$custom$namespace__b = 1");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_setterAssignmentWithThis()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(

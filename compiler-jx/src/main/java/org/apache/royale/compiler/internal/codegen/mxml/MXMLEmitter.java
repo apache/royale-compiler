@@ -55,6 +55,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
 import org.apache.royale.compiler.visitor.IBlockWalker;
 import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 
@@ -432,6 +434,18 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
 
 	@Override
 	public void emitRemoteObject(IMXMLRemoteObjectNode node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void emitWebServiceMethod(IMXMLWebServiceOperationNode node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void emitWebService(IMXMLWebServiceNode node) {
 		// TODO Auto-generated method stub
 		
 	}

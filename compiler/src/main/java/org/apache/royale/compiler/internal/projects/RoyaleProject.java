@@ -1565,8 +1565,8 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 //            return;
 //        }
 //        
-//        this.servicesXMLPath = path;
-//        this.servicesContextRoot = contextRoot;
+        this.servicesXMLPath = path;
+        this.servicesContextRoot = contextRoot;
 //        
 //        if (path != null)
 //        {

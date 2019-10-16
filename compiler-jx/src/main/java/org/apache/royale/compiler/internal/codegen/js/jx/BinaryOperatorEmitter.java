@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
@@ -35,6 +36,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
@@ -242,7 +244,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 {
                 	DynamicAccessNode dyn = (DynamicAccessNode)rnode;
                 	ITypeDefinition type = dyn.getRightOperandNode().resolveType(getProject());
-                	if (type.isInstanceOf("String", getProject()) || type.isInstanceOf("Object", getProject()))
+                	if (type.isInstanceOf("String", getProject()) || type.isInstanceOf("Object", getProject())
+                			|| type == getProject().getBuiltinType(BuiltinType.ANY_TYPE))
         			{
                 		String field;
                     	if (node.getNodeID() == ASTNodeID.Op_AssignId)
@@ -502,6 +505,10 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				write(ASEmitterTokens.SQUARE_CLOSE);
 				write(ASEmitterTokens.MEMBER_ACCESS);
 				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode());
+			}
+			else if (isAssignment && node.getLeftOperandNode() instanceof NamespaceAccessExpressionNode)
+			{
+				getWalker().walk(node.getLeftOperandNode().getChild(1));
 			}
             else getWalker().walk(node.getLeftOperandNode());
             startMapping(node, node.getLeftOperandNode());
