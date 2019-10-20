@@ -813,6 +813,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
+        fjs.setBuilder(getBuilder());
         fjs.getModel().setCurrentClass(cdef);
 
         // visit tags

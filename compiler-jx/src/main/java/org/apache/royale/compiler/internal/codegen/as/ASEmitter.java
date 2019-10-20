@@ -86,12 +86,12 @@ public class ASEmitter implements IASEmitter, IEmitter
 
     private StringBuilder builder;
 
-    protected StringBuilder getBuilder()
+    public StringBuilder getBuilder()
     {
         return builder;
     }
 
-    protected void setBuilder(StringBuilder sb)
+    public void setBuilder(StringBuilder sb)
     {
         builder = sb;
     }
