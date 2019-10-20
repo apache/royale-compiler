@@ -1,3 +1,12 @@
+
+Apache Royale Compiler 0.9.7
+=================
+
+ - Definitions containing [JSModule] with a custom module name are no longer required to use strict camelCase naming scheme.
+ - Added Flex emulation RPC WebService partial support
+ - Fix add event handler code in renderers and inline Components
+ 
+
 Apache Royale Compiler 0.9.6
 =================
 
