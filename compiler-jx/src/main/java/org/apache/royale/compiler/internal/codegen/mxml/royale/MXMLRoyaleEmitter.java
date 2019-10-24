@@ -131,7 +131,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private int bindingCounter;
 
     private boolean inMXMLContent;
-    private boolean inStatesOverride;
+    private Stack<IMXMLStateNode> inStatesOverride = new Stack<IMXMLStateNode>();
     private boolean makingSimpleArray;
     private boolean inStaticInitializer;
 
@@ -2117,9 +2117,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @Override
     public void emitEventSpecifier(IMXMLEventSpecifierNode node)
     {
-    	if (isStateDependent(node) && !inStatesOverride)
-    		return;
-
+    	IMXMLStateNode currentState = null;
+    	if (!inStatesOverride.empty())
+    		currentState = inStatesOverride.peek();
+        if (isStateDependent(node, currentState))
+            return;
+    		
         IDefinition cdef = node.getDefinition();
 
         MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("i");
@@ -2140,7 +2143,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
 	    if (currentDescriptor != null)
 	        currentDescriptor.eventSpecifiers.add(eventSpecifier);
-	    else if (!inStatesOverride) // in theory, if no currentdescriptor must be top tag event
+	    else if (inStatesOverride.empty()) // in theory, if no currentdescriptor must be top tag event
 	        propertiesTree.eventSpecifiers.add(eventSpecifier);
         events.add(eventSpecifier);
     }
@@ -2148,7 +2151,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @Override
     public void emitInstance(IMXMLInstanceNode node)
     {
-        if (isStateDependent(node) && !inStatesOverride)
+    	IMXMLStateNode currentState = null;
+    	if (!inStatesOverride.empty())
+    		currentState = inStatesOverride.peek();
+        if (isStateDependent(node, currentState))
             return;
 
         ASTNodeID nodeID = node.getNodeID();
@@ -2233,12 +2239,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             List<IMXMLNode> snodes = classDefinitionNode.getNodesDependentOnState(stateNode.getStateName());
             if (snodes != null)
             {
-                for (int i=snodes.size()-1; i>=0; --i)
+            	inStatesOverride.push(stateNode);
+                for (int i=0; i<snodes.size(); i++)
                 {
                     IMXMLNode inode = snodes.get(i);
                     if (inode.getNodeID() == ASTNodeID.MXMLInstanceID)
                     {
-                        emitInstanceOverride((IMXMLInstanceNode)inode);
+                        emitInstanceOverride((IMXMLInstanceNode)inode, stateNode);
                     }
                 }
                 // Next process the non-instance overrides dependent on this state.
@@ -2268,6 +2275,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                         }
                     }
                 }
+            	inStatesOverride.pop();
             }
 
             moveUp(false, false);
@@ -2395,8 +2403,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
      */
     void emitEventOverride(IMXMLEventSpecifierNode eventNode)
     {
-        inStatesOverride = true;
-
         MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
         RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name eventOverride = project.getEventOverrideClassName();
@@ -2449,14 +2455,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         			eventHandler + ASEmitterTokens.SINGLE_QUOTE.getToken() +
         		ASEmitterTokens.PAREN_CLOSE.getToken();
         setEvent.propertySpecifiers.add(handler);
-
-        inStatesOverride = false;
     }
 
-    public void emitInstanceOverride(IMXMLInstanceNode instanceNode)
+    public void emitInstanceOverride(IMXMLInstanceNode instanceNode, IMXMLStateNode state)
     {
-        inStatesOverride = true;
-
         MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
         RoyaleProject project = (RoyaleProject) getMXMLWalker().getProject();
         Name instanceOverrideName = project.getInstanceOverrideClassName();
@@ -2558,7 +2560,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (sib == instanceNode)
                 break;
 
-            if (sib instanceof IMXMLInstanceNode && !isStateDependent(sib))
+            if (sib instanceof IMXMLInstanceNode && !isStateDependent(sib, state))
             {
                 prevStatelessSibling = sib;
             }
@@ -2588,8 +2590,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             rel.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + relativeToPropertyValue + ASEmitterTokens.SINGLE_QUOTE.getToken();
             addItems.propertySpecifiers.add(rel);
         }
-
-        inStatesOverride = false;
     }
 
     private String nameToString(Name name)
@@ -2601,18 +2601,41 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         else s = name.getBaseName();
         return s;
     }
+    
+    /**
+     * Determines whether a string matches a state's name or group name.
+     */
+    protected boolean inStateOrStateGroup(String name, IMXMLStateNode state)
+    {
+    	if (state == null) return false;
+    	
+    	if (name.contentEquals(state.getStateName()))
+    		return true;
+    	
+    	String[] groups = state.getStateGroups();
+    	if (groups != null)
+    	{
+        	for (String s : groups)
+        	{
+        		if (name.contentEquals(s))
+        			return true;
+        	}
+    	}
+    	return false;
+    }
+    
     /**
      * Determines whether a node is state-dependent.
      * TODO: we should move to IMXMLNode
      */
-    protected boolean isStateDependent(IASNode node)
+    protected boolean isStateDependent(IASNode node, IMXMLStateNode currentState)
     {
         if (node instanceof IMXMLSpecifierNode)
         {
             String suffix = ((IMXMLSpecifierNode)node).getSuffix();
-            return suffix != null && suffix.length() > 0;
+            return suffix != null && suffix.length() > 0 && !inStateOrStateGroup(suffix, currentState);
         }
-        else if (isStateDependentInstance(node))
+        else if (isStateDependentInstance(node, currentState))
             return true;
         return false;
     }
@@ -2620,12 +2643,21 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     /**
      * Determines whether the geven node is an instance node, as is state dependent
      */
-    protected boolean isStateDependentInstance(IASNode node)
+    protected boolean isStateDependentInstance(IASNode node, IMXMLStateNode currentState)
     {
         if (node instanceof IMXMLInstanceNode)
         {
             String[] includeIn = ((IMXMLInstanceNode)node).getIncludeIn();
             String[] excludeFrom = ((IMXMLInstanceNode)node).getExcludeFrom();
+            if (includeIn != null && currentState != null)
+            	for (String s : includeIn)
+            		if (inStateOrStateGroup(s, currentState)) return false;
+            if (excludeFrom != null && currentState != null)
+            {
+            	for (String s : excludeFrom)
+            		if (inStateOrStateGroup(s, currentState)) return true;
+            	return false;
+            }
             return includeIn != null || excludeFrom != null;
         }
         return false;
@@ -2661,7 +2693,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         if (isDataboundProp(node))
             return;
 
-        if (isStateDependent(node))
+        if (isStateDependent(node, null))
             return;
 
         IDefinition cdef = node.getDefinition();
