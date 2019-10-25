@@ -29,16 +29,7 @@ import java.util.List;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
-import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
-import org.apache.royale.compiler.definitions.IGetterDefinition;
-import org.apache.royale.compiler.definitions.IInterfaceDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.IPackageDefinition;
-import org.apache.royale.compiler.definitions.IParameterDefinition;
-import org.apache.royale.compiler.definitions.ISetterDefinition;
-import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -358,7 +349,22 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
             
             IDefinition anyDef = base.getContainedScope().getPropertyFromDef(project, base, this.getBaseName(), new PrivatePredicate(!project.getAllowPrivateNameConflicts()), false);
             if (anyDef != null) // there might be a variable or a function in a different namespace (private vs protected)
-            	project.getProblems().add(new ConflictingDefinitionProblem(this.getFunctionNode(), this.getBaseName(), anyDef.getParent().getQualifiedName()));
+            {
+                if (this instanceof IAccessorDefinition) {
+                    //cover cases between getter and setter
+                    boolean otherIsGetter = anyDef instanceof IGetterDefinition;
+                    if (this instanceof IGetterDefinition) {
+                        if (!otherIsGetter) {
+                            return null;
+                        }
+                    } else {
+                        if (otherIsGetter) {
+                            return null;
+                        }
+                    }
+                }
+                project.getProblems().add(new ConflictingDefinitionProblem(this.getFunctionNode(), this.getBaseName(), anyDef.getParent().getQualifiedName()));
+            }
         }
         return null;
     }

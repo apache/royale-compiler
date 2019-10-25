@@ -29,7 +29,7 @@ import org.apache.royale.compiler.tree.as.IASNode;
 public final class ConflictingDefinitionProblem extends SemanticProblem
 {
     public static final String DESCRIPTION =
-        "A conflict exists with inherited definition ${declName} in class ${className}.";
+        "A conflict exists with ${location} definition ${declName} in class ${className}.";
 
     public static final int errorCode = 1554;
 
@@ -38,8 +38,19 @@ public final class ConflictingDefinitionProblem extends SemanticProblem
         super(site);
         this.declName = declName;
         this.className = className;
+        this.location = "inherited";
+    }
+    
+    public ConflictingDefinitionProblem(IASNode site, String declName, String className, boolean localOnly)
+    {
+        super(site);
+        this.declName = declName;
+        this.className = className;
+        if (localOnly) this.location = "local";
+        else this.location = "inherited";
     }
     
     public final String declName;
     public final String className;
+    public final String location;
 }

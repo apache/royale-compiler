@@ -56,6 +56,7 @@ import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
@@ -939,7 +940,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
         // code model has some peculiar ideas about what makes a function a constructor or not
         boolean looks_like_ctor = func.isConstructor();
-        looks_like_ctor |= func.getBaseName() != null && this.className != null && func.getBaseName().equals(this.className.getBaseName());
+        looks_like_ctor = looks_like_ctor || ( func.getBaseName() != null && this.className != null && func.getBaseName().equals(this.className.getBaseName()) );
 
         if (! looks_like_ctor && (func.getBaseName() != null))
         {
@@ -999,7 +1000,38 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         }
         else if( !func.isStatic() )
         {
-            // We have to find the (potentially) overriden function whether we are an override or
+            //check conflicting language namespaces
+            if (func.getNamespaceReference().isLanguageNamespace()) {
+                IDefinitionSet others = func.getContainingScope().getLocalDefinitionSetByName(func.getBaseName());
+                if (others.getSize() > 1) {
+                    for (int i=0;i< others.getSize(); i++) {
+                        IDefinition other = others.getDefinition(i);
+                        if (other == func) continue;
+                        if (other.getNamespaceReference().isLanguageNamespace()) {
+                            if (!SemanticUtils.isGetterSetterPair(func, other, classScope.getProject())) {
+                                boolean issueProblem = true;
+                                if (func instanceof IAccessorDefinition) {
+                                    if (((IAccessorDefinition)func).isProblematic()) issueProblem = false;
+                                    ((IAccessorDefinition)func).setIsProblematic(true);
+                                    if (other instanceof IAccessorDefinition) {
+                                        if (((IAccessorDefinition)other).isProblematic()) issueProblem = false;
+                                        //don't explicitly set it as problematic here, that will happen when it undergoes its own checks
+                                    }
+                                }
+                                if (issueProblem) {
+                                    if (other instanceof IFunctionDefinition)
+                                        problems.add(new DuplicateFunctionDefinitionProblem(func.getFunctionNode(), func.getBaseName()));
+                                    else {
+                                        //in legacy compiler, this is also reported as a DuplicateFuncitonDefinitionProblem, but this seems more correct:
+                                        problems.add(new ConflictingDefinitionProblem(func.getFunctionNode(), func.getBaseName(), this.classDefinition.getQualifiedName(), true));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // We have to find the (potentially) overridden function whether we are an override or
             // not/
             FunctionDefinition override = func.resolveOverriddenFunction(classScope.getProject());
             if( func.isOverride() )
@@ -1030,8 +1062,12 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     func.setOverride();
                 else
                 {
+                    boolean ignore = false;
+                    if (classScope.getProject().getAllowPrivateNameConflicts()) {
+                        if (override.isPrivate()) ignore = true;
+                    }
                     // found overriden function, but function not marked as override
-                    problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
+                    if (!ignore) problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
                 }
             }
         }

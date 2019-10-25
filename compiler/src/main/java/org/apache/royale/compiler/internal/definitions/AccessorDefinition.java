@@ -31,6 +31,7 @@ import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
+import org.apache.royale.compiler.problems.DuplicateFunctionDefinitionProblem;
 import org.apache.royale.compiler.problems.UnresolvedNamespaceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
@@ -145,6 +146,8 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
 
         if (definitionSet == null)
             return null;
+        
+        final boolean isCustomNamespace = !isBindable && !((NamespaceDefinition) thisNamespaceDef).isLanguageNamespace();
 
         final int n = definitionSet.getSize();
         for (int i = 0; i < n; i++)
@@ -175,15 +178,73 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
                          * one of the protected methods, and it was legal to have a public getter with
                          * a protected setter and other combinations like that.  Either both
                          * have to be in the bindable namespace, or both are not. */
-                        if ((isBindable && testBindable) ||
-                                (!isBindable && !testBindable))
-                            return (AccessorDefinition)definition;
+                        //follow-up: (re mismatched names) The above was true for legacy Flex compiler, but is actually not currently true for ASC 2.0
+                        //there are benefits to matching the legacy behavior though.
+                        //for custom namespaces however, they must match
+                        if (isBindable && testBindable) return (AccessorDefinition)definition;
+                        
+                        if (!isBindable && !testBindable) {
+                            if (isCustomNamespace) {
+                                //it does need to match precisely
+                                if (thisNamespaceDef.equals(testNamespaceDef))
+                                    return (AccessorDefinition)definition;
+                            } else {
+                                //match loosely based on any language namespace, but check for local conflicts first
+                                if (definition.getNamespaceReference().isLanguageNamespace()) {
+                                    if (!hasConflictingLanguageNSDefinition(definitionSet, this, project))
+                                        return (AccessorDefinition) definition;
+                                    else return null;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
 
         return null;
+    }
+    
+    public boolean isProblematic() {
+        return problematic;
+    }
+    
+    public void setIsProblematic(boolean value) {
+        problematic = value;
+    }
+    
+    private boolean problematic;
+    private boolean hasConflictingLanguageNSDefinition(IDefinitionSet definitionSet , IAccessorDefinition def, ICompilerProject project) {
+        final boolean isGetter = def instanceof IGetterDefinition;
+        final int size = definitionSet.getSize();
+        int defIndex = -1;
+        for (int i=0; i<size; i++) {
+            IDefinition localDef = definitionSet.getDefinition(i);
+            if (!(localDef instanceof IAccessorDefinition)) continue;
+            IAccessorDefinition check = (IAccessorDefinition) localDef;
+            if (check == def) {
+                defIndex = i;
+                break;
+            }
+        }
+        if (defIndex == -1) return false;
+        for (int i=0; i<defIndex; i++) {
+            IDefinition localDef = definitionSet.getDefinition(i);
+            if (!(localDef instanceof IAccessorDefinition)) continue;
+            IAccessorDefinition check = (IAccessorDefinition) localDef;
+            boolean validCheck = isGetter ? check instanceof IGetterDefinition : check instanceof ISetterDefinition;
+            if (!validCheck) continue;
+            if (check.getNamespaceReference().isLanguageNamespace()) {
+                if (!problematic) {
+                    ((AccessorDefinition) check).problematic = true;
+                    //checking occurs twice, don't add multiple duplicate problems for the same check
+                    problematic = true;
+                    project.getProblems().add(new DuplicateFunctionDefinitionProblem(getFunctionNode().getNameExpressionNode(), this.getBaseName()));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

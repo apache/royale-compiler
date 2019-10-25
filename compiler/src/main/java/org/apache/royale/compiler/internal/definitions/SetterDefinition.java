@@ -23,6 +23,7 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 public class SetterDefinition extends AccessorDefinition implements ISetterDefinition
@@ -97,6 +98,19 @@ public class SetterDefinition extends AccessorDefinition implements ISetterDefin
         // in case a setter came back
         if (override instanceof GetterDefinition)
             override = ((GetterDefinition)override).resolveCorrespondingAccessor(project);
+    
+        if (override != null && this.getNamespaceReference().isLanguageNamespace()) {
+            boolean valid = isProtected() && override.isProtected()
+                    || isPublic() && override.isPublic()
+                    || isInternal() && override.isInternal();
+        
+            if (!valid && override.getNamespaceReference() != this.getNamespaceReference()) {
+                //if this is private and there is a non private 'override' then that's a problem for local name references
+                //but we can 'override' a private version in the base classes because there is no local naming conflict
+                if (isPrivate() || !(project.getAllowPrivateNameConflicts() && override.isPrivate()))
+                    project.getProblems().add(new IncompatibleOverrideProblem(getNode()));
+            }
+        }
 
         return override;
     }
