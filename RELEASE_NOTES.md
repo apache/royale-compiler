@@ -5,7 +5,9 @@ Apache Royale Compiler 0.9.7
  - Definitions containing [JSModule] with a custom module name are no longer required to use strict camelCase naming scheme.
  - Added Flex emulation RPC WebService partial support
  - Fix add event handler code in renderers and inline Components
- 
+ - (SWF/JS) Added support for [RoyaleArrayLike] metadata-driven support for proxying compile-time numeric-typed array index access to get/set method calls and also specific for-in/for-each-in loop support. 
+ - (JS) Compiler updates to support more e4X variations/scenarios, including 'use namespace' and 'default xml namespace' directives
+ - (JS) Compiler updates to address custom namespace-related output, and reflection support
 
 Apache Royale Compiler 0.9.6
 =================
