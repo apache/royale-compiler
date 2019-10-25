@@ -25,24 +25,24 @@ import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
-import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
-import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
@@ -65,7 +65,7 @@ public class FieldEmitter extends JSSubEmitter implements
     public void emit(IVariableNode node)
     {
         IDefinition definition = EmitterUtils.getClassDefinition(node);
-
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         IDefinition def = null;
         IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
         if (enode != null)
@@ -111,7 +111,15 @@ public class FieldEmitter extends JSSubEmitter implements
             IDefinition nodeDef = node.getDefinition();
             if (nodeDef != null && !nodeDef.isStatic() && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
         			qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
-            write(qname);
+    
+            if (EmitterUtils.isCustomNamespace(node.getNamespace())) {
+                INamespaceDecorationNode ns = ((VariableNode) node).getNamespaceNode();
+                INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(getProject());
+                fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                String s = nsDef.getURI();
+                write(JSRoyaleEmitter.formatNamespacedProperty(s, qname, false));
+            }
+            else write(qname);
             endMapping(node.getNameExpressionNode());
         }
 

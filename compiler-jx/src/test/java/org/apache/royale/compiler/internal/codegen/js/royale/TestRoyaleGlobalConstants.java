@@ -43,7 +43,7 @@ public class TestRoyaleGlobalConstants extends TestGoogGlobalConstants
     {
         IVariableNode node = getField("var a:Number = Infinity;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.a = Infinity");
+        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.a = Infinity");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TestRoyaleGlobalConstants extends TestGoogGlobalConstants
     {
         IVariableNode node = getField("var a:Number = -Infinity;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.a = -Infinity");
+        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.a = -Infinity");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestRoyaleGlobalConstants extends TestGoogGlobalConstants
     {
         IVariableNode node = getField("var a:Number = NaN;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.a = NaN");
+        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.a = NaN");
     }
 
     @Override
@@ -70,6 +70,6 @@ public class TestRoyaleGlobalConstants extends TestGoogGlobalConstants
     {
         IVariableNode node = getField("var a:* = undefined;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.a = undefined");
+        assertOut("/**\n * @type {*}\n */\nRoyaleTest_A.prototype.a = undefined");
     }
 }

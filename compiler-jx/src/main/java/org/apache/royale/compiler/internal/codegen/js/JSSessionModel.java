@@ -43,6 +43,9 @@ public class JSSessionModel
         public IGetterNode getter;
         public ISetterNode setter;
         public ITypeDefinition type;
+        public boolean resolvedExport;
+        public String name;
+        public String uri;
         public boolean suppressExport;
     }
 

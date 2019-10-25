@@ -594,7 +594,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                     .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
             
             if (!avoidExport) {
-                emitPublic(node);
+                if (ns.equals(IASKeywordConstants.PUBLIC))
+                    emitPublic(node);
             } else {
                 //we should also remove it from reflection data... provide a check here for that.
                 ((JSRoyaleEmitter)emitter).getModel().suppressedExportNodes.add(node);

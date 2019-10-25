@@ -26,6 +26,9 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.*;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -288,20 +291,25 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
         		// output bracket access with QName
         		writeLeftSide(node, leftNode, rightNode);
-        		write(ASEmitterTokens.SQUARE_OPEN);
-        		write(ASEmitterTokens.NEW);
-        		write(ASEmitterTokens.SPACE);
-        		write(IASLanguageConstants.QName);
-        		write(ASEmitterTokens.PAREN_OPEN);
-	    		write(fjs.formatQualifiedName(d.getQualifiedName()));
-        		write(ASEmitterTokens.COMMA);
-        		write(ASEmitterTokens.SPACE);
-        		write(ASEmitterTokens.SINGLE_QUOTE);
-        		write(r.getName());
-        		write(ASEmitterTokens.SINGLE_QUOTE);
-        		write(ASEmitterTokens.PAREN_CLOSE);
-        		write(".objectAccessFormat()");
-        		write(ASEmitterTokens.SQUARE_CLOSE);
+				//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
+				if (((NamespaceAccessExpressionNode) rightNode).resolve(getProject()) instanceof IVariableDefinition) {
+					write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
+				} else {
+					write(ASEmitterTokens.SQUARE_OPEN);
+					write(ASEmitterTokens.NEW);
+					write(ASEmitterTokens.SPACE);
+					write(IASLanguageConstants.QName);
+					write(ASEmitterTokens.PAREN_OPEN);
+					write(fjs.formatQualifiedName(d.getQualifiedName()));
+					write(ASEmitterTokens.COMMA);
+					write(ASEmitterTokens.SPACE);
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					write(r.getName());
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					write(ASEmitterTokens.PAREN_CLOSE);
+					write(".objectAccessFormat()");
+					write(ASEmitterTokens.SQUARE_CLOSE);
+				}
         		return;
         	}
         }
@@ -363,20 +371,25 @@ public class MemberAccessEmitter extends JSSubEmitter implements
     		writeLeftSide(node, leftNode, rightNode);
     		if (!d.getBaseName().equals(ASEmitterTokens.PRIVATE.getToken()))
     		{
-	    		write(ASEmitterTokens.SQUARE_OPEN);
-	    		write(ASEmitterTokens.NEW);
-	    		write(ASEmitterTokens.SPACE);
-	    		write(IASLanguageConstants.QName);
-	    		write(ASEmitterTokens.PAREN_OPEN);
-	    		write(fjs.formatQualifiedName(d.getQualifiedName()));
-	    		write(ASEmitterTokens.COMMA);
-	    		write(ASEmitterTokens.SPACE);
-	    		write(ASEmitterTokens.SINGLE_QUOTE);
-	    		write(r.getName());
-	    		write(ASEmitterTokens.SINGLE_QUOTE);
-	    		write(ASEmitterTokens.PAREN_CLOSE);
-        		write(".objectAccessFormat()");
-	    		write(ASEmitterTokens.SQUARE_CLOSE);
+				//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
+    			if (naen.resolve(getProject()) instanceof IVariableDefinition) {
+					write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
+				} else {
+					write(ASEmitterTokens.SQUARE_OPEN);
+					write(ASEmitterTokens.NEW);
+					write(ASEmitterTokens.SPACE);
+					write(IASLanguageConstants.QName);
+					write(ASEmitterTokens.PAREN_OPEN);
+					write(fjs.formatQualifiedName(d.getQualifiedName()));
+					write(ASEmitterTokens.COMMA);
+					write(ASEmitterTokens.SPACE);
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					write(r.getName());
+					write(ASEmitterTokens.SINGLE_QUOTE);
+					write(ASEmitterTokens.PAREN_CLOSE);
+					write(".objectAccessFormat()");
+					write(ASEmitterTokens.SQUARE_CLOSE);
+				}
     		}
     		else
     		{

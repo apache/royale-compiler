@@ -697,7 +697,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
+				//" * @export\n" +
 				" * @type {number}\n" +
 				" */\n" +
 				"foo.bar.baz.A.internalVar = 2"

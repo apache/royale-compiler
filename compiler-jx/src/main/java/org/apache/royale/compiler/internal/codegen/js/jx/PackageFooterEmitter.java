@@ -40,7 +40,10 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -222,6 +225,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     public class VariableData
     {
     	public String name;
+		public String customNS = null;
     	public String type;
 		public Boolean isStatic = false;
     	public IMetaTagNode[] metaData;
@@ -230,6 +234,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     public class MethodData
     {
     	public String name;
+		public String customNS = null;
     	public String type;
 		public Boolean isStatic = false;
     	public String declaredBy;
@@ -300,7 +305,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				if (getModel().suppressedExportNodes.contains(varNode)) {
 					continue;
 				}
-                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC )))
+				String altNS = null;
+				if (ns != null &&  EmitterUtils.isCustomNamespace(ns)) {
+					altNS = ((INamespaceDefinition)(((VariableNode) varNode).getNamespaceNode().resolve(getProject()))).getURI();
+				}
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC )) || altNS != null)
                 {
                 	name = varNode.getName();
 
@@ -310,6 +319,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 							&& bindableVars.get(name).namespace.equals(IASKeywordConstants.PUBLIC)) {
 
 						AccessorData bindableAccessor = new AccessorData();
+						bindableAccessor.customNS = altNS;
 						bindableAccessor.name = name;
 						bindableAccessor.access = "readwrite";
 						bindableAccessor.type = bindableVars.get(name).type;
@@ -331,6 +341,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
                 	VariableData data = new VariableData();
                 	varData.add(data);
                 	data.name = name;
+                	data.customNS = altNS;
 					data.isStatic = isStatic;
 					String qualifiedTypeName =	varNode.getVariableTypeNode().resolveType(getProject()).getQualifiedName();
 					data.type = fjs.formatQualifiedName(qualifiedTypeName, true);
@@ -385,23 +396,29 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
                 boolean suppressed = getModel().suppressedExportNodes.contains(fnNode);
+	
+				String altNS = null;
+				if (ns != null &&  EmitterUtils.isCustomNamespace(ns)) {
+					altNS = ((INamespaceDefinition)(((FunctionNode) fnNode).getNamespaceNode().resolve(getProject()))).getURI();
+				}
 
-                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)) || altNS != null)
                 {
 					String accessorName = fnNode.getName();
-                	AccessorData data = accessorMap.get(accessorName);
+					String nameKey = altNS!=null? altNS+accessorName : accessorName;
+                	AccessorData data = accessorMap.get(nameKey);
 					if (data == null) {
 						if (suppressed) continue;
 						data = new AccessorData();
 					} else {
 						if (suppressed) {
 							accessorData.remove(data);
-							accessorMap.remove(accessorName);
+							accessorMap.remove(nameKey);
 							continue;
 						}
 					}
                 	data.name = accessorName;
-
+					data.customNS = altNS;
                 	if (!accessorData.contains(data)) accessorData.add(data);
             	    if (dnode.getNodeID() == ASTNodeID.GetterID) {
 						data.type = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
@@ -415,7 +432,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 							data.access = "writeonly";
 						} else data.access = "readwrite";
 					}
-                	accessorMap.put(data.name, data);
+                	accessorMap.put(nameKey, data);
             	    data.type = fjs.formatQualifiedName(data.type, true);
             	    IClassNode declarer = (IClassNode)fnNode.getAncestorOfType(IClassNode.class);
             	    String declarant = fjs.formatQualifiedName(tnode.getQualifiedName(), true);
@@ -457,13 +474,20 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
-                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
+	
+				String altNS = null;
+				if (ns != null && EmitterUtils.isCustomNamespace(ns)) {
+					altNS = ((INamespaceDefinition)(((FunctionNode) fnNode).getNamespaceNode().resolve(getProject()))).getURI();
+				}
+                
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)) || altNS != null)
                 {
                 	if (getModel().suppressedExportNodes.contains(fnNode)) continue;
                 	MethodData data = new MethodData();
 					data.isStatic = isStatic;
                 	methodData.add(data);
                 	data.name = fnNode.getName();
+                	data.customNS = altNS;
 					String qualifiedTypeName =	fnNode.getReturnType();
 					if (!(qualifiedTypeName.equals("") || qualifiedTypeName.equals("void"))) {
 							qualifiedTypeName = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
@@ -631,6 +655,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					if (var.isStatic) {
 					    write("|");
                     }
+					if (var.customNS != null) {
+						write(var.customNS);
+						write("::");
+					}
 					write(var.name);
 					write(ASEmitterTokens.SINGLE_QUOTE);
 					writeToken(ASEmitterTokens.COLON);
@@ -665,7 +693,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					writeToken(ASEmitterTokens.PAREN_CLOSE);
 					write(ASEmitterTokens.BLOCK_OPEN);
 					String getterSetter;
-					String field = var.isStatic ? typeName + "." + var.name : "inst." + var.name;
+					String varName;
+					if (var.customNS != null) {
+						varName = JSRoyaleEmitter.formatNamespacedProperty(var.customNS, var.name, false);
+					} else varName = var.name;
+					
+					String field = var.isStatic ? typeName + "." + varName : "inst." + varName;
 					if (valueIsUntyped) {
 						//to avoid setting when type is '*' set the 'value' param to the function being called, which
 						//causes a 'getter only' result
@@ -730,6 +763,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				//prefix static accessor names with |
 				if (accessor.isStatic) {
 					write("|");
+				}
+				if (accessor.customNS != null) {
+					write(accessor.customNS);
+					write("::");
 				}
 				write(accessor.name);
 				write(ASEmitterTokens.SINGLE_QUOTE);
@@ -804,6 +841,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				//prefix static method names with |
 				if (method.isStatic) {
 					write("|");
+				}
+				if (method.customNS != null) {
+					write(method.customNS);
+					write("::");
 				}
 				write(method.name);
 				write(ASEmitterTokens.SINGLE_QUOTE);

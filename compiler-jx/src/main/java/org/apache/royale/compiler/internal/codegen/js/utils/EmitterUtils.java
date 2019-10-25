@@ -25,8 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
@@ -883,6 +885,19 @@ public class EmitterUtils
     public static void createDefaultNamespaceArg(ContainerNode argsNode, int position, IExpressionNode defaultNamespace) {
         argsNode.addChild((NodeBase) defaultNamespace, position);
         ((NodeBase) defaultNamespace).setParent(argsNode);
+    }
+    
+    public static boolean isCustomNamespace(String ns) {
+        if (ns != null)
+        {
+            return (!(  ns.equals(IASKeywordConstants.PRIVATE) ||
+                        ns.equals(IASKeywordConstants.PROTECTED) ||
+                        ns.equals(IASKeywordConstants.INTERNAL) ||
+                        ns.equals(INamespaceConstants.AS3URI) ||
+                        ns.equals(IASKeywordConstants.PUBLIC)
+                    ));
+        }
+        return false;
     }
 
 }
