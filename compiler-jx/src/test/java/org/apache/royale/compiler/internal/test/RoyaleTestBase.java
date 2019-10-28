@@ -66,6 +66,7 @@ public class RoyaleTestBase extends TestBase
         libraries.add(new File(env.ASJS + "/frameworks/libs/HTML.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/libs/Binding.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/libs/Network.swc"));
+        libraries.add(new File(env.ASJS + "/frameworks/libs/Charts.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/libs/Collections.swc"));
 
         super.addLibraries(libraries);
