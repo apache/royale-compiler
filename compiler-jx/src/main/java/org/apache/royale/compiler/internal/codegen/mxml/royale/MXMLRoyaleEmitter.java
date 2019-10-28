@@ -80,6 +80,7 @@ import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.royale.compiler.internal.tree.mxml.MXMLFunctionNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
@@ -2170,6 +2171,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                         .getProject());
 
         MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
+    	if (nodeID == ASTNodeID.MXMLFunctionID)
+    	{
+    		currentPropertySpecifier.value = ASEmitterTokens.THIS.getToken() +
+    				ASEmitterTokens.MEMBER_ACCESS.getToken() + 
+    				((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker()
+                            .getProject()).getBaseName();
+    		return;
+    	}
 
         String effectiveId = null;
         String id = node.getID();

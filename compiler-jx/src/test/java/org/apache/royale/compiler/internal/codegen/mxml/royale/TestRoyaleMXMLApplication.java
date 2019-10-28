@@ -1488,6 +1488,122 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     }
     
     @Test
+    public void testFXComponentFunctionAttribute()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Script><![CDATA[public function fn_test(foo:String):void {}]]></fx:Script><basic:beads><basic:DataTipBead labelFunction=\"fn_test\" />"
+                + "</basic:beads></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.charts.beads.DataTipBead');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
+        		"   */\n" +
+        		"  this.$ID0_;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes\n" +
+        		"  ([1,\n" +
+        		"'beads',\n" +
+        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', 'labelFunction', true, this.fn_test, 0, 0, null],\n" +
+        		"0,\n" +
+        		"0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @param {string} foo\n" +
+        		" */\n" +
+        		"AppName.prototype.fn_test = function(foo) {\n" +
+          		"};" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'fn_test': { type: 'void', declaredBy: 'AppName', parameters: function () { return [ { index: 1, type: 'String', optional: false } ]; }},\n"+
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+    
+    @Test
     public void testRoyaleMainFileDual()
     {
         MXMLJSC mxmlc = new MXMLJSC();

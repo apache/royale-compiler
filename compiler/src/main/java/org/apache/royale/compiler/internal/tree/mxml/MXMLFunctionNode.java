@@ -33,7 +33,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLFunctionNode;
 /**
  * Implementation of the {@code IMXMLFunctionNode} interface.
  */
-class MXMLFunctionNode extends MXMLExpressionNodeBase implements IMXMLFunctionNode
+public class MXMLFunctionNode extends MXMLExpressionNodeBase implements IMXMLFunctionNode
 {
     private static final Object DEFAULT = null;
 
