@@ -72,6 +72,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.D
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
@@ -81,7 +82,6 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
-import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.problems.FilePrivateItemsWithMainVarWarningProblem;
@@ -1524,5 +1524,48 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         ICompilerProject project = getWalker().getProject();
 		return ((RoyaleJSProject)project).isGoogProvided(className);
 	}
+	
+    public void processBindableSupport(IClassDefinition type,ArrayList<String> requiresList) {
+        ICompilerProject royaleProject = getWalker().getProject();
+        boolean needsBindableSupport = type.needsEventDispatcher(royaleProject);
+        if (needsBindableSupport) {
+            
+            IClassDefinition bindableClassDef = type;
+            ClassDefinition objectClassDefinition = (ClassDefinition)royaleProject.getBuiltinType(
+                    IASLanguageConstants.BuiltinType.OBJECT);
+            
+            if (bindableClassDef.resolveBaseClass(royaleProject).equals(objectClassDefinition)) {
+                //keep the decision in the model for later
+                getModel().registerImplicitBindableImplementation( bindableClassDef,
+                        ImplicitBindableImplementation.EXTENDS);
+                // add the requiresList support for extending the dispatcher class
+                if (!requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                    requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                }
+            } else {
+                //keep the decision in the model for later
+                getModel().registerImplicitBindableImplementation( bindableClassDef,
+                        ImplicitBindableImplementation.IMPLEMENTS);
+                //add the requiresList support for implementing IEventDispatcher
+                if (!requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME))) {
+                    requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
+                }
+                if (!requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                    requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                }
+            }
+        }
+        
+        if (!needsBindableSupport) {
+            //we still need to check for static-only bindable requirements. If it was also instance-bindable,
+            //then the static-only requirements have already been met above
+            needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(royaleProject);
+            //static-only bindable *only* requires the Dispatcher class, not the interface
+            if (needsBindableSupport
+                    && !requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+            }
+        }
+    }
 
 }

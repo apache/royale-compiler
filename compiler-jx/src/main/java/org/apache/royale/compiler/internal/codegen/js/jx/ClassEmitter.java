@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
@@ -35,10 +36,12 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 public class ClassEmitter extends JSSubEmitter implements
         ISubEmitter<IClassNode>
@@ -57,12 +60,22 @@ public class ClassEmitter extends JSSubEmitter implements
         RoyaleJSProject project = (RoyaleJSProject)getEmitter().getWalker().getProject();
         keepASDoc = project.config != null && project.config.getKeepASDoc();
         verbose = project.config != null && project.config.isVerbose();
-    	
-        getModel().pushClass(node.getDefinition());
-
+    	boolean isInternal = getModel().getInternalClasses().containsKey(node.getName());
+        IClassDefinition definition = node.getDefinition();
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         
+    	if (isInternal) {
+    	    //process bindable support for possibly bindable internal (file-private) class:
+            ASProjectScope projectScope = project.getScope();
+            ICompilationUnit cu = projectScope
+                    .getCompilationUnitForDefinition(definition);
+            ArrayList<String> requiresList = project.getRequires(cu);
+            //the following needs to happen before getModel().pushClass for the internal class:
+            fjs.processBindableSupport(definition, requiresList);
+        }
+        getModel().pushClass(node.getDefinition());
+    	
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && keepASDoc)
         {
@@ -79,8 +92,6 @@ public class ClassEmitter extends JSSubEmitter implements
         boolean suppressExport = (asDoc != null && DocEmitterUtils.hasSuppressExport(fjs, asDoc.commentNoEnd()));
 
         getModel().suppressExports = suppressExport;
-
-        IClassDefinition definition = node.getDefinition();
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
 

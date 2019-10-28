@@ -280,48 +280,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
 
         if (type instanceof IClassDefinition) {
-            //check whether we should add the requires for the implicit Bindable EventDispatcher implementations
-            boolean needsBindableSupport = ((IClassDefinition) type).needsEventDispatcher(royaleProject);
-
-            if (needsBindableSupport) {
-                IClassDefinition bindableClassDef = (IClassDefinition) type;
-                ClassDefinition objectClassDefinition = (ClassDefinition)royaleProject.getBuiltinType(
-                        IASLanguageConstants.BuiltinType.OBJECT);
-
-                if (bindableClassDef.resolveBaseClass(royaleProject).equals(objectClassDefinition)) {
-                    //keep the decision in the model for later
-                    getModel().registerImplicitBindableImplementation( bindableClassDef,
-                                                                       ImplicitBindableImplementation.EXTENDS);
-                    // add the requiresList support for extending the dispatcher class
-                    if (!requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
-                        requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
-                    }
-                } else {
-                    //keep the decision in the model for later
-                    getModel().registerImplicitBindableImplementation( bindableClassDef,
-                                                                       ImplicitBindableImplementation.IMPLEMENTS);
-                    //add the requiresList support for implementing IEventDispatcher
-                    if (!requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME))) {
-                        requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
-                    }
-                    if (!requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
-                        requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
-                    }
-                }
-            }
-
-            if (!needsBindableSupport) {
-                //we still need to check for static-only bindable requirements. If it was also instance-bindable,
-                //then the static-only requirements have already been met above
-                needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(royaleProject);
-                //static-only bindable *only* requires the Dispatcher class, not the interface
-                if (needsBindableSupport
-                        && !requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
-                    requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
-                }
-
-            }
-
+            ((JSRoyaleEmitter) getEmitter()).processBindableSupport((IClassDefinition) type, requiresList);
         }
 
         boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname, royaleProject);
