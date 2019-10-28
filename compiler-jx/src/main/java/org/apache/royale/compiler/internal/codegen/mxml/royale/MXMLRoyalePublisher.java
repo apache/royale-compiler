@@ -31,6 +31,8 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
@@ -222,9 +224,14 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 			e.printStackTrace();
 		}
 		String mainClassQName = qName;
-		DefinitionPromise cpromise = (DefinitionPromise)project.mainCU.getDefinitionPromises().get(0);
-		ClassDefinition cdef = (ClassDefinition)(cpromise.getActualDefinition());
-		ClassDefinition baseDef = (ClassDefinition)(project.resolveQNameToDefinition(cdef.getBaseClassAsDisplayString()));
+        DefinitionPromise cpromise = (DefinitionPromise)project.mainCU.getDefinitionPromises().get(0);
+        IDefinition actualDef = cpromise.getActualDefinition();
+        IClassDefinition baseDef = null;
+        if(actualDef instanceof IClassDefinition)
+        {
+		    IClassDefinition cdef = (IClassDefinition) cpromise.getActualDefinition();
+            baseDef = (IClassDefinition) project.resolveQNameToDefinition(cdef.getBaseClassAsDisplayString());
+        }
 		if (baseDef != null)
 		{
 			String factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
