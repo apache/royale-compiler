@@ -284,10 +284,14 @@ public class GoogDepsWriter {
 	private void computeDeps(ArrayList<String> deps, GoogDep gd, ArrayList<String> usedDeps) {
 		if (gd.fileInfo.impls != null)
 		{
-			deps.addAll(gd.fileInfo.impls);
-			for (String dep : gd.fileInfo.impls)
+			//deps.addAll(gd.fileInfo.impls); // filter below to avoid impls-and-provides combination in same CU, e.g. via file-private classes extending other file-private classes
+			for (String dep : gd.fileInfo.impls) {
+				if (gd.fileInfo.provides != null &&
+						gd.fileInfo.provides.contains(dep)) continue;
+				deps.add(dep);
 				if (!usedDeps.contains(dep))
 					usedDeps.add(dep);
+			}
 		}
 		if (gd.fileInfo.staticDeps != null)
 		{
