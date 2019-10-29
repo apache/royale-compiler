@@ -53,8 +53,6 @@ Event.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Event', qName: 'Event', k
  */
 Event.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'Event': { type: '', declaredBy: 'Event'}

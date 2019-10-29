@@ -62,8 +62,6 @@ UseWindow.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'U
  */
 UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'UseWindow': { type: '', declaredBy: 'UseWindow'}

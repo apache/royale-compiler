@@ -125,7 +125,6 @@ models.MyModel.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyModel', qName:
  */
 models.MyModel.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'labelText': { type: 'String', access: 'readwrite', declaredBy: 'models.MyModel'},

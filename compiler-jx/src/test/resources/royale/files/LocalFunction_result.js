@@ -80,8 +80,6 @@ LocalFunction.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'LocalFunction', q
  */
 LocalFunction.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'LocalFunction': { type: '', declaredBy: 'LocalFunction'},

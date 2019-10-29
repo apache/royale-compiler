@@ -797,11 +797,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		        		" * @return {Object.<string, Function>}\n" +
         		        		" */\n" +
         		        		"RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		        		"return {\n" +
-                                "  variables: function () {return {};},\n" +
-                                "  accessors: function () {return {};},\n" +
-                                "  methods: function () {return {};}\n" +
-        		        		"};\n" +
+        		        		"return {};\n" +
                                 "};\n" +
                                 "/**\n" +
                                 " * @const\n" +

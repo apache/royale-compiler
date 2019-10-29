@@ -100,11 +100,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
         		"A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-        		"    variables: function () {return {};},\n" +
-        		"    accessors: function () {return {};},\n" +
-        		"    methods: function () {return {};}\n" +
-        		"  };\n" +
+        		"  return {};\n" +
         		"};\n"+
 				"/**\n" +
 				" * @const\n" +
@@ -153,11 +149,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
         		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-        		"  };\n" +
+        		"  return {};\n" +
         		"};\n"+
 				"/**\n" +
 				" * @const\n" +
@@ -213,8 +205,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -283,8 +273,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -345,8 +333,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -415,8 +401,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'},\n" +
@@ -489,8 +473,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -535,8 +517,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
@@ -605,8 +585,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -679,8 +657,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -769,8 +745,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -845,7 +819,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"        '|someString': { type: 'String', get_set: function (/** * */ v) {return v !== undefined ? foo.bar.baz.A.InternalClass.someString = v : foo.bar.baz.A.InternalClass.someString;}}\n" +
 				"      };\n" +
 				"    },\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
@@ -957,7 +930,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
 				"    accessors: function () {\n" +
 				"      return {\n" +
 				"        'myString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -1026,7 +998,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
 				"    accessors: function () {\n" +
 				"      return {\n" +
 				"        'someString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
@@ -1111,8 +1082,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -1159,7 +1128,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.ITestInterface'}\n" +
@@ -1212,8 +1180,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
@@ -1301,11 +1267,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @return {Object.<string, Function>}\n" +
 				" */\n" +
 				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-				"  };\n" +
+				"  return {};\n" +
 				"};\n" +
 				"/**\n" +
 				" * @const\n" +

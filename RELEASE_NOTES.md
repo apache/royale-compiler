@@ -8,6 +8,7 @@ Apache Royale Compiler 0.9.7
  - (SWF/JS) Added support for [RoyaleArrayLike] metadata-driven support for proxying compile-time numeric-typed array index access to get/set method calls and also specific for-in/for-each-in loop support. 
  - (JS) Compiler updates to support more e4X variations/scenarios, including 'use namespace' and 'default xml namespace' directives
  - (JS) Compiler updates to address custom namespace-related output, and reflection support
+ - (JS) Compiler updates to output more compact Reflection data
 
 Apache Royale Compiler 0.9.6
 =================

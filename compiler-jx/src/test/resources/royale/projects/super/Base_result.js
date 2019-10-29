@@ -79,7 +79,6 @@ Base.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind
  */
 Base.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'text': { type: 'String', access: 'readwrite', declaredBy: 'Base'}

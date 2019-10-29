@@ -59,7 +59,6 @@ interfaces.IA.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IA', qName: 'inte
  */
 interfaces.IA.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    accessors: function () {return {};},
     methods: function () {
       return {
         'someFunction': { type: 'classes.B', declaredBy: 'interfaces.IA'},

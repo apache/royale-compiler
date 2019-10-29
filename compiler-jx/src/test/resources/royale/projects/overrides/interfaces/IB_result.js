@@ -51,10 +51,7 @@ interfaces.IB.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IB', qName: 'inte
  * @return {Object.<string, Function>}
  */
 interfaces.IB.prototype.ROYALE_REFLECTION_INFO = function () {
-  return {
-    accessors: function () {return {};},
-    methods: function () {return {};}
-  };
+  return {};
 };
 /**
  * @const

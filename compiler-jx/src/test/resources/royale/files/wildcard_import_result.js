@@ -80,8 +80,6 @@ wildcard_import.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'wildcard_import
  */
 wildcard_import.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'wildcard_import': { type: '', declaredBy: 'wildcard_import'}

@@ -52,8 +52,6 @@ OtherClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'OtherClass', qName: 
  */
 OtherClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'OtherClass': { type: '', declaredBy: 'OtherClass'}

@@ -62,8 +62,6 @@ NoConflictUseWindow.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'NoConflictU
  */
 NoConflictUseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'NoConflictUseWindow': { type: '', declaredBy: 'NoConflictUseWindow'}

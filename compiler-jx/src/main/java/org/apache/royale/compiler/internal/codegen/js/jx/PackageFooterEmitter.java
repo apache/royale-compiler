@@ -570,14 +570,14 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		// return {
 		writeToken(ASEmitterTokens.RETURN);
 		write(ASEmitterTokens.BLOCK_OPEN);
-		indentPush();
-		writeNewline();
+		/*indentPush();
+		writeNewline();*/
 	}
 
-	private void emitReflectionDataEnd(String typeName) {
+	private void emitReflectionDataEnd(String typeName, boolean hasContent) {
 		JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
 		
-		writeNewline();
+		if (hasContent) writeNewline();
 		// close return object
 		write(ASEmitterTokens.BLOCK_CLOSE);
 		write(ASEmitterTokens.SEMICOLON);
@@ -621,20 +621,25 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     {
 
 		emitReflectionDataStart(typeName);
+		boolean indented = false;
+		boolean continueContent = false;
 		int count;
 		if (outputType == ReflectionKind.CLASS) {
-			// variables: function() {
-			write("variables");
-			writeToken(ASEmitterTokens.COLON);
-			writeToken(ASEmitterTokens.FUNCTION);
-			write(ASEmitterTokens.PAREN_OPEN);
-			writeToken(ASEmitterTokens.PAREN_CLOSE);
-			write(ASEmitterTokens.BLOCK_OPEN);
-			if (varData.size() == 0) {
-				//return {};},
+			
+			if (varData.size() > 0) {
+				/*//return {};},
 				writeEmptyContent(true, true);
-			} else {
-
+			} else {*/
+				// variables: function() {
+				indentPush();
+				writeNewline();
+				indented = true;
+				write("variables");
+				writeToken(ASEmitterTokens.COLON);
+				writeToken(ASEmitterTokens.FUNCTION);
+				write(ASEmitterTokens.PAREN_OPEN);
+				writeToken(ASEmitterTokens.PAREN_CLOSE);
+				write(ASEmitterTokens.BLOCK_OPEN);
 
 				indentPush();
 				writeNewline();
@@ -727,23 +732,35 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				writeNewline();
 				// close variable function
 				write(ASEmitterTokens.BLOCK_CLOSE);
-				write(ASEmitterTokens.COMMA);
-				writeNewline();
+				continueContent = true;
+			
 			}
 		}
 	    
-	    // accessors: function() {
-	    write("accessors");
-	    writeToken(ASEmitterTokens.COLON);
-	    writeToken(ASEmitterTokens.FUNCTION);
-	    write(ASEmitterTokens.PAREN_OPEN);
-	    writeToken(ASEmitterTokens.PAREN_CLOSE);
-	    write(ASEmitterTokens.BLOCK_OPEN);
+	 
 
-		if (accessorData.size() == 0) {
-			//return {};},
+		if (accessorData.size() > 0) {
+			/*//return {};},
 			writeEmptyContent(true, true);
-		} else {
+		} else {*/
+			if (continueContent) {
+				write(ASEmitterTokens.COMMA);
+				writeNewline();
+			}
+			// accessors: function() {
+			if (!indented) {
+				indentPush();
+				writeNewline();
+				indented = true;
+			}
+			
+			
+			write("accessors");
+			writeToken(ASEmitterTokens.COLON);
+			writeToken(ASEmitterTokens.FUNCTION);
+			write(ASEmitterTokens.PAREN_OPEN);
+			writeToken(ASEmitterTokens.PAREN_CLOSE);
+			write(ASEmitterTokens.BLOCK_OPEN);
 			indentPush();
 			writeNewline();
 			// return {
@@ -806,22 +823,34 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			writeNewline();
 			// close accessor function
 			write(ASEmitterTokens.BLOCK_CLOSE);
-			write(ASEmitterTokens.COMMA);
-			writeNewline();
-
+			continueContent = true;
 		}
 
-	    // methods: function() {
-	    write("methods");
-	    writeToken(ASEmitterTokens.COLON);
-	    writeToken(ASEmitterTokens.FUNCTION);
-	    write(ASEmitterTokens.PAREN_OPEN);
-	    writeToken(ASEmitterTokens.PAREN_CLOSE);
-	    write(ASEmitterTokens.BLOCK_OPEN);
-		if (methodData.size() == 0) {
-			//return {};},
+	 
+		if (methodData.size() > 0) {
+			/*//return {};},
 			writeEmptyContent(false, false);
-		} else {
+		} else {*/
+			
+			// methods: function() {
+			
+			if (continueContent){
+				write(ASEmitterTokens.COMMA);
+				writeNewline();
+			}
+			
+			if (!indented) {
+				indentPush();
+				writeNewline();
+				indented = true;
+			}
+			
+			write("methods");
+			writeToken(ASEmitterTokens.COLON);
+			writeToken(ASEmitterTokens.FUNCTION);
+			write(ASEmitterTokens.PAREN_OPEN);
+			writeToken(ASEmitterTokens.PAREN_CLOSE);
+			write(ASEmitterTokens.BLOCK_OPEN);
 			indentPush();
 			writeNewline();
 			// return {
@@ -887,17 +916,18 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			writeNewline();
 			// close method function
 			write(ASEmitterTokens.BLOCK_CLOSE);
+			continueContent = true;
 		}
 		
     	if (metaData != null && metaData.length > 0)
     	{
     		//write(ASEmitterTokens.COMMA);
     	    //writeNewline();
-    	    writeMetaData(metaData, true, true);
+    	    writeMetaData(metaData, continueContent, continueContent);
     	}
-	    
-	    indentPop();
-		emitReflectionDataEnd(typeName);
+	    if (indented)
+	    	indentPop();
+		emitReflectionDataEnd(typeName, indented);
     }
 
     /*
@@ -921,7 +951,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	*/
  
 
-	private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
+	/*private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
 		//return {};
 		writeToken(ASEmitterTokens.RETURN);
 		write(ASEmitterTokens.BLOCK_OPEN);
@@ -931,7 +961,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		write(ASEmitterTokens.BLOCK_CLOSE);
 		if (appendComma) write(ASEmitterTokens.COMMA);
 		if (includeNewline) writeNewline();
-	}
+	}*/
 
 	private void writeParameters(IParameterNode[] params)
 	{
@@ -949,14 +979,14 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		int len = params.length;
 		for (int i = 0; i < len ; i++) {
 			IParameterDefinition parameterDefinition = (IParameterDefinition) params[i].getDefinition();
-			writeToken(ASEmitterTokens.BLOCK_OPEN);
+		/*	writeToken(ASEmitterTokens.BLOCK_OPEN);
 			write("index");
 			writeToken(ASEmitterTokens.COLON);
 			write(Integer.toString(i+1));
 			write(ASEmitterTokens.COMMA);
 			write(ASEmitterTokens.SPACE);
 			write("type");
-			writeToken(ASEmitterTokens.COLON);
+			writeToken(ASEmitterTokens.COLON);*/
 			write(ASEmitterTokens.SINGLE_QUOTE);
 			ITypeDefinition pd = parameterDefinition.resolveType(getProject());
 			if (pd == null)
@@ -971,16 +1001,16 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 			write(ASEmitterTokens.COMMA);
 			write(ASEmitterTokens.SPACE);
-			write("optional");
-			writeToken(ASEmitterTokens.COLON);
+			/*write("optional");
+			writeToken(ASEmitterTokens.COLON);*/
 			writeToken(parameterDefinition.hasDefaultValue() ? ASEmitterTokens.TRUE :  ASEmitterTokens.FALSE);
 
-			write(ASEmitterTokens.BLOCK_CLOSE);
+			/*write(ASEmitterTokens.BLOCK_CLOSE);*/
 			if (i < len-1) write(ASEmitterTokens.COMMA);
 		}
 
 		// close array of parameter definitions
-		write(ASEmitterTokens.SPACE);
+		//write(ASEmitterTokens.SPACE);
 		write(ASEmitterTokens.SQUARE_CLOSE);
 		writeToken(ASEmitterTokens.SEMICOLON);
 		// close function

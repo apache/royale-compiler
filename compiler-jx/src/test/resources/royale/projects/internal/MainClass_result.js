@@ -55,8 +55,6 @@ MainClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'M
  */
 MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'MainClass': { type: '', declaredBy: 'MainClass'}
@@ -114,7 +112,6 @@ MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
         'foo': { type: 'OtherClass', get_set: function (/** MainClass.InternalClass */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}
       };
     },
-    accessors: function () {return {};},
     methods: function () {
       return {
         'InternalClass': { type: '', declaredBy: 'MainClass.InternalClass'}

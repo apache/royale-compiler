@@ -190,7 +190,6 @@ RoyaleTest_again.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'RoyaleTest_aga
  */
 RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'service': { type: 'org.apache.royale.net.HTTPService', access: 'readwrite', declaredBy: 'RoyaleTest_again'},

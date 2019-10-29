@@ -62,8 +62,6 @@ mypackage.TestClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestClass',
  */
 mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'TestClass': { type: '', declaredBy: 'mypackage.TestClass'}

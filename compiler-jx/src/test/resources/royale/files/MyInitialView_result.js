@@ -869,7 +869,6 @@ null
  */
 MyInitialView.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'symbol': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},

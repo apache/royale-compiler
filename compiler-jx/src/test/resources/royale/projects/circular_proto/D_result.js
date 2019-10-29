@@ -68,8 +68,6 @@ D.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'D', qName: 'D', kind: 'class'
  */
 D.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'D': { type: '', declaredBy: 'D'},

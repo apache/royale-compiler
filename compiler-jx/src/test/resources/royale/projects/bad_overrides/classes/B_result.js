@@ -52,8 +52,6 @@ classes.B.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B
  */
 classes.B.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'B': { type: '', declaredBy: 'classes.B'}

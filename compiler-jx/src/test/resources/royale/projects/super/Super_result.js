@@ -81,7 +81,6 @@ Super.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', k
  */
 Super.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'text': { type: 'String', access: 'readwrite', declaredBy: 'Super'}
