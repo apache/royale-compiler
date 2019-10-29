@@ -226,9 +226,13 @@ public class TestRunConfiguration implements StepConfiguration
             LoggingUtil.log("Provided report directory path [" + reportDir.getPath() + "] does not exist.");
         }
         
-        if(command != null && !command.exists())
+        if(command != null)
         {
-            throw new BuildException("The provided command path [" + command + "] does not exist.");
+            if (!command.exists())
+                throw new BuildException("The provided command path [" + command + "] does not exist.");
+            if (command.isDirectory()) {
+                throw new BuildException("The provided command path [" + command + "] is a directory, it must be an executable.");
+            }
         }
         
         if(headless)
