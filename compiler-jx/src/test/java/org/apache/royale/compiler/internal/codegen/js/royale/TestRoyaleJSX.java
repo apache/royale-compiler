@@ -20,7 +20,9 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 
@@ -28,6 +30,15 @@ import org.junit.Test;
 
 public class TestRoyaleJSX extends ASTestBase
 {
+    @Override
+    public void setUp()
+    {
+        backend = createBackend();
+        project = new RoyaleJSProject(workspace, backend);
+        project.config = new JSGoogConfiguration();
+        super.setUp();
+    }
+
     @Test
     public void testJSXMetadataWithoutXMLLiterals()
     {

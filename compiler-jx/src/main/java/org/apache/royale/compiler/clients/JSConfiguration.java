@@ -581,4 +581,27 @@ public class JSConfiguration extends Configuration
         jsVectorIndexChecks = value;
     }
     
+    
+    //
+    // 'jsx-factory'
+    //
+    
+    private String jsxFactory = "React.createElement";
+    
+    public String getJsxFactory()
+    {
+        return jsxFactory;
+    }
+    
+    /**
+     * Customize the factory to use for JSX. Defaults to React.createElement
+     */
+    @Config(advanced = true)
+    @Mapping("jsx-factory")
+    public void setJsxFactory(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        jsxFactory = value;
+    }
+    
 }

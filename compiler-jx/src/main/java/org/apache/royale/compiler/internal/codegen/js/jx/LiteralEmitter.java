@@ -30,6 +30,7 @@ import org.apache.royale.compiler.common.IMetaInfo;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.RegExpLiteralNode;
@@ -237,6 +238,8 @@ public class LiteralEmitter extends JSSubEmitter implements
 
     private void emitJSX(XMLLiteralNode node)
     {
+        RoyaleJSProject project = (RoyaleJSProject) getProject();
+        String jsxFactory = project.config.getJsxFactory();
         int childCount = node.getContentsNode().getChildCount();
         Stack<String> elementStack = new Stack<String>();
         String elementName = null;
@@ -333,7 +336,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                             }
                             elementName = getElementNameToEmit(elementName, node);
                             elementStack.push(elementName);
-                            write("React.createElement");
+                            write(jsxFactory);
                             write(ASEmitterTokens.PAREN_OPEN);
                             write(elementName);
                             value = value.substring(endNameIndex);
