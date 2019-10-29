@@ -769,13 +769,30 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     public void emitDeclarations(IMXMLDeclarationsNode node)
     {
     	inMXMLContent = true;
+        boolean reusingDescriptor = false;
+
         MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("i");
 
         MXMLDescriptorSpecifier currentPropertySpecifier = new MXMLDescriptorSpecifier();
         currentPropertySpecifier.isProperty = true;
         currentPropertySpecifier.name = "mxmlContent";
         currentPropertySpecifier.parent = currentInstance;
-        descriptorTree.add(currentPropertySpecifier);
+        if (currentInstance == null)
+        {
+        	ArrayList<MXMLDescriptorSpecifier> specList =
+            	(currentInstance == null) ? descriptorTree : currentInstance.propertySpecifiers;
+            for (MXMLDescriptorSpecifier ds : specList)
+            {
+            	if (ds.name.equals("mxmlContent"))
+            	{
+            		currentPropertySpecifier = ds;
+            		reusingDescriptor = true;
+            		break;
+            	}
+            }
+        }
+        if (!reusingDescriptor)
+        	descriptorTree.add(currentPropertySpecifier);
         moveDown(false, currentInstance, currentPropertySpecifier);
     	super.emitDeclarations(node);
         moveUp(false, false);
@@ -2173,11 +2190,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
     	if (nodeID == ASTNodeID.MXMLFunctionID)
     	{
+            RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
+            project.needLanguage = true;
     		currentPropertySpecifier.value = JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken()
 					+ ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() +
     				((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker().getProject()).getBaseName() +
 					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
 					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
+    				"__" + JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + "__" + 
 					((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker().getProject()).getBaseName() +
 					ASEmitterTokens.SINGLE_QUOTE.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken();
     		return;

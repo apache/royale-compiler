@@ -1512,6 +1512,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.require('org.apache.royale.core.Application');\n" +
         		"goog.require('org.apache.royale.charts.beads.DataTipBead');\n" +
+//        		"goog.require('org.apache.royale.utils.Language');\n" + // in real compiles this will be output, but not in tests
         		"\n" +
         		"\n" +
         		"\n" +
@@ -1543,7 +1544,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
         		"'beads',\n" +
-        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', 'labelFunction', true, this.fn_test, 0, 0, null],\n" +
+        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', 'labelFunction', true, org.apache.royale.utils.Language.closure(this.fn_test, this, '__org.apache.royale.utils.Language.closure__fn_test'), 0, 0, null],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1584,11 +1585,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" */\n" +
         		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
-				"        'fn_test': { type: 'void', declaredBy: 'AppName', parameters: function () { return [ { index: 1, type: 'String', optional: false } ]; }},\n"+
+				"        'fn_test': { type: 'void', declaredBy: 'AppName', parameters: function () { return [ 'String', false ]; }},\n"+
 				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
         		"      };\n" +
         		"    }\n" +
