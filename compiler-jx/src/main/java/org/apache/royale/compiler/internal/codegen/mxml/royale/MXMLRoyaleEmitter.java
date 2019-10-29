@@ -2173,10 +2173,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
     	if (nodeID == ASTNodeID.MXMLFunctionID)
     	{
-    		currentPropertySpecifier.value = ASEmitterTokens.THIS.getToken() +
-    				ASEmitterTokens.MEMBER_ACCESS.getToken() + 
-    				((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker()
-                            .getProject()).getBaseName();
+    		currentPropertySpecifier.value = JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken()
+					+ ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() +
+    				((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker().getProject()).getBaseName() +
+					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
+					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
+					((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker().getProject()).getBaseName() +
+					ASEmitterTokens.SINGLE_QUOTE.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken();
     		return;
     	}
 
