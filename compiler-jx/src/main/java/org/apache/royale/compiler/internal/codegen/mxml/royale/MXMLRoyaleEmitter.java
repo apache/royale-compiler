@@ -48,6 +48,7 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -2192,13 +2193,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	{
             RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
             project.needLanguage = true;
+            IFunctionDefinition fdef = ((MXMLFunctionNode)node).getValue(project);
+            String fnName = fdef.getBaseName();
+            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                    .getASEmitter();
+            if (fdef.isPrivate() && project.getAllowPrivateNameConflicts())
+            	fnName = ((JSRoyaleEmitter)asEmitter).formatPrivateName(fdef.getParent().getQualifiedName(), fdef.getBaseName());
+            
     		currentPropertySpecifier.value = JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken()
 					+ ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() +
-    				((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker().getProject()).getBaseName() +
+    				fnName +
 					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
 					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
-    				"__" + JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + "__" + 
-					((MXMLFunctionNode)node).getValue((ICompilerProject) getMXMLWalker().getProject()).getBaseName() +
+    				"__" + JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + "__" + fdef.getBaseName() +
 					ASEmitterTokens.SINGLE_QUOTE.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken();
     		return;
     	}
