@@ -49,6 +49,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -79,6 +80,7 @@ import org.apache.royale.compiler.internal.targets.ITargetAttributes;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFunctionNode;
@@ -3279,9 +3281,16 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	                    
     	                    ICompilerProject project = getMXMLWalker().getProject();
     	                    String qname = varnode.getName();
-    	                		if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
-    	                			qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
-    	                    write(qname);
+	                		if (varDef != null && varDef.isPrivate() && project.getAllowPrivateNameConflicts())
+	                			qname = fjs.formatPrivateName(varDef.getParent().getQualifiedName(), qname);
+	                        if (EmitterUtils.isCustomNamespace(varnode.getNamespace())) {
+	                            INamespaceDecorationNode ns = ((VariableNode) varnode).getNamespaceNode();
+	                            INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+	                            fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+	                            String s = nsDef.getURI();
+	                            write(JSRoyaleEmitter.formatNamespacedProperty(s, qname, false));
+	                        }
+	                        else write(qname);
     	                    if (schildID == ASTNodeID.BindableVariableID && !varnode.isConst())
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);

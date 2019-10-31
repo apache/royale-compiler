@@ -28,6 +28,7 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
@@ -39,6 +40,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -280,9 +282,16 @@ public class ClassEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     String dname = dnode.getName();
                     IDefinition dDef = dnode.getDefinition();
-                		if (dDef != null && dDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-                			dname = getEmitter().formatPrivateName(dDef.getParent().getQualifiedName(), dname);
-                    write(dname);
+            		if (dDef != null && dDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+            			dname = getEmitter().formatPrivateName(dDef.getParent().getQualifiedName(), dname);
+                    if (EmitterUtils.isCustomNamespace(varnode.getNamespace())) {
+                        INamespaceDecorationNode ns = ((VariableNode) varnode).getNamespaceNode();
+                        INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(getProject());
+                        getEmitter().formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                        String s = nsDef.getURI();
+                        write(JSRoyaleEmitter.formatNamespacedProperty(s, dname, false));
+                    }
+                    else write(dname);
                     if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
                     {
                     	write("_");

@@ -112,8 +112,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" */\n" +
         		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {return {};},\n" +
-        		"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'addedToParent': { type: 'void', declaredBy: 'AppName'},\n" +
@@ -219,8 +217,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		" */\n" +
         		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {return {};},\n" +
-        		"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'bar': { type: 'void', declaredBy: 'AppName'},\n" +
@@ -319,10 +315,108 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"  return {\n" +
 				"    variables: function () {\n" +
 				"      return {\n" +
-				"        'foo': { type: 'Array'}\n" +
+				"        'foo': { type: 'Array', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
 				"      };\n" +
 				"    },\n" +
-				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
+        		"\n" +
+        		"\n" ;
+        	
+        assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
+    }
+    
+    @Test
+    public void testComplexCustomNamespaceInitializersInScript()
+    {
+        String code = "" + "<fx:Script><![CDATA["
+                + "    import custom.custom_namespace;"    
+                + "    use namespace custom_namespace;"    
+                + "    custom_namespace var foo:Array = ['foo'];"
+                + "]]></fx:Script>";
+
+        IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
+                IMXMLScriptNode.class, RoyaleTestBase.WRAP_LEVEL_DOCUMENT);
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
+        	.getAncestorOfType(IMXMLDocumentNode.class);
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.http_$$ns_apache_org$2017$custom$namespace__foo = ['foo'];\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+				"//use namespace custom.custom_namespace;\n" +
+        		"\n" +
+				"\n" +
+				"/**\n" +
+				" * @type {Array}\n" +
+				" */\n" +
+				"AppName.prototype.http_$$ns_apache_org$2017$custom$namespace__foo;\n" +
+				"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"  return {\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'AppName': { type: '', declaredBy: 'AppName'}\n" +

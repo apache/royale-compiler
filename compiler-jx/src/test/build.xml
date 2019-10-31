@@ -105,7 +105,6 @@
                     <exclude name="**/TestRoyaleMXML*.class"/>
                     <exclude name="**/TestSourceMapMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
-                    <exclude name="**/TestRoyaleClass.class"/>
                     <exclude name="**/TestTypedefsCompile.class"/>
                 </fileset>
             </batchtest>
