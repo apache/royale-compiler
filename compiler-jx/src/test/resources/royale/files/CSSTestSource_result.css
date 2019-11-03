@@ -29,26 +29,26 @@
 
 .glass {
         border-color: #767473;
-        highlight-alphas: .07, .45;
-        fill-colors: #888888, #F3F3F3, #9E9E9E, #FCFCFC;
         fill-alphas: .60, .70, .80, .90;
+        fill-colors: #888888, #F3F3F3, #9E9E9E, #FCFCFC;
+        highlight-alphas: .07, .45;
 }
 
 
 .glassSlider {
-        fill-colors: #F3F3F3, #BBBBBB, #FCFCFC, #CCCCCC;
         fill-alphas: .80, .70, .60, .50;
+        fill-colors: #F3F3F3, #BBBBBB, #FCFCFC, #CCCCCC;
 }
 
 
 .listItem {
-        border-style: outset;
-        background-color: #FFFFFF;
-        vertical-align: middle;
-        horizontal-gap: 5;
         background-alpha: .5;
+        background-color: #FFFFFF;
+        border-style: outset;
+        horizontal-gap: 5;
         padding-left: 4;
         padding-right: 4;
+        vertical-align: middle;
 }
 
 
@@ -63,9 +63,9 @@
 
 
 .outer>.innerTitle {
-        height: 176px;
-        color: #fff;
         background: url('assets/welcome_card.jpg') center / cover;
+        color: #fff;
+        height: 176px;
 }
 
 
@@ -86,8 +86,8 @@
 
 
 .outerother-square>.innerTitle {
-        color: #fff;
         background: url('assets/dog.png') bottom right 15% no-repeat #46B6AC;
+        color: #fff;
 }
 
 
@@ -98,9 +98,9 @@
 
 
 .FLEX35340A {
-        transform: translateY(-50%);
         background: -moz-linear-gradient(top,  #ffffff 0%, #e1e1e1 100%);
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e1e1e1',GradientType=0 );
+        transform: translateY(-50%);
 }
 
 
@@ -116,23 +116,23 @@
 
 .FLEX35340D {
         box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
-        text-shadow: 0 -1px 0 rgba(0,0,0,0.70);
         font-family: Georgia, Times New Roman, Times, serif;
+        text-shadow: 0 -1px 0 rgba(0,0,0,0.70);
 }
 
 
 .FLEX35346 {
-        position: absolute;
-        transform: translate(0,-1px);
-        height: 2px;
-        overflow: hidden;
-        width: calc(100% - 22px);
-        margin: 0 26px;
-        left: 0;
-        padding: 0;
-        border: 0;
         -webkit-transform: translate(0,-1px);
+        border: 0;
+        height: 2px;
+        left: 0;
+        margin: 0 26px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
         top: 50%;
+        transform: translate(0,-1px);
+        width: calc(100% - 22px);
 }
 
 

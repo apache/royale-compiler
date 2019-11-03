@@ -198,12 +198,16 @@ RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
     },
     methods: function () {
       return {
-        'RoyaleTest_again': { type: '', declaredBy: 'RoyaleTest_again'},
-        '$EH0': { type: 'void', declaredBy: 'RoyaleTest_again'}
+        'RoyaleTest_again': { type: '', declaredBy: 'RoyaleTest_again'}
       };
     }
   };
 };
+/**
+ * @const
+ * @type {number}
+ */
+RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
 
 
 

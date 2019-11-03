@@ -20,6 +20,7 @@ package org.apache.royale.compiler.internal.driver.js.royale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -227,15 +228,21 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         }
 
         result.append(" {\n");
+        ArrayList<String> listOfProps = new ArrayList<String>();
         for (final ICSSProperty prop : rule.getProperties())
         {
-            if (!hasMediaQuery)
-                result.append("    ");
-
             String propString = ((CSSProperty)prop).toCSSString();
             // skip class references since the won't work in CSS
             if (propString.contains("ClassReference"))
             	continue;
+            listOfProps.add(propString);
+        }
+        Collections.sort(listOfProps);
+        for (final String propString : listOfProps)
+        {
+            if (!hasMediaQuery)
+                result.append("    ");
+
             result.append("    ").append(propString).append("\n");
         }
         if (hasMediaQuery)
@@ -394,162 +401,159 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         result.append("function() {");
         
         ImmutableList<ICSSProperty> plist = rule.getProperties();
-        
-        boolean firstProp = true;
-        for (final ICSSProperty prop : plist)
+        ArrayList<String> listOfProps = new ArrayList<String>();
+        for (final ICSSProperty prop : rule.getProperties())
         {
-        	if (!firstProp)
-        		result.append(";\n");
-        	firstProp = false;
-            result.append("this[\"" + prop.getName() + "\"] = ");
+        	StringBuilder line = new StringBuilder();
+            line.append("this[\"" + prop.getName() + "\"] = ");
             ICSSPropertyValue value = prop.getValue();
             if (value instanceof CSSArrayPropertyValue)
             {
                 ImmutableList<? extends ICSSPropertyValue> values = ((CSSArrayPropertyValue)value).getElements();
-                result.append("[");
+                line.append("[");
                 boolean firstone = true;
                 for (ICSSPropertyValue val : values)
                 {
                     if (firstone)
                         firstone = false;
                     else
-                        result.append(", ");
+                        line.append(", ");
                     if (val instanceof CSSStringPropertyValue)
                     {
-                        result.append("\"" + escapeDoubleQuotes(((CSSStringPropertyValue)val).getValue()) + "\"");
+                        line.append("\"" + escapeDoubleQuotes(((CSSStringPropertyValue)val).getValue()) + "\"");
                     }
                     else if (val instanceof CSSColorPropertyValue)
                     {
-                        result.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
+                        line.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (val instanceof CSSRgbColorPropertyValue)
                     {
-                        result.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
+                        line.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (value instanceof CSSRgbaColorPropertyValue)
                     {
                         //todo: handle alpha in the RGBA ?
-                        result.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
+                        line.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
                     }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
                         CSSKeywordPropertyValue keywordValue = (CSSKeywordPropertyValue)val;
                         String keywordString = keywordValue.getKeyword();
                         if (IASLanguageConstants.TRUE.equals(keywordString))
-                            result.append("true");
+                            line.append("true");
                         else if (IASLanguageConstants.FALSE.equals(keywordString))
-                            result.append("false");
+                            line.append("false");
                         else
-                            result.append("\"" + ((CSSKeywordPropertyValue)val).getKeyword() + "\"");
+                            line.append("\"" + ((CSSKeywordPropertyValue)val).getKeyword() + "\"");
                     }
                     else if (val instanceof CSSNumberPropertyValue)
                     {
-                        result.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
+                        line.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
-                        result.append("\"" + escapeDoubleQuotes(((CSSURLAndFormatPropertyValue)val).toString()) + "\"");
+                        line.append("\"" + escapeDoubleQuotes(((CSSURLAndFormatPropertyValue)val).toString()) + "\"");
                     }
                     else if (val instanceof CSSMultiValuePropertyValue)
                     {
-                        result.append("\"" + ((CSSMultiValuePropertyValue)val).toString() + "\"");
+                        line.append("\"" + ((CSSMultiValuePropertyValue)val).toString() + "\"");
                     }
                     else
                     {
-                        result.append("unexpected value type: " + val.toString());
+                        line.append("unexpected value type: " + val.toString());
                     }
                 }
-                result.append("]");
+                line.append("]");
             }
             else if (value instanceof CSSMultiValuePropertyValue)
             {
                 ImmutableList<? extends ICSSPropertyValue> values = ((CSSMultiValuePropertyValue)value).getElements();
-                result.append("[");
+                line.append("[");
                 boolean firstone = true;
                 for (ICSSPropertyValue val : values)
                 {
                     if (firstone)
                         firstone = false;
                     else
-                        result.append(", ");
+                        line.append(", ");
                     if (val instanceof CSSStringPropertyValue)
                     {
-                        result.append("\"" + escapeDoubleQuotes(((CSSStringPropertyValue)val).getValue()) + "\"");
+                        line.append("\"" + escapeDoubleQuotes(((CSSStringPropertyValue)val).getValue()) + "\"");
                     }
                     else if (val instanceof CSSColorPropertyValue)
                     {
-                        result.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
+                        line.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (val instanceof CSSRgbColorPropertyValue)
                     {
-                        result.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
+                        line.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (val instanceof CSSRgbaColorPropertyValue)
                     {
                         //todo: handle alpha in the RGBA ?
-                        result.append(new Long(((CSSRgbaColorPropertyValue)val).getColorAsLong()));
+                        line.append(new Long(((CSSRgbaColorPropertyValue)val).getColorAsLong()));
                     }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
                         CSSKeywordPropertyValue keywordValue = (CSSKeywordPropertyValue)val;
                         String keywordString = keywordValue.getKeyword();
                         if (IASLanguageConstants.TRUE.equals(keywordString))
-                            result.append("true");
+                            line.append("true");
                         else if (IASLanguageConstants.FALSE.equals(keywordString))
-                            result.append("false");
+                            line.append("false");
                         else
-                            result.append("\"" + ((CSSKeywordPropertyValue)val).getKeyword() + "\"");
+                            line.append("\"" + ((CSSKeywordPropertyValue)val).getKeyword() + "\"");
                     }
                     else if (val instanceof CSSNumberPropertyValue)
                     {
-                        result.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
+                        line.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
-                        result.append("\"" + escapeDoubleQuotes(((CSSURLAndFormatPropertyValue)val).toString()) + "\"");
+                        line.append("\"" + escapeDoubleQuotes(((CSSURLAndFormatPropertyValue)val).toString()) + "\"");
                     }
                     else if (val instanceof CSSMultiValuePropertyValue)
                     {
-                        result.append("\"" + ((CSSMultiValuePropertyValue)val).toString() + "\"");
+                        line.append("\"" + ((CSSMultiValuePropertyValue)val).toString() + "\"");
                     }
                     else
                     {
-                        result.append("unexpected value type: " + val.toString());
+                        line.append("unexpected value type: " + val.toString());
                     }
                 }
-                result.append("]");
+                line.append("]");
             }
             else if (value instanceof CSSStringPropertyValue)
             {
-                result.append("\"" + ((CSSStringPropertyValue)value).getValue() + "\"");
+                line.append("\"" + ((CSSStringPropertyValue)value).getValue() + "\"");
             }
             else if (value instanceof CSSColorPropertyValue)
             {
-                result.append(new Integer(((CSSColorPropertyValue)value).getColorAsInt()));
+                line.append(new Integer(((CSSColorPropertyValue)value).getColorAsInt()));
             }
             else if (value instanceof CSSRgbColorPropertyValue)
             {
-                result.append(new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
+                line.append(new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
             }
             else if (value instanceof CSSRgbaColorPropertyValue)
             {
                 //todo: handle alpha in the RGBA ?
-                result.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
+                line.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
             }
             else if (value instanceof CSSKeywordPropertyValue)
             {
                 CSSKeywordPropertyValue keywordValue = (CSSKeywordPropertyValue)value;
                 String keywordString = keywordValue.getKeyword();
                 if (IASLanguageConstants.TRUE.equals(keywordString))
-                    result.append("true");
+                    line.append("true");
                 else if (IASLanguageConstants.FALSE.equals(keywordString))
-                    result.append("false");
+                    line.append("false");
                 else
-                    result.append("\"" + ((CSSKeywordPropertyValue)value).getKeyword() + "\"");
+                    line.append("\"" + ((CSSKeywordPropertyValue)value).getKeyword() + "\"");
             }
             else if (value instanceof CSSNumberPropertyValue)
             {
-                result.append(new Double(((CSSNumberPropertyValue)value).getNumber().doubleValue()));
+                line.append(new Double(((CSSNumberPropertyValue)value).getNumber().doubleValue()));
             }
             else if (value instanceof CSSFunctionCallPropertyValue)
             {
@@ -560,18 +564,18 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     if ("null".equals(className))
                     {
                         // ClassReference(null) resets the property's class reference.
-                        result.append("null");
+                        line.append("null");
                     }
                     else
                     {
-                        result.append(formatQualifiedName(className));
+                        line.append(formatQualifiedName(className));
                         requires.add(className);
                     }
                 }
                 else if ("url".equals(functionCall.name))
                 {
                     final String urlString = CSSFunctionCallPropertyValue.getSingleArgumentFromRaw(functionCall.rawArguments);
-                    result.append("\"" + urlString + "\"");
+                    line.append("\"" + urlString + "\"");
                 }
                 else if ("PropertyReference".equals(functionCall.name))
                 {
@@ -580,7 +584,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 else if ("calc".equals(functionCall.name))
                 {
                     // TODO: implement me
-                	result.append("null");
+                	line.append("null");
                 }
                 else if ("Embed".equals(functionCall.name))
                 {
@@ -594,7 +598,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 else if (otherCSSFunctions.contains(functionCall.name))
                 {
                 	// ignore for now?
-                	result.append("null");
+                	line.append("null");
                 }
                 else
                 {
@@ -602,6 +606,17 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     throw new IllegalStateException("Unexpected function call property value: " + functionCall);
                 }
             }
+            listOfProps.add(line.toString());
+        }
+        Collections.sort(listOfProps);
+        
+        boolean firstProp = true;
+        for (final String line2 : listOfProps)
+        {
+        	if (!firstProp)
+        		result.append(";\n");
+        	firstProp = false;
+        	result.append(line2);
         }
         result.append("}");
 

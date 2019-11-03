@@ -52,7 +52,7 @@ LocalFunction.prototype.myMemberMethod = function(value) {
   function myLocalFunction(value) {
     return self.myMemberProperty + value;
   };
-  org.apache.royale.utils.Language.trace("WOW! :: " + myLocalFunction(value + 42));
+  org.apache.royale.utils.Language.trace("WOW! :: " + myLocalFunction((value + 42) >> 0));
 };
 
 
@@ -88,4 +88,9 @@ LocalFunction.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @const
+ * @type {number}
+ */
+LocalFunction.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
 

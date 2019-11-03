@@ -211,7 +211,7 @@ goog.exportSymbol('MyInitialView', MyInitialView);
  * @private
  * @type {org.apache.royale.utils.Timer}
  */
-MyInitialView.prototype.timer;
+MyInitialView.prototype.timer = null;
 
 
 ;
@@ -887,19 +887,17 @@ MyInitialView.prototype.ROYALE_REFLECTION_INFO = function () {
     methods: function () {
       return {
         'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
-        'timerHandler': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.royale.events.Event', optional: false } ]; }},
-        'MyInitialView': { type: '', declaredBy: 'MyInitialView'},
-        '$EH0': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH1': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH2': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH3': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH4': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH5': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH6': { type: 'void', declaredBy: 'MyInitialView'}
+        'timerHandler': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [ 'org.apache.royale.events.Event', false ]; }},
+        'MyInitialView': { type: '', declaredBy: 'MyInitialView'}
       };
     }
   };
 };
+/**
+ * @const
+ * @type {number}
+ */
+MyInitialView.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
 
   
   

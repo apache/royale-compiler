@@ -164,6 +164,12 @@ public class TestBase implements ITestBase
     protected void assertErrors(String errorReport)
     {
     	StringBuilder actualErrors = new StringBuilder();
+    	
+    	// switch to a different set of problems for any other 
+    	// threads still outputting problems.  Otherwise we
+    	// can get a concurrent modification exception
+    	project.setProblems(new ArrayList<ICompilerProblem>());
+    	
     	for (ICompilerProblem problem : errors)
     	{
     		if (problem.toString().equals("An externally-visible definition with the name 'Array' was unexpectedly found."))

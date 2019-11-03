@@ -49,21 +49,21 @@ goog.exportSymbol('models.MyModel', models.MyModel);
  * @private
  * @type {string}
  */
-models.MyModel.prototype._labelText;
+models.MyModel.prototype._labelText = null;
 
 
 /**
  * @private
  * @type {Array}
  */
-models.MyModel.prototype._strings;
+models.MyModel.prototype._strings = null;
 
 
 /**
  * @private
  * @type {Array}
  */
-models.MyModel.prototype._cities;
+models.MyModel.prototype._cities = null;
 
 
 models.MyModel.prototype.get__labelText = function() {
@@ -139,3 +139,8 @@ models.MyModel.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @const
+ * @type {number}
+ */
+models.MyModel.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
