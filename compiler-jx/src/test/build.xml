@@ -117,6 +117,7 @@
 	
     <target name="integration.tests.asjs" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler}/target/junit-results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
         <junit dir="${compiler}"
             fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
