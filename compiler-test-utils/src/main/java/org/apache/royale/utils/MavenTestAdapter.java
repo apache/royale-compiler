@@ -68,14 +68,14 @@ public class MavenTestAdapter implements ITestAdapter {
     @Override
     public File getPlayerglobal() {
         try {
-            String PLAYERGLOBAL_HOME = System.getProperty("PLAYERGLOBAL_HOME", null);
+            /*String PLAYERGLOBAL_HOME = System.getProperty("PLAYERGLOBAL_HOME", null);
             if(PLAYERGLOBAL_HOME == null || PLAYERGLOBAL_HOME.length() == 0) {
             	PLAYERGLOBAL_HOME = System.getenv("PLAYERGLOBAL_HOME");
                 if(PLAYERGLOBAL_HOME == null || PLAYERGLOBAL_HOME.length() == 0) {
                     System.out.println("PLAYERGLOBAL_HOME not specified");
                     return null;
                 }
-            }
+            }*/
             return getDependency("com.adobe.flash.framework", "playerglobal",
                 System.getProperty("flashVersion"), "swc", null);
         }
