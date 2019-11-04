@@ -31,16 +31,6 @@
 
   <name>Apache Royale: Royale Ant Tasks</name>
 
-  <build>
-    <plugins>
-        <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.9</version>
-        </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.ant</groupId>

@@ -115,62 +115,7 @@
     <module>royale-maven-plugin</module>
   </modules>
 
-  <!--
-      As the compiler build uses the jburg plugin which has a dependency on
-      the compiler-jburg-types artifact that are part of this project. We therefore have
-      a utils profile, that builds these these artifacts so Maven doesn't fail
-      as it resolves plugin dependencies before starting the build.
-      After one build with "-P -main,utils" (don't use main profile, use utils profile
-      has been built, the default build should be able to do it's job.
-  -->
   <profiles>
-    <profile>
-      <id>utils</id>
-      <activation>
-          <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-          <jburgTypesRequired>false</jburgTypesRequired>
-      </properties>
-      <modules>
-        <module>compiler-build-tools</module>
-        <module>compiler-jburg-types</module>
-      </modules>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <configuration>
-              <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>2.5.3</version>
-            <configuration>
-              <providerImplementations>
-                <git>jgit</git>
-              </providerImplementations>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-provider-jgit</artifactId>
-                <version>1.11.2-SNAPSHOT</version>
-              </dependency>
-              <dependency>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-api</artifactId>
-                <version>1.11.2-SNAPSHOT</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <profile>
       <id>apache-release</id>
       <activation>
@@ -181,30 +126,7 @@
       </properties>
     </profile>
 
-    <profile>
-        <id>upload-release-to-staging</id>
-        <activation>
-            <activeByDefault>false</activeByDefault>
-        </activation>
-        <modules><!-- only run on top-level, not for each module -->
-        </modules>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>wagon-maven-plugin</artifactId>
-                    <version>2.0.0</version>
-                    <configuration>
-                        <includes>**</includes>
-                        <serverId>apache.releases.https</serverId>
-                        <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
-
-    <profile>
+    <!--profile>
         <id>test-using-swf</id>
         <dependencies>
             <dependency>
@@ -215,7 +137,7 @@
                 <scope>test</scope>
             </dependency>
         </dependencies>
-    </profile>
+    </profile-->
 
     <!-- Profile for linux (Self-Enabling) -->
     <profile>
@@ -229,6 +151,7 @@
         <os.type>linux</os.type>
       </properties>
     </profile>
+
     <!-- Profile for mac (Self-Enabling) -->
     <profile>
       <id>os-mac</id>
@@ -241,6 +164,7 @@
         <os.type>mac</os.type>
       </properties>
     </profile>
+
     <!-- profile for windows (Self-Enabling) -->
     <profile>
       <id>os-windows</id>
@@ -253,51 +177,14 @@
         <os.type>win</os.type>
       </properties>
     </profile>
-
   </profiles>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>net.sourceforge.jburg</groupId>
-        <artifactId>jburg-maven-plugin</artifactId>
-        <version>1.10.4</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.royale.compiler</groupId>
-            <artifactId>compiler-jburg-types</artifactId>
-            <version>${compiler-jburg-types.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.3</version>
-        <configuration>
-          <providerImplementations>
-            <git>jgit</git>
-          </providerImplementations>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-jgit</artifactId>
-            <version>1.11.2</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-api</artifactId>
-            <version>1.11.2</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
+      <!-- Execute some checks if the environment ist correctly configured -->
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1</version>
         <executions>
           <!-- Do some pre-build checks and report any findings to the user -->
           <execution>
@@ -318,7 +205,6 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
         <executions>
           <execution>
             <id>license-check</id>
@@ -385,26 +271,20 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>analyze</id>
-            <goals>
-              <goal>analyze-only</goal>
-            </goals>
-            <configuration>
-              <failOnWarning>false</failOnWarning>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>net.sourceforge.jburg</groupId>
+        <artifactId>jburg-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.royale.compiler</groupId>
+            <artifactId>compiler-jburg-types</artifactId>
+            <version>${compiler-jburg-types.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -414,7 +294,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.9</version>
         <executions>
           <!--
               Prepares the property pointing to the JaCoCo runtime agent which
@@ -496,7 +375,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19</version>
         <configuration>
           <argLine>${surefireArgLine}</argLine>
           <systemPropertyVariables>
@@ -521,7 +399,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
         <executions>
           <execution>
             <goals>
@@ -543,11 +420,26 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>analyze</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>false</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Plugin to detect problems with JDK incompatibilities -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.15</version>
         <executions>
           <execution>
             <id>check-jdk-1.6</id>
@@ -570,8 +462,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <!-- Downgraded to 3.4 as 3.5 and 3.5.1 seem to have issues with the velocity tools -->
-        <version>3.7.1</version>
         <configuration>
           <generateReports>true</generateReports>
           <generateSitemap>true</generateSitemap>
@@ -611,7 +501,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-publish-plugin</artifactId>
-        <version>3.0.0</version>
         <executions>
           <execution>
             <id>scm-publish</id>
@@ -633,23 +522,106 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>3.2</version>
       </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.royale.compiler</groupId>
+          <artifactId>compiler-build-tools</artifactId>
+          <version>${compiler-build-tools.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.googlecode.maven-download-plugin</groupId>
+          <artifactId>download-maven-plugin</artifactId>
+          <version>1.4.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.13</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>net.sourceforge.jburg</groupId>
+          <artifactId>jburg-maven-plugin</artifactId>
+          <version>1.10.4</version>
+        </plugin>
+
+        <plugin>
+          <groupId>de.jflex</groupId>
+          <artifactId>maven-jflex-plugin</artifactId>
+          <version>1.4.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antlr-plugin</artifactId>
+          <version>2.0-beta-1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr3-maven-plugin</artifactId>
+          <version>3.5.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>groovy-maven-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.5</version>
+        </plugin>
+
         <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.2.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.22.1</version>
         </plugin>
 
         <!-- Update to a version able to do reproducible builds -->
@@ -667,9 +639,15 @@
         </plugin>
 
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.18</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
+          <version>3.1.1</version>
           <configuration>
             <tags>
               <tag>
@@ -702,15 +680,29 @@
             <failOnError>false</failOnError>
           </configuration>
         </plugin>
+
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-scm-plugin</artifactId>
             <version>1.10.0</version>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.1.0</version>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.8.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
         </plugin>
       </plugins>
     </pluginManagement>
