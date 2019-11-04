@@ -176,8 +176,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
         ArrayList<String> asEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).usedNames;
-        JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter)asEmitter;
 
         String currentClassName = fjs.getModel().getCurrentClass().getQualifiedName();
         ArrayList<String> removals = new ArrayList<String>();
@@ -198,6 +197,26 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             System.out.println(currentClassName + " mxml: " + usedNames.toString());
         }
         usedNames.addAll(asEmitterUsedNames);
+        
+        ArrayList<String> asStaticEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).staticUsedNames;
+        removals = new ArrayList<String>();
+        for (String usedName : asStaticEmitterUsedNames) {
+            //remove any internal component that has been registered with the other emitter's usedNames
+            if (usedName.startsWith(currentClassName+".") && subDocumentNames.contains(usedName.substring(currentClassName.length()+1))) {
+                removals.add(usedName);
+            }
+        }
+        for (String usedName : removals)
+        {
+        	asStaticEmitterUsedNames.remove(usedName);
+        }
+        if (fjp.config == null || fjp.config.isVerbose())
+        {
+            System.out.println(currentClassName + " as: " + asStaticEmitterUsedNames.toString());
+            System.out.println(currentClassName + " mxml: " + staticUsedNames.toString());
+        }
+        staticUsedNames.addAll(asStaticEmitterUsedNames);
+        
 
         boolean foundXML = false;
     	String[] lines = output.split("\n");
