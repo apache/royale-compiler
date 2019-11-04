@@ -93,7 +93,7 @@ public final class FileUtils
             File[] files = new File[n];
             for (int i = 0; i < n; i++)
             {
-                files[i] = new File(canonfile.getPath(), ss[i]);
+                files[i] = new File(dir.getPath(), ss[i]);
             }
 
             for (int i = 0; i < files.length; ++i)
