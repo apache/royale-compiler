@@ -88,15 +88,15 @@ public class SWCWriter extends SWCWriterBase
     	if (metadataDate != null)
     	{
     	    // TODO: Perhaps parsing without modification and then serializing with a default timezone is the more solid approach.
-    		// strip off timezone.  Zip format doesn't store timezone
-    		// and the goal is to have the same date and time regardless
-    		// of which timezone the build machine is using.
-    		int c = metadataDate.lastIndexOf(" ");
-    		if(c != -1) {
+            // strip off timezone.  Zip format doesn't store timezone
+            // and the goal is to have the same date and time regardless
+            // of which timezone the build machine is using.
+            int c = metadataDate.lastIndexOf(' ');
+            if(c != -1) {
                 metadataDate = metadataDate.substring(0, c);
             }
-    		c = metadataFormat.lastIndexOf(" ");
-    		if(c != -1) {
+            c = metadataFormat.lastIndexOf(' ');
+            if(c != -1) {
                 metadataFormat = metadataFormat.substring(0, c);
             }
     		try {

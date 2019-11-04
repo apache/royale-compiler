@@ -231,13 +231,18 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                			} catch (IllegalArgumentException e1) {
 	                				e1.printStackTrace();
 	                			}
+	                    		// TODO: Fix this the same way that the compiler normalized the date
 	                    		// strip off timezone.  Zip format doesn't store timezone
 	                    		// and the goal is to have the same date and time regardless
 	                    		// of which timezone the build machine is using.
-	                    		int c = metadataDate.lastIndexOf(" ");
-	                    		metadataDate = metadataDate.substring(0,  c);
-	                    		c = metadataFormat.lastIndexOf(" ");
-	                    		metadataFormat = metadataFormat.substring(0, c);
+	                    		int c = metadataDate.lastIndexOf(' ');
+	                    		if(c != -1) {
+                                    metadataDate = metadataDate.substring(0, c);
+                                }
+	                    		c = metadataFormat.lastIndexOf(' ');
+	                    		if(c != -1) {
+                                    metadataFormat = metadataFormat.substring(0, c);
+                                }
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
 	                    			zipFileDate = sdf.parse(metadataDate).getTime();
@@ -407,13 +412,18 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                			} catch (IllegalArgumentException e1) {
 	                				e1.printStackTrace();
 	                			}
-	                    		// strip off timezone.  Zip format doesn't store timezone
-	                    		// and the goal is to have the same date and time regardless
-	                    		// of which timezone the build machine is using.
-	                    		int c = metadataDate.lastIndexOf(" ");
-	                    		metadataDate = metadataDate.substring(0,  c);
-	                    		c = metadataFormat.lastIndexOf(" ");
-	                    		metadataFormat = metadataFormat.substring(0, c);
+                                // TODO: Fix this the same way that the compiler normalized the date
+                                // strip off timezone.  Zip format doesn't store timezone
+                                // and the goal is to have the same date and time regardless
+                                // of which timezone the build machine is using.
+                                int c = metadataDate.lastIndexOf(' ');
+                                if(c != -1) {
+                                    metadataDate = metadataDate.substring(0, c);
+                                }
+                                c = metadataFormat.lastIndexOf(' ');
+                                if(c != -1) {
+                                    metadataFormat = metadataFormat.substring(0, c);
+                                }
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
 	                    			zipFileDate = sdf.parse(metadataDate).getTime();
@@ -502,13 +512,18 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
             			} catch (IllegalArgumentException e1) {
             				e1.printStackTrace();
             			}
+                        // TODO: Fix this the same way that the compiler normalized the date
                 		// strip off timezone.  Zip format doesn't store timezone
                 		// and the goal is to have the same date and time regardless
                 		// of which timezone the build machine is using.
-                		int c = metadataDate.lastIndexOf(" ");
-                		metadataDate = metadataDate.substring(0,  c);
-                		c = metadataFormat.lastIndexOf(" ");
-                		metadataFormat = metadataFormat.substring(0, c);
+                		int c = metadataDate.lastIndexOf(' ');
+                        if(c != -1) {
+                            metadataDate = metadataDate.substring(0, c);
+                        }
+                        c = metadataFormat.lastIndexOf(' ');
+                        if(c != -1) {
+                            metadataFormat = metadataFormat.substring(0, c);
+                        }
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
                 			zipFileDate = sdf.parse(metadataDate).getTime();

@@ -50,22 +50,15 @@
     <!-- Timestamp for the reproducible builds -->
     <project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp>
 
+    <compiler-build-tools.version>1.1.0</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
+
     <flex.version>4.15.0</flex.version>
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
 
     <jburgTypesRequired>true</jburgTypesRequired>
     <skipgpg>false</skipgpg>
-    <compiler-build-tools.version>1.1.0</compiler-build-tools.version>
-    <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
-
-    <!-- URL of the ASF SonarQube server -->
-    <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
-    <!-- Tell sonar where the coverage reports are located -->
-    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
-    <!-- Exclude all generated code -->
-    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
 
     <website.path>latest-dev</website.path>
   </properties>
