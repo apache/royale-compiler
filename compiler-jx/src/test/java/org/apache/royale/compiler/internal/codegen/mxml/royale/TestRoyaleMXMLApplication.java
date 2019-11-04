@@ -676,7 +676,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"2,\n" +
         		"2,\n" +
         		"\"labelText\",\n" +
-        		"\"propertyChange\",\n" +
+        		"\"valueChange\",\n" +
         		"0,\n" +
         		"null,\n" +
         		"null,\n" +

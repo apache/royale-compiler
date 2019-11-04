@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -44,6 +45,7 @@ public class RoyaleTestBase extends TestBase
     public void setUp()
     {
         backend = createBackend();
+        BindableHelper.PROPERTY_CHANGE = "valueChange";
     	project = new RoyaleJSProject(workspace, backend);
         super.setUp();
 
