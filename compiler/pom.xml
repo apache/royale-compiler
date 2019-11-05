@@ -598,6 +598,15 @@
       <version>3.4</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- Ensure the playerglobal is available for running tests -->
+    <dependency>
+      <groupId>com.adobe.flash.framework</groupId>
+      <artifactId>playerglobal</artifactId>
+      <version>${flash.version}</version>
+      <type>swc</type>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
 </project>

@@ -42,7 +42,7 @@
   </scm>
 
   <properties>
-    <java.version>1.6</java.version>
+    <java.version>1.7</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
     <maven.version>3.3.1</maven.version>
@@ -253,7 +253,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>@{surefireArgLine}</argLine>
+          <argLine>${surefireArgLine}</argLine>
           <systemPropertyVariables>
             <buildType>Maven</buildType>
             <flexVersion>${flex.version}</flexVersion>
@@ -285,7 +285,7 @@
           </execution>
         </executions>
         <configuration>
-          <argLine>@{failsafeArgLine}</argLine>
+          <argLine>${failsafeArgLine}</argLine>
           <systemPropertyVariables>
             <buildType>Maven</buildType>
             <flexVersion>${flex.version}</flexVersion>
