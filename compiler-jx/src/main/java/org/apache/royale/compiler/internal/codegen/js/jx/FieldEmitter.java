@@ -301,7 +301,6 @@ public class FieldEmitter extends JSSubEmitter implements
         {
         	getModel().inStaticInitializer = ndef.isStatic();
             String vnodeString = getEmitter().stringifyNode(vnode);
-            /*
             if (ndef.isStatic() && vnode instanceof FunctionCallNode)
             {
                 FunctionCallNode fcn = (FunctionCallNode)vnode;
@@ -337,7 +336,6 @@ public class FieldEmitter extends JSSubEmitter implements
                     }
             	}
             }
-            */
         	getModel().inStaticInitializer = false;
         	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) ||
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
