@@ -35,9 +35,13 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.royale.abc.ABCConstants;
+import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Instruction;
 import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.Namespace;
+import org.apache.royale.abc.semantics.OneOperandInstruction;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
@@ -1673,28 +1677,90 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		parentNode = parentNode.getParent();
     	}
     	boolean isXML = parentNode instanceof IMXMLXMLNode;
+    	boolean isXMLList = parentNode instanceof IMXMLXMLListNode;
+    	String effectiveID = ((IMXMLInstanceNode)parentNode).getEffectiveID();
     	sb.append("this.");
-    	sb.append(((IMXMLInstanceNode)parentNode).getEffectiveID());
-    	while (nodeStack.size() > 0)
+    	sb.append(effectiveID);
+    	// at least for one XMLList case, we could not trust
+    	// the nodestack as children were only binding nodes
+    	// and not preceding XML nodes
+    	if (isXMLList)
     	{
-    		IASNode childNode = nodeStack.pop();
-    		int n = parentNode.getChildCount();
-    		int i = 0;
-    		for (; i < n; i++)
+    		// re-interpret the instruction list.
+    		// it would not be a surprise of the non-XMLList cases will
+    		// eventually require this code path
+    		InstructionListNode ilNode = (InstructionListNode)destNode.getExpressionNode();
+    		InstructionList il = ilNode.getInstructions();
+    		ArrayList<Instruction> abcs = il.getInstructions();
+    		int n = abcs.size();
+    		for (int i = 0; i < n; i++)
     		{
-    			if (childNode == parentNode.getChild(i))
-    				break;
-    		}
-    		assert i < n;
-    		sb.append("[" + new Integer(i).toString() + "]" );
-    		parentNode = childNode;
-    	}
-    	if (isXML)
-    	{
-    		sb.append(".setAttribute('" + destNode.getName() + "', value);" );
+    			Instruction inst = abcs.get(i);
+    			int opCode = inst.getOpcode();
+    			if (opCode == ABCConstants.OP_getlocal0)
+    			{
+    				if (i > 0)
+    					System.out.println("unexpected getLocal0 in binding expression");
+    			}
+    			else if (opCode == ABCConstants.OP_getproperty)
+    			{
+    				OneOperandInstruction getProp = (OneOperandInstruction)inst;
+    				Name propName = (Name)getProp.getOperand(0);
+    				if (i == 0)
+    					System.out.println("unexpected opcode in binding expression");
+    				else if (i == 1 && !propName.getBaseName().contentEquals(effectiveID))
+    					System.out.println("unexpected effectiveID in binding expression");
+    				else if (i > 1)
+    				{
+    					try
+    				    {
+    				        Integer.parseInt(propName.getBaseName());
+    			    		sb.append("[" + propName.getBaseName() + "]" );
+    				    } catch (NumberFormatException ex)
+    				    {
+    				    	sb.append(".elements(" + propName.getBaseName() + ")" );
+    				    }
+    				}
+    			}
+    			else if (opCode == ABCConstants.OP_getlocal1)
+    			{
+    				if (i != n - 3)
+    					System.out.println("unexpected getLocal1 in binding expression");    				
+    			}
+    			else if (opCode == ABCConstants.OP_setproperty)
+    			{
+    				if (i != n - 2)
+    					System.out.println("unexpected setProperty in binding expression");    				
+    				OneOperandInstruction setProp = (OneOperandInstruction)inst;
+    				Name propName = (Name)setProp.getOperand(0);
+    				if (!propName.getBaseName().contentEquals(destNode.getName()))
+    					System.out.println("unexpected setProperty name in binding expression");    				
+    				break; // exit loop
+    			}
+    		}    		
+	    	sb.append(".setAttribute('" + destNode.getName() + "', value);" );
     	}
     	else
-    		sb.append("." + destNode.getName() + " = value;");
+    	{
+	    	while (nodeStack.size() > 0)
+	    	{
+	    		IASNode childNode = nodeStack.pop();
+	    		int n = parentNode.getChildCount();
+	    		int i = 0;
+	    		for (; i < n; i++)
+	    		{
+	    			if (childNode == parentNode.getChild(i))
+	    				break;
+	    		}
+	    		assert i < n;
+	    		sb.append("[" + new Integer(i).toString() + "]" );
+	    		parentNode = childNode;
+	    	}
+	    	if (isXML)
+		    	sb.append(".setAttribute('" + destNode.getName() + "', value);" );
+	    	else
+	    		sb.append("." + destNode.getName() + " = value;");
+    	}
     	return sb.toString();
     }
 

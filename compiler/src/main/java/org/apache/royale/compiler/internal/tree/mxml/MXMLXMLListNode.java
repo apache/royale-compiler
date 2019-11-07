@@ -25,10 +25,13 @@ import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
 import org.apache.royale.compiler.problems.MXMLXMLListMixedContentProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLXMLListNode;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of the {@code IMXMLXMLListNode} interface.
@@ -54,6 +57,8 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
     private ArrayList<IMXMLTagData> childTags = new ArrayList<IMXMLTagData>();
 
     private String xmlString;
+    
+    private List<IMXMLBindingNode> bindings = new ArrayList<IMXMLBindingNode>();
 
     @Override
     public ASTNodeID getNodeID()
@@ -106,6 +111,17 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
 
         super.initializationComplete(builder, tag, info);
 
+        if (bindings.size() > 0)
+        {
+        	int childCount = getChildCount();
+        	List<IMXMLNode> children = new ArrayList<IMXMLNode>();
+        	for (int i = 0; i < childCount; i++)
+        	{
+        		children.add((IMXMLNode)getChild(i));
+        	}
+        	children.addAll(bindings);
+        	setChildren(children.toArray(new IMXMLNode[] {}));
+        }
         // don't pin the MXMLTagDatas
         childTags = null;
     }
@@ -115,7 +131,11 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
         StringWriter sw = new StringWriter();
         for (IMXMLTagData tag : childTags)
         {
-            new XMLBuilder(this, tag, tag.getCompositePrefixMap(), builder).processNode(tag, sw);
+        	IMXMLTagData parentTagData = tag.getParentTag();
+        	XMLBuilder xmlBuilder = new XMLBuilder(this, parentTagData, tag.getCompositePrefixMap(), builder);
+        	xmlBuilder.processNode(tag, sw);
+        	List<IMXMLBindingNode> bindings = xmlBuilder.getDatabindings();
+        	this.bindings.addAll(bindings);
         }
         xmlString = sw.toString();
     }

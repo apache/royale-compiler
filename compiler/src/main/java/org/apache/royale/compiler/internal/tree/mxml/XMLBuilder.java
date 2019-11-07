@@ -444,7 +444,9 @@ class XMLBuilder
         }
         else
         {
-            il.addInstruction(ABCConstants.OP_getproperty, getNameForTag(tag));
+        	String rootTagName = rootTag.getName();
+        	if (!rootTagName.contentEquals("fx:XMLList"))
+        		il.addInstruction(ABCConstants.OP_getproperty, getNameForTag(tag));
             int index = getIndexOfTag(tag);
             il.addInstruction(ABCConstants.OP_getproperty, new Name(String.valueOf(index)));
         }
