@@ -1692,6 +1692,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		InstructionListNode ilNode = (InstructionListNode)destNode.getExpressionNode();
     		InstructionList il = ilNode.getInstructions();
     		ArrayList<Instruction> abcs = il.getInstructions();
+    		// the first indexed access accesses an XMLList, the next ones
+    		// access an XML object
+    		boolean indexedAccess = false;
     		int n = abcs.size();
     		for (int i = 0; i < n; i++)
     		{
@@ -1715,7 +1718,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     					try
     				    {
     				        Integer.parseInt(propName.getBaseName());
+    				        if (indexedAccess)
+    				        	sb.append(".children()");
     			    		sb.append("[" + propName.getBaseName() + "]" );
+    				        indexedAccess = true;
     				    } catch (NumberFormatException ex)
     				    {
     				    	sb.append(".elements(" + propName.getBaseName() + ")" );
