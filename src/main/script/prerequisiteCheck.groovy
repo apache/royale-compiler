@@ -62,7 +62,7 @@ def detectFlashPlayer() {
                 }
             }
         } else {
-            println "missing: File referenced by FLASHPLAYER_DEBUGGER does not exist."
+            println "missing: File referenced by FLASHPLAYER_DEBUGGER does not exist. " + flashplayerDebuggerPath
             allConditionsMet = false
             return
         }
