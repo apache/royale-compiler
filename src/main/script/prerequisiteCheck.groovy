@@ -32,11 +32,12 @@ Check if the Flash player executable is specified and available at the specified
 def detectFlashPlayer() {
     print "Detecting FlashPlayer Debugger:  "
     String flashplayerDebuggerPath = System.getenv("FLASHPLAYER_DEBUGGER")
-    // If the property is specified with surrounding double-quotes, remove them.
-    if(flashplayerDebuggerPath.startsWith("\"") && flashplayerDebuggerPath.endsWith("\"")) {
-        flashplayerDebuggerPath = flashplayerDebuggerPath.substring(1, flashplayerDebuggerPath.length() - 1)
-    }
     if(flashplayerDebuggerPath != null) {
+        // If the property is specified with surrounding double-quotes, remove them.
+        if(flashplayerDebuggerPath.startsWith("\"") && flashplayerDebuggerPath.endsWith("\"")) {
+            flashplayerDebuggerPath = flashplayerDebuggerPath.substring(1, flashplayerDebuggerPath.length() - 1)
+        }
+
         File flashplayerDebuggerFile = new File(flashplayerDebuggerPath)
         if(flashplayerDebuggerFile.exists()) {
             if(!flashplayerDebuggerFile.isFile()) {
