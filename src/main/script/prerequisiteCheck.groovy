@@ -35,19 +35,30 @@ def detectFlashPlayer() {
     if(flashplayerDebuggerPath != null) {
         File flashplayerDebuggerFile = new File(flashplayerDebuggerPath)
         if(flashplayerDebuggerFile.exists()) {
-            if(!flashplayerDebuggerFile.isFile() || !flashplayerDebuggerFile.canExecute()) {
-                println "missing: FLASHPLAYER_DEBUGGER must point to an executable file"
+            if(!flashplayerDebuggerFile.isFile()) {
+                println "not a file: FLASHPLAYER_DEBUGGER must point to an existing file"
                 allConditionsMet = false
                 return
             }
             // On a Mac, we can also check the version.
             if(os == "mac") {
+                if(!flashplayerDebuggerFile.canExecute()) {
+                    println "executable: FLASHPLAYER_DEBUGGER must point to an executable file"
+                    allConditionsMet = false
+                    return
+                }
                 // Check the version by inspecting the ../Info.plst
                 String curVersion = getMacFlashPlayerVersion(flashplayerDebuggerFile)
                 // Check at least the version 32 is installed.
                 def result = checkVersionAtLeast(curVersion, flashVersion)
                 if(!result) {
                     allConditionsMet = false
+                }
+            } else if(os == "linux") {
+                if(!flashplayerDebuggerFile.canExecute()) {
+                    println "executable: FLASHPLAYER_DEBUGGER must point to an executable file"
+                    allConditionsMet = false
+                    return
                 }
             }
         } else {
