@@ -40,7 +40,7 @@ def detectFlashPlayer() {
         File flashplayerDebuggerFile = new File(flashplayerDebuggerPath)
         if(flashplayerDebuggerFile.exists()) {
             if(!flashplayerDebuggerFile.isFile()) {
-                println "not a file: FLASHPLAYER_DEBUGGER must point to an existing file"
+                println "not a file: FLASHPLAYER_DEBUGGER must point to a file"
                 allConditionsMet = false
                 return
             }
