@@ -57,13 +57,18 @@ def detectFlashPlayer() {
                 def result = checkVersionAtLeast(curVersion, flashVersion)
                 if(!result) {
                     allConditionsMet = false
+                    return
                 }
+                println "OK"
             } else if(os == "linux") {
                 if(!flashplayerDebuggerFile.canExecute()) {
                     println "executable: FLASHPLAYER_DEBUGGER must point to an executable file"
                     allConditionsMet = false
                     return
                 }
+                println "OK"
+            } else if(os == "win") {
+                println "OK"
             }
         } else {
             println "missing: File referenced by FLASHPLAYER_DEBUGGER does not exist. " + flashplayerDebuggerPath
@@ -92,12 +97,6 @@ def getMacFlashPlayerVersion(File flashplayerExecutable) {
     def inputStream = new FileInputStream( infoPlistFile )
     def document     = builder.parse(inputStream).documentElement
     xpath.evaluate("//key[text() = \"CFBundleShortVersionString\"]/following-sibling::string[1]/text()", document)
-}
-
-def detectPlayerglobalHome() {
-    print "Detecting Playerglobal:  "
-    String playerglobalHomePath = System.getenv("PLAYERGLOBAL_HOME")
-
 }
 
 
@@ -185,7 +184,6 @@ if(os == "win") {
 
 // TODO: Potentially only do this check if the tests are to be executed.
 detectFlashPlayer()
-detectPlayerglobalHome()
 
 if(!allConditionsMet) {
     throw new RuntimeException("Not all conditions met, see log for details.")
