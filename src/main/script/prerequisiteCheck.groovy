@@ -34,26 +34,21 @@ def detectFlashPlayer() {
     String flashplayerDebuggerPath = System.getenv("FLASHPLAYER_DEBUGGER")
     if(flashplayerDebuggerPath != null) {
         File flashplayerDebuggerFile = new File(flashplayerDebuggerPath)
-        String curVersion = null
         if(flashplayerDebuggerFile.exists()) {
             if(!flashplayerDebuggerFile.isFile() || !flashplayerDebuggerFile.canExecute()) {
                 println "missing: FLASHPLAYER_DEBUGGER must point to an executable file"
                 allConditionsMet = false
                 return
             }
-            if(os == "linux") {
-
-            } else if(os == "mac") {
+            // On a Mac, we can also check the version.
+            if(os == "mac") {
                 // Check the version by inspecting the ../Info.plst
-                curVersion = getMacFlashPlayerVersion(flashplayerDebuggerFile)
-            } else if(os == "win") {
-
-            }
-
-            // Check at least the version 32 is installed.
-            def result = checkVersionAtLeast(curVersion, flashVersion)
-            if(!result) {
-                allConditionsMet = false
+                String curVersion = getMacFlashPlayerVersion(flashplayerDebuggerFile)
+                // Check at least the version 32 is installed.
+                def result = checkVersionAtLeast(curVersion, flashVersion)
+                if(!result) {
+                    allConditionsMet = false
+                }
             }
         } else {
             println "missing: File referenced by FLASHPLAYER_DEBUGGER does not exist."
@@ -61,9 +56,15 @@ def detectFlashPlayer() {
             return
         }
     } else {
-        println "missing: FLASHPLAYER_DEBUGGER environment variable"
+        println "missing: FLASHPLAYER_DEBUGGER environment variable. " +
+                "Please get the 'Flash Player projector content debugger' for your platform from here: " +
+                "https://www.adobe.com/support/flashplayer/debug_downloads.html"
         allConditionsMet = false
     }
+}
+
+def checkFlashPlayer(File flashplayerExecutable) {
+    flashplayerExecutable.exists() && flashplayerExecutable.isFile()
 }
 
 def getMacFlashPlayerVersion(File flashplayerExecutable) {
