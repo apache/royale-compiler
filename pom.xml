@@ -522,7 +522,7 @@
   <profiles>
     <!-- Profile for linux (Self-Enabling) -->
     <profile>
-      <id>os-unix</id>
+      <id>_os-unix</id>
       <activation>
         <os>
           <family>unix</family>
@@ -535,7 +535,7 @@
 
     <!-- Profile for mac (Self-Enabling) -->
     <profile>
-      <id>os-mac</id>
+      <id>_os-mac</id>
       <activation>
         <os>
           <family>mac</family>
@@ -548,7 +548,7 @@
 
     <!-- profile for windows (Self-Enabling) -->
     <profile>
-      <id>os-windows</id>
+      <id>_os-windows</id>
       <activation>
         <os>
           <family>windows</family>

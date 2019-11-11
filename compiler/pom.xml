@@ -484,7 +484,7 @@
         directory. It requires some environment variables being set.
     -->
     <profile>
-      <id>include-sdk-compile-tests</id>
+      <id>option-with-compiler-compile-fdk-tests</id>
       <build>
         <plugins>
           <plugin>
