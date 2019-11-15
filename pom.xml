@@ -56,6 +56,7 @@
     <flex.version>4.15.0</flex.version>
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
+    <option.withSwf.enabled>false</option.withSwf.enabled>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -260,6 +261,7 @@
             <flashVersion>${flash.version}</flashVersion>
             <airVersion>${air.version}</airVersion>
             <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+            <optionWithSwfEnabled>${option.withSwf.enabled}</optionWithSwfEnabled>
           </systemPropertyVariables>
           <!--
               Currently some tests need this to be disabled,
@@ -526,6 +528,13 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>option-with-swf</id>
+      <properties>
+        <option.withSwf.enabled>true</option.withSwf.enabled>
+      </properties>
+    </profile>
+
     <!-- Profile for linux (Self-Enabling) -->
     <profile>
       <id>_os-unix</id>

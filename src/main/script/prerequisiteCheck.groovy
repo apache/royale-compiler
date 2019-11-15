@@ -1,6 +1,5 @@
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathFactory
-import java.lang.reflect.Field
 import java.util.regex.Matcher
 
 /*
@@ -74,7 +73,6 @@ def detectFlashPlayer() {
         } else {
             println "missing: File referenced by FLASHPLAYER_DEBUGGER does not exist. " + flashplayerDebuggerPath
             allConditionsMet = false
-            return
         }
     } else {
         println "missing: FLASHPLAYER_DEBUGGER environment variable. " +
@@ -183,8 +181,24 @@ if(os == "win") {
 // profiles.
 /////////////////////////////////////////////////////
 
-// TODO: Potentially only do this check if the tests are to be executed.
-detectFlashPlayer()
+def optionWithSwfEnabled = false
+def activeProfiles = session.request.activeProfiles
+for (def activeProfile : activeProfiles) {
+    if(activeProfile == "option-with-swf") {
+        optionWithSwfEnabled = true
+        println "option-with-swf"
+    }
+}
+println ""
+
+if(optionWithSwfEnabled) {
+    if(os == "linux") {
+        println "As linux doesn't support the FlashPlayer, we cannot build with the 'option-with-swf' profile on Linux."
+        allConditionsMet = false
+    } else {
+        detectFlashPlayer()
+    }
+}
 
 if(!allConditionsMet) {
     throw new RuntimeException("Not all conditions met, see log for details.")

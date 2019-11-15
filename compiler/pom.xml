@@ -484,7 +484,7 @@
         directory. It requires some environment variables being set.
     -->
     <profile>
-      <id>option-with-compiler-compile-fdk-tests</id>
+      <id>option-with-flex-sdk-tests</id>
       <build>
         <plugins>
           <plugin>
@@ -513,6 +513,21 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <!-- Also run tests using the FLASHPLAYER_DEBUGGER -->
+    <profile>
+      <id>option-with-swf</id>
+      <dependencies>
+        <!-- Ensure the playerglobal is available for running tests -->
+        <dependency>
+          <groupId>com.adobe.flash.framework</groupId>
+          <artifactId>playerglobal</artifactId>
+          <version>${flash.version}</version>
+          <type>swc</type>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 
@@ -597,15 +612,6 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.4</version>
       <scope>test</scope>
-    </dependency>
-
-    <!-- Ensure the playerglobal is available for running tests -->
-    <dependency>
-      <groupId>com.adobe.flash.framework</groupId>
-      <artifactId>playerglobal</artifactId>
-      <version>${flash.version}</version>
-      <type>swc</type>
-      <scope>runtime</scope>
     </dependency>
   </dependencies>
 

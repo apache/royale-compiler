@@ -65,19 +65,18 @@ public class MavenTestAdapter implements ITestAdapter {
         return libs;
     }
 
+    public boolean optionWithSwfEnabled() {
+        return Boolean.valueOf(System.getProperty("optionWithSwfEnabled", "false"));
+    }
+
     @Override
     public File getPlayerglobal() {
+        if(!optionWithSwfEnabled()) {
+            return null;
+        }
         try {
-            /*String PLAYERGLOBAL_HOME = System.getProperty("PLAYERGLOBAL_HOME", null);
-            if(PLAYERGLOBAL_HOME == null || PLAYERGLOBAL_HOME.length() == 0) {
-            	PLAYERGLOBAL_HOME = System.getenv("PLAYERGLOBAL_HOME");
-                if(PLAYERGLOBAL_HOME == null || PLAYERGLOBAL_HOME.length() == 0) {
-                    System.out.println("PLAYERGLOBAL_HOME not specified");
-                    return null;
-                }
-            }*/
             return getDependency("com.adobe.flash.framework", "playerglobal",
-                System.getProperty("flashVersion"), "swc", null);
+                    System.getProperty("flashVersion"), "swc", null);
         }
         catch (RuntimeException e) {};
         return null;
@@ -85,8 +84,9 @@ public class MavenTestAdapter implements ITestAdapter {
 
     @Override
     public File getFlashplayerDebugger() {
-        // TODO: If the archive isn't unpacked, unpack it.
-        // TODO: Return a reference to the player debugger executable, depending on the current platform.
+        if(!optionWithSwfEnabled()) {
+            return null;
+        }
         String FLASHPLAYER_DEBUGGER = System.getProperty("FLASHPLAYER_DEBUGGER", null);
         if(FLASHPLAYER_DEBUGGER == null || FLASHPLAYER_DEBUGGER.length() == 0) {
             FLASHPLAYER_DEBUGGER = System.getenv("FLASHPLAYER_DEBUGGER");
@@ -95,9 +95,8 @@ public class MavenTestAdapter implements ITestAdapter {
                 return null;
             }
         }
+        System.out.println("Using Flash");
         return new File(FLASHPLAYER_DEBUGGER);
-        /*return getDependency("com.adobe.flash.runtime", "player-debugger",
-                System.getProperty("flashVersion"), "zip", null);*/
     }
 
     @Override
