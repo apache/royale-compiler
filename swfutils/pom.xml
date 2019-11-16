@@ -32,14 +32,4 @@
   <name>Apache Royale: Compiler: SWFUtils</name>
   <description>The Apache Royale Compiler SWF Utility classes</description>
 
-  <build>
-    <plugins>
-        <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.9</version>
-        </plugin>
-    </plugins>
-  </build>
-
 </project>

@@ -33,18 +33,12 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.9</version>
-      </plugin>
       <!--
 Do all the JBurg code generation.
 -->
       <plugin>
         <groupId>net.sourceforge.jburg</groupId>
         <artifactId>jburg-maven-plugin</artifactId>
-        <version>1.10.4</version>
         <extensions>true</extensions>
         <executions>
           <execution>

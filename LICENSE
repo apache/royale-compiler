@@ -218,3 +218,10 @@ under Apache License 2.0.
 
 RoyaleClosurePassConfig.java
 Files with names ending with WithModuleSupport.java
+
+The files:
+.mvn/wrapper/MavenWrapperDownloader.java
+mvnw
+mvnw.cmd
+Are provided from the Github Project: https://github.com/takari/maven-wrapper
+which is distributed under the Apache 2.0 license.

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>18</version>
+    <version>21</version>
   </parent>
 
   <groupId>org.apache.royale.compiler</groupId>
@@ -42,29 +42,21 @@
   </scm>
 
   <properties>
-    <java.version>1.6</java.version>
+    <java.version>1.7</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
     <maven.version>3.3.1</maven.version>
 
-    <flex.version>4.15.0</flex.version>
-    <flash.version>20.0</flash.version>
-    <air.version>20.0</air.version>
+    <!-- Timestamp for the reproducible builds -->
+    <!--project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp-->
 
-    <jburgTypesRequired>true</jburgTypesRequired>
-    <skipgpg>false</skipgpg>
     <compiler-build-tools.version>1.1.0</compiler-build-tools.version>
     <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
 
-    <!-- URL of the ASF SonarQube server -->
-    <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
-    <!-- Tell sonar where the coverage reports are located -->
-    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
-    <!-- Exclude all generated code -->
-    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
-
-    <website.path>latest-dev</website.path>
+    <flex.version>4.15.0</flex.version>
+    <flash.version>20.0</flash.version>
+    <air.version>20.0</air.version>
+    <option.withSwf.enabled>false</option.withSwf.enabled>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -97,178 +89,47 @@
     </mailingList>
   </mailingLists>
 
-  <!--
-      As the compiler build uses the jburg plugin which has a dependency on
-      the compiler-jburg-types artifact that are part of this project. We therefore have
-      a utils profile, that builds these these artifacts so Maven doesn't fail
-      as it resolves plugin dependencies before starting the build.
-      After one build with "-P -main,utils" (don't use main profile, use utils profile
-      has been built, the default build should be able to do it's job.
-  -->
-  <profiles>
-    <profile>
-      <id>utils</id>
-      <activation>
-          <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-          <jburgTypesRequired>false</jburgTypesRequired>
-      </properties>
-      <modules>
-        <module>compiler-build-tools</module>
-        <module>compiler-jburg-types</module>
-      </modules>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <configuration>
-              <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>2.5.3</version>
-            <configuration>
-              <providerImplementations>
-                <git>jgit</git>
-              </providerImplementations>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-provider-jgit</artifactId>
-                <version>1.11.2-SNAPSHOT</version>
-              </dependency>
-              <dependency>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-api</artifactId>
-                <version>1.11.2-SNAPSHOT</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-        <id>main</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <modules>
-            <module>compiler-common</module>
-            <module>compiler-externc</module>
-            <module>compiler</module>
-            <module>compiler-jx</module>
-            <module>compiler-test-utils</module>
-            <module>swfutils</module>
-            <module>debugger</module>
-            <module>flex-compiler-oem</module>
-            <module>royale-ant-tasks</module>
-            <module>royaleunit-ant-tasks</module>
-            <!--<module>royale-maven-extension</module>-->
-            <module>royale-maven-plugin</module>
-        </modules>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>net.sourceforge.jburg</groupId>
-              <artifactId>jburg-maven-plugin</artifactId>
-              <version>1.10.4</version>
-              <dependencies>
-                <dependency>
-                  <groupId>org.apache.royale.compiler</groupId>
-                  <artifactId>compiler-jburg-types</artifactId>
-                  <version>${compiler-jburg-types.version}</version>
-                </dependency>
-              </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <providerImplementations>
-                        <git>jgit</git>
-                    </providerImplementations>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-jgit</artifactId>
-                        <version>1.11.2-SNAPSHOT</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-api</artifactId>
-                        <version>1.11.2-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-          </plugins>
-        </build>
-    </profile>
-    <profile>
-      <id>apache-release</id>
-      <activation>
-          <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <website.path>${project.version}</website.path>
-      </properties>
-    </profile>
-    <profile>
-        <id>upload-release-to-staging</id>
-        <activation>
-            <activeByDefault>false</activeByDefault>
-        </activation>
-        <modules><!-- only run on top-level, not for each module -->
-        </modules>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>wagon-maven-plugin</artifactId>
-                    <version>2.0.0</version>
-                    <configuration>
-                        <includes>**</includes>
-                        <serverId>apache.releases.https</serverId>
-                        <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
-    <profile>
-        <id>test-using-swf</id>
-        <dependencies>
-            <dependency>
-                <groupId>com.adobe.flash.framework</groupId>
-                <artifactId>playerglobal</artifactId>
-                <version>${flash.version}</version>
-                <type>swc</type>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </profile>
-  </profiles>
+  <modules>
+    <module>compiler-common</module>
+    <module>compiler-externc</module>
+    <module>compiler</module>
+    <module>compiler-jx</module>
+    <module>compiler-test-utils</module>
+    <module>swfutils</module>
+    <module>debugger</module>
+    <module>flex-compiler-oem</module>
+    <module>royale-ant-tasks</module>
+    <module>royaleunit-ant-tasks</module>
+    <!--<module>royale-maven-extension</module>-->
+    <module>royale-maven-plugin</module>
+  </modules>
 
   <build>
     <plugins>
+      <!-- Execute some checks if the environment ist correctly configured -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <configuration>
-          <skip>${skipgpg}</skip><!--true to skip gpg if building release on CI server -->
-        </configuration>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <!-- Do some pre-build checks and report any findings to the user -->
+          <execution>
+            <id>prerequisite-check</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.12</version>
         <executions>
           <execution>
             <id>license-check</id>
@@ -279,6 +140,7 @@
           </execution>
         </executions>
         <configuration>
+          <consoleOutput>true</consoleOutput>
           <excludes>
             <exclude>LICENSE*</exclude>
             <exclude>NOTICE*</exclude>
@@ -318,42 +180,23 @@
             <exclude>**/src/main/sisu/javax.inject.Named</exclude>
           </excludes>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>net.sourceforge.jburg</groupId>
+        <artifactId>jburg-maven-plugin</artifactId>
         <dependencies>
           <dependency>
-            <groupId>org.apache.maven.doxia</groupId>
-            <artifactId>doxia-core</artifactId>
-            <version>1.6</version>
-            <exclusions>
-              <exclusion>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-              </exclusion>
-            </exclusions>
+            <groupId>org.apache.royale.compiler</groupId>
+            <artifactId>compiler-jburg-types</artifactId>
+            <version>${compiler-jburg-types.version}</version>
           </dependency>
         </dependencies>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>analyze</id>
-            <goals>
-              <goal>analyze-only</goal>
-            </goals>
-            <configuration>
-              <failOnWarning>false</failOnWarning>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -363,7 +206,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.9</version>
         <executions>
           <!--
               Prepares the property pointing to the JaCoCo runtime agent which
@@ -382,23 +224,6 @@
                   for JaCoCo runtime agent.
               -->
               <propertyName>surefireArgLine</propertyName>
-            </configuration>
-          </execution>
-          <!--
-              Ensures that the code coverage report for unit tests is created after
-              unit tests have been run.
-          -->
-          <execution>
-            <id>post-unit-test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <!-- Sets the path to the file which contains the execution data. -->
-              <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-              <!-- Sets the output directory for the code coverage report. -->
-              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
             </configuration>
           </execution>
           <!--
@@ -421,23 +246,6 @@
               <propertyName>failsafeArgLine</propertyName>
             </configuration>
           </execution>
-          <!--
-              Ensures that the code coverage report for integration tests after
-              integration tests have been run.
-          -->
-          <execution>
-            <id>post-integration-test</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <!-- Sets the path to the file which contains the execution data. -->
-              <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
-              <!-- Sets the output directory for the code coverage report. -->
-              <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
 
@@ -445,7 +253,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19</version>
         <configuration>
           <argLine>${surefireArgLine}</argLine>
           <systemPropertyVariables>
@@ -454,12 +261,13 @@
             <flashVersion>${flash.version}</flashVersion>
             <airVersion>${air.version}</airVersion>
             <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+            <optionWithSwfEnabled>${option.withSwf.enabled}</optionWithSwfEnabled>
           </systemPropertyVariables>
           <!--
               Currently some tests need this to be disabled,
               but actually this is a bug. For now I'll disable
               them to avoid problems during the maven migration.
-              After this is finished, we should defnitely fix
+              After this is finished, we should definitely fix
               the tests so assertions can be enabled.
           -->
           <enableAssertions>false</enableAssertions>
@@ -470,7 +278,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
         <executions>
           <execution>
             <goals>
@@ -492,124 +299,168 @@
         </configuration>
       </plugin>
 
-      <!-- Plugin to detect problems with JDK incompatibilities -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.15</version>
-        <executions>
-          <execution>
-            <id>check-jdk-1.6</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java16</artifactId>
-            <version>1.1</version>
-          </signature>
-        </configuration>
-      </plugin>
-
-      <!-- Configure the Site generation -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <!-- Downgraded to 3.4 as 3.5 and 3.5.1 seem to have issues with the velocity tools -->
-        <version>3.7.1</version>
-        <configuration>
-          <generateReports>true</generateReports>
-          <generateSitemap>true</generateSitemap>
-          <relativizeDecorationLinks>false</relativizeDecorationLinks>
-          <locales>en</locales>
-          <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-          <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.doxia</groupId>
-            <artifactId>doxia-core</artifactId>
-            <version>1.6</version>
-          </dependency>
-          <!-- All dependencies needed by the reflow skin -->
-          <dependency>
-            <groupId>lt.velykis.maven.skins</groupId>
-            <artifactId>reflow-velocity-tools</artifactId>
-            <version>1.1.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <!--
-        Make the maven-site-plugin stage the output in the "asf-site" branch
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-scm-publish-plugin</artifactId>
-        <version>3.0.0</version>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>scm-publish</id>
-            <phase>site-deploy</phase>
-            <!-- deploy site with maven-scm-publish-plugin -->
+            <id>analyze</id>
             <goals>
-              <goal>publish-scm</goal>
+              <goal>analyze-only</goal>
             </goals>
             <configuration>
-              <!-- mono-module doesn't require site:stage -->
-              <content>${project.build.directory}/site</content>
-              <!-- branch where to deploy -->
-              <scmBranch>asf-site</scmBranch>
+              <failOnWarning>false</failOnWarning>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
+      <!-- Plugin to detect problems with JDK incompatibilities -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>3.2</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check-jdk-1.7</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <signature>
+                <groupId>org.codehaus.mojo.signature</groupId>
+                <artifactId>java17</artifactId>
+                <version>1.0</version>
+              </signature>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>io.github.zlika</groupId>
-          <artifactId>reproducible-build-maven-plugin</artifactId>
-          <version>0.9</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>strip-jar</goal>
-              </goals>
-            </execution>
-          </executions>
+          <groupId>org.apache.royale.compiler</groupId>
+          <artifactId>compiler-build-tools</artifactId>
+          <version>${compiler-build-tools.version}</version>
         </plugin>
+
+        <plugin>
+          <groupId>com.googlecode.maven-download-plugin</groupId>
+          <artifactId>download-maven-plugin</artifactId>
+          <version>1.4.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.13</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>net.sourceforge.jburg</groupId>
+          <artifactId>jburg-maven-plugin</artifactId>
+          <version>1.10.4</version>
+        </plugin>
+
+        <plugin>
+          <groupId>de.jflex</groupId>
+          <artifactId>maven-jflex-plugin</artifactId>
+          <version>1.4.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antlr-plugin</artifactId>
+          <version>2.0-beta-1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr3-maven-plugin</artifactId>
+          <version>3.5.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>groovy-maven-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.5</version>
+        </plugin>
+
+        <!-- Update to a version able to do reproducible builds -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+
+        <!-- Update to a version able to do reproducible builds -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <!-- Update to a version able to do reproducible builds -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.18</version>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
+          <version>3.1.1</version>
           <configuration>
             <tags>
               <tag>
@@ -642,108 +493,108 @@
             <failOnError>false</failOnError>
           </configuration>
         </plugin>
+
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-scm-plugin</artifactId>
             <version>1.10.0</version>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.1.0</version>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.8.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.theoryinpractise</groupId>
+          <artifactId>reproducible-maven-plugin</artifactId>
+          <version>1.0.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
   </build>
 
-  <reporting>
-    <plugins>
+  <profiles>
+    <profile>
+      <id>option-with-swf</id>
+      <properties>
+        <option.withSwf.enabled>true</option.withSwf.enabled>
+      </properties>
+    </profile>
 
-      <!-- Generates a changelog report from GIT commits -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changelog-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <!-- Automatically link Jira issues -->
-          <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
-        </configuration>
-      </plugin>
+    <!-- Profile for linux (Self-Enabling) -->
+    <profile>
+      <id>_os-unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <os.type>linux</os.type>
+      </properties>
+    </profile>
 
-      <!-- Generates a report with the details of the unit- and integrationtests -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.19.1</version>
-      </plugin>
+    <!-- Profile for mac (Self-Enabling) -->
+    <profile>
+      <id>_os-mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <os.type>mac</os.type>
+      </properties>
+    </profile>
 
-      <!-- Generates a report with the test coverages -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.9</version>
-      </plugin>
+    <!-- profile for windows (Self-Enabling) -->
+    <profile>
+      <id>_os-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <os.type>win</os.type>
+      </properties>
+    </profile>
 
-      <!-- Generates a report with the SonarQube analysis reports -->
-      <plugin>
-        <groupId>org.codehaus.sonar-plugins</groupId>
-        <artifactId>maven-report</artifactId>
-        <version>0.1</version>
-      </plugin>
-
-      <!-- Generate the JavaDoc API documentation -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
-      </plugin>
-    </plugins>
-  </reporting>
-
-  <repositories>
-    <repository>
+    <!-- Make the release-plugin use the new reproducible build plugin extension -->
+    <profile>
       <id>apache-release</id>
-      <url>https://repository.apache.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache-snapshots</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>apache-plugins-release</id>
-      <url>https://repository.apache.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>apache-plugins-snapshots</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>reproducible-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <preparationGoals>clean com.theoryinpractise:reproducible-maven-plugin:apply install</preparationGoals>
+              <completionGoals>com.theoryinpractise:reproducible-maven-plugin:clear</completionGoals>
+              <goals>deploy</goals>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
