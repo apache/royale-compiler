@@ -109,7 +109,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Object " +
         		                       "{ return super.isDefaultPrevented(); }" + 
         		                       "override public function isDefaultPrevented():Object" +
-                                       "{ return defaultPrevented; }", IClassNode.class);
+                                       "{ return defaultPrevented; }", IClassNode.class, WRAP_LEVEL_CLASS);
         // getters and setters don't get output until the class is output so you can't just visit the accessorNode
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\n" + 
@@ -119,11 +119,12 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  " * Prevent renaming of class. Needed for reflection.\n" +
         		  " */\n" +
         		  "goog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
-        		  "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
-        		  "  var self = this;\n" +
-        		  "  ;\n" +
-        		  "  function isDefaultPrevented() {\n" +
-        		  "    return defaultPrevented;\n  };\n  \n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @override\n" +
+        		  " */\n" +
+        		  "RoyaleTest_A.prototype.isDefaultPrevented = function() {\n" +
+        		  "  return this.defaultPrevented;\n" +
         		  "};\n\n\n" +
         		  "RoyaleTest_A.prototype.get__defaultPrevented = function() {\n" +
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +

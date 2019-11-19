@@ -371,7 +371,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     }
                     wroteGetter = true;
                 }
-                else if (setterNode != null && setterNode.getDefinition().isOverride())
+                else if (setterNode != null /* && setterNode.getDefinition().isOverride()*/)
                 {
                 	// see if there is a getter on a base class.  If so, we have to 
                 	// generate a call to the super from this class because 
@@ -431,7 +431,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     	write(baseName);
                     }
                 }
-                else if (getterNode != null && getterNode.getDefinition().isOverride())
+                else if (getterNode != null/* && getterNode.getDefinition().isOverride()*/)
                 {
                 	// see if there is a getter on a base class.  If so, we have to 
                 	// generate a call to the super from this class because 
