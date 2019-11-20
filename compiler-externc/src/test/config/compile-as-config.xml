@@ -30,6 +30,7 @@
             <path-element>generated-sources/externc/typedefs</path-element>
         </source-path>
         
+        <strict-identifier-names>false</strict-identifier-names>
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
     

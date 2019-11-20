@@ -1555,7 +1555,7 @@ public class Configuration
     // 'compiler.strict-identifier-names' option
     //
 
-    private boolean strictIdentifierNames = false;
+    private boolean strictIdentifierNames = true;
 
     public boolean getCompilerStrictIdentifierNames()
     {
@@ -1568,10 +1568,9 @@ public class Configuration
      */
     @Config
     @Mapping({ "compiler", "strict-identifier-names" })
-    @RoyaleOnly
-    public void setCompilerStrictIdentifierNames(ConfigurationValue cv, boolean allow)
+    public void setCompilerStrictIdentifierNames(ConfigurationValue cv, boolean strict)
     {
-        this.strictIdentifierNames = allow;
+        this.strictIdentifierNames = strict;
     }
 
     //
