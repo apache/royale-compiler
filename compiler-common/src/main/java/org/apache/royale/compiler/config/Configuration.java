@@ -1552,6 +1552,29 @@ public class Configuration
     }
 
     //
+    // 'compiler.strict-identifier-names' option
+    //
+
+    private boolean strictIdentifierNames = false;
+
+    public boolean getCompilerStrictIdentifierNames()
+    {
+        return strictIdentifierNames;
+    }
+
+    /**
+     * Whether the compiler will enforce strict identifier naming. If enabled,
+     * certain keywords and reserved words cannot be used as identifier names.
+     */
+    @Config
+    @Mapping({ "compiler", "strict-identifier-names" })
+    @RoyaleOnly
+    public void setCompilerStrictIdentifierNames(ConfigurationValue cv, boolean allow)
+    {
+        this.strictIdentifierNames = allow;
+    }
+
+    //
     // 'compiler.actionscript-file-encoding' option
     //
 

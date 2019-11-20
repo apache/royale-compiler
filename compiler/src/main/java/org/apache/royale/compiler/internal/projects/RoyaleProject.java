@@ -2499,6 +2499,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	allowPrivateConstructors = allow;
     }
 
+    private boolean strictIdentifierNames = false;
+    
+    /**
+     * Indicates if strict identifier names are enforced.
+     */
+    @Override
+    public boolean getStrictIdentifierNames()
+    {
+    	return strictIdentifierNames;
+    }
+    public void setStrictIdentifierNames(boolean enabled)
+    {
+    	strictIdentifierNames = enabled;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;

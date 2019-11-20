@@ -19,7 +19,7 @@
 -->
 <!-- Parsing swf file:/Users/aharui/git/royale/maven/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=830 -->
+  <!-- framecount=1 length=820 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
@@ -59,7 +59,7 @@ public class %0 extends Object
       4      returnvoid           
   }
 
-  public var default:String
+  public var as:String
 
   private function initHandler(Object):void
   {
@@ -69,18 +69,18 @@ public class %0 extends Object
     //  max_regs     2            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  21           
+    //  code_length  20           
     bb0
       succs=[]
       0       getlocal0                                   
       1       pushscope                                   
-      2       pushstring      "bar"                       
-      3       findproperty    default                     
-      4       swap                                        
-      5       setproperty     default                     
-      6       findpropstrict  assertEqual                 
-      7       pushstring      "variable named default"    
-      8       getlex          default                     
+      2       getlocal0                                   
+      3       pushstring      "bar"                       
+      4       setproperty     as                          
+      5       findpropstrict  assertEqual                 
+      6       pushstring      "variable named as"         
+      7       getlocal0                                   
+      8       getproperty     as                          
       9       pushstring      "bar"                       
       10      callpropvoid                                
       11      returnvoid                                  

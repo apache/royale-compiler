@@ -55,7 +55,7 @@ public class DebuggerUtil
     	IWorkspace workspace = new Workspace();
         DebuggerUtil.InMemoryFileSpecification imfs = new DebuggerUtil.InMemoryFileSpecification(code);
         EnumSet<PostProcessStep> empty = EnumSet.noneOf(PostProcessStep.class);
-        IASNode exprAST = ASParser.parseFile(imfs, workspace, empty, null, false, false, new ArrayList<String>(), null, null, null);
+        IASNode exprAST = ASParser.parseFile(imfs, workspace, empty, null, false, false, false, new ArrayList<String>(), null, null, null);
 
         // Have to create a fake ScopedBlockNode so the expression can do things
         // like resolve, which means it has to be able to find a scope.

@@ -183,6 +183,13 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
          * Flag indicating we follow include statements, including their tokens
          */
         public boolean followIncludes = true;
+
+        /**
+         * Flag indicating if identifier naming is strictly enforced to consider
+         * keywords or reserved words invalid, or if it's more lenient, like
+         * newer ECMAScript versions introduced after ActionScript 3.
+         */
+        public boolean strictIdentifierNames = false;
     }
 
     private Reader reader;
@@ -257,13 +264,6 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
      * A pool to reduce duplicated string literals created
      */
     private final HashMap<String, String> stringPool;
-
-    /**
-     * Indicates if identifier naming is strictly enforced to exclude keywords
-     * or reserved words, or if it's more lenient, like newer ECMAScript
-     * versions introduced after ActionScript 3.
-     */
-    public boolean strictIdentifiers = false;
 
     /**
      * You should probably not use this constructor. There is a lot of code that
@@ -362,11 +362,13 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
             final IFileSpecification fileSpec,
             final IncludeHandler includeHandler,
             final boolean followIncludes,
-            final List<String> includedFiles)
+            final List<String> includedFiles,
+            final boolean strictIdentifierNames)
             throws FileNotFoundException
     {
         final StreamingASTokenizer tokenizer = create(fileSpec, includeHandler);
         tokenizer.setFollowIncludes(followIncludes);
+        tokenizer.setStrictIdentifierNames(strictIdentifierNames);
 
         final ImmutableList.Builder<ASToken> imaginaryTokensBuilder =
                 new ImmutableList.Builder<ASToken>();
@@ -555,6 +557,11 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
     public void setFollowIncludes(final boolean followIncludes)
     {
         config.followIncludes = followIncludes;
+    }
+
+    public void setStrictIdentifierNames(boolean value)
+    {
+        config.strictIdentifierNames = value;
     }
 
     /**
@@ -813,7 +820,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     return retVal;
                 case TOKEN_KEYWORD_INCLUDE:
                 {
-                    if (!strictIdentifiers && lastToken != null)
+                    if (!config.strictIdentifierNames && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
@@ -1004,7 +1011,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                         consume(1);
                         return retVal;
                     }
-                    if (!strictIdentifiers && lastToken != null)
+                    if (!config.strictIdentifierNames && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
@@ -1048,11 +1055,11 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     // if this isn't "default xml namespace" then
                     // see if it is the default case in a switch
                     // otherwise, assume it is an identiferName
-                    else if (!strictIdentifiers &&
+                    else if (!config.strictIdentifierNames &&
                             maybeXML != null && 
                             maybeXML.getType() != TOKEN_COLON)
                         retVal.setType(TOKEN_IDENTIFIER);
-                    else if (!strictIdentifiers && lastToken != null)
+                    else if (!config.strictIdentifierNames && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
@@ -1207,7 +1214,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_KEYWORD_AS:
                 case TOKEN_KEYWORD_IN:
                 case TOKEN_KEYWORD_IS:
-                    if(!strictIdentifiers)
+                    if(!config.strictIdentifierNames)
                     {
                         if (lastToken != null)
                         {
@@ -1230,7 +1237,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     }
                     // and fall through
                 case TOKEN_KEYWORD_DELETE:
-                    if(!strictIdentifiers)
+                    if(!config.strictIdentifierNames)
                     {
                         ASToken nextToken = LT(1);
                         if (nextToken != null)
@@ -1280,7 +1287,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_KEYWORD_RETURN:
                 case TOKEN_KEYWORD_THROW:
                 case TOKEN_KEYWORD_NEW:
-                    if (!strictIdentifiers && lastToken != null)
+                    if (!config.strictIdentifierNames && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
