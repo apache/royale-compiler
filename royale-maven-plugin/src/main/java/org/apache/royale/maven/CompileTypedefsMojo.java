@@ -46,7 +46,7 @@ public class CompileTypedefsMojo
 
     @Override
     protected String getToolGroupName() {
-        return "RoyaleSWF";
+        return "Royale";
     }
 
     @Override
@@ -61,6 +61,13 @@ public class CompileTypedefsMojo
 
     protected File getOutput() throws MojoExecutionException {
         return new File(outputDirectory, outputFileName);
+    }
+
+    @Override
+    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
+        List<String> args = super.getCompilerArgs(configFile);
+        args.add("-compiler.targets=SWF");
+        return args;
     }
 
     @Override
