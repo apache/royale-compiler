@@ -1505,7 +1505,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      */
     public String getArrayElementType(ICompilerProject project)
     {
-        if (getTypeAsDisplayString().equals(IASLanguageConstants.Array))
+        if (getTypeAsDisplayString().equals(IASLanguageConstants.Array)
+                || IASLanguageConstants.Array.equals(getInstanceType(project)))
         {
             return getPropertyMetaTagValue(
                     (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE);
