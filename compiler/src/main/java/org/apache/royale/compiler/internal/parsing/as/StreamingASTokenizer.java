@@ -259,6 +259,13 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
     private final HashMap<String, String> stringPool;
 
     /**
+     * Indicates if identifier naming is strictly enforced to exclude keywords
+     * or reserved words, or if it's more lenient, like newer ECMAScript
+     * versions introduced after ActionScript 3.
+     */
+    public boolean strictIdentifiers = false;
+
+    /**
      * You should probably not use this constructor. There is a lot of code that
      * uses this constructor, but that code should be updated to use one of the
      * static create methods below.
@@ -806,7 +813,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     return retVal;
                 case TOKEN_KEYWORD_INCLUDE:
                 {
-                    if (lastToken != null)
+                    if (!strictIdentifiers && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
@@ -997,7 +1004,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                         consume(1);
                         return retVal;
                     }
-                    if (lastToken != null)
+                    if (!strictIdentifiers && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
@@ -1041,10 +1048,11 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     // if this isn't "default xml namespace" then
                     // see if it is the default case in a switch
                     // otherwise, assume it is an identiferName
-                    else if (maybeXML != null && 
+                    else if (!strictIdentifiers &&
+                            maybeXML != null && 
                             maybeXML.getType() != TOKEN_COLON)
                         retVal.setType(TOKEN_IDENTIFIER);
-                    else if (lastToken != null)
+                    else if (!strictIdentifiers && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
@@ -1199,42 +1207,48 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_KEYWORD_AS:
                 case TOKEN_KEYWORD_IN:
                 case TOKEN_KEYWORD_IS:
-                    if (lastToken != null)
+                    if(!strictIdentifiers)
                     {
-                        int lastTokenType = lastToken.getType();
-                        switch (lastTokenType)
+                        if (lastToken != null)
                         {
-                            case TOKEN_SEMICOLON:
-                            case TOKEN_BLOCK_OPEN:
-                            case TOKEN_COMMA:
-                                retVal.setType(TOKEN_IDENTIFIER);
-                                return retVal;
+                            int lastTokenType = lastToken.getType();
+                            switch (lastTokenType)
+                            {
+                                case TOKEN_SEMICOLON:
+                                case TOKEN_BLOCK_OPEN:
+                                case TOKEN_COMMA:
+                                    retVal.setType(TOKEN_IDENTIFIER);
+                                    return retVal;
+                            }
                         }
-                    }
-                    else 
-                    {
-                        // we are first token so assume identifier
-                        retVal.setType(TOKEN_IDENTIFIER);
-                        return retVal;
+                        else 
+                        {
+                            // we are first token so assume identifier
+                            retVal.setType(TOKEN_IDENTIFIER);
+                            return retVal;
+                        }
                     }
                     // and fall through
                 case TOKEN_KEYWORD_DELETE:
-                    ASToken nextToken = LT(1);
-                    if (nextToken != null)
+                    if(!strictIdentifiers)
                     {
-                        int nextTokenType = nextToken.getType();
-                        switch (nextTokenType)
+                        ASToken nextToken = LT(1);
+                        if (nextToken != null)
                         {
-                            // if followed by a token assume it is the
-                            // keyword and not the identiferName;
-                            case TOKEN_IDENTIFIER:
-                                return retVal;
-                            // followed by a comma or semicolon
-                            // probably being used in an expression
-                            case TOKEN_COMMA:
-                            case TOKEN_SEMICOLON:
-                                retVal.setType(TOKEN_IDENTIFIER);
-                                return retVal;
+                            int nextTokenType = nextToken.getType();
+                            switch (nextTokenType)
+                            {
+                                // if followed by a token assume it is the
+                                // keyword and not the identiferName;
+                                case TOKEN_IDENTIFIER:
+                                    return retVal;
+                                // followed by a comma or semicolon
+                                // probably being used in an expression
+                                case TOKEN_COMMA:
+                                case TOKEN_SEMICOLON:
+                                    retVal.setType(TOKEN_IDENTIFIER);
+                                    return retVal;
+                            }
                         }
                     }
                     // and fall through
@@ -1266,7 +1280,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_KEYWORD_RETURN:
                 case TOKEN_KEYWORD_THROW:
                 case TOKEN_KEYWORD_NEW:
-                    if (lastToken != null)
+                    if (!strictIdentifiers && lastToken != null)
                     {
                         int lastTokenType = lastToken.getType();
                         switch (lastTokenType)
