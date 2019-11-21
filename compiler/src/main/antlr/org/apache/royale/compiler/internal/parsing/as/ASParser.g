@@ -182,6 +182,11 @@ attributedDefinition[ContainerNode c]
     List<INamespaceDecorationNode> namespaceAttributes = new ArrayList<INamespaceDecorationNode>();
     List<ModifierNode> modifiers = new ArrayList<ModifierNode>(); 
     INamespaceDecorationNode namespaceAttr = null;
+	IASNode lastChild = null;
+	if(c.getChildCount() > 0)
+	{
+		lastChild = c.getChild(c.getChildCount() - 1);
+	}
     
     boolean enabled = isDefinitionEnabled(c);
     boolean eval = true;
@@ -193,7 +198,19 @@ attributedDefinition[ContainerNode c]
         	// type. If either is evaluated to false, the definition is disabled.
         	enabled &= eval;
             if (!enabled)
-			    c = new ContainerNode(); 
+			{
+				// previously, we removed the entire definition from the AST,
+				// but some IDEs can "fade out" disabled definitions. by adding
+				// the children to a ConfigConditionBlockNode, they can be seen
+				// in the AST, but ignored when generating compiled output. -JT
+			    ConfigConditionBlockNode configBlock = new ConfigConditionBlockNode(false); 
+				if(lastChild != null && c.getRemovedConditionalCompileNode())
+				{
+					configBlock.startBefore(lastChild);
+				}
+				c.addItem(configBlock);
+				c = configBlock;
+			}
         }
         (attribute[modifiers, namespaceAttributes])* 
         {
