@@ -343,6 +343,13 @@ groupDirectiveWithConfigVariable [ContainerNode c, int endToken]
         	c.addItem(block);
         }
         groupDirective[block, endToken]
+		{
+			Token prevToken = buffer.previous();
+			if(prevToken.getType() == endToken)
+			{
+				block.endAfter(prevToken);
+			}
+		}
     ;
 	
 /**
