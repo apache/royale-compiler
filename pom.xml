@@ -57,6 +57,8 @@
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
     <option.withSwf.enabled>false</option.withSwf.enabled>
+
+    <skipgpg>false</skipgpg>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
