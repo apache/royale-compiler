@@ -618,6 +618,38 @@
         </plugins>
       </build>
     </profile>
+
+    <!--
+      This profile is intended to help when having problems with Maven.
+      When enabled, it automatically generates an "effective.pom" in the target directory.
+      This version is the fully expanded version where all inherited configuration is in
+      place and all variables are resolved and profile configuration is included.
+    -->
+    <profile>
+      <id>debug-pom</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-help-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-effective-pom</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>effective-pom</goal>
+                </goals>
+                <configuration>
+                  <output>${project.build.directory}/effective.pom</output>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
+
+  
 
 </project>
