@@ -187,6 +187,7 @@ attributedDefinition[ContainerNode c]
 	{
 		lastChild = c.getChild(c.getChildCount() - 1);
 	}
+	ConfigConditionBlockNode configBlock = null;
     
     boolean enabled = isDefinitionEnabled(c);
     boolean eval = true;
@@ -203,7 +204,7 @@ attributedDefinition[ContainerNode c]
 				// but some IDEs can "fade out" disabled definitions. by adding
 				// the children to a ConfigConditionBlockNode, they can be seen
 				// in the AST, but ignored when generating compiled output. -JT
-			    ConfigConditionBlockNode configBlock = new ConfigConditionBlockNode(false); 
+			    configBlock = new ConfigConditionBlockNode(false); 
 				if(lastChild != null && c.getRemovedConditionalCompileNode())
 				{
 					configBlock.startBefore(lastChild);
@@ -221,6 +222,18 @@ attributedDefinition[ContainerNode c]
                namespaceAttr = namespaceAttributes.get(0);
         }
         definition[c, namespaceAttr, modifiers]
+		{
+			if(configBlock != null)
+			{
+				// since this config block doesn't have braces {}, check if
+				// there's a semicolon at the end of the definition
+				Token prevToken = buffer.previous();
+				if(prevToken.getType() == TOKEN_SEMICOLON)
+				{
+					configBlock.endAfter(prevToken);
+				}
+			}
+		}
     	exception catch [RecognitionException ex]
     	{ 
     		handleParsingError(ex);  
@@ -861,6 +874,13 @@ interfaceDefinition[ContainerNode c,  INamespaceDecorationNode namespace, List<M
  		openT:TOKEN_BLOCK_OPEN
 			{ b.startAfter(openT); }
 		classOrInterfaceBlock[b]
+		{
+			Token prevToken = buffer.previous();
+			if(prevToken.getType() == TOKEN_BLOCK_CLOSE)
+			{
+				interfaceNode.endAfter(prevToken);
+			}
+		}
  	;
  	exception catch [RecognitionException ex] { handleParsingError(ex);  }
  
@@ -939,6 +959,13 @@ classDefinition [ContainerNode c, INamespaceDecorationNode namespace, List<Modif
         openT:TOKEN_BLOCK_OPEN
         { classNode.getScopedNode().startAfter(openT); }
         classOrInterfaceBlock[classNode.getScopedNode()]
+		{
+			Token prevToken = buffer.previous();
+			if(prevToken.getType() == TOKEN_BLOCK_CLOSE)
+			{
+				classNode.endAfter(prevToken);
+			}
+		}
 	;
 	exception catch [RecognitionException ex] { handleParsingError(ex);  }
 
@@ -1115,6 +1142,13 @@ functionDefinition[ContainerNode c, INamespaceDecorationNode namespace, List<Mod
      	(resultType[n])?
      	
      	optionalFunctionBody[n]
+		{
+			Token prevToken = buffer.previous();
+			if(prevToken.getType() == TOKEN_BLOCK_CLOSE)
+			{
+				n.endAfter(prevToken);
+			}
+		}
  	;
 	exception catch [RecognitionException ex] { handleParsingError(ex); }
 
