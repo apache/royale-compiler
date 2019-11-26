@@ -1536,14 +1536,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 for (int i = 0; i < n; i++)
                 {
                 	IExpressionNode getterNode = getterNodes.get(i);
-                	if (getterNode.getNodeID() == ASTNodeID.LiteralStringID)
-                	{
-                		sb.append(ASEmitterTokens.DOUBLE_QUOTE.getToken());
-                		sb.append(asEmitter.stringifyNode(getterNode));
-                		sb.append(ASEmitterTokens.DOUBLE_QUOTE.getToken());
-                	}
-                	else
-                		sb.append(asEmitter.stringifyNode(getterNode));
+                    sb.append(asEmitter.stringifyNode(getterNode));
                     if (i < n - 1)
                     	sb.append(ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.PLUS.getToken() + ASEmitterTokens.SPACE.getToken());
                 }
