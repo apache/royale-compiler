@@ -31,8 +31,10 @@ import org.apache.royale.compiler.internal.definitions.SyntheticBindableSetterDe
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.ITypedNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 
@@ -124,7 +126,28 @@ public abstract class BaseTypedDefinitionNode extends BaseDefinitionNode impleme
      */
     public String getTypeName()
     {
-        return hasExplicitType() ? ((IIdentifierNode)typeNode).getName() : "";
+        if(hasExplicitType())
+        {
+            IIdentifierNode identifierNode = null;
+            if(typeNode instanceof IIdentifierNode)
+            {
+                identifierNode = (IIdentifierNode) typeNode;
+            }
+            else if(typeNode instanceof INamespaceAccessExpressionNode)
+            {
+                INamespaceAccessExpressionNode namespaceAccess = (INamespaceAccessExpressionNode) typeNode;
+                IExpressionNode rightOperandNode = namespaceAccess.getRightOperandNode();
+                if (rightOperandNode instanceof IIdentifierNode) 
+                {
+                    identifierNode = (IIdentifierNode) rightOperandNode;
+                }
+            }
+            if (identifierNode != null)
+            {
+                return identifierNode.getName();
+            }
+        }
+        return "";
     }
 
     public boolean isVoidType()
