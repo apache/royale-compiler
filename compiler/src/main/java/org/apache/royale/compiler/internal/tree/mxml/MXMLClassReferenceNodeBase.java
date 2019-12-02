@@ -436,7 +436,13 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         RoyaleProject project = builder.getProject();
 
         // Handle child tags that are property/style/event specifiers.
-        MXMLSpecifierNodeBase childNode = createSpecifierNode(builder, childTag.getShortName());
+        MXMLSpecifierNodeBase childNode = null;
+        // ...but only if the child has the same prefix as the parent -JT
+        // apache/royale-compiler#101
+        if(tag.getPrefix().equals(childTag.getPrefix()))
+        {
+            childNode = createSpecifierNode(builder, childTag.getShortName());
+        }
         if (childNode != null)
         {
             // This tag is not part of the default property value.
