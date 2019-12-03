@@ -40,7 +40,7 @@ import org.apache.royale.compiler.tree.as.*;
 import java.util.*;
 
 /**
- * Support for processsing a variety of characteristics via metadata on classes or interfaces
+ * Support for processing a variety of characteristics via metadata on classes or interfaces
  * that translate Array like access and iteration from as3 language level to implementation support for
  * the annotated definition(s)
  * example:
@@ -87,13 +87,13 @@ public class ArrayLikeUtil
     final private static String LENGTH_ACCESS_DEFAULT = LENGTH_ACCESS_GETTER;
     final private static String SETTER_ARG_SEQUENCE_DEFAULT = SETTER_ARG_SEQUENCE_VALUE_INDEX;
     
-    //this is currently 'assumed safe', based on the chance of naming collision with an actual user-coded name
-    //being extremely remote. It also assumes that the target platform will optimize its own local variable names,
-    //there is no attempt to make a 'short' name.
+    //this is currently 'assumed safe', based on the chance of naming collision being extremely unlikely
+    //with an actual user-coded variable name. It also assumes that the target platform will optimize its own local variable names,
+    //therefore there is no attempt to make a 'short' name.
     final private static String ARRAY_LIKE_FOREACH_ITERATOR_VARNAME_BASE = "royale$for$Each$Iterator";
     
     /**
-     * @todo Consider the possibility of specific iterator factories instead of one generic function for all... the qName for the specific function could be specified in the Metadata def.
+     * todo Consider the possibility of specific iterator factories instead of one generic function for all... the qName for the specific function could be specified in the Metadata def.
      * These could simply take the instance as an argument and already know the way to construct the 'iterator' because they are specific
      * (e.g. collections could have a specific iterator function, XMLish its own, BinaryData its own etc).
      */
@@ -107,12 +107,16 @@ public class ArrayLikeUtil
         return "'" + original + "'";
     }
     
+    /**
+     * pre-processes dynamic access nodes, replacing them where applicable with get or set value calls
+     * on the arrayLike instance
+     */
     public static void preProcessGetterSetters(ICompilerProject project, ContainerNode node, NodeBase lower ) {
         NodeBase parent = lower != null ? lower : node;
         int childCount = parent.getChildCount();
         for (int i=0; i < childCount; i++) {
             IASNode child = parent.getChild(i);
-            
+            //future: consider ways to consolidate/abstract these various checks
             if (child instanceof BinaryOperatorAssignmentNode) {
                 if (((BinaryOperatorAssignmentNode) child).getLeftOperandNode() instanceof DynamicAccessNode) {
                     DynamicAccessNode dynNode = (DynamicAccessNode) ((BinaryOperatorAssignmentNode) child).getLeftOperandNode();
@@ -200,6 +204,22 @@ public class ArrayLikeUtil
                                 binaryOp.setRightOperandNode(replacement);
                             }
                             replacement.setParent(binaryOp);
+                            dynNode.setParent(null);
+                            child = replacement;
+                        }
+                    } else if (parent instanceof VariableNode) {
+                        VariableNode variableNode = (VariableNode) parent;
+                        IDefinition target = dynNode.getLeftOperandNode().resolveType(project);
+                        IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(target, project);
+                        IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
+                        String getterArg = getGetterArg(arrayLikeTag);
+                        if (!getterArg.equals("[]")) { //otherwise we leave it as is
+                            ExpressionNodeBase indexArg = (ExpressionNodeBase) dynNode.getRightOperandNode();
+                            FunctionCallNode replacement = createDynamicAccessMutation(dynNode, getterArg);
+                            replacement.getArgumentsNode().addChild(indexArg);
+                            replacement.getArgumentsNode().setParent(replacement);
+                            variableNode.setAssignedValue(null, replacement);
+                            replacement.setParent(variableNode);
                             dynNode.setParent(null);
                             child = replacement;
                         }
