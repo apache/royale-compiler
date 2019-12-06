@@ -91,6 +91,17 @@ node('jenkins-win-he-de-1') {
                 }
             }
 
+        stage('Code Quality') {
+            steps {
+                echo 'Checking Code Quality on SonarCloud'
+                // Then run the analysis
+                // 'my-sonarcloud-token' needs to be defined for this job and contains the user token
+                withCredentials([string(credentialsId: 'piotrz-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh 'mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_royale-compiler -Dsonar.branch.name=develop -Dsonar.login=${SONAR_TOKEN}'
+                }
+            }
+        }
+
     }
 
 
