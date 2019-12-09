@@ -108,6 +108,21 @@ public abstract class BaseMojo
 
     protected abstract File getOutput() throws MojoExecutionException;
 
+    protected String getLanguageManifestFileName()
+    {
+        return "mxml-2009-manifest.xml";
+    }
+
+    protected String getLanguageNamespaceURI()
+    {
+        return "http://ns.adobe.com/mxml/2009";
+    }
+
+    protected String getLanguageManifestContents()
+    {
+        return "<?xml version=\"1.0\"?>\n<componentPackage>\n<component id=\"Array\" class=\"Array\" lookupOnly=\"true\"/>\n<component id=\"Boolean\" class=\"Boolean\" lookupOnly=\"true\"/>\n<component id=\"Class\" class=\"Class\" lookupOnly=\"true\"/>\n<component id=\"Date\" class=\"Date\" lookupOnly=\"true\"/>\n<component id=\"DesignLayer\" class=\"mx.core.DesignLayer\"/>\n<component id=\"Function\" class=\"Function\" lookupOnly=\"true\"/>\n<component id=\"int\" class=\"int\" lookupOnly=\"true\"/>\n<component id=\"Number\" class=\"Number\" lookupOnly=\"true\"/>\n<component id=\"Object\" class=\"Object\" lookupOnly=\"true\"/>\n<component id=\"RegExp\" class=\"RegExp\" lookupOnly=\"true\"/>\n<component id=\"String\" class=\"String\" lookupOnly=\"true\"/>\n<component id=\"uint\" class=\"uint\" lookupOnly=\"true\"/>\n<component id=\"Vector\" class=\"__AS3__.vec.Vector\" lookupOnly=\"true\"/>\n<component id=\"XML\" class=\"XML\" lookupOnly=\"true\"/>\n<component id=\"XMLList\" class=\"XMLList\" lookupOnly=\"true\"/>\n\n</componentPackage>";
+    }
+
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = new VelocityContext();
 
@@ -130,7 +145,12 @@ public abstract class BaseMojo
         context.put("swfExternalLibraries", swfExternalLibraries);
         context.put("themeLibraries", themeLibraries);
         context.put("sourcePaths", sourcePaths);
-        context.put("namespaces", getNamespaces());
+        List<Namespace> namespaces = getNamespaces();
+        // not good to put the language namespace into getNamespaces() because
+        // the result of getNamespaces() is used in places where the language 
+        // namespace should not be included.
+        namespaces.add(getLanguageNamespace());
+        context.put("namespaces", namespaces);
         context.put("jsNamespaces", getNamespacesJS());
         context.put("namespaceUris", getNamespaceUris());
         context.put("includeClasses", includeClasses);
@@ -161,6 +181,14 @@ public abstract class BaseMojo
             }
         }
         return namespaces;
+    }
+
+    protected Namespace getLanguageNamespace() {
+        File manifestFile = new File(outputDirectory, getLanguageManifestFileName());
+        Namespace namespace = new Namespace();
+        namespace.setUri(getLanguageNamespaceURI());
+        namespace.setManifest(manifestFile.getAbsolutePath());
+        return namespace;
     }
 
     protected List<Namespace> getNamespacesJS() {
@@ -282,6 +310,21 @@ public abstract class BaseMojo
         try {
             writer = new FileWriter(configFile);
             template.merge(context, writer);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
+        } finally {
+            if(writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
+                }
+            }
+        }
+        File manifestFile = new File(outputDirectory, getLanguageManifestFileName());
+        try {
+            writer = new FileWriter(manifestFile);
+            writer.write(getLanguageManifestContents());
         } catch (IOException e) {
             throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
         } finally {
