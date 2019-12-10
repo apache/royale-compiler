@@ -302,16 +302,16 @@ public abstract class BaseMojo
                 throw new MojoExecutionException("Could not create output directory: " + configFile.getParent());
             }
         }
-        FileWriter writer = null;
+        FileWriter configWriter = null;
         try {
-            writer = new FileWriter(configFile);
-            configTemplate.merge(context, writer);
+            configWriter = new FileWriter(configFile);
+            configTemplate.merge(context, configWriter);
         } catch (IOException e) {
             throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
         } finally {
-            if(writer != null) {
+            if(configWriter != null) {
                 try {
-                    writer.close();
+                    configWriter.close();
                 } catch (IOException e) {
                     throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
                 }
@@ -327,15 +327,16 @@ public abstract class BaseMojo
                 throw new MojoExecutionException("Could not create output directory: " + manifestFile.getParent());
             }
         }
+        FileWriter manifestWriter = null;
         try {
-            writer = new FileWriter(manifestFile);
-            manifestTemplate.merge(context, writer);
+            manifestWriter = new FileWriter(manifestFile);
+            manifestTemplate.merge(context, manifestWriter);
         } catch (IOException e) {
             throw new MojoExecutionException("Error creating manifest file at " + manifestFile.getPath());
         } finally {
-            if(writer != null) {
+            if(manifestWriter != null) {
                 try {
-                    writer.close();
+                    manifestWriter.close();
                 } catch (IOException e) {
                     throw new MojoExecutionException("Error creating manifest file at " + manifestFile.getPath());
                 }
