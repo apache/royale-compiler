@@ -110,7 +110,7 @@ public abstract class BaseMojo
 
     protected String getLanguageManifestFileName()
     {
-        return "mxml-2009-manifest.xml";
+        return "mxml-language-manifest.xml";
     }
 
     protected String getLanguageNamespaceURI()
@@ -160,6 +160,7 @@ public abstract class BaseMojo
             context.put("includeLookupOnly", includeLookupOnly);
         }
         context.put("output", getOutput());
+        context.put("manifestComponents", getLanguageManifestComponents());
 
         return context;
     }
@@ -202,6 +203,27 @@ public abstract class BaseMojo
             namespaceUris.add(namespace.getUri());
         }
         return namespaceUris;
+    }
+
+    protected List<ManifestComponent> getLanguageManifestComponents()
+    {
+        List<ManifestComponent> manifestComponents = new ArrayList<ManifestComponent>();
+        manifestComponents.add(new ManifestComponent("Array", "Array", true));
+        manifestComponents.add(new ManifestComponent("Boolean", "Boolean", true));
+        manifestComponents.add(new ManifestComponent("Class", "Class", true));
+        manifestComponents.add(new ManifestComponent("Date", "Date", true));
+        manifestComponents.add(new ManifestComponent("DesignLayer", "mx.core.DesignLayer", false));
+        manifestComponents.add(new ManifestComponent("Function", "Function", true));
+        manifestComponents.add(new ManifestComponent("int", "int", true));
+        manifestComponents.add(new ManifestComponent("Number", "Number", true));
+        manifestComponents.add(new ManifestComponent("Object", "Object", true));
+        manifestComponents.add(new ManifestComponent("RegExp", "RegExp", true));
+        manifestComponents.add(new ManifestComponent("String", "String", true));
+        manifestComponents.add(new ManifestComponent("uint", "uint", true));
+        manifestComponents.add(new ManifestComponent("Vector", "__AS3__.vec.Vector", true));
+        manifestComponents.add(new ManifestComponent("XML", "XML", true));
+        manifestComponents.add(new ManifestComponent("XMLList", "XMLList", true));
+        return manifestComponents;
     }
 
     @SuppressWarnings("unchecked")
