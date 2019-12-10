@@ -140,12 +140,8 @@ public abstract class BaseMojo
         context.put("swfExternalLibraries", swfExternalLibraries);
         context.put("themeLibraries", themeLibraries);
         context.put("sourcePaths", sourcePaths);
-        List<Namespace> namespaces = getNamespaces();
-        // not good to put the language namespace into getNamespaces() because
-        // the result of getNamespaces() is used in places where the language 
-        // namespace should not be included.
-        namespaces.add(getLanguageNamespace());
-        context.put("namespaces", namespaces);
+        context.put("languageNamespace", getLanguageNamespace());
+        context.put("namespaces", getNamespaces());
         context.put("jsNamespaces", getNamespacesJS());
         context.put("namespaceUris", getNamespaceUris());
         context.put("includeClasses", includeClasses);

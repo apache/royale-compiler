@@ -40,9 +40,15 @@
 
     <namespaces>
 #foreach($namespace in $namespaces)            <namespace>
-      <uri>$namespace.uri</uri>
-      <manifest>$namespace.manifest</manifest>
-    </namespace>
+        <uri>$namespace.uri</uri>
+        <manifest>$namespace.manifest</manifest>
+      </namespace>
+#end
+#if($languageNamespace)
+      <namespace>
+        <uri>$languageNamespace.uri</uri>
+        <manifest>$languageNamespace.manifest</manifest>
+      </namespace>
 #end
     </namespaces>
 
