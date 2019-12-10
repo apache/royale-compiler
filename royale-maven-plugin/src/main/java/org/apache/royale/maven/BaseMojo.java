@@ -118,11 +118,6 @@ public abstract class BaseMojo
         return "http://ns.adobe.com/mxml/2009";
     }
 
-    protected String getLanguageManifestContents()
-    {
-        return "<?xml version=\"1.0\"?>\n<componentPackage>\n<component id=\"Array\" class=\"Array\" lookupOnly=\"true\"/>\n<component id=\"Boolean\" class=\"Boolean\" lookupOnly=\"true\"/>\n<component id=\"Class\" class=\"Class\" lookupOnly=\"true\"/>\n<component id=\"Date\" class=\"Date\" lookupOnly=\"true\"/>\n<component id=\"DesignLayer\" class=\"mx.core.DesignLayer\"/>\n<component id=\"Function\" class=\"Function\" lookupOnly=\"true\"/>\n<component id=\"int\" class=\"int\" lookupOnly=\"true\"/>\n<component id=\"Number\" class=\"Number\" lookupOnly=\"true\"/>\n<component id=\"Object\" class=\"Object\" lookupOnly=\"true\"/>\n<component id=\"RegExp\" class=\"RegExp\" lookupOnly=\"true\"/>\n<component id=\"String\" class=\"String\" lookupOnly=\"true\"/>\n<component id=\"uint\" class=\"uint\" lookupOnly=\"true\"/>\n<component id=\"Vector\" class=\"__AS3__.vec.Vector\" lookupOnly=\"true\"/>\n<component id=\"XML\" class=\"XML\" lookupOnly=\"true\"/>\n<component id=\"XMLList\" class=\"XMLList\" lookupOnly=\"true\"/>\n\n</componentPackage>";
-    }
-
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = new VelocityContext();
 
@@ -292,14 +287,15 @@ public abstract class BaseMojo
             return;
         }
 
-        // Prepare the config file.
-        File configFile = new File(outputDirectory, getConfigFileName());
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         velocityEngine.init();
-        Template template = velocityEngine.getTemplate("config/" + getConfigFileName());
         VelocityContext context = getVelocityContext();
+        
+        // Prepare the config file.
+        File configFile = new File(outputDirectory, getConfigFileName());
+        Template configTemplate = velocityEngine.getTemplate("config/" + getConfigFileName());
 
         if(!configFile.getParentFile().exists()) {
             if(!configFile.getParentFile().mkdirs()) {
@@ -309,7 +305,7 @@ public abstract class BaseMojo
         FileWriter writer = null;
         try {
             writer = new FileWriter(configFile);
-            template.merge(context, writer);
+            configTemplate.merge(context, writer);
         } catch (IOException e) {
             throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
         } finally {
@@ -321,18 +317,27 @@ public abstract class BaseMojo
                 }
             }
         }
+
+        // Prepare the MXML language manifest file.
         File manifestFile = new File(outputDirectory, getLanguageManifestFileName());
+        Template manifestTemplate = velocityEngine.getTemplate("config/" + getLanguageManifestFileName());
+
+        if(!manifestFile.getParentFile().exists()) {
+            if(!manifestFile.getParentFile().mkdirs()) {
+                throw new MojoExecutionException("Could not create output directory: " + manifestFile.getParent());
+            }
+        }
         try {
             writer = new FileWriter(manifestFile);
-            writer.write(getLanguageManifestContents());
+            manifestTemplate.merge(context, writer);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
+            throw new MojoExecutionException("Error creating manifest file at " + manifestFile.getPath());
         } finally {
             if(writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
+                    throw new MojoExecutionException("Error creating manifest file at " + manifestFile.getPath());
                 }
             }
         }
