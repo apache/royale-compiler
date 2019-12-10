@@ -115,7 +115,7 @@
     <output>${output}</output>
 
   <doc-namespaces>
-#foreach($namespace in $namespaces)    <uri>$namespace.uri</uri>
+#foreach($namespaceUri in $namespaceUris)    <uri>$namespaceUri</uri>
 #end
   </doc-namespaces>
 
