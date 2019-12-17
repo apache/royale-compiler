@@ -20,11 +20,9 @@ package org.apache.royale.compiler.internal.graph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -610,19 +608,12 @@ public class GoogDepsWriter {
 				sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
 			}
 
-			PrintWriter out = new PrintWriter(new FileWriter(mainFile, Charset.forName("utf8")));  
-            for (String s : fileLines)
-            {
-                out.println(s);
-            }
-			out.close();
+			FileUtils.writeLines(mainFile, "utf8", fileLines);
 
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
-				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile, Charset.forName("utf8")));  
-				sourceMapOut.print(newSourceMap);
-				sourceMapOut.close();
+				FileUtils.write(mainFile, newSourceMap, "utf8");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -882,19 +873,12 @@ public class GoogDepsWriter {
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
 			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
 
-			PrintWriter out = new PrintWriter(new FileWriter(depFile, Charset.forName("utf8")));  
-			for (String s : finalLines)
-            {
-                out.println(s);
-            }
-			out.close();
+			FileUtils.writeLines(depFile, "utf8", finalLines);
 
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, depFile.getName());
-				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile, Charset.forName("utf8")));  
-				sourceMapOut.print(newSourceMap);
-				sourceMapOut.close();
+				FileUtils.write(sourceMapFile, newSourceMap, "utf8");
 			}
         }
         catch (IOException e)
