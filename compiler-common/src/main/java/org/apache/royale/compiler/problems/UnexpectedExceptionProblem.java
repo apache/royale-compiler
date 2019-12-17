@@ -25,7 +25,7 @@ package org.apache.royale.compiler.problems;
 public final class UnexpectedExceptionProblem extends CompilerProblem
 {
     public static final String DESCRIPTION =
-        "Unexpected exception '${exceptionName}'.";
+        "Unexpected exception '${exceptionName}' at ${exceptionLocation}";
 
     public static final int errorCode = 1530;
     
@@ -33,7 +33,10 @@ public final class UnexpectedExceptionProblem extends CompilerProblem
     {
         super();
         this.exceptionName = throwable.getClass().getName();
+        StackTraceElement element = throwable.getStackTrace()[0];
+        this.exceptionLocation = element.getClassName() + "." + element.getMethodName() + ":" + element.getLineNumber();
     }
 
     public final String exceptionName;
+    public final String exceptionLocation;
 }
