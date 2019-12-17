@@ -109,7 +109,7 @@ public class JSWriter implements IJSWriter
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
 
         if (jsSourceMapOut != null)
@@ -137,9 +137,10 @@ public class JSWriter implements IJSWriter
                 fileName = fileName.replace(".as", ".js");
                 String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapFilePath, sourceRoot);
                 jsSourceMapOut.write(sourceMap.getBytes("utf8"));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
             }
         }
     }
@@ -150,7 +151,11 @@ public class JSWriter implements IJSWriter
         for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
             String relativePath = relativize(mapping.sourcePath, relativeToFile.getAbsolutePath());
-            mapping.sourcePath = relativePath;
+            //this shouldn't happen, but if it does, keep the absolute path
+            if (relativePath != null)
+            {
+                mapping.sourcePath = relativePath;
+            }
         }
     }
     
@@ -159,7 +164,6 @@ public class JSWriter implements IJSWriter
         List<IMappingEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
         for (IMappingEmitter.SourceMapMapping mapping : mappings)
         {
-            //prefer forward slash because web browser devtools expect it
             String sourcePath = mapping.sourcePath;
             sourcePath = convertSourcePathToURI(sourcePath);
             mapping.sourcePath = sourcePath;
@@ -168,11 +172,16 @@ public class JSWriter implements IJSWriter
     
     protected String convertSourcePathToURI(String sourcePath)
     {
+        if (sourcePath == null)
+        {
+            return null;
+        }
         File file = new File(sourcePath);
-        if(file.isAbsolute())
+        if (file.isAbsolute())
         {
             sourcePath = "file:///" + sourcePath;
         }
+        //prefer forward slash because web browser devtools expect it
         return sourcePath.replace('\\', '/');
     }
 
@@ -191,8 +200,14 @@ public class JSWriter implements IJSWriter
         currentFile = currentFile.getParentFile();
         while (currentFile != null)
         {
-            String absoluteCurrentFile = currentFile.getAbsolutePath() + File.separator;
-            if(caseInsensitive)
+            String absoluteCurrentFile = currentFile.getAbsolutePath();
+            if (!absoluteCurrentFile.endsWith(File.separator))
+            {
+                //if it's already there don't duplicate it
+                //for instance, a windows drive will be c:\ already
+                absoluteCurrentFile += File.separator;
+            }
+            if (caseInsensitive)
             {
                 absoluteCurrentFile = absoluteCurrentFile.toLowerCase();
             }
