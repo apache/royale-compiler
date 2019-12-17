@@ -179,7 +179,7 @@ public class InterfaceDefinition extends TypeDefinitionBase implements IInterfac
             return true;
 
         //  An interface is an instance of Object by definition.
-        if (type.equals(project.getBuiltinType(BuiltinType.OBJECT)))
+        if (project.getBuiltinType(BuiltinType.OBJECT).equals(type))
             return true;
 
         // Since 'this' is an interface, 'type' must also be an interface.
