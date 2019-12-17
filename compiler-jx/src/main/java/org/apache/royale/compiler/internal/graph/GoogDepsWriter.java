@@ -610,7 +610,7 @@ public class GoogDepsWriter {
 				sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
 			}
 
-			PrintWriter out = new PrintWriter(new FileWriter(mainFile));  
+			PrintWriter out = new PrintWriter(new FileWriter(mainFile, Charset.forName("utf8")));  
             for (String s : fileLines)
             {
                 out.println(s);
@@ -620,7 +620,7 @@ public class GoogDepsWriter {
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
-				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
+				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile, Charset.forName("utf8")));  
 				sourceMapOut.print(newSourceMap);
 				sourceMapOut.close();
 			}
@@ -882,7 +882,7 @@ public class GoogDepsWriter {
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
 			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
 
-			PrintWriter out = new PrintWriter(new FileWriter(depFile));  
+			PrintWriter out = new PrintWriter(new FileWriter(depFile, Charset.forName("utf8")));  
 			for (String s : finalLines)
             {
                 out.println(s);
@@ -892,7 +892,7 @@ public class GoogDepsWriter {
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, depFile.getName());
-				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
+				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile, Charset.forName("utf8")));  
 				sourceMapOut.print(newSourceMap);
 				sourceMapOut.close();
 			}
