@@ -613,7 +613,7 @@ public class GoogDepsWriter {
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
-				FileUtils.write(mainFile, newSourceMap, "utf8");
+				FileUtils.write(sourceMapFile, newSourceMap, "utf8");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
