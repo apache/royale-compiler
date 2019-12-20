@@ -426,6 +426,17 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	}
 
     			}
+            	else if (((JSRoyaleEmitter)getEmitter()).isProxy(dynLeft))
+            	{
+                    getWalker().walk(dynLeft);
+                    IExpressionNode rightSide = dyn.getRightOperandNode();
+                    write(".setProperty(");
+                    getWalker().walk(rightSide);
+                    write(", ");
+                    getWalker().walk(node.getRightOperandNode());
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    return;            		
+            	}
             }
             
 			if (id == ASTNodeID.Op_EqualID) {

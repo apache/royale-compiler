@@ -1451,6 +1451,36 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testProxySetBrackets()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a['foo'] = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
+    }
+    
+    @Test
+    public void testProxySetBracketsStringVar()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var foo:String;a[foo] = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ foo = null;\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  //var /** @type {string} */ foo = null;\n  a.setProperty(foo, 'bar');\n}");
+    }
+    
+    @Test
+    public void testProxySetBracketsUintVar()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var foo:uint = 0;a[foo] = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {number} */ foo = 0;\n  a.setProperty(foo, 'bar');\n}");
+    }
+    
+    @Test
     public void testProxyGet()
     {
         IFunctionNode node = (IFunctionNode) getNode(
