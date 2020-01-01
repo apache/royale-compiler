@@ -113,6 +113,7 @@ public class NativeUtils
         escape("escape"),
         isFinite("isFinite"),
         isNaN("isNaN"),
+        Map("Map"),
         Number("Number"),
         Object("Object"),
         parseFloat("parseFloat"),
