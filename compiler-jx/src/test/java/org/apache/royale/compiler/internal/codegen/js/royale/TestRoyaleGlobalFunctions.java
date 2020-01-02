@@ -161,6 +161,15 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language.uint(-100)");
     }
+    
+    @Override
+    @Test
+    public void testIsXMLName()
+    {
+        IVariableNode node = getVariable("var a:Boolean = isXMLName(\"?\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = !!(isXMLName(\"?\"))");
+    }
 
     @Override
     @Test

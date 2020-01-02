@@ -92,7 +92,7 @@ wildcard_import.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-wildcard_import.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+wildcard_import.prototype.ROYALE_COMPILE_FLAGS = 9;
 
 
 

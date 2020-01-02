@@ -72,10 +72,10 @@ Super.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+Super.prototype.ROYALE_COMPILE_FLAGS = 9;
 /**
  * Provide reflection support for distinguishing dynamic fields on class object (static)
  * @const
  * @type {Array<string>}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(Super);
+Super.prototype.ROYALE_INITIAL_STATICS = Object.keys(Super);

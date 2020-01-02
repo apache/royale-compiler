@@ -92,5 +92,5 @@ LocalFunction.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-LocalFunction.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+LocalFunction.prototype.ROYALE_COMPILE_FLAGS = 9;
 

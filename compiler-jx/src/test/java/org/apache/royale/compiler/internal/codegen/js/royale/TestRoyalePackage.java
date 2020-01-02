@@ -106,7 +106,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Override
@@ -155,7 +155,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Override
@@ -216,7 +216,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		
 		);
     }
@@ -284,7 +284,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Test
@@ -345,7 +345,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Test
@@ -414,7 +414,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"goog.exportProperty(foo.bar.baz.A.prototype, 'foo', foo.bar.baz.A.prototype.foo);\n" );
     }
 
@@ -484,7 +484,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -528,7 +528,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		);
     }
 
@@ -596,7 +596,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -668,7 +668,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -756,7 +756,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -832,13 +832,13 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"/**\n" +
 				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
 				" * @const\n" +
 				" * @type {Array<string>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(foo.bar.baz.A.InternalClass);\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_INITIAL_STATICS = Object.keys(foo.bar.baz.A.InternalClass);\n"
 		);
     }
 
@@ -946,7 +946,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1014,7 +1014,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		);
     }
 
@@ -1093,7 +1093,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1139,7 +1139,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1192,7 +1192,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		);
     }
 
@@ -1273,13 +1273,13 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.A.Internal.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"/**\n" +
 				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
 				" * @const\n" +
 				" * @type {Array<string>}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(foo.bar.A.Internal);\n"
+				"foo.bar.A.Internal.prototype.ROYALE_INITIAL_STATICS = Object.keys(foo.bar.A.Internal);\n"
 		);
 	}
 	

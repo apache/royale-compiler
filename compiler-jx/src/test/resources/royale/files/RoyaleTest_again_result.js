@@ -207,7 +207,7 @@ RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+RoyaleTest_again.prototype.ROYALE_COMPILE_FLAGS = 9;
 
 
 

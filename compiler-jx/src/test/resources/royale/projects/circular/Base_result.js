@@ -68,4 +68,4 @@ Base.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-Base.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+Base.prototype.ROYALE_COMPILE_FLAGS = 9;

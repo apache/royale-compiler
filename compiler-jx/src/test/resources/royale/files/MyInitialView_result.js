@@ -897,7 +897,6 @@ MyInitialView.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-MyInitialView.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+MyInitialView.prototype.ROYALE_COMPILE_FLAGS = 9;
 
-  
   

@@ -208,7 +208,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
         		"\n" +
         		"\n";
 
@@ -304,7 +304,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
         		"\n" +
         		"\n";
 
@@ -429,7 +429,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
         		"\n" +
         		"\n";
 
@@ -554,7 +554,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
         		"\n" +
         		"\n";
 
@@ -714,7 +714,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
         		"\n" +
         		"\n";
 
@@ -844,7 +844,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
@@ -969,7 +969,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }
@@ -1093,7 +1093,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }
@@ -1219,7 +1219,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }
@@ -1344,7 +1344,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }
@@ -1473,7 +1473,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.AppName_component0.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;" +
+        		"AppName.AppName_component0.prototype.ROYALE_COMPILE_FLAGS = 9;" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -1515,7 +1515,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }
@@ -1630,7 +1630,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }
@@ -1746,7 +1746,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @const\n" +
         		" * @type {number}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;";
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
 
         assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
     }

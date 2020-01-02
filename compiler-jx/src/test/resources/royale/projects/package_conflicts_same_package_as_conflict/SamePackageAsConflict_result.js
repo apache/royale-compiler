@@ -73,4 +73,4 @@ SamePackageAsConflict.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-SamePackageAsConflict.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+SamePackageAsConflict.prototype.ROYALE_COMPILE_FLAGS = 9;

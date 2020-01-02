@@ -60,4 +60,4 @@ interfaces.IA.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-interfaces.IA.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+interfaces.IA.prototype.ROYALE_COMPILE_FLAGS = 9;

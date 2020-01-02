@@ -570,8 +570,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		// return {
 		writeToken(ASEmitterTokens.RETURN);
 		write(ASEmitterTokens.BLOCK_OPEN);
-		/*indentPush();
-		writeNewline();*/
 	}
 
 	private void emitReflectionDataEnd(String typeName, boolean hasContent) {
@@ -590,18 +588,17 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		
 		if (config == null) return;
 		//add compiletime descriptor flags
+		//allow dead-code elimination if reflection is not used
 		//doc emitter-ish:
 		writeNewline("/**");
 		writeNewline(" * @const");
 		writeNewline(" * @type {number}");
 		writeNewline(" */");
 		
-		//{typeName}.prototype.ROYALE_REFLECTION_INFO.compileFlags = {int value here};
+		//{typeName}.prototype.ROYALE_COMPILE_FLAGS = {int value here};
 		write(typeName);
 		write(ASEmitterTokens.MEMBER_ACCESS);
 		write(JSEmitterTokens.PROTOTYPE);
-		write(ASEmitterTokens.MEMBER_ACCESS);
-		write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
 		write(ASEmitterTokens.MEMBER_ACCESS);
 		writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_COMPILE_TIME_FLAGS);
 		writeToken(ASEmitterTokens.EQUAL);
@@ -627,10 +624,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		if (outputType == ReflectionKind.CLASS) {
 			
 			if (varData.size() > 0) {
-				/*//return {};},
-				writeEmptyContent(true, true);
-			} else {*/
-				// variables: function() {
 				indentPush();
 				writeNewline();
 				indented = true;
@@ -740,9 +733,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	 
 
 		if (accessorData.size() > 0) {
-			/*//return {};},
-			writeEmptyContent(true, true);
-		} else {*/
 			if (continueContent) {
 				write(ASEmitterTokens.COMMA);
 				writeNewline();
@@ -828,12 +818,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 	 
 		if (methodData.size() > 0) {
-			/*//return {};},
-			writeEmptyContent(false, false);
-		} else {*/
-			
-			// methods: function() {
-			
 			if (continueContent){
 				write(ASEmitterTokens.COMMA);
 				writeNewline();
@@ -900,7 +884,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				IMetaTagNode[] metas = method.metaData;
 				if (metas != null)
 				{
-					//writeToken(ASEmitterTokens.COMMA);
 					writeMetaData(metas, true, false);
 				}
 
@@ -921,47 +904,13 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		
     	if (metaData != null && metaData.length > 0)
     	{
-    		//write(ASEmitterTokens.COMMA);
-    	    //writeNewline();
     	    writeMetaData(metaData, continueContent, continueContent);
     	}
 	    if (indented)
 	    	indentPop();
 		emitReflectionDataEnd(typeName, indented);
     }
-
-    /*
-    private void writeStringArray(ArrayList<String> sequence) {
-    	int l = sequence.size();
-		int count = 0;
-    	writeToken(ASEmitterTokens.SQUARE_OPEN);
-		for (String item :sequence) {
-			if (count>0) {
-				write(ASEmitterTokens.COMMA);
-				write(ASEmitterTokens.SPACE);
-			}
-			write(ASEmitterTokens.SINGLE_QUOTE);
-			write(item);
-			write(ASEmitterTokens.SINGLE_QUOTE);
-			count++;
-		}
-		if (l>0) write(ASEmitterTokens.SPACE);
-		writeToken(ASEmitterTokens.SQUARE_CLOSE);
-	}
-	*/
- 
-
-	/*private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
-		//return {};
-		writeToken(ASEmitterTokens.RETURN);
-		write(ASEmitterTokens.BLOCK_OPEN);
-		write(ASEmitterTokens.BLOCK_CLOSE);
-		write(ASEmitterTokens.SEMICOLON);
-		// close empty content function
-		write(ASEmitterTokens.BLOCK_CLOSE);
-		if (appendComma) write(ASEmitterTokens.COMMA);
-		if (includeNewline) writeNewline();
-	}*/
+    
 
 	private void writeParameters(IParameterNode[] params)
 	{
@@ -979,14 +928,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		int len = params.length;
 		for (int i = 0; i < len ; i++) {
 			IParameterDefinition parameterDefinition = (IParameterDefinition) params[i].getDefinition();
-		/*	writeToken(ASEmitterTokens.BLOCK_OPEN);
-			write("index");
-			writeToken(ASEmitterTokens.COLON);
-			write(Integer.toString(i+1));
-			write(ASEmitterTokens.COMMA);
-			write(ASEmitterTokens.SPACE);
-			write("type");
-			writeToken(ASEmitterTokens.COLON);*/
+
 			write(ASEmitterTokens.SINGLE_QUOTE);
 			ITypeDefinition pd = parameterDefinition.resolveType(getProject());
 			if (pd == null)
@@ -1001,16 +943,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 			write(ASEmitterTokens.COMMA);
 			write(ASEmitterTokens.SPACE);
-			/*write("optional");
-			writeToken(ASEmitterTokens.COLON);*/
 			writeToken(parameterDefinition.hasDefaultValue() ? ASEmitterTokens.TRUE :  ASEmitterTokens.FALSE);
-
-			/*write(ASEmitterTokens.BLOCK_CLOSE);*/
+			
 			if (i < len-1) write(ASEmitterTokens.COMMA);
 		}
 
 		// close array of parameter definitions
-		//write(ASEmitterTokens.SPACE);
 		write(ASEmitterTokens.SQUARE_CLOSE);
 		writeToken(ASEmitterTokens.SEMICOLON);
 		// close function
@@ -1154,6 +1092,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		}
 		if (needsStaticsList) {
 			//support for reflection on static classes: supports ability to distinguish between initial fields and dynamic fields
+			//this is excluded via dead-code-elimination if never used
 			//doc emitter-ish:
 			writeNewline("/**");
 			writeNewline(" * Provide reflection support for distinguishing dynamic fields on class object (static)");
@@ -1161,12 +1100,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			writeNewline(" * @type {Array<string>}");
 			writeNewline(" */");
 			
-			//{typeName}.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys({typeName});
+			//{typeName}.prototype.ROYALE_INITIAL_STATICS = Object.keys({typeName});
 			write(typeName);
 			write(ASEmitterTokens.MEMBER_ACCESS);
 			write(JSEmitterTokens.PROTOTYPE);
-			write(ASEmitterTokens.MEMBER_ACCESS);
-			write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
 			write(ASEmitterTokens.MEMBER_ACCESS);
 			writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_INITIAL_STATICS);
 			writeToken(ASEmitterTokens.EQUAL);

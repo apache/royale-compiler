@@ -143,4 +143,4 @@ models.MyModel.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-models.MyModel.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+models.MyModel.prototype.ROYALE_COMPILE_FLAGS = 9;

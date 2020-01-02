@@ -148,7 +148,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.MyEventTarget.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.MyEventTarget.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
     @Override
@@ -204,7 +204,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.TestInterface.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
     @Override
@@ -261,7 +261,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.TestClass.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
     
     @Test
@@ -332,7 +332,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.TestClass.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
     
 

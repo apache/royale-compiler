@@ -73,4 +73,4 @@ UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-UseWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+UseWindow.prototype.ROYALE_COMPILE_FLAGS = 9;

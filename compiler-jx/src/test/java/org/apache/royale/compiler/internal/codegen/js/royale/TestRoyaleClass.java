@@ -317,7 +317,7 @@ public class TestRoyaleClass extends TestGoogClass
                           " * @const\n" + 
                           " * @type {number}\n" + 
                           " */\n" + 
-                          "org.apache.royale.B.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" + 
+                          "org.apache.royale.B.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
                           "\n" + 
                           "\n" + 
                           "\n" + 
@@ -375,7 +375,7 @@ public class TestRoyaleClass extends TestGoogClass
                           " * @const\n" + 
                           " * @type {number}\n" + 
                           " */\n" + 
-                          "org.apache.royale.B.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n" + 
+                          "org.apache.royale.B.A.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
                           "";
         assertOutWithMetadata(expected);
     }

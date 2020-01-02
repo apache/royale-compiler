@@ -182,4 +182,4 @@ controllers.MyController.prototype.ROYALE_REFLECTION_INFO = function () {
  * @const
  * @type {number}
  */
-controllers.MyController.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+controllers.MyController.prototype.ROYALE_COMPILE_FLAGS = 9;

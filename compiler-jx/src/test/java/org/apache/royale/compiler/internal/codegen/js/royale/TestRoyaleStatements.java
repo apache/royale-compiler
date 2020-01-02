@@ -803,7 +803,7 @@ public class TestRoyaleStatements extends TestGoogStatements
                                 " * @const\n" +
                                 " * @type {number}\n" +
                                 " */\n" +
-                                "RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+                                "RoyaleTest_A.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
     @Override
