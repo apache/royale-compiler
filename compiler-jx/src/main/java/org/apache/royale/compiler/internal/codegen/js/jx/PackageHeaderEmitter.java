@@ -29,10 +29,8 @@ import java.util.List;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
@@ -40,17 +38,18 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.common.JSModuleRequireDescription;
-import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.PackageScope;
-import org.apache.royale.compiler.internal.tree.as.ClassNode;
-import org.apache.royale.compiler.internal.tree.as.InterfaceNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.utils.NativeUtils;
 
@@ -76,9 +75,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         {
             qname = type.getQualifiedName();
             ITypeNode typeNode = type.getNode();
-            if (typeNode instanceof ClassNode)
+            if (typeNode instanceof IClassNode)
             {
-                ClassNode classNode = (ClassNode) typeNode;
+                IClassNode classNode = (IClassNode) typeNode;
                 ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
                 if (asDoc != null)
                 {
@@ -87,9 +86,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     getEmitter().getModel().isExterns = isExterns;
                 }
             }
-            else if (typeNode instanceof InterfaceNode)
+            else if (typeNode instanceof IInterfaceNode)
             {
-            	InterfaceNode interfaceNode = (InterfaceNode) typeNode;
+            	IInterfaceNode interfaceNode = (IInterfaceNode) typeNode;
                 ASDocComment asDoc = (ASDocComment) interfaceNode.getASDocComment();
                 if (asDoc != null)
                 {
@@ -106,6 +105,14 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             if(fn != null)
             {
                 qname = fn.getQualifiedName();
+                IFunctionNode functionNode = (IFunctionNode) fn.getNode();
+                ASDocComment asDoc = (ASDocComment) functionNode.getASDocComment();
+                if (asDoc != null)
+                {
+                    String asDocString = asDoc.commentNoEnd();
+                    isExterns = asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken());
+                    getEmitter().getModel().isExterns = isExterns;
+                }
             }
         }
         if (qname == null)
@@ -115,6 +122,14 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             if(variable != null)
             {
                 qname = variable.getQualifiedName();
+                IVariableNode variableNode = (IVariableNode) variable.getNode();
+                ASDocComment asDoc = (ASDocComment) variableNode.getASDocComment();
+                if (asDoc != null)
+                {
+                    String asDocString = asDoc.commentNoEnd();
+                    isExterns = asDocString.contains(JSRoyaleEmitterTokens.EXTERNS.getToken());
+                    getEmitter().getModel().isExterns = isExterns;
+                }
             }
         }
         if (qname == null)
@@ -241,9 +256,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         else
         {
             ITypeNode typeNode = type.getNode();
-            if (typeNode instanceof ClassNode)
+            if (typeNode instanceof IClassNode)
             {
-                ClassNode classNode = (ClassNode) typeNode;
+                IClassNode classNode = (IClassNode) typeNode;
                 ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
                 if (asDoc != null)
                 {
