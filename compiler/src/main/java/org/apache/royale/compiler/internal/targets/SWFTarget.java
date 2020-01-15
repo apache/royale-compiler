@@ -426,7 +426,6 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                        Collection<EmitterClassVisitor> classes = emitter.getDefinedClasses();
 	                        for (EmitterClassVisitor clazz : classes)
 	                        {
-	                        	System.out.println("scanning for overrides: " + clazz.getInstanceInfo().name.getBaseName());
 	                        	Iterator<Trait> instanceTraits = clazz.instanceTraits.iterator();
 	                        	while (instanceTraits.hasNext())
 	                        	{
