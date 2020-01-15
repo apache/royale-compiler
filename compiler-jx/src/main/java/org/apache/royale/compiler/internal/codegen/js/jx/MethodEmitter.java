@@ -80,7 +80,12 @@ public class MethodEmitter extends JSSubEmitter implements
         if(classification == IFunctionDefinition.FunctionClassification.FILE_MEMBER ||
                 classification == IFunctionDefinition.FunctionClassification.PACKAGE_MEMBER)
         {
-            write(fjs.formatQualifiedName(fn.getQualifiedName()));
+            String qualifiedName = node.getQualifiedName();
+            if (fjs.getModel().isExterns && node.getName().equals(qualifiedName))
+            {
+                writeToken(ASEmitterTokens.VAR);
+            }
+            write(fjs.formatQualifiedName(qualifiedName));
         }
         else
         {
@@ -92,6 +97,10 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             if (qname != null && !qname.equals(""))
             {
+                if (isConstructor && fjs.getModel().isExterns && typeDef.getBaseName().equals(qname))
+                {
+                    writeToken(ASEmitterTokens.VAR);
+                }
                 write(fjs.formatQualifiedName(qname));
                 if (!isConstructor)
                 {

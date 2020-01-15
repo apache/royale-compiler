@@ -142,8 +142,12 @@ public class FieldEmitter extends JSSubEmitter implements
                 classification == IVariableDefinition.VariableClassification.FILE_MEMBER;
         if (isPackageOrFileMember)
         {
-        	className = getEmitter().formatQualifiedName(node.getQualifiedName());
-            write(className);
+            String qualifiedName = node.getQualifiedName();
+            if (fjs.getModel().isExterns && node.getName().equals(qualifiedName))
+            {
+                writeToken(ASEmitterTokens.VAR);
+            }
+            write(fjs.formatQualifiedName(qualifiedName));
         }
         else
         {
