@@ -92,6 +92,7 @@ import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
@@ -1806,12 +1807,32 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             boolean makeStaticWatcher = (watcherInfoBase.getType() == WatcherType.STATIC_PROPERTY);
 
             // round up the getter function for the watcher, or null if we don't need one
-            MethodInfo propertyGetterFunction = null;
+            StringBuilder propertyGetterFunction = null;
             if (watcherInfoBase.isRoot && !makeStaticWatcher)
             {
                 // TODO: figure out what this looks like
                 // propertyGetterFunction = this.propertyGetter;
                 // assert propertyGetterFunction != null;
+                StringBuilder sb = new StringBuilder();
+                sb.append("function() { return this.");
+                RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
+                String propName = propertyWatcherInfo.getPropertyName();
+                IDefinitionSet defSet = this.classDefinition.getContainedScope().getLocalDefinitionSetByName(propName);
+                if (defSet != null)
+                {
+	                IDefinition rootDef = defSet.getDefinition(0);
+	                if (rootDef != null)
+	                {
+	                	if (rootDef.isPrivate())
+	                	{
+	                		sb.append(((JSRoyaleEmitter)asEmitter).formatPrivateName(this.classDefinition.getQualifiedName(), 
+	                				propName));
+	                    	sb.append("; }");
+	                    	propertyGetterFunction = sb;
+	                	}
+	                	// might need for public as well.
+	                }
+                }
             }
             else if (watcherInfoBase.isRoot && makeStaticWatcher)
             {
@@ -1823,6 +1844,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             outputBindings(propertyWatcherInfo.getBindings());
             if (propertyGetterFunction == null)
                 writeNewline("null" + ASEmitterTokens.COMMA.getToken()); // null is valid
+            else
+            	writeNewline(propertyGetterFunction.toString() + ASEmitterTokens.COMMA.getToken());
             if (type == WatcherType.STATIC_PROPERTY)
             {
                 StaticPropertyWatcherInfo pwinfo = (StaticPropertyWatcherInfo)watcherInfoBase;
