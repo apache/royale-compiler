@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.codegen.mxml.royale;
 import java.util.ArrayList;
 
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 
 /**
  * @author Erik de Bruin
@@ -151,9 +152,22 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
 
     private String outputPropertySpecifier(boolean writeNewline)
     {
-        write((isProperty) ? ASEmitterTokens.SINGLE_QUOTE.getToken() : "");
-        write(name);
-        write((isProperty) ? ASEmitterTokens.SINGLE_QUOTE.getToken() : "");
+        if (isProperty)
+        {
+            write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(name);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else
+        {
+            write(name);
+        }
         writeDelimiter(writeNewline);
 
         if (isProperty)
