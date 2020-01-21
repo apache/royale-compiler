@@ -903,7 +903,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                     }
                     if (tagStack.isEmpty())
                     {
-                        if (result.isImplicit() && !includeImplicit)
+                        if (result != null && result.isImplicit() && !includeImplicit)
                             return null;
                         return result;
                     }
