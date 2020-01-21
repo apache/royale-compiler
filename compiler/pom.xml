@@ -36,6 +36,19 @@
     <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <Class-Path>external/closure-compiler-v20181210.jar compiler-common.jar external/antlr-2.7.7.jar external/antlr-3.3.jar external/antlr-runtime-3.3.jar external/commons-cli-1.2.jar external/commons-io-2.4.jar external/guava-25.1-jre.jar external/lzma-sdk-4j-9.22.0.jar external/flex-tool-api-1.0.0.jar ..</Class-Path>
+                <!-- <Class-Path>compiler-common.jar external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar ..</Class-Path> -->
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <executions>
             <execution>
