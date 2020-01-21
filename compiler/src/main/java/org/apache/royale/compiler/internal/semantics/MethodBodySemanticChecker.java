@@ -892,6 +892,20 @@ public class MethodBodySemanticChecker
                 ));
             }
         }
+        else if ( def instanceof AccessorDefinition )
+        {
+            AccessorDefinition accessorDef = (AccessorDefinition)def;
+            IDefinition accessorType = accessorDef.resolveType(project);
+            if (accessorType != null && // Null here means the ANY_TYPE
+                    (accessorType.equals(project.getBuiltinType(BuiltinType.NUMBER)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.BOOLEAN)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.INT)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.UINT)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.STRING))))
+            {
+                addProblem(new CallNonFunctionProblem(iNode, method_binding.getName().getBaseName()));
+            }
+        }
         else if ( def instanceof FunctionDefinition )
         {
             FunctionDefinition func = (FunctionDefinition)def;
