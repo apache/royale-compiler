@@ -375,7 +375,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
         		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
@@ -500,7 +500,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
         		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
@@ -626,7 +626,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
         		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 1, '_id', true, '$ID0', 0, 0, null]],\n" +
         		"0,\n" +
@@ -787,9 +787,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
-        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 2, '_id', true, '$ID0', 'text', true, 'Hello World', 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.Label, 2, '_id', true, '$ID0', goog.reflect.objectProperty('text', this), true, 'Hello World', 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -913,9 +913,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
-        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID0', 'dataProvider', true, ['Hello','World'], 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID0', goog.reflect.objectProperty('dataProvider', this), true, ['Hello','World'], 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1037,9 +1037,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
-        		"[org.apache.royale.core.View, 1, '_id', true, '$ID3', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID2', 'dataProvider', true, ['Hello','World'], 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID3', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID2', goog.reflect.objectProperty('dataProvider', this), true, ['Hello','World'], 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1163,9 +1163,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
-        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID0', 'dataProvider', true, ['Hello','World'], 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID0', goog.reflect.objectProperty('dataProvider', this), true, ['Hello','World'], 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1288,9 +1288,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'initialView',\n" +
+        		"goog.reflect.objectProperty('initialView', this),\n" +
         		"false,\n" +
-        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID0', 'dataProvider', true, ['Hello','World'], 0, 0, null]],\n" +
+        		"[org.apache.royale.core.View, 1, '_id', true, '$ID1', 0, 0, [org.apache.royale.html.DropDownList, 2, '_id', true, '$ID0', goog.reflect.objectProperty('dataProvider', this), true, ['Hello','World'], 0, 0, null]],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1576,8 +1576,8 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'beads',\n" +
-        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', 'labelFunction', true, org.apache.royale.utils.Language.closure(this.fn_test, this, '__org.apache.royale.utils.Language.closure__fn_test'), 0, 0, null],\n" +
+        		"goog.reflect.objectProperty('beads', this),\n" +
+        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', goog.reflect.objectProperty('labelFunction', this), true, org.apache.royale.utils.Language.closure(this.fn_test, this, '__org.apache.royale.utils.Language.closure__fn_test'), 0, 0, null],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1693,8 +1693,8 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"  this.generateMXMLAttributes\n" +
         		"  ([1,\n" +
-        		"'beads',\n" +
-        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', 'labelFunction', true, org.apache.royale.utils.Language.closure(this.AppName_fn_test, this, '__org.apache.royale.utils.Language.closure__fn_test'), 0, 0, null],\n" +
+        		"goog.reflect.objectProperty('beads', this),\n" +
+        		"null, [org.apache.royale.charts.beads.DataTipBead, 2, '_id', true, '$ID0', goog.reflect.objectProperty('labelFunction', this), true, org.apache.royale.utils.Language.closure(this.AppName_fn_test, this, '__org.apache.royale.utils.Language.closure__fn_test'), 0, 0, null],\n" +
         		"0,\n" +
         		"0\n" +
         		"  ]);\n" +
@@ -1789,7 +1789,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         args[4] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Network.swc")).getPath();
         args[5] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Collections.swc")).getPath();
         args[6] = "-library-path+=" + new File(FilenameNormalization.normalize(env.ASJS + "/frameworks/libs/Basic.swc")).getPath();
-        args[7] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
+		args[7] = "-external-library-path+=" + testAdapter.getPlayerglobal().getPath();
         args[8] = "-output=" + new File(testAdapter.getTempDir(), "bin-debug/RoyaleTest_again_Flash.swf").getPath();
         if (env.GOOG != null)
         	args[9] = "-closure-lib=" + new File(FilenameNormalization.normalize(env.GOOG)).getPath();
