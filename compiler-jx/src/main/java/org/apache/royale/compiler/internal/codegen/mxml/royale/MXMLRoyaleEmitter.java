@@ -47,6 +47,7 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.codegen.js.IMappingEmitter;
 import org.apache.royale.compiler.codegen.mxml.royale.IMXMLRoyaleEmitter;
 import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -3010,6 +3011,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         getCurrentDescriptor("ps").valueNeedsQuotes = true;
 
         emitAttributeValue(node);
+    }
+    
+    @Override
+    public void emitMXMLClass(IMXMLClassNode node)
+    {   
+    	RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
+    	ITypeDefinition cdef = node.getValue(project);
+    	String qname = formatQualifiedName(cdef.getQualifiedName());
+    	ICompilationUnit classCU = project.resolveQNameToCompilationUnit(qname);
+    	ICompilationUnit cu = project.resolveQNameToCompilationUnit(classDefinition.getQualifiedName());
+    	project.addDependency(cu, classCU, DependencyType.EXPRESSION, qname);
+        MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
+        ps.value = qname;
     }
 
     //--------------------------------------------------------------------------

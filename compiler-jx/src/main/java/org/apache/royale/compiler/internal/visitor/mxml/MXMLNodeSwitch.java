@@ -23,6 +23,7 @@ import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
@@ -121,6 +122,9 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLUintID:
             visitor.visitUint((IMXMLUintNode) node);
             break;
+        case MXMLClassID:
+            visitor.visitMXMLClass((IMXMLClassNode) node);
+            break;
         case MXMLStyleID:
             visitor.visitStyleBlock((IMXMLStyleNode)node);
             break;
@@ -174,7 +178,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
             break;
         case MXMLApplicationID:
         case MXMLBindingAttributeID:
-        case MXMLClassID:
         case MXMLClassDefinitionID:
         case MXMLClearID:
         case MXMLConcatenatedDataBindingID:

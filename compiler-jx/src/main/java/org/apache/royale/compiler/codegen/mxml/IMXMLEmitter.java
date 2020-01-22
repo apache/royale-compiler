@@ -25,6 +25,7 @@ import org.apache.royale.compiler.codegen.IEmitter;
 import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
@@ -105,6 +106,8 @@ public interface IMXMLEmitter extends IEmitter
     void emitString(IMXMLStringNode node);
 
     void emitUint(IMXMLUintNode node);
+
+    void emitMXMLClass(IMXMLClassNode node);
 
     //--------------------------------------------------------------------------
 

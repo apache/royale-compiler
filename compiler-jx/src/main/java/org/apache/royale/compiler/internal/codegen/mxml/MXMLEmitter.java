@@ -321,6 +321,12 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
         emitAttributeValue(node);
     }
 
+    @Override
+    public void emitMXMLClass(IMXMLClassNode node)
+    {    	
+    	write(node.getValue(getMXMLWalker().getProject()).getQualifiedName());
+    }
+
     //--------------------------------------------------------------------------
 
     @Override

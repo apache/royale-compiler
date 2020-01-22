@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
@@ -344,6 +345,14 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         mxmlEmitter.emitUint(node);
     }
 
+    @Override
+    public void visitMXMLClass(IMXMLClassNode node)
+    {
+        debug("visitMXMLClass()");
+
+        mxmlEmitter.emitMXMLClass(node);
+    }
+    
     //--------------------------------------------------------------------------
 
     @Override
