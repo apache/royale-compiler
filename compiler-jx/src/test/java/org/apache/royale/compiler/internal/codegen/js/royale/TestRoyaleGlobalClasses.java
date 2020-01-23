@@ -845,7 +845,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:XML = <top attr1='cat'>\n<child attr2='dog'>\n<grandchild attr3='fish'>text</grandchild>\n</child>\n</top>");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'>\\\n<child attr2='dog'>\\\n<grandchild attr3='fish'>text</grandchild>\\\n</child>\\\n</top>\")");
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'>\\n<child attr2='dog'>\\n<grandchild attr3='fish'>text</grandchild>\\n</child>\\n</top>\")");
     }
     
     @Test

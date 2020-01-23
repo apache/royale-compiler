@@ -155,7 +155,11 @@ public class LiteralEmitter extends JSSubEmitter implements
                                     +")";
                             
                         }
-	                    else s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
+	                    else {
+		                    newlineReplacement = "\\\\n";
+	                        s = s.replaceAll("\r", "");
+	                    	s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
+	                    }
 	                }
                 }
                 else
