@@ -126,7 +126,7 @@ public class ArrayLikeUtil
                         IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
                         String setterArg;
                         setterArg = getSetterArg(arrayLikeTag);
-                        if (!setterArg.equals("[]")) { //otherwise we leave it as is
+                        if (!setterArg.equals(INDEX_ACCESS_UNCHANGED)) { //otherwise we leave it as is
                             //get the FunctionCallNode replacement's arguments from the original assignment
                             ExpressionNodeBase indexArg = (ExpressionNodeBase) dynNode.getRightOperandNode();
                             ExpressionNodeBase valueArg = (ExpressionNodeBase) ((BinaryOperatorAssignmentNode) child).getRightOperandNode();
@@ -161,7 +161,7 @@ public class ArrayLikeUtil
                         IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(target, project);
                         IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
                         String getterArg = getGetterArg(arrayLikeTag);
-                        if (!getterArg.equals("[]")) {
+                        if (!getterArg.equals(INDEX_ACCESS_UNCHANGED)) {
                             ExpressionNodeBase indexArg = (ExpressionNodeBase) dynNode.getRightOperandNode();
                             FunctionCallNode replacement = createDynamicAccessMutation(dynNode, getterArg);
                             replacement.getArgumentsNode().addChild(indexArg);
@@ -177,7 +177,7 @@ public class ArrayLikeUtil
                         IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(target, project);
                         IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
                         String getterArg = getGetterArg(arrayLikeTag);
-                        if (!getterArg.equals("[]")) { //otherwise we leave it as is
+                        if (!getterArg.equals(INDEX_ACCESS_UNCHANGED)) { //otherwise we leave it as is
                             ExpressionNodeBase indexArg = (ExpressionNodeBase) dynNode.getRightOperandNode();
                             FunctionCallNode replacement = createDynamicAccessMutation(dynNode, getterArg);
                             replacement.getArgumentsNode().addChild(indexArg);
@@ -193,7 +193,7 @@ public class ArrayLikeUtil
                         IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(target, project);
                         IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
                         String getterArg = getGetterArg(arrayLikeTag);
-                        if (!getterArg.equals("[]")) { //otherwise we leave it as is
+                        if (!getterArg.equals(INDEX_ACCESS_UNCHANGED)) { //otherwise we leave it as is
                             ExpressionNodeBase indexArg = (ExpressionNodeBase) dynNode.getRightOperandNode();
                             FunctionCallNode replacement = createDynamicAccessMutation(dynNode, getterArg);
                             replacement.getArgumentsNode().addChild(indexArg);
@@ -213,7 +213,7 @@ public class ArrayLikeUtil
                         IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(target, project);
                         IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
                         String getterArg = getGetterArg(arrayLikeTag);
-                        if (!getterArg.equals("[]")) { //otherwise we leave it as is
+                        if (!getterArg.equals(INDEX_ACCESS_UNCHANGED)) { //otherwise we leave it as is
                             ExpressionNodeBase indexArg = (ExpressionNodeBase) dynNode.getRightOperandNode();
                             FunctionCallNode replacement = createDynamicAccessMutation(dynNode, getterArg);
                             replacement.getArgumentsNode().addChild(indexArg);
@@ -224,31 +224,39 @@ public class ArrayLikeUtil
                             child = replacement;
                         }
                     } else if (parent instanceof UnaryOperatorNodeBase) {
-                        UnaryOperatorNodeBase unaryOperatorNodeBase = (UnaryOperatorNodeBase) parent;
-                        ArrayLikeUsageErrorProblem usageError;
-                        SourceLocation loc = new SourceLocation();
-                        loc.setSourcePath(unaryOperatorNodeBase.getSourcePath());
-                        if (unaryOperatorNodeBase.getOperandNode().getAbsoluteStart() > unaryOperatorNodeBase.getOperatorAbsoluteStart()) {
-                            //prepended unary operator
-                            loc.setColumn(unaryOperatorNodeBase.getColumn());
-                            loc.setLine(unaryOperatorNodeBase.getLine());
-                            loc.setEndColumn(unaryOperatorNodeBase.getOperatorAbsoluteStart()-unaryOperatorNodeBase.getOperandNode().getAbsoluteStart());
-                            loc.setEndLine(unaryOperatorNodeBase.getLine());
-                            loc.setStart(unaryOperatorNodeBase.getStart());
-                            loc.setEnd(unaryOperatorNodeBase.getOperatorAbsoluteStart()-1);
-                        } else {
-                            //post-pended unary operator
-                            loc.setColumn(unaryOperatorNodeBase.getOperandNode().getEndColumn());
-                            loc.setLine(unaryOperatorNodeBase.getOperandNode().getEndLine());
-                            loc.setEndColumn(unaryOperatorNodeBase.getEndColumn());
-                            loc.setEndLine(unaryOperatorNodeBase.getEndLine());
-                            loc.setStart(unaryOperatorNodeBase.getOperandNode().getAbsoluteStart());
-                            loc.setStart(unaryOperatorNodeBase.getAbsoluteEnd());
+                        IDefinition target = dynNode.getLeftOperandNode().resolveType(project);
+                        IDefinition metaSource = ArrayLikeUtil.resolveArrayLikeDefinitionSource(target, project);
+                        IMetaTag arrayLikeTag = ArrayLikeUtil.getArrayLikeMetaData(metaSource);
+                        String getterArg = getGetterArg(arrayLikeTag);
+                        String setterArg = getSetterArg(arrayLikeTag);
+                        if (!(INDEX_ACCESS_UNCHANGED.equals(getterArg) && INDEX_ACCESS_UNCHANGED.equals(setterArg))) {
+                            //report an error - unless we have native get/set bracket [] access (where we can assume it should work), we can't easily migrate unary operators
+                            UnaryOperatorNodeBase unaryOperatorNodeBase = (UnaryOperatorNodeBase) parent;
+                            ArrayLikeUsageErrorProblem usageError;
+                            SourceLocation loc = new SourceLocation();
+                            loc.setSourcePath(unaryOperatorNodeBase.getSourcePath());
+                            if (unaryOperatorNodeBase.getOperandNode().getAbsoluteStart() > unaryOperatorNodeBase.getOperatorAbsoluteStart()) {
+                                //prepended unary operator
+                                loc.setColumn(unaryOperatorNodeBase.getColumn());
+                                loc.setLine(unaryOperatorNodeBase.getLine());
+                                loc.setEndColumn(unaryOperatorNodeBase.getOperatorAbsoluteStart() - unaryOperatorNodeBase.getOperandNode().getAbsoluteStart());
+                                loc.setEndLine(unaryOperatorNodeBase.getLine());
+                                loc.setStart(unaryOperatorNodeBase.getStart());
+                                loc.setEnd(unaryOperatorNodeBase.getOperatorAbsoluteStart() - 1);
+                            } else {
+                                //post-pended unary operator
+                                loc.setColumn(unaryOperatorNodeBase.getOperandNode().getEndColumn());
+                                loc.setLine(unaryOperatorNodeBase.getOperandNode().getEndLine());
+                                loc.setEndColumn(unaryOperatorNodeBase.getEndColumn());
+                                loc.setEndLine(unaryOperatorNodeBase.getEndLine());
+                                loc.setStart(unaryOperatorNodeBase.getOperandNode().getAbsoluteStart());
+                                loc.setStart(unaryOperatorNodeBase.getAbsoluteEnd());
+                            }
+                            usageError = new ArrayLikeUsageErrorProblem(loc,
+                                    "Unary Operation not supported");
+
+                            project.getProblems().add(usageError);
                         }
-                        usageError = new ArrayLikeUsageErrorProblem(loc,
-                                "Unary Operation not supported");
-                       
-                        project.getProblems().add(usageError);
                     } /*else {
                         System.out.println("Skipped: " + (child.getNodeID()));
                     }*/
@@ -467,8 +475,15 @@ public class ArrayLikeUtil
         }
     
     }
-    
-    private static HashMap<String, String> arrayLikeLookups = new HashMap<String, String>(20);
+
+    private static int currentProject = -1;
+    private static HashMap<String, String> arrayLikeLookups = null;
+
+    private static void resetLookupsIfNeeded(ICompilerProject project) {
+        if (currentProject == project.hashCode()) return;
+        arrayLikeLookups = new HashMap<String, String>(20);
+        currentProject = project.hashCode();
+    }
 
     /**
      *
@@ -583,6 +598,7 @@ public class ArrayLikeUtil
      */
     synchronized public static boolean isArrayLike(IDefinition definition, ICompilerProject project) {
         if (definition != null) {
+            resetLookupsIfNeeded(project);
             if (definition instanceof IClassDefinition) {
                 String qName = definition.getQualifiedName();
                 if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;
@@ -598,6 +614,7 @@ public class ArrayLikeUtil
     
     private static boolean checkClass(IClassDefinition definition, ICompilerProject project){
         String qName = definition.getQualifiedName();
+        resetLookupsIfNeeded(project);
         if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;
         boolean isArrayLike = false;
         //check the class
@@ -632,6 +649,7 @@ public class ArrayLikeUtil
     
     private static boolean checkInterface(IInterfaceDefinition interfaceDefinition, ICompilerProject project){
         String qName = interfaceDefinition.getQualifiedName();
+        resetLookupsIfNeeded(project);
         if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;
         
         boolean isArrayLike = interfaceDefinition.hasMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_ARRAYLIKE);
@@ -669,6 +687,7 @@ public class ArrayLikeUtil
     public static IDefinition resolveArrayLikeDefinitionSource(IDefinition sourceDefinition, ICompilerProject project){
         IDefinition metaSource = null;
         if (sourceDefinition != null){
+            resetLookupsIfNeeded(project);
             String sourceDefinitionQName = sourceDefinition.getQualifiedName();
             if (arrayLikeLookups.containsKey(sourceDefinitionQName)) {
                 String resolvedQName = arrayLikeLookups.get(sourceDefinitionQName);
