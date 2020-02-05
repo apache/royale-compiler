@@ -446,6 +446,25 @@ public class JSGoogConfiguration extends JSConfiguration
     	exportProtectedSymbols = value;
     }
 
+    //
+    // 'mxml-reflect-object-property'
+    //
+
+    private boolean mxmlReflectObjectProperty = true;
+
+    public boolean getMxmlReflectObjectProperty()
+    {
+        return mxmlReflectObjectProperty;
+    }
+
+    @Config
+    @Mapping("mxml-reflect-object-property")
+    public void setMxmlReflectObjectProperty(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	mxmlReflectObjectProperty = value;
+    }
+
     
     //
     // 'warn-public-vars'

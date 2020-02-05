@@ -118,6 +118,8 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
 
     public MXMLDescriptorSpecifier parent;
 
+    public boolean useGoogReflectObjectProperty = false;
+
     //--------------------------------------------------------------------------
     //
     //    Methods
@@ -154,15 +156,24 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     {
         if (isProperty)
         {
-            write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(name);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.COMMA);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.THIS);
-            write(ASEmitterTokens.PAREN_CLOSE);
+            if(useGoogReflectObjectProperty)
+            {
+                write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(name);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.SPACE);
+                write(ASEmitterTokens.THIS);
+                write(ASEmitterTokens.PAREN_CLOSE);
+            }
+            else
+            {
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(name);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+            }
         }
         else
         {
