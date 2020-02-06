@@ -2342,8 +2342,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             descriptorTree.add(currentInstance);
         else
         {
-            currentInstance.parent = propertiesTree;
-            propertiesTree.propertySpecifiers.add(currentInstance);
+        	// we get here if a instance is a child of a top-level tag
+        	// and there is no default property.  If there are other
+        	// ways to get here, then the code will need adjusting.
+        	
+        	// this code assumes that the children will have an id
+        	// and will just create properties with the children's id
+        	// on the class.
+        	MXMLDescriptorSpecifier prop = new MXMLDescriptorSpecifier();
+        	prop.isProperty = true;
+        	prop.name = id;
+        	prop.parent = propertiesTree;
+        	propertiesTree.propertySpecifiers.add(prop);
+            currentInstance.parent = prop;
+            prop.propertySpecifiers.add(currentInstance);
         }
 
         addInstanceIfNeeded(instances, currentInstance);
