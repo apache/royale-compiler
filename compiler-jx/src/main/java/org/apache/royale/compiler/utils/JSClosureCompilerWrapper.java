@@ -25,7 +25,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -88,6 +91,7 @@ public class JSClosureCompilerWrapper
     private String propertyMapOutputPath;
     private String variableMapInputPath;
     private String propertyMapInputPath;
+    private Set<String> propertyNamesToKeep;
     private boolean skipTypeInference;
     private boolean sourceMap = false;
     private boolean verbose = false;
@@ -123,6 +127,11 @@ public class JSClosureCompilerWrapper
     {
         verbose = enabled;
     }
+
+    public void setPropertyNamesToKeep(Set<String> propertyNames)
+    {
+        propertyNamesToKeep = propertyNames;
+    }
     
     public boolean compile()
     {
@@ -146,16 +155,37 @@ public class JSClosureCompilerWrapper
 			}
         }
         
+        Map<String, String> propertyMap = null;
+        if (propertyNamesToKeep != null)
+        {
+            if (propertyMap == null)
+            {
+                propertyMap = new HashMap<String, String>();
+            }
+            for (String name : propertyNamesToKeep)
+            {
+                propertyMap.put(name, name);
+            }
+        }
         if (propertyMapInputPath != null)
         {
+            if (propertyMap == null)
+            {
+                propertyMap = new HashMap<String, String>();
+            }
         	File inputFile = new File(outputFolder, propertyMapInputPath);
         	try {
-            	VariableMap map = VariableMap.load(inputFile.getAbsolutePath());
-				CompilerMapFetcher.setPropertyMap(options_, map);
+                VariableMap inputMap = VariableMap.load(inputFile.getAbsolutePath());
+                propertyMap.putAll(inputMap.getOriginalNameToNewNameMap());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+        }
+        if (propertyMap != null)
+        {
+            VariableMap map = VariableMap.fromMap(propertyMap);
+            CompilerMapFetcher.setPropertyMap(options_, map);
         }
 
         compiler_.setPassConfig(new RoyaleClosurePassConfig(options_, 

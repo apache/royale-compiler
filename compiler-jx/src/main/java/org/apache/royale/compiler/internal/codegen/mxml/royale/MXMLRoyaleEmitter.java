@@ -2854,7 +2854,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier currentPropertySpecifier = new MXMLDescriptorSpecifier();
         currentPropertySpecifier.isProperty = true;
-        currentPropertySpecifier.useGoogReflectObjectProperty = project.config.getMxmlReflectObjectProperty();
+        currentPropertySpecifier.useGoogReflectObjectProperty = project.config.getRenamePublicSymbols() && project.config.getMxmlReflectObjectProperty();
         currentPropertySpecifier.name = cdef != null ? cdef.getQualifiedName() : node.getName();
         currentPropertySpecifier.parent = currentInstance;
 
