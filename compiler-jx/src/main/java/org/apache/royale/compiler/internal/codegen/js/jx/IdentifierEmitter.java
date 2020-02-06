@@ -320,7 +320,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                         if (nodeDef instanceof IAccessorDefinition && ((IMemberAccessExpressionNode) parentNode).getOperator() == IOperatorNode.OperatorType.MEMBER_ACCESS)
                             wasCustomNamespace = fjs.isCustomNamespace((FunctionDefinition)nodeDef);
                         
-                        if (nodeDef.isStatic() || !wasCustomNamespace) {
+                        if (!wasCustomNamespace) {
                             //we already wrote member access before walking to this node.
                             accessWithNS = false;
                         }
