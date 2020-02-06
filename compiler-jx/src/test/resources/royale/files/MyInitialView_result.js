@@ -900,3 +900,4 @@ MyInitialView.prototype.ROYALE_REFLECTION_INFO = function () {
 MyInitialView.prototype.ROYALE_COMPILE_FLAGS = 9;
 
   
+  
