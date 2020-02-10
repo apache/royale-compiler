@@ -317,7 +317,7 @@ public class ArrayLikeUtil
         IForLoopNode[] forLoops = searchScope.getLoopChecks(true);
         List<IForLoopNode> forLoopList = Arrays.asList(forLoops);
         boolean importAdded = false;
-        ArrayList<String> usedIterators = new ArrayList<>();
+        ArrayList<String> usedIterators = new ArrayList<String>();
         for (IForLoopNode loopNode : forLoopList) {
             int depth = 0;
             IASNode nodeCheck = loopNode;
