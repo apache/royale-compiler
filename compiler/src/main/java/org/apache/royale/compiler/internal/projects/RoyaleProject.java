@@ -24,15 +24,7 @@ import static com.google.common.collect.Lists.transform;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 
@@ -66,6 +58,7 @@ import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.exceptions.LibraryCircularDependencyException;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.royale.compiler.internal.css.CSSManager;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -2625,4 +2618,15 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     public boolean isStaticTypedTarget() {
 	    return true;
     }
+
+
+    private WeakHashMap<IClassDefinition, BindingDatabase> bindingMap = new WeakHashMap<IClassDefinition, BindingDatabase>();
+    /**
+     * Support for access to BindingData from the class definition as key.
+     * @return
+     */
+    public WeakHashMap<IClassDefinition, BindingDatabase> getBindingMap(){
+        return bindingMap;
+    }
+
 }

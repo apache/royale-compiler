@@ -90,9 +90,7 @@ public class BindingDatabase
    private boolean analysisFinished = false;
    
    private static List<BindingDatabase> _diagnosticLogger;
-   
-   public static WeakHashMap<IClassDefinition, BindingDatabase> bindingMap = new WeakHashMap<IClassDefinition, BindingDatabase>();
-   
+
    /**
     * test only field. Total number of watcher info's of all types
     */

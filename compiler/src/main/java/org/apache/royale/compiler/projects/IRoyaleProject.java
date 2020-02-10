@@ -20,10 +20,7 @@
 package org.apache.royale.compiler.projects;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.common.XMLName;
@@ -31,7 +28,9 @@ import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.RSLSettings;
 import org.apache.royale.compiler.css.ICSSManager;
 import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.exceptions.LibraryCircularDependencyException;
+import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.royale.compiler.internal.config.IWriteOnlyProjectSettings;
 import org.apache.royale.compiler.internal.css.CSSManager;
 import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
@@ -245,5 +244,12 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      * true for targets with static typing at runtime, false for dynamic typing at runtime
      */
     boolean isStaticTypedTarget();
+
+
+    /**
+     * Support for access to BindingData from the class definition as key.
+     * @return
+     */
+    WeakHashMap<IClassDefinition, BindingDatabase> getBindingMap();
 
 }

@@ -92,6 +92,7 @@ import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -1483,7 +1484,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     protected void emitBindingData(String cname, IClassDefinition cdef)
     {
-        BindingDatabase bd = BindingDatabase.bindingMap.get(cdef);
+		IRoyaleProject project = (IRoyaleProject)(walker.getProject());
+		BindingDatabase bd = project.getBindingMap().get(cdef);
         if (bd == null)
             return;
         if (bd.getBindingInfo().isEmpty())
@@ -2541,7 +2543,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             String overrideID = MXMLRoyaleEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
 	        setProp.id = overrideID;
 	        instances.add(setProp);
-	        BindingDatabase bd = BindingDatabase.bindingMap.get(classDefinition);
+			IRoyaleProject project = (IRoyaleProject)(walker.getProject());
+			BindingDatabase bd = project.getBindingMap().get(classDefinition);
 	        Set<BindingInfo> bindingInfo = bd.getBindingInfo();
 	        IMXMLDataBindingNode bindingNode = (IMXMLDataBindingNode)propertyOrStyleNode.getChild(0);
 	        for (BindingInfo bi : bindingInfo)

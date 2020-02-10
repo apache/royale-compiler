@@ -43,6 +43,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.mxml.*;
@@ -595,7 +596,8 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
             String overrideID = MXMLRoyaleEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
 	        setProp.id = overrideID;
 	        instances.add(setProp);
-	        BindingDatabase bd = BindingDatabase.bindingMap.get(classDefinition);
+            IRoyaleProject project = (IRoyaleProject)(walker.getProject());
+            BindingDatabase bd = project.getBindingMap().get(classDefinition);
 	        Set<BindingInfo> bindingInfo = bd.getBindingInfo();
 	        IMXMLDataBindingNode bindingNode = (IMXMLDataBindingNode)propertyOrStyleNode.getChild(0);
 	        for (BindingInfo bi : bindingInfo)
