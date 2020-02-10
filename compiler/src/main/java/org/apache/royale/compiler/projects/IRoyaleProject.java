@@ -239,4 +239,11 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      */
     File getLinkReport(Configuration config);
 
+
+    /**
+     * classifier for the Target type
+     * true for targets with static typing at runtime, false for dynamic typing at runtime
+     */
+    boolean isStaticTypedTarget();
+
 }

@@ -662,7 +662,7 @@ public class RoyaleJSProject extends RoyaleProject
     }
 
 
-	@Override
+
 	public File getLinkReport(Configuration config) {
 		File f = config.getLinkReport();
 		if (f != null)
@@ -680,4 +680,12 @@ public class RoyaleJSProject extends RoyaleProject
 		}
 		return f;
 	}
+
+    /**
+     * JS Projects do not have static typing at runtime
+     */
+    @Override
+    public boolean isStaticTypedTarget() {
+        return false;
+    }
 }

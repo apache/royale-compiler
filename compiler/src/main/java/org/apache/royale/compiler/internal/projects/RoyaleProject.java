@@ -2619,4 +2619,10 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         this.swfDebugfileAlias = swfDebugfileAlias;
     }
 
+    /**
+     * SWF/default Projects have static typing at runtime
+     */
+    public boolean isStaticTypedTarget() {
+	    return true;
+    }
 }

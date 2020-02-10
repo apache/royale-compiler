@@ -714,7 +714,7 @@ public class ABCGenerator implements ICodeGenerator
         {
             assert !methodInfo.isNative() : "Native methods should be handled in the main thread and not be dispatched to a background thread!";
             functionNode.parseFunctionBody(enclosingScope.getProblems());
-            ASTUtil.processFunctionNode(functionNode, enclosingScope.getProject(), false);
+            ASTUtil.processFunctionNode(functionNode, enclosingScope.getProject());
             generateMethodBodyForFunction(deferredVisitEnds, methodInfo, functionNode, enclosingScope, null);
         }
         

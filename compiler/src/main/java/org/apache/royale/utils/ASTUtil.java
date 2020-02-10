@@ -22,21 +22,23 @@ package org.apache.royale.utils;
 
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 
 public class ASTUtil {
     
-    public static void processFunctionNode(FunctionNode funcNode, ICompilerProject project, boolean dynamicTarget) {
-        if (funcNode.isImplicit()) {
-            //we don't care about implicit nodes (e.g. generated constructors)
-            //and they may not have all the 'real' definition data populated anyway, such as contained ASScope
-            return;
+    public static void processFunctionNode(FunctionNode funcNode, ICompilerProject project) {
+        if (project instanceof IRoyaleProject) {
+            if (funcNode.isImplicit()) {
+                //we don't care about implicit nodes (e.g. generated constructors)
+                //and they may not have all the 'real' definition data populated anyway, such as contained ASScope
+                return;
+            }
+            ArrayLikeUtil.preProcessGetterSetters(project, funcNode.getScopedNode(), null);
+            if (funcNode.getDefinition().getContainedScope().getHasLoopCheck()) {
+                //pre-process for 'ArrayLike' for-each mutations
+                ArrayLikeUtil.preProcessLoopChecks(funcNode.getDefinition().getContainedScope(), (IRoyaleProject) project);
+            }
         }
-        ArrayLikeUtil.preProcessGetterSetters(project, funcNode.getScopedNode(), null);
-        if (funcNode.getDefinition().getContainedScope().getHasLoopCheck()) {
-            //pre-process for 'ArrayLike' for-each mutations
-            ArrayLikeUtil.preProcessLoopChecks(funcNode.getDefinition().getContainedScope(), project, dynamicTarget);
-        }
-       
     }
     
     

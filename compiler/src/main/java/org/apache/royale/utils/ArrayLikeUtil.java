@@ -35,6 +35,7 @@ import org.apache.royale.compiler.problems.ArrayLikeConfigurationErrorProblem;
 import org.apache.royale.compiler.problems.ArrayLikeUsageErrorProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.tree.as.*;
 
 import java.util.*;
@@ -112,6 +113,9 @@ public class ArrayLikeUtil
      * on the arrayLike instance
      */
     public static void preProcessGetterSetters(ICompilerProject project, ContainerNode node, NodeBase lower ) {
+        if (!(project instanceof IRoyaleProject)) {
+            return;
+        }
         NodeBase parent = lower != null ? lower : node;
         int childCount = parent.getChildCount();
         for (int i=0; i < childCount; i++) {
@@ -273,6 +277,9 @@ public class ArrayLikeUtil
     }
     
     private static boolean isArrayLikeCandidate(DynamicAccessNode dynNode, ICompilerProject project) {
+        if (!(project instanceof IRoyaleProject)) {
+            return false;
+        }
         boolean isCandidate = false;
         //first check to see if the access is numeric... if it is not then we consider that it is not a candidate
         IDefinition dynType = dynNode.getRightOperandNode().resolveType(project);
@@ -303,16 +310,14 @@ public class ArrayLikeUtil
      * main support for loop mutations to support RoyaleArrayLikes as targets of 'for each' loops
      * @param searchScope
      * @param project
-     * @param useDynamicAccess
      */
-    public static void preProcessLoopChecks(ASScope searchScope,ICompilerProject project, boolean useDynamicAccess) {
-
+    public static void preProcessLoopChecks(ASScope searchScope, IRoyaleProject project) {
         ScopedBlockNode funcScopeNode = (ScopedBlockNode) searchScope.getScopeNode();
         
         IForLoopNode[] forLoops = searchScope.getLoopChecks(true);
         List<IForLoopNode> forLoopList = Arrays.asList(forLoops);
         boolean importAdded = false;
-        ArrayList<String> usedIterators = new ArrayList<String>();
+        ArrayList<String> usedIterators = new ArrayList<>();
         for (IForLoopNode loopNode : forLoopList) {
             int depth = 0;
             IASNode nodeCheck = loopNode;
@@ -413,7 +418,8 @@ public class ArrayLikeUtil
                 // {!alreadyUsed: var} originalName{!alreadyUsed: :OriginalType} =  arrIter.getNext();
                 // {originalBody Loop body}
                 // }
-        
+
+                boolean useDynamicAccess = !project.isStaticTypedTarget();
                 ForLoopNode.ILoopMutation mutation = ArrayLikeUtil.createArrayLikeLoopMutation((ForLoopNode) loopNode, arrIter, useDynamicAccess);
         
                 String generatorFuncName = ArrayLikeUtil.ARRAYLIKE_GENERIC_SUPPORT_ITERATOR_FACTORY_FUNC;
@@ -505,7 +511,13 @@ public class ArrayLikeUtil
      */
     public static boolean validateArrayLikeDefinition(IDefinition definition, ICompilerProject project, List<ICompilerProblem> problems) {
         IMetaTag arrayLikeTag  = definition.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_ARRAYLIKE);
-        
+        if (!(project instanceof IRoyaleProject)) {
+            if (problems != null) {
+                problems.add(new ArrayLikeConfigurationErrorProblem(arrayLikeTag, "This is not a Royale Project. Only Royale projects support "+IMetaAttributeConstants.ATTRIBUTE_ARRAYLIKE));
+            }
+            return false;
+        }
+
         //mandatory
         String lengthCheck = arrayLikeTag.getAttributeValue(LENGTH_ARG);
         boolean pass = true;
@@ -597,22 +609,22 @@ public class ArrayLikeUtil
      * @return true if this definition either has its own ArrayLike annotation, or inherits via its ancestors or interfaces
      */
     synchronized public static boolean isArrayLike(IDefinition definition, ICompilerProject project) {
-        if (definition != null) {
+        if (definition != null && project instanceof IRoyaleProject) {
             resetLookupsIfNeeded(project);
             if (definition instanceof IClassDefinition) {
                 String qName = definition.getQualifiedName();
                 if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;
-                return checkClass((IClassDefinition) definition, project);
+                return checkClass((IClassDefinition) definition, (IRoyaleProject) project);
             } else if (definition instanceof IInterfaceDefinition) {
                 String qName = definition.getQualifiedName();
                 if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;
-                return checkInterface((IInterfaceDefinition) definition, project);
+                return checkInterface((IInterfaceDefinition) definition, (IRoyaleProject) project);
             }
         }
         return false;
     }
     
-    private static boolean checkClass(IClassDefinition definition, ICompilerProject project){
+    private static boolean checkClass(IClassDefinition definition, IRoyaleProject project){
         String qName = definition.getQualifiedName();
         resetLookupsIfNeeded(project);
         if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;
@@ -647,7 +659,7 @@ public class ArrayLikeUtil
         return isArrayLike;
     }
     
-    private static boolean checkInterface(IInterfaceDefinition interfaceDefinition, ICompilerProject project){
+    private static boolean checkInterface(IInterfaceDefinition interfaceDefinition, IRoyaleProject project){
         String qName = interfaceDefinition.getQualifiedName();
         resetLookupsIfNeeded(project);
         if (arrayLikeLookups.containsKey(qName)) return arrayLikeLookups.get(qName) != null;

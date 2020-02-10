@@ -64,7 +64,7 @@ public class MethodEmitter extends JSSubEmitter implements
         ICompilerProject project = getWalker().getProject();
 
         fjs.getDocEmitter().emitMethodDoc(node, project);
-        ASTUtil.processFunctionNode(fn, project, true);
+        ASTUtil.processFunctionNode(fn, project);
         
         boolean isConstructor = node.isConstructor();
 

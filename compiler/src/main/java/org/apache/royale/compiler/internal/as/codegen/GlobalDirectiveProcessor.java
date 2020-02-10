@@ -157,7 +157,7 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
         else
         {
             f.parseFunctionBody(currentScope.getProblems());
-            ASTUtil.processFunctionNode(f, currentScope.getProject(), false);
+            ASTUtil.processFunctionNode(f, currentScope.getProject());
             return currentScope.getGenerator().generateFunction(f, this.currentScope, null, null);
         }
     }

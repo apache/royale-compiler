@@ -785,7 +785,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         final boolean is_constructor = func.isConstructor();
         
         ICompilerProject project = classScope.getProject();
-        ASTUtil.processFunctionNode(func, project, false);
+        ASTUtil.processFunctionNode(func, project);
         boolean isBindable = false;
         if (funcDef instanceof AccessorDefinition)
         {

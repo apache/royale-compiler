@@ -132,6 +132,27 @@ public abstract class ASScope extends ASScopeBase
     }
     public void addLoopCheck(IForLoopNode value){
         if (loopChecks == null) loopChecks = CheapArray.create(1);
+        else {
+            int len = CheapArray.size(loopChecks);
+            boolean exitEarly = false;
+            //sometimes the same for loop exists as more than one instance for the same source locations.
+            //this seems to happen somtimes in mxml code blocks.
+            //The following makes sure that only one instance representing the same source code location is tracked
+            //for ArrayLike inspection
+            for (int i=0; i<len; i++) {
+                IForLoopNode existing = (IForLoopNode) CheapArray.get(i, loopChecks);
+                if (existing.getAbsoluteStart() == value.getAbsoluteStart()
+                    && existing.getAbsoluteEnd() == value.getAbsoluteEnd()
+                    && existing.getSourcePath().equals(value.getSourcePath())) {
+                    CheapArray.replace(i, value, loopChecks);
+                    exitEarly = true;
+                    break;
+                }
+            }
+            if (exitEarly) {
+               return;
+            }
+        }
         CheapArray.add(value, loopChecks);
     }
     public IForLoopNode[] getLoopChecks(boolean remove){
@@ -166,6 +187,9 @@ public abstract class ASScope extends ASScopeBase
         
         if (usedNamespaces != null)
             CheapArray.optimize(usedNamespaces, EMPTY_USE_ARRAY);
+
+        if (loopChecks != null)
+            CheapArray.optimize(loopChecks, EMPTY_LOOPCHECK_ARRAY);
     }
 
     public void addNamespaceDirective(NamespaceDefinition.INamespaceDirective directive)
