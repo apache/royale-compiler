@@ -128,6 +128,11 @@ public class MXMLNodeSpecifier
     protected void writeNewline(String value)
     {
         write(value);
+        writeNewline();
+    }
+
+    protected void writeNewline()
+    {
         write(ASEmitterTokens.NEW_LINE);
     }
 

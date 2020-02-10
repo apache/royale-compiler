@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 
 /**
  * @author Erik de Bruin
@@ -118,6 +119,12 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
 
     public MXMLDescriptorSpecifier parent;
 
+    //---------------------------------
+    //    currentIndent
+    //---------------------------------
+ 
+    private int currentIndent = 0;
+
     public boolean useGoogReflectObjectProperty = false;
 
     //--------------------------------------------------------------------------
@@ -125,6 +132,47 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     //    Methods
     //
     //--------------------------------------------------------------------------
+
+    //---------------------------------
+    //    indent
+    //---------------------------------
+
+    protected String getIndent()
+    {
+        return getIndent(currentIndent);
+    }
+
+    protected String getIndent(int numIndent)
+    {
+        final StringBuilder sb = new StringBuilder();
+        if (parent != null)
+        {
+            sb.append(parent.getIndent());
+        }
+        for (int i = 0; i < numIndent; i++)
+            sb.append(JSRoyaleEmitterTokens.INDENT.getToken());
+        return sb.toString();
+    }
+
+    public void indentPush()
+    {
+        currentIndent++;
+    }
+
+    public void indentPop()
+    {
+        if (currentIndent > 0)
+        {
+            currentIndent--;
+        }
+    }
+
+    @Override
+    protected void writeNewline()
+    {
+        write(ASEmitterTokens.NEW_LINE);
+        write(getIndent(currentIndent));
+    }
 
     //---------------------------------
     //    outputEventSpecifier
@@ -192,10 +240,13 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
             else
             {
                 write((hasArray) ? ASEmitterTokens.NULL : ASEmitterTokens.FALSE);
-                writeDelimiter(writeNewline && !hasArray);
-
+                writeDelimiter(writeNewline);
                 write(ASEmitterTokens.SQUARE_OPEN);
-                output(false);
+                indentPush();
+                writeNewline();
+                output(writeNewline);
+                indentPop();
+                writeNewline();
                 write(ASEmitterTokens.SQUARE_CLOSE);
             }
 
@@ -285,7 +336,9 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
         }
 
         if (model != null)
-            write(model.outputPropertySpecifier(true));
+        {
+            write(model.outputPropertySpecifier(writeNewline));
+        }
 
         for (MXMLDescriptorSpecifier md : propertySpecifiers)
         {
@@ -299,7 +352,9 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
         }
 
         if (beads != null)
+        {
             write(beads.outputPropertySpecifier(writeNewline));
+        }
 
         if (!isProperty)
         {
@@ -334,16 +389,26 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     private void outputChildren(MXMLDescriptorSpecifier children, boolean writeNewline)
     {
         write(ASEmitterTokens.SQUARE_OPEN.getToken());
-        write(children.output(false));
+        if(writeNewline)
+        {
+            indentPush();
+            writeNewline();
+        }
+        write(children.output(writeNewline));
+        if(writeNewline)
+        {
+            indentPop();
+            writeNewline();
+        }
         write(ASEmitterTokens.SQUARE_CLOSE.getToken());
     }
 
-    public String outputStateDescriptors()
+    public String outputStateDescriptors(boolean writeNewLine)
     {
         for (MXMLDescriptorSpecifier md : propertySpecifiers)
         {
             write(ASEmitterTokens.SQUARE_OPEN);
-            write(md.output(false));
+            write(md.output(writeNewLine));
             write(ASEmitterTokens.SQUARE_CLOSE);
             writeNewline(ASEmitterTokens.COMMA);
         }

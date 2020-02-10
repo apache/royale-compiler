@@ -1109,7 +1109,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	        writeNewline(" */");
 	        writeNewline("this.mxmlsd = " + ASEmitterTokens.SQUARE_OPEN.getToken());
 	        indentPush();
-	        write(root.outputStateDescriptors());
+	        write(root.outputStateDescriptors(false));
 	        write("null");
 	        write(ASEmitterTokens.SQUARE_CLOSE);
 	        indentPop();
@@ -1130,13 +1130,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         {
             indentPush();
             writeNewline();
-            writeNewline("this.generateMXMLAttributes");
+            write("this.generateMXMLAttributes");
             write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.SQUARE_OPEN);
+            indentPush();
+            writeNewline(ASEmitterTokens.SQUARE_OPEN);
 
             MXMLDescriptorSpecifier root = propertiesTree;
             root.isTopNode = true;
-            writeNewline(root.output(true));
+            for(int i = 0; i < getCurrentIndent(); i++)
+            {
+                root.indentPush();
+            }
+            write(root.output(true));
+            indentPop();
+            writeNewline();
 
             collectExportedNames(root);
 
@@ -2171,24 +2178,24 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             writeNewline("/** @this {" + formatQualifiedName(cname) + "} */");
             indentPush();
             writeNewline("get: function() {");
-            indentPush();
-            writeNewline("{");
             writeNewline("if (this.mxmldd == undefined)");
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
             writeNewline("var arr = " + formatQualifiedName(cname) + ".superClass_.get__MXMLDescriptor.apply(this);");
             writeNewline("/** @type {Array} */");
-            indentPop();
-            indentPop();
+            indentPush();
             writeNewline("var data = [");
 
-            writeNewline(root.output(true));
+            for(int i = 0; i < getCurrentIndent(); i++)
+            {
+                root.indentPush();
+            }
+            write(root.output(true));
+            indentPop();
+            writeNewline();
 
-            indentPush();
             writeNewline("];");
-            indentPush();
-            writeNewline("");
             indentPush();
             writeNewline("if (arr)");
             indentPop();
@@ -2201,11 +2208,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             writeNewline("}");
             indentPop();
             writeNewline("return this.mxmldd;");
-            writeNewline("}");
             indentPop();
             writeNewline("}");
             indentPop();
             writeNewline("}");
+            indentPop();
         	writeNewline("});");
         }
 
