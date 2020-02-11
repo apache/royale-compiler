@@ -181,6 +181,9 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                				if (tags[0].getAllAttributes().length == 0)
 	                					isBindable = true;
 	                			}
+	                			if (tags.length == 0 ) {
+	                				isBindable = definition.isBindable();// if the class itself is marked as Bindable
+								}
 	                		}
 	                		else if (getterDef != null && getterDef.isBindable())
 	                		{
@@ -191,7 +194,10 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                			{
 	                				if (tags[0].getAllAttributes().length == 0)
 	                					isBindable = true;
-	                			}                			
+	                			}
+								if (tags.length == 0 ) {
+									isBindable = definition.isBindable();// if the class itself is marked as Bindable
+								}
 	                		}
 	                	}
 	                    writeNewline();
