@@ -169,7 +169,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                	IAccessorDefinition getterDef = null;
 	                	if (getterNode != null)
 	                		getterDef = (IAccessorDefinition)getterNode.getDefinition();
-	                	if (setterDef.isBindable() || (getterDef != null && getterDef.isBindable()))
+	                	if ((getterDef != null && (setterDef.isBindable() || getterDef.isBindable())))
 	                	{
 	                		if (setterDef.isBindable())
 	                		{
@@ -185,7 +185,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                				isBindable = definition.isBindable();// if the class itself is marked as Bindable
 								}
 	                		}
-	                		else if (getterDef != null && getterDef.isBindable())
+	                		else if (getterDef.isBindable())
 	                		{
 	                			IMetaTag[] tags = getterDef.getMetaTagsByName("Bindable");
 	                			if (tags.length > 1)
