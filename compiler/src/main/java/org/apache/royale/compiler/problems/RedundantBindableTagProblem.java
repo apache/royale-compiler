@@ -19,12 +19,9 @@
 
 package org.apache.royale.compiler.problems;
 
-import org.apache.royale.compiler.common.ISourceLocation;
-import org.apache.royale.compiler.common.SourceLocation;
-import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
 import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
+
 
 /**
  * Problem generated when code attempts to bind to something that isn't bindable.
