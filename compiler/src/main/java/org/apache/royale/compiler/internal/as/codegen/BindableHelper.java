@@ -32,9 +32,12 @@ import org.apache.royale.abc.visitors.ITraitsVisitor;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 import java.util.Vector;
 
@@ -70,6 +73,40 @@ import static org.apache.royale.abc.ABCConstants.TRAIT_Var;
  */
 public class BindableHelper
 {
+    /**
+     * Check to see if the metaTag is a codegen style [Bindable] tag (without any event names specified)
+     * @param metaTag
+     * @return true if the tag is [Bindable]
+     */
+    public static boolean isCodeGenBindable(IMetaTag metaTag) {
+        return metaTag != null
+                && metaTag.getTagName().equals(BINDABLE)
+                && metaTag.getAllAttributes().length == 0;
+    }
+
+    /**
+     * A convenience method to get the next full node after all the Metadata tags, for when
+     * a Binding problem should be reported against the main source node for the definition
+     * @param site the full definition with [Bindable]
+     * @return the first node after the MetaData tags
+     */
+    public static IASNode getProblemReportingNode(IDefinition site) {
+        IDefinitionNode siteNode = site.getNode();
+
+        int afterMetas = siteNode.getMetaTags().getAbsoluteEnd();
+
+        int childrenCount = siteNode.getChildCount();
+        IASNode reportingNode = siteNode;
+        for (int i = 1; i < childrenCount; i++) {
+            IASNode nextNode = siteNode.getChild(i);
+            if (nextNode.getAbsoluteStart() > afterMetas) {
+                reportingNode = nextNode;
+                break;
+            }
+        }
+        return reportingNode;
+    }
+
     /**
      * Generate a synthetic getter for a var that is bindable.  The generated getter will simply return the value of
      * the property.

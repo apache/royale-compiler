@@ -787,53 +787,64 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         ICompilerProject project = classScope.getProject();
         ASTUtil.processFunctionNode(func, project);
         boolean isBindable = false;
+
         if (funcDef instanceof AccessorDefinition)
         {
-            IMetaTag[] metaTags = funcDef.getAllMetaTags();
+            boolean isClassBindable = false;
+            IMetaTag[] metaTags = getClassDefinition().getAllMetaTags();
             for (IMetaTag metaTag : metaTags)
             {
-                if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
-                {
-                    IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
-                    isBindable = attrs.length == 0;
+                if (BindableHelper.isCodeGenBindable(metaTag)) {
+                    isClassBindable = true;
+                    break;
+                }
+            }
+            AccessorDefinition definitionWithBindable = null;
+
+            metaTags = funcDef.getAllMetaTags();
+            for (IMetaTag metaTag : metaTags)
+            {
+                if (BindableHelper.isCodeGenBindable(metaTag)) {
+                    isBindable = true;
+                    definitionWithBindable = (AccessorDefinition)funcDef;
+                    break;
                 }
             }
             AccessorDefinition otherDef =
                     ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
             if (!isBindable)
             {
-                // ignore if not in your class def
                 if (otherDef != null && otherDef.getContainingScope().equals(funcDef.getContainingScope()))
                 {
                     metaTags = otherDef.getAllMetaTags();
                     for (IMetaTag metaTag : metaTags)
                     {
-                        if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
-                        {
-                            IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
-                            isBindable = attrs.length == 0;
+                        if (BindableHelper.isCodeGenBindable(metaTag)) {
+                            isBindable = true;
+                            definitionWithBindable = otherDef;
+                            break;
                         }
                     }
                 }
             }
-            if (!isBindable)
-            {
-                metaTags = getClassDefinition().getAllMetaTags();
-                for (IMetaTag metaTag : metaTags)
-                {
-                    if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
-                    {
-                        IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
-                        isBindable = attrs.length == 0;
-                    }
-                }
-            }
+
             if (isBindable
                     && otherDef instanceof ISetterDefinition
                     && !(otherDef.getContainingScope().equals(funcDef.getContainingScope()))) {
                 //if the setter is not defined in the same scope as this getter, that is an Error (same as Flex)
                 isBindable = false;
                 classScope.addProblem(new BindableGetterCodeGenProblem((IGetterDefinition) funcDef));
+            }
+            if (isClassBindable) {
+                if (isBindable) {
+                    if (definitionWithBindable == funcDef) { //if we don't do this, we will end up with two reports
+                        classScope.addProblem(new RedundantBindableTagProblem(
+                                BindableHelper.getProblemReportingNode(definitionWithBindable)
+                        ));
+                    }
+                } else {
+                    isBindable = true;
+                }
             }
         }
         
