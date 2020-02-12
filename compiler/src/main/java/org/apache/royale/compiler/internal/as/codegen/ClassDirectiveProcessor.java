@@ -798,10 +798,10 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     isBindable = attrs.length == 0;
                 }
             }
+            AccessorDefinition otherDef =
+                    ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
             if (!isBindable)
             {
-                AccessorDefinition otherDef = 
-                    ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
                 // ignore if not in your class def
                 if (otherDef != null && otherDef.getContainingScope().equals(funcDef.getContainingScope()))
                 {
@@ -827,6 +827,13 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                         isBindable = attrs.length == 0;
                     }
                 }
+            }
+            if (isBindable
+                    && otherDef instanceof ISetterDefinition
+                    && !(otherDef.getContainingScope().equals(funcDef.getContainingScope()))) {
+                //if the setter is not defined in the same scope as this getter, that is an Error (same as Flex)
+                isBindable = false;
+                classScope.addProblem(new BindableGetterCodeGenProblem((IGetterDefinition) funcDef));
             }
         }
         
