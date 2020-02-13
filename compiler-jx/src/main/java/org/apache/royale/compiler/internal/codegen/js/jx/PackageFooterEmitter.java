@@ -193,6 +193,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		    write(ASEmitterTokens.BLOCK_CLOSE);
 		    write(ASEmitterTokens.SEMICOLON);
 
+		    if (needsIEventDispatcher) {
+				JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
+				fjs.getBindableEmitter().emitBindableInterfaceMethods(((IClassDefinition) tnode.getDefinition()));
+			}
+
 		    collectReflectionData(tnode);
 		    IMetaTagNode[] metadata = null;
 		    IMetaTagsNode metadataTags = tnode.getMetaTags();

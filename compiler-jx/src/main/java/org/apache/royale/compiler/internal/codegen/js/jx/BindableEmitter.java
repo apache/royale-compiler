@@ -116,7 +116,7 @@ public class BindableEmitter extends JSSubEmitter implements
     }
 
 
-    private void emitBindableInterfaceMethods(IClassDefinition definition)  {
+    public void emitBindableInterfaceMethods(IClassDefinition definition)  {
         writeNewline();
         writeNewline("/**");
         writeNewline(" * Compiler generated");
@@ -213,11 +213,6 @@ public class BindableEmitter extends JSSubEmitter implements
 
 
     private void emitInstanceBindableVars(IClassDefinition definition) {
-
-        if (definition.needsEventDispatcher(getProject())) {
-            if (getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS)
-                emitBindableInterfaceMethods(definition);
-        }
 
         String qname = definition.getQualifiedName();
         write(JSGoogEmitterTokens.OBJECT);
