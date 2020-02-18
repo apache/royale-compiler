@@ -473,6 +473,20 @@ public class LexicalScope
     public enum VariableMutability { Default, Variable, Constant };
 
     /**
+     * Check to see if this name is declared as a variable within this scope
+     * @param var_name A Name instance to check
+     * @return true if the var_name is a declared variable.
+     */
+    public boolean hasDeclaredVariableName(Name var_name) {
+        if ( var_name != null && this.declaredVariables.contains(var_name) )
+        {
+            return true;
+        }
+        //consider: do we also need to check non-reference equality?
+        return false;
+    }
+
+    /**
      * Create a variable with potential visibility
      * to nested scopes.
      * 

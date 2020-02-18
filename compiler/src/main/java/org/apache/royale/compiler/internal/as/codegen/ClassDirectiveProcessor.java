@@ -53,6 +53,7 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
+import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -62,15 +63,6 @@ import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
-import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
-import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.definitions.DefinitionBase;
-import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
-import org.apache.royale.compiler.internal.definitions.GetterDefinition;
-import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.definitions.metadata.ResourceBundleMetaTag;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
@@ -853,6 +845,8 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         Name funcName = funcDef.getMName(classScope.getProject());
         Name bindableName = null;
         boolean wasOverride = false;
+        //we only mutate the setter definitions, leave getters as-is
+        isBindable = isBindable && funcDef instanceof ISetterDefinition;
         if (isBindable)
         {
             // move function into bindable namespace
@@ -904,41 +898,24 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             }
         }
         if (isBindable)
-        {
+        {   //only setters get modified in this case, getters remain the same as source code
             if (wasOverride)
                 funcDef.setOverride();
-            if (funcDef instanceof GetterDefinition)
-            {
-                Name funcTypeName;
-                TypeDefinitionBase typeDef = funcDef.resolveType(project);
-                if ( SemanticUtils.isType(typeDef) )
-                    funcTypeName = typeDef.getMName(project);
-                else
-                    funcTypeName = NAME_OBJECT;
-                DefinitionBase bindableGetter = func.buildBindableGetter(funcName.getBaseName());
-                ASScope funcScope = (ASScope)funcDef.getContainingScope();
-                bindableGetter.setContainingScope(funcScope);
-                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
-                ls.generateBindableGetter(bindableGetter, funcName, bindableName, 
-                                        funcTypeName, getAllMetaTags(funcDef));
-            }
+
+            Name funcTypeName;
+            TypeDefinitionBase typeDef = funcDef.resolveType(project);
+            if ( SemanticUtils.isType(typeDef) )
+                funcTypeName = typeDef.getMName(project);
             else
-            {
-                Name funcTypeName;
-                TypeDefinitionBase typeDef = funcDef.resolveType(project);
-                if ( SemanticUtils.isType(typeDef) )
-                    funcTypeName = typeDef.getMName(project);
-                else
-                    funcTypeName = NAME_OBJECT;
-                ASScope funcScope = (ASScope)funcDef.getContainingScope();
-                DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(), 
-                        funcScope,
-                        funcDef.getTypeReference());
-                bindableSetter.setContainingScope(funcScope);
-                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
-                ls.generateBindableSetter(bindableSetter, funcName, bindableName, 
-                        funcTypeName, getAllMetaTags(funcDef));
-            }
+                funcTypeName = NAME_OBJECT;
+            ASScope funcScope = (ASScope)funcDef.getContainingScope();
+            DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(),
+                    funcScope,
+                    funcDef.getTypeReference());
+            bindableSetter.setContainingScope(funcScope);
+            LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
+            ls.generateBindableSetter(bindableSetter, funcName, bindableName,
+                    funcTypeName, getAllMetaTags(funcDef));
         }
     }
 

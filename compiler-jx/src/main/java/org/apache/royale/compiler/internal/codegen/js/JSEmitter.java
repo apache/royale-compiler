@@ -534,6 +534,14 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		return className.replace(".", "_") + "_" + name;
 	}
 
+    public String formatPrivateName(String className, String name, Boolean nameFirst) {
+        if (nameFirst) {
+            return name + "_" +className.replace(".", "_");
+        } else {
+            return formatPrivateName(className, name);
+        }
+    }
+
     public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
     {
         IDefinition assignedDef = null;

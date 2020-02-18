@@ -220,9 +220,10 @@ public class BindableHelper
         mi.setReturnType(NAME_VOID);
 
         InstructionList insns = new InstructionList(32);
-        // var oldValue = backingName;
+        // var oldValue = backingName (or propName for an originally defined getter);
+        Name oldValuePropName = classScope.hasDeclaredVariableName(propName) ? backingName : propName;
         insns.addInstruction(OP_getlocal0);
-        insns.addInstruction(OP_getproperty, backingName);
+        insns.addInstruction(OP_getproperty, oldValuePropName);
         insns.addInstruction(OP_setlocal2);
 
         // if( oldValue !== newValue )

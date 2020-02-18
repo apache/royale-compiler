@@ -41,6 +41,7 @@ public interface IJSEmitter extends IASEmitter, IMappingEmitter
     
     String formatQualifiedName(String name);
     String formatPrivateName(String className, String name);
+    String formatPrivateName(String className, String name, Boolean nameFirst);
     
     void emitSourceMapDirective(ITypeNode node);
     

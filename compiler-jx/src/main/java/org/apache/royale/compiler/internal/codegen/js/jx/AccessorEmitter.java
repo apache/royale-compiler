@@ -45,7 +45,6 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
@@ -216,10 +215,14 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                    else
 	                    {
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
-	                        if (isBindable)
-	                        	write(JSRoyaleEmitterTokens.BINDABLE_PREFIX);
-	                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-	                    	write(baseName);
+	                        if (isBindable) {
+								write(JSRoyaleEmitterTokens.BINDABLE_PREFIX);
+								write(JSRoyaleEmitterTokens.SETTER_PREFIX);
+								write(getEmitter().formatPrivateName(definition.getQualifiedName(), baseName, true));
+							} else {
+								write(JSRoyaleEmitterTokens.SETTER_PREFIX);
+								write(baseName);
+							}
 	                    }
 	                    write(ASEmitterTokens.SPACE);
 	                    write(ASEmitterTokens.EQUAL);
@@ -275,7 +278,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.BINDABLE_PREFIX);
 	                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-	                    	write(baseName);
+							write(getEmitter().formatPrivateName(definition.getQualifiedName(), baseName, true));
 	                        write(ASEmitterTokens.PAREN_OPEN);
 	                        write("value");
 	                        write(ASEmitterTokens.PAREN_CLOSE);
