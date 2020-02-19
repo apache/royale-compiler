@@ -1343,6 +1343,17 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  goog.bind(org.apache.royale.utils.Language.closure(this.b, this, 'b'), this);\n}");
     }
+    
+    @Test
+    public void testFunctionCallFullyQualifiedPrivate()
+    {
+        project.setAllowPrivateNameConflicts(true);
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import goog.bind; public class B {private function b() { goog.bind(b, this); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @private\n */\nfoo.bar.B.prototype.foo_bar_B_b = function() {\n  goog.bind(org.apache.royale.utils.Language.closure(this.foo_bar_B_b, this, 'foo_bar_B_b'), this);\n}");
+    }
 
     @Test
     public void testFunctionCallCustomNamespace()

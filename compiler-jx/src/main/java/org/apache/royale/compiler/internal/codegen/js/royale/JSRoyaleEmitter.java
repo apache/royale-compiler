@@ -38,6 +38,7 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -1147,21 +1148,40 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         if (getDocEmitter() instanceof JSRoyaleDocEmitter && ((JSRoyaleDocEmitter) getDocEmitter()).getSuppressClosure()) return;
     	write(ASEmitterTokens.COMMA);
     	write(ASEmitterTokens.SPACE);
-    	write(ASEmitterTokens.SINGLE_QUOTE);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        
+        IIdentifierNode identifierNode = null;
     	if (node.getNodeID() == ASTNodeID.IdentifierID)
     	{
-        	if (nodeDef instanceof FunctionDefinition &&
+            identifierNode = (IIdentifierNode) node;
+    	}
+        else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+        {
+            identifierNode = getChainedIdentifierNode(node);
+        }
+        if (identifierNode == null)
+        {
+            System.out.println("unexpected node in emitClosureEnd");
+        }
+        else
+        {
+            if (!node.equals(identifierNode))
+            {
+                nodeDef = identifierNode.resolve(getWalker().getProject());
+            }
+
+            if (nodeDef instanceof FunctionDefinition &&
         			isCustomNamespace((FunctionDefinition)nodeDef))
         	{
             	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getWalker().getProject()).getName();
             	write(ns + "::");
-        	}
-    		write(nodeDef.getBaseName());
-    	}
-    	else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    		writeChainName(node);
-    	else
-    		System.out.println("unexpected node in emitClosureEnd");
+            }
+
+            String qname = nodeDef.getBaseName();
+            if (nodeDef != null && !nodeDef.isStatic() && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getWalker().getProject().getAllowPrivateNameConflicts())
+                qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+    		write(qname);
+        }
     	write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
     }
@@ -1183,16 +1203,18 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	}
     	super.emitStatement(node);
     }
-    private void writeChainName(IASNode node)
+
+    private IIdentifierNode getChainedIdentifierNode(IASNode node)
     {
     	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
     	{
     		node = ((IMemberAccessExpressionNode)node).getRightOperandNode();
     	}
-    	if (node.getNodeID() == ASTNodeID.IdentifierID)
-    		write(((IdentifierNode)node).getName());
-    	else
-    		System.out.println("unexpected node in emitClosureEnd");
+        if (node.getNodeID() == ASTNodeID.IdentifierID)
+        {
+            return (IIdentifierNode) node;
+        }
+        return null;
     }
 
     @Override
