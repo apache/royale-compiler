@@ -156,17 +156,6 @@ public class JSClosureCompilerWrapper
         }
         
         Map<String, String> propertyMap = null;
-        if (propertyNamesToKeep != null)
-        {
-            if (propertyMap == null)
-            {
-                propertyMap = new HashMap<String, String>();
-            }
-            for (String name : propertyNamesToKeep)
-            {
-                propertyMap.put(name, name);
-            }
-        }
         if (propertyMapInputPath != null)
         {
             if (propertyMap == null)
@@ -181,6 +170,23 @@ public class JSClosureCompilerWrapper
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+        }
+        if (propertyNamesToKeep != null)
+        {
+            if (propertyMap == null)
+            {
+                propertyMap = new HashMap<String, String>();
+            }
+            for (String name : propertyNamesToKeep)
+            {
+                //if the propertyMapInputPath has already used this name, we
+                //aren't allowed to add a duplicate.
+                //should there be a warning when there's a duplicate? -JT
+                if (!propertyMap.containsValue(name))
+                {
+                    propertyMap.put(name, name);
+                }
+            }
         }
         if (propertyMap != null)
         {
