@@ -2127,7 +2127,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      '$ID0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
-				"      org.apache.royale.utils.Language.closure(this.AppName_fn_test, this, '__org.apache.royale.utils.Language.closure__fn_test'),\n" +
+				"      org.apache.royale.utils.Language.closure(this.AppName_fn_test, this, 'AppName_fn_test'),\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      null\n" +
