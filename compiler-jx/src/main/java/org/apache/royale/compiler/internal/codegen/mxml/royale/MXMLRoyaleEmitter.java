@@ -2311,20 +2311,16 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	{
             RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
             project.needLanguage = true;
-            IFunctionDefinition fdef = ((MXMLFunctionNode)node).getValue(project);
+            MXMLFunctionNode fnode = ((MXMLFunctionNode)node);
+            IFunctionDefinition fdef = fnode.getValue(project);
+            IExpressionNode fexpNode = (IExpressionNode)fnode.getExpressionNode();
             String fnName = fdef.getBaseName();
             IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                     .getASEmitter();
             if (fdef.isPrivate() && project.getAllowPrivateNameConflicts())
             	fnName = ((JSRoyaleEmitter)asEmitter).formatPrivateName(fdef.getParent().getQualifiedName(), fdef.getBaseName());
-            
-    		currentPropertySpecifier.value = JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken()
-					+ ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() +
-    				fnName +
-					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
-					ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
-    				"__" + JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + "__" + fdef.getBaseName() +
-					ASEmitterTokens.SINGLE_QUOTE.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken();
+            String fNodeString = ((JSRoyaleEmitter)asEmitter).stringifyNode(fexpNode);
+    		currentPropertySpecifier.value = fNodeString; 
     		return;
     	}
 
