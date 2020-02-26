@@ -213,6 +213,24 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testArraySortCompareFunctionWithOptNumberArg()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();var f:Function = function():void {};a.sort(Array.UNIQUESORT)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("org.apache.royale.utils.Language.sort(a, 4)");
+    }
+
+    @Test
+    public void testArraySortCompareFunctionWithOptFunctionArg()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();var f:Function = function():void {};a.sort(f)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.sort(f)");
+    }
+
+    @Test
     public void testArraySortOn()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo')");

@@ -430,9 +430,38 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                         getEmitter().getModel().needLanguage = true;
                                         write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
                                         write(ASEmitterTokens.MEMBER_ACCESS);
-                                        write("sort");
+                                        write("sort(");
+                                        // can't use parameter emitter because the parameter types would be for
+                                        // Array.sort instead of Language.sort
                                         IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
-                                        fjs.emitArguments(newArgs);
+                                        for (int i = 0; i < newArgs.getChildCount(); i++)
+                                        {
+                                        	IExpressionNode arg = (IExpressionNode)newArgs.getChild(i);
+                                        	IDefinition paramTypeDef;
+                                        	if (i == 0)
+                                        	{
+                                        		paramTypeDef = project.resolveQNameToDefinition(IASLanguageConstants.Array);
+                                                getEmitter().emitAssignmentCoercion(arg, paramTypeDef);
+                                        	}
+                                        	else if (i == 1)
+                                        	{
+                                        		write(ASEmitterTokens.COMMA);
+                                        		write(ASEmitterTokens.SPACE);
+                                        		if (args.length == 1)
+                                        			paramTypeDef = project.resolveQNameToDefinition(IASLanguageConstants.Number);
+                                        		else
+                                        			paramTypeDef = project.resolveQNameToDefinition(IASLanguageConstants.Function);
+                                                getEmitter().emitAssignmentCoercion(arg, paramTypeDef);
+                                        	}
+                                        	else if (i == 2)
+                                        	{
+                                        		write(ASEmitterTokens.COMMA);
+                                        		write(ASEmitterTokens.SPACE);
+                                        		paramTypeDef = project.resolveQNameToDefinition(IASLanguageConstants.Number);
+                                                getEmitter().emitAssignmentCoercion(arg, paramTypeDef);
+                                        	}
+                                        }
+                                        write(")");
                                         return;
                                     }
                                 }
