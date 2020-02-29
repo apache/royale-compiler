@@ -141,6 +141,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private int bindingCounter;
 
     private boolean inMXMLContent;
+    private IMXMLInstanceNode overrideInstanceToEmit;
     private Stack<IMXMLStateNode> inStatesOverride = new Stack<IMXMLStateNode>();
     private boolean makingSimpleArray;
     private boolean inStaticInitializer;
@@ -2257,7 +2258,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	IMXMLStateNode currentState = null;
     	if (!inStatesOverride.empty())
     		currentState = inStatesOverride.peek();
-        if (isStateDependent(node, currentState))
+        if (isStateDependent(node, currentState, true))
             return;
     		
         IDefinition cdef = node.getDefinition();
@@ -2291,7 +2292,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	IMXMLStateNode currentState = null;
     	if (!inStatesOverride.empty())
     		currentState = inStatesOverride.peek();
-        if (isStateDependent(node, currentState))
+        if (overrideInstanceToEmit != node && isStateDependent(node, currentState, false))
             return;
 
         ASTNodeID nodeID = node.getNodeID();
@@ -2649,7 +2650,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             boolean oldInMXMLContent = inMXMLContent;
             moveDown(false, null, itemsDesc);
             inMXMLContent = true;
+            overrideInstanceToEmit = instanceNode;
             getMXMLWalker().walk(instanceNode); // instance node
+            overrideInstanceToEmit = null;
             inMXMLContent = oldInMXMLContent;
             moveUp(false, false);
         }
@@ -2726,7 +2729,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (sib == instanceNode)
                 break;
 
-            if (sib instanceof IMXMLInstanceNode && !isStateDependent(sib, state))
+            if (sib instanceof IMXMLInstanceNode && !isStateDependent(sib, state, true))
             {
                 prevStatelessSibling = sib;
             }
@@ -2794,14 +2797,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
      * Determines whether a node is state-dependent.
      * TODO: we should move to IMXMLNode
      */
-    protected boolean isStateDependent(IASNode node, IMXMLStateNode currentState)
+    protected boolean isStateDependent(IASNode node, IMXMLStateNode currentState, boolean includeGroups)
     {
         if (node instanceof IMXMLSpecifierNode)
         {
             String suffix = ((IMXMLSpecifierNode)node).getSuffix();
             return suffix != null && suffix.length() > 0 && !inStateOrStateGroup(suffix, currentState);
         }
-        else if (isStateDependentInstance(node, currentState))
+        else if (isStateDependentInstance(node, currentState, includeGroups))
             return true;
         return false;
     }
@@ -2809,20 +2812,23 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     /**
      * Determines whether the geven node is an instance node, as is state dependent
      */
-    protected boolean isStateDependentInstance(IASNode node, IMXMLStateNode currentState)
+    protected boolean isStateDependentInstance(IASNode node, IMXMLStateNode currentState, boolean includeGroups)
     {
         if (node instanceof IMXMLInstanceNode)
         {
             String[] includeIn = ((IMXMLInstanceNode)node).getIncludeIn();
             String[] excludeFrom = ((IMXMLInstanceNode)node).getExcludeFrom();
-            if (includeIn != null && currentState != null)
-            	for (String s : includeIn)
-            		if (inStateOrStateGroup(s, currentState)) return false;
-            if (excludeFrom != null && currentState != null)
+            if (includeGroups)
             {
-            	for (String s : excludeFrom)
-            		if (inStateOrStateGroup(s, currentState)) return true;
-            	return false;
+	            if (includeIn != null && currentState != null)
+	               for (String s : includeIn)
+	                   if (inStateOrStateGroup(s, currentState)) return false;
+	            if (excludeFrom != null && currentState != null)
+	            {
+	               for (String s : excludeFrom)
+	                   if (inStateOrStateGroup(s, currentState)) return true;
+	               return false;
+	            }
             }
             return includeIn != null || excludeFrom != null;
         }
@@ -2859,7 +2865,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         if (isDataboundProp(node))
             return;
 
-        if (isStateDependent(node, null))
+        if (isStateDependent(node, null, true))
             return;
             
     	RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
