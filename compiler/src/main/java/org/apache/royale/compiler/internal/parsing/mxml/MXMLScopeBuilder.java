@@ -772,6 +772,7 @@ public class MXMLScopeBuilder
         variableDefinition.setTypeReference(typeRef);
         variableDefinition.setNameLocation(idAttribute.getValueStart(), idAttribute.getValueEnd());
         variableDefinition.setBindable();
+        variableDefinition.setMxmlDeclared();
         currentClassScope.addDefinition(variableDefinition);
     }
     

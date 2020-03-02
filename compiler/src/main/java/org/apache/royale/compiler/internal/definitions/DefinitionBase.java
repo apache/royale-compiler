@@ -1348,15 +1348,21 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         boolean bindable = isBindableLocally();
         if (!bindable)
         {
-            IDefinition containing = getParent();
-            if (containing instanceof IClassDefinition
-                    && this.getNamespaceReference() == NamespaceDefinition.getPublicNamespaceDefinition())
-            {
-                DefinitionBase containingBase = (DefinitionBase)containing;
-                bindable = containingBase.isBindableLocally();
-            }
+           bindable = isClassBindable();
         }
         return bindable;
+    }
+
+    public boolean isClassBindable() {
+        boolean classBindable = false;
+        IDefinition containing = getParent();
+        if (containing instanceof IClassDefinition
+                && this.getNamespaceReference() == NamespaceDefinition.getPublicNamespaceDefinition())
+        {
+            DefinitionBase containingBase = (DefinitionBase)containing;
+            classBindable = containingBase.isBindableLocally();
+        }
+        return classBindable;
     }
 
     /**

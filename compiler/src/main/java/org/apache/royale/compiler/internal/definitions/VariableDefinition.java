@@ -136,6 +136,15 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
         return dt;
     }
 
+    private boolean mxmlDeclared = false;
+    public void setMxmlDeclared(){
+        mxmlDeclared = true;
+    }
+
+    public boolean isMXMLDeclared() {
+        return mxmlDeclared;
+    }
+
     @Override
     public IVariableNode getNode()
     {

@@ -2956,7 +2956,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (!makingSimpleArray)
     	{
             MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-            if (ps.hasObject)
+            if (ps.hasObject || ps.parent == null) //('ps.parent == null' was added to allow a top level fx:Object definition, they were not being output without that)
             {
             	emitInstance(node);
             	return;

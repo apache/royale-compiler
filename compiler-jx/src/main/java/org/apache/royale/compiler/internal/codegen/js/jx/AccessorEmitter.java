@@ -35,7 +35,7 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
@@ -163,6 +163,8 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                }
 	                if (setterNode != null)
 	                {
+						boolean isClassBindable = BindableHelper.isClassCodeGenBindable(definition);
+
 	                	boolean isBindable = false;                
 	                	IAccessorDefinition setterDef = (IAccessorDefinition)setterNode.getDefinition();
 	                	IAccessorDefinition getterDef = null;
@@ -170,34 +172,25 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                		getterDef = (IAccessorDefinition)getterNode.getDefinition();
 	                	if ((getterDef != null && (setterDef.isBindable() || getterDef.isBindable())))
 	                	{
+							boolean foundExplicitBindableTag = false;
 	                		if (setterDef.isBindable())
 	                		{
-	                			IMetaTag[] tags = setterDef.getMetaTagsByName("Bindable");
-	                			if (tags.length > 1)
-	                        		isBindable = true;
-	                			else if (tags.length == 1)
-	                			{
-	                				if (tags[0].getAllAttributes().length == 0)
-	                					isBindable = true;
-	                			}
-	                			if (tags.length == 0 ) {
-	                				isBindable = definition.isBindable();// if the class itself is marked as Bindable
-								}
+
+								isBindable = BindableHelper.isCodeGenBindableMember(setterDef, isClassBindable);
+								foundExplicitBindableTag = BindableHelper.hasExplicitBindable(setterDef);
 	                		}
-	                		else if (getterDef.isBindable())
+	                		if (getterDef.isBindable())
 	                		{
-	                			IMetaTag[] tags = getterDef.getMetaTagsByName("Bindable");
-	                			if (tags.length > 1)
-	                        		isBindable = true;
-	                			else if (tags.length == 1)
-	                			{
-	                				if (tags[0].getAllAttributes().length == 0)
-	                					isBindable = true;
-	                			}
-								if (tags.length == 0 ) {
-									isBindable = definition.isBindable();// if the class itself is marked as Bindable
-								}
+
+								isBindable = isBindable || BindableHelper.isCodeGenBindableMember(getterDef, isClassBindable);
+								foundExplicitBindableTag = foundExplicitBindableTag || BindableHelper.hasExplicitBindable(getterDef);
+
 	                		}
+
+							if (isClassBindable) {
+								//if we 'foundExplicitBindableTag' such as [Bindable(event='someEvent')], then nothing else matters, even another [Bindable] tag is ignored (Flex)
+								isBindable = !foundExplicitBindableTag;
+							}
 	                	}
 	                    writeNewline();
 	                    writeNewline();

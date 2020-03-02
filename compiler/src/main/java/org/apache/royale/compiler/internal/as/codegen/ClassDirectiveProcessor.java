@@ -744,7 +744,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             if (!definition.isContingentNeeded(classScope.getProject()))
                 continue;
 
-            assert (definition instanceof VariableDefinition) : "The code generator only supports contigent variable definitions";
+            assert (definition instanceof VariableDefinition) : "The code generator only supports contingent variable definitions";
             
             final IDefinitionNode node = definition.getNode();
             declareVariable((VariableNode) node, (VariableDefinition)definition, definition.isStatic(),
@@ -779,45 +779,41 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         ICompilerProject project = classScope.getProject();
         ASTUtil.processFunctionNode(func, project);
         boolean isBindable = false;
-
         if (funcDef instanceof AccessorDefinition)
         {
-            boolean isClassBindable = false;
-            IMetaTag[] metaTags = getClassDefinition().getAllMetaTags();
-            for (IMetaTag metaTag : metaTags)
-            {
-                if (BindableHelper.isCodeGenBindable(metaTag)) {
-                    isClassBindable = true;
-                    break;
-                }
-            }
-            AccessorDefinition definitionWithBindable = null;
+            boolean isClassBindable = BindableHelper.isClassCodeGenBindable(getClassDefinition());
 
-            metaTags = funcDef.getAllMetaTags();
-            for (IMetaTag metaTag : metaTags)
-            {
-                if (BindableHelper.isCodeGenBindable(metaTag)) {
-                    isBindable = true;
-                    definitionWithBindable = (AccessorDefinition)funcDef;
-                    break;
-                }
+            AccessorDefinition definitionWithBindable = null;
+            boolean foundExplicitBindableTag = false;
+
+            isBindable = BindableHelper.isCodeGenBindableMember(funcDef, isClassBindable);
+            if (isBindable) {
+                definitionWithBindable = (AccessorDefinition) funcDef;
             }
+            foundExplicitBindableTag = BindableHelper.hasExplicitBindable(funcDef);
+
             AccessorDefinition otherDef =
                     ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
-            if (!isBindable)
+            if (!isBindable && !foundExplicitBindableTag)
             {
                 if (otherDef != null && otherDef.getContainingScope().equals(funcDef.getContainingScope()))
                 {
-                    metaTags = otherDef.getAllMetaTags();
-                    for (IMetaTag metaTag : metaTags)
-                    {
-                        if (BindableHelper.isCodeGenBindable(metaTag)) {
-                            isBindable = true;
-                            definitionWithBindable = otherDef;
-                            break;
-                        }
+                    isBindable = BindableHelper.isCodeGenBindableMember(otherDef, isClassBindable);
+                    if (isBindable) {
+                        definitionWithBindable = otherDef;
+                    }
+                    foundExplicitBindableTag = BindableHelper.hasExplicitBindable(otherDef);
+                    //if a) class is Bindable, and b)there is a [Bindable] tag, and c) there is also a [Bindable(eventName)] tag
+                    //then we can retain the [Bindable] codegen and reset foundExplicitBinding to false (assumption, check in flex)
+                    if (isClassBindable && isBindable && foundExplicitBindableTag) {
+                        foundExplicitBindableTag = false; //we will ignore it and keep codegen as well
                     }
                 }
+            }
+            if (isBindable && otherDef == null) {
+                //no other definition
+                isBindable = false;
+                //warning if explicit [Bindable] ?
             }
 
             if (isBindable
@@ -828,24 +824,32 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 classScope.addProblem(new BindableGetterCodeGenProblem((IGetterDefinition) funcDef));
             }
             if (isClassBindable) {
+                //add a warning if redundant local 'codegen' [Bindable] tag
+                if (BindableHelper.hasCodegenBindable(definitionWithBindable)) {
+                    classScope.addProblem(new RedundantBindableTagProblem(
+                            BindableHelper.getProblemReportingNode(definitionWithBindable)
+                    ));
+                }
                 if (isBindable) {
-                    if (definitionWithBindable == funcDef) { //if we don't do this, we will end up with two reports
-                        classScope.addProblem(new RedundantBindableTagProblem(
-                                BindableHelper.getProblemReportingNode(definitionWithBindable)
-                        ));
-                    }
-                } else {
-                    isBindable = true;
+                    if (!foundExplicitBindableTag && BindableHelper.hasExplicitBindable(otherDef)) foundExplicitBindableTag = true;
+                }
+                if (foundExplicitBindableTag) {
+                    //logic:
+                    //when class is [Bindable],
+                    //if either getter/setter member has at least one explicit Bindable tag (Bindable(event='something'))
+                    //then no code-gen is applied,
+                    //even if one of them also has a local 'codegen' [Bindable] tag
+                    isBindable = false;
                 }
             }
         }
-        
+
         functionSemanticChecks(func);
 
         Name funcName = funcDef.getMName(classScope.getProject());
         Name bindableName = null;
         boolean wasOverride = false;
-        //we only mutate the setter definitions, leave getters as-is
+        //from here on we are only interested in the setter definitions, leave getters as-is
         isBindable = isBindable && funcDef instanceof ISetterDefinition;
         if (isBindable)
         {
@@ -1471,7 +1475,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 this.cinitInsns.addAll(cgResult);
             else
                 this.iinitInsns.addAll(cgResult);
-            }
+        }
     }
     
     /**

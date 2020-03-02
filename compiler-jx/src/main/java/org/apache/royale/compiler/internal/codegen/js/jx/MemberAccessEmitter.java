@@ -29,6 +29,7 @@ import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -40,6 +41,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.D
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
@@ -48,6 +50,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
+import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 import java.util.ArrayList;
@@ -428,6 +431,13 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
 							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
 							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+
+				//If binding getterFunctions ever need closures, this seems to be where it would be done (so far not needed, @todo review and remove this when certain)
+				/*if (!needClosure && !isStatic && parentNodeId == ASTNodeID.FunctionCallID) {
+					if (node.getParent().getParent() instanceof IMXMLSingleDataBindingNode) {
+						needClosure = true;
+					}
+				}*/
 		
 				if (needClosure
 						&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
@@ -458,6 +468,42 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 {
                     dynamicAccessUnknownMembers = fjsProject.config.getJsDynamicAccessUnknownMembers();
                 }
+                if (!dynamicAccessUnknownMembers) {
+                	//for <fx:Object declarations in mxml, we need to do this by default, because initialization values are set this way already, as are destination bindings, for example.
+					IIdentifierNode checkNode = null;
+					if (leftNode instanceof IIdentifierNode) {
+						//we might be dealing with the direct child member access of an fx:Object
+						checkNode = (IIdentifierNode) leftNode;
+					} else {
+						if (leftNode instanceof MemberAccessExpressionNode) {
+							//if we are nested, check upwards for topmost Identifier node and verify that it is mxml variable of type Object, verifying that we are considered 'untyped' along the way
+							MemberAccessExpressionNode mae = (MemberAccessExpressionNode) leftNode;
+							while (mae != null) {
+								if (mae.getRightOperandNode().resolve(getProject()) == null) {
+									if (mae.getLeftOperandNode() instanceof IIdentifierNode) {
+										checkNode = (IIdentifierNode) mae.getLeftOperandNode();
+										break;
+									} else if (mae.getLeftOperandNode() instanceof MemberAccessExpressionNode) {
+										mae = (MemberAccessExpressionNode) mae.getLeftOperandNode();
+									} else {
+										mae = null;
+									}
+								} else mae = null;
+							}
+						}
+					}
+
+					if (checkNode != null &&
+							checkNode.resolve(getProject()) instanceof VariableDefinition) {
+						VariableDefinition varDef = ((VariableDefinition) (checkNode.resolve(getProject())));
+						if (varDef.isMXMLDeclared()) {
+							IDefinition type = varDef.resolveType(getProject());
+							if (type instanceof IClassDefinition && type.equals(getProject().getBuiltinType(IASLanguageConstants.BuiltinType.OBJECT))) {
+								dynamicAccessUnknownMembers = true;
+							}
+						}
+					}
+				}
             }
 			if (dynamicAccessUnknownMembers && rightNode instanceof IIdentifierNode)
 			{

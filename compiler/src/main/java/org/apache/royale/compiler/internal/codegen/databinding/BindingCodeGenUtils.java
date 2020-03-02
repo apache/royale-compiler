@@ -37,14 +37,16 @@ import org.apache.royale.abc.visitors.IABCVisitor;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
+import org.apache.royale.compiler.internal.as.codegen.CmcEmitter;
 import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
-import org.apache.royale.compiler.internal.tree.as.LiteralNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 
 /**
@@ -376,11 +378,12 @@ public class BindingCodeGenUtils
             String functionName,
             List<String> eventNames,
             List<BindingInfo> bindingInfo,
-            IExpressionNode[] params)
+            IExpressionNode[] params,
+            LexicalScope lexicalScope)
     {
         
         log(insns, "enter makeFunctionWatchercg");
-       
+
         Name watcherClassName = project.getFunctionReturnWatcherClassName();
         insns.addInstruction(OP_findpropstrict, watcherClassName);
         // stack: mx.binding.FunctionReturnWatcher
@@ -404,7 +407,7 @@ public class BindingCodeGenUtils
         // stack: this, functionName, watcher class
         
         // arg3: parameterFunction
-        makeParameterFunction(emitter, insns, params);
+        makeParameterFunction(emitter, insns, params, lexicalScope);
         
         // arg4: events
         boolean isStyle = makeEventNameArray(insns, eventNames);
@@ -450,7 +453,7 @@ public class BindingCodeGenUtils
     
     // version 2: just throw
     
-    public static void makeParameterFunction(IABCVisitor emitter, InstructionList ret, IExpressionNode[] params)
+    public static void makeParameterFunction(IABCVisitor emitter, InstructionList ret, IExpressionNode[] params, LexicalScope lexicalScope)
     {
        
         //----------- step 1: build up a method info for the function
@@ -471,26 +474,53 @@ public class BindingCodeGenUtils
            
         parameterFunctionBody.addInstruction(OP_getlocal0);
         parameterFunctionBody.addInstruction(OP_pushscope);
-        
-        if (params.length == 1 && params[0] instanceof LiteralNode)
-        {
-            parameterFunctionBody.addInstruction(OP_pushstring, ((LiteralNode)params[0]).getValue());
-            
-            parameterFunctionBody.addInstruction(OP_newarray, 1);
-            parameterFunctionBody.addInstruction(OP_returnvalue);            
-        }
-        else
-        {
-            parameterFunctionBody.addInstruction(OP_findpropstrict, IMXMLTypeConstants.NAME_ARGUMENTERROR);
-    
-            // Make a new ArugmentError with correct ID
-            parameterFunctionBody.addInstruction(OP_pushstring, "unimp param func");
-            parameterFunctionBody.pushNumericConstant(1069);
-            parameterFunctionBody.addInstruction(OP_constructprop,  
-                    new Object[] {  IMXMLTypeConstants.NAME_ARGUMENTERROR, 2 });     
-            // stack : ArgumentError
-               
-            parameterFunctionBody.addInstruction(OP_throw);   
+
+        if (params.length == 0) {
+            //it is a function call with no params
+            parameterFunctionBody.addInstruction(OP_newarray, 0);
+            parameterFunctionBody.addInstruction(OP_returnvalue);
+        } else {
+
+            //create a temporary ArrayLiteralNode
+            ArrayLiteralNode arrayLit = new ArrayLiteralNode();
+
+            for (IASNode param: params) {
+                ContainerNode parent = (ContainerNode)param.getParent();
+                //make the array literal think it has the param as a child
+                arrayLit.getContentsNode().addItem((NodeBase)param);
+                //(tricky) now reset the parent of the param, avoid errors with ASScope access during traversal,
+                //we only really want the downward traversal from the ArrayLiteralNode as the root, we don't want any sense
+                //that it is *actually* a parent, because it is not ASScope aware.
+                ((NodeBase) param).setParent(parent);
+                if (arrayLit.getSourcePath()==null) {
+                    //give the synthetic node a location to avoid an error elsewhere
+                    //setting the source path here will prevent an assertion failure in a future call to SemanticUtils.getFileName(iNode) if
+                    //asserts are enabled for the compiler runtime (at the time of writing, ant was and maven was not)
+                    arrayLit.setSourceLocation(param);
+                } else {
+                   arrayLit.endAfter(param);
+                }
+            }
+
+            //generate the instruction list for the Arrayliteral
+            InstructionList list = lexicalScope.getGenerator().generateInstructions(arrayLit, CmcEmitter.__array_literal_NT, lexicalScope);
+            if (list != null && !list.isEmpty()) {
+                //output the array literal and return it
+                parameterFunctionBody.addAll(list);
+                parameterFunctionBody.addInstruction(OP_returnvalue);
+            } else {
+                //sanity check, this is the original legacy fail approach @todo review this, hopefully it can be removed if it never happens in practice
+                parameterFunctionBody.addInstruction(OP_findpropstrict, IMXMLTypeConstants.NAME_ARGUMENTERROR);
+
+                // Make a new ArugmentError with correct ID
+                parameterFunctionBody.addInstruction(OP_pushstring, "unimp param func");
+                parameterFunctionBody.pushNumericConstant(1069);
+                parameterFunctionBody.addInstruction(OP_constructprop,
+                        new Object[] {  IMXMLTypeConstants.NAME_ARGUMENTERROR, 2 });
+                // stack : ArgumentError
+
+                parameterFunctionBody.addInstruction(OP_throw);
+            }
         }
         
         // now generate the function
