@@ -241,6 +241,124 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     }
 
     @Test
+    public void testAlreadyEscapedBackslashStringAttribute()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+                + "<basic:beads><basic:TextPromptBead prompt=\"0-9\\\\\"/></basic:beads></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.html.accessories.TextPromptBead');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.html.accessories.TextPromptBead}\n" +
+        		"   */\n" +
+        		"  this.$ID0_;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes([\n" +
+        		"    1,\n" +
+        		"    'beads',\n" +
+        		"    null,\n" +
+        		"    [\n" +
+        		"      org.apache.royale.html.accessories.TextPromptBead,\n" +
+        		"      2,\n" +
+        		"      '_id',\n" +
+        		"      true,\n" +
+        		"      '$ID0',\n" +
+        		"      'prompt',\n" +
+        		"      true,\n" +
+        		"      '0-9\\\\',\n" +
+        		"      0,\n" +
+        		"      0,\n" +
+        		"      null\n" +
+        		"    ],\n" +
+        		"    0,\n" +
+        		"    0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;\n" +
+        		"\n" +
+        		"\n";
+
+        assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
+    }
+
+    @Test
     public void testInterfaceAttribute()
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\" implements=\"org.apache.royale.core.IChrome\">"

@@ -237,7 +237,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                 writeDelimiter(writeNewline);
                 // need to do other escaping here?
                 // restrict="0-9.\"
-                if (value.endsWith("\\'"))
+                if (value.endsWith("\\'") && !value.endsWith("\\\\'"))
                 {
                 	value = value.substring(0, value.length() - 1) + "\\'";
                 }
