@@ -780,7 +780,7 @@ public class EmitterUtils
      * @param obj
      * @return
      */
-    public static boolean isXMLList(MemberAccessExpressionNode obj, ICompilerProject project)
+    public static boolean isXMLList(IMemberAccessExpressionNode obj, ICompilerProject project)
     {
         IExpressionNode leftNode = obj.getLeftOperandNode();
         IExpressionNode rightNode = obj.getRightOperandNode();
