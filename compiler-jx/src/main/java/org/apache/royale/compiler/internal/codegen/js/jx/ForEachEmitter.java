@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -32,6 +33,7 @@ import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 
@@ -163,14 +165,43 @@ public class ForEachEmitter extends JSSubEmitter implements
         	} else if (funcName instanceof IMemberAccessExpressionNode) {
                 IFunctionDefinition funcDef = (IFunctionDefinition) ((IMemberAccessExpressionNode) funcName).getRightOperandNode().resolve(getProject());
                 if (funcDef == null) {
-                    isXML = EmitterUtils.isXMLList((IMemberAccessExpressionNode)funcName, getProject()) || EmitterUtils.isXML(funcName, getProject());
+                    //we need to check the LHS for XMLishness, and then resolve the method name against the determined XMLish definition (XML or XMLList),
+                    // and then check its return type once we find the public FunctionDefinition for the method name
+                    // (because although it is a member of something XMLish, it may not return something that is also XMLish, such as a QName, a String, a uint, or a Namespace etc)
+                    IDefinitionSet matchingDefinitions = null;
+                    if (EmitterUtils.isLeftNodeXML(((IMemberAccessExpressionNode) funcName).getLeftOperandNode(), getProject())) {
+                        if (((IMemberAccessExpressionNode) funcName).getRightOperandNode().getNodeID() == ASTNodeID.IdentifierID) {
+                            matchingDefinitions = getProject().getBuiltinType(IASLanguageConstants.BuiltinType.XML).getContainedScope().getLocalDefinitionSetByName(((IIdentifierNode)((IMemberAccessExpressionNode) funcName).getRightOperandNode()).getName());
+                        }
+                    } else if (EmitterUtils.isLeftNodeXMLList(((IMemberAccessExpressionNode) funcName).getLeftOperandNode(), getProject())) {
+                        if (((IMemberAccessExpressionNode) funcName).getRightOperandNode().getNodeID() == ASTNodeID.IdentifierID) {
+                            matchingDefinitions = getProject().getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST).getContainedScope().getLocalDefinitionSetByName(((IIdentifierNode)((IMemberAccessExpressionNode) funcName).getRightOperandNode()).getName());
+                        }
+                    }
+                    if (matchingDefinitions != null) {
+                        for (int i = 0; i< matchingDefinitions.getSize(); i++) {
+                            IDefinition functionDefinition = matchingDefinitions.getDefinition(i);
+                            if (functionDefinition instanceof IFunctionDefinition) {
+                                if (functionDefinition.isPublic()) {
+                                    isXML = SemanticUtils.isXMLish((((IFunctionDefinition) functionDefinition).resolveReturnType(getProject())), getProject());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    //@todo should we emit a warning here if wasXMLish (from either of the first 2 checks) && !isXML (from the matchingDefinitions check)?
+                    // results will not be consistent in this case.
+                    // e.g. looping over a QName or Namespace instance
+                    // It is probably rare and ill-advised, but it definitely won't work well in javascript currently for those classes, for example.
+
                 } else {
                     isXML = SemanticUtils.isXMLish(funcDef.resolveReturnType(getProject()), getProject());
                 }
                 if (isXML) {
                     write(".elementNames()");
                 }
-            }
+            } //@todo what about dynamic access node for function call? e.g. myXML[string_Value_Here]() ... not so easy really, would likely need a runtime helper/wrapper.
         }
         endMapping(rnode);
         startMapping(node, cnode);

@@ -802,6 +802,44 @@ public class EmitterUtils
             return true;
         return false;
     }
+
+    public static boolean isLeftNodeXMLList(IExpressionNode leftNode, ICompilerProject project) {
+        boolean isXMLList = false;
+        if (isLeftNodeXMLish(leftNode, project)) {
+            //it is not XMLList if it is a DynamicAccessNode with numeric index.
+            //this is limited analysis, because ["0"] would also be the same as [0], but perhaps best we can do without more runtime support
+            if (leftNode instanceof IDynamicAccessNode) { //DynamicAccessNode
+                IExpressionNode dynAccess = ((IDynamicAccessNode) leftNode).getRightOperandNode();
+                IDefinition accessDef = dynAccess.resolveType(project);
+                if (SemanticUtils.isNumericType(accessDef, project)) {
+                    //assume we are XML, not XMLList
+                    isXMLList = false;
+                }
+            } else
+                isXMLList = true;
+
+        }
+        return isXMLList;
+    }
+
+    public static boolean isLeftNodeXML(IExpressionNode leftNode, ICompilerProject project) {
+        boolean isXML = false;
+        if (isLeftNodeXMLish(leftNode, project)) {
+            //it is not XMLList if it is a DynamicAccessNode with numeric index.
+            //this is limited analysis, because ["0"] would also be the same as [0], but perhaps best we can do without more runtime support
+            if (leftNode instanceof IDynamicAccessNode) { //DynamicAccessNode
+                IExpressionNode dynAccess = ((IDynamicAccessNode) leftNode).getRightOperandNode();
+                IDefinition accessDef = dynAccess.resolveType(project);
+                if (SemanticUtils.isNumericType(accessDef, project)) {
+                    //assume we are XML, not XMLList
+                    isXML = true;
+                }
+            } else
+                isXML = false;
+
+        }
+        return isXML;
+    }
     
     
     public static boolean isLeftNodeXMLish(IExpressionNode leftNode, ICompilerProject project)
