@@ -187,7 +187,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         return;
                     }
                 }
-                else if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)leftSide))
+                else if (((JSRoyaleEmitter)getEmitter()).isXMLList((IMemberAccessExpressionNode)leftSide))
                 {
                 	MemberAccessExpressionNode xmlNode = (MemberAccessExpressionNode)leftSide;
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)

@@ -1379,7 +1379,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      * @param obj
      * @return
      */
-    public boolean isXMLList(MemberAccessExpressionNode obj)
+    public boolean isXMLList(IMemberAccessExpressionNode obj)
     {
 		return EmitterUtils.isXMLList(obj, getWalker().getProject());
     }

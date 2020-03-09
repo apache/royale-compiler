@@ -118,7 +118,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         else if (obj.getNodeID() == ASTNodeID.Op_DescendantsID)
         {
             //it should always be XMLList... but check anyway
-            if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
+            if (((JSRoyaleEmitter)getEmitter()).isXMLList((IMemberAccessExpressionNode)obj))
             {
                 write(".elementNames()");
                 isXML = true;
@@ -126,12 +126,12 @@ public class ForEachEmitter extends JSSubEmitter implements
         }
         else if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
         {
-            if (((JSRoyaleEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
+            if (((JSRoyaleEmitter)getEmitter()).isXMLList((IMemberAccessExpressionNode)obj))
             {
                 write(".elementNames()");
                 isXML = true;
             }
-            if (((JSRoyaleEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)obj))
+            if (((JSRoyaleEmitter)getEmitter()).isProxy((IMemberAccessExpressionNode)obj))
             {
                 write(".propertyNames()");
                 isXML = true;
