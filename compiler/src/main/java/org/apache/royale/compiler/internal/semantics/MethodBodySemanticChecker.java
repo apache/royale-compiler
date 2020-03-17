@@ -873,8 +873,18 @@ public class MethodBodySemanticChecker
         if (def == null) {
             IDefinition defCheck = SemanticUtils.getDefinitionOfUnderlyingType(iNode,true, project);
             if (defCheck instanceof IClassDefinition) {
-                //if we are adding the bindable IEventDispatcher implementation, then we should allow those IEventDispatcher methods
+                //if we have the bindable IEventDispatcher implementation either at this level or via ancestry, then we should allow those IEventDispatcher methods
+                boolean assumeBindableIEventDispatcher = false;
+                IClassDefinition.IClassIterator classIterator = ((IClassDefinition) defCheck).classIterator(project, true);
+                while (classIterator.hasNext())
+                {
+                    defCheck = classIterator.next();
                     if (((IClassDefinition)defCheck).needsEventDispatcher(project)) {
+                        assumeBindableIEventDispatcher = true;
+                        break;
+                    }
+                }
+                if (assumeBindableIEventDispatcher) {
                     IInterfaceDefinition iEventDispatcher =  iEventDispatcher();
                     IDefinitionSet bindingMethodCheck = iEventDispatcher.getContainedScope().getLocalDefinitionSetByName( method_binding.getName().getBaseName());
                     if (bindingMethodCheck!=null && bindingMethodCheck.getSize() == 1) {
