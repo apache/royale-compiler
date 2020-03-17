@@ -31,12 +31,6 @@ Event = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Event', Event);
-
-
-/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

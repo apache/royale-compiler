@@ -200,11 +200,6 @@ MyInitialView = function() {
 goog.inherits(MyInitialView, org.apache.royale.core.View);
 
 
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MyInitialView', MyInitialView);
-
 
 
 /**

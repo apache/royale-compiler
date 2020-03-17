@@ -21,9 +21,11 @@ package org.apache.royale.compiler.utils;
 
 import java.util.Set;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -77,5 +79,37 @@ public class ClosureUtils
                 }
             }
         }
-    } 
+    }
+
+    public static void collectSymbolNamesToExport(ICompilationUnit cu, RoyaleJSProject project, Set<String> symbolsResult)
+    {
+        if (project.isExternalLinkage(cu))
+        {
+            return;
+        }
+        for (IDefinition def : cu.getDefinitionPromises())
+        {
+            if(def instanceof DefinitionPromise)
+            {
+                def = ((DefinitionPromise) def).getActualDefinition();
+            }
+            if (def instanceof ITypeDefinition)
+            {
+                if (def.isImplicit() || def.isNative())
+                {
+                    continue;
+                }
+                ITypeDefinition typeDef = (ITypeDefinition) def;
+
+                ASDocComment asDoc = (ASDocComment) typeDef.getExplicitSourceComment();
+                if (asDoc != null && DocEmitterUtils.hasSuppressExport(null, asDoc.commentNoEnd()))
+                {
+                    continue;
+                }
+
+                String qualifiedName = typeDef.getQualifiedName();
+                symbolsResult.add(qualifiedName);
+            }
+        }
+    }
 }

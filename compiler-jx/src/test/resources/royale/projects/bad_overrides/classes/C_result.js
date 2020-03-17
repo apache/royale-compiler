@@ -31,12 +31,6 @@ classes.C = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('classes.C', classes.C);
-
-
-/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

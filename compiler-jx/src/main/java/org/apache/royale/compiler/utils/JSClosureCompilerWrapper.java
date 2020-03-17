@@ -92,6 +92,7 @@ public class JSClosureCompilerWrapper
     private String variableMapInputPath;
     private String propertyMapInputPath;
     private Set<String> propertyNamesToKeep;
+    private Set<String> extraSymbolNamesToExport;
     private boolean skipTypeInference;
     private boolean sourceMap = false;
     private boolean verbose = false;
@@ -131,6 +132,11 @@ public class JSClosureCompilerWrapper
     public void setPropertyNamesToKeep(Set<String> propertyNames)
     {
         propertyNamesToKeep = propertyNames;
+    }
+
+    public void setExtraSymbolNamesToExport(Set<String> names)
+    {
+        extraSymbolNamesToExport = names;
     }
     
     public boolean compile()
@@ -196,7 +202,8 @@ public class JSClosureCompilerWrapper
 
         compiler_.setPassConfig(new RoyaleClosurePassConfig(options_, 
         		jsSourceFiles_.get(jsSourceFiles_.size() - 1).getName(), 
-        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath)));
+                variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath),
+                extraSymbolNamesToExport));
         Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
         
         try

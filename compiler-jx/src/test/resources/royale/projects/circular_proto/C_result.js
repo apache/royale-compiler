@@ -37,12 +37,6 @@ goog.inherits(C, B);
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('C', C);
-
-
-/**
  * @export
  * @param {boolean} b
  * @return {number}

@@ -31,12 +31,6 @@ LocalFunction = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('LocalFunction', LocalFunction);
-
-
-/**
  * @private
  * @type {string}
  */

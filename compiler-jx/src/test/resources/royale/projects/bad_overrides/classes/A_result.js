@@ -36,12 +36,6 @@ classes.A = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('classes.A', classes.A);
-
-
-/**
  * @export
  * @return {classes.B}
  */

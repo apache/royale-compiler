@@ -33,12 +33,6 @@ E = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('E', E);
-
-
-/**
  * @export
  * @param {boolean} b
  * @return {number}

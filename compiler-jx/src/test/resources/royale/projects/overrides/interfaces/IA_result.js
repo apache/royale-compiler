@@ -31,12 +31,6 @@ goog.require('interfaces.IB');
  */
 interfaces.IA = function() {
 };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.IA', interfaces.IA);
 /**
  * @export
  * @return {classes.B}

@@ -35,12 +35,6 @@ Base = function() {
 goog.inherits(Base, Super);
 
 
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Base', Base);
-
-
 Base.prototype.get__text = function() {
   return "A" + Base.superClass_.get__text.apply(this);
 };

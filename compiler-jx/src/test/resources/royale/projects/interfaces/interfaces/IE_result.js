@@ -28,12 +28,6 @@ goog.provide('interfaces.IE');
  */
 interfaces.IE = function() {
 };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.IE', interfaces.IE);
 interfaces.IE.prototype.myMethod = function() {
 };
 /**  * @type {string}
