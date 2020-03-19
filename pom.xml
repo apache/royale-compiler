@@ -57,6 +57,8 @@
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
     <option.withSwf.enabled>false</option.withSwf.enabled>
+
+    <release-profiles>apache-release,option-with-swf</release-profiles>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -203,7 +205,7 @@
                   <git>jgit</git>
               </providerImplementations>
               <!-- List of profiles that will be activated in the release:perform phase -->
-              <arguments>-Papache-release,royale-release,option-with-swf ${arguments}</arguments>
+              <arguments>-P${release-profiles} ${arguments}</arguments>
           </configuration>
           <dependencies>
               <dependency>
@@ -615,6 +617,9 @@
     -->
     <profile>
       <id>royale-release</id>
+      <properties>
+        <release-profiles>apache-release,royale-release,option-with-swf</release-profiles>
+      </properties>
       <build>
         <pluginManagement>
           <plugins>
