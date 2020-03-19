@@ -636,6 +636,17 @@
         <!-- Ensure the royale-release plugin is enabled when running release:perform -->
         <release-profiles>apache-release,royale-release,option-with-swf</release-profiles>
       </properties>
+
+      <!-- Redirect the deployment to a local directory -->
+      <!-- Note: using the 'altReleaseDeploymentRepository' and alike were ignored in the release:perform phase -->
+      <distributionManagement>
+        <repository>
+          <id>apache.releases.https</id>
+          <name>Apache Release Distribution Repository</name>
+          <url>file://${maven.multiModuleProjectDirectory}/../local-release-dir</url>
+        </repository>
+      </distributionManagement>
+
       <build>
         <pluginManagement>
           <plugins>
@@ -653,18 +664,6 @@
               <artifactId>maven-release-plugin</artifactId>
               <configuration>
                 <pushChanges>false</pushChanges>
-              </configuration>
-            </plugin>
-            <!-- Redirect the deployment to a local directory -->
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-deploy-plugin</artifactId>
-              <!-- If deploying fails due to repo or network problems, retry the given number of times (1-10) -->
-              <configuration>
-                <!-- The 'maven.multiModuleProjectDirectory' property is available starting with maven 3.3.1 -->
-                <altReleaseDeploymentRepository>release-repo::default::file:${maven.multiModuleProjectDirectory}/../local-release-dir</altReleaseDeploymentRepository>
-                <altDeploymentRepository>release-repo::default::file:${maven.multiModuleProjectDirectory}/../local-release-dir</altDeploymentRepository>
-                <altSnapshotDeploymentRepository>release-repo::default::file:${maven.multiModuleProjectDirectory}/../local-release-dir</altSnapshotDeploymentRepository>
               </configuration>
             </plugin>
           </plugins>
