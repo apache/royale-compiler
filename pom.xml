@@ -205,7 +205,12 @@
               </providerImplementations>
               <!-- List of profiles that will be activated in the release:perform phase -->
               <releaseProfiles>${release-profiles}</releaseProfiles>
-              <arguments/>
+              <!--
+                The apache parent passes the profiles in here,
+                we have to override this with something that doesn't hurt.
+                If left empty, the version from the parent is used.
+              -->
+              <arguments combine.self="override">-DsomePropertyYouCanIgnore=someValueYouCanIgnore</arguments>
           </configuration>
           <dependencies>
               <dependency>
@@ -656,7 +661,10 @@
               <artifactId>maven-deploy-plugin</artifactId>
               <!-- If deploying fails due to repo or network problems, retry the given number of times (1-10) -->
               <configuration>
-                <altReleaseDeploymentRepository>release-repo::default::file:./../local-release-dir</altReleaseDeploymentRepository>
+                <!-- The 'maven.multiModuleProjectDirectory' property is available starting with maven 3.3.1 -->
+                <altReleaseDeploymentRepository>release-repo::default::file:${maven.multiModuleProjectDirectory}/../local-release-dir</altReleaseDeploymentRepository>
+                <altDeploymentRepository>release-repo::default::file:${maven.multiModuleProjectDirectory}/../local-release-dir</altDeploymentRepository>
+                <altSnapshotDeploymentRepository>release-repo::default::file:${maven.multiModuleProjectDirectory}/../local-release-dir</altSnapshotDeploymentRepository>
               </configuration>
             </plugin>
           </plugins>
