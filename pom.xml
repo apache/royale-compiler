@@ -202,7 +202,7 @@
           <providerImplementations>
             <git>jgit</git>
           </providerImplementations>
-          <arguments combine.self="override">-Papache-release,option-with-swf</arguments>
+          <arguments combine.self="override">-P${release-profiles}</arguments>
         </configuration>
         <dependencies>
           <dependency>
@@ -675,7 +675,6 @@
               <artifactId>maven-release-plugin</artifactId>
               <configuration>
                 <pushChanges>false</pushChanges>
-                <arguments combine.self="override">-Papache-release,apache-release,option-with-swf</arguments>
               </configuration>
             </plugin>
           </plugins>
