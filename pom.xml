@@ -635,6 +635,12 @@
         <repository>
           <id>apache.releases.https</id>
           <name>Apache Release Distribution Repository</name>
+          <!--
+            'maven.multiModuleProjectDirectory' is a property introduced with maven 3.3.1 ...
+            don't worry if your IDE is complaining.
+            Also this will be set to the 'target/checkout' directory the output will be in
+            'target/local-release-dir'.
+          -->
           <url>file://${maven.multiModuleProjectDirectory}/../local-release-dir</url>
         </repository>
       </distributionManagement>
