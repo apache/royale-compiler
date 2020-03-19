@@ -202,7 +202,8 @@
               <providerImplementations>
                   <git>jgit</git>
               </providerImplementations>
-              <arguments>-Papache-release,royale-release ${arguments}</arguments>
+              <!-- List of profiles that will be activated in the release:perform phase -->
+              <arguments>-Papache-release,royale-release,option-with-swf ${arguments}</arguments>
           </configuration>
           <dependencies>
               <dependency>
