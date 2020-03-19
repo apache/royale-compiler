@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>22</version>
+    <version>23</version>
   </parent>
 
   <groupId>org.apache.royale.compiler</groupId>
@@ -196,34 +196,26 @@
       </plugin>
 
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
-          <configuration>
-              <providerImplementations>
-                  <git>jgit</git>
-              </providerImplementations>
-              <!-- List of profiles that will be activated in the release:perform phase -->
-              <releaseProfiles>${release-profiles}</releaseProfiles>
-              <!--
-                The apache parent passes the profiles in here,
-                we have to override this with something that doesn't hurt.
-                If left empty, the version from the parent is used.
-              -->
-              <arguments combine.self="override">-DsomePropertyYouCanIgnore=someValueYouCanIgnore</arguments>
-          </configuration>
-          <dependencies>
-              <dependency>
-                  <groupId>org.apache.maven.scm</groupId>
-                  <artifactId>maven-scm-provider-jgit</artifactId>
-                  <version>1.11.2</version>
-              </dependency>
-              <dependency>
-                  <groupId>org.apache.maven.scm</groupId>
-                  <artifactId>maven-scm-api</artifactId>
-                  <version>1.11.2</version>
-              </dependency>
-          </dependencies>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <providerImplementations>
+            <git>jgit</git>
+          </providerImplementations>
+          <arguments combine.self="override">-Papache-release,option-with-swf</arguments>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-jgit</artifactId>
+            <version>1.11.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-api</artifactId>
+            <version>1.11.2</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
@@ -547,9 +539,9 @@
         </plugin>
 
         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-scm-plugin</artifactId>
-            <version>1.10.0</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>1.10.0</version>
         </plugin>
 
         <plugin>
@@ -567,7 +559,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>3.0.0-M1</version>
         </plugin>
 
         <plugin>
@@ -648,6 +640,25 @@
       </distributionManagement>
 
       <build>
+        <plugins>
+          <!-- Generate the effective poms for this build -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-help-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-effective-pom</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>effective-pom</goal>
+                </goals>
+                <configuration>
+                  <output>${project.build.directory}/effective.pom</output>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
         <pluginManagement>
           <plugins>
             <!-- We require the release manager to manually login an sign using his credentials -->
@@ -664,6 +675,7 @@
               <artifactId>maven-release-plugin</artifactId>
               <configuration>
                 <pushChanges>false</pushChanges>
+                <arguments combine.self="override">-Papache-release,apache-release,option-with-swf</arguments>
               </configuration>
             </plugin>
           </plugins>
