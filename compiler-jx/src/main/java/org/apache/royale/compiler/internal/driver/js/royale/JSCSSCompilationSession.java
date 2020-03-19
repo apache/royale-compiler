@@ -102,7 +102,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         cssString = cssString.replaceAll("[\\n\\r]+\\s*", "");
         cssString = cssString.replaceAll("\\s+", " ");
         cssString = cssString.replaceAll("\\s?([:,;{}])\\s?", "$1");
-        cssString = cssString.replaceAll("([\\s:]0)(px|pt|%|em)", "$1");
+        cssString = cssString.replaceAll("([\\s:]0)(px|pt|em)", "$1");
 
         return cssString;
     }
