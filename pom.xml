@@ -204,7 +204,8 @@
                   <git>jgit</git>
               </providerImplementations>
               <!-- List of profiles that will be activated in the release:perform phase -->
-              <arguments>-P${release-profiles} ${arguments}</arguments>
+              <releaseProfiles>${release-profiles}</releaseProfiles>
+              <arguments/>
           </configuration>
           <dependencies>
               <dependency>
