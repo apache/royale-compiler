@@ -86,7 +86,7 @@ public abstract class BaseMojo
     protected boolean failOnCompilerWarnings = false;
 
     @Parameter
-    protected boolean allowSubclassOverrides = true;
+    protected boolean allowSubclassOverrides = false;
     
     @Parameter
     private Boolean includeLookupOnly = null;
