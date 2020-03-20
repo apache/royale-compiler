@@ -36,6 +36,12 @@ goog.inherits(Base, Super);
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Base', Base);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

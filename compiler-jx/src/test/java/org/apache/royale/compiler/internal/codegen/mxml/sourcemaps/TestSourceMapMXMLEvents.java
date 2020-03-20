@@ -37,7 +37,7 @@ public class TestSourceMapMXMLEvents extends RoyaleSourceMapTestBase
                 .getAncestorOfType(IMXMLDocumentNode.class);
         mxmlBlockWalker.walk(dnode);
         ///event
-        assertMapping(node, 0, 6, 74, 2, 74, 7);  // event
+        assertMapping(node, 0, 6, 79, 2, 79, 7);  // event
         //the start column in the ActionScript seems to be outside the quote
         //instead of inside. that seems like a bug. -JT
     }

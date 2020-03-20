@@ -32,6 +32,12 @@ otherpackage.Event = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('otherpackage.Event', otherpackage.Event);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

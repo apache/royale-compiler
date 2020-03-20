@@ -34,6 +34,12 @@ interfaces.IA = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IA', interfaces.IA);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

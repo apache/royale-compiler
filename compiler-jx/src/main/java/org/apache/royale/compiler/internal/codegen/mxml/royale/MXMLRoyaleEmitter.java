@@ -1165,6 +1165,21 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
 
+	    writeNewline();
+	    writeNewline();
+        writeNewline("/**");
+	    writeNewline(" * Prevent renaming of class. Needed for reflection.");
+        writeNewline(" */");
+	    write(JSRoyaleEmitterTokens.GOOG_EXPORT_SYMBOL);
+	    write(ASEmitterTokens.PAREN_OPEN);
+	    write(ASEmitterTokens.SINGLE_QUOTE);
+	    write(formatQualifiedName(cname));
+	    write(ASEmitterTokens.SINGLE_QUOTE);
+	    write(ASEmitterTokens.COMMA);
+	    write(ASEmitterTokens.SPACE);
+	    write(formatQualifiedName(cname));
+	    write(ASEmitterTokens.PAREN_CLOSE);
+	    write(ASEmitterTokens.SEMICOLON);
         writeNewline();
         writeNewline();
 	    writeNewline();

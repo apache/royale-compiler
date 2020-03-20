@@ -48,6 +48,11 @@ wildcard_import = function() {
 goog.inherits(wildcard_import, org.apache.royale.core.Application);
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('wildcard_import', wildcard_import);
+
 
 
 /**

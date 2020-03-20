@@ -40,6 +40,12 @@ goog.inherits(models.MyModel, org.apache.royale.events.EventDispatcher);
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('models.MyModel', models.MyModel);
+
+
+/**
  * @private
  * @type {string}
  */

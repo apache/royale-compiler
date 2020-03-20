@@ -34,6 +34,12 @@ NoConflictUseWindow = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('NoConflictUseWindow', NoConflictUseWindow);
+
+
+/**
  * @private
  * @type {mypackage.TestClass}
  */

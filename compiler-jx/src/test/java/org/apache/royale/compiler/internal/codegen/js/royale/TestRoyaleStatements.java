@@ -718,7 +718,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              " * @constructor\n" +
         		              " */\n" +
         		              "RoyaleTest_A = function() {\n" +
-        		              "};\n\n\n" +
+        		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
         		              "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
                               "  var self = this;\n" +
                               "  var /** @type {number} */ len = 0;\n" +

@@ -34,6 +34,12 @@ DifferentPackageAsConflict = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('DifferentPackageAsConflict', DifferentPackageAsConflict);
+
+
+/**
  * @private
  * @type {mypackage.TestClass}
  */

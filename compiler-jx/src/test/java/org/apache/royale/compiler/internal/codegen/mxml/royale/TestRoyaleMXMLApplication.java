@@ -199,6 +199,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -312,6 +317,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -399,6 +409,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -489,9 +504,14 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  this.mxmldp;\n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
-				"\n" +
 				"\n" +
         		"/**\n" +
         		" * Metadata\n" +
@@ -619,6 +639,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -758,6 +783,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -896,6 +926,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -1074,6 +1109,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -1216,6 +1256,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -1355,6 +1400,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -1498,6 +1548,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -1639,6 +1694,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -1737,6 +1797,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -1769,6 +1834,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName.AppName_component0, org.apache.royale.html.DropDownList);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName.AppName_component0', AppName.AppName_component0);\n" +
 				"\n" +
 				"\n" +
         		"/**\n" +
@@ -1924,6 +1994,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -2047,6 +2122,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -2159,6 +2239,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -2290,6 +2375,11 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +

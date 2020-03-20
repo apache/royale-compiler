@@ -31,6 +31,12 @@ OtherClass = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('OtherClass', OtherClass);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

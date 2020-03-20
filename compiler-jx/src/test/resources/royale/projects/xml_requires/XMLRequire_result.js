@@ -34,6 +34,12 @@ XMLRequire = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('XMLRequire', XMLRequire);
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

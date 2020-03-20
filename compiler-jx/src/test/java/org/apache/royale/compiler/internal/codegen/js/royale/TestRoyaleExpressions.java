@@ -116,6 +116,10 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  "RoyaleTest_A = function() {\n" +
         		  "};\n\n\n" +
         		  "/**\n" +
+        		  " * Prevent renaming of class. Needed for reflection.\n" +
+        		  " */\n" +
+        		  "goog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
+        		  "/**\n" +
         		  " * @export\n" +
         		  " * @override\n" +
         		  " */\n" +
@@ -1311,7 +1315,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import custom.TestOtherInterface; public class B implements TestOtherInterface { public function B() { TestOtherInterface(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {custom.TestOtherInterface}\n */\nB = function() {\n  org.apache.royale.utils.Language.as(b, custom.TestOtherInterface, true).type = '';\n};");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestOtherInterface}\n */\nB = function() {\n  org.apache.royale.utils.Language.as(b, custom.TestOtherInterface, true).type = '';\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);");
     }
 
     @Test

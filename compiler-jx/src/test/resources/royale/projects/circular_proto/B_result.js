@@ -33,6 +33,12 @@ B = function() {
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('B', B);
+
+
+/**
  * @export
  * @param {boolean} b
  * @return {number}

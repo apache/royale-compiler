@@ -209,6 +209,11 @@ this.$EH0
 goog.inherits(RoyaleTest_again, org.apache.royale.core.Application);
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('RoyaleTest_again', RoyaleTest_again);
+
 
 
 /**

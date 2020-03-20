@@ -86,6 +86,12 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 					"\n" +
 					"\n" +
 					"/**\n" +
+					" * Prevent renaming of class. Needed for reflection.\n" +
+					" */\n" +
+					"goog.exportSymbol('com.example.components.MyEventTarget', com.example.components.MyEventTarget);\n" +
+					"\n" +
+					"\n" +
+					"/**\n" +
 					" * @private\n" +
 					" * @type {string}\n" +
 					" */\n" +
@@ -172,6 +178,12 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"\n" +
 				"\n" +
 				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestInterface', com.example.components.TestInterface);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
@@ -220,6 +232,12 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" */\n" +
 				"com.example.components.TestClass = function() {\n" +
 				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
@@ -279,6 +297,12 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" */\n" +
 				"com.example.components.TestClass = function() {\n" +
 				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +

@@ -159,7 +159,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Foo = new Foo('bar', 42);",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * @protected\n * @type {Foo}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {Foo}\n */\nRoyaleTest_A.prototype.foo;");
     }
 
     @Test
@@ -192,7 +192,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -201,7 +201,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * @protected\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -210,7 +210,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("import custom.custom_namespace;use namespace custom_namespace;public static var foo:Object = initFoo(); custom_namespace static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @export\n * @return {Object}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo();\n\n");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @export\n * @return {Object}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo();\n\n");
     }
     
     @Test
@@ -219,7 +219,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("static public var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo = {'foo':'bar'};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo = {'foo':'bar'};");
     }
     
     @Test
@@ -228,7 +228,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Number = parseFloat('1E2')",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * @protected\n * @type {number}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @type {number}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -237,7 +237,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("private static var empty:Function = function():void {}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * @private\n * @type {Function}\n */\nRoyaleTest_A.empty = function() {\n};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @private\n * @type {Function}\n */\nRoyaleTest_A.empty = function() {\n};");
     }
     
     @Override
@@ -318,7 +318,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Number = parseFloat('1E2');",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -327,7 +327,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * @protected\n * @const\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Array}\n */\nRoyaleTest_A.prototype.foo;");
     }
     
     @Test
@@ -336,7 +336,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected const foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * @protected\n * @const\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @protected\n * @const\n * @type {Object}\n */\nRoyaleTest_A.prototype.foo;");
     }
 
     @Override

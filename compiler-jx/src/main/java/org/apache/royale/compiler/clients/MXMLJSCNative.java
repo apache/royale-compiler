@@ -318,7 +318,6 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                 }
 
                 Set<String> closurePropNamesToKeep = new HashSet<String>();
-                Set<String> closureSymbolNamesToExport = new HashSet<String>();
                 jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
@@ -386,14 +385,12 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
 	                        writer.close();
 	                    }
                         ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
-                        ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
 	                }
                 }
                 
                 if (jsPublisher != null)
                 {
                     jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
-                    jsPublisher.setClosureSymbolNamesToExport(closureSymbolNamesToExport);
                     compilationSuccess = jsPublisher.publish(problems);
                 }
                 else

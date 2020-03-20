@@ -31,6 +31,12 @@ goog.require('interfaces.IB');
  */
 interfaces.IA = function() {
 };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.ID', interfaces.IA);
 interfaces.IA.prototype.someFunction = function() {
 };
 interfaces.IA.prototype.someOtherFunction = function() {

@@ -130,10 +130,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
 
   /** file of already renamed vars */
   private File varRenameMapFile;
-
-  private Set<String> extraSymbolNamesToExport;
   
-  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName, File varRenameMapFile, Set<String> extraSymbolNamesToExport) {
+  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName, File varRenameMapFile) {
     super(options);
 
     // The current approach to protecting "hidden" side-effects is to
@@ -143,7 +141,6 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     preprocessorSymbolTableFactory = new PreprocessorSymbolTable.CachedInstanceFactory();
     this.varRenameMapFile = varRenameMapFile;
     this.sourceFileName = sourceFileName;
-    this.extraSymbolNamesToExport = extraSymbolNamesToExport;
   }
 
   GlobalNamespace getGlobalNamespace() {
@@ -354,10 +351,6 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     // and *before* the suspicious code checks. This is enforced in the assertValidOrder method.
     if (options.polymerVersion != null) {
       checks.add(polymerPass);
-    }
-
-    if (extraSymbolNamesToExport != null) {
-      checks.add(extraSymbolsPass);
     }
 
     if (options.checkSuspiciousCode
@@ -1261,41 +1254,6 @@ public final class RoyaleClosurePassConfig extends PassConfig {
           return ES_NEXT;
         }
       };
-  
-  private final PassFactory extraSymbolsPass = 
-    new PassFactory("extra-symbols-to-export", true) {
-      @Override
-      protected CompilerPass create(final AbstractCompiler compiler) {
-        return new CompilerPass() {
-          @Override
-          public void process(Node externs, Node root) {
-            Node scriptNode = compiler.getScriptNode(sourceFileName);
-            for(String nameToExport : extraSymbolNamesToExport)
-            {
-              Node exportCallTarget = NodeUtil.newQName(compiler,
-                  compiler.getCodingConvention().getExportSymbolFunction(), scriptNode, nameToExport);
-              Node call = IR.call(exportCallTarget);
-              if (exportCallTarget.isName()) {
-                call.putBooleanProp(Node.FREE_CALL, true);
-              }
-              call.addChildToBack(IR.string(nameToExport));
-              call.addChildToBack(NodeUtil.newQName(compiler,
-              nameToExport, scriptNode, nameToExport));
-
-              Node expression = IR.exprResult(call);
-
-              scriptNode.addChildToBack(expression);
-              compiler.reportChangeToEnclosingScope(expression);
-            }
-          }
-        };
-      }
-
-      @Override
-      protected FeatureSet featureSet() {
-        return ES_NEXT;
-      }
-    };
 
   /** Raw exports processing pass. */
   private final PassFactory gatherRawExports =

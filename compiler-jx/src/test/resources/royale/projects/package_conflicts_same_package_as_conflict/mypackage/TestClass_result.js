@@ -36,6 +36,12 @@ this.event = new mypackage.Event();
 
 
 /**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
+
+
+/**
  * @private
  * @type {mypackage.Event}
  */
