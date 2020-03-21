@@ -179,6 +179,9 @@
                  for more info.
              -->
             <exclude>**/src/main/sisu/javax.inject.Named</exclude>
+
+            <exclude>**/ant-config.xml</exclude>
+            <exclude>**/maven-config.xml</exclude>
           </excludes>
         </configuration>
       </plugin>
