@@ -28,8 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by christoferdutz on 20.02.16.
@@ -68,7 +67,15 @@ public abstract class BaseProblemGeneratorMojo extends AbstractMojo
             try {
                 printHeader(writer);
 
-                Collection<File> problemClassSourceFiles = getProblemClassSourceFiles(getInputDirectory());
+                List<File> problemClassSourceFiles = new ArrayList<>(getProblemClassSourceFiles(getInputDirectory()));
+                Collections.sort(problemClassSourceFiles, new Comparator<Object>() {
+                    @Override
+                    public int compare(Object o1, Object o2) {
+                        File firstFile = (File) o1;
+                        File secondFile = (File) o2;
+                        return firstFile.getName().compareTo(secondFile.getName());
+                    }
+                });
                 Iterator<File> problemClassSourceFileIterator = problemClassSourceFiles.iterator();
                 while (problemClassSourceFileIterator.hasNext()) {
                     File problemClassSourceFile = problemClassSourceFileIterator.next();

@@ -47,10 +47,7 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
     <maven.version>3.3.1</maven.version>
 
-    <!-- Timestamp for the reproducible builds -->
-    <!--project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp-->
-
-    <compiler-build-tools.version>1.1.0</compiler-build-tools.version>
+    <compiler-build-tools.version>1.2.0-SNAPSHOT</compiler-build-tools.version>
     <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
 
     <flex.version>4.15.0</flex.version>
