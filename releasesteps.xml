@@ -131,6 +131,8 @@
     <target name="unzip-artifacts-utils" if="utils">
         <mkdir dir="${artifactfolder}/artifacts" />
         <unzip src="${artifactfolder}/archive_utils.zip" dest="${artifactfolder}/artifacts"/>
+        <copydir src="${artifactfolder}/artifacts/archive/target/utils/local-release-dir/org/apache/royale/compiler"
+                 dest="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler"/>
     </target>
     <target name="unzip-artifacts" if="artifactfolder">
         <antcall target="unzip-artifacts-utils" />
@@ -138,12 +140,15 @@
         <unzip src="${artifactfolder}/archive.zip" dest="${artifactfolder}/artifacts"/>
     </target>
     <target name="build-source-utils" if="utils">
-        <!-- build these modules -->
-        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
-            <arg value="clean" />
-            <arg value="install" />
-            <arg value="-P" />
-            <arg value="-main,utils" />
+        <!-- build the build tools -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources/compiler-build-tools" failonerror="true" >
+          <arg value="clean" />
+          <arg value="install" />
+        </exec>
+        <!-- build the jburg types -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources/compiler-jburg-types" failonerror="true" >
+          <arg value="clean" />
+          <arg value="install" />
         </exec>
     </target>
     <target name="build-source" >
@@ -153,7 +158,7 @@
         </unzip>
         
         <antcall target="build-source-utils" />
-        <!-- build these modules -->
+        <!-- build the main project -->
         <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
             <arg value="clean" />
             <arg value="install" />
