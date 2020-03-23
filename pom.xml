@@ -28,7 +28,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.8-SNAPSHOT</version>
+  <version>0.9.7-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -200,8 +200,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
-          <!-- Add settings to streamline the line separators on windows and mac/linux -->
-          <arguments combine.self="override">-P${release-profiles} -Dline.separator='\n'</arguments>
+          <arguments combine.self="override">-P${release-profiles}</arguments>
         </configuration>
       </plugin>
 
@@ -324,6 +323,24 @@
             <configuration>
               <failOnWarning>false</failOnWarning>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- This plugin cleans up the jars for anything that might cause problems for reproducible builds -->
+      <!--
+        Even if the core maven plugins currently would support doing this without, we would be required
+        to set the line-separator and the Antlr3 plugin crashes if this is set to something non-default
+      -->
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.11</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -454,6 +471,12 @@
               </manifest>
             </archive>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-archiver-plugin</artifactId>
+          <version>3.0.1</version>
         </plugin>
 
         <plugin>
