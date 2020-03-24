@@ -31,6 +31,7 @@ import java.io.Writer;
 import java.security.DigestOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
@@ -101,6 +102,7 @@ public class SWCWriter extends SWCWriterBase
             }
     		try {
     			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     			fileDate = sdf.parse(metadataDate).getTime();
     		} catch (ParseException e) {
     			// TODO Auto-generated catch block
