@@ -700,7 +700,7 @@
       where to deploy artifacts.
     -->
     <profile>
-      <id>releasesteps-upload-release-to-staging</id>
+      <id>_releasesteps-upload-release-to-staging</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
