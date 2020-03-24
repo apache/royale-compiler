@@ -162,7 +162,7 @@
         <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
             <arg value="clean" />
             <arg value="install" />
-            <arg value="-Poption-with-swf" />
+            <arg value="-Proyale-release,option-with-swf" />
         </exec>
     </target>
     
