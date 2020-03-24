@@ -28,7 +28,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.7-SNAPSHOT</version>
+  <version>0.9.8-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -47,8 +47,8 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
     <maven.version>3.3.1</maven.version>
 
-    <compiler-build-tools.version>1.2.0-SNAPSHOT</compiler-build-tools.version>
-    <compiler-jburg-types.version>1.2.0-SNAPSHOT</compiler-jburg-types.version>
+    <compiler-build-tools.version>1.2.0</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.2.0</compiler-jburg-types.version>
 
     <flex.version>4.15.0</flex.version>
     <flash.version>20.0</flash.version>

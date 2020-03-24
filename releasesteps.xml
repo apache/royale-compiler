@@ -384,12 +384,13 @@
     <target name="Release_Step_003_Upload" depends="get-artifact-folder">
         <fail message="release.version not specified"
             unless="release.version"/>
-        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+        <exec executable="${mvn}" failonerror="true" >
             <arg value="wagon:upload" />
             <arg value="-X" />
             <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/local-release-dir" />
-            <arg value="-P" />
-            <arg value="_releasesteps-upload-release-to-staging" />
+            <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
+            <arg value="-Dwagon.serverId=apache.releases.https" />
+            <arg value="-Dwagon.includes=**" />
         </exec>
     </target>
     
