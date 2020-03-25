@@ -446,7 +446,7 @@ public class JSGoogCompcConfiguration extends JSConfiguration
     // 'warn-public-vars'
     //
 
-    private boolean warnPublicVars = false;
+    private boolean warnPublicVars = true;
 
     public boolean getWarnPublicVars()
     {
