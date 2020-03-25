@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.abc.semantics.Instruction;
+import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.abc.semantics.OneOperandInstruction;
@@ -2123,7 +2124,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (instanceId != null)
             {
                 indentPush();
-                writeNewline("/** @export */");
+    	        writeNewline("/** @export */");
                 writeNewline(instanceId + ": {");
                 writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();
@@ -2867,8 +2868,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         if (isStateDependent(node, null, true))
             return;
-            
-    	RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
 
         IDefinition cdef = node.getDefinition();
 
@@ -2878,7 +2877,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier currentPropertySpecifier = new MXMLDescriptorSpecifier();
         currentPropertySpecifier.isProperty = true;
-        currentPropertySpecifier.useGoogReflectObjectProperty = project.config != null && project.config.getMxmlReflectObjectProperty();
         currentPropertySpecifier.name = cdef != null ? cdef.getQualifiedName() : node.getName();
         currentPropertySpecifier.parent = currentInstance;
 
