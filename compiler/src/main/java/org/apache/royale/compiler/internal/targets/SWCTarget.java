@@ -24,19 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
@@ -327,6 +316,7 @@ public class SWCTarget extends Target implements ISWCTarget
         		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
         		try {
         			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+        			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         			fileDate = sdf.parse(metadataDate).getTime();
         		} catch (ParseException e) {
     				// TODO Auto-generated catch block
@@ -557,7 +547,8 @@ public class SWCTarget extends Target implements ISWCTarget
         		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
         		try {
         			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-        			mod = sdf.parse(metadataDate).getTime();
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    mod = sdf.parse(metadataDate).getTime();
         		} catch (ParseException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
