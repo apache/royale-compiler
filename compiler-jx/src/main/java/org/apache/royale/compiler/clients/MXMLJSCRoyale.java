@@ -31,15 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
@@ -814,7 +806,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
         		try {
         			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-        			fileDate = sdf.parse(metadataDate).getTime();
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    fileDate = sdf.parse(metadataDate).getTime();
         		} catch (ParseException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();

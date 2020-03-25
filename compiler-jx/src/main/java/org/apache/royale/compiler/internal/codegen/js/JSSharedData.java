@@ -45,8 +45,9 @@ public class JSSharedData
 /*    public static String now()
     {
         final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(cal.getTime());
     }
 */

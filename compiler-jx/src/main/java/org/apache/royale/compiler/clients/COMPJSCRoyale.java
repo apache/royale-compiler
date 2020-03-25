@@ -28,11 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
@@ -224,6 +220,7 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 	                    			fileDate = sdf.parse(metadataDate).getTime();
 	                    		} catch (ParseException e) {
 	                				// TODO Auto-generated catch block
@@ -245,7 +242,8 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                 }
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-	                    			zipFileDate = sdf.parse(metadataDate).getTime();
+                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                    zipFileDate = sdf.parse(metadataDate).getTime();
 	                    		} catch (ParseException e) {
 	                				// TODO Auto-generated catch block
 	                				e.printStackTrace();
@@ -405,7 +403,8 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
 	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-	                    			fileDate = sdf.parse(metadataDate).getTime();
+                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                    fileDate = sdf.parse(metadataDate).getTime();
 	                    		} catch (ParseException e) {
 	                				// TODO Auto-generated catch block
 	                				e.printStackTrace();
@@ -426,7 +425,8 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                                 }
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-	                    			zipFileDate = sdf.parse(metadataDate).getTime();
+                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                    zipFileDate = sdf.parse(metadataDate).getTime();
 	                    		} catch (ParseException e) {
 	                				// TODO Auto-generated catch block
 	                				e.printStackTrace();
@@ -505,7 +505,8 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                 		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                			fileDate = sdf.parse(metadataDate).getTime();
+                            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            fileDate = sdf.parse(metadataDate).getTime();
                 		} catch (ParseException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();
@@ -526,7 +527,8 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                         }
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                			zipFileDate = sdf.parse(metadataDate).getTime();
+                            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            zipFileDate = sdf.parse(metadataDate).getTime();
                 		} catch (ParseException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();

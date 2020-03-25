@@ -55,6 +55,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 {
@@ -557,8 +558,9 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
     public static String now() {
         final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(cal.getTime());
     }
 
