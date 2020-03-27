@@ -34,6 +34,13 @@
 
   <name>Apache Royale: Build Tools</name>
 
+  <scm>
+    <connection>scm:git:ssh://git@github.com/apache/royale-compiler.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/apache/royale-compiler.git</developerConnection>
+    <url>http://github.com/apache/royale-compiler</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <build>
     <plugins>
       <plugin>

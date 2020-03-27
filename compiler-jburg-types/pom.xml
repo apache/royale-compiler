@@ -36,6 +36,13 @@
   <name>Apache Royale: JBurg Types</name>
   <description>Types needed by JBurg to perform it's code generation.</description>
 
+  <scm>
+    <connection>scm:git:ssh://git@github.com/apache/royale-compiler.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/apache/royale-compiler.git</developerConnection>
+    <url>http://github.com/apache/royale-compiler</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <build>
     <plugins>
       <plugin>
