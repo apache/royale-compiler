@@ -33,11 +33,11 @@
 
   <name>Apache Royale: Compiler: Parent</name>
   <description>The Apache Royale Project</description>
-
+  
   <scm>
-    <connection>scm:git:https://github.com/apache/royale-compiler.git</connection>
-    <developerConnection>scm:git:https://github.com/apache/royale-compiler.git</developerConnection>
-    <url>scm:git:https://github.com/apache/royale-compiler.git</url>
+    <connection>scm:git:ssh://git@github.com/apache/royale-compiler.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/apache/royale-compiler.git</developerConnection>
+    <url>http://github.com/apache/royale-compiler</url>
     <tag>HEAD</tag>
   </scm>
 
