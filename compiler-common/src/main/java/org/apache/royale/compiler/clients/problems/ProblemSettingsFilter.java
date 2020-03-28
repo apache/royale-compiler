@@ -24,25 +24,7 @@ import java.util.Set;
 
 import org.apache.royale.compiler.config.ICompilerProblemSettings;
 import org.apache.royale.compiler.internal.config.ICompilerSettings;
-import org.apache.royale.compiler.problems.AbstractDeprecatedAPIProblem;
-import org.apache.royale.compiler.problems.ArrayCastProblem;
-import org.apache.royale.compiler.problems.AssignmentInConditionalProblem;
-import org.apache.royale.compiler.problems.ConstNotInitializedProblem;
-import org.apache.royale.compiler.problems.DateCastProblem;
-import org.apache.royale.compiler.problems.DeprecatedConfigurationOptionProblem;
-import org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem;
-import org.apache.royale.compiler.problems.DuplicateVariableDefinitionProblem;
-import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.IllogicalComparionWithNaNProblem;
-import org.apache.royale.compiler.problems.IllogicalComparisonWithUndefinedProblem;
-import org.apache.royale.compiler.problems.InstanceOfProblem;
-import org.apache.royale.compiler.problems.NullUsedWhereOtherExpectedProblem;
-import org.apache.royale.compiler.problems.OverlappingSourcePathProblem;
-import org.apache.royale.compiler.problems.ScopedToDefaultNamespaceProblem;
-import org.apache.royale.compiler.problems.SemanticWarningProblem;
-import org.apache.royale.compiler.problems.StrictSemanticsProblem;
-import org.apache.royale.compiler.problems.ThisUsedInClosureProblem;
-import org.apache.royale.compiler.problems.VariableHasNoTypeDeclarationProblem;
+import org.apache.royale.compiler.problems.*;
 
 /**
  * A problem filter that implements filtering based the values of the following
@@ -154,7 +136,8 @@ public class ProblemSettingsFilter implements IProblemFilter
     {
         // TODO: call setShowProblemByClass() with problems relating to 
         // binding warnings.
-        // CMP-1424   
+        // CMP-1424
+        setShowProblemByClass(MXMLDatabindingSourceNotBindableProblem.class, showBindingWarnings);
     }
 
     private void setShowMultipleDefinitionWarnings(boolean b)
