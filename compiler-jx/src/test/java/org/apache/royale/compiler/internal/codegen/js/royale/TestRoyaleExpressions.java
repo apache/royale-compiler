@@ -1306,6 +1306,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array.<string>} */ a = null;\n  return a.length;\n}");
     }
 
+    @Ignore
+    public void testFunctionProperty()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B { public function a():void { b(c); } public function set b(v:Function):void {}  public function get b():Function { return null; } public function get c():Object { return null; } public function set c(v:Object):void {} }",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype.a = function() {\n  this.b(this.c);\n}");
+    }
+    
     //----------------------------------
     // Other
     //----------------------------------
