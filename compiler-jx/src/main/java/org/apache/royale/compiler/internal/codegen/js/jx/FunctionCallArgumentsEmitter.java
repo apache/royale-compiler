@@ -24,6 +24,7 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
@@ -59,6 +60,11 @@ public class FunctionCallArgumentsEmitter extends JSSubEmitter implements
         if (functionCallNode != null)
         {
             IDefinition calledDef = functionCallNode.resolveCalledExpression(getProject());
+            if (calledDef instanceof ISetterDefinition) {
+                if (((ISetterDefinition)calledDef).resolveCorrespondingAccessor(getProject()) != null) {
+                    calledDef = ((ISetterDefinition)calledDef).resolveCorrespondingAccessor(getProject());
+                }
+            }
             if (calledDef instanceof IFunctionDefinition)
             {
                 IFunctionDefinition functionDef = (IFunctionDefinition) calledDef;

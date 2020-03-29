@@ -1306,7 +1306,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array.<string>} */ a = null;\n  return a.length;\n}");
     }
 
-    @Ignore
+    @Test
     public void testFunctionProperty()
     {
         IFunctionNode node = (IFunctionNode) getNode(
