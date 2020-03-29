@@ -23,7 +23,6 @@ import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocDIT
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
- * Created by christoferdutz on 10.11.14.
  */
 public class RoyaleToolGroup extends AbstractFlexToolGroup {
 

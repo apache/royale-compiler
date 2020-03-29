@@ -23,7 +23,6 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Created by christoferdutz on 23.02.16.
  */
 public interface ITestAdapter {
 

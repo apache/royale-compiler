@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by christoferdutz on 23.02.16.
  */
 public class AntTestAdapter implements ITestAdapter {
 

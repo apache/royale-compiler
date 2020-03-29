@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * Created by christoferdutz on 28.10.16.
  */
 public class JarSourceFile extends SourceFile {
 
