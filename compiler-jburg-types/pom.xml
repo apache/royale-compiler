@@ -37,9 +37,9 @@
   <description>Types needed by JBurg to perform it's code generation.</description>
 
   <scm>
-    <connection>scm:git:ssh://git@github.com/apache/royale-compiler.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/apache/royale-compiler.git</developerConnection>
-    <url>http://github.com/apache/royale-compiler</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
+    <url>https://github.com/apache/royale-compiler</url>
     <tag>HEAD</tag>
   </scm>
 
