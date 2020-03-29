@@ -134,9 +134,6 @@ public class ProblemSettingsFilter implements IProblemFilter
 
     private void setShowBindingWarnings(boolean showBindingWarnings)
     {
-        // TODO: call setShowProblemByClass() with problems relating to 
-        // binding warnings.
-        // CMP-1424
         setShowProblemByClass(MXMLDatabindingSourceNotBindableProblem.class, showBindingWarnings);
     }
 
