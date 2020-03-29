@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 /**
- * Created by christoferdutz on 23.02.16.
  */
 public class MavenTestAdapter implements ITestAdapter {
 
