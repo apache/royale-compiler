@@ -428,13 +428,27 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     			}
             	else if (((JSRoyaleEmitter)getEmitter()).isProxy(dynLeft))
             	{
-                    getWalker().walk(dynLeft);
-                    IExpressionNode rightSide = dyn.getRightOperandNode();
-                    write(".setProperty(");
-                    getWalker().walk(rightSide);
-                    write(", ");
-                    getWalker().walk(node.getRightOperandNode());
-                    write(ASEmitterTokens.PAREN_CLOSE);
+            		if (isAssignment)
+            		{
+	                    getWalker().walk(dynLeft);
+	                    IExpressionNode rightSide = dyn.getRightOperandNode();
+	                    write(".setProperty(");
+	                    getWalker().walk(rightSide);
+	                    write(", ");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+            		}
+            		else
+            		{
+	                    getWalker().walk(dynLeft);
+	                    IExpressionNode rightSide = dyn.getRightOperandNode();
+	                    write(".getProperty(");
+	                    getWalker().walk(rightSide);
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    write(ASEmitterTokens.SPACE);
+	                    writeToken(op);
+	                    getWalker().walk(node.getRightOperandNode());
+            		}
                     return;            		
             	}
             }

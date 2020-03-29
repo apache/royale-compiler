@@ -1509,6 +1509,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testProxyGetArrayIndexAndCompare()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy(); if (a[0] != null) return; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  if (a.getProperty(0) != null)\n    return;\n}");
+    }
+    
+    @Test
     public void testProxyFunctionCall()
     {
         IFunctionNode node = (IFunctionNode) getNode(
