@@ -134,6 +134,18 @@
       <id>apache-release</id>
       <build>
         <plugins>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>reproducible-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <preparationGoals>clean com.theoryinpractise:reproducible-maven-plugin:apply install</preparationGoals>
+              <completionGoals>com.theoryinpractise:reproducible-maven-plugin:clear</completionGoals>
+            </configuration>
+          </plugin>
           <!--
             Create MD5 and SHA512 checksum files for the release artifacts.
           -->
