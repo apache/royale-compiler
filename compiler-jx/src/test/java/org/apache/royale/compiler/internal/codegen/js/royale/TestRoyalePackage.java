@@ -775,6 +775,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +

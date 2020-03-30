@@ -402,6 +402,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"Object.defineProperties(AppName, /** @lends {AppName} */ {\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"foo: {\n" +
@@ -504,6 +505,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"AppName.foo = 'foo';\n" +
@@ -603,6 +605,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @type {Array}\n" +
 				" */\n" +
 				"AppName.foo = ['foo'];\n" +

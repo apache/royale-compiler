@@ -632,7 +632,7 @@ public class TestRoyaleClass extends TestGoogClass
         IClassNode node = getClassNode("public class A {public static var a:int = 10;public static var b:String = initStatic(); "
                 + "private static function initStatic():String { return \"foo\"; }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.royale.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.royale.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.royale.A.initStatic = function() {\n  return \"foo\";\n};\n\norg.apache.royale.A.b = org.apache.royale.A.initStatic();\n\n");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @nocollapse\n * @type {number}\n */\norg.apache.royale.A.a = 10;\n\n\n/**\n * @export\n * @nocollapse\n * @type {string}\n */\norg.apache.royale.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.royale.A.initStatic = function() {\n  return \"foo\";\n};\n\norg.apache.royale.A.b = org.apache.royale.A.initStatic();\n\n");
     }
     
     @Test

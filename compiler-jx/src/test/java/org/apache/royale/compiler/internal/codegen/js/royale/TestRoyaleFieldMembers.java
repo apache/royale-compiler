@@ -175,7 +175,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("public static var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
+        assertOut("/**\n * @export\n * @nocollapse\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
     }
 
     @Test
@@ -210,7 +210,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("import custom.custom_namespace;use namespace custom_namespace;public static var foo:Object = initFoo(); custom_namespace static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @export\n * @return {Object}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo();\n\n");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @nocollapse\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @export\n * @return {Object}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo();\n\n");
     }
     
     @Test
@@ -219,7 +219,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("static public var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo = {'foo':'bar'};");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n * @nocollapse\n * @type {Object}\n */\nRoyaleTest_A.foo = {'foo':'bar'};");
     }
     
     @Test

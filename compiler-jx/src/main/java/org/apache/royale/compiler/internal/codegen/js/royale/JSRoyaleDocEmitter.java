@@ -37,6 +37,7 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -595,7 +596,16 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             
             if (!avoidExport) {
                 if (ns.equals(IASKeywordConstants.PUBLIC))
+                {
                     emitPublic(node);
+                    if(!node.isConst() && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+                    {
+                        //dynamically getting/setting a public static variable
+                        //won't work properly if it is collapsed, even when it
+                        //has been exported
+                        emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+                    }
+                }
             } else {
                 //we should also remove it from reflection data... provide a check here for that.
                 ((JSRoyaleEmitter)emitter).getModel().suppressedExportNodes.add(node);
