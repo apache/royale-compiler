@@ -653,7 +653,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "private static const C:Number = 42;"
                 + "custom_namespace static const C:String = 'me' + 'you';}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @const\n * @type {number}\n */\norg.apache.royale.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.royale.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.royale.A.C = 42;\n\n\n/**\n * @const\n * @type {string}\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__C = 'me' + 'you';");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @nocollapse\n * @const\n * @type {number}\n */\norg.apache.royale.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.royale.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.royale.A.C = 42;\n\n\n/**\n * @const\n * @type {string}\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__C = 'me' + 'you';");
     }
 
     @Override
@@ -861,7 +861,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A {public static const NAME:String = 'Dummy'; public function A(arg1:String = NAME) {_name = arg1;} private var _name:String;}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @param {string=} arg1\n */\norg.apache.royale.A = function(arg1) {\n  arg1 = typeof arg1 !== 'undefined' ? arg1 : org.apache.royale.A.NAME;\n  this._name = arg1;\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.royale.A.NAME = 'Dummy';\n\n\n/**\n * @private\n * @type {string}\n */\norg.apache.royale.A.prototype._name = null;");
+        assertOut("/**\n * @constructor\n * @param {string=} arg1\n */\norg.apache.royale.A = function(arg1) {\n  arg1 = typeof arg1 !== 'undefined' ? arg1 : org.apache.royale.A.NAME;\n  this._name = arg1;\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @nocollapse\n * @const\n * @type {string}\n */\norg.apache.royale.A.NAME = 'Dummy';\n\n\n/**\n * @private\n * @type {string}\n */\norg.apache.royale.A.prototype._name = null;");
     }
     
     protected IBackend createBackend()
