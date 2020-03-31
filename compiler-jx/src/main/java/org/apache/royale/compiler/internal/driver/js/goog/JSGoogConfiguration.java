@@ -425,7 +425,6 @@ public class JSGoogConfiguration extends JSConfiguration
     {
     	exportPublicSymbols = value;
     }
-
     
     //
     // 'export-protected-symbols'
@@ -444,6 +443,44 @@ public class JSGoogConfiguration extends JSConfiguration
             throws ConfigurationException
     {
     	exportProtectedSymbols = value;
+    }
+
+    //
+    // 'prevent-rename-public-symbols'
+    //
+
+    private boolean preventRenamePublicSymbols = true;
+
+    public boolean getPreventRenamePublicSymbols()
+    {
+        return preventRenamePublicSymbols;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-symbols")
+    public void setPreventRenamePublicSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicSymbols = value;
+    }
+
+    //
+    // 'prevent-rename-protected-symbols'
+    //
+
+    private boolean preventRenameProtectedSymbols = true;
+
+    public boolean getPreventRenameProtectedSymbols()
+    {
+        return preventRenameProtectedSymbols;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-symbols")
+    public void setPreventRenameProtectedSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedSymbols = value;
     }
 
     

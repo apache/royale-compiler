@@ -35,8 +35,8 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.CommandLineConfigurator;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
@@ -75,6 +75,7 @@ import org.apache.royale.compiler.targets.ITarget;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.utils.ClosureUtils;
 import org.apache.royale.swf.ISWF;
 import org.apache.royale.swf.SWF;
 import org.apache.royale.swf.types.RGB;
@@ -272,7 +273,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
-    private IJSPublisher jsPublisher;
+    private IJSGoogPublisher jsPublisher;
     protected MXMLC mxmlc;
     protected JSCompilerEntryPoint lastCompiler;
     public boolean noLink;
@@ -532,7 +533,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         return false;
                 }
 
-                jsPublisher = (IJSPublisher) project.getBackend().createPublisher(
+                Set<String> closurePropNamesToKeep = new HashSet<String>();
+                jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -617,11 +619,13 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    		outputClassFile.setLastModified(fileDate);
 	                    	}
 	                    }
+                        ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
 	                }
                 }
                 
                 if (jsPublisher != null)
                 {
+                    jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
                     compilationSuccess = jsPublisher.publish(problems);
                 }
                 else

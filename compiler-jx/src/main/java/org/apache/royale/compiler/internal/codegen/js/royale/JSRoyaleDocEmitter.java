@@ -546,6 +546,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
         begin();
 
+        RoyaleJSProject fjp =  (RoyaleJSProject)project;
         String ns = node.getNamespace();
         if (ns == IASKeywordConstants.PRIVATE)
         {
@@ -554,11 +555,18 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         else if (ns == IASKeywordConstants.PROTECTED)
         {
             emitProtected(node);
+            boolean preventRename = fjp.config != null && fjp.config.getPreventRenameProtectedSymbols();
+            if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+            {
+                //dynamically getting/setting a protected static variable
+                //won't work properly if it is collapsed, even when it
+                //has been exported
+                emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+            }
         }
         else
         {
-        	RoyaleJSProject fjp =  (RoyaleJSProject)project;
-            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars();
+            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars() && !fjp.config.getPreventRenamePublicSymbols();
             IMetaTagsNode meta = node.getMetaTags();
             boolean bindable = false;
             if (meta != null)
@@ -598,7 +606,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 if (ns.equals(IASKeywordConstants.PUBLIC))
                 {
                     emitPublic(node);
-                    if(node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+                    boolean preventRename = fjp.config != null && fjp.config.getPreventRenamePublicSymbols();
+                    if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
                     {
                         //dynamically getting/setting a public static variable
                         //won't work properly if it is collapsed, even when it
