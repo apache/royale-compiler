@@ -86,6 +86,7 @@ public class SWCWriter extends SWCWriterBase
         File outputDirectory = new File(outputFile.getAbsoluteFile().getParent());
         outputDirectory.mkdirs();
         
+        /*
     	if (metadataDate != null)
     	{
     	    // TODO: Perhaps parsing without modification and then serializing with a default timezone is the more solid approach.
@@ -110,7 +111,7 @@ public class SWCWriter extends SWCWriterBase
     		} catch (IllegalArgumentException e1) {
     			e1.printStackTrace();
     		}
-    	}
+    	}*/
     	
         zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(filename)));
         zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
@@ -121,7 +122,7 @@ public class SWCWriter extends SWCWriterBase
      */
     private final ZipOutputStream zipOutputStream;
     
-    private long fileDate = System.currentTimeMillis();
+    private long fileDate = -1;
 
     @Override
     void writeCatalog(final ISWC swc) throws IOException
