@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.google.javascript.jscomp.CheckLevel;
@@ -91,6 +92,7 @@ public class JSClosureCompilerWrapper
     private boolean skipTypeInference;
     private boolean sourceMap = false;
     private boolean verbose = false;
+    private Set<String> propertyNamesToKeep;
     
     public String targetFilePath;
     
@@ -122,6 +124,11 @@ public class JSClosureCompilerWrapper
     public void setVerbose(boolean enabled)
     {
         verbose = enabled;
+    }
+
+    public void setPropertyNamesToKeep(Set<String> propertyNames)
+    {
+        propertyNamesToKeep = propertyNames;
     }
     
     public boolean compile()
@@ -160,7 +167,7 @@ public class JSClosureCompilerWrapper
 
         compiler_.setPassConfig(new RoyaleClosurePassConfig(options_, 
         		jsSourceFiles_.get(jsSourceFiles_.size() - 1).getName(), 
-        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath)));
+        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath), propertyNamesToKeep));
         Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
         
         try

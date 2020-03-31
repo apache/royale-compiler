@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -36,8 +37,8 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -72,6 +73,7 @@ import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.utils.ClosureUtils;
 import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.ArgumentUtil;
 import org.apache.royale.utils.FilenameNormalization;
@@ -169,7 +171,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
-    private IJSPublisher jsPublisher;
+    private IJSGoogPublisher jsPublisher;
     
     public MXMLJSCNative()
     {
@@ -315,7 +317,8 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                         return false;
                 }
 
-                jsPublisher = (IJSPublisher) project.getBackend().createPublisher(
+                Set<String> closurePropNamesToKeep = new HashSet<String>();
+                jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -381,11 +384,13 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                             }
 	                        writer.close();
 	                    }
+                        ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
 	                }
                 }
                 
                 if (jsPublisher != null)
                 {
+                    jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
                     compilationSuccess = jsPublisher.publish(problems);
                 }
                 else
