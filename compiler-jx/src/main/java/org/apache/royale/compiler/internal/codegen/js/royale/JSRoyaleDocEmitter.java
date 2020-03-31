@@ -598,7 +598,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 if (ns.equals(IASKeywordConstants.PUBLIC))
                 {
                     emitPublic(node);
-                    if(!node.isConst() && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+                    if(node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
                     {
                         //dynamically getting/setting a public static variable
                         //won't work properly if it is collapsed, even when it
