@@ -558,7 +558,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         else
         {
         	RoyaleJSProject fjp =  (RoyaleJSProject)project;
-            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars();
+            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars() && !fjp.config.getPreventRenamePublicSymbols();
             IMetaTagsNode meta = node.getMetaTags();
             boolean bindable = false;
             if (meta != null)

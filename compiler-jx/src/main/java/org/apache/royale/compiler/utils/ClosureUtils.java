@@ -37,8 +37,8 @@ public class ClosureUtils
         {
             return;
         }
-		boolean renamePublic = false;
-		boolean renameProtected = true;
+		boolean preventRenamePublic = project.config.getPreventRenamePublicSymbols();
+		boolean preventRenameProtected = project.config.getPreventRenameProtectedSymbols();
         for (IDefinition def : cu.getDefinitionPromises())
         {
             if(def instanceof DefinitionPromise)
@@ -62,11 +62,11 @@ public class ClosureUtils
                     {
                         continue;
                     }
-                    if (localDef.isProtected() && renameProtected)
+                    if (localDef.isProtected() && !preventRenameProtected)
                     {
                         continue;
                     }
-                    if (localDef.isPublic() && renamePublic)
+                    if (localDef.isPublic() && !preventRenamePublic)
                     {
                         continue;
                     }
