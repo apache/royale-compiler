@@ -653,7 +653,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "private static const C:Number = 42;"
                 + "custom_namespace static const C:String = 'me' + 'you';}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @nocollapse\n * @const\n * @type {number}\n */\norg.apache.royale.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.royale.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.royale.A.C = 42;\n\n\n/**\n * @const\n * @type {string}\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__C = 'me' + 'you';");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('org.apache.royale.A', org.apache.royale.A);\n\n\n/**\n * @export\n * @nocollapse\n * @const\n * @type {number}\n */\norg.apache.royale.A.A = 42;\n\n\n/**\n * @protected\n * @nocollapse\n * @const\n * @type {number}\n */\norg.apache.royale.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.royale.A.C = 42;\n\n\n/**\n * @const\n * @type {string}\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__C = 'me' + 'you';");
     }
 
     @Override
