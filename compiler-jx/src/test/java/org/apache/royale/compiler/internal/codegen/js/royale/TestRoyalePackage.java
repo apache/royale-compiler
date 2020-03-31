@@ -1247,6 +1247,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +

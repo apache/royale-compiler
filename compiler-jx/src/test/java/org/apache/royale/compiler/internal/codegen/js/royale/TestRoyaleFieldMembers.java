@@ -259,7 +259,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("public static const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo");
+        assertOut("/**\n * @export\n * @nocollapse\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
@@ -276,7 +276,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("public static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
+        assertOut("/**\n * @export\n * @nocollapse\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
     }
 
     @Test
@@ -293,7 +293,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("public static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
+        assertOut("/**\n * @export\n * @nocollapse\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -301,7 +301,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("public static const foo:Number = parseFloat('1E2');");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = parseFloat('1E2')");
+        assertOut("/**\n * @export\n * @nocollapse\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = parseFloat('1E2')");
     }
 
     @Test
