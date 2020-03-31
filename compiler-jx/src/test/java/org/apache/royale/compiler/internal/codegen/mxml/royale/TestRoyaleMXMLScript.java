@@ -713,6 +713,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"Object.defineProperties(AppName, /** @lends {AppName} */ {\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @const\n" +
 				" * @type {string}\n" +
 				" */\n" +
