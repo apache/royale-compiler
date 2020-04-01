@@ -303,7 +303,7 @@ public class FieldEmitter extends JSSubEmitter implements
         }
         if (vnode != null && !isComplexInitializedStatic)
         {
-        	getModel().inStaticInitializer = ndef.isStatic();
+        	getModel().inStaticInitializer = ndef.isStatic() || isPackageOrFileMember;
             String vnodeString = getEmitter().stringifyNode(vnode);
             if (ndef.isStatic() && vnode instanceof FunctionCallNode)
             {
