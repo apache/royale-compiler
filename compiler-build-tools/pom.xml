@@ -240,6 +240,7 @@
         </plugins>
       </build>
     </profile>
+    <profile>
       <id>royale-release</id>
       <properties>
         <!-- Ensure the royale-release plugin is enabled when running release:perform -->
