@@ -104,7 +104,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         boolean isProxy = false;
         if (obj.getNodeID() == ASTNodeID.IdentifierID)
         {
-        	if (((JSRoyaleEmitter)getEmitter()).isXML((IdentifierNode)obj))
+        	if (((JSRoyaleEmitter)getEmitter()).isXMLish((IdentifierNode)obj))
         	{
         		write(".elementNames()");
         		isXML = true;

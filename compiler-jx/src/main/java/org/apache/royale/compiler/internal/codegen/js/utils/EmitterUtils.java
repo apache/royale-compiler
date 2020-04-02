@@ -751,16 +751,16 @@ public class EmitterUtils
      * @param obj
      * @return
      */
-    public static boolean isXML(IExpressionNode obj, ICompilerProject project )
+    public static boolean isXMLish(IExpressionNode obj, ICompilerProject project )
     {
         // See if the left side is XML or XMLList
         IDefinition leftDef = obj.resolveType(project);
         if (leftDef == null && obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
         {
-            return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode(), project);
+            return isXMLish(((MemberAccessExpressionNode)obj).getLeftOperandNode(), project);
         }
         else if (leftDef != null && leftDef.getBaseName().equals("*") && obj instanceof DynamicAccessNode) {
-            return isXML(((DynamicAccessNode)obj).getLeftOperandNode(), project);
+            return isXMLish(((DynamicAccessNode)obj).getLeftOperandNode(), project);
         }
         return SemanticUtils.isXMLish(leftDef, project);
     }
@@ -785,7 +785,7 @@ public class EmitterUtils
         IExpressionNode leftNode = obj.getLeftOperandNode();
         IExpressionNode rightNode = obj.getRightOperandNode();
         ASTNodeID rightID = rightNode.getNodeID();
-        if (rightID == ASTNodeID.IdentifierID)
+        if (rightID == ASTNodeID.IdentifierID || (rightID == ASTNodeID.NamespaceAccessExpressionID && rightNode.getChild(1).getNodeID() == ASTNodeID.IdentifierID))
         {
             IDefinition rightDef = rightNode.resolveType(project);
             if (rightDef != null)
@@ -799,6 +799,8 @@ public class EmitterUtils
             return isLeftNodeXMLish(leftNode, project);
         }
         else if (rightID == ASTNodeID.Op_AtID)
+            return true;
+        else if (rightNode instanceof IDynamicAccessNode && ((IDynamicAccessNode) rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID)
             return true;
         return false;
     }
@@ -904,7 +906,7 @@ public class EmitterUtils
                 boolean isXML = leftNode instanceof MemberAccessExpressionNode
                         && isLeftNodeXMLish((MemberAccessExpressionNode) leftNode, project);
                 if (!isXML) {
-                    isXML = leftNode instanceof IExpressionNode && isXML((IExpressionNode)leftNode, project);
+                    isXML = leftNode instanceof IExpressionNode && isXMLish((IExpressionNode)leftNode, project);
                 }
                 if (isXML) {
                     //check argumentsNode

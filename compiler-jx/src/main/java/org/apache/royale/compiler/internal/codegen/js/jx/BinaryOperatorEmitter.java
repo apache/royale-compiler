@@ -192,19 +192,35 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	MemberAccessExpressionNode xmlNode = (MemberAccessExpressionNode)leftSide;
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)
                 	{
+                		boolean wrapQuotes = true;
 	                    getWalker().walk(xmlNode.getLeftOperandNode());
 	                    IExpressionNode rightSide = xmlNode.getRightOperandNode();
 	                    if (rightSide instanceof UnaryOperatorAtNode)
 	                    {
 		                    write(".setAttribute('");
-		                    getWalker().walk(((UnaryOperatorAtNode)rightSide).getChild(0));
+		                    getWalker().walk(rightSide.getChild(0));
 	                    }
+	                    else if (rightSide instanceof IDynamicAccessNode && ((IDynamicAccessNode) rightSide).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID) {
+							write(".setAttribute(");
+							wrapQuotes = false;
+							getWalker().walk(((IDynamicAccessNode)rightSide).getRightOperandNode());
+						}
+	                    else if (rightSide instanceof INamespaceAccessExpressionNode) {
+							write(".setChild(");
+							write("new QName(");
+							getWalker().walk(((INamespaceAccessExpressionNode) rightSide).getLeftOperandNode());
+							write(",'");
+							getWalker().walk(((INamespaceAccessExpressionNode) rightSide).getRightOperandNode());
+							write("')");
+							wrapQuotes = false;
+						}
 	                    else
 	                    {
 		                    write(".setChild('");
 		                    getWalker().walk(rightSide);
 	                    }
-	                    write("', ");
+	                    if (wrapQuotes) write("'");
+	                    write(", ");
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
@@ -240,7 +256,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
-                else if (isDynamicAccess && ((JSRoyaleEmitter)getEmitter()).isXML((IExpressionNode)lnode))
+                else if (isDynamicAccess && ((JSRoyaleEmitter)getEmitter()).isXMLish((IExpressionNode)lnode))
                 {
                 	DynamicAccessNode dyn = (DynamicAccessNode)rnode;
                 	ITypeDefinition type = dyn.getRightOperandNode().resolveType(getProject());
@@ -368,7 +384,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             	DynamicAccessNode dyn = (DynamicAccessNode)leftSide;
             	IExpressionNode dynLeft = dyn.getLeftOperandNode();
             	ITypeDefinition type = dyn.getRightOperandNode().resolveType(getProject());
-            	if (((JSRoyaleEmitter)getEmitter()).isXML(dynLeft) && type.isInstanceOf("String", getProject()))
+            	if (((JSRoyaleEmitter)getEmitter()).isXMLish(dynLeft)/* && !SemanticUtils.isNumericType(type, getProject())*/) //type.isInstanceOf("String", getProject())
     			{
             		String field;
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)
@@ -377,17 +393,19 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    IExpressionNode rightSide = dyn.getRightOperandNode();
 	                    if (rightSide instanceof UnaryOperatorAtNode)
 	                    {
-		                    write(".setAttribute('");
-							field = fjs.stringifyNode(((UnaryOperatorAtNode)rightSide).getChild(0));
-							field = field.replace("\"", ""); // remove wrapping double-quotes
+		                    write(".setAttribute(");
+							field = fjs.stringifyNode((rightSide).getChild(0));
 	                    }
 	                    else
 	                    {
-		                    write(".setChild('");
+							write(".setChild(");
 							field = fjs.stringifyNode(rightSide);
-							field = field.replace("\"", ""); // remove wrapping double-quotes
 	                    }
-	                    write(field + "', ");
+						if (field.startsWith("\"") && field.endsWith("\"")) {
+							// remove wrapping double-quotes and swap to single quotes
+							field = "'" + field.substring(1, field.length() - 1) + "'";
+						}
+	                    write(field + ", ");
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
@@ -576,7 +594,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				getWalker().walk(node.getRightOperandNode());
 				
 				if (node.getNodeID() == ASTNodeID.Op_InID &&
-						((JSRoyaleEmitter)getEmitter()).isXML(node.getRightOperandNode()))
+						((JSRoyaleEmitter)getEmitter()).isXMLish(node.getRightOperandNode()))
 				{
 					write(".elementNames()");
 				}

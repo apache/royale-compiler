@@ -72,7 +72,7 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 	    	if (leftOperandNode instanceof MemberAccessExpressionNode)
 	    		isXML = fjs.isLeftNodeXMLish((MemberAccessExpressionNode)leftOperandNode);
 	    	else if (leftOperandNode instanceof IExpressionNode)
-	    		isXML = fjs.isXML((IExpressionNode)leftOperandNode);
+	    		isXML = fjs.isXMLish((IExpressionNode)leftOperandNode);
         	if (leftOperandNode instanceof MemberAccessExpressionNode)
         		isProxy = fjs.isProxy((MemberAccessExpressionNode)leftOperandNode);
         	else if (leftOperandNode instanceof IExpressionNode)
