@@ -232,6 +232,18 @@ public class FieldEmitter extends JSSubEmitter implements
 	                write(ASEmitterTokens.BLOCK_CLOSE);
 	                writeNewline(ASEmitterTokens.SEMICOLON);
                 }
+                //Fix for references to the target : the following empty declaration is required for @lends to work in Object.defineProperties below
+                //otherwise references elsewhere in code to the target can be renamed (and therefore do not work)
+                if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter)
+                {
+                    ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
+                }
+                write(className);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                writeFieldName(node, fjs);
+                write(ASEmitterTokens.SEMICOLON);
+                writeNewline();
+                writeNewline();
                 write(IASLanguageConstants.Object);
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.DEFINE_PROPERTIES);
