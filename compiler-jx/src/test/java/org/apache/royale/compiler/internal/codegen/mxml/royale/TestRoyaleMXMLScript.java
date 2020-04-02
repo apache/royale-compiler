@@ -348,48 +348,48 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
-        		" * AppName\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('AppName');\n" +
-        		"\n" +
-        		"goog.require('org.apache.royale.core.Application');\n" +
-        		"goog.require('org.apache.royale.events.CloseEvent');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" * @extends {org.apache.royale.core.Application}\n" +
-        		" */\n" +
-        		"AppName = function() {\n" +
-        		"  AppName.base(this, 'constructor');\n" +
-        		"  \n" +
-        		"  /**\n" +
-        		"   * @private\n" +
-        		"   * @type {Array}\n" +
-        		"   */\n" +
-        		"  this.mxmldd;\n" +
-        		"  \n" +
-        		"  /**\n" +
-        		"   * @private\n" +
-        		"   * @type {Array}\n" +
-        		"   */\n" +
-        		"  this.mxmldp;\n" +
-        		"};\n" +
-        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
-        		"\n" +
+				" * AppName\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('AppName');\n" +
+				"\n" +
+				"goog.require('org.apache.royale.core.Application');\n" +
+				"goog.require('org.apache.royale.events.CloseEvent');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" * @extends {org.apache.royale.core.Application}\n" +
+				" */\n" +
+				"AppName = function() {\n" +
+				"  AppName.base(this, 'constructor');\n" +
+				"  \n" +
+				"  /**\n" +
+				"   * @private\n" +
+				"   * @type {Array}\n" +
+				"   */\n" +
+				"  this.mxmldd;\n" +
+				"  \n" +
+				"  /**\n" +
+				"   * @private\n" +
+				"   * @type {Array}\n" +
+				"   */\n" +
+				"  this.mxmldp;\n" +
+				"};\n" +
+				"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('AppName', AppName);\n" +
+				"\n" +
+				"\n" +
 				"\n" +
 				"AppName.get__foo = function() {\n" +
 				"  var value = org.apache.royale.events.CloseEvent.CLOSE;\n" +
@@ -399,6 +399,12 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"AppName.set__foo = function(value) {\n" +
 				"  Object.defineProperty(AppName, 'foo', { value: value, writable: true });\n" +
 				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @type {string}\n" +
+				" */\n" +
+				"AppName.foo;\n" +
+				"\n" +
 				"Object.defineProperties(AppName, /** @lends {AppName} */ {\n" +
 				"/**\n" +
 				" * @export\n" +
@@ -410,27 +416,27 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"  configurable: true}});\n" +
 				"\n" +
 				"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-			    "    variables: function () {\n" +
-        		"      return {\n" +
-        		"        '|foo': { type: 'String', get_set: function (/** * */ v) {return v !== undefined ? AppName.foo = v : AppName.foo;}}\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {\n" +
+				"      return {\n" +
+				"        '|foo': { type: 'String', get_set: function (/** * */ v) {return v !== undefined ? AppName.foo = v : AppName.foo;}}\n" +
+				"      };\n" +
+				"    },\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'AppName': { type: '', declaredBy: 'AppName'}\n" +
@@ -438,8 +444,8 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"    }\n" +
 				"  };\n" +
 				"};\n" +
-        		"\n" +
-        		"\n" ;
+				"\n" +
+				"\n" ;
         	
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
@@ -659,54 +665,61 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n" +
-        		" * AppName\n" +
-        		" *\n" +
-        		" * @fileoverview\n" +
-        		" *\n" +
-        		" * @suppress {checkTypes|accessControls}\n" +
-        		" */\n" +
-        		"\n" +
-        		"goog.provide('AppName');\n" +
-        		"\n" +
-        		"goog.require('org.apache.royale.core.Application');\n" +
-        		"goog.require('org.apache.royale.events.CloseEvent');\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @constructor\n" +
-        		" * @extends {org.apache.royale.core.Application}\n" +
-        		" */\n" +
-        		"AppName = function() {\n" +
-        		"  AppName.base(this, 'constructor');\n" +
-        		"  \n" +
-        		"  /**\n" +
-        		"   * @private\n" +
-        		"   * @type {Array}\n" +
-        		"   */\n" +
-        		"  this.mxmldd;\n" +
-        		"  \n" +
-        		"  /**\n" +
-        		"   * @private\n" +
-        		"   * @type {Array}\n" +
-        		"   */\n" +
-        		"  this.mxmldp;\n" +
-        		"};\n" +
-        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
-        		"\n" +
+				" * AppName\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('AppName');\n" +
+				"\n" +
+				"goog.require('org.apache.royale.core.Application');\n" +
+				"goog.require('org.apache.royale.events.CloseEvent');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" * @extends {org.apache.royale.core.Application}\n" +
+				" */\n" +
+				"AppName = function() {\n" +
+				"  AppName.base(this, 'constructor');\n" +
+				"  \n" +
+				"  /**\n" +
+				"   * @private\n" +
+				"   * @type {Array}\n" +
+				"   */\n" +
+				"  this.mxmldd;\n" +
+				"  \n" +
+				"  /**\n" +
+				"   * @private\n" +
+				"   * @type {Array}\n" +
+				"   */\n" +
+				"  this.mxmldp;\n" +
+				"};\n" +
+				"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('AppName', AppName);\n" +
+				"\n" +
+				"\n" +
 				"\n" +
 				"AppName.get__foo = function() {\n" +
 				"  var value = org.apache.royale.events.CloseEvent.CLOSE;\n" +
 				"  Object.defineProperty(AppName, 'foo', { value: value, writable: false });\n" +
 				"  return value;\n" +
 				"};\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {string}\n" +
+				" */\n" +
+				"AppName.foo;\n" +
+				"\n" +
 				"Object.defineProperties(AppName, /** @lends {AppName} */ {\n" +
 				"/**\n" +
 				" * @export\n" +
@@ -718,21 +731,21 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"  configurable: true}});\n" +
 				"\n" +
 				"\n" +
-        		"/**\n" +
-        		" * Metadata\n" +
-        		" *\n" +
-        		" * @type {Object.<string, Array.<Object>>}\n" +
-        		" */\n" +
-        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Reflection\n" +
-        		" *\n" +
-        		" * @return {Object.<string, Function>}\n" +
-        		" */\n" +
-        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Reflection\n" +
+				" *\n" +
+				" * @return {Object.<string, Function>}\n" +
+				" */\n" +
+				"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
@@ -741,8 +754,8 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"    }\n" +
 				"  };\n" +
 				"};\n" +
-        		"\n" +
-        		"\n" ;
+				"\n" +
+				"\n" ;
         	
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
