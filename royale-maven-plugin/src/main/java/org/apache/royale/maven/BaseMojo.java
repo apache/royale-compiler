@@ -285,8 +285,9 @@ public abstract class BaseMojo
             additionalCompilerOptions = additionalCompilerOptions.replaceAll("=\\s+", "=");
             //remove whitespace before or after any ',' (this assumes that ',' is never part of a value assignment itself and is only used to separate list values in config settings)
             additionalCompilerOptions = additionalCompilerOptions.replaceAll("\\s*,\\s*", ",");
-            //any other whitespace can be resolved to a single separator (';') multiple sequential separators will be ignored if there are explicit ';' separators included
-            additionalCompilerOptions = additionalCompilerOptions.replaceAll("\\s+", ";");
+
+            //any explicit line separators can be resolved to a single separator (';') multiple sequential separators will be ignored if there are explicit ';' separators included below
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("(\\r\\n?|\\n)+", ";");
             if (additionalCompilerOptions.contains(";"))
             {
                 String[] options = additionalCompilerOptions.split(";");
