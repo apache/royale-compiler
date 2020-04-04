@@ -303,11 +303,13 @@
                   <git>jgit</git>
                 </providerImplementations>
               </configuration>
-              <dependency>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-provider-jgit</artifactId>
-                <version>1.11.3</version>
-              </dependency>
+              <dependencies>
+                <dependency>
+                  <groupId>org.apache.maven.scm</groupId>
+                  <artifactId>maven-scm-provider-jgit</artifactId>
+                  <version>1.11.3</version>
+                </dependency>
+              </dependencies>
             </plugin>
           </plugins>
         </pluginManagement>
