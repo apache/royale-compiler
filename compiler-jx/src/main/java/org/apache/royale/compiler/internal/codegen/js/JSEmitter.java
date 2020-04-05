@@ -40,6 +40,7 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BlockCloseEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.BlockOpenEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.CatchEmitter;
@@ -914,7 +915,19 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		{
 			write(coercionStart);
         }
-        emitAssignedValue(assignedNode);
+		if (project.getBuiltinType(BuiltinType.FUNCTION).equals(definition) && 
+				assignedNode instanceof MemberAccessExpressionNode) {
+			write(JSGoogEmitterTokens.GOOG_BIND.getToken() + 
+					ASEmitterTokens.PAREN_OPEN.getToken()
+			);
+			emitAssignedValue(assignedNode);
+			write(ASEmitterTokens.COMMA.getToken());
+			MemberAccessExpressionNode maenode = (MemberAccessExpressionNode)assignedNode;
+			getWalker().walk(maenode.getLeftOperandNode());
+			write(ASEmitterTokens.PAREN_CLOSE.getToken());
+		} else {
+			emitAssignedValue(assignedNode);
+		}
 		if (coercionStart != null)
 		{
 			if (coercionEnd != null)
