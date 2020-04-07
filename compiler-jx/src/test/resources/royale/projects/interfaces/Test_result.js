@@ -43,12 +43,6 @@ goog.inherits(Test, classes.A);
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Test', Test);
-
-
-/**
  * @export
  * @param {interfaces.IC} ic
  * @return {interfaces.IC}

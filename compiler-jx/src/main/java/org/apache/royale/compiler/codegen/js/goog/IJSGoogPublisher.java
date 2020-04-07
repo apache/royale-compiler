@@ -30,4 +30,5 @@ import org.apache.royale.compiler.codegen.js.IJSPublisher;
 public interface IJSGoogPublisher extends IJSPublisher
 {
 	void setClosurePropertyNamesToKeep(Set<String> propertyNames);
+	void setClosureSymbolNamesToExport(Set<String> symbolNames);
 }

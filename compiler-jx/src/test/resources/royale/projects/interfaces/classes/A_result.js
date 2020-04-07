@@ -36,12 +36,6 @@ goog.inherits(classes.A, classes.C);
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('classes.A', classes.A);
-
-
-/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

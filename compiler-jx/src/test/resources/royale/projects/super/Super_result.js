@@ -31,12 +31,6 @@ Super = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Super', Super);
-
-
-/**
  * @private
  * @type {string}
  */

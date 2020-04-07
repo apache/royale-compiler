@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -323,6 +324,8 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
                 }
 
                 Set<String> closurePropNamesToKeep = new HashSet<String>();
+                //use a LinkedHashSet because the order of the exported names matters -JT
+                LinkedHashSet<String> closureSymbolNamesToExport = new LinkedHashSet<String>();
                 jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
@@ -390,12 +393,14 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
 	                        writer.close();
 	                    }
                         ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
+                        ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
 	                }
                 }
                 
                 if (jsPublisher != null)
                 {
                     jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
+                    jsPublisher.setClosureSymbolNamesToExport(closureSymbolNamesToExport);
                     compilationSuccess = jsPublisher.publish(problems);
                 }
                 else

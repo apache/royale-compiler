@@ -103,6 +103,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     private boolean useStrictPublishing;
     private List<String> additionalHTML = new ArrayList<String>();
     private Set<String> closurePropertyNamesToKeep;
+    private Set<String> closureSymbolNamesToExport;
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
     										String mainClassQName, 
@@ -186,6 +187,11 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     public void setClosurePropertyNamesToKeep(Set<String> propertyNames)
     {
         closurePropertyNamesToKeep = propertyNames;
+    }
+
+    public void setClosureSymbolNamesToExport(Set<String> symbolNames)
+    {
+        closureSymbolNamesToExport = symbolNames;
     }
 
     @Override
@@ -387,6 +393,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         {
             compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
             compilerWrapper.setPropertyNamesToKeep(closurePropertyNamesToKeep);
+            if (closureSymbolNamesToExport == null) {
+                closureSymbolNamesToExport = new HashSet<String>();
+            }
+            //the HTML template always needs this name to be exported, even if
+            //other class names are not exported
+            closureSymbolNamesToExport.add(mainClassQName);
+            compilerWrapper.setExtraSymbolNamesToExport(closureSymbolNamesToExport);
         }
 
         if (compilerWrapper != null)

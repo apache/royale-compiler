@@ -339,6 +339,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                 }
 
                 Set<String> closurePropNamesToKeep = new HashSet<String>();
+                //use a LinkedHashSet because the order of the exported names matters -JT
+                LinkedHashSet<String> closureSymbolNamesToExport = new LinkedHashSet<String>();
                 jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
@@ -417,6 +419,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                        writer.close();
 	                    }
                         ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
+                        ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
 	                }
 	                File externsReportFile = googConfiguration.getExternsReport();
 	                if (externsReportFile != null)
@@ -435,6 +438,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                 if (jsPublisher != null)
                 {
                     jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
+                    jsPublisher.setClosureSymbolNamesToExport(closureSymbolNamesToExport);
                     compilationSuccess = jsPublisher.publish(problems);
                 }
                 else

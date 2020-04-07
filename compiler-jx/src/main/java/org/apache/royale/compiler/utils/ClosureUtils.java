@@ -19,14 +19,21 @@
 
 package org.apache.royale.compiler.utils;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IFileScope;
 import org.apache.royale.compiler.units.ICompilationUnit;
 
 public class ClosureUtils
@@ -38,49 +45,144 @@ public class ClosureUtils
             return;
         }
 		boolean preventRenamePublic = project.config.getPreventRenamePublicSymbols();
-		boolean preventRenameProtected = project.config.getPreventRenameProtectedSymbols();
-        for (IDefinition def : cu.getDefinitionPromises())
+        boolean preventRenameProtected = project.config.getPreventRenameProtectedSymbols();
+        try
         {
-            if(def instanceof DefinitionPromise)
+            for(IASScope scope : cu.getFileScopeRequest().get().getScopes())
             {
-                def = ((DefinitionPromise) def).getActualDefinition();
-            }
-            if (def instanceof ITypeDefinition)
-            {
-                if (def.isImplicit() || def.isNative())
+                for(IDefinition def : scope.getAllLocalDefinitions())
                 {
-                    continue;
-                }
-                ITypeDefinition typeDef = (ITypeDefinition) def;
-                for (IDefinition localDef : typeDef.getContainedScope().getAllLocalDefinitions())
-                {
-                    if (localDef.isImplicit())
+                    if(def instanceof IPackageDefinition)
                     {
-                        continue;
+                        //source files seem to return packages while SWC files
+                        //return symbols inside the packages
+                        //we want the symbols, so drill down into the package
+                        IPackageDefinition packageDef = (IPackageDefinition) def;
+                        def = packageDef.getContainedScope().getAllLocalDefinitions().iterator().next();
                     }
-                    if (!localDef.isPublic() && !localDef.isProtected())
+                    if(scope instanceof IFileScope && def.isPrivate())
                     {
-                        continue;
+                        //file-private symbols are emitted like static variables
+                        result.add(def.getBaseName());
                     }
-                    if (localDef.isProtected() && !preventRenameProtected)
+                    if (def instanceof ITypeDefinition)
                     {
-                        continue;
+                        if (def.isImplicit() || def.isNative())
+                        {
+                            continue;
+                        }
+                        ITypeDefinition typeDef = (ITypeDefinition) def;
+                        for (IDefinition localDef : typeDef.getContainedScope().getAllLocalDefinitions())
+                        {
+                            if (localDef.isImplicit())
+                            {
+                                continue;
+                            }
+                            INamespaceReference nsRef = localDef.getNamespaceReference();
+                            boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
+                            boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
+                                    || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
+                            
+                            if (!isPublic && !isProtected)
+                            {
+                                continue;
+                            }
+                            if (isProtected && !preventRenameProtected)
+                            {
+                                continue;
+                            }
+                            if (isPublic && !preventRenamePublic)
+                            {
+                                continue;
+                            }
+                            if (localDef instanceof IVariableDefinition && localDef instanceof IFunctionDefinition)
+                            {
+                                continue;
+                            }
+                            result.add(localDef.getBaseName());
+                        }
                     }
-                    if (localDef.isPublic() && !preventRenamePublic)
-                    {
-                        continue;
-                    }
-                    if (!(localDef instanceof IVariableDefinition))
-                    {
-                        continue;
-                    }
-                    if (localDef instanceof IFunctionDefinition)
-                    {
-                        continue;
-                    }
-                    result.add(localDef.getBaseName());
                 }
             }
         }
-    } 
+        catch(InterruptedException e) {}
+    }
+
+    //the result must be a LinkedHashSet so that it iterates over the keys in
+    //the same order that they were added
+    public static void collectSymbolNamesToExport(ICompilationUnit cu, RoyaleJSProject project, LinkedHashSet<String> symbolsResult)
+    {
+        if (project.isExternalLinkage(cu))
+        {
+            return;
+        }
+        try
+        {
+            String parentQName = null;
+            Set<String> filePrivateNames = new LinkedHashSet<String>();
+            for(IASScope scope : cu.getFileScopeRequest().get().getScopes())
+            {
+                for(IDefinition def : scope.getAllLocalDefinitions())
+                {
+                    if(def instanceof IPackageDefinition)
+                    {
+                        //source files seem to return packages while SWC files
+                        //return symbols inside the packages
+                        //we want the symbols, so drill down into the package
+                        IPackageDefinition packageDef = (IPackageDefinition) def;
+                        def = packageDef.getContainedScope().getAllLocalDefinitions().iterator().next();
+                    }
+                    if (def.isImplicit() || def.isNative())
+                    {
+                        continue;
+                    }
+
+                    String qualifiedName = def.getQualifiedName();
+                    boolean isFilePrivate = false;
+                    if(scope instanceof IFileScope && def.isPrivate())
+                    {
+                        isFilePrivate = true;
+                        filePrivateNames.add(qualifiedName);
+                    }
+                    else
+                    {
+                        symbolsResult.add(qualifiedName);
+                        if(parentQName == null)
+                        {
+                            parentQName = qualifiedName;
+                        }
+                    }
+                    if (def instanceof ITypeDefinition)
+                    {
+                        ITypeDefinition typeDef = (ITypeDefinition) def;
+                        ASDocComment asDoc = (ASDocComment) typeDef.getExplicitSourceComment();
+                        if (asDoc != null && DocEmitterUtils.hasSuppressExport(null, asDoc.commentNoEnd()))
+                        {
+                            continue;
+                        }
+
+                        for(IDefinition childDef : typeDef.getContainedScope().getAllLocalDefinitions())
+                        {
+                            if(childDef instanceof IFunctionDefinition && !(childDef instanceof IVariableDefinition) && childDef.isStatic() && childDef.isPublic())
+                            {
+                                if(isFilePrivate)
+                                {
+                                    filePrivateNames.add(qualifiedName + "." + childDef.getBaseName());
+                                }
+                                else
+                                {
+                                    symbolsResult.add(qualifiedName + "." + childDef.getBaseName());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            for(String filePrivateName : filePrivateNames)
+            {
+                symbolsResult.add(parentQName + "." + filePrivateName);
+            }
+        }
+        catch(InterruptedException e) {}
+    }
 }

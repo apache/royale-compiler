@@ -41,7 +41,6 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterToken
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
-import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.PublicVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -537,7 +536,8 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
         else /*if (ns != null && ns == IASKeywordConstants.PUBLIC)*/
         {
-            emitPublic(node);
+            if(!node.hasModifier(ASModifier.STATIC))
+                emitPublic(node);
         }
     }
 
@@ -558,9 +558,9 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             boolean preventRename = fjp.config != null && fjp.config.getPreventRenameProtectedSymbols();
             if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
             {
-                //dynamically getting/setting a protected static variable
-                //won't work properly if it is collapsed, even when it
-                //has been exported
+                //dynamically getting/setting a static variable won't
+                //work properly if it is collapsed in a release build,
+                //even when it has been exported
                 emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
             }
         }
@@ -609,9 +609,9 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                     boolean preventRename = fjp.config != null && fjp.config.getPreventRenamePublicSymbols();
                     if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
                     {
-                        //dynamically getting/setting a public static variable
-                        //won't work properly if it is collapsed, even when it
-                        //has been exported
+                        //dynamically getting/setting a static variable won't
+                        //work properly if it is collapsed in a release build,
+                        //even when it has been exported
                         emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
                     }
                 }

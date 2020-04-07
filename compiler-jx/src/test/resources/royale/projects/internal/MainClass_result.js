@@ -34,12 +34,6 @@ MainClass = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MainClass', MainClass);
-
-
-/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
@@ -76,12 +70,6 @@ MainClass.prototype.ROYALE_COMPILE_FLAGS = 9;
 MainClass.InternalClass = function() {
   this.foo = new OtherClass();
 };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
 
 
 /**
