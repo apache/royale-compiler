@@ -68,6 +68,7 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     SETTER_PREFIX("set__"),
     BINDABLE_PREFIX("bindable__"),
     CLOSURE_FUNCTION_NAME("org.apache.royale.utils.Language.closure"),
+    CONDITIONAL_BIND_FUNCTION_NAME("org.apache.royale.utils.Language.conditionalBind"),
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     JSX("JSX"),

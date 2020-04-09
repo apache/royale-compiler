@@ -568,7 +568,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
 			if (isAssignment)
 			{
-				getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()));
+				getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()), true);
 			}
 			else
 			{

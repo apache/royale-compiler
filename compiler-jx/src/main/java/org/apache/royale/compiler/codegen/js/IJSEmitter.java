@@ -49,4 +49,5 @@ public interface IJSEmitter extends IASEmitter, IMappingEmitter
     void emitClosureEnd(IASNode node, IDefinition nodeDef);
 
     void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition);
+    void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition, Boolean checkForConditionalBind);
 }

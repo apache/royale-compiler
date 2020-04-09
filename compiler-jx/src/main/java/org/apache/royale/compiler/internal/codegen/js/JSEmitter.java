@@ -40,7 +40,6 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BlockCloseEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.BlockOpenEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.CatchEmitter;
@@ -73,6 +72,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.ICatchNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
@@ -543,7 +543,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         }
     }
 
-    public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
+    public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition, Boolean checkForConditionalBind)
     {
         IDefinition assignedDef = null;
         IDefinition assignedTypeDef = null;
@@ -915,16 +915,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		{
 			write(coercionStart);
         }
-		if (project.getBuiltinType(BuiltinType.FUNCTION).equals(definition) && 
+		if (checkForConditionalBind && project.getBuiltinType(BuiltinType.FUNCTION).equals(definition) && 
 				assignedNode instanceof MemberAccessExpressionNode) {
-			write(JSGoogEmitterTokens.GOOG_BIND.getToken() + 
-					ASEmitterTokens.PAREN_OPEN.getToken()
-			);
-			emitAssignedValue(assignedNode);
-			write(ASEmitterTokens.COMMA.getToken());
-			MemberAccessExpressionNode maenode = (MemberAccessExpressionNode)assignedNode;
-			getWalker().walk(maenode.getLeftOperandNode());
-			write(ASEmitterTokens.PAREN_CLOSE.getToken());
+			emitAssignedCoercionHelper(assignedNode);
 		} else {
 			emitAssignedValue(assignedNode);
 		}
@@ -939,6 +932,27 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 				write(")");
 			}
 		}
+    }
+    
+    private void emitAssignedCoercionHelper(IExpressionNode assignedNode) {
+    	MemberAccessExpressionNode maeNode = (MemberAccessExpressionNode)assignedNode;
+		if (maeNode.getLeftOperandNode() instanceof ILanguageIdentifierNode && 
+				((ILanguageIdentifierNode)maeNode.getLeftOperandNode()).getKind().equals(ILanguageIdentifierNode.LanguageIdentifierKind.THIS)) {
+			emitAssignedValue(assignedNode);
+		} else {
+			write(JSRoyaleEmitterTokens.CONDITIONAL_BIND_FUNCTION_NAME.getToken()  + 
+					ASEmitterTokens.PAREN_OPEN.getToken()
+			);
+			emitAssignedValue(assignedNode);
+			write(ASEmitterTokens.COMMA.getToken());
+			getWalker().walk(maeNode.getLeftOperandNode());
+			write(ASEmitterTokens.PAREN_CLOSE.getToken());
+		}
+    }
+    
+    public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
+    {
+    	emitAssignmentCoercion(assignedNode, definition, false);
     }
 
 }
