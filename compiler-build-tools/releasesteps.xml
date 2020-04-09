@@ -105,7 +105,7 @@
         </exec>
     </target>
 
-    <target name="Royale_Compiler_Build_Tools_Release_Step_003" depends="get-temp-folder,download-artifacts,unzip-artifacts,build-source,validate-bits">
+    <target name="Royale_Compiler_Build_Tools_Release_Step_002" depends="get-temp-folder,download-artifacts,unzip-artifacts,build-source,validate-bits">
     </target>
     <target name="get-temp-folder">
         <input
@@ -120,23 +120,20 @@
     </target>
     
     <target name="download-artifacts" if="artifactfolder">
-        <antcall target="download-artifacts-utils" />
-        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
+        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Compiler_Build_Tools_Release_Step_002/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
     </target>
 
     <target name="unzip-artifacts" if="artifactfolder">
-        <antcall target="unzip-artifacts-utils" />
         <mkdir dir="${artifactfolder}/artifacts" />
         <unzip src="${artifactfolder}/archive.zip" dest="${artifactfolder}/artifacts"/>
     </target>
     
     <target name="build-source" >
         <mkdir dir="${artifactfolder}/sources" />
-        <unzip src="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" dest="${artifactfolder}/sources" >
+        <unzip src="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip" dest="${artifactfolder}/sources" >
             <cutdirsmapper dirs="1" />
         </unzip>
         
-        <antcall target="build-source-utils" />
         <!-- build the main project -->
         <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
             <arg value="clean" />
@@ -156,7 +153,7 @@
             unless="artifact.folder.found"/>
     </target>
     
-    <target name="validate-bits" depends="get-artifact-folder,get-utils-version,compare-jars">
+    <target name="validate-bits" depends="get-artifact-folder,compare-jars">
     </target>
     
     <target name="write-out-maven-jars-list">
@@ -173,18 +170,11 @@
         <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false" >
             <property name="artifactfolder" value="${artifactfolder}" />
             <property name="release.version" value="${release.version}" />
-            <property name="utils.version" value="${utils.version}" />
         </ant>
     </target>
     
     <target name="get-jar-version" >
-        <condition property="jar.version" value="${utils.version}"
-            else="${release.version}">
-            <or>
-                <equals arg1="${thisFile}" arg2="compiler-jburg-types" />
-                <equals arg1="${thisFile}" arg2="compiler-build-tools" />
-            </or>
-        </condition>
+        <property name="jar.version" value="${release.version}" />
     </target>
     
     <target name="loopOnce" >
@@ -210,7 +200,6 @@
         <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false">
             <property name="artifactfolder" value="${artifactfolder}" />
             <property name="release.version" value="${release.version}" />
-            <property name="utils.version" value="${utils.version}" />
         </ant>
     </target>
     <target name="lastone" if="islast">
@@ -222,23 +211,23 @@
 
     <target name="compare_files" depends="get-jar-version">
         <echo>comparing ${thisFile}-${jar.version}</echo>
-        <fail message="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
+        <fail message="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
             <condition>
                 <not>
-                    <resourceexists><file file="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
+                    <resourceexists><file file="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
                 </not>
             </condition>
         </fail>
-        <fail message="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar does not exist" >
+        <fail message="${artifactfolder}/sources/target/${thisFile}-${jar.version}.jar does not exist" >
             <condition>
                 <not>
-                    <resourceexists><file file="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar"/></resourceexists>
+                    <resourceexists><file file="${artifactfolder}/sources/target/${thisFile}-${jar.version}.jar"/></resourceexists>
                 </not>
             </condition>
         </fail>
         <condition property="filesmatch" value="true">
-              <filesmatch file1="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
-                file2="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar" />
+              <filesmatch file1="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
+                file2="${artifactfolder}/sources/target/${thisFile}-${jar.version}.jar" />
         </condition>
         <fail message="${thisFile}-${jar.version}.jar does not match" unless="filesmatch" />
     </target>
