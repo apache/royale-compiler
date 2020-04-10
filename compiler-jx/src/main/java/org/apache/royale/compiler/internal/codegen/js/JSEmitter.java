@@ -917,7 +917,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         }
 		if (checkForConditionalBind && project.getBuiltinType(BuiltinType.FUNCTION).equals(definition) && 
 				assignedNode instanceof MemberAccessExpressionNode) {
-			emitAssignedCoercionHelper(assignedNode);
+			emitAssignedCoercionHelper(assignedNode, definition);
 		} else {
 			emitAssignedValue(assignedNode);
 		}
@@ -934,19 +934,27 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 		}
     }
     
-    private void emitAssignedCoercionHelper(IExpressionNode assignedNode) {
+    private void emitAssignedCoercionHelper(IExpressionNode assignedNode, IDefinition nodeDef) {
     	MemberAccessExpressionNode maeNode = (MemberAccessExpressionNode)assignedNode;
-		if (maeNode.getLeftOperandNode() instanceof ILanguageIdentifierNode && 
-				((ILanguageIdentifierNode)maeNode.getLeftOperandNode()).getKind().equals(ILanguageIdentifierNode.LanguageIdentifierKind.THIS)) {
+    	ILanguageIdentifierNode.LanguageIdentifierKind kind = null;
+		if (nodeDef.isStatic() || maeNode.getLeftOperandNode() instanceof ILanguageIdentifierNode &&
+				((kind = ((ILanguageIdentifierNode)maeNode.getLeftOperandNode()).getKind()).equals(ILanguageIdentifierNode.LanguageIdentifierKind.THIS) ||
+				kind.equals(ILanguageIdentifierNode.LanguageIdentifierKind.SUPER))) {
 			emitAssignedValue(assignedNode);
 		} else {
-			write(JSRoyaleEmitterTokens.CONDITIONAL_BIND_FUNCTION_NAME.getToken()  + 
+			write(JSRoyaleEmitterTokens.CONDITIONAL_CLOSURE_FUNCTION_NAME.getToken()  + 
 					ASEmitterTokens.PAREN_OPEN.getToken()
 			);
 			emitAssignedValue(assignedNode);
-			write(ASEmitterTokens.COMMA.getToken());
-			getWalker().walk(maeNode.getLeftOperandNode());
-			write(ASEmitterTokens.PAREN_CLOSE.getToken());
+            write(ASEmitterTokens.COMMA.getToken());
+            write(ASEmitterTokens.SPACE.getToken());
+            getWalker().walk(maeNode.getLeftOperandNode());
+            write(ASEmitterTokens.COMMA.getToken());
+            write(ASEmitterTokens.SPACE.getToken());
+            write(ASEmitterTokens.SINGLE_QUOTE.getToken());
+            getWalker().walk(maeNode.getRightOperandNode());
+            write(ASEmitterTokens.SINGLE_QUOTE.getToken());
+            write(ASEmitterTokens.PAREN_CLOSE.getToken());
 		}
     }
     
