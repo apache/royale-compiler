@@ -108,7 +108,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         	if (leftNode instanceof MemberAccessExpressionNode)
         		isXML = fjs.isLeftNodeXMLish(leftNode);
         	else if (leftNode != null)
-        		isXML = fjs.isXML(leftNode);
+        		isXML = fjs.isXMLish(leftNode);
 
 			if (!isXML) {
 				if (leftNode instanceof MemberAccessExpressionNode)

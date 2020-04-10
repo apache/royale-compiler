@@ -1098,7 +1098,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     		IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XMLList = new XMLList();a[a.length()] = <foo/>;a[a.length()] = <baz/>;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a[a.length()] = new XML( '<foo/>')");
+        assertOut("a.setChild(a.length(), new XML( '<foo/>'))");
     }
 
     @Test

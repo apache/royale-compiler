@@ -709,7 +709,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	{
         	if (getModel().inStaticInitializer)
         		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name)
-        				&& isGoogProvided(name) && !getModel().getCurrentClass().getQualifiedName().equals(name)
+        				&& isGoogProvided(name) && (getModel().getCurrentClass() == null || !getModel().getCurrentClass().getQualifiedName().equals(name))
         				&& (getModel().primaryDefinitionQName == null
         					|| !getModel().primaryDefinitionQName.equals(name)))
         			staticUsedNames.add(name);
@@ -1245,7 +1245,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         		}
         		else if (node.getChild(0).getChild(0).getNodeID() == ASTNodeID.IdentifierID)
         		{
-        			if (isXML((IdentifierNode)(node.getChild(0).getChild(0))))
+        			if (isXMLish((IdentifierNode)(node.getChild(0).getChild(0))))
         			{
         		        if (ASNodeUtils.hasParenOpen(node))
         		            write(ASEmitterTokens.PAREN_OPEN);
@@ -1288,13 +1288,15 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 
     		        IExpressionNode rightNode = obj.getRightOperandNode();
     	            String s = stringifyNode(obj.getLeftOperandNode());
-    	            boolean needsQuotes = rightNode.getNodeID() != ASTNodeID.Op_AtID;
+    	            boolean avoidMethodAccess = (rightNode instanceof IDynamicAccessNode && ((IDynamicAccessNode) rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID);
+    	            boolean needsQuotes = rightNode.getNodeID() != ASTNodeID.Op_AtID
+                             && !avoidMethodAccess;
     	            write(s);
     	            write(".removeChild(");
     	            if (needsQuotes)
     	            	write("'");
     	            else
-    	            	write(s + ".");
+    	            	if (!avoidMethodAccess) write(s + ".");
     	            s = stringifyNode(rightNode);
     	            write(s);
     	            if (needsQuotes)
@@ -1353,6 +1355,15 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         		DynamicAccessNode parentNode = (DynamicAccessNode)node.getParent();
         		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
         			write("node.");
+        		if (node.getParent().getParent() != null
+                        && node.getParent().getParent().getParent() != null
+                        && node.getParent().getParent().getParent().getNodeID() == ASTNodeID.Op_DeleteID) {
+        		    write ("'@' + ");
+        		    //example : delete myXML.@[MyConst];
+        		    //output myXML.removeChild('@' + MyConst) <-- variant is handled in emulation class
+                    getWalker().walk(parentNode.getRightOperandNode());
+                    return;
+                }
             	write("attribute(");
         		getWalker().walk(parentNode.getRightOperandNode());
             	write(")");
@@ -1474,9 +1485,9 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      * @param obj
      * @return
      */
-    public boolean isXML(IExpressionNode obj)
+    public boolean isXMLish(IExpressionNode obj)
     {
-		return EmitterUtils.isXML(obj, getWalker().getProject());
+		return EmitterUtils.isXMLish(obj, getWalker().getProject());
     }
 
     public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)

@@ -688,7 +688,17 @@
               <artifactId>maven-release-plugin</artifactId>
               <configuration>
                 <pushChanges>false</pushChanges>
+                <providerImplementations>
+                  <git>jgit</git>
+                </providerImplementations>
               </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.apache.maven.scm</groupId>
+                  <artifactId>maven-scm-provider-jgit</artifactId>
+                  <version>1.11.3-SNAPSHOT</version>
+                </dependency>
+              </dependencies>
             </plugin>
           </plugins>
         </pluginManagement>

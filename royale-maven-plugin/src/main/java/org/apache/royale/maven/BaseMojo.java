@@ -281,9 +281,13 @@ public abstract class BaseMojo
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
         if(additionalCompilerOptions != null) {
-            if (additionalCompilerOptions.contains("\n")) {
-                additionalCompilerOptions = additionalCompilerOptions.replace("\n", "");
-            }
+            //remove whitespace after any '=' or '+='
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("=\\s+", "=");
+            //remove whitespace before or after any ',' (this assumes that ',' is never part of a value assignment itself and is only used to separate list values in config settings)
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("\\s*,\\s*", ",");
+
+            //any explicit line separators can be resolved to a single separator (';') multiple sequential separators will be ignored if there are explicit ';' separators included below
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("(\\r\\n?|\\n)+", ";");
             if (additionalCompilerOptions.contains(";"))
             {
                 String[] options = additionalCompilerOptions.split(";");
