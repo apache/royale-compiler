@@ -138,7 +138,7 @@
         <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
             <arg value="clean" />
             <arg value="install" />
-            <arg value="-Proyale-release,option-with-swf" />
+            <arg value="-Proyale-release" />
         </exec>
     </target>
     
@@ -232,35 +232,29 @@
         <fail message="${thisFile}-${jar.version}.jar does not match" unless="filesmatch" />
     </target>
     
-    <target name="Royale_Compiler_Build_Tools_Release_Step_003_Sign" depends="get-artifact-folder">
+    <target name="Royale_Compiler_Build_Tools_Release_Step_002_Sign" depends="get-artifact-folder">
         <fail message="release.version not specified"
             unless="release.version"/>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}.pom" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip" />
         </antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler-build-tools" />
-        </antcall>
-        <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-tests.jar" />
         </antcall>
     </target>
 
     <target name="sign-jar-artifacts">
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
         </antcall>
     </target>
     
@@ -276,53 +270,48 @@
         </exec>
     </target>
     
-    <target name="Royale_Compiler_Build_Tools_Release_Step_003_Upload" depends="get-artifact-folder">
+    <target name="Royale_Compiler_Build_Tools_Release_Step_002_Upload" depends="get-artifact-folder">
         <fail message="release.version not specified"
             unless="release.version"/>
         <exec executable="${mvn}" failonerror="true" >
             <arg value="wagon:upload" />
             <arg value="-X" />
-            <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/local-release-dir" />
+            <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir" />
             <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
             <arg value="-Dwagon.serverId=apache.releases.https" />
             <arg value="-Dwagon.includes=**" />
         </exec>
-        <antcall target="check-new-version" />
-        <antcall target="post-on-dist" />
+        <!--<antcall target="check-new-version" />-->
+        <!--<antcall target="post-on-dist" />-->
     </target>
-    
-    <target name="post-on-dist" depends="credentials" description="Perform required release approval steps">
+
+    <!--
+    <target name="Release_Step_004_Post_Artifacts_To_Dist" depends="credentials" description="Perform required release approval steps">-->
+    <target name="Release_Step_004_Post_Artifacts_To_Dist" description="Perform required release approval steps">
 		<antcall target="check-new-version" />
-		<mkdir dir="${dist.dev}/royale/compiler/${release.version}/rc${rc}/binaries" />
-		<copy todir="${dist.dev}/royale/compiler/${release.version}/rc${rc}" >
-			<fileset dir="${basedir}/out" >
-				<include name="apache-royale-compiler-${release.version}-src*" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.dev}/royale/compiler/${release.version}/rc${rc}/binaries" >
-			<fileset dir="${basedir}/out" >
-				<include name="apache-royale-compiler-${release.version}-bin*" />
-			</fileset>
-		</copy>
-        <!--
+		<mkdir dir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" />
+        <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip"
+		    todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
+		</get>
+        <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip.asc"
+            todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
+        </get>
+        <checksum />
+		<get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar" todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
+		</get>
+        <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar.asc" todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
+        </get>
+        <checksum />
+<!--
 		<copy file="${basedir}/README" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/READme" />
         -->
-		<copy file="${basedir}/ApproveCompilerBuildTools.xml" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/ApproveCompilerBuildTools.xml" />
-        <exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
+		<copy file="${basedir}/ApproveCompilerBuildTools.xml" tofile="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/ApproveCompilerBuildTools.xml" />
+        <exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
             <arg value="update" />
         </exec>
-		<exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
 			<arg value="add" />
-			<arg value="${dist.dev}/royale/compiler/${release.version}/rc${rc}" />
-		</exec>
-		<exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
-			<arg value="commit" />
-			<arg value="--username" />
-			<arg value="${apache.username}" />
-			<arg value="--password" />
-			<arg value="${apache.password}" />
-			<arg value="-m" />
-			<arg value="rc${rc} of Apache Royale Compiler ${release.version}" />
+			<arg value="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" />
 		</exec>
     </target>
     
