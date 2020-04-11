@@ -305,7 +305,7 @@
 <!--
 		<copy file="${basedir}/README" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/READme" />
         -->
-		<copy file="${basedir}/ApproveCompilerBuildTools.xml" tofile="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/ApproveCompilerBuildTools.xml" />
+		<copy file="${basedir}/ApproveBuildTools.xml" tofile="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/ApproveBuildTools.xml" />
         <exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
             <arg value="update" />
         </exec>
