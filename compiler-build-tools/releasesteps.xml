@@ -365,9 +365,9 @@
 	
 	
 	<target name="check-new-version" description="check if svn folder needs to be added" >
-		<condition property="version.folder" value="${dist.dev}/royale/compiler/${release.version}" >
+		<condition property="version.folder" value="${dist.dev}/royale/compiler-build-tools/${release.version}" >
 			<not>
-				<available file="${dist.dev}/royale/compiler/${release.version}" />
+				<available file="${dist.dev}/royale/compiler-build-tools/${release.version}" />
 			</not>
 		</condition>
 		<antcall target="add-version-folder" />
@@ -375,7 +375,7 @@
     
 	<target name="add-version-folder" description="adds svn folder if needed" if="version.folder" >
 		<mkdir dir="${version.folder}" />
-		<exec executable="${svn}" dir="${dist.dev}/royale/compiler" failonerror="true" >
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
 			<arg value="add" />
 			<arg value="${version.folder}" />
 		</exec>
