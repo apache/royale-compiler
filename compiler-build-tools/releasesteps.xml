@@ -296,12 +296,12 @@
         <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip.asc"
             todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
         </get>
-        <checksum />
+        <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/compiler-build-tools-${release.version}-source-release.zip" forceOverwrite="yes" fileext=".sha512"/>
 		<get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar" todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
 		</get>
         <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar.asc" todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
         </get>
-        <checksum />
+        <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/compiler-build-tools-${release.version}.jar" forceOverwrite="yes" fileext=".sha512"/>
 <!--
 		<copy file="${basedir}/README" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/READme" />
         -->
