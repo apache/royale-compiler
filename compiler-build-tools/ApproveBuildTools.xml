@@ -52,7 +52,13 @@
         <os family="windows" />
     </condition>-->
 	<property name="package.suffix" value="zip" />
-	
+    
+    <condition property="mvn" value="mvn.cmd">
+        <isset property="isWindows" />
+    </condition>
+    <property name="mvn" value="mvn" />
+    
+
 	<property name="src.rat.report" value="${basedir}/rat-report-src.txt"/>
     <property name="bin.rat.report" value="${basedir}/rat-report-bin.txt"/>
     <property name="apache.rat.jar" value="apache-rat-0.11.jar" />
@@ -86,7 +92,7 @@
 	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/royale/compiler-build-tools/${release.version}/rc${rc}" />
 	<property name="src.package.url.path" value="${package.url.path}" />
     <property name="bin.package.url.path" value="${package.url.path}/binaries" />
-    <property name="src.package.url.name" value="apache-royale-compiler-build-tools-${release.version}-src" />
+    <property name="src.package.url.name" value="apache-royale-compiler-build-tools-${release.version}-source-release" />
     <property name="bin.package.url.name" value="compiler-build-tools-${release.version}" />
 	
     <condition property="zip.package">
@@ -182,12 +188,12 @@
     <target name="asc_get" if="rc" >
         <get src="${src.package.url.path}/${src.package.url.name}.${package.suffix}.asc"
             dest="${basedir}/${src.package.url.name}.${package.suffix}.asc" />
-        <get src="${bin.package.url.path}/${bin.package.url.name}.${package.suffix}.asc"
-            dest="${basedir}/${bin.package.url.name}.${package.suffix}.asc" />
+        <get src="${bin.package.url.path}/${bin.package.url.name}.jar.asc"
+            dest="${basedir}/${bin.package.url.name}.jar.asc" />
     </target>
     
     <target name="check-sigs" description="check md5 and gpg sigs">
-		<replace file="${basedir}/${src.package.url.name}.${package.suffix}.md5"
+		<replace file="${basedir}/${src.package.url.name}.${package.suffix}.sha512"
 			token=" " />
 		<checksum file="${basedir}/${src.package.url.name}.${package.suffix}" algorithm="SHA-512" verifyproperty="src.md5.ok" fileext=".sha512"/>
         <condition property="SourceMD5Invalid">
@@ -196,7 +202,7 @@
 			</not>
         </condition>
         <fail message="Source Package SHA-512 checksum did not match" if="SourceMD5Invalid" />
-        <replace file="${basedir}/${bin.package.url.name}.jar.md5"
+        <replace file="${basedir}/${bin.package.url.name}.jar.sha512"
             token=" " />
         <checksum file="${basedir}/${bin.package.url.name}.jar" algorithm="SHA-512" verifyproperty="bin.md5.ok" fileext=".sha512" />
         <condition property="BinaryMD5Invalid">
@@ -239,8 +245,9 @@
     <target name="unzip-file" if="zip.package" description="Unzips zipFile">
         <unzip src="${basedir}/${src.package.url.name}.${package.suffix}"
                 dest="${basedir}/${src.package.url.name}"/>
+        <!--
         <unzip src="${basedir}/${bin.package.url.name}.${package.suffix}"
-                dest="${basedir}/${bin.package.url.name}"/>
+                dest="${basedir}/${bin.package.url.name}"/>-->
     </target>
 
     <target name="rat-check" >
@@ -292,6 +299,7 @@
         defaultvalue="n"
         addproperty="rat.src.binaries.ok"/>
         
+        <!--
         <echo message="Checking files at ${basedir}/${bin.package.url.name}, report is ${bin.rat.report}"/>
         
         <antcall target="binary-rat" />
@@ -315,6 +323,7 @@
         validargs="y,n"
         defaultvalue="n"
         addproperty="rat.bin.binaries.ok"/>
+        -->
     </target>
 
     <target name="binary-rat" >
@@ -399,10 +408,10 @@
     <target name="jar-check" >
         <delete dir="${basedir}/jar" failonerror="false" />
         <mkdir dir="${basedir}/jar" />
-        <unjar src="${basedir}/${bin.package.url.name}/${thisFile}" dest="${basedir}/jar" />
+        <unjar src="${basedir}/${thisFile}" dest="${basedir}/jar" />
         <exec executable="tar" output="${basedir}/jarclasses.txt">
             <arg value="tf" />
-            <arg value="${basedir}/${bin.package.url.name}/${thisFile}" />
+            <arg value="${basedir}/${thisFile}" />
         </exec>
         <replaceregexp file="${basedir}/jarclasses.txt" match="(.*)/(.*)" replace="\1" flags="m" byline="true"/>
         <exec executable="sort" output="${basedir}/jarpaths.txt">
@@ -415,14 +424,14 @@
         <input
             message="Above is the list of folders in this ${thisFile}.&#xA;Folder names can sometimes indicate presence of third-party content that needs to be in LICENSE and/or NOTICE files.&#xA;Press the Enter key to see the LICENSE for this jar."/>
         
-        <fail message="LICENSE not in ${basedir}/${bin.package.url.name}/${thisFile}">
+        <fail message="LICENSE not in ${basedir}/${thisFile}">
             <condition>
                 <not>
                     <available file="${basedir}/jar/META-INF/LICENSE" />
                 </not>
             </condition>
         </fail>
-        <fail message="NOTICE not in ${basedir}/${bin.package.url.name}/${thisFile}">
+        <fail message="NOTICE not in ${basedir}/${thisFile}">
             <condition>
                 <not>
                     <available file="${basedir}/jar/META-INF/NOTICE" />
@@ -437,7 +446,7 @@
             validargs="y,n"
             defaultvalue="y"
             addproperty="jar.license.ok"/>
-        <fail message="LICENSE for ${basedir}/${bin.package.url.name}/${thisFile} not correct">
+        <fail message="LICENSE for ${basedir}/${thisFile} not correct">
             <condition>
                 <not>
                     <equals arg1="${jar.license.ok}" arg2="y" />
@@ -452,7 +461,7 @@
             validargs="y,n"
             defaultvalue="y"
             addproperty="jar.notice.ok"/>
-        <fail message="NOTICE for ${basedir}/${bin.package.url.name}/${thisFile} not correct">
+        <fail message="NOTICE for ${basedir}/${thisFile} not correct">
             <condition>
                 <not>
                     <equals arg1="${jar.notice.ok}" arg2="y" />
@@ -482,14 +491,14 @@
         <fail message="NOTICE not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${src.package.url.name}/NOTICE" />
+					<available file="${basedir}/${src.package.url.name}/apache-royale-compiler-build-tools-${release.version}/NOTICE" />
 				</not>
 			</condition>
         </fail>
         <fail message="LICENSE not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${src.package.url.name}/LICENSE" />
+					<available file="${basedir}/${src.package.url.name}/apache-royale-compiler-build-tools-${release.version}/LICENSE" />
 				</not>
 			</condition>
         </fail>
@@ -543,7 +552,7 @@
 		-->
         
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${src.package.url.name}/NOTICE" />
+            <param name="file" value="${basedir}/${src.package.url.name}/apache-royale-compiler-build-tools-${release.version}/NOTICE" />
         </antcall>
 		<input
 			message="Check the source package NOTICE for required notices from third-parties. Is it ok?"
@@ -552,7 +561,7 @@
         addproperty="src.notice.ok"/>
 
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${src.package.url.name}/LICENSE" />
+            <param name="file" value="${basedir}/${src.package.url.name}/apache-royale-compiler-build-tools-${release.version}/LICENSE" />
         </antcall>
 		<input
 			message="Check the source package LICENSE for the Apache License and third-party licenses. Is it ok?"
@@ -561,7 +570,7 @@
         addproperty="src.license.ok"/>
         
         <antcall target="display-text" >
-            <param name="file" value="${basedir}/${bin.package.url.name}/NOTICE" />
+            <param name="file" value="${basedir}/jar/META-INF/NOTICE" />
         </antcall>
         <input
         message="Check the binary package NOTICE for required notices from third-parties. Is it ok?"
@@ -570,7 +579,7 @@
         addproperty="bin.notice.ok"/>
         
         <antcall target="display-text" >
-            <param name="file" value="${basedir}/${bin.package.url.name}/LICENSE" />
+            <param name="file" value="${basedir}/jar/META-INF/LICENSE" />
         </antcall>
         <input
         message="Check the binary package LICENSE for the Apache License and third-party licenses. Is it ok?"
@@ -584,7 +593,10 @@
 			message="The final step is to run the build and any tests the build script runs.  This can take several minutes.  Press y to start the build."
             validargs="y"
         defaultvalue="y" />
-        <exec dir="${basedir}/${src.package.url.name}" target="all" />
+        <exec executable="${mvn}" dir="${basedir}/${src.package.url.name}/apache-royale-compiler-build-tools-${release.version}" failonerror="true" >
+            <arg value="clean" />
+            <arg value="install" />
+        </exec>
     </target>
     	
 	<target name="approve" >
