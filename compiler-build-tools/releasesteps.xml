@@ -74,6 +74,11 @@
     </condition>
     <property name="mvn" value="mvn" />
 
+    <condition property="svn" value="svn.exe">
+        <isset property="isWindows" />
+    </condition>
+    <property name="svn" value="svn" />
+
     <available file="${env.ANT_HOME}/lib/${apache.rat.jar}"
         type="file"
         property="apache.rat.found"/>
