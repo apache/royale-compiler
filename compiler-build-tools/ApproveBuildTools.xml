@@ -47,10 +47,11 @@
 			</not>
 		</and>
     </condition>
+    <!--
     <condition property="package.suffix" value="zip">
         <os family="windows" />
-    </condition>
-	<property name="package.suffix" value="tar.gz" />
+    </condition>-->
+	<property name="package.suffix" value="zip" />
 	
 	<property name="src.rat.report" value="${basedir}/rat-report-src.txt"/>
     <property name="bin.rat.report" value="${basedir}/rat-report-bin.txt"/>
@@ -578,7 +579,7 @@
         addproperty="bin.license.ok"/>
     </target>
 
-    <target name="build" depends="copy.downloads">
+    <target name="build">
 		<input
 			message="The final step is to run the build and any tests the build script runs.  This can take several minutes.  Press y to start the build."
             validargs="y"
@@ -590,8 +591,8 @@
 		<condition property="vote" value="+1">
 			<and>
 				<equals arg1="${rat.src.license.ok}" arg2="y" />
-				<equals arg1="${rat.src.binaries.ok}" arg2="y" />
                 <!--
+				<equals arg1="${rat.src.binaries.ok}" arg2="y" />
                 <equals arg1="${rat.bin.license.ok}" arg2="y" />
                 <equals arg1="${rat.bin.binaries.ok}" arg2="y" />
 				<equals arg1="${readme.ok}" arg2="y" />

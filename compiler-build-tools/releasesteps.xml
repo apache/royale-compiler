@@ -296,12 +296,12 @@
 		<antcall target="check-new-version" />
 		<mkdir dir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" />
         <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip"
-            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
+            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/apache-royale-compiler-build-tools-${release.version}-source-release.zip" >
 		</get>
         <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip.asc"
-            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
+            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/apache-royale-compiler-build-tools-${release.version}-source-release.zip.asc" >
         </get>
-        <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/compiler-build-tools-${release.version}-source-release.zip" forceOverwrite="yes" fileext=".sha512"/>
+        <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/apache-royale-compiler-build-tools-${release.version}-source-release.zip" forceOverwrite="yes" fileext=".sha512"/>
 		<get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}.jar" dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
 		</get>
         <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}.jar.asc" dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
