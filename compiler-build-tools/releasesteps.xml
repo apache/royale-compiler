@@ -295,16 +295,16 @@
     <target name="Release_Step_004_Post_Artifacts_To_Dist" description="Perform required release approval steps">
 		<antcall target="check-new-version" />
 		<mkdir dir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" />
-        <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip"
-		    todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
+        <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip"
+            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
 		</get>
-        <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip.asc"
-            todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
+        <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}-source-release.zip.asc"
+            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" >
         </get>
         <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/compiler-build-tools-${release.version}-source-release.zip" forceOverwrite="yes" fileext=".sha512"/>
-		<get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar" todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
+		<get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar" dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
 		</get>
-        <get url="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar.asc" todir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
+        <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/compiler-build-tools/{release.version}/compiler-build-tools-${release.version}.jar.asc" dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
         </get>
         <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/compiler-build-tools-${release.version}.jar" forceOverwrite="yes" fileext=".sha512"/>
 <!--
