@@ -28,7 +28,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>compiler-build-tools</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Royale: Build Tools</name>
@@ -37,7 +37,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
     <url>https://github.com/apache/royale-compiler</url>
-    <tag>org.apache.royale.compiler-build-tools-1.2.0-rc1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <build>
@@ -316,4 +316,4 @@
     </profile>
   </profiles>
 
-<properties><project.build.outputTimestamp>2020-04-12T09:44:30Z</project.build.outputTimestamp></properties></project>
+<properties /></project>
