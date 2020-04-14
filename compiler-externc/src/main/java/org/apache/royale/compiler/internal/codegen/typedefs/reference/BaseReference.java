@@ -34,7 +34,7 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType.Nullability;
 
-public abstract class BaseReference
+public abstract class BaseReference implements Comparable< BaseReference >
 {
     private String qualifiedName;
 
@@ -329,4 +329,9 @@ public abstract class BaseReference
 	public TrueConstant isTrueConstant() {
 		return null;
 	}
+	
+	@Override
+    public int compareTo(BaseReference o) {
+        return this.getBaseName().compareTo(o.getBaseName());
+    }
 }
