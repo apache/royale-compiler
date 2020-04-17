@@ -134,7 +134,7 @@ public class ForEachEmitter extends JSSubEmitter implements
             if (((JSRoyaleEmitter)getEmitter()).isProxy((IMemberAccessExpressionNode)obj))
             {
                 write(".propertyNames()");
-                isXML = true;
+                isProxy = true;
             }
         }
         else if (obj.getNodeID() == ASTNodeID.Op_AsID)
