@@ -144,7 +144,7 @@
             <exclude>LICENSE*</exclude>
             <exclude>NOTICE*</exclude>
             <exclude>README*</exclude>
-            <exclude>RELEASE_NOTES*</exclude>
+            <exclude>**/RELEASE_NOTES*</exclude>
             <!-- Modules which are excluded from the build -->
             <!-- FlashBuilder settings. frameworks/fb.properties contains Alex' path entries and should be removed -->
             <exclude>fb.properties</exclude>
