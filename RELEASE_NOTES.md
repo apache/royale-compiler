@@ -9,6 +9,9 @@ Apache Royale Compiler 0.9.7
  - (JS) Compiler updates to support more e4X variations/scenarios, including 'use namespace' and 'default xml namespace' directives
  - (JS) Compiler updates to address custom namespace-related output, and reflection support
  - (JS) Compiler updates to output more compact Reflection data
+ - Maven: Many fixes, improvements and Updates (thanks to Christopher Dutz)
+ - Support for Maven distribution (Create SDK with Maven)
+
 
 Apache Royale Compiler 0.9.6
 =================
