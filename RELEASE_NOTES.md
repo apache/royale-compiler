@@ -12,7 +12,9 @@ Apache Royale Compiler 0.9.7
  - Fixed a [compiler memory leak](https://github.com/apache/royale-compiler/issues/117) that was occurring over multiple compilations 
  - Fixes in bindable code generation for accessors, and in bindable function generation for swf
  - Fixed show-binding-warnings=false option to switch off binding warnings
- 
+ - Maven: Many fixes, improvements and Updates (thanks to Christopher Dutz)
+ - Support for Maven distribution (Create SDK with Maven)
+
  For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
 Apache Royale Compiler 0.9.6
