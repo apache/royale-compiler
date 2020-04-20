@@ -14,6 +14,26 @@ Apache Royale Compiler 0.9.7
  - Fixed show-binding-warnings=false option to switch off binding warnings
  - Maven: Many fixes, improvements and Updates (thanks to Christopher Dutz)
  - Support for Maven distribution (Create SDK with Maven)
+ - (JS) Prevent renaming of public variables in release builds so that they may be set from MXML.
+ - (JS) Fix conflict between methods of the same name in superclass and subclass, where the superclass method is private and the subclass method is public.
+ - (JS) Added jsx-factory compiler option to customize the factory method used in code generated from [JSX].
+ - (JS) Added inline-constants compiler option that optionally replaces references to contants with their value when the value is a primitive (like numeric, boolean, or string).
+ - (SWF/JS) Added warn-this-within-closure compiler option that controls whether the compiler emits warnings when referencing "this" in closures or anonymous functions.
+ - (SWF/JS) Added strict-identifier-names compiler option to make the compiler emit errors when using certain keywords as identifiers, to match the old behavior of the Flex SDK compiler.
+ - (SWF/JS) Fix metadata attributes being ignored if they did not have a value. Example: async was ignored in [Test(async)].
+ - (SWF/JS) Fix path resolving error when specifying a source file with ./ or .\ on the command line.
+ - (SWF/JS) Fix [ArrayElementType] being ignored when setting the [DefaultProperty] in MXML.
+ - (SWF) Fix mxmlc and compc scripts in the bin folder that didn't work from the command line.
+ - (SWF/JS) Fix incorrect resolving of a property with a different namespace than the parent element in MXML. Properties must have the same namespace as the component, just like in Flex.
+ - (SWF/JS) Fix missing error for values that cannot be parsed as text in MXML.
+ - (JS) Fix stripped end quotes from strings in data binding expressions in MXML.
+ - (Maven) Added missing MXML manifest for core language types like Object, Array, Number, String, Boolean, etc.
+ - (JS) Fixed null reference error on source map generation with certain folder hierarchies.
+ - (JS) Fixed lost UTF-8 encoding when using remove-circulars.
+ - (SWF/JS) Fix missing error when setting private/inaccessible property in MXML.
+ - (JS) Fix "missing var keyword" warning from Closure compiler for type definitions.
+ - (SWF/JS) Fix missing error for calling a getter as a function (similar to attempting to call a variable as a function) when it is the wrong type.
+ - (JS) Fix missing . in generated JS when using static getter/setter in a custom namespace.
 
  For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
