@@ -31,6 +31,11 @@ import java.io.Writer;
 import java.security.DigestOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
@@ -86,32 +91,23 @@ public class SWCWriter extends SWCWriterBase
         File outputDirectory = new File(outputFile.getAbsoluteFile().getParent());
         outputDirectory.mkdirs();
         
-        /*
     	if (metadataDate != null)
     	{
-    	    // TODO: Perhaps parsing without modification and then serializing with a default timezone is the more solid approach.
-            // strip off timezone.  Zip format doesn't store timezone
-            // and the goal is to have the same date and time regardless
-            // of which timezone the build machine is using.
-            int c = metadataDate.lastIndexOf(' ');
-            if(c != -1) {
-                metadataDate = metadataDate.substring(0, c);
-            }
-            c = metadataFormat.lastIndexOf(' ');
-            if(c != -1) {
-                metadataFormat = metadataFormat.substring(0, c);
-            }
     		try {
     			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-    			fileDate = sdf.parse(metadataDate).getTime();
+    			Date d = sdf.parse(metadataDate);
+    			Calendar cal = new GregorianCalendar();
+    			cal.setTime(d);
+    			ZonedDateTime zdt = ZonedDateTime.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), 
+    									cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), 0, ZoneId.systemDefault());
+    			fileDate = zdt.toInstant().toEpochMilli();
     		} catch (ParseException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		} catch (IllegalArgumentException e1) {
     			e1.printStackTrace();
     		}
-    	}*/
+    	}
     	
         zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(filename)));
         zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
@@ -122,7 +118,7 @@ public class SWCWriter extends SWCWriterBase
      */
     private final ZipOutputStream zipOutputStream;
     
-    private long fileDate = -1;
+    private long fileDate = System.currentTimeMillis();
 
     @Override
     void writeCatalog(final ISWC swc) throws IOException

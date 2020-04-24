@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
@@ -502,30 +504,15 @@ public class COMPJSC extends MXMLJSC
 	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
 	                    		try {
 	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-	                    			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-	                    			fileDate = sdf.parse(metadataDate).getTime();
-	                    		} catch (ParseException e) {
-	                				// TODO Auto-generated catch block
-	                				e.printStackTrace();
-	                			} catch (IllegalArgumentException e1) {
-	                				e1.printStackTrace();
-	                			}
-                                // TODO: Fix this the same way that the compiler normalized the date
-                                // strip off timezone.  Zip format doesn't store timezone
-                                // and the goal is to have the same date and time regardless
-                                // of which timezone the build machine is using.
-                                int c = metadataDate.lastIndexOf(' ');
-                                if(c != -1) {
-                                    metadataDate = metadataDate.substring(0, c);
-                                }
-                                c = metadataFormat.lastIndexOf(' ');
-                                if(c != -1) {
-                                    metadataFormat = metadataFormat.substring(0, c);
-                                }
-	                    		try {
-	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                                    zipFileDate = sdf.parse(metadataDate).getTime();
+	                    			Date d = sdf.parse(metadataDate);
+	                    			Calendar cal = new GregorianCalendar();
+	                    			cal.setTime(d);
+	                                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+	                    			d = sdf.parse(metadataDate);
+	                    			fileDate = d.getTime();
+	                    			ZonedDateTime zdt = ZonedDateTime.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), 
+	                    									cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), 0, ZoneId.systemDefault());
+	                    			zipFileDate = zdt.toInstant().toEpochMilli();
 	                    		} catch (ParseException e) {
 	                				// TODO Auto-generated catch block
 	                				e.printStackTrace();
@@ -595,8 +582,15 @@ public class COMPJSC extends MXMLJSC
                 		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			Date d = sdf.parse(metadataDate);
+                			Calendar cal = new GregorianCalendar();
+                			cal.setTime(d);
                             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                			fileDate = sdf.parse(metadataDate).getTime();
+                			d = sdf.parse(metadataDate);
+                			fileDate = d.getTime();
+                			ZonedDateTime zdt = ZonedDateTime.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), 
+                									cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), 0, ZoneId.systemDefault());
+                			zipFileDate = zdt.toInstant().toEpochMilli();
                 		} catch (ParseException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();
@@ -617,8 +611,17 @@ public class COMPJSC extends MXMLJSC
                         }
                 		try {
                 			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                			Date d = sdf.parse(metadataDate);
+                			// zip file wants dates in local time
+                			Calendar cal = new GregorianCalendar();
+                			cal.setTime(d);
                             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            zipFileDate = sdf.parse(metadataDate).getTime();
+                			d = sdf.parse(metadataDate);
+                			// other timestamps are in UTC
+                			fileDate = d.getTime();
+                			ZonedDateTime zdt = ZonedDateTime.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), 
+                									cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), 0, ZoneId.systemDefault());
+                			zipFileDate = zdt.toInstant().toEpochMilli();
                 		} catch (ParseException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();
