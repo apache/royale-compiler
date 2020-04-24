@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.7</version>
+    <version>0.9.8-SNAPSHOT</version>
   </parent>
 
   <artifactId>debugger</artifactId>
-  <version>0.9.7</version>
+  <version>0.9.8-SNAPSHOT</version>
 
   <name>Apache Royale: Compiler: Debugger</name>
 
@@ -81,12 +81,12 @@ Do all the JBurg code generation.
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>swfutils</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -123,4 +123,4 @@ Do all the JBurg code generation.
     </dependency>
   </dependencies>
 
-<properties><project.build.outputTimestamp>2020-04-24T07:11:17Z</project.build.outputTimestamp></properties></project>
+<properties /></project>
