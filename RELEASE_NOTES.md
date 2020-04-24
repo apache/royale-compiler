@@ -12,7 +12,7 @@ Apache Royale Compiler 0.9.7
  - Fixed a [compiler memory leak](https://github.com/apache/royale-compiler/issues/117) that was occurring over multiple compilations 
  - Fixes in bindable code generation for accessors, and in bindable function generation for swf
  - Fixed show-binding-warnings=false option to switch off binding warnings
- - Maven: Many fixes, improvements and Updates (thanks to Christopher Dutz)
+ - Maven: Many fixes, improvements and Updates
  - Support for Maven distribution (Create SDK with Maven)
  - (JS) Prevent renaming of public variables in release builds so that they may be set from MXML.
  - (JS) Fix conflict between methods of the same name in superclass and subclass, where the superclass method is private and the subclass method is public.
