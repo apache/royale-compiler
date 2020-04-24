@@ -60,6 +60,7 @@ public class LiteralEmitter extends JSSubEmitter implements
         String s = node.getValue(true);
         if (!(node instanceof RegExpLiteralNode))
         {
+            boolean withEscapedSingleQuote = false;
             if (node.getLiteralType() == LiteralType.XML)
             {
                 boolean jsx = false;
@@ -110,10 +111,12 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                            {
 	                                s = ((LiteralNode)child).getValue(true);
 	                                s = s.replace("\n", "");
-	                                if (s.contains("'"))
-	                                    sb.append("\"" + s + "\"");
-	                                else
-	                                    sb.append("'" + s + "'");
+                                    if (s.contains("'")) {
+                                        s = s.replace("'","__ESC_SNGLE_QUOT_PLACEHOLDER__");
+                                        withEscapedSingleQuote = true;
+                                    }
+
+                                    sb.append("'" + s + "'");
 	                            }
 	                            else
 	                            {
@@ -182,6 +185,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
             s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
             s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
+            if (withEscapedSingleQuote) s = s.replaceAll("__ESC_SNGLE_QUOT_PLACEHOLDER__", "\\\\'");
             s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
             s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
