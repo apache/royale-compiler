@@ -25,7 +25,7 @@
  * Alex Harui (https://github.com/aharui)
  * Omprakash Muppirala (https://github.com/bigosmallm)
  * Carlos Rovira (https://github.com/carlosrovira)
- * Christopher Dutz (https://github.com/chrisdutz)
+ * Christofer Dutz (https://github.com/chrisdutz)
  * Cyrill Zadra (https://github.com/cyrillzadra)
  * Darrell Loverin (https://github.com/dloverin)
  * Frédéric Thomas (https://github.com/doublefx)
