@@ -22,9 +22,12 @@ package org.apache.royale.compiler.internal.parsing.mxml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.parsing.ICMToken;
 import org.apache.royale.compiler.problems.ASDocNotClosedProblem;
+import org.apache.royale.compiler.problems.BadCharacterProblem;
 import org.apache.royale.compiler.problems.CommentNotClosedProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLUnclosedTagProblem;
@@ -280,6 +283,29 @@ public abstract class BaseRawMXMLTokenizer
     protected void reportUnclosedASDocComment(MXMLToken token)
     {
         getProblems().add(new ASDocNotClosedProblem((ASToken)token));
+    }
+
+    protected void reportBadCharacterProblem(String badChar)
+    {
+        ISourceLocation location = getCurrentSourceLocation(badChar.length());
+        ICompilerProblem problem = new BadCharacterProblem(location, badChar);
+        getProblems().add(problem);
+    }
+
+    /**
+     * Create a {@code ISourceLocation} object based on the current lexer state.
+     * 
+     * @param tokenLength Length of the problematic input.
+     * @return Current source location used to report a syntax problem.
+     */
+    protected final ISourceLocation getCurrentSourceLocation(int tokenLength)
+    {
+        return new SourceLocation(
+                sourcePath,
+                getOffset(),
+                getOffset() + tokenLength,
+                getLine(),
+                getColumn());
     }
     
     protected List<ICompilerProblem> problems = null;
