@@ -92,7 +92,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 startMapping(parentNode);
                 if(initialValue instanceof String)
                 {
-                    write("\"" + initialValue + "\"");
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    write((String) initialValue);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
                 }
                 else if(initialValue == ABCConstants.UNDEFINED_VALUE)
                 {
@@ -358,7 +360,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     }
                     else if (identifierIsAccessorFunction && isStatic)
                     {
-                    	write("[\"" +node.getName() + "\"]");
+                        write(ASEmitterTokens.SQUARE_OPEN);
+                        write(ASEmitterTokens.DOUBLE_QUOTE);
+                        write(node.getName());
+                        write(ASEmitterTokens.DOUBLE_QUOTE);
+                        write(ASEmitterTokens.SQUARE_CLOSE);
                     }
                 	else
                 	{
@@ -392,7 +398,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 else if (identifierIsAccessorFunction && isStatic)
                 {
-                	write("[\"" + qname + "\"]");
+                    write(ASEmitterTokens.SQUARE_OPEN);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                	write(qname);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    write(ASEmitterTokens.SQUARE_CLOSE);
                 }
                 else
                 {
