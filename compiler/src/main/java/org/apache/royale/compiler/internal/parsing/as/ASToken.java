@@ -616,6 +616,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_KEYWORD_NULL:
             case TOKEN_LITERAL_NUMBER:
             case TOKEN_LITERAL_STRING:
+            case TOKEN_OPERATOR_NS_QUALIFIER:
                 return true;
         }
         return false;
