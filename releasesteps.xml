@@ -391,6 +391,7 @@
             <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
             <arg value="-Dwagon.serverId=apache.releases.https" />
             <arg value="-Dwagon.includes=**" />
+	    <arg value="-N"/>
         </exec>
     </target>
     
