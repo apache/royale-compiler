@@ -277,6 +277,7 @@
                 <include name="settings-template.xml"/>
                 <include name="royale-maven-plugin/pom.xml"/>
                 <include name="royale-maven-plugin/src/**"/>
+                <include name="src/main/**"/>
             </fileset>
         </copy>
         
