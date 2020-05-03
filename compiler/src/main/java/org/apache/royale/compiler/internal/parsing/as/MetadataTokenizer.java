@@ -292,6 +292,15 @@ public class MetadataTokenizer
             {
                 return null;
             }
+            case ASTokenTypes.TOKEN_OPERATOR_NS_QUALIFIER:
+            {
+                if (inAttrList)
+                {
+                    return new MetadataToken(MetadataTokenTypes.TOKEN_ATTR_OPERATOR_NS_QUALIFIER,
+                                         sourcePath, startOffset, endOffset,
+                                         line, column, tokenString);
+                }
+            }
         }
 
         return null;
