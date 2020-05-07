@@ -27,7 +27,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.8</version>
+  <version>0.9.8-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -37,7 +37,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
     <url>https://github.com/apache/royale-compiler</url>
-    <tag>org.apache.royale.compiler-0.9.7-rc5</tag>
+    <tag>release/0.9.7</tag>
   </scm>
 
   <properties>
@@ -55,7 +55,7 @@
     <option.withSwf.enabled>false</option.withSwf.enabled>
 
     <release-profiles>apache-release,option-with-swf</release-profiles>
-  <project.build.outputTimestamp>2020-05-07T08:28:57Z</project.build.outputTimestamp></properties>
+  </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>

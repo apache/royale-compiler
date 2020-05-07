@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.8</version>
+    <version>0.9.8-SNAPSHOT</version>
   </parent>
 
   <artifactId>royaleunit-ant-tasks</artifactId>
-  <version>0.9.8</version>
+  <version>0.9.8-SNAPSHOT</version>
 
   <name>Apache Royale: RoyaleUnit Ant Tasks</name>
 
@@ -63,4 +63,4 @@
     </dependency>
   </dependencies>
 
-<properties><project.build.outputTimestamp>2020-05-07T08:28:57Z</project.build.outputTimestamp></properties></project>
+<properties /></project>
