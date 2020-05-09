@@ -483,6 +483,22 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_XMLChildEqualsTrue()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var2:XML;var2.child == true");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var2.child('child') == 'true'");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_XMLChildEqualsFalse()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var2:XML;var2.child == false");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var2.child('child') == 'false'");
+    }
+    
+    @Test
     public void testVisitBinaryOperatorNode_AssignmentStringLiteralToString()
     {
         IBinaryOperatorNode node = getBinaryNode("var var1:String;var1 = \"hi\"");
