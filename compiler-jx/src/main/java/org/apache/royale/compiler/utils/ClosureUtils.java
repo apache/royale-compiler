@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
@@ -44,8 +45,10 @@ public class ClosureUtils
         {
             return;
         }
-		boolean preventRenamePublic = project.config.getPreventRenamePublicSymbols();
-        boolean preventRenameProtected = project.config.getPreventRenameProtectedSymbols();
+		boolean preventRenamePublic = project.config != null && project.config.getPreventRenamePublicSymbols();
+        boolean preventRenameProtected = project.config != null && project.config.getPreventRenameProtectedSymbols();
+        boolean exportPublic = project.config != null && project.config.getExportPublicSymbols();
+        boolean exportProtected = project.config != null && project.config.getExportProtectedSymbols();
         try
         {
             for(IASScope scope : cu.getFileScopeRequest().get().getScopes())
@@ -83,23 +86,20 @@ public class ClosureUtils
                             boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
                                     || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
                             
-                            if (!isPublic && !isProtected)
+                            if ((isPublic && preventRenamePublic) || (isProtected && preventRenameProtected))
                             {
-                                continue;
+                                if (localDef instanceof IAccessorDefinition)
+                                {
+                                    if ((isPublic && exportPublic) || (isProtected && exportProtected))
+                                    {
+                                        //if an accessor is exported, we don't
+                                        //need to prevent renaming
+                                        //(not true for other symbol types)
+                                        continue;
+                                    }
+                                }
+                                result.add(localDef.getBaseName());
                             }
-                            if (isProtected && !preventRenameProtected)
-                            {
-                                continue;
-                            }
-                            if (isPublic && !preventRenamePublic)
-                            {
-                                continue;
-                            }
-                            if (localDef instanceof IVariableDefinition && localDef instanceof IFunctionDefinition)
-                            {
-                                continue;
-                            }
-                            result.add(localDef.getBaseName());
                         }
                     }
                 }
