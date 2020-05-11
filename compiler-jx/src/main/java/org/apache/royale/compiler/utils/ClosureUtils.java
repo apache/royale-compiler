@@ -116,6 +116,8 @@ public class ClosureUtils
         {
             return;
         }
+        boolean exportPublic = project.config != null && project.config.getExportPublicSymbols();
+        boolean exportProtected = project.config != null && project.config.getExportProtectedSymbols();
         try
         {
             String parentQName = null;
@@ -161,17 +163,29 @@ public class ClosureUtils
                             continue;
                         }
 
-                        for(IDefinition childDef : typeDef.getContainedScope().getAllLocalDefinitions())
+                        for(IDefinition localDef : typeDef.getContainedScope().getAllLocalDefinitions())
                         {
-                            if(childDef instanceof IFunctionDefinition && !(childDef instanceof IVariableDefinition) && childDef.isStatic() && childDef.isPublic())
+                            if (localDef.isImplicit())
                             {
-                                if(isFilePrivate)
+                                continue;
+                            }
+                            INamespaceReference nsRef = localDef.getNamespaceReference();
+                            boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
+                            boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
+                                    || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
+                            if (localDef instanceof IFunctionDefinition && !(localDef instanceof IVariableDefinition)
+                                    && localDef.isStatic() && isPublic)
+                            {
+                                if ((isPublic && exportPublic) || (isProtected && exportProtected))
                                 {
-                                    filePrivateNames.add(qualifiedName + "." + childDef.getBaseName());
-                                }
-                                else
-                                {
-                                    symbolsResult.add(qualifiedName + "." + childDef.getBaseName());
+                                    if (isFilePrivate)
+                                    {
+                                        filePrivateNames.add(qualifiedName + "." + localDef.getBaseName());
+                                    }
+                                    else
+                                    {
+                                        symbolsResult.add(qualifiedName + "." + localDef.getBaseName());
+                                    }
                                 }
                             }
                         }
