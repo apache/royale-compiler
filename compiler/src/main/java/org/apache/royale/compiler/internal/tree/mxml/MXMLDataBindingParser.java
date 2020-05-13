@@ -340,6 +340,19 @@ class MXMLDataBindingParser
         ISourceFragment[] fragments = fragmentList.toArray(new ISourceFragment[0]);
         String text = SourceFragmentsReader.concatLogicalText(fragments);
 
+        // LiteralNode automatically strips out quote characters at the
+        // beginning and end of the string.
+        // with that in mind, if the original text starts or ends with a quote,
+        // that will get stripped if we don't wrap it manually.
+        // apache/royale-compiler#49
+        if(text.indexOf("\"") != -1)
+        {
+            text = "'" + text + "'";
+        }
+        else
+        {
+            text = "\"" + text + "\"";
+        }
         LiteralNode stringLiteralNode = new LiteralNode(LiteralType.STRING, text);
         stringLiteralNode.setParent(parent);
 

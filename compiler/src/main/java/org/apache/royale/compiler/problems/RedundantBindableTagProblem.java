@@ -17,25 +17,29 @@
  *
  */
 
-package org.apache.royale.compiler.utils;
+package org.apache.royale.compiler.problems;
 
-public class NodeJSUtils
+import org.apache.royale.compiler.problems.annotations.DefaultSeverity;
+import org.apache.royale.compiler.tree.as.IASNode;
+
+
+/**
+ * Problem generated when code attempts to bind to something that isn't bindable.
+ */
+@DefaultSeverity(CompilerProblemSeverity.WARNING)
+public final class RedundantBindableTagProblem extends SemanticProblem
 {
+    public static final String DESCRIPTION =
+        "Class already marked [Bindable]; property-level [Bindable] is redundant and will be ignored.";
+
+    public static final int warningCode = 5050;
+
     /**
-     * Converts the name of a node module with dashes into a version in camel
-     * case so that it can be a valid identifier.
+     * @param site should be the identifier node of identifier/thing with the redundant [Bindable] that is causing the problem.
      */
-    public static String convertFromDashesToCamelCase(String moduleNameWithDashes)
+    public RedundantBindableTagProblem(IASNode site)
     {
-        String camelCaseModule = moduleNameWithDashes;
-        int moduleIndex = camelCaseModule.indexOf("-");
-        while (moduleIndex != -1 && moduleIndex < camelCaseModule.length() - 1)
-        {
-            camelCaseModule = camelCaseModule.substring(0, moduleIndex)
-                    + camelCaseModule.substring(moduleIndex + 1, moduleIndex + 2).toUpperCase()
-                    + camelCaseModule.substring(moduleIndex + 2);
-            moduleIndex = camelCaseModule.indexOf("-");
-        }
-        return camelCaseModule;
+        super(site);
     }
+
 }

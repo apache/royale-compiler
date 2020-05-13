@@ -49,7 +49,7 @@ public class StatementEmitter extends JSSubEmitter implements
         if (node.getParent().getNodeID() != ASTNodeID.LabledStatementID
                 && node.getNodeID() != ASTNodeID.ConfigBlockID
                 && !(node instanceof IStatementNode))
-        {
+        { //@todo - the following can generate a lonely ";\n" in the js output from 'super()' in the constructor call
             startMapping(node, node);
             write(ASEmitterTokens.SEMICOLON);
             endMapping(node);

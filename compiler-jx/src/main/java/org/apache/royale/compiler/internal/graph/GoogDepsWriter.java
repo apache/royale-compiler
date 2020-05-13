@@ -20,11 +20,9 @@ package org.apache.royale.compiler.internal.graph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -284,10 +282,14 @@ public class GoogDepsWriter {
 	private void computeDeps(ArrayList<String> deps, GoogDep gd, ArrayList<String> usedDeps) {
 		if (gd.fileInfo.impls != null)
 		{
-			deps.addAll(gd.fileInfo.impls);
-			for (String dep : gd.fileInfo.impls)
+			//deps.addAll(gd.fileInfo.impls); // filter below to avoid impls-and-provides combination in same CU, e.g. via file-private classes extending other file-private classes
+			for (String dep : gd.fileInfo.impls) {
+				if (gd.fileInfo.provides != null &&
+						gd.fileInfo.provides.contains(dep)) continue;
+				deps.add(dep);
 				if (!usedDeps.contains(dep))
 					usedDeps.add(dep);
+			}
 		}
 		if (gd.fileInfo.staticDeps != null)
 		{
@@ -606,19 +608,12 @@ public class GoogDepsWriter {
 				sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
 			}
 
-			PrintWriter out = new PrintWriter(new FileWriter(mainFile));  
-            for (String s : fileLines)
-            {
-                out.println(s);
-            }
-			out.close();
+			FileUtils.writeLines(mainFile, "utf8", fileLines);
 
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
-				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
-				sourceMapOut.print(newSourceMap);
-				sourceMapOut.close();
+				FileUtils.write(sourceMapFile, newSourceMap, "utf8");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -878,19 +873,12 @@ public class GoogDepsWriter {
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
 			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
 
-			PrintWriter out = new PrintWriter(new FileWriter(depFile));  
-			for (String s : finalLines)
-            {
-                out.println(s);
-            }
-			out.close();
+			FileUtils.writeLines(depFile, "utf8", finalLines);
 
 			if (sourceMapConsumer != null)
 			{
 				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, depFile.getName());
-				PrintWriter sourceMapOut = new PrintWriter(new FileWriter(sourceMapFile));  
-				sourceMapOut.print(newSourceMap);
-				sourceMapOut.close();
+				FileUtils.write(sourceMapFile, newSourceMap, "utf8");
 			}
         }
         catch (IOException e)

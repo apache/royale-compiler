@@ -27,6 +27,7 @@ import org.apache.royale.compiler.common.ASImportTarget;
 import org.apache.royale.compiler.common.IImportTarget;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.ICommonClassNode;
@@ -76,14 +77,23 @@ public class VariableNode extends BaseVariableNode
     {
         ASTNodeID nodeID = ASTNodeID.VariableID;
 
-        IDefinition varDef = this.getDefinition();
+        DefinitionBase varDef = this.getDefinition();
         if (varDef != null && varDef.isBindable())
         {
             // Bindable vars with a user-specified event class work the same as normal variables
             // the user is responsible for dispatching the event.
-            List<String> eventNames = varDef.getBindableEventNames();
-            if (eventNames.size() == 0)
+
+            //note: the above statement was inconsistent with Flex if the class itself is also marked [Bindable]
+            //in that case, binding is related to both codegen events and the specified event.
+            if (varDef.isClassBindable()) {
+                //we know that isBindable() must be because of the class [Bindable], regardless of any specific eventNames
                 nodeID = ASTNodeID.BindableVariableID;
+            } else {
+                //as original, only consider to be [Bindable] if eventNames is empty:
+                List<String> eventNames = varDef.getBindableEventNames();
+                if (eventNames.size() == 0)
+                    nodeID = ASTNodeID.BindableVariableID;
+            }
         }
 
         return nodeID;

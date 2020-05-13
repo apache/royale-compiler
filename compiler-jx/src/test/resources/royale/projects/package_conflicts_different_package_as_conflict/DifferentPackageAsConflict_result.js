@@ -62,8 +62,6 @@ DifferentPackageAsConflict.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Diff
  */
 DifferentPackageAsConflict.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'DifferentPackageAsConflict': { type: '', declaredBy: 'DifferentPackageAsConflict'}
@@ -72,8 +70,7 @@ DifferentPackageAsConflict.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-DifferentPackageAsConflict.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+DifferentPackageAsConflict.prototype.ROYALE_COMPILE_FLAGS = 9;

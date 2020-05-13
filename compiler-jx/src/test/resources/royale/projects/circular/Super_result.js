@@ -61,8 +61,6 @@ Super.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', k
  */
 Super.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'Super': { type: '', declaredBy: 'Super'}
@@ -71,15 +69,13 @@ Super.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+Super.prototype.ROYALE_COMPILE_FLAGS = 9;
 /**
  * Provide reflection support for distinguishing dynamic fields on class object (static)
- * @export
  * @const
  * @type {Array<string>}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(Super);
+Super.prototype.ROYALE_INITIAL_STATICS = Object.keys(Super);

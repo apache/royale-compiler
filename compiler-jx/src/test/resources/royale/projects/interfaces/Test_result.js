@@ -77,19 +77,16 @@ Test.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind
  */
 Test.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'Test': { type: '', declaredBy: 'Test'},
-        'doSomething': { type: 'interfaces.IC', declaredBy: 'Test', parameters: function () { return [ { index: 1, type: 'interfaces.IC', optional: false } ]; }}
+        'doSomething': { type: 'interfaces.IC', declaredBy: 'Test', parameters: function () { return [ 'interfaces.IC', false ]; }}
       };
     }
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-Test.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+Test.prototype.ROYALE_COMPILE_FLAGS = 9;

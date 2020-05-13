@@ -213,6 +213,24 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testArraySortCompareFunctionWithOptNumberArg()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();var f:Function = function():void {};a.sort(Array.UNIQUESORT)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("org.apache.royale.utils.Language.sort(a, 4)");
+    }
+
+    @Test
+    public void testArraySortCompareFunctionWithOptFunctionArg()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array();var f:Function = function():void {};a.sort(f)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.sort(f)");
+    }
+
+    @Test
     public void testArraySortOn()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo')");
@@ -845,7 +863,23 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:XML = <top attr1='cat'>\n<child attr2='dog'>\n<grandchild attr3='fish'>text</grandchild>\n</child>\n</top>");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'>\\\n<child attr2='dog'>\\\n<grandchild attr3='fish'>text</grandchild>\\\n</child>\\\n</top>\")");
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'>\\n<child attr2='dog'>\\n<grandchild attr3='fish'>text</grandchild>\\n</child>\\n</top>\")");
+    }
+    
+    @Test
+    public void testXMLLiteralMultilineNoSemicolon()
+    {
+        IVariableNode node = getVariable("var a:XML = <top />\nvar foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( '<top />')");
+    }
+    
+    @Test
+    public void testXMLLiteralMultilineNoSemicolonWithAttribute()
+    {
+        IVariableNode node = getVariable("var a:XML = <top attr1='cat'/>\nvar foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'/>\")");
     }
     
     @Test
@@ -930,6 +964,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testXMLSingleDotBracketQName()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var q:QName; var b:XMLList = a[q];");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(2);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.child(q)");
+    }
+    
+    @Test
     public void testXMLSingleDotChain()
     {
         IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a.child.grandchild;");
@@ -945,6 +989,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.child;");
         asBlockWalker.visitUnaryOperator(node);
         assertOut("a.removeChild('child')");
+    }
+    
+    @Test
+    public void testXMLDeleteAttribute()
+    {
+        IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.@attr1;");
+        asBlockWalker.visitUnaryOperator(node);
+        assertOut("a.removeChild(a.attribute('attr1'))");
     }
     
     @Test
@@ -1046,7 +1098,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     		IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XMLList = new XMLList();a[a.length()] = <foo/>;a[a.length()] = <baz/>;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a[a.length()] = new XML( '<foo/>')");
+        assertOut("a.setChild(a.length(), new XML( '<foo/>'))");
     }
 
     @Test
@@ -1182,7 +1234,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.attribute('attr2') == 'fish')})");
+        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(/** @type {XML} */ node){return (node.attribute('attr2') == 'fish')})");
     }
     
     @Test
@@ -1192,7 +1244,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.child('year') == '2016')})");
+        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(/** @type {XML} */ node){return (node.child('year') == '2016')})");
     }
     
     @Test
@@ -1200,7 +1252,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("private var attribute:Function; private function test() {var a:XMLList; a = a.(attribute('name').length())};", IBinaryOperatorNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = a.filter(function(node){return (node.attribute('name').length())})");
+        assertOut("a = a.filter(function(/** @type {XML} */ node){return (node.attribute('name').length())})");
     }
     
     @Test
@@ -1236,6 +1288,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLSetAttributeBracketPropStar()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var z:* = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@[z] = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setAttribute(z, 'foo')");
+    }
+    
+    @Test
     public void testXMLSetChildAttributeBracketProp()
     {
         IBinaryOperatorNode node = getBinaryNode("var z:String = 'prop';var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.child.@['attr3'] = 'foo'");
@@ -1264,7 +1324,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a.(@id==3).@height = '100px'");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.filter(function(node){return (node.attribute('id') == 3)}).setAttribute('height', '100px')");
+        assertOut("a.filter(function(/** @type {XML} */ node){return (node.attribute('id') == 3)}).setAttribute('height', '100px')");
     }
     
     @Test
@@ -1409,6 +1469,36 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testProxySetBrackets()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a['foo'] = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
+    }
+    
+    @Test
+    public void testProxySetBracketsStringVar()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var foo:String;a[foo] = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ foo = null;\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  //var /** @type {string} */ foo = null;\n  a.setProperty(foo, 'bar');\n}");
+    }
+    
+    @Test
+    public void testProxySetBracketsUintVar()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var foo:uint = 0;a[foo] = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {number} */ foo = 0;\n  a.setProperty(foo, 'bar');\n}");
+    }
+    
+    @Test
     public void testProxyGet()
     {
         IFunctionNode node = (IFunctionNode) getNode(
@@ -1416,6 +1506,16 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.getProperty('foo');\n}");
+    }
+    
+    @Test
+    public void testProxyGetArrayIndexAndCompare()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy(); if (a[0] != null) return; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  if (a.getProperty(0) != null)\n    return;\n}");
     }
     
     @Test

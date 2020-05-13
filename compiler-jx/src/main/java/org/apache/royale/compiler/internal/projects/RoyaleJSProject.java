@@ -49,6 +49,7 @@ import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.common.JSModuleRequireDescription;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
@@ -93,7 +94,7 @@ public class RoyaleJSProject extends RoyaleProject
 
     private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
-    private HashMap<ICompilationUnit, HashMap<String, DependencyType>> jsModules = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
+    private HashMap<ICompilationUnit, HashMap<JSModuleRequireDescription, DependencyType>> jsModules = new HashMap<ICompilationUnit, HashMap<JSModuleRequireDescription, DependencyType>>();
     public TreeSet<String> mixinClassNames;
     public HashMap<String, String> remoteClassAliasMap;
     public JSGoogConfiguration config;
@@ -227,28 +228,39 @@ public class RoyaleJSProject extends RoyaleProject
     private synchronized void updateJSModulesMap(ICompilationUnit from, ICompilationUnit to,
 			DependencyType dt, String qname)
     {
-        HashMap<String, DependencyType> reqs;
+        HashMap<JSModuleRequireDescription, DependencyType> reqs;
         if (jsModules.containsKey(from))
         {
             reqs = jsModules.get(from);
         }
         else
         {
-            reqs = new HashMap<String, DependencyType>();
+            reqs = new HashMap<JSModuleRequireDescription, DependencyType>();
             jsModules.put(from, reqs);
         }
-        IMetaTag tag = getJSModuleMetadata(to);
+        IMetaTag tag = getJSModuleMetadata(to, qname);
         if (tag != null)
         {
             IMetaTagAttribute nameAttribute = tag.getAttribute("name");
+            String moduleName = null;
             if (nameAttribute != null)
             {
-                reqs.put(nameAttribute.getValue(), dt);
+                moduleName = nameAttribute.getValue();
             }
-            else
+            if(moduleName == null)
             {
-                reqs.put(qname, dt);
+                int idx = qname.indexOf('.');
+                if(idx == -1)
+                {
+                    moduleName = qname;
+                }
+                else
+                {
+                    moduleName = qname.substring(0, idx);
+                }
             }
+            JSModuleRequireDescription module = new JSModuleRequireDescription(moduleName, qname);
+            reqs.put(module, dt);
         }
     }
     
@@ -291,7 +303,7 @@ public class RoyaleJSProject extends RoyaleProject
     // definitions that should be considered external linkage
     public Collection<String> unitTestExterns;
 
-    private IMetaTag getJSModuleMetadata(ICompilationUnit cu)
+    private IMetaTag getJSModuleMetadata(ICompilationUnit cu, String qname)
     {
         try
         {
@@ -299,7 +311,7 @@ public class RoyaleJSProject extends RoyaleProject
             while(iterator.hasNext())
             {
                 IDefinition def = iterator.next();
-                if (def.hasMetaTagByName("JSModule"))
+                if (def.getQualifiedName().equals(qname) && def.hasMetaTagByName("JSModule"))
                 {
                     return def.getMetaTagByName("JSModule");
                 }
@@ -449,15 +461,16 @@ public class RoyaleJSProject extends RoyaleProject
         return null;
     }
 
-    public ArrayList<String> getExternalRequires(ICompilationUnit from)
+    public ArrayList<JSModuleRequireDescription> getExternalRequires(ICompilationUnit from)
     {
         if (jsModules.containsKey(from))
         {
-            HashMap<String, DependencyType> map = jsModules.get(from);
-            ArrayList<String> arr = new ArrayList<String>();
-            Set<String> cus = map.keySet();
-            for (String s : cus)
-                arr.add(s);
+            HashMap<JSModuleRequireDescription, DependencyType> map = jsModules.get(from);
+            ArrayList<JSModuleRequireDescription> arr = new ArrayList<JSModuleRequireDescription>();
+            for (JSModuleRequireDescription m : map.keySet())
+            {
+                arr.add(m);
+            }
             return arr;
         }
         return null;
@@ -649,7 +662,7 @@ public class RoyaleJSProject extends RoyaleProject
     }
 
 
-	@Override
+
 	public File getLinkReport(Configuration config) {
 		File f = config.getLinkReport();
 		if (f != null)
@@ -667,4 +680,12 @@ public class RoyaleJSProject extends RoyaleProject
 		}
 		return f;
 	}
+
+    /**
+     * JS Projects do not have static typing at runtime
+     */
+    @Override
+    public boolean isStaticTypedTarget() {
+        return false;
+    }
 }

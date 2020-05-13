@@ -68,6 +68,7 @@ import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
 import com.google.common.util.concurrent.Futures;
+import org.apache.royale.utils.ASTUtil;
 
 /**
  * ABCGenerator is the public interface to the code generator.
@@ -713,6 +714,7 @@ public class ABCGenerator implements ICodeGenerator
         {
             assert !methodInfo.isNative() : "Native methods should be handled in the main thread and not be dispatched to a background thread!";
             functionNode.parseFunctionBody(enclosingScope.getProblems());
+            ASTUtil.processFunctionNode(functionNode, enclosingScope.getProject());
             generateMethodBodyForFunction(deferredVisitEnds, methodInfo, functionNode, enclosingScope, null);
         }
         

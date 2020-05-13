@@ -123,7 +123,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     }
 
     //isXMLName is in E4X, which is not supported by JavaScript
-    @Ignore
+/*    @Ignore*/
     @Override
     @Test
     public void testIsXMLName()

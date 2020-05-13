@@ -62,8 +62,6 @@ mypackage.TestClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'TestClass',
  */
 mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'TestClass': { type: '', declaredBy: 'mypackage.TestClass'}
@@ -72,8 +70,7 @@ mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-mypackage.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+mypackage.TestClass.prototype.ROYALE_COMPILE_FLAGS = 9;

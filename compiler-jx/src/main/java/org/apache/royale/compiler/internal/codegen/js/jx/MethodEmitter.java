@@ -40,6 +40,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.utils.ASTUtil;
 
 public class MethodEmitter extends JSSubEmitter implements
         ISubEmitter<IFunctionNode>
@@ -63,7 +64,8 @@ public class MethodEmitter extends JSSubEmitter implements
         ICompilerProject project = getWalker().getProject();
 
         fjs.getDocEmitter().emitMethodDoc(node, project);
-
+        ASTUtil.processFunctionNode(fn, project);
+        
         boolean isConstructor = node.isConstructor();
 
         boolean addingBindableImplementsSupport = isConstructor &&
@@ -78,7 +80,12 @@ public class MethodEmitter extends JSSubEmitter implements
         if(classification == IFunctionDefinition.FunctionClassification.FILE_MEMBER ||
                 classification == IFunctionDefinition.FunctionClassification.PACKAGE_MEMBER)
         {
-            write(fjs.formatQualifiedName(fn.getQualifiedName()));
+            String qualifiedName = node.getQualifiedName();
+            if (fjs.getModel().isExterns && node.getName().equals(qualifiedName))
+            {
+                writeToken(ASEmitterTokens.VAR);
+            }
+            write(fjs.formatQualifiedName(qualifiedName));
         }
         else
         {
@@ -90,6 +97,10 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             if (qname != null && !qname.equals(""))
             {
+                if (isConstructor && fjs.getModel().isExterns && typeDef.getBaseName().equals(qname))
+                {
+                    writeToken(ASEmitterTokens.VAR);
+                }
                 write(fjs.formatQualifiedName(qname));
                 if (!isConstructor)
                 {

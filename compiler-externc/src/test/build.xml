@@ -44,7 +44,23 @@
             </patternset>
         </unjar>
         <mkdir dir="${compiler.externc}/target/downloads" />
-        <unzip src="${compiler.externc}/target/junit-temp/externs/externs.zip" dest="${compiler.externc}/target/downloads" />
+        <unzip src="${compiler.externc}/target/junit-temp/externs/externs.zip" dest="${compiler.externc}/target/downloads" >
+            <patternset>
+                <include name="**/*.js"/>
+                <exclude name="**/es3.js"/>
+                <exclude name="**/es6.js"/>
+                <exclude name="**/w3c_css.js"/>
+                <exclude name="**/gecko_dom.js"/>
+                <exclude name="**/w3c_dom2.js"/>
+                <exclude name="**/html5.js"/>
+            </patternset>
+        </unzip>
+        <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/es3.js" dest="${compiler.externc}/target/downloads/es3.js" ignoreerrors="true" skipexisting="false"/>
+        <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/es6.js" dest="${compiler.externc}/target/downloads/es6.js" ignoreerrors="true" skipexisting="false"/>
+        <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/w3c_css.js" dest="${compiler.externc}/target/downloads/browser/w3c_css.js" ignoreerrors="true" skipexisting="false"/>
+        <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/gecko_dom.js" dest="${compiler.externc}/target/downloads/browser/gecko_dom.js" ignoreerrors="true" skipexisting="false"/>
+        <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/w3c_dom2.js" dest="${compiler.externc}/target/downloads/browser/w3c_dom2.js" ignoreerrors="true" skipexisting="false"/>
+        <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/html5.js" dest="${compiler.externc}/target/downloads/browser/html5.js" ignoreerrors="true" skipexisting="false"/>
     </target>
 
     <target name="compile.unit.tests">

@@ -16,18 +16,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
   </parent>
 
   <artifactId>compiler</artifactId>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
 
   <name>Apache Royale: Compiler: Compiler</name>
   <description>The Apache Royale Compiler</description>
@@ -35,13 +34,21 @@
   <build>
     <plugins>
         <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.9</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <Class-Path>external/closure-compiler-v20181210.jar compiler-common.jar external/antlr-2.7.7.jar external/antlr-3.3.jar external/antlr-runtime-3.3.jar external/commons-cli-1.2.jar external/commons-io-2.4.jar external/guava-25.1-jre.jar external/lzma-sdk-4j-9.22.0.jar external/flex-tool-api-1.0.0.jar ..</Class-Path>
+                <!-- <Class-Path>compiler-common.jar external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar ..</Class-Path> -->
+              </manifestEntries>
+            </archive>
+          </configuration>
         </plugin>
+
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.1.0</version>
           <executions>
             <execution>
               <id>copy-externc-resources</id>
@@ -81,7 +88,6 @@
       <plugin>
         <groupId>de.jflex</groupId>
         <artifactId>maven-jflex-plugin</artifactId>
-        <version>1.4.3</version>
         <executions>
           <execution>
             <id>generate-raw-as-tokenizer</id>
@@ -129,7 +135,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antlr-plugin</artifactId>
-        <version>2.0-beta-1</version>
         <executions>
           <execution>
             <id>generate-as-parser</id>
@@ -160,7 +165,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.5.0</version>
         <executions>
           <execution>
             <id>generate-metadata-parser</id>
@@ -241,7 +245,6 @@
       <plugin>
         <groupId>net.sourceforge.jburg</groupId>
         <artifactId>jburg-maven-plugin</artifactId>
-        <version>1.10.4</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -296,7 +299,6 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr3-maven-plugin</artifactId>
-        <version>3.5.2</version>
         <executions>
           <execution>
             <id>generate-csslexer-and-cssparser</id>
@@ -333,7 +335,6 @@
       <plugin>
         <groupId>org.apache.royale.compiler</groupId>
         <artifactId>compiler-build-tools</artifactId>
-        <version>${compiler-build-tools.version}</version>
         <executions>
           <execution>
             <id>generate-unknown-tree-handler</id>
@@ -432,7 +433,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19</version>
         <configuration>
           <includes>
             <include>**/*Tests.java</include>
@@ -462,7 +462,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
         <configuration>
           <includes>
             <include>as/**/*Tests.java</include>
@@ -497,7 +496,7 @@
         directory. It requires some environment variables being set.
     -->
     <profile>
-      <id>include-sdk-compile-tests</id>
+      <id>option-with-flex-sdk-tests</id>
       <build>
         <plugins>
           <plugin>
@@ -527,6 +526,21 @@
         </plugins>
       </build>
     </profile>
+
+    <!-- Also run tests using the FLASHPLAYER_DEBUGGER -->
+    <profile>
+      <id>option-with-swf</id>
+      <dependencies>
+        <!-- Ensure the playerglobal is available for running tests -->
+        <dependency>
+          <groupId>com.adobe.flash.framework</groupId>
+          <artifactId>playerglobal</artifactId>
+          <version>${flash.version}</version>
+          <type>swc</type>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
   <dependencies>
@@ -538,7 +552,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>org.apache.flex</groupId>
@@ -590,13 +604,13 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -613,4 +627,4 @@
     </dependency>
   </dependencies>
 
-</project>
+<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>

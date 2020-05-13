@@ -55,8 +55,6 @@ XMLRequire.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'XMLRequire', qName: 
  */
 XMLRequire.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'XMLRequire': { type: '', declaredBy: 'XMLRequire'}
@@ -65,8 +63,7 @@ XMLRequire.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-XMLRequire.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+XMLRequire.prototype.ROYALE_COMPILE_FLAGS = 9;

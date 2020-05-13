@@ -16,29 +16,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
   </parent>
 
   <artifactId>compiler-externc</artifactId>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
 
   <name>Apache Royale: Compiler: Externc</name>
   <description>The Apache Royale Compiler Externs Compiler</description>
 
   <build>
     <plugins>
-        <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.9</version>
-        </plugin>
         <plugin>
             <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-build-tools</artifactId>
@@ -67,11 +61,129 @@
                 </dependency>
             </dependencies>
         </plugin>
+        <!-- Download JavaScript from GitHub -->
+        <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>get-svg</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/contrib/externs/svg.js</url>
+                        <outputFileName>svg.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                        <skipCache>true</skipCache>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-es3</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/es3.js</url>
+                        <outputFileName>es3.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-es6</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/es6.js</url>
+                        <outputFileName>es6.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-w3c_composition_event</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/w3c_composition_event.js</url>
+                        <outputFileName>w3c_composition_event.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads/browser</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-w3c_css</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/w3c_css.js</url>
+                        <outputFileName>w3c_css.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads/browser</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-gecko_dom</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/gecko_dom.js</url>
+                        <outputFileName>gecko_dom.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads/browser</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-w3c_dom2</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/w3c_dom2.js</url>
+                        <outputFileName>w3c_dom2.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads/browser</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>get-html5</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/html5.js</url>
+                        <outputFileName>html5.js</outputFileName>
+                        <outputDirectory>${project.build.directory}/downloads/browser</outputDirectory>
+                        <skipCache>true</skipCache>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        
         <!-- Make the surefire execute all unit-tests -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.19</version>
             <configuration>
                 <includes>
                     <include>org/**/TestExternES3.java</include>
@@ -93,7 +205,6 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.18.1</version>
             <configuration>
                 <includes>
                     <include>org/**/TestExternES3.java</include>
@@ -115,7 +226,6 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>2.2</version>
             <executions>
                 <execution>
                     <goals>
@@ -132,7 +242,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>com.google.javascript</groupId>
@@ -143,7 +253,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -155,4 +265,4 @@
 
   </dependencies>
 
-</project>
+<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>

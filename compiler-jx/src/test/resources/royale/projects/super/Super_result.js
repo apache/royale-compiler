@@ -81,7 +81,6 @@ Super.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', k
  */
 Super.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'text': { type: 'String', access: 'readwrite', declaredBy: 'Super'}
@@ -95,8 +94,7 @@ Super.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-Super.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+Super.prototype.ROYALE_COMPILE_FLAGS = 9;

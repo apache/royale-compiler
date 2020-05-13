@@ -24,6 +24,7 @@ import java.util.List;
 
 
 import org.apache.royale.compiler.common.DependencyType;
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -455,11 +456,24 @@ public class BindingInfo implements Comparable<BindingInfo>
             return;
         
         IExpressionNode expressionNodeForGetter = expressionNodesForGetter.get(0);
+        //if it is a MemberAccessExpressionNode, and the first node is Identifier 'this' , then we will only examine right operand node
+        boolean hadThis = false;
+        if (expressionNodeForGetter instanceof MemberAccessExpressionNode) {
+            if (((MemberAccessExpressionNode) expressionNodeForGetter).getLeftOperandNode() instanceof IIdentifierNode
+                && ((IIdentifierNode) ((MemberAccessExpressionNode) expressionNodeForGetter).getLeftOperandNode()).getName().equals(IASKeywordConstants.THIS)
+            ) {
+                expressionNodeForGetter = ((MemberAccessExpressionNode) expressionNodeForGetter).getRightOperandNode();
+                hadThis = true;
+            }
+        }
+
+
         if (expressionNodeForGetter instanceof IIdentifierNode)
         {
             String name = ((IIdentifierNode)expressionNodeForGetter).getName();
             IReference ref = ReferenceFactory.lexicalReference(project.getWorkspace(), name);
-            IDefinition def = ref.resolve(project, scope, DependencyType.EXPRESSION, false);
+            ASScope resolutionScope = hadThis ? ((TypeScope) scope).getInstanceScope() : scope;
+            IDefinition def = ref.resolve(project, resolutionScope, DependencyType.EXPRESSION, false);
             if (def instanceof IVariableDefinition)
             {
                 // here we have decided that the binding expression is a variable
@@ -487,7 +501,11 @@ public class BindingInfo implements Comparable<BindingInfo>
         else if (expressionNodeForGetter instanceof MemberAccessExpressionNode)
         {
         	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)expressionNodeForGetter;
-            IDefinition def = mae.resolve(project);
+            IDefinition def;
+        	if (hadThis) {
+        	    def = expressionNodesForGetter.get(0).resolve(project);
+            }
+            else def = mae.resolve(project);
             if (def != null && def.isPublic() && 
             		(def instanceof IAccessorDefinition ||
             		 def instanceof IConstantDefinition ||
@@ -496,14 +514,14 @@ public class BindingInfo implements Comparable<BindingInfo>
             	IExpressionNode leftSide = mae.getLeftOperandNode();
             	if (leftSide instanceof IIdentifierNode)
             	{
-            		IDefinition leftDef = leftSide.resolve(project);
-		        	if (leftDef.isPublic())
-		        	{
-		        		if (leftDef instanceof ClassDefinition)
-		        			classDef = (ClassDefinition)leftDef;
-		        		sourceString = leftDef.getBaseName() + "." + def.getBaseName();
-		                isSimplePublicProperty = true;            		
-		        	}
+                    IDefinition leftDef = leftSide.resolve(project);
+                    if (leftDef.isPublic())
+                    {
+                        if (leftDef instanceof ClassDefinition)
+                            classDef = (ClassDefinition)leftDef;
+                        sourceString = leftDef.getBaseName() + "." + def.getBaseName();
+                        isSimplePublicProperty = true;
+                    }
             	}
             	else if (leftSide instanceof MemberAccessExpressionNode)
             	{

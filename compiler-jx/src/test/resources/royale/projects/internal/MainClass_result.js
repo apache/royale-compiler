@@ -55,8 +55,6 @@ MainClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'M
  */
 MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'MainClass': { type: '', declaredBy: 'MainClass'}
@@ -65,11 +63,10 @@ MainClass.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-MainClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+MainClass.prototype.ROYALE_COMPILE_FLAGS = 9;
 
 
 
@@ -115,7 +112,6 @@ MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
         'foo': { type: 'OtherClass', get_set: function (/** MainClass.InternalClass */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}
       };
     },
-    accessors: function () {return {};},
     methods: function () {
       return {
         'InternalClass': { type: '', declaredBy: 'MainClass.InternalClass'}
@@ -124,8 +120,7 @@ MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-MainClass.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+MainClass.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 9;

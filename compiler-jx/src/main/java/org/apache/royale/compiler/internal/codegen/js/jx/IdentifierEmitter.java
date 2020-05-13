@@ -24,13 +24,8 @@ import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.definitions.IConstantDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.IParameterDefinition;
-import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -41,9 +36,6 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
-import org.apache.royale.compiler.internal.tree.as.BinaryOperatorDivisionAssignmentNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -73,12 +65,13 @@ public class IdentifierEmitter extends JSSubEmitter implements
         IASNode parentNode = node.getParent();
         ASTNodeID parentNodeId = parentNode.getNodeID();
         IASNode grandparentNode = parentNode.getParent();
-        ASTNodeID grandparentNodeId = (parentNode != null) ? grandparentNode.getNodeID() : null;
+  //      ASTNodeID grandparentNodeId = (parentNode != null) ? grandparentNode.getNodeID() : null;
 
         boolean identifierIsAccessorFunction = nodeDef instanceof AccessorDefinition;
         boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
                 && !identifierIsAccessorFunction;
         boolean emitName = true;
+        boolean wroteMemberAccess = false;
     	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
         RoyaleJSProject project = (RoyaleJSProject)getWalker().getProject();
     	boolean isCustomNamespace = false;
@@ -212,8 +205,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     endMapping(prevSibling);
                     startMapping(parentNode, prevSibling);
                 }
-                if (!isCustomNamespace && (!(identifierIsAccessorFunction && isStatic)))
-                	write(ASEmitterTokens.MEMBER_ACCESS);
+                if (!isCustomNamespace && (!(identifierIsAccessorFunction && isStatic))) {
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    wroteMemberAccess = true;
+                }
+                
                 endMapping(parentNode);
             }
         }
@@ -256,8 +252,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else
                     write(ASEmitterTokens.THIS);
 
-                if (!isCustomNamespace)
-                	write(ASEmitterTokens.MEMBER_ACCESS);
+                if (!isCustomNamespace) {
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    wroteMemberAccess = true;
+                }
                 endMapping(node);
             }
             else if (EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node))
@@ -292,12 +290,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 emitName = false;
             }
         }
-
-        //IDefinition parentDef = (nodeDef != null) ? nodeDef.getParent() : null;
-        //boolean isNative = (parentDef != null)
-        //        && NativeUtils.isNative(parentDef.getBaseName());
+        
         if (emitName)
         {
+            boolean accessWithNS = !wroteMemberAccess;
             if (nodeDef != null)
             {
                 // this can be optimized but this way lets
@@ -313,6 +309,21 @@ public class IdentifierEmitter extends JSSubEmitter implements
                             classification == VariableClassification.FILE_MEMBER)
                     {
                         isPackageOrFileMember = true;
+                    }
+                    String ns = nodeDef.getNamespaceReference().getBaseName();
+                    isCustomNamespace = EmitterUtils.isCustomNamespace(ns);
+                    if (isCustomNamespace && parentNode instanceof IMemberAccessExpressionNode
+                            && ((IMemberAccessExpressionNode) parentNode).getRightOperandNode() == node) {
+                        accessWithNS = true;
+                        boolean wasCustomNamespace = false;
+                        //duplicate some checks in MemberAccessEmitter to avoid double output of MEMBER_ACCESS
+                        if (nodeDef instanceof IAccessorDefinition && ((IMemberAccessExpressionNode) parentNode).getOperator() == IOperatorNode.OperatorType.MEMBER_ACCESS)
+                            wasCustomNamespace = fjs.isCustomNamespace((FunctionDefinition)nodeDef);
+                        
+                        if (!wasCustomNamespace) {
+                            //we already wrote member access before walking to this node.
+                            accessWithNS = false;
+                        }
                     }
                 }
                 else if (nodeDef instanceof IFunctionDefinition)
@@ -342,8 +353,8 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 	}
                     else if (isCustomNamespace)
                     {
-                    	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
-                    	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, true));
+                    	String ns = ((INamespaceResolvedReference)(nodeDef.getNamespaceReference())).resolveAETNamespace(getProject()).getName();
+                    	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
                     }
                     else if (identifierIsAccessorFunction && isStatic)
                     {
@@ -351,9 +362,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     }
                 	else
                 	{
-                		qname = node.getName();
-                    	if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-                    		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                	    if (!(nodeDef.getParent() instanceof IPackageDefinition)) {
+                            qname = node.getName();
+                            if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                                qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                        }
                     	write(qname);
                 	}
                 }
@@ -374,8 +387,8 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 else if (isCustomNamespace)
                 {
-                	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getProject()).getName();
-                	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, true));
+                	String ns = ((INamespaceResolvedReference)nodeDef.getNamespaceReference()).resolveAETNamespace(getProject()).getName();
+                	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
                 }
                 else if (identifierIsAccessorFunction && isStatic)
                 {
@@ -389,8 +402,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 }
                 endMapping(node);
             }
-            else if (grandparentNodeId == ASTNodeID.E4XFilterID &&
-            		(!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.Op_DescendantsID)))
+            else if (getModel().inE4xFilter && EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node) /* swapped this out to allow for deeper nesting inside the filter expression ... instead of original:grandparentNodeId == ASTNodeID.E4XFilterID*/
+            		&& (!(parentNodeId == ASTNodeID.MemberAccessExpressionID
+                    || parentNodeId == ASTNodeID.Op_DescendantsID
+                    || parentNodeId == ASTNodeID.FunctionCallID)))
             {
                 startMapping(node);
                 write("child('");

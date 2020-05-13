@@ -309,6 +309,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                 this.getProject().getProjectConfigVariables(),
                 true,
                 this.getProject().isAssetEmbeddingSupported(),
+                this.getProject().getStrictIdentifierNames(),
                 includedFiles,
                 deferFunctionBody,
                 flashProject,

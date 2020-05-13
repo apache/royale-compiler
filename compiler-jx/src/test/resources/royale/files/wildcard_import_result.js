@@ -59,7 +59,8 @@ goog.exportSymbol('wildcard_import', wildcard_import);
  * @private
  */
 wildcard_import.prototype.tmp = function() {
-  var /** @type {org.apache.royale.html.Button} */ myButton;
+  var /** @type {org.apache.royale.html.Button} */ myButton = null;
+  //var /** @type {org.apache.royale.html.Button} */ myButton = null;
   myButton = new org.apache.royale.html.Button();
 };
 
@@ -80,8 +81,6 @@ wildcard_import.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'wildcard_import
  */
 wildcard_import.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'wildcard_import': { type: '', declaredBy: 'wildcard_import'}
@@ -89,6 +88,11 @@ wildcard_import.prototype.ROYALE_REFLECTION_INFO = function () {
     }
   };
 };
+/**
+ * @const
+ * @type {number}
+ */
+wildcard_import.prototype.ROYALE_COMPILE_FLAGS = 9;
 
 
 

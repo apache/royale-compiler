@@ -22,13 +22,7 @@ package org.apache.royale.compiler.internal.targets;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.royale.abc.ABCConstants;
@@ -765,7 +759,8 @@ public abstract class RoyaleTarget
     	{
     		try {
     			SimpleDateFormat sdf = new SimpleDateFormat(rdfDateFormat);
-    			compileDate = sdf.parse(rdfDate).getTime();
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                compileDate = sdf.parse(rdfDate).getTime();
     		} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

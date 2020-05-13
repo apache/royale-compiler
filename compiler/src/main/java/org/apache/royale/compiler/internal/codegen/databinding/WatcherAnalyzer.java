@@ -353,6 +353,11 @@ public class WatcherAnalyzer
             eventNames = WatcherInfoBase.getEventNamesFromDefinition(def, problems, node, project);
             name = def.getBaseName();
             id = def;
+            //solves a problem for function bindings where all bindings resolve to the latest one
+            if (type == WatcherType.FUNCTION) {
+                //make sure we have unique watchers for each functionCallNode
+                id = node;//or maybe node.getAncestorOfType(FunctionCallNode.class); ?
+            }
         }
         
         makeWatcherOfKnownType(id, type, state, node, eventNames, name, def);

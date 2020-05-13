@@ -281,5 +281,10 @@ public interface ICompilerProject
       * @return True if private constructors are allowed.
       */
      boolean getAllowPrivateConstructors();
+     
+     /**
+      * @return True if strict identifier naming is enforced.
+      */
+     boolean getStrictIdentifierNames();
 
 }

@@ -16,35 +16,36 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>18</version>
+    <version>23</version>
     <relativePath />
   </parent>
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>compiler-build-tools</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Royale: Build Tools</name>
 
+  <scm>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
+    <url>https://github.com/apache/royale-compiler</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <build>
     <plugins>
       <plugin>
-        <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.9</version>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.5</version>
+        <version>3.6.0</version>
         <configuration>
           <goalPrefix>compiler-build-tools</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -67,27 +68,26 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
+      </plugin>
+      <!-- This plugin cleans up the jars for anything that might cause problems for reproducible builds -->
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.11</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>io.github.zlika</groupId>
-          <artifactId>reproducible-build-maven-plugin</artifactId>
-          <version>0.9</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>strip-jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
           <configuration>
             <tags>
               <tag>
@@ -121,12 +121,18 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>1.10.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.2.0</version>
+          <configuration>
+            <finalName>apache-royale-${project.artifactId}-${project.version}</finalName>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -185,4 +191,129 @@
     </dependency>
   </dependencies>
 
-</project>
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>reproducible-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <preparationGoals>clean com.theoryinpractise:reproducible-maven-plugin:apply install</preparationGoals>
+              <completionGoals>com.theoryinpractise:reproducible-maven-plugin:clear</completionGoals>
+            </configuration>
+          </plugin>
+          <!--
+            Create MD5 and SHA512 checksum files for the release artifacts.
+          -->
+          <plugin>
+            <groupId>net.nicoulaj.maven.plugins</groupId>
+            <artifactId>checksum-maven-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>files</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <algorithms>
+                <algorithm>SHA-512</algorithm>
+              </algorithms>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>apache-royale-${project.artifactId}-${project.version}-source-release.zip</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>royale-release</id>
+      <properties>
+        <!-- Ensure the royale-release plugin is enabled when running release:perform -->
+        <release-profiles>apache-release</release-profiles>
+      </properties>
+
+      <!-- Redirect the deployment to a local directory -->
+      <!-- Note: using the 'altReleaseDeploymentRepository' and alike were ignored in the release:perform phase -->
+      <distributionManagement>
+        <repository>
+          <id>apache.releases.https</id>
+          <name>Apache Release Distribution Repository</name>
+          <!--
+            'maven.multiModuleProjectDirectory' is a property introduced with maven 3.3.1 ...
+            don't worry if your IDE is complaining.
+            Also this will be set to the 'target/checkout' directory the output will be in
+            'target/local-release-dir'.
+          -->
+          <url>file://${maven.multiModuleProjectDirectory}/../local-release-dir</url>
+        </repository>
+      </distributionManagement>
+
+      <build>
+        <plugins>
+          <!-- Generate the effective poms for this build -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-help-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-effective-pom</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>effective-pom</goal>
+                </goals>
+                <configuration>
+                  <output>${project.build.directory}/effective.pom</output>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+        <pluginManagement>
+          <plugins>
+            <!-- We require the release manager to manually login an sign using his credentials -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
+            <!-- We require the release manager to login and push the changes using his credentials -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <configuration>
+                <pushChanges>false</pushChanges>
+                <providerImplementations>
+                  <git>jgit</git>
+                </providerImplementations>
+              </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.apache.maven.scm</groupId>
+                  <artifactId>maven-scm-provider-jgit</artifactId>
+                  <version>1.11.3-SNAPSHOT</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
+<properties /></project>

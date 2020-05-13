@@ -19,18 +19,12 @@
 
 package org.apache.royale.compiler.internal.codegen.js;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IGetterNode;
-import org.apache.royale.compiler.tree.as.ISetterNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 
 /**
@@ -49,6 +43,10 @@ public class JSSessionModel
         public IGetterNode getter;
         public ISetterNode setter;
         public ITypeDefinition type;
+        public boolean resolvedExport;
+        public String name;
+        public String uri;
+        public boolean suppressExport;
     }
 
     public static class BindableVarInfo
@@ -76,7 +74,9 @@ public class JSSessionModel
         public ArrayList<IFunctionNode> methods;
         public IClassDefinition classDefinition;
         public ImplicitBindableImplementation bindableImplementation;
-        public Boolean suppressExports;
+        public Boolean suppressExports; //global
+        public ArrayList<IASNode> suppressedExportNodes; //specific
+        public Boolean defaultXMLNamespaceActive;
     }
     
     public JSSessionModel()
@@ -91,10 +91,16 @@ public class JSSessionModel
     public boolean isExterns = false;
 
     public boolean inE4xFilter = false;
+    
+    public Boolean defaultXMLNamespaceActive = false;
+    
+    private HashMap<FunctionScope, IExpressionNode> defaultXMLNamespaces = new HashMap<FunctionScope, IExpressionNode>();
 
     public boolean inStaticInitializer = false;
     
     public boolean suppressExports = false;
+    
+    public ArrayList<IASNode> suppressedExportNodes = new ArrayList<IASNode>();
     
     private LinkedHashMap<String, PropertyNodes> propertyMap = new LinkedHashMap<String, PropertyNodes>();
 
@@ -141,6 +147,28 @@ public class JSSessionModel
             implicitBindableImplementations.remove(classDefinition);
         }
     }
+    
+    public void registerDefaultXMLNamespace(FunctionScope forFunctionScope, IExpressionNode defaultNamespace) {
+        if (forFunctionScope != null) {
+            if (defaultNamespace == null) {
+                //unregister
+                defaultXMLNamespaces.remove(forFunctionScope);
+                if (defaultXMLNamespaces.isEmpty()) {
+                    defaultXMLNamespaceActive = false;
+                }
+            } else {
+                defaultXMLNamespaceActive = true;
+                defaultXMLNamespaces.put(forFunctionScope, defaultNamespace);
+            }
+        }
+    }
+    
+    public IExpressionNode getDefaultXMLNamespace(FunctionScope forFunctionScope) {
+        if (defaultXMLNamespaceActive) {
+            return defaultXMLNamespaces.get(forFunctionScope);
+        }
+        return null;
+    }
 
     public void pushClass(IClassDefinition currentClass)
     {
@@ -154,8 +182,11 @@ public class JSSessionModel
         context.methods = methods;
         context.bindableImplementation = implicitBindableImplementation;
         context.suppressExports = suppressExports;
+        context.suppressedExportNodes = suppressedExportNodes;
+        context.defaultXMLNamespaceActive = defaultXMLNamespaceActive;
         stack.push(context);
         suppressExports = false; //always defaults to false
+        suppressedExportNodes = new ArrayList<IASNode>();
         this.currentClass = currentClass;
         bindableVars = new HashMap<String, BindableVarInfo>();
         staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
@@ -166,6 +197,7 @@ public class JSSessionModel
         implicitBindableImplementation = implicitBindableImplementations.get(currentClass);
         if (implicitBindableImplementation == null)
             implicitBindableImplementation = ImplicitBindableImplementation.NONE;
+        defaultXMLNamespaceActive = false;
     }
 
     public void popClass()
@@ -180,6 +212,8 @@ public class JSSessionModel
         methods = context.methods;
         implicitBindableImplementation = context.bindableImplementation;
         suppressExports = context.suppressExports;
+        suppressedExportNodes = context.suppressedExportNodes;
+        defaultXMLNamespaceActive = context.defaultXMLNamespaceActive;
     }
 
     public HashMap<String, PropertyNodes> getPropertyMap()

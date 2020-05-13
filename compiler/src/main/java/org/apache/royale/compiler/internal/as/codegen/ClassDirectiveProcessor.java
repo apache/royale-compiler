@@ -21,10 +21,7 @@ package org.apache.royale.compiler.internal.as.codegen;
 
 import static org.apache.royale.abc.ABCConstants.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.instructionlist.InstructionList;
@@ -51,60 +48,21 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
-import org.apache.royale.compiler.definitions.IAccessorDefinition;
-import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.definitions.IConstantDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IInterfaceDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.exceptions.CodegenInterruptedException;
-import org.apache.royale.compiler.problems.AbstractOutsideClassProblem;
-import org.apache.royale.compiler.problems.BadAccessAbstractMethodProblem;
-import org.apache.royale.compiler.problems.CircularTypeReferenceProblem;
-import org.apache.royale.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
-import org.apache.royale.compiler.problems.ConstructorIsGetterSetterProblem;
-import org.apache.royale.compiler.problems.ConstructorIsStaticProblem;
-import org.apache.royale.compiler.problems.ConstructorMustBePublicOrPrivateProblem;
-import org.apache.royale.compiler.problems.ConstructorMustBePublicProblem;
-import org.apache.royale.compiler.problems.DuplicateClassDefinitionProblem;
-import org.apache.royale.compiler.problems.DynamicNotOnClassProblem;
-import org.apache.royale.compiler.problems.FinalOutsideClassProblem;
-import org.apache.royale.compiler.problems.ForwardReferenceToBaseClassProblem;
-import org.apache.royale.compiler.problems.FunctionNotMarkedOverrideProblem;
-import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
-import org.apache.royale.compiler.problems.InvalidOverrideProblem;
-import org.apache.royale.compiler.problems.MultipleContructorDefinitionsProblem;
-import org.apache.royale.compiler.problems.NativeVariableProblem;
-import org.apache.royale.compiler.problems.OverrideFinalProblem;
-import org.apache.royale.compiler.problems.OverrideNotFoundProblem;
-import org.apache.royale.compiler.problems.StaticAndOverrideProblem;
-import org.apache.royale.compiler.problems.StaticNamespaceDefinitionProblem;
-import org.apache.royale.compiler.problems.SyntaxProblem;
-import org.apache.royale.compiler.problems.VirtualOutsideClassProblem;
+import org.apache.royale.compiler.internal.definitions.*;
+import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.ICommonClassNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
-import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
-import org.apache.royale.compiler.internal.definitions.ClassDefinition;
-import org.apache.royale.compiler.internal.definitions.DefinitionBase;
-import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
-import org.apache.royale.compiler.internal.definitions.GetterDefinition;
-import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
-import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
-import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.definitions.metadata.ResourceBundleMetaTag;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
@@ -112,13 +70,8 @@ import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.MethodBodySemanticChecker;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
-import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
-import org.apache.royale.compiler.internal.tree.as.ClassNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionNode;
-import org.apache.royale.compiler.internal.tree.as.ImportNode;
-import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
-import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.utils.ASTUtil;
+import org.apache.royale.utils.ArrayLikeUtil;
 
 /**
  * A ClassDirectiveProcessor generates an ABC class
@@ -620,8 +573,16 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     Integer.toString(ctorDef.getNameStart()), true);
             if (metaTag != null)
                 metaTags = MetaTag.addMetaTag(metaTags, metaTag);
-        }        
-
+        }
+    
+        if (ArrayLikeUtil.definitionIsArrayLike(classDefinition)) {
+            ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+            boolean valid = ArrayLikeUtil.validateArrayLikeDefinition(classDefinition, classScope.getProject(), problems);
+            if (!valid){
+                classScope.getProject().getProblems().addAll(problems);
+            }
+        }
+        
         this.classScope.processMetadata(tv, metaTags);
         tv.visitEnd();
         
@@ -783,7 +744,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             if (!definition.isContingentNeeded(classScope.getProject()))
                 continue;
 
-            assert (definition instanceof VariableDefinition) : "The code generator only supports contigent variable definitions";
+            assert (definition instanceof VariableDefinition) : "The code generator only supports contingent variable definitions";
             
             final IDefinitionNode node = definition.getNode();
             declareVariable((VariableNode) node, (VariableDefinition)definition, definition.isStatic(),
@@ -816,56 +777,80 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         final boolean is_constructor = func.isConstructor();
         
         ICompilerProject project = classScope.getProject();
-        
+        ASTUtil.processFunctionNode(func, project);
         boolean isBindable = false;
         if (funcDef instanceof AccessorDefinition)
         {
-            IMetaTag[] metaTags = funcDef.getAllMetaTags();
-            for (IMetaTag metaTag : metaTags)
-            {
-                if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
-                {
-                    IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
-                    isBindable = attrs.length == 0;
-                }
+            boolean isClassBindable = BindableHelper.isClassCodeGenBindable(getClassDefinition());
+
+            AccessorDefinition definitionWithBindable = null;
+            boolean foundExplicitBindableTag = false;
+
+            isBindable = BindableHelper.isCodeGenBindableMember(funcDef, isClassBindable);
+            if (isBindable) {
+                definitionWithBindable = (AccessorDefinition) funcDef;
             }
-            if (!isBindable)
-            {
-                AccessorDefinition otherDef = 
+            foundExplicitBindableTag = BindableHelper.hasExplicitBindable(funcDef);
+
+            AccessorDefinition otherDef =
                     ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
-                // ignore if not in your class def
+            if (!isBindable && !foundExplicitBindableTag)
+            {
                 if (otherDef != null && otherDef.getContainingScope().equals(funcDef.getContainingScope()))
                 {
-                    metaTags = otherDef.getAllMetaTags();
-                    for (IMetaTag metaTag : metaTags)
-                    {
-                        if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
-                        {
-                            IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
-                            isBindable = attrs.length == 0;
-                        }
+                    isBindable = BindableHelper.isCodeGenBindableMember(otherDef, isClassBindable);
+                    if (isBindable) {
+                        definitionWithBindable = otherDef;
+                    }
+                    foundExplicitBindableTag = BindableHelper.hasExplicitBindable(otherDef);
+                    //if a) class is Bindable, and b)there is a [Bindable] tag, and c) there is also a [Bindable(eventName)] tag
+                    //then we can retain the [Bindable] codegen and reset foundExplicitBinding to false (assumption, check in flex)
+                    if (isClassBindable && isBindable && foundExplicitBindableTag) {
+                        foundExplicitBindableTag = false; //we will ignore it and keep codegen as well
                     }
                 }
             }
-            if (!isBindable)
-            {
-                metaTags = getClassDefinition().getAllMetaTags();
-                for (IMetaTag metaTag : metaTags)
-                {
-                    if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
-                    {
-                        IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
-                        isBindable = attrs.length == 0;
-                    }
+            if (isBindable && otherDef == null) {
+                //no other definition
+                isBindable = false;
+                //warning if explicit [Bindable] ?
+            }
+
+            if (isBindable
+                    && otherDef instanceof ISetterDefinition
+                    && !(otherDef.getContainingScope().equals(funcDef.getContainingScope()))) {
+                //if the setter is not defined in the same scope as this getter, that is an Error (same as Flex)
+                isBindable = false;
+                classScope.addProblem(new BindableGetterCodeGenProblem((IGetterDefinition) funcDef));
+            }
+            if (isClassBindable) {
+                //add a warning if redundant local 'codegen' [Bindable] tag
+                if (BindableHelper.hasCodegenBindable(definitionWithBindable)) {
+                    classScope.addProblem(new RedundantBindableTagProblem(
+                            BindableHelper.getProblemReportingNode(definitionWithBindable)
+                    ));
+                }
+                if (isBindable) {
+                    if (!foundExplicitBindableTag && BindableHelper.hasExplicitBindable(otherDef)) foundExplicitBindableTag = true;
+                }
+                if (foundExplicitBindableTag) {
+                    //logic:
+                    //when class is [Bindable],
+                    //if either getter/setter member has at least one explicit Bindable tag (Bindable(event='something'))
+                    //then no code-gen is applied,
+                    //even if one of them also has a local 'codegen' [Bindable] tag
+                    isBindable = false;
                 }
             }
         }
-        
+
         functionSemanticChecks(func);
 
         Name funcName = funcDef.getMName(classScope.getProject());
         Name bindableName = null;
         boolean wasOverride = false;
+        //from here on we are only interested in the setter definitions, leave getters as-is
+        isBindable = isBindable && funcDef instanceof ISetterDefinition;
         if (isBindable)
         {
             // move function into bindable namespace
@@ -917,41 +902,24 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             }
         }
         if (isBindable)
-        {
+        {   //only setters get modified in this case, getters remain the same as source code
             if (wasOverride)
                 funcDef.setOverride();
-            if (funcDef instanceof GetterDefinition)
-            {
-                Name funcTypeName;
-                TypeDefinitionBase typeDef = funcDef.resolveType(project);
-                if ( SemanticUtils.isType(typeDef) )
-                    funcTypeName = typeDef.getMName(project);
-                else
-                    funcTypeName = NAME_OBJECT;
-                DefinitionBase bindableGetter = func.buildBindableGetter(funcName.getBaseName());
-                ASScope funcScope = (ASScope)funcDef.getContainingScope();
-                bindableGetter.setContainingScope(funcScope);
-                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
-                ls.generateBindableGetter(bindableGetter, funcName, bindableName, 
-                                        funcTypeName, getAllMetaTags(funcDef));
-            }
+
+            Name funcTypeName;
+            TypeDefinitionBase typeDef = funcDef.resolveType(project);
+            if ( SemanticUtils.isType(typeDef) )
+                funcTypeName = typeDef.getMName(project);
             else
-            {
-                Name funcTypeName;
-                TypeDefinitionBase typeDef = funcDef.resolveType(project);
-                if ( SemanticUtils.isType(typeDef) )
-                    funcTypeName = typeDef.getMName(project);
-                else
-                    funcTypeName = NAME_OBJECT;
-                ASScope funcScope = (ASScope)funcDef.getContainingScope();
-                DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(), 
-                        funcScope,
-                        funcDef.getTypeReference());
-                bindableSetter.setContainingScope(funcScope);
-                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
-                ls.generateBindableSetter(bindableSetter, funcName, bindableName, 
-                        funcTypeName, getAllMetaTags(funcDef));
-            }
+                funcTypeName = NAME_OBJECT;
+            ASScope funcScope = (ASScope)funcDef.getContainingScope();
+            DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(),
+                    funcScope,
+                    funcDef.getTypeReference());
+            bindableSetter.setContainingScope(funcScope);
+            LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
+            ls.generateBindableSetter(bindableSetter, funcName, bindableName,
+                    funcTypeName, getAllMetaTags(funcDef));
         }
     }
 
@@ -971,7 +939,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
         // code model has some peculiar ideas about what makes a function a constructor or not
         boolean looks_like_ctor = func.isConstructor();
-        looks_like_ctor |= func.getBaseName() != null && this.className != null && func.getBaseName().equals(this.className.getBaseName());
+        looks_like_ctor = looks_like_ctor || ( func.getBaseName() != null && this.className != null && func.getBaseName().equals(this.className.getBaseName()) );
 
         if (! looks_like_ctor && (func.getBaseName() != null))
         {
@@ -1031,7 +999,38 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         }
         else if( !func.isStatic() )
         {
-            // We have to find the (potentially) overriden function whether we are an override or
+            //check conflicting language namespaces
+            if (func.getNamespaceReference().isLanguageNamespace()) {
+                IDefinitionSet others = func.getContainingScope().getLocalDefinitionSetByName(func.getBaseName());
+                if (others.getSize() > 1) {
+                    for (int i=0;i< others.getSize(); i++) {
+                        IDefinition other = others.getDefinition(i);
+                        if (other == func) continue;
+                        if (other.getNamespaceReference().isLanguageNamespace()) {
+                            if (!SemanticUtils.isGetterSetterPair(func, other, classScope.getProject())) {
+                                boolean issueProblem = true;
+                                if (func instanceof IAccessorDefinition) {
+                                    if (((IAccessorDefinition)func).isProblematic()) issueProblem = false;
+                                    ((IAccessorDefinition)func).setIsProblematic(true);
+                                    if (other instanceof IAccessorDefinition) {
+                                        if (((IAccessorDefinition)other).isProblematic()) issueProblem = false;
+                                        //don't explicitly set it as problematic here, that will happen when it undergoes its own checks
+                                    }
+                                }
+                                if (issueProblem) {
+                                    if (other instanceof IFunctionDefinition)
+                                        problems.add(new DuplicateFunctionDefinitionProblem(func.getFunctionNode(), func.getBaseName()));
+                                    else {
+                                        //in legacy compiler, this is also reported as a DuplicateFuncitonDefinitionProblem, but this seems more correct:
+                                        problems.add(new ConflictingDefinitionProblem(func.getFunctionNode(), func.getBaseName(), this.classDefinition.getQualifiedName(), true));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // We have to find the (potentially) overridden function whether we are an override or
             // not/
             FunctionDefinition override = func.resolveOverriddenFunction(classScope.getProject());
             if( func.isOverride() )
@@ -1062,8 +1061,12 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     func.setOverride();
                 else
                 {
+                    boolean ignore = false;
+                    if (classScope.getProject().getAllowPrivateNameConflicts()) {
+                        if (override.isPrivate()) ignore = true;
+                    }
                     // found overriden function, but function not marked as override
-                    problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
+                    if (!ignore) problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
                 }
             }
         }
@@ -1472,7 +1475,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 this.cinitInsns.addAll(cgResult);
             else
                 this.iinitInsns.addAll(cgResult);
-            }
+        }
     }
     
     /**

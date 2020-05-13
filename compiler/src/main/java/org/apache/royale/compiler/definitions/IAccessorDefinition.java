@@ -33,4 +33,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 public interface IAccessorDefinition extends IFunctionDefinition, IVariableDefinition
 {
     IAccessorDefinition resolveCorrespondingAccessor(ICompilerProject project);
+    
+    boolean isProblematic();
+    void setIsProblematic(boolean value);
 }

@@ -100,7 +100,7 @@ public class TestRoyaleAccessors extends ASTestBase
     }
 
     @Test
-    public void testGetSetCustomNamespaceAccessor()
+    public void testGetSetCustomNamespaceAccessorWithoutMemberAccess()
     {
         IClassNode node = (IClassNode) getNode(
                 "import custom.custom_namespace;use namespace custom_namespace;public class B { public function B() {}; public function doStuff():void {var theLabel:String = label; label = theLabel;}; private var _label:String; custom_namespace function get label():String {return _label}; custom_namespace function set label(value:String):void {_label = value};}",
@@ -114,20 +114,73 @@ public class TestRoyaleAccessors extends ASTestBase
     }
 
     @Test
+    public void testGetSetCustomNamespaceAccessorWithMemberAccess()
+    {
+        IClassNode node = (IClassNode) getNode(
+                "import custom.custom_namespace;use namespace custom_namespace;public class B { public function B() {}; public function doStuff():void {var theLabel:String = this.label; this.label = theLabel;}; private var _label:String; custom_namespace function get label():String {return _label}; custom_namespace function set label(value:String):void {_label = value};}",
+                IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this.http_$$ns_apache_org$2017$custom$namespace__label;\n  this.http_$$ns_apache_org$2017$custom$namespace__label = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label = null;\n\n\n" +
+				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label = function() {\n  return this._label;\n};\n\n\n" +
+				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n  * @export\n  * @type {string} */\nhttp_$$ns_apache_org$2017$custom$namespace__label: {\nget: B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label,\nset: B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label}}\n);";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testGetSetCustomNamespaceStaticAccessorWithoutMemberAccess()
+    {
+        IClassNode node = (IClassNode) getNode(
+                "import custom.custom_namespace;use namespace custom_namespace;public class B { public function B() {}; public function doStuff():void {var theLabel:String = label; label = theLabel;}; private static var _label:String; custom_namespace static function get label():String {return _label}; custom_namespace static function set label(value:String):void {_label = value};}",
+                IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = B.http_$$ns_apache_org$2017$custom$namespace__label;\n  B.http_$$ns_apache_org$2017$custom$namespace__label = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB._label = null;\n\n\n" +
+				"B.http_$$ns_apache_org$2017$custom$namespace__get__label = function() {\n  return B._label;\n};\n\n\n" +
+				"B.http_$$ns_apache_org$2017$custom$namespace__set__label = function(value) {\n  B._label = value;\n};\n\n\n" +
+        		"Object.defineProperties(B, /** @lends {B} */ {\n/**\n  * @export\n  * @type {string} */\nhttp_$$ns_apache_org$2017$custom$namespace__label: {\nget: B.http_$$ns_apache_org$2017$custom$namespace__get__label,\nset: B.http_$$ns_apache_org$2017$custom$namespace__set__label}}\n);";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testGetSetCustomNamespaceStaticAccessorWithMemberAccess()
+    {
+        IClassNode node = (IClassNode) getNode(
+                "import custom.custom_namespace;use namespace custom_namespace;public class B { public function B() {}; public function doStuff():void {var theLabel:String = B.label; B.label = theLabel;}; private static var _label:String; custom_namespace static function get label():String {return _label}; custom_namespace static function set label(value:String):void {_label = value};}",
+                IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = B.http_$$ns_apache_org$2017$custom$namespace__label;\n  B.http_$$ns_apache_org$2017$custom$namespace__label = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB._label = null;\n\n\n" +
+				"B.http_$$ns_apache_org$2017$custom$namespace__get__label = function() {\n  return B._label;\n};\n\n\n" +
+				"B.http_$$ns_apache_org$2017$custom$namespace__set__label = function(value) {\n  B._label = value;\n};\n\n\n" +
+        		"Object.defineProperties(B, /** @lends {B} */ {\n/**\n  * @export\n  * @type {string} */\nhttp_$$ns_apache_org$2017$custom$namespace__label: {\nget: B.http_$$ns_apache_org$2017$custom$namespace__get__label,\nset: B.http_$$ns_apache_org$2017$custom$namespace__set__label}}\n);";
+        assertOut(expected);
+    }
+
+    @Test
     public void testBindableGetAndSetAccessor()
     {
         IClassNode node = (IClassNode) getNode(
                 "public function doStuff():void {label = 'hello, bye'; var theLabel:String = label;}; private var _label:String; [Bindable] public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label = null;\n\n\n" +
-        		"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
-				"RoyaleTest_A.prototype.bindable__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
-        		"RoyaleTest_A.prototype.set__label = function(value) {\nvar oldValue = this.get__label();\nif (oldValue != value) {\nthis.bindable__set__label(value);\n" +
-        		"    this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(\n" +
-        		"         this, \"label\", oldValue, value));\n}\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {string} */\n" +
-        		"label: {\nget: RoyaleTest_A.prototype.get__label,\nset: RoyaleTest_A.prototype.set__label}}\n);";
+        String expected ="/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n/**\n * @export\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label = null;\n\n\n" +
+                "RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
+                "RoyaleTest_A.prototype.bindable__set__label_RoyaleTest_A = function(value) {\n" +
+                "  this._label = value;" +
+                "\n};\n\n\n" +
+                "RoyaleTest_A.prototype.set__label = function(value) {\n" +
+                "var oldValue = this.get__label();\n" +
+                "if (oldValue != value) {\n" +
+                "this.bindable__set__label_RoyaleTest_A(value);\n" +
+                "    this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(\n" +
+                "         this, \"label\", oldValue, value));\n" +
+                "}\n};\n\n\n" +
+                "Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n" +
+                "/**\n" +
+                "  * @export\n  * @type {string} */\n" +
+                "label: {\n" +
+                "get: RoyaleTest_A.prototype.get__label,\n" +
+                "set: RoyaleTest_A.prototype.set__label}}\n" +
+                ");";
         assertOut(expected);
     }
 

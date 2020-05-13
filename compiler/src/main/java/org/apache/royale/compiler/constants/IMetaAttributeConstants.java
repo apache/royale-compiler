@@ -216,6 +216,9 @@ public interface IMetaAttributeConstants
 
     // [RoyalePrivateConstructor]
     static final String ATTRIBUTE_PRIVATE_CONSTRUCTOR = "RoyalePrivateConstructor";
+    
+    // [RoyaleArrayLike(...args)]
+    static final String ATTRIBUTE_ARRAYLIKE = "RoyaleArrayLike";
 	
 	/**
 	 * List of metadata tags that do not inherit

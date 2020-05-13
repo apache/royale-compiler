@@ -138,11 +138,11 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
 
         String tagName = builder.getFileScope().resolveTagToQualifiedName(childTag);
         IDefinition definition = project.getScope().findDefinitionByName(tagName);
-        if (definition instanceof ClassDefinition)
+        if (definition instanceof IClassDefinition)
         {
             MXMLInstanceNode instanceNode =
                     MXMLInstanceNode.createInstanceNode(builder, tagName, this);
-            instanceNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+            instanceNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
             instanceNode.initializeFromTag(builder, childTag);
             info.addChildNode(instanceNode);
 
@@ -150,7 +150,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
             // the [ArrayElementType] of the property of type Array that's being set.
             if (arrayElementType != null)
             {
-                if (!((ClassDefinition)definition).isInstanceOf(arrayElementType, project))
+                if (!((IClassDefinition)definition).isInstanceOf(arrayElementType, project))
                 {
                     ICompilerProblem problem = new MXMLIncompatibleArrayElementProblem(
                             childTag, propertyName, arrayElementType, definition.getQualifiedName());
@@ -233,6 +233,9 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
 
         setClassReference(project, IASLanguageConstants.Array);
 
+        propertyName = defaultPropertyDefinition.getBaseName();
+        arrayElementType = defaultPropertyDefinition.getArrayElementType(project);
+
         List<IMXMLNode> children = new ArrayList<IMXMLNode>();
         for (IMXMLUnitData unit : contentUnits)
         {
@@ -258,9 +261,21 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                     {
                         MXMLInstanceNode childNode = MXMLInstanceNode.createInstanceNode(
                                 builder, definition.getQualifiedName(), this);
-                        childNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+                        childNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
                         childNode.initializeFromTag(builder, tag);
                         children.add(childNode);
+
+                        // Report problem if actual type of array element is incompatible with
+                        // the [ArrayElementType] of the property of type Array that's being set.
+                        if (arrayElementType != null)
+                        {
+                            if (!((IClassDefinition)definition).isInstanceOf(arrayElementType, project))
+                            {
+                                ICompilerProblem problem = new MXMLIncompatibleArrayElementProblem(
+                                    tag, propertyName, arrayElementType, definition.getQualifiedName());
+                                builder.addProblem(problem);
+                            }
+                        }
                     }
                     else
                     {

@@ -51,14 +51,10 @@ interfaces.ID.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'ID', qName: 'inte
  * @return {Object.<string, Function>}
  */
 interfaces.ID.prototype.ROYALE_REFLECTION_INFO = function () {
-  return {
-    accessors: function () {return {};},
-    methods: function () {return {};}
-  };
+  return {};
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-interfaces.ID.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+interfaces.ID.prototype.ROYALE_COMPILE_FLAGS = 9;

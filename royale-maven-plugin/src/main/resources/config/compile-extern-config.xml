@@ -44,6 +44,12 @@
                 <manifest>$namespace.manifest</manifest>
             </namespace>
 #end
+#if($languageNamespace)
+            <namespace>
+                <uri>$languageNamespace.uri</uri>
+                <manifest>$languageNamespace.manifest</manifest>
+            </namespace>
+#end
         </namespaces>
 
         <warn-no-constructor>false</warn-no-constructor>

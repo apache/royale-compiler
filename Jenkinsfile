@@ -60,13 +60,6 @@ node('jenkins-win-he-de-1') {
             echo 'checking out royale-framework for branch ' + env.BRANCH_NAME
             checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://github.com/apache/royale-asjs.git']]])
 
-        stage 'Build Royale Compiler Utils'
-
-            dir('compiler') {
-                echo 'Building Royale Compiler Utils'
-                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P -main,utils -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
-            }
-
         stage 'Build Royale Compiler'
 
             dir('compiler') {
@@ -90,6 +83,17 @@ node('jenkins-win-he-de-1') {
                     bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e -Dhttps.protocols=TLSv1.2"
                 }
             }
+
+        stage('Code Quality') {
+            steps {
+                echo 'Checking Code Quality on SonarCloud'
+                // Then run the analysis
+                // 'my-sonarcloud-token' needs to be defined for this job and contains the user token
+                withCredentials([string(credentialsId: 'piotrz-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh 'mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_royale-sdk-compiler -Dsonar.branch.name=develop -Dsonar.login=${SONAR_TOKEN}'
+                }
+            }
+        }
 
     }
 

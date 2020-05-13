@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
@@ -27,6 +28,7 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
@@ -35,15 +37,13 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IAccessorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.units.ICompilationUnit;
 
 public class ClassEmitter extends JSSubEmitter implements
         ISubEmitter<IClassNode>
@@ -62,12 +62,22 @@ public class ClassEmitter extends JSSubEmitter implements
         RoyaleJSProject project = (RoyaleJSProject)getEmitter().getWalker().getProject();
         keepASDoc = project.config != null && project.config.getKeepASDoc();
         verbose = project.config != null && project.config.isVerbose();
-    	
-        getModel().pushClass(node.getDefinition());
-
+    	boolean isInternal = getModel().getInternalClasses().containsKey(node.getName());
+        IClassDefinition definition = node.getDefinition();
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         
+    	if (isInternal) {
+    	    //process bindable support for possibly bindable internal (file-private) class:
+            ASProjectScope projectScope = project.getScope();
+            ICompilationUnit cu = projectScope
+                    .getCompilationUnitForDefinition(definition);
+            ArrayList<String> requiresList = project.getRequires(cu);
+            //the following needs to happen before getModel().pushClass for the internal class:
+            fjs.processBindableSupport(definition, requiresList);
+        }
+        getModel().pushClass(node.getDefinition());
+    	
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && keepASDoc)
         {
@@ -84,8 +94,6 @@ public class ClassEmitter extends JSSubEmitter implements
         boolean suppressExport = (asDoc != null && DocEmitterUtils.hasSuppressExport(fjs, asDoc.commentNoEnd()));
 
         getModel().suppressExports = suppressExport;
-
-        IClassDefinition definition = node.getDefinition();
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
 
@@ -132,6 +140,10 @@ public class ClassEmitter extends JSSubEmitter implements
                 String qname = definition.getQualifiedName();
                 if (qname != null && !qname.equals(""))
                 {
+                    if (fjs.getModel().isExterns && definition.getBaseName().equals(qname))
+                    {
+                        writeToken(ASEmitterTokens.VAR);
+                    }
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.SPACE);
                     writeToken(ASEmitterTokens.EQUAL);
@@ -192,6 +204,9 @@ public class ClassEmitter extends JSSubEmitter implements
                     writeNewline();
                     getEmitter().emitMethod((IFunctionNode) dnode);
                     write(ASEmitterTokens.SEMICOLON);
+                    if (getModel().defaultXMLNamespaceActive) {
+                        getModel().registerDefaultXMLNamespace((FunctionScope) ((IFunctionNode) dnode).getScopedNode().getScope(), null);
+                    }
                 }
             }
             else if (dnode.getNodeID() == ASTNodeID.GetterID
@@ -211,6 +226,14 @@ public class ClassEmitter extends JSSubEmitter implements
                 writeNewline();
                 writeNewline();
                 getEmitter().emitField((IVariableNode) dnode);
+                startMapping(dnode, dnode);
+                write(ASEmitterTokens.SEMICOLON);
+                endMapping(dnode);
+            } else if (dnode.getNodeID() == ASTNodeID.NamespaceID) {
+                writeNewline();
+                writeNewline();
+                writeNewline();
+                getEmitter().emitNamespace((INamespaceNode) dnode);
                 startMapping(dnode, dnode);
                 write(ASEmitterTokens.SEMICOLON);
                 endMapping(dnode);
@@ -263,9 +286,16 @@ public class ClassEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     String dname = dnode.getName();
                     IDefinition dDef = dnode.getDefinition();
-                		if (dDef != null && dDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-                			dname = getEmitter().formatPrivateName(dDef.getParent().getQualifiedName(), dname);
-                    write(dname);
+            		if (dDef != null && dDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+            			dname = getEmitter().formatPrivateName(dDef.getParent().getQualifiedName(), dname);
+                    if (EmitterUtils.isCustomNamespace(varnode.getNamespace())) {
+                        INamespaceDecorationNode ns = ((VariableNode) varnode).getNamespaceNode();
+                        INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(getProject());
+                        getEmitter().formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                        String s = nsDef.getURI();
+                        write(JSRoyaleEmitter.formatNamespacedProperty(s, dname, false));
+                    }
+                    else write(dname);
                     if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
                     {
                     	write("_");

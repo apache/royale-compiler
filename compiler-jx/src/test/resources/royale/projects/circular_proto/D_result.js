@@ -68,8 +68,6 @@ D.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'D', qName: 'D', kind: 'class'
  */
 D.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'D': { type: '', declaredBy: 'D'},
@@ -79,8 +77,7 @@ D.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-D.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+D.prototype.ROYALE_COMPILE_FLAGS = 8;

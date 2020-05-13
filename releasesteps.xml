@@ -120,17 +120,19 @@
     </target>
     
     <target name="download-artifacts-utils" if="utils">
-        <get src="http://apacheroyaleci.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_002a_if_utils/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive_utils.zip" />
+        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_002a_if_utils/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive_utils.zip" />
     </target>
     
     <target name="download-artifacts" if="artifactfolder">
         <antcall target="download-artifacts-utils" />
-        <get src="http://apacheroyaleci.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
+        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
     </target>
 
     <target name="unzip-artifacts-utils" if="utils">
         <mkdir dir="${artifactfolder}/artifacts" />
         <unzip src="${artifactfolder}/archive_utils.zip" dest="${artifactfolder}/artifacts"/>
+        <copydir src="${artifactfolder}/artifacts/archive/target/utils/local-release-dir/org/apache/royale/compiler"
+                 dest="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler"/>
     </target>
     <target name="unzip-artifacts" if="artifactfolder">
         <antcall target="unzip-artifacts-utils" />
@@ -138,25 +140,29 @@
         <unzip src="${artifactfolder}/archive.zip" dest="${artifactfolder}/artifacts"/>
     </target>
     <target name="build-source-utils" if="utils">
-        <!-- build these modules -->
-        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
-            <arg value="clean" />
-            <arg value="install" />
-            <arg value="-P" />
-            <arg value="-main,utils" />
+        <!-- build the build tools -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources/compiler-build-tools" failonerror="true" >
+          <arg value="clean" />
+          <arg value="install" />
+        </exec>
+        <!-- build the jburg types -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources/compiler-jburg-types" failonerror="true" >
+          <arg value="clean" />
+          <arg value="install" />
         </exec>
     </target>
     <target name="build-source" >
         <mkdir dir="${artifactfolder}/sources" />
-        <unzip src="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" dest="${artifactfolder}/sources" >
+        <unzip src="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" dest="${artifactfolder}/sources" >
             <cutdirsmapper dirs="1" />
         </unzip>
         
         <antcall target="build-source-utils" />
-        <!-- build these modules -->
+        <!-- build the main project -->
         <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
             <arg value="clean" />
             <arg value="install" />
+            <arg value="-Proyale-release,option-with-swf" />
         </exec>
     </target>
     
@@ -256,10 +262,10 @@
 
     <target name="compare_files" depends="get-jar-version">
         <echo>comparing ${thisFile}-${jar.version}</echo>
-        <fail message="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
+        <fail message="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
             <condition>
                 <not>
-                    <resourceexists><file file="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
+                    <resourceexists><file file="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
                 </not>
             </condition>
         </fail>
@@ -271,7 +277,7 @@
             </condition>
         </fail>
         <condition property="filesmatch" value="true">
-              <filesmatch file1="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
+              <filesmatch file1="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
                 file2="${artifactfolder}/sources/${thisFile}/target/${thisFile}-${jar.version}.jar" />
         </condition>
         <fail message="${thisFile}-${jar.version}.jar does not match" unless="filesmatch" />
@@ -281,10 +287,10 @@
         <fail message="release.version not specified"
             unless="release.version"/>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}-source-release.zip" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}.pom" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/royale-compiler-parent/${release.version}/royale-compiler-parent-${release.version}.pom" />
         </antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler" />
@@ -296,7 +302,7 @@
             <param name="jarname" value="compiler-externc" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-tests.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-tests.jar" />
         </antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler-jx" />
@@ -336,31 +342,31 @@
 
     <target name="sign-jar-artifacts">
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
         </antcall>
     </target>
     
     <target name="sign-utils-jar-artifacts">
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}.pom" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}.pom" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}-javadoc.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}-javadoc.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}-sources.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}-sources.jar" />
         </antcall>
         <antcall target="sign-file" >
-            <param name="file" value="${artifactfolder}/artifacts/archive/target/checkout/release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}.jar" />
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/${jarname}/${utils.version}/${jarname}-${utils.version}.jar" />
         </antcall>
     </target>
     
@@ -378,12 +384,14 @@
     <target name="Release_Step_003_Upload" depends="get-artifact-folder">
         <fail message="release.version not specified"
             unless="release.version"/>
-        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+        <exec executable="${mvn}" failonerror="true" >
             <arg value="wagon:upload" />
             <arg value="-X" />
-            <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/checkout/release-dir" />
-            <arg value="-P" />
-            <arg value="upload-release-to-staging,-main" />
+            <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/local-release-dir" />
+            <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
+            <arg value="-Dwagon.serverId=apache.releases.https" />
+            <arg value="-Dwagon.includes=**" />
+	    <arg value="-N"/>
         </exec>
     </target>
     

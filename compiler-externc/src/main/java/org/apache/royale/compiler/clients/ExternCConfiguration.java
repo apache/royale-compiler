@@ -38,7 +38,6 @@ import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
-import org.apache.royale.compiler.utils.NodeJSUtils;
 import org.apache.royale.utils.FilenameNormalization;
 
 public class ExternCConfiguration extends Configuration
@@ -327,7 +326,7 @@ public class ExternCConfiguration extends Configuration
         for (String module : namedModules)
         {
             //convert to camel case
-            String camelCaseModule = NodeJSUtils.convertFromDashesToCamelCase(module);
+            String camelCaseModule = convertFromDashesToCamelCase(module);
             if(basePackageName.length() == 0)
             {
                 if (classReference.getBaseName().equals(camelCaseModule))
@@ -342,6 +341,24 @@ public class ExternCConfiguration extends Configuration
             }
         }
         return null;
+    }
+
+    /**
+     * Converts the name of a node module with dashes into a version in camel
+     * case so that it can be a valid identifier.
+     */
+    private String convertFromDashesToCamelCase(String moduleNameWithDashes)
+    {
+        String camelCaseModule = moduleNameWithDashes;
+        int moduleIndex = camelCaseModule.indexOf("-");
+        while (moduleIndex != -1 && moduleIndex < camelCaseModule.length() - 1)
+        {
+            camelCaseModule = camelCaseModule.substring(0, moduleIndex)
+                    + camelCaseModule.substring(moduleIndex + 1, moduleIndex + 2).toUpperCase()
+                    + camelCaseModule.substring(moduleIndex + 2);
+            moduleIndex = camelCaseModule.indexOf("-");
+        }
+        return camelCaseModule;
     }
 
     public File getJsRoot()

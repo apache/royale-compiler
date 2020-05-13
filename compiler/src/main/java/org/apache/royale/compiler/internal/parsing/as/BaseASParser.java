@@ -191,7 +191,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
      */
     public static FileNode parseFile(IFileSpecification spec, IFileSpecificationGetter fileSpecGetter)
     {
-        return parseFile(spec, fileSpecGetter, EnumSet.of(PostProcessStep.CALCULATE_OFFSETS), EMPTY_CONFIGURATION, true);
+        return parseFile(spec, fileSpecGetter, EnumSet.of(PostProcessStep.CALCULATE_OFFSETS), EMPTY_CONFIGURATION, true, false);
     }
 
     /**
@@ -214,9 +214,10 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             IFileSpecificationGetter fileSpecGetter,
             EnumSet<PostProcessStep> postProcess,
             IProjectConfigVariables variables,
-            boolean followIncludes)
+            boolean followIncludes,
+            boolean strictIdentifierNames)
     {
-        return parseFile(spec, fileSpecGetter, postProcess, variables, followIncludes, true, Collections.<String> emptyList(), DeferFunctionBody.DISABLED, null, null);
+        return parseFile(spec, fileSpecGetter, postProcess, variables, followIncludes, true, strictIdentifierNames, Collections.<String> emptyList(), DeferFunctionBody.DISABLED, null, null);
     }
 
     /**
@@ -247,6 +248,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             IProjectConfigVariables variables,
             boolean followIncludes,
             boolean allowEmbeds,
+            boolean strictIdentifierNames,
             List<String> includedFiles,
             DeferFunctionBody deferFunctionBody,
             IASProject flashProject,
@@ -267,7 +269,8 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                     spec,
                     includeHandler,
                     followIncludes,
-                    includedFiles);
+                    includedFiles,
+                    strictIdentifierNames);
 
             final IRepairingTokenBuffer buffer = new StreamingTokenBuffer(tokenizer);
 

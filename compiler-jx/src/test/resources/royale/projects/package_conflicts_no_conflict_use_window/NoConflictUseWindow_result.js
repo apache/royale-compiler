@@ -62,8 +62,6 @@ NoConflictUseWindow.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'NoConflictU
  */
 NoConflictUseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'NoConflictUseWindow': { type: '', declaredBy: 'NoConflictUseWindow'}
@@ -72,8 +70,7 @@ NoConflictUseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-NoConflictUseWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+NoConflictUseWindow.prototype.ROYALE_COMPILE_FLAGS = 9;

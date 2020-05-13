@@ -176,6 +176,12 @@ public class ConfigProcessor
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public boolean getStrictIdentifierNames() {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
 
     /**

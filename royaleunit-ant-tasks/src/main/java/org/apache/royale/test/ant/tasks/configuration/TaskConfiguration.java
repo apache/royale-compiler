@@ -89,7 +89,9 @@ public class TaskConfiguration
 
     public void setCommand(String commandPath)
     {
-        testRunConfiguration.setCommand(project.resolveFile(commandPath));
+        if (commandPath != null && commandPath.length() > 0) {
+            testRunConfiguration.setCommand(project.resolveFile(commandPath));
+        }
     }
     
     public void setDisplay(int display)

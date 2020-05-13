@@ -100,18 +100,13 @@ public class TestRoyalePackage extends TestGoogPackage
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
         		"A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-        		"    variables: function () {return {};},\n" +
-        		"    accessors: function () {return {};},\n" +
-        		"    methods: function () {return {};}\n" +
-        		"  };\n" +
+        		"  return {};\n" +
         		"};\n"+
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Override
@@ -154,18 +149,13 @@ public class TestRoyalePackage extends TestGoogPackage
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
         		"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-        		"  };\n" +
+        		"  return {};\n" +
         		"};\n"+
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Override
@@ -215,8 +205,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -225,11 +213,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		
 		);
     }
@@ -286,8 +273,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -296,11 +281,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Test
@@ -349,8 +333,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -360,11 +342,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n");
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n");
     }
 
     @Test
@@ -420,8 +401,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'},\n" +
@@ -432,11 +411,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"goog.exportProperty(foo.bar.baz.A.prototype, 'foo', foo.bar.baz.A.prototype.foo);\n" );
     }
 
@@ -495,8 +473,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -505,11 +481,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -542,8 +517,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
@@ -552,11 +525,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		);
     }
 
@@ -613,8 +585,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -623,11 +593,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -688,8 +657,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -698,16 +665,15 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
+				//" * @export\n" +
 				" * @type {number}\n" +
 				" */\n" +
 				"foo.bar.baz.A.internalVar = 2"
@@ -779,8 +745,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -789,11 +753,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -812,6 +775,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +
@@ -856,7 +820,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"        '|someString': { type: 'String', get_set: function (/** * */ v) {return v !== undefined ? foo.bar.baz.A.InternalClass.someString = v : foo.bar.baz.A.InternalClass.someString;}}\n" +
 				"      };\n" +
 				"    },\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
@@ -867,18 +830,16 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"/**\n" +
 				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {Array<string>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(foo.bar.baz.A.InternalClass);\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_INITIAL_STATICS = Object.keys(foo.bar.baz.A.InternalClass);\n"
 		);
     }
 
@@ -970,7 +931,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
 				"    accessors: function () {\n" +
 				"      return {\n" +
 				"        'myString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -984,11 +944,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1040,7 +999,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
 				"    accessors: function () {\n" +
 				"      return {\n" +
 				"        'someString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
@@ -1054,11 +1012,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		);
     }
 
@@ -1126,8 +1083,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -1136,11 +1091,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1175,7 +1129,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.ITestInterface'}\n" +
@@ -1184,11 +1137,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.baz.A.ITestInterface.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"\n" +
 				"\n" +
 				"\n" +
@@ -1229,8 +1181,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
@@ -1240,11 +1190,10 @@ public class TestRoyalePackage extends TestGoogPackage
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n"
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_COMPILE_FLAGS = 15;\n"
 		);
     }
 
@@ -1298,6 +1247,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"/**\n" +
 				" * @export\n" +
+				" * @nocollapse\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
@@ -1319,25 +1269,19 @@ public class TestRoyalePackage extends TestGoogPackage
 				" * @return {Object.<string, Function>}\n" +
 				" */\n" +
 				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-				"  };\n" +
+				"  return {};\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.compileFlags = 15;\n" +
+				"foo.bar.A.Internal.prototype.ROYALE_COMPILE_FLAGS = 15;\n" +
 				"/**\n" +
 				" * Provide reflection support for distinguishing dynamic fields on class object (static)\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {Array<string>}\n" +
 				" */\n" +
-				"foo.bar.A.Internal.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys(foo.bar.A.Internal);\n"
+				"foo.bar.A.Internal.prototype.ROYALE_INITIAL_STATICS = Object.keys(foo.bar.A.Internal);\n"
 		);
 	}
 	

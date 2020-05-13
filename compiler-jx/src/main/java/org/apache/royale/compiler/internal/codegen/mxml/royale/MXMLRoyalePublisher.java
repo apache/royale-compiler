@@ -28,9 +28,11 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
-import org.apache.royale.compiler.codegen.js.IJSPublisher;
+import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
@@ -38,7 +40,6 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
 import org.apache.royale.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.royale.compiler.internal.css.CSSFontFace;
 import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
-import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
@@ -56,7 +57,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
 
-public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
+public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPublisher
 {
 
     public static final String ROYALE_OUTPUT_DIR_NAME = "bin";
@@ -101,6 +102,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
     private String moduleOutput;
     private boolean useStrictPublishing;
     private List<String> additionalHTML = new ArrayList<String>();
+    private Set<String> closurePropertyNamesToKeep;
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
     										String mainClassQName, 
@@ -181,6 +183,11 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         return outputFolder;
     }
 
+    public void setClosurePropertyNamesToKeep(Set<String> propertyNames)
+    {
+        closurePropertyNamesToKeep = propertyNames;
+    }
+
     @Override
     public boolean publish(ProblemQuery problems) throws IOException
     {
@@ -222,9 +229,14 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
 			e.printStackTrace();
 		}
 		String mainClassQName = qName;
-		DefinitionPromise cpromise = (DefinitionPromise)project.mainCU.getDefinitionPromises().get(0);
-		ClassDefinition cdef = (ClassDefinition)(cpromise.getActualDefinition());
-		ClassDefinition baseDef = (ClassDefinition)(project.resolveQNameToDefinition(cdef.getBaseClassAsDisplayString()));
+        DefinitionPromise cpromise = (DefinitionPromise)project.mainCU.getDefinitionPromises().get(0);
+        IDefinition actualDef = cpromise.getActualDefinition();
+        IClassDefinition baseDef = null;
+        if(actualDef instanceof IClassDefinition)
+        {
+		    IClassDefinition cdef = (IClassDefinition) cpromise.getActualDefinition();
+            baseDef = (IClassDefinition) project.resolveQNameToDefinition(cdef.getBaseClassAsDisplayString());
+        }
 		if (baseDef != null)
 		{
 			String factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
@@ -374,6 +386,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSPublisher
         if (configuration.release())
         {
             compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
+            compilerWrapper.setPropertyNamesToKeep(closurePropertyNamesToKeep);
         }
 
         if (compilerWrapper != null)

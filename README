@@ -61,11 +61,6 @@ Building the Apache Royale Compiler with Apache Maven
     *1) The bin directories for Maven and Java should be added to your
         PATH.
 
-    You must first build the utils profile without the main profile 
-    and then the main profile.  So, first run:
-
-        mvn clean install -P -main,utils
-
     Then run
 
         mvn clean install
@@ -270,7 +265,7 @@ Software Dependencies
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - https://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
-        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
+        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20181210.zip
 
     The Google Closure Compiler includes files originally from Rhino under MPL 1.1.  For
     details see:

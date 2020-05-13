@@ -20,14 +20,19 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -40,6 +45,7 @@ import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
+import org.apache.royale.compiler.internal.scopes.TypeScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
@@ -219,6 +225,8 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         processFragments(builder, attribute, info);
 
         info.clearFragments();
+
+        validateProperty(builder, attribute);
     }
 
     private void processFragments(MXMLTreeBuilder builder,
@@ -620,6 +628,8 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             // use helpers for parse for bindings, @functions, create correct child node
             processFragments(builder, tag, info);
         }
+
+        validateProperty(builder, tag);
     }
 
     @Override
@@ -641,5 +651,37 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             return null;
 
         return (IVariableDefinition)proxyDefinition;
+    }
+
+    private void validateProperty(MXMLTreeBuilder builder, ISourceLocation source)
+    {
+        final IDefinition definition = getDefinition();
+        if (definition instanceof IVariableDefinition || definition instanceof IAccessorDefinition)
+        {
+            MXMLFileScope fileScope = builder.getFileScope();
+            Set<INamespaceDefinition> namespaceSet = new HashSet<INamespaceDefinition>(fileScope.getNamespaceSet(builder.getProject()));
+
+            ITypeDefinition typeDef = (ITypeDefinition) definition.getParent();
+            TypeScope typeScope = (TypeScope) typeDef.getContainedScope();
+
+            ClassDefinition fileClassDef = fileScope.getMainClassDefinition();
+            if(Arrays.asList(fileClassDef.resolveAncestry(builder.getProject())).contains(typeDef))
+            {
+                IClassDefinition current = fileClassDef;
+                do
+                {
+                    namespaceSet.add(current.getProtectedNamespaceReference());
+                    current = current.resolveBaseClass(builder.getProject());
+                }
+                while (current instanceof IClassDefinition);
+            }
+
+            List<IDefinition> foundDefs = new ArrayList<IDefinition>();
+            typeScope.getPropertyForMemberAccess(builder.getProject(), foundDefs, definition.getBaseName(), namespaceSet, false);
+            if(!foundDefs.contains(definition))
+            {
+                builder.addProblem(new InaccessiblePropertyReferenceProblem(this, definition.getBaseName(), typeDef.getBaseName()));
+            }
+        }
     }
 }

@@ -60,6 +60,7 @@ import org.apache.royale.compiler.problems.SyntaxProblem;
 import org.apache.royale.compiler.problems.VirtualOutsideClassProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.royale.utils.ASTUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -156,6 +157,7 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
         else
         {
             f.parseFunctionBody(currentScope.getProblems());
+            ASTUtil.processFunctionNode(f, currentScope.getProject());
             return currentScope.getGenerator().generateFunction(f, this.currentScope, null, null);
         }
     }

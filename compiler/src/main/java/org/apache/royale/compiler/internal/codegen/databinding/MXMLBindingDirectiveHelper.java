@@ -86,7 +86,7 @@ public class MXMLBindingDirectiveHelper
     public MXMLBindingDirectiveHelper(MXMLClassDirectiveProcessor ddp, IABCVisitor emitter)
     {
         host = ddp;
-        BindingDatabase.bindingMap.put(ddp.getClassDefinition(), bindingDataBase);
+        ddp.getProject().getBindingMap().put(ddp.getClassDefinition(), bindingDataBase);
         this.emitter = emitter;
     }
     
@@ -288,7 +288,7 @@ public class MXMLBindingDirectiveHelper
            
             ret.addInstruction(OP_pushstring, functionWatcherInfo.getFunctionName());
             InstructionList paramFunction = new InstructionList();
-            BindingCodeGenUtils.makeParameterFunction(emitter, paramFunction, functionWatcherInfo.params);
+            BindingCodeGenUtils.makeParameterFunction(emitter, paramFunction, functionWatcherInfo.params, host.getInstanceScope());
             ret.addAll(paramFunction);
             outputEventNames(ret, functionWatcherInfo.getEventNames());
             outputBindings(ret, functionWatcherInfo.getBindings());
@@ -916,7 +916,8 @@ public class MXMLBindingDirectiveHelper
                     functionWatcherInfo.getFunctionName(),
                     functionWatcherInfo.getEventNames(),
                     functionWatcherInfo.getBindings(),
-                    functionWatcherInfo.params);
+                    functionWatcherInfo.params,
+                    host.getInstanceScope());
         }
         else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
         {

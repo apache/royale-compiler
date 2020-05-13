@@ -28,7 +28,8 @@
         <external-library-path>
             <path-element>../../compiler-externc/target/js.swc</path-element>
         </external-library-path>
-        
+
+        <strict-identifier-names>false</strict-identifier-names>
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
     

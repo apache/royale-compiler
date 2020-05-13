@@ -1,0 +1,438 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="CreateCompilerBuildToolsReleaseCandidate" default="main" basedir=".">
+
+    <!-- use -Dtag=<tag or commit hash> to build from other than the head -->
+
+    <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
+    <!-- Java 7 on Mac requires OSX 10.7.3 or higher and is 64-bit only -->
+    <!-- local.d32 is set/used in build.properties so this needs to be done first. -->
+    <condition property="local.d32" value="-d32">
+        <and>
+            <os family="windows"/>
+            <equals arg1="${sun.arch.data.model}" arg2="64"/>
+            <equals arg1="${os.arch}" arg2="x86_64"/>
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
+        </and>
+    </condition>
+
+    <condition property="isMac" value="mac">
+        <os family="mac" />
+    </condition>
+    <condition property="isWindows" value="windows">
+        <os family="windows" />
+    </condition>
+    <condition property="isLinux" value="linux">
+		<and>
+			<os family="unix" />
+			<not>
+				<isset property="isMac" />
+			</not>
+		</and>
+    </condition>
+	
+	<property name="rat.report" value="${basedir}/rat-report.txt"/>
+    <property name="apache.rat.jar" value="apache-rat-0.11.jar" />
+    <property name="apache.rat.tasks.jar" value="apache-rat-tasks-0.11.jar" />
+    <property name="apache.rat.url" value="https://search.maven.org/remotecontent?filepath=org/apache/rat/apache-rat/0.11" />
+    <property name="apache.rat.tasks.url" value="https://search.maven.org/remotecontent?filepath=org/apache/rat/apache-rat-tasks/0.11" />
+    
+	<property file="${basedir}/../local.properties" />
+	<property file="${basedir}/../build.properties" />
+	   
+    <property environment="env"/>
+    
+	<condition property="do.copy.downloads" >
+		<isset property="download.cache.dir" /> 
+	</condition>
+	
+    <condition property="CRLF" value="%0D%0A">
+        <isset property="isWindows" />
+    </condition>
+    <property name="CRLF" value="%0A" />
+    
+    <condition property="mvn" value="mvn.cmd">
+        <isset property="isWindows" />
+    </condition>
+    <property name="mvn" value="mvn" />
+
+    <condition property="svn" value="svn.exe">
+        <isset property="isWindows" />
+    </condition>
+    <property name="svn" value="svn" />
+
+    <available file="${env.ANT_HOME}/lib/${apache.rat.jar}"
+        type="file"
+        property="apache.rat.found"/>
+    <available file="${env.ANT_HOME}/lib/${apache.rat.tasks.jar}"
+        type="file"
+        property="apache.rat.tasks.found"/>
+		
+    <fail message="The release version number is not set.  Specify -Drelease.version=&lt;release version (e.g. 0.9.0, 1.0.0, etc)&gt;"
+        unless="release.version"/>
+        
+	<target name="install-rat" depends="install-rat.jar,install-rat.tasks.jar" />
+	<target name="install-rat.jar" unless="apache.rat.found">
+		<get src="${apache.rat.url}/${apache.rat.jar}" dest="${env.ANT_HOME}/lib/${apache.rat.jar}" />
+	</target>
+	<target name="install-rat.tasks.jar" unless="apache.rat.tasks.found">
+		<get src="${apache.rat.url}/${apache.rat.tasks.jar}" dest="${env.ANT_HOME}/lib/${apache.rat.tasks.jar}" />
+	</target>
+	
+    <target name="rat-taskdef" description="Rat taskdef">
+        <typedef resource="org/apache/rat/anttasks/antlib.xml"
+        uri="antlib:org.apache.rat.anttasks"
+        classpathref="anttask.classpath"/>
+    </target>
+    
+    <target name="checkout_tag" if="tag" >
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="checkout" />
+            <arg value="${tag}" />
+        </exec>
+    </target>
+
+    <target name="Royale_Compiler_Build_Tools_Release_Step_002" depends="get-temp-folder,download-artifacts,unzip-artifacts,build-source,validate-bits">
+    </target>
+    <target name="get-temp-folder">
+        <input
+        message="Enter a temporary folder to store the downloaded artifacts:"
+        addproperty="artifactfolder"/>
+        <mkdir dir="${artifactfolder}" />
+        <available file="${artifactfolder}"
+        type="dir"
+        property="artifact.folder.found"/>
+        <fail message="Could not create artifact folder"
+        unless="artifact.folder.found"/>
+    </target>
+    
+    <target name="download-artifacts" if="artifactfolder">
+        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Compiler_Build_Tools_Release_Step_002/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
+    </target>
+
+    <target name="unzip-artifacts" if="artifactfolder">
+        <mkdir dir="${artifactfolder}/artifacts" />
+        <unzip src="${artifactfolder}/archive.zip" dest="${artifactfolder}/artifacts"/>
+    </target>
+    
+    <target name="build-source" >
+        <mkdir dir="${artifactfolder}/sources" />
+        <unzip src="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip" dest="${artifactfolder}/sources" >
+            <cutdirsmapper dirs="1" />
+        </unzip>
+        
+        <!-- build the main project -->
+        <exec executable="${mvn}" dir="${artifactfolder}/sources" failonerror="true" >
+            <arg value="clean" />
+            <arg value="install" />
+            <arg value="-Proyale-release" />
+        </exec>
+    </target>
+    
+    <target name="get-artifact-folder" unless="artifactfolder">
+        <input
+            message="Enter the temporary folder to store the downloaded artifacts:"
+            addproperty="artifactfolder"/>
+        <available file="${artifactfolder}"
+            type="dir"
+            property="artifact.folder.found"/>
+        <fail message="Could not find artifact folder"
+            unless="artifact.folder.found"/>
+    </target>
+    
+    <target name="validate-bits" depends="get-artifact-folder,compare-jars">
+    </target>
+    
+    <target name="write-out-maven-jars-list">
+        <delete file="${artifactfolder}/jars.txt" />
+        <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
+         to skip in the rat-check of the binaries and which jars to examine before approval -->
+        <property name="jars-list" value="compiler-build-tools"/>
+        <echo file="${artifactfolder}/jars.txt" message="${jars-list}"/>
+    </target>
+    
+    <target name="compare-jars" depends="write-out-maven-jars-list">
+        <!-- comma delimited list, no spaces, not one file per line -->
+        <copy file="${artifactfolder}/jars.txt" tofile="${artifactfolder}/loop.txt" />
+        <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false" >
+            <property name="artifactfolder" value="${artifactfolder}" />
+            <property name="release.version" value="${release.version}" />
+        </ant>
+    </target>
+    
+    <target name="get-jar-version" >
+        <property name="jar.version" value="${release.version}" />
+    </target>
+    
+    <target name="loopOnce" >
+        <!-- make a copy of the list so we can munge it to
+         get the first item in the list -->
+        <delete file="${artifactfolder}/loop1.txt" />
+        <copy file="${artifactfolder}/loop.txt" tofile="${artifactfolder}/loop1.txt" />
+        <loadfile srcFile="${artifactfolder}/loop.txt" property="checkiflast" />
+        <condition property="islast" value="true">
+            <not>
+                <contains string="${checkiflast}" substring="," />
+            </not>
+        </condition>
+        <antcall target="notlast" />
+        <antcall target="lastone" />
+    </target>
+    <target name="notlast" unless="islast">
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="echoFile" />
+        <replaceregexp file="${artifactfolder}/loop1.txt" match="^(.*),(.*)" replace="\2" />
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="thisFile" />
+        <antcall target="compare_files" />
+        <replaceregexp file="${artifactfolder}/loop.txt" match="^(.*),(.*)" replace="\1" />
+        <ant antfile="releasesteps.xml" target="loopOnce" inheritAll="false">
+            <property name="artifactfolder" value="${artifactfolder}" />
+            <property name="release.version" value="${release.version}" />
+        </ant>
+    </target>
+    <target name="lastone" if="islast">
+        <loadfile srcFile="${artifactfolder}/loop1.txt" property="thisFile" />
+        <antcall target="compare_files" />
+        <delete file="${artifactfolder}/loop.txt" />
+        <delete file="${artifactfolder}/loop1.txt" />
+    </target>
+
+    <target name="compare_files" depends="get-jar-version">
+        <echo>comparing ${thisFile}-${jar.version}</echo>
+        <fail message="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar does not exist" >
+            <condition>
+                <not>
+                    <resourceexists><file file="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"/></resourceexists>
+                </not>
+            </condition>
+        </fail>
+        <fail message="${artifactfolder}/sources/target/${thisFile}-${jar.version}.jar does not exist" >
+            <condition>
+                <not>
+                    <resourceexists><file file="${artifactfolder}/sources/target/${thisFile}-${jar.version}.jar"/></resourceexists>
+                </not>
+            </condition>
+        </fail>
+        <condition property="filesmatch" value="true">
+              <filesmatch file1="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${thisFile}/${jar.version}/${thisFile}-${jar.version}.jar"
+                file2="${artifactfolder}/sources/target/${thisFile}-${jar.version}.jar" />
+        </condition>
+        <fail message="${thisFile}-${jar.version}.jar does not match" unless="filesmatch" />
+    </target>
+    
+    <target name="Royale_Compiler_Build_Tools_Release_Step_002_Sign" depends="get-artifact-folder">
+        <fail message="release.version not specified"
+            unless="release.version"/>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="compiler-build-tools" />
+        </antcall>
+    </target>
+
+    <target name="sign-jar-artifacts">
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.pom" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-javadoc.jar" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}-sources.jar" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir/org/apache/royale/compiler/${jarname}/${release.version}/${jarname}-${release.version}.jar" />
+        </antcall>
+    </target>
+    
+    
+    
+    <target name="sign-file">
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${file}.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${file}" />
+        </exec>
+    </target>
+    
+    <target name="Royale_Compiler_Build_Tools_Release_Step_002_Upload" depends="get-artifact-folder">
+        <fail message="release.version not specified"
+            unless="release.version"/>
+        <exec executable="${mvn}" failonerror="true" >
+            <arg value="wagon:upload" />
+            <arg value="-X" />
+            <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir" />
+            <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
+            <arg value="-Dwagon.serverId=apache.releases.https" />
+            <arg value="-Dwagon.includes=**" />
+        </exec>
+        <!--<antcall target="check-new-version" />-->
+        <!--<antcall target="post-on-dist" />-->
+    </target>
+
+    <!--
+    <target name="Release_Step_004_Post_Artifacts_To_Dist" depends="credentials" description="Perform required release approval steps">-->
+    <target name="Release_Step_004_Post_Artifacts_To_Dist" description="Perform required release approval steps">
+		<antcall target="check-new-version" />
+		<mkdir dir="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" />
+        <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip"
+            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/apache-royale-compiler-build-tools-${release.version}-source-release.zip" >
+		</get>
+        <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}-source-release.zip.asc"
+            dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/apache-royale-compiler-build-tools-${release.version}-source-release.zip.asc" >
+        </get>
+        <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/apache-royale-compiler-build-tools-${release.version}-source-release.zip" forceOverwrite="yes" fileext=".sha512"/>
+		<get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}.jar" dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
+		</get>
+        <get src="https://repository.apache.org/content/repositories/orgapacheroyale-${maven.folder.number}/org/apache/royale/compiler/compiler-build-tools/${release.version}/compiler-build-tools-${release.version}.jar.asc" dest="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries" >
+        </get>
+        <checksum algorithm="SHA-512" file="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/binaries/compiler-build-tools-${release.version}.jar" forceOverwrite="yes" fileext=".sha512"/>
+<!--
+		<copy file="${basedir}/README" tofile="${dist.dev}/royale/compiler/${release.version}/rc${rc}/READme" />
+        -->
+		<copy file="${basedir}/ApproveBuildTools.xml" tofile="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}/ApproveBuildTools.xml" />
+        <exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
+            <arg value="update" />
+        </exec>
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
+			<arg value="add" />
+			<arg value="${dist.dev}/royale/compiler-build-tools/${release.version}/rc${rc}" />
+		</exec>
+    </target>
+    
+    <target name="tag_release" unless="tag" >
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="tag" />
+            <arg value="-a" />
+            <arg value="apache-royale-compiler-${release.version}-rc${rc}" />
+            <arg value="-m" />
+            <arg value="&quot;rc${rc} of apache-royale-compiler-${release.version}&quot;" />
+        </exec>
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="push" />
+            <arg value="--tags" />
+        </exec>
+    </target>
+
+	<target name="credentials" depends="get-username,get-password">
+		<echo>${apache.username}</echo>
+		<echo>${apache.password}</echo>
+	</target>
+	<target name="get-username" unless="apache.username" >
+        <input
+        message="Enter Apache account username:"
+        addproperty="apache.username"/>
+        <condition property="have.username">
+			<not>
+				<equals trim="true" arg1="" arg2="${apache.username}"/>
+			</not>
+        </condition>
+		<fail message="The apache.username property is not set.  It should be the username for Apache SVN and Git."
+			unless="have.username"/>
+	</target>
+	<target name="get-password" unless="apache.password" >
+        <input
+        message="Enter Apache account password:"
+        addproperty="apache.password"/>
+        <condition property="have.password">
+			<not>
+				<equals trim="true" arg1="" arg2="${apache.password}"/>
+			</not>
+        </condition>
+		<fail message="The apache.password property is not set.  It should be the password for Apache SVN and Git."
+			unless="have.password"/>
+	</target>
+	
+	
+	<target name="check-new-version" description="check if svn folder needs to be added" >
+		<condition property="version.folder" value="${dist.dev}/royale/compiler-build-tools/${release.version}" >
+			<not>
+				<available file="${dist.dev}/royale/compiler-build-tools/${release.version}" />
+			</not>
+		</condition>
+		<antcall target="add-version-folder" />
+	</target>
+    
+	<target name="add-version-folder" description="adds svn folder if needed" if="version.folder" >
+		<mkdir dir="${version.folder}" />
+		<exec executable="${svn}" dir="${dist.dev}/royale/compiler-build-tools" failonerror="true" >
+			<arg value="add" />
+			<arg value="${version.folder}" />
+		</exec>
+	</target>
+		
+	<target name="release" depends="credentials" >
+		<available file="${svn.dist.release}"
+			type="dir" 
+			property="dist.release" value="${svn.dist.release}" />
+    
+		<fail message="The svn.dist.release property is not set to the working copy for https://dist.apache.org/repos/dist/release."
+			unless="dist.release"/>
+				
+		<exec executable="${svn}" dir="${dist.release}/royale" failonerror="true" >
+			<arg value="update" />
+		</exec>
+		<exec executable="${svn}" dir="${dist.release}/royale/compiler" failonerror="true" >
+			<arg value="mv" />
+			<arg value="${dist.dev}/royale/compiler/${release.version}/rc${rc}" />
+            <arg value="${dist.release}/royale/compiler/${release.version}" />
+		</exec>
+		<exec executable="${svn}" dir="${dist.release}/.." failonerror="true" >
+			<arg value="commit" />
+			<arg value="--username" />
+			<arg value="${apache.username}" />
+			<arg value="--password" />
+			<arg value="${apache.password}" />
+			<arg value="-m" />
+			<arg value="Apache Royale Compiler ${release.version}" />
+		</exec>
+        <antcall target="release.tag" />
+		<exec executable="${git}" dir="${basedir}" failonerror="true" >
+			<arg value="push" />
+			<arg value="--tags" />
+		</exec>
+		<echo>Wait at least 24 hours before running update-installer-config-release target</echo>
+	</target>
+	
+    <target name="release.tag" >
+        <condition property="tag" value="apache-royale-compiler-${release.version}-rc${rc}">
+            <not>
+                <isset property="tag" />
+            </not>
+        </condition>
+        <exec executable="${git}" dir="${basedir}" failonerror="true" output="${basedir}/taghash.txt">
+            <arg value="show" />
+            <arg value="${tag}" />
+        </exec>
+        <replaceregexp file="${basedir}/taghash.txt" match="(.*).commit (.*).Author(.*)" replace="\2" byline="false" flags="s" />
+        <loadfile srcFile="${basedir}/taghash.txt" property="releasehash" />
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="tag" />
+            <arg value="-a" />
+            <arg value="apache-royale-compiler-${release.version}" />
+            <arg value="${releasehash}" />
+            <arg value="-m" />
+            <arg value="&quot;Official release of apache-royale-compiler-${release.version}&quot;" />
+        </exec>
+    </target>
+</project>

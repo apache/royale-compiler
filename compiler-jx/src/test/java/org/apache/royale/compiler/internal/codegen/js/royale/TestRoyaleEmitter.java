@@ -136,21 +136,19 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"        'publicProperty': { type: 'Number', get_set: function (/** com.example.components.MyEventTarget */ inst, /** * */ v) {return v !== undefined ? inst.publicProperty = v : inst.publicProperty;}}\n" +
 				"      };\n" +
 				"    },\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'MyEventTarget': { type: '', declaredBy: 'com.example.components.MyEventTarget'},\n" +
-				"        'myFunction': { type: 'String', declaredBy: 'com.example.components.MyEventTarget', parameters: function () { return [ { index: 1, type: 'String', optional: false } ]; }}\n" +
+				"        'myFunction': { type: 'String', declaredBy: 'com.example.components.MyEventTarget', parameters: function () { return [ 'String', false ]; }}\n" +
 				"      };\n" +
 				"    }\n" +
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.MyEventTarget.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.MyEventTarget.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
     @Override
@@ -200,17 +198,13 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" * @return {Object.<string, Function>}\n" +
 				" */\n" +
 				"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-				"  return {\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-				"  };\n" +
+				"  return {};\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.TestInterface.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.TestInterface.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
     @Override
@@ -261,18 +255,13 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" * @return {Object.<string, Function>}\n" +
 				" */\n" +
 				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
-				"    methods: function () {return {};}\n" +
-				"  };\n" +
+				"  return {};\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.TestClass.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
     
     @Test
@@ -332,8 +321,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" */\n" +
 				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
 				"  return {\n" +
-				"    variables: function () {return {};},\n" +
-				"    accessors: function () {return {};},\n" +
 				"    methods: function () {\n" +
 				"      return {\n" +
 				"        'TestClass': { type: '', declaredBy: 'com.example.components.TestClass'}\n" +
@@ -342,11 +329,10 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"  };\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
 				" */\n" +
-				"com.example.components.TestClass.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+				"com.example.components.TestClass.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
     
 

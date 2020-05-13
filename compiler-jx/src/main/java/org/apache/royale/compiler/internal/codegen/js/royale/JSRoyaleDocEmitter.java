@@ -37,6 +37,7 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -267,8 +268,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                             suppressClosure = true;
                         
                         String suppressExport = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
-                        if (docText.contains(suppressExport))
+                        if (docText.contains(suppressExport)) {
                             emitExports = false;
+                            if (IASKeywordConstants.PUBLIC.equals(ns)) // suppress it for reflection data checks:
+                                ((JSRoyaleEmitter) (emitter)).getModel().suppressedExportNodes.add(node);
+                        }
                         
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
@@ -443,6 +447,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
     }
     
+    public boolean hasIgnore(String qName) {
+        return ignoreList !=null && qName != null && ignoreList.contains(qName);
+    }
+    
     private void loadKeepers(String doc)
     {
     	coercionList = new ArrayList<String>();
@@ -538,6 +546,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
         begin();
 
+        RoyaleJSProject fjp =  (RoyaleJSProject)project;
         String ns = node.getNamespace();
         if (ns == IASKeywordConstants.PRIVATE)
         {
@@ -546,11 +555,18 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         else if (ns == IASKeywordConstants.PROTECTED)
         {
             emitProtected(node);
+            boolean preventRename = fjp.config != null && fjp.config.getPreventRenameProtectedSymbols();
+            if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+            {
+                //dynamically getting/setting a protected static variable
+                //won't work properly if it is collapsed, even when it
+                //has been exported
+                emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+            }
         }
         else
         {
-        	RoyaleJSProject fjp =  (RoyaleJSProject)project;
-            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars();
+            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars() && !fjp.config.getPreventRenamePublicSymbols();
             IMetaTagsNode meta = node.getMetaTags();
             boolean bindable = false;
             if (meta != null)
@@ -582,12 +598,27 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                
 
             }
-            if (!(node.getASDocComment() instanceof ASDocComment
+            boolean avoidExport = (node.getASDocComment() instanceof ASDocComment
                     && ((ASDocComment)node.getASDocComment()).commentNoEnd()
-                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()))) {
-                emitPublic(node);
-            }
+                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
             
+            if (!avoidExport) {
+                if (ns.equals(IASKeywordConstants.PUBLIC))
+                {
+                    emitPublic(node);
+                    boolean preventRename = fjp.config != null && fjp.config.getPreventRenamePublicSymbols();
+                    if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+                    {
+                        //dynamically getting/setting a public static variable
+                        //won't work properly if it is collapsed, even when it
+                        //has been exported
+                        emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+                    }
+                }
+            } else {
+                //we should also remove it from reflection data... provide a check here for that.
+                ((JSRoyaleEmitter)emitter).getModel().suppressedExportNodes.add(node);
+            }
         }
 
         if (node.isConst())

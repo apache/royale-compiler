@@ -25,8 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
@@ -41,27 +43,15 @@ import org.apache.royale.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.internal.tree.as.ConfigConditionBlockNode;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IAccessorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.INamespaceNode;
-import org.apache.royale.compiler.tree.as.IPackageNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IScopedNode;
-import org.apache.royale.compiler.tree.as.ITypeNode;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IVariableExpressionNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.NativeUtils;
 
 /**
@@ -77,6 +67,16 @@ public class EmitterUtils
             IASNode child = scope.getChild(i);
             if (child instanceof ITypeNode)
                 return (ITypeNode) child;
+            else if (child.getNodeID() == ASTNodeID.ConfigBlockID)
+            {
+            	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)child;
+            	if (configNode.getChildCount() > 0)
+            	{
+            		child = configNode.getChild(0);
+                    if (child instanceof ITypeNode)
+                        return (ITypeNode) child;
+            	}
+            }
         }
         return null;
     }
@@ -473,9 +473,89 @@ public class EmitterUtils
         
         if (node == firstChild) 
         		return true;
-
+        //support alternate ordering of checks, e.g. listItem.(3 == @id) as well as the normal listItem.(@id == 3)
+        if (parentNode instanceof IBinaryOperatorNode
+            && node == parentNode.getChild(1)) {
+            return !(parentNode instanceof IMemberAccessExpressionNode);
+        }
+        
         return false;
     }
+    
+   /* public static ArrayList<String> amendE4XFilterComparison(ICompilerProject project,
+                                                     JSSessionModel model, IBinaryOperatorNode node, boolean isLeft) {
+        if (!model.inE4xFilter) return null;
+        IExpressionNode leftNode = node.getLeftOperandNode();
+        IDefinition left = null;
+        IDefinition right = null;
+        boolean leftNodeMember = false;
+        boolean leftNodeQName = false;
+        boolean rightNodeMember = false;
+        boolean rightNodeQName = false;
+        if (writeE4xFilterNode(project, model, leftNode)) {
+            leftNodeMember = true;
+            if (leftNode  instanceof IFunctionCallNode &&
+                    ((IFunctionCallNode) leftNode).getNameNode() != null){
+                leftNodeQName = ((IFunctionCallNode) leftNode).getNameNode().equals("name");
+            }
+        } else {
+            left = node.getLeftOperandNode().resolveType(project);
+        }
+        IExpressionNode rightNode = node.getRightOperandNode();
+        if (writeE4xFilterNode(project, model, rightNode)) {
+            rightNodeMember = true;
+            if (rightNode  instanceof IFunctionCallNode &&
+                    ((IFunctionCallNode) rightNode).getNameNode() != null){
+                rightNodeQName = ((IFunctionCallNode) rightNode).getNameNode().equals("name");
+            }
+        } else {
+            right = node.getRightOperandNode().resolveType(project);
+        }
+        if (!leftNodeMember && !rightNodeMember) return null;
+        ArrayList<String> s = null;
+        if (leftNodeMember) {
+            //left side is a node.something() function
+            if (right!= null && leftNodeQName) {
+                //node.name() == right
+                if (right.getQualifiedName().equals("String")) {
+                    if (isLeft) {
+                        s=new ArrayList<String>();
+                        s.add(".toString()");
+                    } //else make no change for right side
+                } else if (rightNodeQName || right.getQualifiedName().equals("QName")) {
+                    //use qname.equals(otherQName)
+                    if (isLeft) {
+                        s.add(".equals(");
+                    } else {
+                        s.add(")"); //close the equals
+                    }
+                }
+            }
+        }
+        if (s == null && rightNodeMember) {
+            //right side is a node.something() function that has not already been addressed
+            if (left!= null && rightNodeQName) {
+                //left == node.name()
+                if (left.getQualifiedName().equals("String")) {
+                    if (!isLeft) {
+                        //node.name().toString()
+                        s=new ArrayList<String>();
+                        s.add(".toString()");
+                    } //else make no change for right side
+                } else if (rightNodeQName || right.getQualifiedName().equals("QName")) {
+                    //use qname.equals(otherQName)
+                    if (isLeft) {
+                        s.add(".equals(");
+                    } else {
+                        s.add(")"); //close the equals
+                    }
+                }
+            }
+        }
+       
+        
+        return s;
+    }*/
 
     public static boolean isScalar(IExpressionNode node)
     {
@@ -660,6 +740,204 @@ public class EmitterUtils
             return true;
         }
         return defaultInitializers;
+    }
+    
+    
+    /**
+     * resolveType on an XML expression returns null
+     * (see IdentiferNode.resolveType).
+     * So, we have to walk the tree ourselves and resolve
+     * individual pieces.
+     * @param obj
+     * @return
+     */
+    public static boolean isXMLish(IExpressionNode obj, ICompilerProject project )
+    {
+        // See if the left side is XML or XMLList
+        IDefinition leftDef = obj.resolveType(project);
+        if (leftDef == null && obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+        {
+            return isXMLish(((MemberAccessExpressionNode)obj).getLeftOperandNode(), project);
+        }
+        else if (leftDef != null && leftDef.getBaseName().equals("*") && obj instanceof DynamicAccessNode) {
+            return isXMLish(((DynamicAccessNode)obj).getLeftOperandNode(), project);
+        }
+        return SemanticUtils.isXMLish(leftDef, project);
+    }
+    
+    
+    /**
+     * resolveType on an XML expression returns null
+     * (see IdentiferNode.resolveType).
+     * So, we have to walk the tree ourselves and resolve
+     * individual pieces.
+     * We want to know not just whether the node is of type XML,
+     * but whether it is a property of a property of type XML.
+     * For example, this.foo might be XML or XMLList, but since
+     * 'this' isn't also XML, we return false.  That's because
+     * assignment to this.foo shouldn't use setChild() but
+     * just do an assignment.
+     * @param obj
+     * @return
+     */
+    public static boolean isXMLList(IMemberAccessExpressionNode obj, ICompilerProject project)
+    {
+        IExpressionNode leftNode = obj.getLeftOperandNode();
+        IExpressionNode rightNode = obj.getRightOperandNode();
+        ASTNodeID rightID = rightNode.getNodeID();
+        if (rightID == ASTNodeID.IdentifierID || (rightID == ASTNodeID.NamespaceAccessExpressionID && rightNode.getChild(1).getNodeID() == ASTNodeID.IdentifierID))
+        {
+            IDefinition rightDef = rightNode.resolveType(project);
+            if (rightDef != null)
+            {
+                if (SemanticUtils.isXMLish(rightDef, project))
+                {
+                    return isLeftNodeXMLish(leftNode, project);
+                }
+                return false;
+            }
+            return isLeftNodeXMLish(leftNode, project);
+        }
+        else if (rightID == ASTNodeID.Op_AtID)
+            return true;
+        else if (rightNode instanceof IDynamicAccessNode && ((IDynamicAccessNode) rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID)
+            return true;
+        return false;
+    }
+
+    public static boolean isLeftNodeXMLList(IExpressionNode leftNode, ICompilerProject project) {
+        boolean isXMLList = false;
+        if (isLeftNodeXMLish(leftNode, project)) {
+            //it is not XMLList if it is a DynamicAccessNode with numeric index.
+            //this is limited analysis, because ["0"] would also be the same as [0], but perhaps best we can do without more runtime support
+            if (leftNode instanceof IDynamicAccessNode) { //DynamicAccessNode
+                IExpressionNode dynAccess = ((IDynamicAccessNode) leftNode).getRightOperandNode();
+                IDefinition accessDef = dynAccess.resolveType(project);
+                if (SemanticUtils.isNumericType(accessDef, project)) {
+                    //assume we are XML, not XMLList
+                    isXMLList = false;
+                }
+            } else
+                isXMLList = true;
+
+        }
+        return isXMLList;
+    }
+
+    public static boolean isLeftNodeXML(IExpressionNode leftNode, ICompilerProject project) {
+        boolean isXML = false;
+        if (isLeftNodeXMLish(leftNode, project)) {
+            //it is not XMLList if it is a DynamicAccessNode with numeric index.
+            //this is limited analysis, because ["0"] would also be the same as [0], but perhaps best we can do without more runtime support
+            if (leftNode instanceof IDynamicAccessNode) { //DynamicAccessNode
+                IExpressionNode dynAccess = ((IDynamicAccessNode) leftNode).getRightOperandNode();
+                IDefinition accessDef = dynAccess.resolveType(project);
+                if (SemanticUtils.isNumericType(accessDef, project)) {
+                    //assume we are XML, not XMLList
+                    isXML = true;
+                }
+            } else
+                isXML = false;
+
+        }
+        return isXML;
+    }
+    
+    
+    public static boolean isLeftNodeXMLish(IExpressionNode leftNode, ICompilerProject project)
+    {
+        ASTNodeID leftID = leftNode.getNodeID();
+        if (leftID == ASTNodeID.IdentifierID)
+        {
+            IDefinition leftDef = leftNode.resolveType(project);
+            if (leftDef != null)
+                return SemanticUtils.isXMLish(leftDef, project);
+        }
+        else if (leftID == ASTNodeID.MemberAccessExpressionID || leftID == ASTNodeID.Op_DescendantsID)
+        {
+            MemberAccessExpressionNode maen = (MemberAccessExpressionNode)leftNode;
+            IExpressionNode rightNode = maen.getRightOperandNode();
+            ASTNodeID rightID = rightNode.getNodeID();
+            if (rightID == ASTNodeID.IdentifierID)
+            {
+                IDefinition rightDef = rightNode.resolveType(project);
+                if (rightDef != null && rightDef != project.getBuiltinType(BuiltinType.ANY_TYPE))
+                {
+                    return SemanticUtils.isXMLish(rightDef, project);
+                }
+            }
+            leftNode = maen.getLeftOperandNode();
+            return isLeftNodeXMLish(leftNode, project);
+        }
+        else if (leftID == ASTNodeID.FunctionCallID)
+        {
+            FunctionCallNode fcn = (FunctionCallNode)leftNode;
+            String fname = fcn.getFunctionName();
+            if (fname.equals("XML") || fname.equals("XMLList"))
+                return true;
+        }
+        else if (leftID == ASTNodeID.Op_AsID)
+        {
+            BinaryOperatorAsNode boan = (BinaryOperatorAsNode)leftNode;
+            String fname = ((IdentifierNode)boan.getChild(1)).getName();
+            if (fname.equals("XML") || fname.equals("XMLList"))
+                return true;
+        }
+        else if (leftID == ASTNodeID.ArrayIndexExpressionID)
+        {
+            leftNode = (IExpressionNode)(leftNode.getChild(0));
+            IDefinition leftDef = leftNode.resolveType(project);
+            if (leftDef != null)
+                return SemanticUtils.isXMLish(leftDef, project);
+            
+        }
+        else if (leftID == ASTNodeID.E4XFilterID)
+            return true;
+        return false;
+    }
+    
+    public static boolean needsXMLQNameArgumentsPatch(IFunctionCallNode node, ICompilerProject project) {
+        if (node.getNameNode() instanceof MemberAccessExpressionNode
+        && ((MemberAccessExpressionNode)node.getNameNode()).getRightOperandNode() instanceof IdentifierNode) {
+            String methodName = ((IdentifierNode)((MemberAccessExpressionNode)node.getNameNode()).getRightOperandNode()).getName();
+            if ("child".equals(methodName) || "descendants".equals(methodName) || "attribute".equals(methodName)) {
+                //double check it is not a method with the same name on a non-XMLish class
+                IASNode leftNode = ((MemberAccessExpressionNode)node.getNameNode()).getLeftOperandNode();
+                boolean isXML = leftNode instanceof MemberAccessExpressionNode
+                        && isLeftNodeXMLish((MemberAccessExpressionNode) leftNode, project);
+                if (!isXML) {
+                    isXML = leftNode instanceof IExpressionNode && isXMLish((IExpressionNode)leftNode, project);
+                }
+                if (isXML) {
+                    //check argumentsNode
+                    if (node.getArgumentsNode().getChildCount() == 1) {
+                        IDefinition def = node.getArgumentNodes()[0].resolveType(project);
+                        if (def != null && def.getQualifiedName().equals("QName")) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    public static void createDefaultNamespaceArg(ContainerNode argsNode, int position, IExpressionNode defaultNamespace) {
+        argsNode.addChild((NodeBase) defaultNamespace, position);
+        ((NodeBase) defaultNamespace).setParent(argsNode);
+    }
+    
+    public static boolean isCustomNamespace(String ns) {
+        if (ns != null)
+        {
+            return (!(  ns.equals(IASKeywordConstants.PRIVATE) ||
+                        ns.equals(IASKeywordConstants.PROTECTED) ||
+                        ns.equals(IASKeywordConstants.INTERNAL) ||
+                        ns.equals(INamespaceConstants.AS3URI) ||
+                        ns.equals(IASKeywordConstants.PUBLIC)
+                    ));
+        }
+        return false;
     }
 
 }

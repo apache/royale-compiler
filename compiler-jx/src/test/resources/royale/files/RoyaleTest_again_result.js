@@ -101,25 +101,107 @@ RoyaleTest_again = function() {
    */
   this.mxmldp;
 
-  this.generateMXMLAttributes
-  ([5,
-'model',
-false,
-[models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
-'valuesImpl',
-false,
-[org.apache.royale.core.SimpleCSSValuesImpl, 1, '_id', true, '$ID0', 0, 0, null],
-'initialView',
-false,
-[MyInitialView, 1, '_id', true, '$ID1', 0, 0, null],
-'controller',
-false,
-[controllers.MyController, 1, '_id', true, '$ID3', 0, 0, null],
-'beads',
-null, [org.apache.royale.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.royale.collections.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.royale.collections.parsers.JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
-0,
-1,
-'initialize',
+  this.generateMXMLAttributes([
+    5,
+    'model',
+    false,
+    [
+      models.MyModel,
+      1,
+      '_id',
+      true,
+      '$ID2',
+      0,
+      0,
+      null
+    ],
+    'valuesImpl',
+    false,
+    [
+      org.apache.royale.core.SimpleCSSValuesImpl,
+      1,
+      '_id',
+      true,
+      '$ID0',
+      0,
+      0,
+      null
+    ],
+    'initialView',
+    false,
+    [
+      MyInitialView,
+      1,
+      '_id',
+      true,
+      '$ID1',
+      0,
+      0,
+      null
+    ],
+    'controller',
+    false,
+    [
+      controllers.MyController,
+      1,
+      '_id',
+      true,
+      '$ID3',
+      0,
+      0,
+      null
+    ],
+    'beads',
+    null,
+    [
+      org.apache.royale.net.HTTPService,
+      2,
+      'id',
+      true,
+      'service',
+      'beads',
+      null,
+      [
+        org.apache.royale.collections.LazyCollection,
+        3,
+        'id',
+        true,
+        'collection',
+        'inputParser',
+        false,
+        [
+          org.apache.royale.collections.parsers.JSONInputParser,
+          1,
+          '_id',
+          true,
+          '$ID4',
+          0,
+          0,
+          null
+        ],
+        'itemConverter',
+        false,
+        [
+          StockDataJSONItemConverter,
+          1,
+          '_id',
+          true,
+          '$ID5',
+          0,
+          0,
+          null
+        ],
+        0,
+        0,
+        null
+      ],
+      0,
+      0,
+      null
+    ],
+    0,
+    1,
+    'initialize',
 this.$EH0
   ]);
   
@@ -190,7 +272,6 @@ RoyaleTest_again.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'RoyaleTest_aga
  */
 RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
     accessors: function () {
       return {
         'service': { type: 'org.apache.royale.net.HTTPService', access: 'readwrite', declaredBy: 'RoyaleTest_again'},
@@ -199,12 +280,16 @@ RoyaleTest_again.prototype.ROYALE_REFLECTION_INFO = function () {
     },
     methods: function () {
       return {
-        'RoyaleTest_again': { type: '', declaredBy: 'RoyaleTest_again'},
-        '$EH0': { type: 'void', declaredBy: 'RoyaleTest_again'}
+        'RoyaleTest_again': { type: '', declaredBy: 'RoyaleTest_again'}
       };
     }
   };
 };
+/**
+ * @const
+ * @type {number}
+ */
+RoyaleTest_again.prototype.ROYALE_COMPILE_FLAGS = 9;
 
 
 

@@ -38,6 +38,7 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -72,6 +73,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.D
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
@@ -79,39 +81,14 @@ import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
-import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.problems.FilePrivateItemsWithMainVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IAccessorNode;
-import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IEmbedNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFileNode;
-import org.apache.royale.compiler.tree.as.IForLoopNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
-import org.apache.royale.compiler.tree.as.IGetterNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.IInterfaceNode;
-import org.apache.royale.compiler.tree.as.ILiteralNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.royale.compiler.tree.as.INamespaceNode;
-import org.apache.royale.compiler.tree.as.IPackageNode;
-import org.apache.royale.compiler.tree.as.IScopedNode;
-import org.apache.royale.compiler.tree.as.ISetterNode;
-import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
-import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 import com.google.common.base.Joiner;
@@ -587,25 +564,58 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitNamespace(INamespaceNode node)
     {
     	needNamespace = true;
-        write(formatQualifiedName(node.getQualifiedName()));
+    	if (node.getContainingScope().getScope() instanceof PackageScope) {
+            startMapping(node);
+            write(formatQualifiedName(node.getQualifiedName()));
+            endMapping(node);
+        } else if (node.getContainingScope().getScope() instanceof FunctionScope){
+            writeToken(ASEmitterTokens.VAR);
+            write("/** @type {"+IASLanguageConstants.Namespace+"} */");
+            startMapping(node);
+            write(node.getName());
+            endMapping(node);
+        } else {
+    	    //class member - static scope
+            if (!(node.getDefinition().getParent() instanceof IClassDefinition)) {
+                startMapping(node);
+                write(node.getQualifiedName());
+                endMapping(node);
+            } else {
+                write(node.getDefinition().getParent().getQualifiedName());
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                startMapping(node);
+                write(node.getName());
+                endMapping(node);
+            }
+        }
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         writeToken(ASEmitterTokens.NEW);
+        startMapping(node);
         write(IASLanguageConstants.Namespace);
+        endMapping(node);
         write(ASEmitterTokens.PAREN_OPEN);
         if (!staticUsedNames.contains(IASLanguageConstants.Namespace))
         	staticUsedNames.add(IASLanguageConstants.Namespace);
         IExpressionNode uriNode = node.getNamespaceURINode();
         if (uriNode == null)
         {
+            startMapping(node);
             write(ASEmitterTokens.SINGLE_QUOTE);
             write(node.getName());
             write(ASEmitterTokens.SINGLE_QUOTE);
+            endMapping(node);
         }
         else
         	getWalker().walk(uriNode);
         write(ASEmitterTokens.PAREN_CLOSE);
-        write(ASEmitterTokens.SEMICOLON);
+    }
+    
+    @Override
+    public void emitUseNamespace(IUseNamespaceNode node)
+    {
+        write("//use namespace ");
+        getWalker().walk(node.getTargetNamespaceNode());
     }
 
     public boolean isCustomNamespace(FunctionNode node)
@@ -699,7 +709,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	{
         	if (getModel().inStaticInitializer)
         		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name)
-        				&& isGoogProvided(name) && !getModel().getCurrentClass().getQualifiedName().equals(name)
+        				&& isGoogProvided(name) && (getModel().getCurrentClass() == null || !getModel().getCurrentClass().getQualifiedName().equals(name))
         				&& (getModel().primaryDefinitionQName == null
         					|| !getModel().primaryDefinitionQName.equals(name)))
         			staticUsedNames.add(name);
@@ -981,13 +991,35 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     {
     	getWalker().walk(node.getLeftOperandNode());
     	getModel().inE4xFilter = true;
-    	write(".filter(function(node){return (");
     	String s = stringifyNode(node.getRightOperandNode());
     	if (s.startsWith("(") && s.endsWith(")"))
     		s = s.substring(1, s.length() - 1);
-    	write(s);
-    	write(")})");
+        if (s.contains("this")) {
+            //it *could* be in some string content, but most likely is an actual 'this' reference
+            //so always bind to 'this' to correctly resolve the external references for the instance scope of the original code.
+            write(".filter((function(/** @type {XML} */ node){return (");
+            write(s);
+            write(")})");
+            write(".bind(this))");
+        } else {
+            write(".filter(function(/** @type {XML} */ node){return (");
+            write(s);
+            write(")})");
+        }
     	getModel().inE4xFilter = false;
+    }
+    
+    @Override
+    public  void emitE4XDefaultNamespaceDirective(IDefaultXMLNamespaceNode node){
+        //leave a comment at the original code location
+        write("// e4x default namespace active: ");
+        getWalker().walk(node.getKeywordNode());
+        write(" = ");
+        getWalker().walk(node.getExpressionNode());
+        //register the namespace for the current function scope (and only for function scopes (observed behavior) )
+        if (node.getContainingScope().getScope() instanceof FunctionScope) {
+            getModel().registerDefaultXMLNamespace(((FunctionScope)node.getContainingScope().getScope()), node.getExpressionNode());
+        }
     }
 
     @Override
@@ -1116,21 +1148,40 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         if (getDocEmitter() instanceof JSRoyaleDocEmitter && ((JSRoyaleDocEmitter) getDocEmitter()).getSuppressClosure()) return;
     	write(ASEmitterTokens.COMMA);
     	write(ASEmitterTokens.SPACE);
-    	write(ASEmitterTokens.SINGLE_QUOTE);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        
+        IIdentifierNode identifierNode = null;
     	if (node.getNodeID() == ASTNodeID.IdentifierID)
     	{
-        	if (nodeDef instanceof FunctionDefinition &&
+            identifierNode = (IIdentifierNode) node;
+    	}
+        else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+        {
+            identifierNode = getChainedIdentifierNode(node);
+        }
+        if (identifierNode == null)
+        {
+            System.out.println("unexpected node in emitClosureEnd");
+        }
+        else
+        {
+            if (!node.equals(identifierNode))
+            {
+                nodeDef = identifierNode.resolve(getWalker().getProject());
+            }
+
+            if (nodeDef instanceof FunctionDefinition &&
         			isCustomNamespace((FunctionDefinition)nodeDef))
         	{
             	String ns = ((INamespaceResolvedReference)((FunctionDefinition)nodeDef).getNamespaceReference()).resolveAETNamespace(getWalker().getProject()).getName();
             	write(ns + "::");
-        	}
-    		write(nodeDef.getBaseName());
-    	}
-    	else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    		writeChainName(node);
-    	else
-    		System.out.println("unexpected node in emitClosureEnd");
+            }
+
+            String qname = nodeDef.getBaseName();
+            if (nodeDef != null && !nodeDef.isStatic() && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getWalker().getProject().getAllowPrivateNameConflicts())
+                qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+    		write(qname);
+        }
     	write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
     }
@@ -1152,16 +1203,18 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	}
     	super.emitStatement(node);
     }
-    private void writeChainName(IASNode node)
+
+    private IIdentifierNode getChainedIdentifierNode(IASNode node)
     {
     	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
     	{
     		node = ((IMemberAccessExpressionNode)node).getRightOperandNode();
     	}
-    	if (node.getNodeID() == ASTNodeID.IdentifierID)
-    		write(((IdentifierNode)node).getName());
-    	else
-    		System.out.println("unexpected node in emitClosureEnd");
+        if (node.getNodeID() == ASTNodeID.IdentifierID)
+        {
+            return (IIdentifierNode) node;
+        }
+        return null;
     }
 
     @Override
@@ -1192,7 +1245,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         		}
         		else if (node.getChild(0).getChild(0).getNodeID() == ASTNodeID.IdentifierID)
         		{
-        			if (isXML((IdentifierNode)(node.getChild(0).getChild(0))))
+        			if (isXMLish((IdentifierNode)(node.getChild(0).getChild(0))))
         			{
         		        if (ASNodeUtils.hasParenOpen(node))
         		            write(ASEmitterTokens.PAREN_OPEN);
@@ -1233,12 +1286,22 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     		        if (ASNodeUtils.hasParenOpen(node))
     		            write(ASEmitterTokens.PAREN_OPEN);
 
+    		        IExpressionNode rightNode = obj.getRightOperandNode();
     	            String s = stringifyNode(obj.getLeftOperandNode());
+    	            boolean avoidMethodAccess = (rightNode instanceof IDynamicAccessNode && ((IDynamicAccessNode) rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID);
+    	            boolean needsQuotes = rightNode.getNodeID() != ASTNodeID.Op_AtID
+                             && !avoidMethodAccess;
     	            write(s);
-    	            write(".removeChild('");
-    	            s = stringifyNode(obj.getRightOperandNode());
+    	            write(".removeChild(");
+    	            if (needsQuotes)
+    	            	write("'");
+    	            else
+    	            	if (!avoidMethodAccess) write(s + ".");
+    	            s = stringifyNode(rightNode);
     	            write(s);
-    	            write("')");
+    	            if (needsQuotes)
+    	            	write("'");
+    	            write(")");
     		        if (ASNodeUtils.hasParenClose(node))
     		            write(ASEmitterTokens.PAREN_CLOSE);
     		        return;
@@ -1253,15 +1316,54 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	{
         		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
         			write("node.");
-            	write("attribute('");
-        		getWalker().walk(node.getOperandNode());
-            	write("')");
+            	write("attribute(");
+            	if (op instanceof INamespaceAccessExpressionNode) {
+            	    //parent.@ns::attributeName
+                    write("XML.createAttributeQName(");
+                    write("new QName(");
+                    getWalker().walk(((INamespaceAccessExpressionNode) op).getLeftOperandNode());
+                    write(",'");
+                    getWalker().walk(((INamespaceAccessExpressionNode) op).getRightOperandNode());
+                    write("')");
+                    write(")");
+                } else {
+            	    if (getModel().defaultXMLNamespaceActive
+                            && op instanceof IIdentifierNode
+                            && node.getContainingScope().getScope() instanceof FunctionScope
+                            && getModel().getDefaultXMLNamespace((FunctionScope)(node.getContainingScope().getScope())) !=null) {
+            	        //apply default namespace to this attributes query
+                        //parent.@attributeName (with default xml namespace set in scope)
+                        write("XML.swfCompatibleQuery(");
+            	        write("new QName(");
+                        getWalker().walk(getModel().getDefaultXMLNamespace((FunctionScope)(node.getContainingScope().getScope())));
+                        write(",'");
+                        getWalker().walk(node.getOperandNode());
+                        write("')");
+                        write(", true"); //attribute flag
+                        write(")");
+                    } else {
+            	        //default namespace is ''
+            	        write("'");
+                        getWalker().walk(node.getOperandNode());
+                        write("'");
+                    }
+                }
+            	write(")");
         	}
         	else if (node.getParent().getNodeID() == ASTNodeID.ArrayIndexExpressionID)
         	{
         		DynamicAccessNode parentNode = (DynamicAccessNode)node.getParent();
         		if (EmitterUtils.writeE4xFilterNode(getWalker().getProject(), getModel(), node))
         			write("node.");
+        		if (node.getParent().getParent() != null
+                        && node.getParent().getParent().getParent() != null
+                        && node.getParent().getParent().getParent().getNodeID() == ASTNodeID.Op_DeleteID) {
+        		    write ("'@' + ");
+        		    //example : delete myXML.@[MyConst];
+        		    //output myXML.removeChild('@' + MyConst) <-- variant is handled in emulation class
+                    getWalker().walk(parentNode.getRightOperandNode());
+                    return;
+                }
             	write("attribute(");
         		getWalker().walk(parentNode.getRightOperandNode());
             	write(")");
@@ -1288,79 +1390,14 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      * @param obj
      * @return
      */
-    public boolean isXMLList(MemberAccessExpressionNode obj)
+    public boolean isXMLList(IMemberAccessExpressionNode obj)
     {
-    	IExpressionNode leftNode = obj.getLeftOperandNode();
-    	IExpressionNode rightNode = obj.getRightOperandNode();
-    	ASTNodeID rightID = rightNode.getNodeID();
-		if (rightID == ASTNodeID.IdentifierID)
-		{
-			IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
-			if (rightDef != null)
-			{
-				if (SemanticUtils.isXMLish(rightDef, getWalker().getProject()))
-				{
-					return isLeftNodeXMLish(leftNode);
-				}
-				return false;
-			}
-			return isLeftNodeXMLish(leftNode);
-		}
-		else if (rightID == ASTNodeID.Op_AtID)
-			return true;
-		return false;
+		return EmitterUtils.isXMLList(obj, getWalker().getProject());
     }
 
     public boolean isLeftNodeXMLish(IExpressionNode leftNode)
     {
-    	ASTNodeID leftID = leftNode.getNodeID();
-		if (leftID == ASTNodeID.IdentifierID)
-		{
-			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
-			if (leftDef != null)
-				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
-		}
-		else if (leftID == ASTNodeID.MemberAccessExpressionID || leftID == ASTNodeID.Op_DescendantsID)
-		{
-			MemberAccessExpressionNode maen = (MemberAccessExpressionNode)leftNode;
-	    	IExpressionNode rightNode = maen.getRightOperandNode();
-	    	ASTNodeID rightID = rightNode.getNodeID();
-			if (rightID == ASTNodeID.IdentifierID)
-			{
-				IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
-				if (rightDef != null)
-				{
-					return SemanticUtils.isXMLish(rightDef, getWalker().getProject());
-				}
-			}
-			leftNode = maen.getLeftOperandNode();
-			return isLeftNodeXMLish(leftNode);
-		}
-		else if (leftID == ASTNodeID.FunctionCallID)
-		{
-			FunctionCallNode fcn = (FunctionCallNode)leftNode;
-			String fname = fcn.getFunctionName();
-			if (fname.equals("XML") || fname.equals("XMLList"))
-				return true;
-		}
-		else if (leftID == ASTNodeID.Op_AsID)
-		{
-			BinaryOperatorAsNode boan = (BinaryOperatorAsNode)leftNode;
-			String fname = ((IdentifierNode)boan.getChild(1)).getName();
-			if (fname.equals("XML") || fname.equals("XMLList"))
-				return true;
-		}
-		else if (leftID == ASTNodeID.ArrayIndexExpressionID)
-		{
-			leftNode = (IExpressionNode)(leftNode.getChild(0));
-			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
-			if (leftDef != null)
-				return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
-
-		}
-		else if (leftID == ASTNodeID.E4XFilterID)
-			return true;
-    	return false;
+    	return EmitterUtils.isLeftNodeXMLish(leftNode, getWalker().getProject());
     }
 
     /**
@@ -1448,18 +1485,9 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
      * @param obj
      * @return
      */
-    public boolean isXML(IExpressionNode obj)
+    public boolean isXMLish(IExpressionNode obj)
     {
-		// See if the left side is XML or XMLList
-		IDefinition leftDef = obj.resolveType(getWalker().getProject());
-		if (leftDef == null && obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-		{
-			return isXML(((MemberAccessExpressionNode)obj).getLeftOperandNode());
-		}
-		else if (leftDef != null && leftDef.getBaseName().equals("*") && obj instanceof DynamicAccessNode) {
-            return isXML(((DynamicAccessNode)obj).getLeftOperandNode());
-        }
-		return SemanticUtils.isXMLish(leftDef, getWalker().getProject());
+		return EmitterUtils.isXMLish(obj, getWalker().getProject());
     }
 
     public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)
@@ -1529,5 +1557,48 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         ICompilerProject project = getWalker().getProject();
 		return ((RoyaleJSProject)project).isGoogProvided(className);
 	}
+	
+    public void processBindableSupport(IClassDefinition type,ArrayList<String> requiresList) {
+        ICompilerProject royaleProject = getWalker().getProject();
+        boolean needsBindableSupport = type.needsEventDispatcher(royaleProject);
+        if (needsBindableSupport) {
+            
+            IClassDefinition bindableClassDef = type;
+            ClassDefinition objectClassDefinition = (ClassDefinition)royaleProject.getBuiltinType(
+                    IASLanguageConstants.BuiltinType.OBJECT);
+            
+            if (bindableClassDef.resolveBaseClass(royaleProject).equals(objectClassDefinition)) {
+                //keep the decision in the model for later
+                getModel().registerImplicitBindableImplementation( bindableClassDef,
+                        ImplicitBindableImplementation.EXTENDS);
+                // add the requiresList support for extending the dispatcher class
+                if (!requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                    requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                }
+            } else {
+                //keep the decision in the model for later
+                getModel().registerImplicitBindableImplementation( bindableClassDef,
+                        ImplicitBindableImplementation.IMPLEMENTS);
+                //add the requiresList support for implementing IEventDispatcher
+                if (!requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME))) {
+                    requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
+                }
+                if (!requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                    requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                }
+            }
+        }
+        
+        if (!needsBindableSupport) {
+            //we still need to check for static-only bindable requirements. If it was also instance-bindable,
+            //then the static-only requirements have already been met above
+            needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(royaleProject);
+            //static-only bindable *only* requires the Dispatcher class, not the interface
+            if (needsBindableSupport
+                    && !requiresList.contains(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+            }
+        }
+    }
 
 }

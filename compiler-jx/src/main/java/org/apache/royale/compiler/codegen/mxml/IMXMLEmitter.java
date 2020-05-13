@@ -25,6 +25,7 @@ import org.apache.royale.compiler.codegen.IEmitter;
 import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
@@ -47,6 +48,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 import org.apache.royale.compiler.visitor.IBlockWalker;
 
@@ -104,6 +107,8 @@ public interface IMXMLEmitter extends IEmitter
 
     void emitUint(IMXMLUintNode node);
 
+    void emitMXMLClass(IMXMLClassNode node);
+
     //--------------------------------------------------------------------------
 
     void emitLiteral(IMXMLLiteralNode node);
@@ -145,4 +150,9 @@ public interface IMXMLEmitter extends IEmitter
 
 	void emitRemoteObject(IMXMLRemoteObjectNode node);
 
+    //--------------------------------------------------------------------------
+
+    void emitWebServiceMethod(IMXMLWebServiceOperationNode node);
+
+	void emitWebService(IMXMLWebServiceNode node);
 }

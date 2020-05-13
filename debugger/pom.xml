@@ -16,35 +16,28 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
   </parent>
 
   <artifactId>debugger</artifactId>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
 
   <name>Apache Royale: Compiler: Debugger</name>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.9</version>
-      </plugin>
       <!--
 Do all the JBurg code generation.
 -->
       <plugin>
         <groupId>net.sourceforge.jburg</groupId>
         <artifactId>jburg-maven-plugin</artifactId>
-        <version>1.10.4</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -72,7 +65,7 @@ Do all the JBurg code generation.
           <dependency>
             <groupId>org.apache.royale.compiler</groupId>
             <artifactId>compiler-jburg-types</artifactId>
-            <version>${compiler-build-tools.version}</version>
+            <version>${compiler-jburg-types.version}</version>
           </dependency>
           <dependency>
             <groupId>net.sourceforge.jburg</groupId>
@@ -88,12 +81,12 @@ Do all the JBurg code generation.
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>swfutils</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -114,20 +107,14 @@ Do all the JBurg code generation.
     <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>v20151015</version>
+      <version>v20181210</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>google-closure-library</artifactId>
-      <version>0.0-20150902-b129bb9e</version>
+      <version>0.0-20170809-b9c14c6b</version>
     </dependency>
 
-   <dependency>
-      <groupId>org.apache.royale.compiler</groupId>
-      <artifactId>compiler-build-tools</artifactId>
-      <version>${compiler-build-tools.version}</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -136,4 +123,4 @@ Do all the JBurg code generation.
     </dependency>
   </dependencies>
 
-</project>
+<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>

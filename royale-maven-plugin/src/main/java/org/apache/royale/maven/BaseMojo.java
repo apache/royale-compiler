@@ -1,15 +1,20 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.apache.royale.maven;
@@ -38,7 +43,6 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by christoferdutz on 22.04.16.
  */
 public abstract class BaseMojo
         extends AbstractMojo
@@ -86,7 +90,7 @@ public abstract class BaseMojo
     protected boolean failOnCompilerWarnings = false;
 
     @Parameter
-    protected boolean allowSubclassOverrides = true;
+    protected boolean allowSubclassOverrides = false;
     
     @Parameter
     private Boolean includeLookupOnly = null;
@@ -107,6 +111,16 @@ public abstract class BaseMojo
     protected abstract String getConfigFileName() throws MojoExecutionException;
 
     protected abstract File getOutput() throws MojoExecutionException;
+
+    protected String getLanguageManifestFileName()
+    {
+        return "mxml-language-manifest.xml";
+    }
+
+    protected String getLanguageNamespaceURI()
+    {
+        return "http://ns.adobe.com/mxml/2009";
+    }
 
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = new VelocityContext();
@@ -130,6 +144,7 @@ public abstract class BaseMojo
         context.put("swfExternalLibraries", swfExternalLibraries);
         context.put("themeLibraries", themeLibraries);
         context.put("sourcePaths", sourcePaths);
+        context.put("languageNamespace", getLanguageNamespace());
         context.put("namespaces", getNamespaces());
         context.put("jsNamespaces", getNamespacesJS());
         context.put("namespaceUris", getNamespaceUris());
@@ -145,6 +160,7 @@ public abstract class BaseMojo
             context.put("includeLookupOnly", includeLookupOnly);
         }
         context.put("output", getOutput());
+        context.put("manifestComponents", getLanguageManifestComponents());
 
         return context;
     }
@@ -163,6 +179,14 @@ public abstract class BaseMojo
         return namespaces;
     }
 
+    protected Namespace getLanguageNamespace() {
+        File manifestFile = new File(outputDirectory, getLanguageManifestFileName());
+        Namespace namespace = new Namespace();
+        namespace.setUri(getLanguageNamespaceURI());
+        namespace.setManifest(manifestFile.getAbsolutePath());
+        return namespace;
+    }
+
     protected List<Namespace> getNamespacesJS() {
         List<Namespace> namespaces = new LinkedList<Namespace>();
         if(this.namespaces != null) {
@@ -179,6 +203,27 @@ public abstract class BaseMojo
             namespaceUris.add(namespace.getUri());
         }
         return namespaceUris;
+    }
+
+    protected List<ManifestComponent> getLanguageManifestComponents()
+    {
+        List<ManifestComponent> manifestComponents = new ArrayList<ManifestComponent>();
+        manifestComponents.add(new ManifestComponent("Array", "Array", true));
+        manifestComponents.add(new ManifestComponent("Boolean", "Boolean", true));
+        manifestComponents.add(new ManifestComponent("Class", "Class", true));
+        manifestComponents.add(new ManifestComponent("Date", "Date", true));
+        manifestComponents.add(new ManifestComponent("DesignLayer", "mx.core.DesignLayer", false));
+        manifestComponents.add(new ManifestComponent("Function", "Function", true));
+        manifestComponents.add(new ManifestComponent("int", "int", true));
+        manifestComponents.add(new ManifestComponent("Number", "Number", true));
+        manifestComponents.add(new ManifestComponent("Object", "Object", true));
+        manifestComponents.add(new ManifestComponent("RegExp", "RegExp", true));
+        manifestComponents.add(new ManifestComponent("String", "String", true));
+        manifestComponents.add(new ManifestComponent("uint", "uint", true));
+        manifestComponents.add(new ManifestComponent("Vector", "__AS3__.vec.Vector", true));
+        manifestComponents.add(new ManifestComponent("XML", "XML", true));
+        manifestComponents.add(new ManifestComponent("XMLList", "XMLList", true));
+        return manifestComponents;
     }
 
     @SuppressWarnings("unchecked")
@@ -236,9 +281,13 @@ public abstract class BaseMojo
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
         if(additionalCompilerOptions != null) {
-            if (additionalCompilerOptions.contains("\n")) {
-                additionalCompilerOptions = additionalCompilerOptions.replace("\n", "");
-            }
+            //remove whitespace after any '=' or '+='
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("=\\s+", "=");
+            //remove whitespace before or after any ',' (this assumes that ',' is never part of a value assignment itself and is only used to separate list values in config settings)
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("\\s*,\\s*", ",");
+
+            //any explicit line separators can be resolved to a single separator (';') multiple sequential separators will be ignored if there are explicit ';' separators included below
+            additionalCompilerOptions = additionalCompilerOptions.replaceAll("(\\r\\n?|\\n)+", ";");
             if (additionalCompilerOptions.contains(";"))
             {
                 String[] options = additionalCompilerOptions.split(";");
@@ -264,32 +313,58 @@ public abstract class BaseMojo
             return;
         }
 
-        // Prepare the config file.
-        File configFile = new File(outputDirectory, getConfigFileName());
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         velocityEngine.init();
-        Template template = velocityEngine.getTemplate("config/" + getConfigFileName());
         VelocityContext context = getVelocityContext();
+        
+        // Prepare the config file.
+        File configFile = new File(outputDirectory, getConfigFileName());
+        Template configTemplate = velocityEngine.getTemplate("config/" + getConfigFileName());
 
         if(!configFile.getParentFile().exists()) {
             if(!configFile.getParentFile().mkdirs()) {
                 throw new MojoExecutionException("Could not create output directory: " + configFile.getParent());
             }
         }
-        FileWriter writer = null;
+        FileWriter configWriter = null;
         try {
-            writer = new FileWriter(configFile);
-            template.merge(context, writer);
+            configWriter = new FileWriter(configFile);
+            configTemplate.merge(context, configWriter);
         } catch (IOException e) {
             throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
         } finally {
-            if(writer != null) {
+            if(configWriter != null) {
                 try {
-                    writer.close();
+                    configWriter.close();
                 } catch (IOException e) {
                     throw new MojoExecutionException("Error creating config file at " + configFile.getPath());
+                }
+            }
+        }
+
+        // Prepare the MXML language manifest file.
+        File manifestFile = new File(outputDirectory, getLanguageManifestFileName());
+        Template manifestTemplate = velocityEngine.getTemplate("config/" + getLanguageManifestFileName());
+
+        if(!manifestFile.getParentFile().exists()) {
+            if(!manifestFile.getParentFile().mkdirs()) {
+                throw new MojoExecutionException("Could not create output directory: " + manifestFile.getParent());
+            }
+        }
+        FileWriter manifestWriter = null;
+        try {
+            manifestWriter = new FileWriter(manifestFile);
+            manifestTemplate.merge(context, manifestWriter);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error creating manifest file at " + manifestFile.getPath());
+        } finally {
+            if(manifestWriter != null) {
+                try {
+                    manifestWriter.close();
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Error creating manifest file at " + manifestFile.getPath());
                 }
             }
         }

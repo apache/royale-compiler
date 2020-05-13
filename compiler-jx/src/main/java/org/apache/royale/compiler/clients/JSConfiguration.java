@@ -56,9 +56,19 @@ public class JSConfiguration extends Configuration
 {
     public JSConfiguration()
     {
+        //for Royale projects, we want to make some changes to the compiler
+        //defaults. we do that here in JSConfiguration instead of Configuration.
+        //despite its name, JSConfiguration is used for SWF compilation too.
+
+        //we try to keep the defaults of the Configuration base class backwards
+        //compatible with other compilers, like the one in the Flex SDK. this
+        //policy helps IDEs to use the Royale compiler for code intelligence
+        //with other SDKs without requiring the IDEs to "undo" Royale's changes
+        //to defaults.
         setCompilerAllowAbstractClasses(null, true);
         setCompilerAllowPrivateConstructors(null, true);
         setCompilerAllowImportAliases(null, true);
+        setCompilerStrictIdentifierNames(null, false);
     }
 
     //
@@ -579,6 +589,29 @@ public class JSConfiguration extends Configuration
             throws ConfigurationException
     {
         jsVectorIndexChecks = value;
+    }
+    
+    
+    //
+    // 'jsx-factory'
+    //
+    
+    private String jsxFactory = "React.createElement";
+    
+    public String getJsxFactory()
+    {
+        return jsxFactory;
+    }
+    
+    /**
+     * Customize the factory to use for JSX. Defaults to React.createElement
+     */
+    @Config(advanced = true)
+    @Mapping("jsx-factory")
+    public void setJsxFactory(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        jsxFactory = value;
     }
     
 }

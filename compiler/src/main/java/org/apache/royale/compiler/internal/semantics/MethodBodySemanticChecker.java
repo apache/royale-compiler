@@ -66,11 +66,14 @@ import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.as.codegen.*;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -90,10 +93,6 @@ import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
-import org.apache.royale.compiler.internal.as.codegen.ABCGeneratingReducer;
-import org.apache.royale.compiler.internal.as.codegen.Binding;
-import org.apache.royale.compiler.internal.as.codegen.InlineFunctionLexicalScope;
-import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassTraitsDefinition;
@@ -847,6 +846,13 @@ public class MethodBodySemanticChecker
         }
     }
 
+    private IInterfaceDefinition iEventDispatcher(){
+        String iEventDispatcherPackage = BindableHelper.NAME_IEVENT_DISPATCHER.getQualifiers().getSingleQualifier().getName();
+        String iEventDispatcherName = BindableHelper.NAME_IEVENT_DISPATCHER.getBaseName();
+        IDefinition iEventDispatcher =  ((ASProjectScope)(project.getScope())).findDefinitionByName(iEventDispatcherPackage + "." + iEventDispatcherName);
+        if (iEventDispatcher instanceof IInterfaceDefinition) return (IInterfaceDefinition) iEventDispatcher;
+        return null;
+    }
 
     /**
      *  Check a function call.
@@ -864,6 +870,29 @@ public class MethodBodySemanticChecker
         }
 
         IDefinition def = method_binding.getDefinition();
+        if (def == null) {
+            IDefinition defCheck = SemanticUtils.getDefinitionOfUnderlyingType(iNode,true, project);
+            if (defCheck instanceof IClassDefinition) {
+                //if we have the bindable IEventDispatcher implementation either at this level or via ancestry, then we should allow those IEventDispatcher methods
+                boolean assumeBindableIEventDispatcher = false;
+                IClassDefinition.IClassIterator classIterator = ((IClassDefinition) defCheck).classIterator(project, true);
+                while (classIterator.hasNext())
+                {
+                    defCheck = classIterator.next();
+                    if (((IClassDefinition)defCheck).needsEventDispatcher(project)) {
+                        assumeBindableIEventDispatcher = true;
+                        break;
+                    }
+                }
+                if (assumeBindableIEventDispatcher) {
+                    IInterfaceDefinition iEventDispatcher =  iEventDispatcher();
+                    IDefinitionSet bindingMethodCheck = iEventDispatcher.getContainedScope().getLocalDefinitionSetByName( method_binding.getName().getBaseName());
+                    if (bindingMethodCheck!=null && bindingMethodCheck.getSize() == 1) {
+                        def = bindingMethodCheck.getDefinition(0);
+                    }
+                }
+            }
+        }
 
         if ( def == null && utils.definitionCanBeAnalyzed(method_binding) )
         {
@@ -878,6 +907,7 @@ public class MethodBodySemanticChecker
             }
             else if ( SemanticUtils.hasExplicitStem(iNode) && utils.hasUnderlyingType(iNode) )
             {
+
                 addProblem(new StrictUndefinedMethodProblem( 
                     roundUpUsualSuspects(method_binding, iNode), 
                     method_binding.getName().getBaseName(),
@@ -890,6 +920,20 @@ public class MethodBodySemanticChecker
                     roundUpUsualSuspects(method_binding, iNode), 
                     method_binding.getName().getBaseName()
                 ));
+            }
+        }
+        else if ( def instanceof AccessorDefinition )
+        {
+            AccessorDefinition accessorDef = (AccessorDefinition)def;
+            IDefinition accessorType = accessorDef.resolveType(project);
+            if (accessorType != null && // Null here means the ANY_TYPE
+                    (accessorType.equals(project.getBuiltinType(BuiltinType.NUMBER)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.BOOLEAN)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.INT)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.UINT)) ||
+                    accessorType.equals(project.getBuiltinType(BuiltinType.STRING))))
+            {
+                addProblem(new CallNonFunctionProblem(iNode, method_binding.getName().getBaseName()));
             }
         }
         else if ( def instanceof FunctionDefinition )

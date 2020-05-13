@@ -59,7 +59,6 @@ interfaces.IA.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IA', qName: 'inte
  */
 interfaces.IA.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    accessors: function () {return {};},
     methods: function () {
       return {
         'someFunction': { type: 'classes.B', declaredBy: 'interfaces.IA'},
@@ -69,8 +68,7 @@ interfaces.IA.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-interfaces.IA.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+interfaces.IA.prototype.ROYALE_COMPILE_FLAGS = 8;

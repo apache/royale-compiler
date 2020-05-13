@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ASModifier;
@@ -34,7 +35,7 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
@@ -47,6 +48,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.GetterNode;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -95,6 +97,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 PropertyNodes p = getModel().getPropertyMap().get(propName);
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
+                String baseName = p.name;
                 if (getModel().isExterns)
                 {
                 	IAccessorNode node = (getterNode != null) ? getterNode : setterNode;
@@ -111,21 +114,19 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     write(JSEmitterTokens.PROTOTYPE);
-                    if (fjs.isCustomNamespace((FunctionNode)node))
+                    if (p.uri != null)
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
-            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-            			String s = nsDef.getURI();
-            			write(JSRoyaleEmitter.formatNamespacedProperty(s, propName, true));
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, true));
                     }
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                    	write(propName);
+                    	write(baseName);
                     }
-                    write(ASEmitterTokens.SEMICOLON);                	
-                	
+                    write(ASEmitterTokens.SEMICOLON);
                 }
                 else
                 {
@@ -137,19 +138,18 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                    write(getEmitter().formatQualifiedName(qname));
 	                    write(ASEmitterTokens.MEMBER_ACCESS);
 	                    write(JSEmitterTokens.PROTOTYPE);
-	                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+	                    if (p.uri != null)
 	                    {
 	            			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
 	            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
-	            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-	            			String s = nsDef.getURI();
-	            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + propName, true));
+	            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+	            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + baseName, true));
 	                    }
 	                    else
 	                    {
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-	                    	write(propName);
+	                    	write(baseName);
 	                    }
 	                    write(ASEmitterTokens.SPACE);
 	                    write(ASEmitterTokens.EQUAL);
@@ -163,35 +163,34 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                }
 	                if (setterNode != null)
 	                {
+						boolean isClassBindable = BindableHelper.isClassCodeGenBindable(definition);
+
 	                	boolean isBindable = false;                
 	                	IAccessorDefinition setterDef = (IAccessorDefinition)setterNode.getDefinition();
 	                	IAccessorDefinition getterDef = null;
 	                	if (getterNode != null)
 	                		getterDef = (IAccessorDefinition)getterNode.getDefinition();
-	                	if (setterDef.isBindable() || (getterDef != null && getterDef.isBindable()))
+	                	if ((getterDef != null && (setterDef.isBindable() || getterDef.isBindable())))
 	                	{
+							boolean foundExplicitBindableTag = false;
 	                		if (setterDef.isBindable())
 	                		{
-	                			IMetaTag[] tags = setterDef.getMetaTagsByName("Bindable");
-	                			if (tags.length > 1)
-	                        		isBindable = true;
-	                			else if (tags.length == 1)
-	                			{
-	                				if (tags[0].getAllAttributes().length == 0)
-	                					isBindable = true;
-	                			}
+
+								isBindable = BindableHelper.isCodeGenBindableMember(setterDef, isClassBindable);
+								foundExplicitBindableTag = BindableHelper.hasExplicitBindable(setterDef);
 	                		}
-	                		else if (getterDef != null && getterDef.isBindable())
+	                		if (getterDef.isBindable())
 	                		{
-	                			IMetaTag[] tags = getterDef.getMetaTagsByName("Bindable");
-	                			if (tags.length > 1)
-	                        		isBindable = true;
-	                			else if (tags.length == 1)
-	                			{
-	                				if (tags[0].getAllAttributes().length == 0)
-	                					isBindable = true;
-	                			}                			
+
+								isBindable = isBindable || BindableHelper.isCodeGenBindableMember(getterDef, isClassBindable);
+								foundExplicitBindableTag = foundExplicitBindableTag || BindableHelper.hasExplicitBindable(getterDef);
+
 	                		}
+
+							if (isClassBindable) {
+								//if we 'foundExplicitBindableTag' such as [Bindable(event='someEvent')], then nothing else matters, even another [Bindable] tag is ignored (Flex)
+								isBindable = !foundExplicitBindableTag;
+							}
 	                	}
 	                    writeNewline();
 	                    writeNewline();
@@ -199,21 +198,24 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                    write(getEmitter().formatQualifiedName(qname));
 	                    write(ASEmitterTokens.MEMBER_ACCESS);
 	                    write(JSEmitterTokens.PROTOTYPE);
-	                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+	                    if (p.uri != null)
 	                    {
 	            			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
 	            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
-	            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-	            			String s = nsDef.getURI();
-	            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + propName, true));
+	            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+	            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + baseName, true));
 	                    }
 	                    else
 	                    {
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
-	                        if (isBindable)
-	                        	write(JSRoyaleEmitterTokens.BINDABLE_PREFIX);
-	                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-	                    	write(propName);
+	                        if (isBindable) {
+								write(JSRoyaleEmitterTokens.BINDABLE_PREFIX);
+								write(JSRoyaleEmitterTokens.SETTER_PREFIX);
+								write(getEmitter().formatPrivateName(definition.getQualifiedName(), baseName, true));
+							} else {
+								write(JSRoyaleEmitterTokens.SETTER_PREFIX);
+								write(baseName);
+							}
 	                    }
 	                    write(ASEmitterTokens.SPACE);
 	                    write(ASEmitterTokens.EQUAL);
@@ -235,7 +237,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                        write(JSEmitterTokens.PROTOTYPE);
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-	                    	write(propName);
+	                    	write(baseName);
 	                        write(ASEmitterTokens.SPACE);
 	                        write(ASEmitterTokens.EQUAL);
 	                        write(ASEmitterTokens.SPACE);
@@ -254,7 +256,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                        write(ASEmitterTokens.THIS);
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-	                    	write(propName);
+	                    	write(baseName);
 	                        write(ASEmitterTokens.PAREN_OPEN);
 	                        write(ASEmitterTokens.PAREN_CLOSE);
 	                        writeNewline(ASEmitterTokens.SEMICOLON);
@@ -269,13 +271,13 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.BINDABLE_PREFIX);
 	                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-	                    	write(propName);
+							write(getEmitter().formatPrivateName(definition.getQualifiedName(), baseName, true));
 	                        write(ASEmitterTokens.PAREN_OPEN);
 	                        write("value");
 	                        write(ASEmitterTokens.PAREN_CLOSE);
 	                        writeNewline(ASEmitterTokens.SEMICOLON);
 	                        writeNewline("    this.dispatchEvent("+fjs.formatQualifiedName(BindableEmitter.VALUECHANGE_EVENT_QNAME)+".createUpdateEvent(");
-	                        writeNewline("         this, \"" + propName + "\", oldValue, value));");
+	                        writeNewline("         this, \"" + baseName + "\", oldValue, value));");
 	                        writeNewline(ASEmitterTokens.BLOCK_CLOSE);
 	                        write(ASEmitterTokens.BLOCK_CLOSE);
 	                        write(ASEmitterTokens.SEMICOLON);                        
@@ -315,10 +317,13 @@ public class AccessorEmitter extends JSSubEmitter implements
 
                 boolean wroteGetter = false;
                 PropertyNodes p = getModel().getPropertyMap().get(propName);
+                String baseName = p.name;
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
             	writeNewline("/**");
-                if (emitExports)
+            	//only export if one of the options is public
+            	//if either one is marked as suppressed, both are considered to be
+                if (emitExports && p.resolvedExport && !(p.suppressExport) )
                 	writeNewline("  * @export");
                 if (p.type != null)
                 {
@@ -330,16 +335,16 @@ public class AccessorEmitter extends JSSubEmitter implements
                 else
                 	writeNewline("  */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
-                if (fjs.isCustomNamespace(fnNode))
+                if (p.uri != null)
                 {
         			INamespaceDecorationNode ns = fnNode.getActualNamespaceNode();
         			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
         			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-        			String s = nsDef.getURI();
-        			write(JSRoyaleEmitter.formatNamespacedProperty(s, propName, false));
+        			//String s = nsDef.getURI();
+        			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
                 }
                 else
-                	write(propName);
+                	write(baseName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
                 write(ASEmitterTokens.BLOCK_OPEN);
@@ -352,23 +357,23 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     write(JSEmitterTokens.PROTOTYPE);
-                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                    if (p.uri != null)
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-            			String s = nsDef.getURI();
-            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + propName, true));
+            			//String s = nsDef.getURI();
+            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + baseName, true));
                     }
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-                    	write(propName);
+                    	write(baseName);
                     }
                     wroteGetter = true;
                 }
-                else if (setterNode != null && setterNode.getDefinition().isOverride())
+                else if (setterNode != null /* && setterNode.getDefinition().isOverride()*/)
                 {
                 	// see if there is a getter on a base class.  If so, we have to 
                 	// generate a call to the super from this class because 
@@ -385,19 +390,19 @@ public class AccessorEmitter extends JSSubEmitter implements
                         write(getEmitter().formatQualifiedName(other.getParent().getQualifiedName()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSEmitterTokens.PROTOTYPE);
-                        if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                        if (p.uri != null)
                         {
                 			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
                 			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-                			String s = nsDef.getURI();
-                			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + propName, true));
+                			//String s = nsDef.getURI();
+                			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + baseName, true));
                         }
                         else
                         {
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-                        	write(propName);
+                        	write(baseName);
                         }
                         wroteGetter = true;
                 	}
@@ -413,22 +418,22 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     write(JSEmitterTokens.PROTOTYPE);
-                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                    if (p.uri != null)
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-            			String s = nsDef.getURI();
-            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + propName, true));
+            			//String s = nsDef.getURI();
+            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + baseName, true));
                     }
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-                    	write(propName);
+                    	write(baseName);
                     }
                 }
-                else if (getterNode != null && getterNode.getDefinition().isOverride())
+                else if (getterNode != null/* && getterNode.getDefinition().isOverride()*/)
                 {
                 	// see if there is a getter on a base class.  If so, we have to 
                 	// generate a call to the super from this class because 
@@ -447,19 +452,19 @@ public class AccessorEmitter extends JSSubEmitter implements
                         write(getEmitter().formatQualifiedName(other.getParent().getQualifiedName()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSEmitterTokens.PROTOTYPE);
-                        if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                        if (p.uri != null)
                         {
                 			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
                 			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-                			String s = nsDef.getURI();
-                			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + propName, true));
+                			//String s = nsDef.getURI();
+                			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + baseName, true));
                         }
                         else
                         {
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-                        	write(propName);
+                        	write(baseName);
                         }
                 	}
                 }
@@ -478,6 +483,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 PropertyNodes p = getModel().getStaticPropertyMap().get(propName);
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
+                String baseName = p.name;
                 if (getModel().isExterns)
                 {
                 	IAccessorNode node = (getterNode != null) ? getterNode : setterNode;
@@ -492,18 +498,18 @@ public class AccessorEmitter extends JSSubEmitter implements
                     else
                     	writeNewline("  */");
                     write(getEmitter().formatQualifiedName(qname));
-                    if (fjs.isCustomNamespace((FunctionNode)node))
+                    if (p.uri != null)
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
             			String s = nsDef.getURI();
-            			write(JSRoyaleEmitter.formatNamespacedProperty(s, propName, true));
+            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, true));
                     }
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                    	write(propName);
+                    	write(baseName);
                     }
                     write(ASEmitterTokens.SEMICOLON);                	
                 }
@@ -515,19 +521,19 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                    writeNewline();
 	                    writeNewline();
 	                    write(getEmitter().formatQualifiedName(qname));
-	                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+	                    if (p.uri != null)
 	                    {
 	            			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
 	            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
 	            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-	            			String s = nsDef.getURI();
-	            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + propName, true));
+	            			//String s = nsDef.getURI();
+	            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri , JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + baseName, true));
 	                    }
 	                    else
 	                    {
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-	                    	write(propName);
+	                    	write(baseName);
 	                    }
 	                    write(ASEmitterTokens.SPACE);
 	                    write(ASEmitterTokens.EQUAL);
@@ -545,19 +551,19 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                    writeNewline();
 	                    writeNewline();
 	                    write(getEmitter().formatQualifiedName(qname));
-	                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+	                    if (p.uri != null)
 	                    {
 	            			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
 	            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
 	            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-	            			String s = nsDef.getURI();
-	            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + propName, true));
+	            			//String s = nsDef.getURI();
+	            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + baseName, true));
 	                    }
 	                    else
 	                    {
 	                        write(ASEmitterTokens.MEMBER_ACCESS);
 	                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-	                    	write(propName);
+	                    	write(baseName);
 	                    }
 	                    write(ASEmitterTokens.SPACE);
 	                    write(ASEmitterTokens.EQUAL);
@@ -603,14 +609,25 @@ public class AccessorEmitter extends JSSubEmitter implements
                         propName);
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
+                String baseName = p.name;
             	writeNewline("/**");
-                if (emitExports)
+                if (emitExports && !p.suppressExport)
                 	writeNewline("  * @export");
                 if (p.type != null)
                 	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
                 else
                 	writeNewline("  */");
-                write(propName);
+				FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
+				if (p.uri != null)
+				{
+					INamespaceDecorationNode ns = fnNode.getActualNamespaceNode();
+					INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+					fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+					//String s = nsDef.getURI();
+					write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
+				}
+				else
+					write(baseName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
                 write(ASEmitterTokens.BLOCK_OPEN);
@@ -621,19 +638,19 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
                     write(getEmitter().formatQualifiedName(qname));
-                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                    if (p.uri != null)
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-            			String s = nsDef.getURI();
-            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + propName, true));
+            			//String s = nsDef.getURI();
+            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.GETTER_PREFIX.getToken() + baseName, true));
                     }
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-                    	write(propName);
+                    	write(baseName);
                     }
                 }
                 if (setterNode != null)
@@ -645,19 +662,19 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
                     write(getEmitter().formatQualifiedName(qname));
-                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                    if (p.uri != null)
                     {
             			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
             			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
             			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
-            			String s = nsDef.getURI();
-            			write(JSRoyaleEmitter.formatNamespacedProperty(s, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + propName, true));
+            			//String s = nsDef.getURI();
+            			write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, JSRoyaleEmitterTokens.SETTER_PREFIX.getToken() + baseName, true));
                     }
                     else
                     {
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-                    	write(propName);
+                    	write(baseName);
                     }
                 }
                 write(ASEmitterTokens.BLOCK_CLOSE);
@@ -672,7 +689,11 @@ public class AccessorEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-
+        boolean suppress = getModel().suppressExports ||
+				(node.getASDocComment() != null &&
+				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
+       if (suppress) getModel().suppressedExportNodes.add(node);
+				
         IDefinition def = node.getDefinition();
         ModifiersSet modifierSet = def.getModifiers();
         boolean isStatic = (modifierSet != null && modifierSet
@@ -680,17 +701,35 @@ public class AccessorEmitter extends JSSubEmitter implements
         HashMap<String, PropertyNodes> map = isStatic ? getModel()
                 .getStaticPropertyMap() : getModel().getPropertyMap();
         String name = node.getName();
-    		if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
-    			name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
-        PropertyNodes p = map.get(name);
+		if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
+			name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
+
+		String uri = null;
+		String key = name;
+		if (!def.getNamespaceReference().isLanguageNamespace()) {
+			//we need to include it in the name mappings
+			uri = ((INamespaceDefinition) ((GetterNode) node).getActualNamespaceNode().resolve(getProject())).getURI();
+			//make sure the key includes the uri to avoid clashing with other equivalent base names
+			key =  uri + "::" + name;
+		}
+		
+		PropertyNodes p = map.get(key);
         if (p == null)
         {
             p = new PropertyNodes();
-            map.put(name, p);
-        }
+			//track name and uri separately:
+			p.name = name;
+			p.uri = uri;
+			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
+			p.resolvedExport = uri != null || def.isPublic();
+            map.put(key, p);
+        } else {
+			p.resolvedExport = p.resolvedExport || def.isPublic();
+		}
         p.getter = node;
-        ICompilerProject project = (ICompilerProject)getWalker().getProject();
-        if (project != null)
+		if (!p.suppressExport) p.suppressExport = suppress;
+        ICompilerProject project = getWalker().getProject();
+        if (p.type == null && project != null)
         	p.type = node.getDefinition().resolveReturnType(project);
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(fjs.getProblems());
@@ -701,6 +740,10 @@ public class AccessorEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) fjs.getDocEmitter();
+		boolean suppress = getModel().suppressExports ||
+				(node.getASDocComment() != null &&
+				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
+		if (suppress) getModel().suppressedExportNodes.add(node);
 
         IFunctionDefinition def = node.getDefinition();
         ModifiersSet modifierSet = def.getModifiers();
@@ -711,15 +754,32 @@ public class AccessorEmitter extends JSSubEmitter implements
         String name = node.getName();
     		if (!isStatic && def != null && def.isPrivate() && getProject().getAllowPrivateNameConflicts())
     			name = fjs.formatPrivateName(def.getParent().getQualifiedName(), name);
-        PropertyNodes p = map.get(name);
+    	String uri = null;
+    	String key = name;
+		if (!def.getNamespaceReference().isLanguageNamespace()) {
+			//we need to include it in the name mappings
+			uri = ((INamespaceDefinition) ((SetterNode) node).getActualNamespaceNode().resolve(getProject())).getURI();
+			//make sure the key includes the uri to avoid clashing with other equivalent base names
+			key =  uri + "::" + name;
+		}
+		
+        PropertyNodes p = map.get(key);
         if (p == null)
         {
             p = new PropertyNodes();
-            map.put(name, p);
-        }
+            //track name and uri separately:
+            p.name = name;
+            p.uri = uri;
+ 			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
+            p.resolvedExport = uri != null || def.isPublic();
+            map.put(key, p);
+        } else {
+			p.resolvedExport = p.resolvedExport || def.isPublic();
+		}
         p.setter = node;
+        if (!p.suppressExport) p.suppressExport = suppress;
         ICompilerProject project = (ICompilerProject)getWalker().getProject();
-        if (project != null)
+        if (p.type == null && project != null)
         {
         	IParameterDefinition[] params = def.getParameters();
         	p.type = params[0].resolveType(project);

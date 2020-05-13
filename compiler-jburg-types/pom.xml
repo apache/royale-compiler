@@ -17,96 +17,102 @@
   limitations under the License.
 
 -->
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>18</version>
+    <version>23</version>
     <relativePath/>
   </parent>
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>compiler-jburg-types</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <name>Apache Royale: JBurg Types</name>
   <description>Types needed by JBurg to perform it's code generation.</description>
 
+  <scm>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
+    <url>https://github.com/apache/royale-compiler</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <build>
     <plugins>
-        <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.9</version>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <tags>
+            <tag>
+              <name>goal</name>
+              <placement>a</placement>
+              <head>Goal:</head>
+            </tag>
+            <tag>
+              <name>phase</name>
+              <placement>a</placement>
+              <head>Phase:</head>
+            </tag>
+            <tag>
+              <name>threadSafe</name>
+              <placement>a</placement>
+              <head>Thread Safe:</head>
+            </tag>
+            <tag>
+              <name>requiresDependencyResolution</name>
+              <placement>a</placement>
+              <head>Requires Dependency Resolution:</head>
+            </tag>
+            <tag>
+              <name>requiresProject</name>
+              <placement>a</placement>
+              <head>Requires Project:</head>
+            </tag>
+            <tag>
+              <name>note</name>
+              <placement>a</placement>
+              <head>note:</head>
+            </tag>
+            <tag>
+              <name>pre</name>
+              <placement>X</placement>
+              <head></head>
+            </tag>
+          </tags>
+        </configuration>
+      </plugin>
+      <!-- This plugin cleans up the jars for anything that might cause problems for reproducible builds -->
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>0.11</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>io.github.zlika</groupId>
-                <artifactId>reproducible-build-maven-plugin</artifactId>
-                <version>0.9</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>strip-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <tags>
-                        <tag>
-                            <name>goal</name>
-                            <placement>a</placement>
-                            <head>Goal:</head>
-                        </tag>
-                        <tag>
-                            <name>phase</name>
-                            <placement>a</placement>
-                            <head>Phase:</head>
-                        </tag>
-                        <tag>
-                            <name>threadSafe</name>
-                            <placement>a</placement>
-                            <head>Thread Safe:</head>
-                        </tag>
-                        <tag>
-                            <name>requiresDependencyResolution</name>
-                            <placement>a</placement>
-                            <head>Requires Dependency Resolution:</head>
-                        </tag>
-                        <tag>
-                            <name>requiresProject</name>
-                            <placement>a</placement>
-                            <head>Requires Project:</head>
-                        </tag>
-                        <tag>
-                            <name>note</name>
-                            <placement>a</placement>
-                            <head>note:</head>
-                        </tag>
-                        <tag>
-                            <name>pre</name>
-                            <placement>X</placement>
-                            <head></head>
-                        </tag>
-                    </tags>
-                </configuration>
-            </plugin>
-        </plugins>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.2.0</version>
+          <configuration>
+            <finalName>apache-royale-${project.artifactId}-${project.version}</finalName>
+          </configuration>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
 
@@ -122,5 +128,55 @@
       <version>2.7.7</version>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>reproducible-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <preparationGoals>clean com.theoryinpractise:reproducible-maven-plugin:apply install</preparationGoals>
+              <completionGoals>com.theoryinpractise:reproducible-maven-plugin:clear</completionGoals>
+            </configuration>
+          </plugin>
+          <!--
+            Create MD5 and SHA512 checksum files for the release artifacts.
+          -->
+          <plugin>
+            <groupId>net.nicoulaj.maven.plugins</groupId>
+            <artifactId>checksum-maven-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>files</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <algorithms>
+                <algorithm>SHA-512</algorithm>
+              </algorithms>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>royale-compiler-parent-${project.version}-source-release.zip</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

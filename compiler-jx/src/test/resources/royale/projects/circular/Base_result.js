@@ -57,8 +57,6 @@ Base.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind
  */
 Base.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'Base': { type: '', declaredBy: 'Base'}
@@ -67,8 +65,7 @@ Base.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-Base.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+Base.prototype.ROYALE_COMPILE_FLAGS = 9;

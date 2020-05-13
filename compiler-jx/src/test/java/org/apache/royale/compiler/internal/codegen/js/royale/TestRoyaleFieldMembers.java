@@ -44,13 +44,13 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Test
     public void testField_withStringSetToNull()
     {
-        IVariableNode node = getField("var foo:String = null;");
+        IVariableNode node = getField("public var foo:String = null;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {string}\n */\nRoyaleTest_A.prototype.foo = null");
     }
@@ -59,7 +59,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withType()
     {
-        IVariableNode node = getField("var foo:int;");
+        IVariableNode node = getField("public var foo:int;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
     }
@@ -68,7 +68,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withTypeValue()
     {
-        IVariableNode node = getField("var foo:int = 420;");
+        IVariableNode node = getField("public var foo:int = 420;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
@@ -76,7 +76,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withTypeValue_Negative()
     {
-        IVariableNode node = getField("var foo:int = -420;");
+        IVariableNode node = getField("public var foo:int = -420;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = -420");
     }
@@ -84,7 +84,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withTypeValue_IntDecimal()
     {
-        IVariableNode node = getField("var foo:int = -123.4;");
+        IVariableNode node = getField("public var foo:int = -123.4;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = -123");
     }
@@ -92,7 +92,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withTypeValue_UintDecimal()
     {
-        IVariableNode node = getField("var foo:uint = 123.4;");
+        IVariableNode node = getField("public var foo:uint = 123.4;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 123");
     }
@@ -100,7 +100,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withTypeValue_UintNegative()
     {
-        IVariableNode node = getField("var foo:uint = -123;");
+        IVariableNode node = getField("public var foo:uint = -123;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 4294967173");
     }
@@ -127,11 +127,12 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withCustomNamespaceTypeValue()
     {
-        IVariableNode node = getField("mx_internal var foo:int = 420;");
+        IVariableNode node = getField("import custom.custom_namespace; custom_namespace var foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
+        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = 420");
     }
+    
 
     @Override
     @Test
@@ -166,13 +167,13 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {*}\n */\nRoyaleTest_A.foo");
+        assertOut("/**\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
     public void testStaticField_withType()
     {
-        IVariableNode node = getField("static var foo:int;");
+        IVariableNode node = getField("public static var foo:int;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
     }
@@ -182,7 +183,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
+        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -256,7 +257,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant()
     {
-        IVariableNode node = getField("static const foo;");
+        IVariableNode node = getField("public static const foo;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
@@ -264,7 +265,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_nonStatic()
     {
-        IVariableNode node = getField("const foo;");
+        IVariableNode node = getField("public const foo;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
@@ -273,7 +274,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_withType()
     {
-        IVariableNode node = getField("static const foo:int;");
+        IVariableNode node = getField("public static const foo:int;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 0");
     }
@@ -281,7 +282,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_withType_nonStatic()
     {
-        IVariableNode node = getField("const foo:int;");
+        IVariableNode node = getField("public const foo:int;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0");
     }
@@ -290,7 +291,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_withTypeValue()
     {
-        IVariableNode node = getField("static const foo:int = 420;");
+        IVariableNode node = getField("public static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
@@ -298,7 +299,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_withComplexTypeValue()
     {
-        IVariableNode node = getField("static const foo:Number = parseFloat('1E2');");
+        IVariableNode node = getField("public static const foo:Number = parseFloat('1E2');");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = parseFloat('1E2')");
     }
@@ -306,7 +307,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_withTypeValue_nonStatic()
     {
-        IVariableNode node = getField("const foo:int = 420;");
+        IVariableNode node = getField("public const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
@@ -359,18 +360,19 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     @Test
     public void testConstant_withCustomNamespaceTypeValue()
     {
-        IVariableNode node = getField("mx_internal static const foo:int = 420;");
+        IVariableNode node = getField("import custom.custom_namespace; custom_namespace static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
+
+        assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__foo = 420");
     }
 
     @Test
     public void testConstant_withCustomNamespaceTypeValue_nonStatic()
     {
-        IVariableNode node = getField("mx_internal const foo:int = 420;");
+        IVariableNode node = getField("import custom.custom_namespace; custom_namespace const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
+
+        assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = 420");
     }
+    
 }

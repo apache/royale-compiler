@@ -16,31 +16,39 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
   </parent>
 
   <artifactId>compiler-jx</artifactId>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
 
   <name>Apache Royale: Compiler: Compiler-JX</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.9</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Sealed>false</Sealed>
+              <Class-Path>commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar</Class-Path>
+              <!-- google-closure-library-0.0-20170809-b9c14c6b.jar google-closure-library-third-party-0.0-20170809-b9c14c6b.jar external/closure-compiler-v20181210.jar -->
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
+
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.1.0</version>
         <executions>
           <execution>
             <id>copy-externc-resources</id>
@@ -78,7 +86,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19</version>
         <configuration>
           <includes>
             <include>org/**/Test*.java</include>
@@ -86,7 +93,7 @@
           <excludes>
             <exclude>**/TestRoyaleFile.java</exclude>
             <exclude>**/TestRoyaleMXML*.java</exclude>
-            <exclude>**/TestSourceMap*.java</exclude>
+            <exclude>**/TestSourceMapMXML*.java</exclude>
             <exclude>**/TestMXML*.java</exclude>
             <exclude>**/TestRoyaleClass.java</exclude>
             <exclude>**/TestTypedefsCompile.java</exclude>
@@ -97,7 +104,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
         <configuration>
           <includes>
             <include>**/TestMXML*.java</include>
@@ -111,7 +117,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.5.0</version>
         <executions>
           <execution>
               <id>generate-test-js-typedefs</id>
@@ -173,17 +178,17 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -215,7 +220,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -227,11 +232,11 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.6</version>
+      <version>0.9.7</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     
   </dependencies>
 
-</project>
+<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>

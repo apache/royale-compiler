@@ -31,6 +31,12 @@ import java.io.Writer;
 import java.security.DigestOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
@@ -87,16 +93,14 @@ public class SWCWriter extends SWCWriterBase
         
     	if (metadataDate != null)
     	{
-    		// strip off timezone.  Zip format doesn't store timezone
-    		// and the goal is to have the same date and time regardless
-    		// of which timezone the build machine is using.
-    		int c = metadataDate.lastIndexOf(" ");
-    		metadataDate = metadataDate.substring(0,  c);
-    		c = metadataFormat.lastIndexOf(" ");
-    		metadataFormat = metadataFormat.substring(0, c);
     		try {
     			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-    			fileDate = sdf.parse(metadataDate).getTime();
+    			Date d = sdf.parse(metadataDate);
+    			Calendar cal = new GregorianCalendar();
+    			cal.setTime(d);
+    			ZonedDateTime zdt = ZonedDateTime.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), 
+    									cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), 0, ZoneId.systemDefault());
+    			fileDate = zdt.toInstant().toEpochMilli();
     		} catch (ParseException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();

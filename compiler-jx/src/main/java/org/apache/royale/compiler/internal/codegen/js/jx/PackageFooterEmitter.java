@@ -40,7 +40,10 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
+import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -190,6 +193,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		    write(ASEmitterTokens.BLOCK_CLOSE);
 		    write(ASEmitterTokens.SEMICOLON);
 
+		    if (needsIEventDispatcher) {
+				JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
+				fjs.getBindableEmitter().emitBindableInterfaceMethods(((IClassDefinition) tnode.getDefinition()));
+			}
+
 		    collectReflectionData(tnode);
 		    IMetaTagNode[] metadata = null;
 		    IMetaTagsNode metadataTags = tnode.getMetaTags();
@@ -222,6 +230,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     public class VariableData
     {
     	public String name;
+		public String customNS = null;
     	public String type;
 		public Boolean isStatic = false;
     	public IMetaTagNode[] metaData;
@@ -230,6 +239,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     public class MethodData
     {
     	public String name;
+		public String customNS = null;
     	public String type;
 		public Boolean isStatic = false;
     	public String declaredBy;
@@ -296,7 +306,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					//todo consider outputting consts, none output for now
 					continue;
 				}
-                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC )))
+				//explicit exclusion from reflection data:
+				if (getModel().suppressedExportNodes.contains(varNode)) {
+					continue;
+				}
+				String altNS = null;
+				if (ns != null &&  EmitterUtils.isCustomNamespace(ns)) {
+					altNS = ((INamespaceDefinition)(((VariableNode) varNode).getNamespaceNode().resolve(getProject()))).getURI();
+				}
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC )) || altNS != null)
                 {
                 	name = varNode.getName();
 
@@ -306,6 +324,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 							&& bindableVars.get(name).namespace.equals(IASKeywordConstants.PUBLIC)) {
 
 						AccessorData bindableAccessor = new AccessorData();
+						bindableAccessor.customNS = altNS;
 						bindableAccessor.name = name;
 						bindableAccessor.access = "readwrite";
 						bindableAccessor.type = bindableVars.get(name).type;
@@ -327,6 +346,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
                 	VariableData data = new VariableData();
                 	varData.add(data);
                 	data.name = name;
+                	data.customNS = altNS;
 					data.isStatic = isStatic;
 					String qualifiedTypeName =	varNode.getVariableTypeNode().resolveType(getProject()).getQualifiedName();
 					data.type = fjs.formatQualifiedName(qualifiedTypeName, true);
@@ -380,16 +400,30 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
+                boolean suppressed = getModel().suppressedExportNodes.contains(fnNode);
+	
+				String altNS = null;
+				if (ns != null &&  EmitterUtils.isCustomNamespace(ns)) {
+					altNS = ((INamespaceDefinition)(((FunctionNode) fnNode).getNamespaceNode().resolve(getProject()))).getURI();
+				}
 
-                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)) || altNS != null)
                 {
 					String accessorName = fnNode.getName();
-                	AccessorData data = accessorMap.get(accessorName);
+					String nameKey = altNS!=null? altNS+accessorName : accessorName;
+                	AccessorData data = accessorMap.get(nameKey);
 					if (data == null) {
+						if (suppressed) continue;
 						data = new AccessorData();
+					} else {
+						if (suppressed) {
+							accessorData.remove(data);
+							accessorMap.remove(nameKey);
+							continue;
+						}
 					}
-                	data.name = fnNode.getName();
-
+                	data.name = accessorName;
+					data.customNS = altNS;
                 	if (!accessorData.contains(data)) accessorData.add(data);
             	    if (dnode.getNodeID() == ASTNodeID.GetterID) {
 						data.type = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
@@ -403,7 +437,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 							data.access = "writeonly";
 						} else data.access = "readwrite";
 					}
-                	accessorMap.put(data.name, data);
+                	accessorMap.put(nameKey, data);
             	    data.type = fjs.formatQualifiedName(data.type, true);
             	    IClassNode declarer = (IClassNode)fnNode.getAncestorOfType(IClassNode.class);
             	    String declarant = fjs.formatQualifiedName(tnode.getQualifiedName(), true);
@@ -445,12 +479,20 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
-                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)))
+	
+				String altNS = null;
+				if (ns != null && EmitterUtils.isCustomNamespace(ns)) {
+					altNS = ((INamespaceDefinition)(((FunctionNode) fnNode).getNamespaceNode().resolve(getProject()))).getURI();
+				}
+                
+                if (isInterface || (ns != null && ns.equals(IASKeywordConstants.PUBLIC)) || altNS != null)
                 {
+                	if (getModel().suppressedExportNodes.contains(fnNode)) continue;
                 	MethodData data = new MethodData();
 					data.isStatic = isStatic;
                 	methodData.add(data);
                 	data.name = fnNode.getName();
+                	data.customNS = altNS;
 					String qualifiedTypeName =	fnNode.getReturnType();
 					if (!(qualifiedTypeName.equals("") || qualifiedTypeName.equals("void"))) {
 							qualifiedTypeName = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
@@ -533,14 +575,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		// return {
 		writeToken(ASEmitterTokens.RETURN);
 		write(ASEmitterTokens.BLOCK_OPEN);
-		indentPush();
-		writeNewline();
 	}
 
-	private void emitReflectionDataEnd(String typeName) {
+	private void emitReflectionDataEnd(String typeName, boolean hasContent) {
 		JSGoogConfiguration config = ((RoyaleJSProject)getWalker().getProject()).config;
 		
-		writeNewline();
+		if (hasContent) writeNewline();
 		// close return object
 		write(ASEmitterTokens.BLOCK_CLOSE);
 		write(ASEmitterTokens.SEMICOLON);
@@ -553,19 +593,17 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		
 		if (config == null) return;
 		//add compiletime descriptor flags
+		//allow dead-code elimination if reflection is not used
 		//doc emitter-ish:
 		writeNewline("/**");
-		writeNewline(" * @export");
 		writeNewline(" * @const");
 		writeNewline(" * @type {number}");
 		writeNewline(" */");
 		
-		//{typeName}.prototype.ROYALE_REFLECTION_INFO.compileFlags = {int value here};
+		//{typeName}.prototype.ROYALE_COMPILE_FLAGS = {int value here};
 		write(typeName);
 		write(ASEmitterTokens.MEMBER_ACCESS);
 		write(JSEmitterTokens.PROTOTYPE);
-		write(ASEmitterTokens.MEMBER_ACCESS);
-		write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
 		write(ASEmitterTokens.MEMBER_ACCESS);
 		writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_COMPILE_TIME_FLAGS);
 		writeToken(ASEmitterTokens.EQUAL);
@@ -585,20 +623,21 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     {
 
 		emitReflectionDataStart(typeName);
+		boolean indented = false;
+		boolean continueContent = false;
 		int count;
 		if (outputType == ReflectionKind.CLASS) {
-			// variables: function() {
-			write("variables");
-			writeToken(ASEmitterTokens.COLON);
-			writeToken(ASEmitterTokens.FUNCTION);
-			write(ASEmitterTokens.PAREN_OPEN);
-			writeToken(ASEmitterTokens.PAREN_CLOSE);
-			write(ASEmitterTokens.BLOCK_OPEN);
-			if (varData.size() == 0) {
-				//return {};},
-				writeEmptyContent(true, true);
-			} else {
-
+			
+			if (varData.size() > 0) {
+				indentPush();
+				writeNewline();
+				indented = true;
+				write("variables");
+				writeToken(ASEmitterTokens.COLON);
+				writeToken(ASEmitterTokens.FUNCTION);
+				write(ASEmitterTokens.PAREN_OPEN);
+				writeToken(ASEmitterTokens.PAREN_CLOSE);
+				write(ASEmitterTokens.BLOCK_OPEN);
 
 				indentPush();
 				writeNewline();
@@ -619,6 +658,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					if (var.isStatic) {
 					    write("|");
                     }
+					if (var.customNS != null) {
+						write(var.customNS);
+						write("::");
+					}
 					write(var.name);
 					write(ASEmitterTokens.SINGLE_QUOTE);
 					writeToken(ASEmitterTokens.COLON);
@@ -653,7 +696,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					writeToken(ASEmitterTokens.PAREN_CLOSE);
 					write(ASEmitterTokens.BLOCK_OPEN);
 					String getterSetter;
-					String field = var.isStatic ? typeName + "." + var.name : "inst." + var.name;
+					String varName;
+					if (var.customNS != null) {
+						varName = JSRoyaleEmitter.formatNamespacedProperty(var.customNS, var.name, false);
+					} else varName = var.name;
+					
+					String field = var.isStatic ? typeName + "." + varName : "inst." + varName;
 					if (valueIsUntyped) {
 						//to avoid setting when type is '*' set the 'value' param to the function being called, which
 						//causes a 'getter only' result
@@ -682,23 +730,32 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				writeNewline();
 				// close variable function
 				write(ASEmitterTokens.BLOCK_CLOSE);
-				write(ASEmitterTokens.COMMA);
-				writeNewline();
+				continueContent = true;
+			
 			}
 		}
 	    
-	    // accessors: function() {
-	    write("accessors");
-	    writeToken(ASEmitterTokens.COLON);
-	    writeToken(ASEmitterTokens.FUNCTION);
-	    write(ASEmitterTokens.PAREN_OPEN);
-	    writeToken(ASEmitterTokens.PAREN_CLOSE);
-	    write(ASEmitterTokens.BLOCK_OPEN);
+	 
 
-		if (accessorData.size() == 0) {
-			//return {};},
-			writeEmptyContent(true, true);
-		} else {
+		if (accessorData.size() > 0) {
+			if (continueContent) {
+				write(ASEmitterTokens.COMMA);
+				writeNewline();
+			}
+			// accessors: function() {
+			if (!indented) {
+				indentPush();
+				writeNewline();
+				indented = true;
+			}
+			
+			
+			write("accessors");
+			writeToken(ASEmitterTokens.COLON);
+			writeToken(ASEmitterTokens.FUNCTION);
+			write(ASEmitterTokens.PAREN_OPEN);
+			writeToken(ASEmitterTokens.PAREN_CLOSE);
+			write(ASEmitterTokens.BLOCK_OPEN);
 			indentPush();
 			writeNewline();
 			// return {
@@ -718,6 +775,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				//prefix static accessor names with |
 				if (accessor.isStatic) {
 					write("|");
+				}
+				if (accessor.customNS != null) {
+					write(accessor.customNS);
+					write("::");
 				}
 				write(accessor.name);
 				write(ASEmitterTokens.SINGLE_QUOTE);
@@ -757,22 +818,28 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			writeNewline();
 			// close accessor function
 			write(ASEmitterTokens.BLOCK_CLOSE);
-			write(ASEmitterTokens.COMMA);
-			writeNewline();
-
+			continueContent = true;
 		}
 
-	    // methods: function() {
-	    write("methods");
-	    writeToken(ASEmitterTokens.COLON);
-	    writeToken(ASEmitterTokens.FUNCTION);
-	    write(ASEmitterTokens.PAREN_OPEN);
-	    writeToken(ASEmitterTokens.PAREN_CLOSE);
-	    write(ASEmitterTokens.BLOCK_OPEN);
-		if (methodData.size() == 0) {
-			//return {};},
-			writeEmptyContent(false, false);
-		} else {
+	 
+		if (methodData.size() > 0) {
+			if (continueContent){
+				write(ASEmitterTokens.COMMA);
+				writeNewline();
+			}
+			
+			if (!indented) {
+				indentPush();
+				writeNewline();
+				indented = true;
+			}
+			
+			write("methods");
+			writeToken(ASEmitterTokens.COLON);
+			writeToken(ASEmitterTokens.FUNCTION);
+			write(ASEmitterTokens.PAREN_OPEN);
+			writeToken(ASEmitterTokens.PAREN_CLOSE);
+			write(ASEmitterTokens.BLOCK_OPEN);
 			indentPush();
 			writeNewline();
 			// return {
@@ -792,6 +859,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				//prefix static method names with |
 				if (method.isStatic) {
 					write("|");
+				}
+				if (method.customNS != null) {
+					write(method.customNS);
+					write("::");
 				}
 				write(method.name);
 				write(ASEmitterTokens.SINGLE_QUOTE);
@@ -818,7 +889,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 				IMetaTagNode[] metas = method.metaData;
 				if (metas != null)
 				{
-					//writeToken(ASEmitterTokens.COMMA);
 					writeMetaData(metas, true, false);
 				}
 
@@ -834,51 +904,18 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			writeNewline();
 			// close method function
 			write(ASEmitterTokens.BLOCK_CLOSE);
+			continueContent = true;
 		}
 		
     	if (metaData != null && metaData.length > 0)
     	{
-    		//write(ASEmitterTokens.COMMA);
-    	    //writeNewline();
-    	    writeMetaData(metaData, true, true);
+    	    writeMetaData(metaData, continueContent, continueContent);
     	}
-	    
-	    indentPop();
-		emitReflectionDataEnd(typeName);
+	    if (indented)
+	    	indentPop();
+		emitReflectionDataEnd(typeName, indented);
     }
-
-    /*
-    private void writeStringArray(ArrayList<String> sequence) {
-    	int l = sequence.size();
-		int count = 0;
-    	writeToken(ASEmitterTokens.SQUARE_OPEN);
-		for (String item :sequence) {
-			if (count>0) {
-				write(ASEmitterTokens.COMMA);
-				write(ASEmitterTokens.SPACE);
-			}
-			write(ASEmitterTokens.SINGLE_QUOTE);
-			write(item);
-			write(ASEmitterTokens.SINGLE_QUOTE);
-			count++;
-		}
-		if (l>0) write(ASEmitterTokens.SPACE);
-		writeToken(ASEmitterTokens.SQUARE_CLOSE);
-	}
-	*/
- 
-
-	private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
-		//return {};
-		writeToken(ASEmitterTokens.RETURN);
-		write(ASEmitterTokens.BLOCK_OPEN);
-		write(ASEmitterTokens.BLOCK_CLOSE);
-		write(ASEmitterTokens.SEMICOLON);
-		// close empty content function
-		write(ASEmitterTokens.BLOCK_CLOSE);
-		if (appendComma) write(ASEmitterTokens.COMMA);
-		if (includeNewline) writeNewline();
-	}
+    
 
 	private void writeParameters(IParameterNode[] params)
 	{
@@ -896,14 +933,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		int len = params.length;
 		for (int i = 0; i < len ; i++) {
 			IParameterDefinition parameterDefinition = (IParameterDefinition) params[i].getDefinition();
-			writeToken(ASEmitterTokens.BLOCK_OPEN);
-			write("index");
-			writeToken(ASEmitterTokens.COLON);
-			write(Integer.toString(i+1));
-			write(ASEmitterTokens.COMMA);
-			write(ASEmitterTokens.SPACE);
-			write("type");
-			writeToken(ASEmitterTokens.COLON);
+
 			write(ASEmitterTokens.SINGLE_QUOTE);
 			ITypeDefinition pd = parameterDefinition.resolveType(getProject());
 			if (pd == null)
@@ -918,16 +948,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 			write(ASEmitterTokens.COMMA);
 			write(ASEmitterTokens.SPACE);
-			write("optional");
-			writeToken(ASEmitterTokens.COLON);
 			writeToken(parameterDefinition.hasDefaultValue() ? ASEmitterTokens.TRUE :  ASEmitterTokens.FALSE);
-
-			write(ASEmitterTokens.BLOCK_CLOSE);
+			
 			if (i < len-1) write(ASEmitterTokens.COMMA);
 		}
 
 		// close array of parameter definitions
-		write(ASEmitterTokens.SPACE);
 		write(ASEmitterTokens.SQUARE_CLOSE);
 		writeToken(ASEmitterTokens.SEMICOLON);
 		// close function
@@ -1071,20 +1097,18 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		}
 		if (needsStaticsList) {
 			//support for reflection on static classes: supports ability to distinguish between initial fields and dynamic fields
+			//this is excluded via dead-code-elimination if never used
 			//doc emitter-ish:
 			writeNewline("/**");
 			writeNewline(" * Provide reflection support for distinguishing dynamic fields on class object (static)");
-			writeNewline(" * @export");
 			writeNewline(" * @const");
 			writeNewline(" * @type {Array<string>}");
 			writeNewline(" */");
 			
-			//{typeName}.prototype.ROYALE_REFLECTION_INFO.statics = Object.keys({typeName});
+			//{typeName}.prototype.ROYALE_INITIAL_STATICS = Object.keys({typeName});
 			write(typeName);
 			write(ASEmitterTokens.MEMBER_ACCESS);
 			write(JSEmitterTokens.PROTOTYPE);
-			write(ASEmitterTokens.MEMBER_ACCESS);
-			write(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO);
 			write(ASEmitterTokens.MEMBER_ACCESS);
 			writeToken(JSRoyaleEmitterTokens.ROYALE_REFLECTION_INFO_INITIAL_STATICS);
 			writeToken(ASEmitterTokens.EQUAL);

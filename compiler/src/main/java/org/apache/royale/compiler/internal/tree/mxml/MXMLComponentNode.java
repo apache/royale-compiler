@@ -133,6 +133,7 @@ class MXMLComponentNode extends MXMLFactoryNode implements IMXMLComponentNode
                 // TODO Add a problem subclass for this.
                 ICompilerProblem problem = new MXMLSemanticProblem(childTag);
                 builder.addProblem(problem);
+                return;
             }
 
             // Check that the definition is for a class.

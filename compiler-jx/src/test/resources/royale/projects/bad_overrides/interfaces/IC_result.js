@@ -52,13 +52,11 @@ interfaces.IC.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IC', qName: 'inte
  */
 interfaces.IC.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    accessors: function () {return {};},
-    methods: function () {return {};}
+
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-interfaces.IC.prototype.ROYALE_REFLECTION_INFO.compileFlags = 8;
+interfaces.IC.prototype.ROYALE_COMPILE_FLAGS = 8;

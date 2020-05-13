@@ -19,6 +19,7 @@
 
 package as;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -60,7 +61,7 @@ public class ASKeywordTests extends ASFeatureTestsBase
     }
 
     @Test
-    public void ASKeyword_Namespace_as_method_name()
+    public void ASKeyword_Namespace_asMethodName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -80,11 +81,62 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('method named namespace', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_Default_as_method_name()
+    public void ASKeyword_Default_asVariableName_andStrictIdentifierNamesDisabled()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var default:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "this.default = 'bar';",
+                "assertEqual('variable named default', this.default, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
+    }
+
+    @Test
+    public void ASKeyword_Default_asVariableName_andStrictIdentifierNamesEnabled()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var default:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "this.default = 'bar';",
+                "assertEqual('variable named default', this.default, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=true"
+        };
+        compileAndExpectErrors(source, false, false, false, options,
+            "Expected IDENTIFIER but got 'default'\n");
+    }
+
+    @Test
+    public void ASKeyword_Default_asMethodName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -104,11 +156,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('method named default', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_for_as_method_name()
+    public void ASKeyword_For_asMethodName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -128,11 +184,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
                 "assertEqual('method named default', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_Get_as_method_name()
+    public void ASKeyword_Get_asMethodName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -152,11 +212,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('method named get', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_Get_as_getter_name()
+    public void ASKeyword_Get_asGetterName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -176,11 +240,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('getter named get', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_Get_as_member_expression_name()
+    public void ASKeyword_Get_asMemberExpression_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -200,11 +268,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('getter named get', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_as_method_name()
+    public void ASKeyword_As_asMethodName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -224,11 +296,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('method named as', foo, 'as');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
 
     @Test
-    public void ASKeyword_as_property_name()
+    public void ASKeyword_As_asPropertyName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -249,68 +325,15 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('property named as', as, 'bar');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
     }
     
     @Test
-    public void ASKeyword_as_variable_name()
-    {
-        String[] imports = new String[]
-        {
-        };
-        String[] declarations = new String[]
-        {
-            "public var as:String;",
-        };
-        String[] testCode = new String[]
-        {
-        	"as = 'bar';",
-            "assertEqual('variable named as', as, 'bar');",
-        };
-        String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
-    }
-
-    @Test
-    public void ASKeyword_default_as_variable_name()
-    {
-        String[] imports = new String[]
-        {
-        };
-        String[] declarations = new String[]
-        {
-                "public var default:String;",
-        };
-        String[] testCode = new String[]
-        {
-                "default = 'bar';",
-                "assertEqual('variable named default', default, 'bar');",
-        };
-        String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
-    }
-
-    @Test
-    public void ASKeyword_include_as_variable_name()
-    {
-        String[] imports = new String[]
-        {
-        };
-        String[] declarations = new String[]
-        {
-                "public var include:String;",
-        };
-        String[] testCode = new String[]
-        {
-                "this.include = 'bar';",
-                "assertEqual('variable named include', this.include, 'bar');",
-        };
-        String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
-    }
-
-    @Test
-    public void ASKeyword_as_member_expression()
+    public void ASKeyword_As_asVariableName_andStrictIdentifierNamesDisabled()
     {
         String[] imports = new String[]
         {
@@ -325,7 +348,108 @@ public class ASKeywordTests extends ASFeatureTestsBase
             "assertEqual('variable named as', this.as, 'bar');",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
+    }
+
+    @Test
+    public void ASKeyword_As_asVariableName_andStrictIdentifierNamesEnabled()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var as:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "this.as = 'bar';",
+                "assertEqual('variable named as', this.as, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=true"
+        };
+        compileAndExpectErrors(source, false, false, false, options,
+            "Expected IDENTIFIER but got 'as'\n");
+    }
+
+    @Test
+    public void ASKeyword_As_asMemberExpression_andStrictIdentifierNamesDisabled()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "public var as:String;",
+        };
+        String[] testCode = new String[]
+        {
+        	"this.as = 'bar';",
+            "assertEqual('variable named as', this.as, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
+    }
+
+    @Test
+    public void ASKeyword_Include_asVariableName_andStrictIdentifierNamesDisabled()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var include:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "this.include = 'bar';",
+                "assertEqual('variable named include', this.include, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=false"
+        };
+        compileAndRun(source, false, false, false, options);
+    }
+
+    @Test
+    public void ASKeyword_Include_asVariableName_andStrictIdentifierNamesEnabled()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var include:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "this.include = 'bar';",
+                "assertEqual('variable named include', this.include, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        String[] options = new String[]
+        {
+            "-strict-identifier-names=true"
+        };
+        compileAndExpectErrors(source, false, false, false, options,
+            //not sure why there are three errors here, but not on others, like default and as
+            "Expected IDENTIFIER but got 'include'\n" +
+            "Expected IDENTIFIER but got 'include'\n" +
+            "Expected IDENTIFIER but got 'include'\n");
     }
 
     @Test

@@ -496,6 +496,14 @@ public class MXMLTreeBuilder
                 return null;
             }
         }
+        if (value == null)
+        {
+            // we can't parse null from text alone
+            // to pass null, you need to use binding like {null}
+            // with that in mind, a null value here means that the text is
+            // invalid for the specified type
+            return null;
+        }
         
         MXMLLiteralNode literalNode = new MXMLLiteralNode(null, value);
         literalNode.setSourceLocation(location);

@@ -5019,6 +5019,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         context.addInstruction(OP_findpropstrict, ABCGeneratingReducer.xmlListType);
         context.addInstruction(OP_pushstring, node.getXMLString());
         context.addInstruction(OP_constructprop, CONSTRUCT_XML_LIST_OPERANDS);
+        
+        // Traverse the children - these will be any MXMLBindingNode that were created for
+        // databinding expressions inside the XML
+        traverse(node, context);
     }
     
     /**

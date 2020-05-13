@@ -59,7 +59,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         INamespaceNode node = (INamespaceNode) getNode("public namespace foo;",
         		INamespaceNode.class, WRAP_LEVEL_NONE);
         asBlockWalker.visitNamespace(node);
-        assertOut("foo = new Namespace('foo');");
+        assertOut("foo = new Namespace('foo')");
     }
     
     @Test
@@ -68,7 +68,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         INamespaceNode node = (INamespaceNode) getNode("public namespace foo = 'bar';",
         		INamespaceNode.class, WRAP_LEVEL_NONE);
         asBlockWalker.visitNamespace(node);
-        assertOut("foo = new Namespace('bar');");
+        assertOut("foo = new Namespace('bar')");
     }
     
     @Test
@@ -797,18 +797,13 @@ public class TestRoyaleStatements extends TestGoogStatements
         		        		" * @return {Object.<string, Function>}\n" +
         		        		" */\n" +
         		        		"RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
-        		        		"return {\n" +
-                                "  variables: function () {return {};},\n" +
-                                "  accessors: function () {return {};},\n" +
-                                "  methods: function () {return {};}\n" +
-        		        		"};\n" +
+        		        		"return {};\n" +
                                 "};\n" +
                                 "/**\n" +
-                                " * @export\n" +
                                 " * @const\n" +
                                 " * @type {number}\n" +
                                 " */\n" +
-                                "RoyaleTest_A.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;\n");
+                                "RoyaleTest_A.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
     @Override

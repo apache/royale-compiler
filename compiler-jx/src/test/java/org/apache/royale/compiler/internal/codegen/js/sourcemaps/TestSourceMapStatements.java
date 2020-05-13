@@ -291,7 +291,8 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 14, 1, 5, 1, 21);   // var foreachiter0
         assertMapping(node, 0, 14, 1, 25, 1, 44);  // foreachiter0_target
         assertMapping(node, 0, 17, 1, 44, 1, 46);  // )
-        assertMapping(node, 0, 9, 3, 0, 3, 4);     // i =
+        assertMapping(node, 0, 9, 3, 0, 3, 1);     // i
+        assertMapping(node, 0, 9, 3, 1, 3, 4);     //  =
         assertMapping(node, 0, 14, 3, 4, 3, 38);   // foreachiter0_target[foreachiter0];
         assertMapping(node, 0, 20, 5, 2, 5, 7);    // break
         assertMapping(node, 0, 25, 5, 7, 5, 8);    // ;

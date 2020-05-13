@@ -49,6 +49,12 @@
                 <manifest>$namespace.manifest</manifest>
             </namespace>
 #end
+#if($languageNamespace)
+            <namespace>
+                <uri>$languageNamespace.uri</uri>
+                <manifest>$languageNamespace.manifest</manifest>
+            </namespace>
+#end
         </namespaces>
 
         <keep-as3-metadata>
@@ -115,7 +121,7 @@
     <output>${output}</output>
 
   <doc-namespaces>
-#foreach($namespace in $namespaces)    <uri>$namespace.uri</uri>
+#foreach($namespaceUri in $namespaceUris)    <uri>$namespaceUri</uri>
 #end
   </doc-namespaces>
 

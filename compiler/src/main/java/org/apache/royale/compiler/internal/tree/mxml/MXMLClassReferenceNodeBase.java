@@ -436,7 +436,13 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         RoyaleProject project = builder.getProject();
 
         // Handle child tags that are property/style/event specifiers.
-        MXMLSpecifierNodeBase childNode = createSpecifierNode(builder, childTag.getShortName());
+        MXMLSpecifierNodeBase childNode = null;
+        // ...but only if the child has the same prefix as the parent -JT
+        // apache/royale-compiler#101
+        if(tag.getPrefix().equals(childTag.getPrefix()))
+        {
+            childNode = createSpecifierNode(builder, childTag.getShortName());
+        }
         if (childNode != null)
         {
             // This tag is not part of the default property value.
@@ -519,7 +525,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                 if (defaultPropertyDefinition != null && !processedDefaultProperty && defaultPropertyDefinition.getBaseName().equals("text"))
                 {
                 	String uri = childTag.getURI();
-                	if (uri.equals("http://www.w3.org/1999/xhtml"))
+                	if (uri != null && uri.equals("http://www.w3.org/1999/xhtml"))
                 	{
                         IVariableDefinition htmlDef = (IVariableDefinition)project.resolveSpecifier(classReference, "html");
                         if (htmlDef != null)
@@ -536,7 +542,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                 else if (altDefaultPropertyDefinition != null && !processedDefaultProperty && altDefaultPropertyDefinition.getBaseName().equals("innerHTML"))
                 {
                 	String uri = childTag.getURI();
-                	if (uri.equals("library://ns.apache.org/royale/html"))
+                	if (uri != null && uri.equals("library://ns.apache.org/royale/html"))
                 	{
                         IVariableDefinition textDef = (IVariableDefinition)project.resolveSpecifier(classReference, "innerHTML");
                         if (textDef != null)

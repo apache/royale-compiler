@@ -69,8 +69,7 @@ interfaces.IE.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-interfaces.IE.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+interfaces.IE.prototype.ROYALE_COMPILE_FLAGS = 9;

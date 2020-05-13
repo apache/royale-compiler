@@ -16,30 +16,19 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
   </parent>
 
   <artifactId>royale-ant-tasks</artifactId>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
 
   <name>Apache Royale: Royale Ant Tasks</name>
-
-  <build>
-    <plugins>
-        <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.9</version>
-        </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -49,4 +38,4 @@
     </dependency>
   </dependencies>
 
-</project>
+<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>

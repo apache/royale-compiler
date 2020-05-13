@@ -62,8 +62,6 @@ UseWindow.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'U
  */
 UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'UseWindow': { type: '', declaredBy: 'UseWindow'}
@@ -72,8 +70,7 @@ UseWindow.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-UseWindow.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+UseWindow.prototype.ROYALE_COMPILE_FLAGS = 9;

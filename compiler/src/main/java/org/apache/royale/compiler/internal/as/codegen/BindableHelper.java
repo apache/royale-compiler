@@ -31,10 +31,15 @@ import org.apache.royale.abc.visitors.ITraitVisitor;
 import org.apache.royale.abc.visitors.ITraitsVisitor;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 
 import java.util.Vector;
 
@@ -70,6 +75,139 @@ import static org.apache.royale.abc.ABCConstants.TRAIT_Var;
  */
 public class BindableHelper
 {
+
+    /**
+     * Check to see if a class definition is Bindable (for bindable code-gen)
+     * @param classDefinition the Class definition to check
+     * @return true if the definition has [Bindable]
+     */
+    public static boolean isClassCodeGenBindable(IClassDefinition classDefinition) {
+        IMetaTag[] metaTags = classDefinition.getAllMetaTags();
+        boolean isBindable = false;
+        for (IMetaTag metaTag : metaTags)
+        {
+            if (isCodeGenBindable(metaTag)) {
+                //if there is a single [Bindable] tag, then others are ignored, and the class is considered Bindable
+                isBindable = true;
+                break;
+            }
+        }
+        return isBindable;
+    }
+
+    /**
+     * Check to see if the metaTag is a codegen style [Bindable] tag (without any event names specified)
+     * @param memberDef the definition to check
+     * @param isClassBindable whether the containing class is [Bindable]
+     * @return true if the tag is [Bindable]
+     */
+    public static boolean isCodeGenBindableMember(IDefinition memberDef, boolean isClassBindable) {
+        boolean memberHasCodeGenBindable = false;
+        boolean memberHasExplicitBindable = false;
+        boolean resolved = false;
+        IMetaTag[] metaTags = memberDef.getAllMetaTags();
+        for (IMetaTag metaTag : metaTags)
+        {
+            if (!memberHasCodeGenBindable) {
+                memberHasCodeGenBindable = isCodeGenBindable(metaTag);
+                if (memberHasCodeGenBindable) continue;
+            }
+            if (!memberHasExplicitBindable) {
+                memberHasExplicitBindable = isExplicitBindable(metaTag);
+            }
+        }
+
+        if (isClassBindable) {
+            //if a getter/setter member has at least one explicit Bindable tag , then no code-gen is applied, even if it is also has a 'codegen' [Bindable] tag
+           if (memberDef instanceof IAccessorDefinition) {
+                resolved = !memberHasExplicitBindable;
+            } else {
+               //if it is a variable member, extra [Bindable] tags, including explicit Bindable(event='something') tags are ignored (at least for code-gen)
+               resolved = true; // @todo avoid checking at all in the above loop for this case
+           }
+        } else {
+            //in this case other explicit Bindable tags are ignored, a [Bindable] is sufficient @todo avoid checking for 'memberHasExplicitBindable' in the above loop for this case
+            resolved = memberHasCodeGenBindable;
+        }
+        return resolved;
+    }
+
+    public static boolean hasExplicitBindable(IDefinition definition) {
+       boolean hasExplicitBindableTag = false;
+       if (definition != null) {
+           IMetaTag[] metaTags = definition.getAllMetaTags();
+           for (IMetaTag metaTag : metaTags)
+           {
+               if (isExplicitBindable(metaTag)) {
+                   hasExplicitBindableTag = true;
+                   break;
+               }
+           }
+       }
+       return hasExplicitBindableTag;
+    }
+
+
+    public static boolean hasCodegenBindable(IDefinition definition) {
+        boolean hasCodegenBindableTag = false;
+        if (definition != null) {
+            IMetaTag[] metaTags = definition.getAllMetaTags();
+            for (IMetaTag metaTag : metaTags)
+            {
+                if (isCodeGenBindable(metaTag)) {
+                    hasCodegenBindableTag = true;
+                    break;
+                }
+            }
+        }
+        return hasCodegenBindableTag;
+    }
+
+    /**
+     * Check to see if the metaTag is a codegen style [Bindable] tag (without any event names specified)
+     * @param metaTag the MetaTag to check
+     * @return true if the MetaTag is [Bindable]
+     */
+    public static boolean isCodeGenBindable(IMetaTag metaTag) {
+        return metaTag != null
+                && metaTag.getTagName().equals(BINDABLE)
+                && metaTag.getAllAttributes().length == 0;
+    }
+    /**
+     * Check to see if the metaTag is an explicit [Bindable] tag (with some attributes, such as event='someEvent' specified)
+     * @param metaTag the MetaTag to check
+     * @return true if the MetaTag is [Bindable('something')]
+     */
+    public static boolean isExplicitBindable(IMetaTag metaTag) {
+        return metaTag != null
+                && metaTag.getTagName().equals(BINDABLE)
+                && metaTag.getAllAttributes().length > 0;
+    }
+
+
+    /**
+     * A convenience method to get the next full node after all the Metadata tags, for when
+     * a Binding problem should be reported against the main source node for the definition
+     * @param site the full definition with [Bindable]
+     * @return the first node after the MetaData tags
+     */
+    public static IASNode getProblemReportingNode(IDefinition site) {
+        IDefinitionNode siteNode = site.getNode();
+
+        int afterMetas = siteNode.getMetaTags().getAbsoluteEnd();
+
+        int childrenCount = siteNode.getChildCount();
+        IASNode reportingNode = siteNode;
+        for (int i = 1; i < childrenCount; i++) {
+            IASNode nextNode = siteNode.getChild(i);
+            if (nextNode.getAbsoluteStart() > afterMetas) {
+                reportingNode = nextNode;
+                break;
+            }
+        }
+        return reportingNode;
+    }
+
     /**
      * Generate a synthetic getter for a var that is bindable.  The generated getter will simply return the value of
      * the property.
@@ -183,9 +321,10 @@ public class BindableHelper
         mi.setReturnType(NAME_VOID);
 
         InstructionList insns = new InstructionList(32);
-        // var oldValue = backingName;
+        // var oldValue = backingName (or propName for an originally defined getter);
+        Name oldValuePropName = classScope.hasDeclaredVariableName(propName) ? backingName : propName;
         insns.addInstruction(OP_getlocal0);
-        insns.addInstruction(OP_getproperty, backingName);
+        insns.addInstruction(OP_getproperty, oldValuePropName);
         insns.addInstruction(OP_setlocal2);
 
         // if( oldValue !== newValue )

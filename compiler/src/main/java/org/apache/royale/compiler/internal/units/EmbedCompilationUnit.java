@@ -51,6 +51,7 @@ import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResul
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.InvalidABCByteCodeProblem;
 import org.apache.royale.compiler.problems.NoScopesInABCCompilationUnitProblem;
+import org.apache.royale.compiler.problems.UnknownSuperclassProblem;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -310,9 +311,19 @@ public class EmbedCompilationUnit extends CompilationUnitBase
         if (embedData.generatedClassExtendsAnother())
         {
             ASProjectScope projectScope = getProject().getScope();
-            IDefinition[] defs = projectScope.findAllDefinitionsByName(Multiname.crackDottedQName(getProject(), embedData.getTranscoder().getBaseClassQName()));
-            ICompilationUnit referencedCU = projectScope.getCompilationUnitForScope(defs[0].getContainingScope());
-            getProject().addDependency(this, referencedCU, DependencyType.INHERITANCE, defs[0].getQualifiedName());
+            IDefinition[] baseDefs = projectScope.findAllDefinitionsByName(Multiname.crackDottedQName(getProject(), embedData.getTranscoder().getBaseClassQName()));
+            if(baseDefs == null || baseDefs.length == 0)
+            {
+                IDefinition[] subDefs = projectScope.findAllDefinitionsByName(Multiname.crackDottedQName(getProject(), embedData.getQName()));
+                ICompilerProblem problem = new UnknownSuperclassProblem(
+                    subDefs[0], embedData.getTranscoder().getBaseClassQName());
+                problems.add(problem);
+            }
+            else
+            {
+                ICompilationUnit referencedCU = projectScope.getCompilationUnitForScope(baseDefs[0].getContainingScope());
+                getProject().addDependency(this, referencedCU, DependencyType.INHERITANCE, baseDefs[0].getQualifiedName());
+            }
         }
     }
     

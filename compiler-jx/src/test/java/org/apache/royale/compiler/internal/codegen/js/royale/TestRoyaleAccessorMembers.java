@@ -39,7 +39,7 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
 				"RoyaleTest_A.prototype.get__foo = function() {\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @type {number} */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
 				"RoyaleTest_A.prototype.get__foo = function() {\n  return -1;\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @type {number} */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
     }
 
     @Override
@@ -108,9 +108,10 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
     	IClassNode node = (IClassNode) getNode("function set foo(value:int):void{}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
+        // /**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\nRoyaleTest_A.prototype.set__foo = function(value) {\n};\n\n\nObject.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
 				"RoyaleTest_A.prototype.set__foo = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
     }
 
     @Override
@@ -122,7 +123,7 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
 				"RoyaleTest_A.prototype.set__foo = function(value) {\n  fetch('haai');\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
     }
 
     @Override

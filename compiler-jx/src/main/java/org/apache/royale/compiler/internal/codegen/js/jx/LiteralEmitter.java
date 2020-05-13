@@ -30,6 +30,8 @@ import org.apache.royale.compiler.common.IMetaInfo;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.royale.compiler.internal.tree.as.XMLLiteralNode;
@@ -58,6 +60,7 @@ public class LiteralEmitter extends JSSubEmitter implements
         String s = node.getValue(true);
         if (!(node instanceof RegExpLiteralNode))
         {
+            boolean withEscapedSingleQuote = false;
             if (node.getLiteralType() == LiteralType.XML)
             {
                 boolean jsx = false;
@@ -91,7 +94,7 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                        if (s.contains("'"))
 	                            s = "\"" + s + "\"";
 	                        else
-	                            s = "'" + s + "'";
+	                            s = "'" + s.trim() + "'";
 	                    }
 	                    else
 	                    {
@@ -108,10 +111,12 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                            {
 	                                s = ((LiteralNode)child).getValue(true);
 	                                s = s.replace("\n", "");
-	                                if (s.contains("'"))
-	                                    sb.append("\"" + s + "\"");
-	                                else
-	                                    sb.append("'" + s + "'");
+                                    if (s.contains("'")) {
+                                        s = s.replace("'","__ESC_SNGLE_QUOT_PLACEHOLDER__");
+                                        withEscapedSingleQuote = true;
+                                    }
+
+                                    sb.append("'" + s + "'");
 	                            }
 	                            else
 	                            {
@@ -134,12 +139,30 @@ public class LiteralEmitter extends JSSubEmitter implements
 	                    char c = s.charAt(0);
 	                    if (c == '"')
 	                    {
-	                        s = s.substring(1, s.length() - 1);
+	                        s = s.substring(1, s.length() - 1).trim();
 	                        s = s.replace("\"", "__QUOTE_PLACEHOLDER__");
 	                        s = "\"" + s + "\"";
 	                    }
 	                    // use formatQualifiedName to get XML in the usedNames dependencies
-	                    s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
+                        if (getModel().defaultXMLNamespaceActive &&
+                                xmlNode.getContainingScope().getScope() instanceof FunctionScope &&
+                                getModel().getDefaultXMLNamespace((FunctionScope)(xmlNode.getContainingScope().getScope())) != null) {
+                                    s = getEmitter().formatQualifiedName("XML")
+                                    + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                                    + "constructWithDefaultXmlNS"
+                                    + "("
+                                    + s
+                                    //we need to append the default ns arg:
+                                    +","
+                                    + getEmitter().stringifyNode(getModel().getDefaultXMLNamespace((FunctionScope)(xmlNode.getContainingScope().getScope())))
+                                    +")";
+                            
+                        }
+	                    else {
+		                    newlineReplacement = "\\\\n";
+	                        s = s.replaceAll("\r", "");
+	                    	s = "new " + getEmitter().formatQualifiedName("XML") + "( " + s + ")";
+	                    }
 	                }
                 }
                 else
@@ -162,6 +185,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
             s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
             s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
+            if (withEscapedSingleQuote) s = s.replaceAll("__ESC_SNGLE_QUOT_PLACEHOLDER__", "\\\\'");
             s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
             s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
@@ -222,6 +246,8 @@ public class LiteralEmitter extends JSSubEmitter implements
 
     private void emitJSX(XMLLiteralNode node)
     {
+        RoyaleJSProject project = (RoyaleJSProject) getProject();
+        String jsxFactory = project.config.getJsxFactory();
         int childCount = node.getContentsNode().getChildCount();
         Stack<String> elementStack = new Stack<String>();
         String elementName = null;
@@ -318,7 +344,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                             }
                             elementName = getElementNameToEmit(elementName, node);
                             elementStack.push(elementName);
-                            write("React.createElement");
+                            write(jsxFactory);
                             write(ASEmitterTokens.PAREN_OPEN);
                             write(elementName);
                             value = value.substring(endNameIndex);

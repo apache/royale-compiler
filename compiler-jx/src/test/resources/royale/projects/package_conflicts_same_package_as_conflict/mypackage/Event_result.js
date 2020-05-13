@@ -53,8 +53,6 @@ mypackage.Event.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Event', qName: 
  */
 mypackage.Event.prototype.ROYALE_REFLECTION_INFO = function () {
   return {
-    variables: function () {return {};},
-    accessors: function () {return {};},
     methods: function () {
       return {
         'Event': { type: '', declaredBy: 'mypackage.Event'}
@@ -63,8 +61,7 @@ mypackage.Event.prototype.ROYALE_REFLECTION_INFO = function () {
   };
 };
 /**
- * @export
  * @const
  * @type {number}
  */
-mypackage.Event.prototype.ROYALE_REFLECTION_INFO.compileFlags = 9;
+mypackage.Event.prototype.ROYALE_COMPILE_FLAGS = 9;

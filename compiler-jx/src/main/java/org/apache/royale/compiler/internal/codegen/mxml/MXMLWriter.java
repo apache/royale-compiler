@@ -74,7 +74,7 @@ public class MXMLWriter extends JSWriter
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
 
         if (sourceMapOut != null)
@@ -104,7 +104,7 @@ public class MXMLWriter extends JSWriter
                 sourceMapOut.write(sourceMap.getBytes("utf8"));
             } catch (Exception e)
             {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
             }
         }
     }

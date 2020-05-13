@@ -96,6 +96,7 @@ public class ClassReference extends BaseReference
         if (!isInterface())
             allMethods.addAll(staticFields.values());
         allMethods.addAll(instanceFields.values());
+        Collections.sort(allMethods);
         return allMethods;
     }
 
@@ -105,6 +106,7 @@ public class ClassReference extends BaseReference
         if (!isInterface())
             allMethods.addAll(staticMethods.values());
         allMethods.addAll(instanceMethods.values());
+        Collections.sort(allMethods);
         return allMethods;
     }
 
@@ -494,7 +496,7 @@ public class ClassReference extends BaseReference
             if (classReference != null)
                 result.add(classReference);
         }
-
+        Collections.sort(result);
         return result;
     }
 
@@ -508,6 +510,7 @@ public class ClassReference extends BaseReference
             if (reference != null)
                 result.add(reference);
         }
+        Collections.sort(result);
         return result;
     }
 
@@ -521,6 +524,7 @@ public class ClassReference extends BaseReference
             if (reference != null)
                 result.add(reference);
         }
+        Collections.sort(result);
         return result;
     }
 
@@ -549,6 +553,7 @@ public class ClassReference extends BaseReference
             	getModel().problems.add(problem);
             }
         }
+        Collections.sort(result);
         return result;
     }
 
@@ -563,7 +568,7 @@ public class ClassReference extends BaseReference
             result.addAll(superClass.getInterfaces());
             superClass = superClass.getSuperClass();
         }
-
+        Collections.sort(result);
         return result;
     }
 

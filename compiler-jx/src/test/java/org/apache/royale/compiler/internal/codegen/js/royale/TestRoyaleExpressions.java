@@ -109,7 +109,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassNode node = (IClassNode)getNode("public function get defaultPrevented():Object " +
         		                       "{ return super.isDefaultPrevented(); }" + 
         		                       "override public function isDefaultPrevented():Object" +
-                                       "{ return defaultPrevented; }", IClassNode.class);
+                                       "{ return defaultPrevented; }", IClassNode.class, WRAP_LEVEL_CLASS);
         // getters and setters don't get output until the class is output so you can't just visit the accessorNode
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\n" + 
@@ -119,11 +119,12 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  " * Prevent renaming of class. Needed for reflection.\n" +
         		  " */\n" +
         		  "goog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
-        		  "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
-        		  "  var self = this;\n" +
-        		  "  ;\n" +
-        		  "  function isDefaultPrevented() {\n" +
-        		  "    return defaultPrevented;\n  };\n  \n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @override\n" +
+        		  " */\n" +
+        		  "RoyaleTest_A.prototype.isDefaultPrevented = function() {\n" +
+        		  "  return this.defaultPrevented;\n" +
         		  "};\n\n\n" +
         		  "RoyaleTest_A.prototype.get__defaultPrevented = function() {\n" +
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
@@ -533,6 +534,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b = 1");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentCustomNamespaceNoUseNamespace()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "import custom.custom_namespace;public class B {custom_namespace function set b(value:Number):void {}; public function c() { custom_namespace::b = 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.http_$$ns_apache_org$2017$custom$namespace__b = 1");
     }
 
     @Test
@@ -1295,6 +1306,16 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array.<string>} */ a = null;\n  return a.length;\n}");
     }
 
+    @Test
+    public void testFunctionProperty()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B { public function a():void { b(c); } public function set b(v:Function):void {}  public function get b():Function { return null; } public function get c():Object { return null; } public function set c(v:Object):void {} }",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype.a = function() {\n  this.b(this.c);\n}");
+    }
+    
     //----------------------------------
     // Other
     //----------------------------------
@@ -1331,6 +1352,17 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  goog.bind(org.apache.royale.utils.Language.closure(this.b, this, 'b'), this);\n}");
+    }
+    
+    @Test
+    public void testFunctionCallFullyQualifiedPrivate()
+    {
+        project.setAllowPrivateNameConflicts(true);
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import goog.bind; public class B {private function b() { goog.bind(b, this); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @private\n */\nfoo.bar.B.prototype.foo_bar_B_b = function() {\n  goog.bind(org.apache.royale.utils.Language.closure(this.foo_bar_B_b, this, 'foo_bar_B_b'), this);\n}");
     }
 
     @Test

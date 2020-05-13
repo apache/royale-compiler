@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
@@ -58,6 +59,8 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 import org.apache.royale.compiler.visitor.IBlockWalker;
@@ -342,6 +345,14 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         mxmlEmitter.emitUint(node);
     }
 
+    @Override
+    public void visitMXMLClass(IMXMLClassNode node)
+    {
+        debug("visitMXMLClass()");
+
+        mxmlEmitter.emitMXMLClass(node);
+    }
+    
     //--------------------------------------------------------------------------
 
     @Override
@@ -457,6 +468,23 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         debug("visitRemoteObjectMethod()");
         
         mxmlEmitter.emitRemoteObject(node);		
+	}
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitWebServiceMethod(IMXMLWebServiceOperationNode node)
+    {
+        debug("visitWebServiceMethod()");
+        
+        mxmlEmitter.emitWebServiceMethod(node);
+    }
+    
+	@Override
+	public void visitWebService(IMXMLWebServiceNode node) {
+        debug("visitWebService()");
+        
+        mxmlEmitter.emitWebService(node);		
 	}
     
     //--------------------------------------------------------------------------

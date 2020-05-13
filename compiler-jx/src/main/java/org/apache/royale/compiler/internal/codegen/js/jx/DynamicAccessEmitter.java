@@ -72,13 +72,22 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 	    	if (leftOperandNode instanceof MemberAccessExpressionNode)
 	    		isXML = fjs.isLeftNodeXMLish((MemberAccessExpressionNode)leftOperandNode);
 	    	else if (leftOperandNode instanceof IExpressionNode)
-	    		isXML = fjs.isXML((IExpressionNode)leftOperandNode);
+	    		isXML = fjs.isXMLish((IExpressionNode)leftOperandNode);
         	if (leftOperandNode instanceof MemberAccessExpressionNode)
         		isProxy = fjs.isProxy((MemberAccessExpressionNode)leftOperandNode);
         	else if (leftOperandNode instanceof IExpressionNode)
         		isProxy = fjs.isProxy((IExpressionNode)leftOperandNode);
 	    	if (isXML)
 	    	{
+				if (type == null) {
+	    			//this can happen if myThing is of type Object or AnyType (*)
+					//with example: myXml.somethingChild[myThing.id]
+	    			//use Stringify with 'child' method, which has support for attributes vs elements
+					write(".child('' +");
+						getWalker().walk(rightOperandNode);
+					write(")");
+					return;
+				}
 				if (type.isInstanceOf("String", getProject()))
 				{
 					String field = fjs.stringifyNode(rightOperandNode);
@@ -90,7 +99,13 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 					else
 						write(".child(" + field + ")");
 					return;
-				}    		
+				}
+				else if (type.isInstanceOf("QName", getProject()))
+				{
+					String field = fjs.stringifyNode(rightOperandNode);					
+					write(".child(" + field + ")");
+					return;
+				}
 	    	}
         	else if (isProxy)
         	{

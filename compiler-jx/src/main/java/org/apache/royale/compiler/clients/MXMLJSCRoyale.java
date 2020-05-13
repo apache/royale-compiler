@@ -31,22 +31,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.codegen.js.IJSPublisher;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -93,6 +86,7 @@ import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
+import org.apache.royale.compiler.utils.ClosureUtils;
 import org.apache.flex.tools.FlexTool;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -195,7 +189,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
-    private IJSPublisher jsPublisher;
+    private IJSGoogPublisher jsPublisher;
     
     public MXMLJSCRoyale()
     {
@@ -344,7 +338,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                         return false;
                 }
 
-                jsPublisher = (IJSPublisher) project.getBackend().createPublisher(
+                Set<String> closurePropNamesToKeep = new HashSet<String>();
+                jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -421,6 +416,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                             }
 	                        writer.close();
 	                    }
+                        ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
 	                }
 	                File externsReportFile = googConfiguration.getExternsReport();
 	                if (externsReportFile != null)
@@ -438,6 +434,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                 
                 if (jsPublisher != null)
                 {
+                    jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
                     compilationSuccess = jsPublisher.publish(problems);
                 }
                 else
@@ -809,7 +806,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
         		try {
         			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-        			fileDate = sdf.parse(metadataDate).getTime();
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    fileDate = sdf.parse(metadataDate).getTime();
         		} catch (ParseException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
@@ -823,7 +821,6 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 	
 	/**
