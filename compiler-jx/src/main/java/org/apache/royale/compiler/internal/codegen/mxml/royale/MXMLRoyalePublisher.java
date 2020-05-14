@@ -517,41 +517,45 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         // is generated here so it can be used for outputting the html templates.
         String depsFileData = gdw.generateDeps(project, problems);
 
-        // FOR MODULES: this generate inject_html lines for js to be added to __deps.js
-        String moduleAdditionHTML = "";
+        // FOR MODULES: this generates inject_script lines for js to be added to __deps.js
+        String additionalScript = "";
 
         if (project.isModule(mainClassQName))
         {
             for (String s : additionalHTML)
             {
-                moduleAdditionHTML += "document.head.innerHTML += '"+ s.trim() + "';";
+                additionalScript += s.trim() + System.lineSeparator();
             }
             
         	// need better test someday
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
-            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + moduleAdditionHTML + "\n", false);
+            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + additionalScript + "\n", false);
             gdw.needCSS = true;
             if (configuration.release()) {
-            	writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            	writeFile(new File(releaseDir, projectName + ".js"), additionalScript, false);
             }
         }
         else
         {
 	        File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
+			List<String> wrappedScript = new ArrayList<String>();
+			wrappedScript.add("<script type=\"text/javascript\">");
+			wrappedScript.addAll(additionalHTML);
+			wrappedScript.add("</script>");
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
-	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
+	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
 	            } else {
-	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
+	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
 	            }
 	        }
 	        // Create the index.html for the release-js version.
 	        if (configuration.release()) {
 	            if (template != null) {
-	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, additionalHTML);
+	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, wrappedScript);
 	            } else {
-	                writeHTML("release", projectName, mainClassQName, releaseDir, null, additionalHTML);
+	                writeHTML("release", projectName, mainClassQName, releaseDir, null, wrappedScript);
 	            }
 	        }
         }        
@@ -586,11 +590,11 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
 
             ok = compilerWrapper.compile();
 
-            // FOR MODULES: add moduleAdditionHTML to main js release file too
+            // FOR MODULES: add additionalScript to main js release file too
             if (project.isModule(mainClassQName))
             {
                 StringBuilder appendString = new StringBuilder();
-                appendString.append(moduleAdditionHTML);
+                appendString.append(additionalScript);
                 writeFile(projectReleaseMainFile, appendString.toString(), true);
             }
 
@@ -690,17 +694,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     {
         boolean inDocComment = false;
         boolean inConstructor = false;
-        boolean inInjectHTML = false;
+        boolean inInjectScript = false;
 	    for (int i = 0; i < lines.size(); i++)
 	    {
             String line = lines.get(i);
             if (inDocComment)
             {
-                if (inInjectHTML)
+                if (inInjectScript)
                 {
-                    if (line.indexOf("</inject_html>") > -1)
+                    if (line.indexOf("</inject_script>") > -1)
                     {
-                        inInjectHTML = false;
+                        inInjectScript = false;
                         continue;
                     }
                     line = line.trim();
@@ -709,10 +713,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
                     additionalHTML.add(line);
                     continue;
                 }
-                int c = line.indexOf("<inject_html>");
+                int c = line.indexOf("<inject_script>");
                 if (c != -1)
                 {
-                    inInjectHTML = true;
+                    inInjectScript = true;
                     continue;
                 }
                 if (!inConstructor)
@@ -732,7 +736,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
                         //we're done
                         break;
                     }
-                    inInjectHTML = false;
+                    inInjectScript = false;
                     inDocComment = false;
                     inConstructor = false;
                 }

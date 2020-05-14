@@ -247,14 +247,14 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     }
     
     @Test
-    public void testInjectHTML()
+    public void testInjectScript()
     {
         String code = "package com.example.components {\n"
         		+ "public class TestClass {"
         	    + "/**\n"
-        	    + " * <inject_html>\n"
+        	    + " * <inject_script>\n"
         		+ " * This will be injected.\n"
-        		+ " * </inject_html>\n"
+        		+ " * </inject_script>\n"
         		+ " */\n"
                 + "public function TestClass() { } } }";
         IFileNode node = compileAS(code);
@@ -272,9 +272,9 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * <inject_html>\n" +
+				" * <inject_script>\n" +
 				" * This will be injected.\n" +
-				" * </inject_html>\n" +
+				" * </inject_script>\n" +
 				" * @constructor\n" +
 				" */\n" +
 				"com.example.components.TestClass = function() {\n" +

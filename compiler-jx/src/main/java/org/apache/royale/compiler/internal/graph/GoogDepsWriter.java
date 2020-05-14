@@ -1079,7 +1079,7 @@ public class GoogDepsWriter {
 	    fi.suppressLine = -1;
 	    fi.fileoverviewLine = -1;
 		fi.googProvideLine = -1;
-		boolean inInjectHTML = false;
+		boolean inInjectScript = false;
 	    for (int i = 0; i < n; i++)
 	    {
 	        String line = lines.get(i);
@@ -1091,11 +1091,11 @@ public class GoogDepsWriter {
 	        }
 	        else
 	        {
-		        if (inInjectHTML)
+		        if (inInjectScript)
 	            {
-	                if (line.indexOf("</inject_html>") > -1)
+	                if (line.indexOf("</inject_script>") > -1)
 	                {
-	                    inInjectHTML = false;
+	                    inInjectScript = false;
 	                    continue;
 	                }
 	            	line = line.trim();
@@ -1104,10 +1104,10 @@ public class GoogDepsWriter {
 				    additionalHTML.add(line);
 				    continue;
 	            }
-                c = line.indexOf("<inject_html>");
+                c = line.indexOf("<inject_script>");
                 if (c > -1)
                 {
-                    inInjectHTML = true;
+                    inInjectScript = true;
                 }
 		        c = line.indexOf("@constructor");
 		        if (c > -1)
