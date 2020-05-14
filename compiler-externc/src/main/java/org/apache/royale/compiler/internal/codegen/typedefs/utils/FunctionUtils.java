@@ -97,7 +97,11 @@ public class FunctionUtils
                 {
                     for (Node param : paramNode.children())
                     {
-                        sb.append(param.getString());
+                    	String name = param.getString();
+                    	int c = name.indexOf("$jscomp$");
+                    	if (c != -1)
+                    		name = name.substring(0, c);
+                        sb.append(name);
                         if (!outputJS)
                         	sb.append(":Object");
                         if (index < len - 1)

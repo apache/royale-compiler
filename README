@@ -61,11 +61,6 @@ Building the Apache Royale Compiler with Apache Maven
     *1) The bin directories for Maven and Java should be added to your
         PATH.
 
-    You must first build the utils profile without the main profile 
-    and then the main profile.  So, first run:
-
-        mvn clean install -P -main,utils
-
     Then run
 
         mvn clean install
