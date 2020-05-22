@@ -1464,17 +1464,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     {
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            writeNewline();
-            writeNewline("/**");
-            writeNewline(" * @private");
-            writeNewline(" * @type {" + instance.name + "}");
-            writeNewline(" */");
-            write(ASEmitterTokens.THIS);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            String id = instance.id != null ? instance.id : instance.effectiveId;
-            if (!id.startsWith(MXMLRoyaleEmitterTokens.ID_PREFIX.getToken())) id += "_";
-			write(id);
-            writeNewline(ASEmitterTokens.SEMICOLON);
+			String id = instance.id != null ? instance.id : instance.effectiveId;
+			if (id != null) { //it seems id can be null, for example with a generated Object for Operations via RemoteObject
+				writeNewline();
+				writeNewline("/**");
+				writeNewline(" * @private");
+				writeNewline(" * @type {" + instance.name + "}");
+				writeNewline(" */");
+				write(ASEmitterTokens.THIS);
+				write(ASEmitterTokens.MEMBER_ACCESS);
+
+				if (!id.startsWith(MXMLRoyaleEmitterTokens.ID_PREFIX.getToken())) id += "_";
+				write(id);
+				writeNewline(ASEmitterTokens.SEMICOLON);
+			}
         }
     }
 
