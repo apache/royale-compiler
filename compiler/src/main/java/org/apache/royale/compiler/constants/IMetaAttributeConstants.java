@@ -219,6 +219,9 @@ public interface IMetaAttributeConstants
     
     // [RoyaleArrayLike(...args)]
     static final String ATTRIBUTE_ARRAYLIKE = "RoyaleArrayLike";
+
+    // [RoyaleBindings] (added by compiler)
+    static final String ATTRIBUTE_BINDINGS= "RoyaleBindings";
 	
 	/**
 	 * List of metadata tags that do not inherit

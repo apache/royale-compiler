@@ -114,6 +114,9 @@ public class MXMLCompilationUnit extends CompilationUnitBase
                 {
                     TypeScope mainClassScope = (TypeScope)mainClassDefinition.getContainedScope();
                     documentNode.setScope(mainClassScope);
+                    if (documentNode.getHasDataBindings()) {
+                        mainClassDefinition.setRoyaleBindings();
+                    }
                 }
             }
             

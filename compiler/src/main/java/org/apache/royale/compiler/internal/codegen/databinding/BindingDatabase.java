@@ -27,9 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.WeakHashMap;
 
-import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -64,6 +62,20 @@ public class BindingDatabase
         {
             _diagnosticLogger.add(this);
         }
+    }
+
+    private String nearestAncestorBindings = null;
+
+    public Boolean getHasAncestorBindings(){
+        return nearestAncestorBindings != null;
+    }
+
+    public void setNearestAncestorWithBindings(String value){
+        nearestAncestorBindings = value;
+    }
+
+    public String getNearestAncestorWithBindings(){
+        return nearestAncestorBindings;
     }
     
     /************** private data ****************/
@@ -337,6 +349,10 @@ public class BindingDatabase
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+
+        if (nearestAncestorBindings != null) {
+            sb.append("<ancestor bindings also exist at "+ nearestAncestorBindings+ " >");
+        }
         
         if (bindingInfoSet.isEmpty())
         {
