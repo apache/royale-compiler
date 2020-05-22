@@ -2622,12 +2622,12 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     }
 
 
-    private WeakHashMap<IClassDefinition, BindingDatabase> bindingMap = new WeakHashMap<IClassDefinition, BindingDatabase>();
+    private HashMap<IClassDefinition, BindingDatabase> bindingMap = new HashMap<IClassDefinition, BindingDatabase>();
     /**
      * Support for access to BindingData from the class definition as key.
      * @return
      */
-    public WeakHashMap<IClassDefinition, BindingDatabase> getBindingMap(){
+    public HashMap<IClassDefinition, BindingDatabase> getBindingMap(){
         return bindingMap;
     }
 
