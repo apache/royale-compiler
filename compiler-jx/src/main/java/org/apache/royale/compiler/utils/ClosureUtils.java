@@ -30,6 +30,7 @@ import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -67,6 +68,14 @@ public class ClosureUtils
                     {
                         //file-private symbols are emitted like static variables
                         result.add(def.getBaseName());
+                    }
+                    if (def instanceof IVariableDefinition
+                            && !(def instanceof IAccessorDefinition))
+                    {
+                        IVariableDefinition varDef = (IVariableDefinition) def;
+                        if (varDef.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER)) {
+                            result.add(def.getBaseName());
+                        }
                     }
                     if (def instanceof ITypeDefinition)
                     {
@@ -148,6 +157,16 @@ public class ClosureUtils
                     }
                     else
                     {
+                        if (def instanceof IVariableDefinition
+                                && !(def instanceof IAccessorDefinition))
+                        {
+                            IVariableDefinition varDef = (IVariableDefinition) def;
+                            if (varDef.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER)
+                                    && varDef.getPackageName() != null
+                                    && varDef.getPackageName().length() > 0) {
+                                symbolsResult.add(def.getPackageName());
+                            }
+                        }
                         symbolsResult.add(qualifiedName);
                         if(parentQName == null)
                         {
