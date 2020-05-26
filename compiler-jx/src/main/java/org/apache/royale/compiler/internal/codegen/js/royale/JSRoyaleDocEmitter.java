@@ -31,7 +31,9 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
@@ -145,6 +147,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             emitExports = !suppressExports;
             exportProtected = false;
         }
+        emitExports = emitExports && !node.getFunctionClassification().equals(FunctionClassification.PACKAGE_MEMBER);
         
         coercionList = null;
         ignoreList = null;
@@ -564,6 +567,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             emitExports = !suppressExports;
             exportProtected = false;
         }
+        emitExports = emitExports && !node.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER);
 
         begin();
 
