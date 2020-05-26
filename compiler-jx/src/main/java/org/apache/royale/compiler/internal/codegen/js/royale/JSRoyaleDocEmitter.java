@@ -140,6 +140,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
         	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
         }
+        else
+        {
+            emitExports = !suppressExports;
+            exportProtected = false;
+        }
         
         coercionList = null;
         ignoreList = null;
@@ -544,9 +549,24 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     @Override
     public void emitFieldDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
+        RoyaleJSProject fjp =  (RoyaleJSProject)project;
+        boolean suppressExports = false;
+        if (emitter instanceof JSRoyaleEmitter) {
+            suppressExports = ((JSRoyaleEmitter) emitter).getModel().suppressExports;
+        }
+        if (fjp.config != null)
+        {
+        	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
+        	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
+        }
+        else
+        {
+            emitExports = !suppressExports;
+            exportProtected = false;
+        }
+
         begin();
 
-        RoyaleJSProject fjp =  (RoyaleJSProject)project;
         String ns = node.getNamespace();
         if (ns == IASKeywordConstants.PRIVATE)
         {
