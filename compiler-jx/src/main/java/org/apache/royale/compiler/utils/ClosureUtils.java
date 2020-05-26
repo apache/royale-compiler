@@ -173,18 +173,22 @@ public class ClosureUtils
                             boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
                             boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
                                     || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
-                            if (localDef instanceof IFunctionDefinition && !(localDef instanceof IVariableDefinition)
-                                    && localDef.isStatic() && isPublic)
+                            if (localDef instanceof IFunctionDefinition
+                                    && !(localDef instanceof IAccessorDefinition)
+                                    // the next two conditions are temporary
+                                    // and more symbols will be exported in the future
+                                    && localDef.isStatic()
+                                    && isPublic)
                             {
                                 if ((isPublic && exportPublic) || (isProtected && exportProtected))
                                 {
                                     if (isFilePrivate)
                                     {
-                                        filePrivateNames.add(qualifiedName + "." + localDef.getBaseName());
+                                        filePrivateNames.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + localDef.getBaseName());
                                     }
                                     else
                                     {
-                                        symbolsResult.add(qualifiedName + "." + localDef.getBaseName());
+                                        symbolsResult.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + localDef.getBaseName());
                                     }
                                 }
                             }
