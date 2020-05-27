@@ -157,16 +157,6 @@ public class ClosureUtils
                     }
                     else
                     {
-                        if (def instanceof IVariableDefinition
-                                && !(def instanceof IAccessorDefinition))
-                        {
-                            IVariableDefinition varDef = (IVariableDefinition) def;
-                            if (varDef.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER)
-                                    && varDef.getPackageName() != null
-                                    && varDef.getPackageName().length() > 0) {
-                                symbolsResult.add(def.getPackageName());
-                            }
-                        }
                         symbolsResult.add(qualifiedName);
                         if(parentQName == null)
                         {
