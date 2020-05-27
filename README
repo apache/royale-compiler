@@ -52,7 +52,7 @@ Building the Apache Royale Compiler with Apache Maven
     SOFTWARE                                
     ==================================================================================
 
-    Java SDK 1.7 or greater (*1)            
+    Java SDK 8 or greater (*1)            
 
     Maven 3.3.9 or greater (*1)              
 
@@ -255,7 +255,7 @@ Software Dependencies
     into an Apache Royale SDK and the lib folder in the repository working copy.
 
         antlr - https://repo1.maven.org/maven2/org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
-	args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
+        args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
         commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2-bin.tar.gz
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4.tar.gz
         commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.tar.gz
@@ -265,7 +265,7 @@ Software Dependencies
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - https://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
-        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20181210.zip
+        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v20181210.zip
 
     The Google Closure Compiler includes files originally from Rhino under MPL 1.1.  For
     details see:
