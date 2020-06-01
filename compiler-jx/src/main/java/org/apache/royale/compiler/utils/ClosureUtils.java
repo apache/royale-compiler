@@ -157,6 +157,10 @@ public class ClosureUtils
                     }
                     else
                     {
+                        if (project.isExterns(qualifiedName))
+                        {
+                            return;
+                        }
                         symbolsResult.add(qualifiedName);
                         if(parentQName == null)
                         {
