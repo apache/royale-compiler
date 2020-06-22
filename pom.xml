@@ -64,6 +64,7 @@
     <maven.wagon.http.retryHandler.class>standard</maven.wagon.http.retryHandler.class>
     <!-- Try at most 6 times to deploy every artifact -->
     <maven.wagon.http.retryHandler.count>6</maven.wagon.http.retryHandler.count>
+    <project.build.outputTimestamp>2020-05-17T18:04:00Z</project.build.outputTimestamp>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -340,24 +341,6 @@
         </executions>
       </plugin>
 
-      <!-- This plugin cleans up the jars for anything that might cause problems for reproducible builds -->
-      <!--
-        Even if the core maven plugins currently would support doing this without, we would be required
-        to set the line-separator and the Antlr3 plugin crashes if this is set to something non-default
-      -->
-      <plugin>
-        <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.11</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>strip-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Plugin to detect problems with JDK incompatibilities -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -471,7 +454,6 @@
           <version>0.8.5</version>
         </plugin>
 
-        <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
@@ -504,14 +486,12 @@
           <version>2.22.1</version>
         </plugin>
 
-        <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.2.1</version>
         </plugin>
 
-        <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -583,12 +563,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>3.0.0-M1</version>
-        </plugin>
-
-        <plugin>
-          <groupId>com.theoryinpractise</groupId>
-          <artifactId>reproducible-maven-plugin</artifactId>
-          <version>1.0.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -739,20 +713,6 @@
       <id>apache-release</id>
       <build>
         <plugins>
-          <plugin>
-            <groupId>com.theoryinpractise</groupId>
-            <artifactId>reproducible-maven-plugin</artifactId>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <configuration>
-              <preparationGoals>clean com.theoryinpractise:reproducible-maven-plugin:apply install</preparationGoals>
-              <completionGoals>com.theoryinpractise:reproducible-maven-plugin:clear</completionGoals>
-            </configuration>
-          </plugin>
-          <!--
-            Create MD5 and SHA512 checksum files for the release artifacts.
           -->
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
