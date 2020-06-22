@@ -38,6 +38,7 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.royale.compiler.internal.codegen.databinding.BindingInfo;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleASDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
@@ -355,16 +356,22 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("i");
 
         MXMLEventSpecifier eventSpecifier = new MXMLEventSpecifier();
-        eventSpecifier.eventHandler = MXMLRoyaleEmitterTokens.EVENT_PREFIX
-                .getToken() + eventCounter++;
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter)asEmitter;
+
+        IClassDefinition currentClass = fjs.getModel().getCurrentClass();
+        //naming needs to avoid conflicts with ancestors - using delta from object which is
+        //a) short and b)provides a 'unique' (not zero risk, but very low risk) option
+        String nameBase = EmitterUtils.getClassDepthNameBase(MXMLRoyaleEmitterTokens.EVENT_PREFIX
+                .getToken(), currentClass, getMXMLWalker().getProject());
+        eventSpecifier.eventHandler = nameBase + eventCounter++;
+
         eventSpecifier.name = cdef.getBaseName();
         eventSpecifier.type = node.getEventParameterDefinition()
                 .getTypeAsDisplayString();
 
         eventHandlerNameMap.put(node, eventSpecifier.eventHandler);
-        
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
+
 
         StringBuilder sb = null;
         int len = node.getChildCount();
@@ -406,8 +413,14 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
         String id = node.getID();
         if (id == null)
             id = node.getEffectiveID();
-        if (id == null)
-            id = MXMLRoyaleEmitterTokens.ID_PREFIX.getToken() + idCounter++;
+        if (id == null) {
+            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+            JSRoyaleEmitter fjs = (JSRoyaleEmitter)asEmitter;
+            IClassDefinition currentClass = fjs.getModel().getCurrentClass();
+            //naming needs to avoid conflicts with ancestors - using delta from object which is
+            //a) short and b)provides a 'unique' (not zero risk, but very low risk) option
+            id = EmitterUtils.getClassDepthNameBase(MXMLRoyaleEmitterTokens.ID_PREFIX.getToken(), currentClass, getMXMLWalker().getProject()) + idCounter++;
+        }
 
         MXMLDescriptorSpecifier currentInstance = new MXMLDescriptorSpecifier();
         currentInstance.isProperty = false;

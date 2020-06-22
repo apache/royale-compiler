@@ -81,6 +81,22 @@
         </javac>
 	</target>
 	
+    <!-- The OrderSwitches tool is used to order a switch statement from
+         JFlex for reproducible binaries  -->
+    <target name="order.switches"
+            description="Compiles the OrderSwitches build tool" >
+        <mkdir dir="${compiler-build-tools}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler-build-tools}/src/main/java"/>
+            <include name="org/apache/royale/compiler/tools/annotate/OrderSwitches.java"/>
+            <classpath>
+                <pathelement location="${compiler-build-tools}/target/classes"/>
+            </classpath>
+        </javac>
+    </target>
+    
 	<!-- The UnknownTreePatternInputOutput tool is used to compile an XML file containing unknown AST patterns to a Java class -->
     <target name="unknown.tree.pattern.input.output"
             description="Compiles the UnknownTreePatternInputOutput tool">
@@ -108,7 +124,7 @@
 	    </javac>
 	</target>
 
-    <target name="main" depends="annotate.class, unknown.tree.pattern.input.output" />
+    <target name="main" depends="annotate.class,order.switches, unknown.tree.pattern.input.output" />
     
     <!--
 

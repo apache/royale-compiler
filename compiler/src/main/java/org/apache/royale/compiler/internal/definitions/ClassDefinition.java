@@ -1383,6 +1383,18 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
         addMetaTag(excludeClassMetaTag);
     }
 
+
+    /**
+     * Mark this class as being generated with mxml bindings [RoyaleBindings] meta data.
+     */
+    public void setRoyaleBindings()
+    {
+        if (!hasMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_BINDINGS)) {
+            MetaTag bindingsMarker = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_BINDINGS, new IMetaTagAttribute[0]);
+            addMetaTag(bindingsMarker);
+        }
+    }
+
     /**
      * For debugging only. Produces a string such as
      * <code>public class B extends A implements I1, I2</code>.

@@ -426,6 +426,19 @@
               <goal>generate-problems-resource-bundle</goal>
             </goals>
           </execution>
+          <execution>
+            <id>order-jflex-switch-statements</id>
+            <goals>
+              <goal>order-jflex-switches</goal>
+            </goals>
+            <configuration>
+              <includes>
+              <include>jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.java</include>
+              <include>jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.java</include>
+              <include>jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.java</include>
+              </includes>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 

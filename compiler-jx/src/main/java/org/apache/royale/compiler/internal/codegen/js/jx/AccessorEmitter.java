@@ -277,7 +277,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                        write(ASEmitterTokens.PAREN_CLOSE);
 	                        writeNewline(ASEmitterTokens.SEMICOLON);
 	                        writeNewline("    this.dispatchEvent("+fjs.formatQualifiedName(BindableEmitter.VALUECHANGE_EVENT_QNAME)+".createUpdateEvent(");
-	                        writeNewline("         this, \"" + baseName + "\", oldValue, value));");
+	                        writeNewline("         this, \"" + p.originalName + "\", oldValue, value));");
 	                        writeNewline(ASEmitterTokens.BLOCK_CLOSE);
 	                        write(ASEmitterTokens.BLOCK_CLOSE);
 	                        write(ASEmitterTokens.SEMICOLON);                        
@@ -719,6 +719,7 @@ public class AccessorEmitter extends JSSubEmitter implements
             p = new PropertyNodes();
 			//track name and uri separately:
 			p.name = name;
+			p.originalName = node.getName();
 			p.uri = uri;
 			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
 			p.resolvedExport = uri != null || def.isPublic();
@@ -769,6 +770,7 @@ public class AccessorEmitter extends JSSubEmitter implements
             p = new PropertyNodes();
             //track name and uri separately:
             p.name = name;
+            p.originalName = node.getName();
             p.uri = uri;
  			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
             p.resolvedExport = uri != null || def.isPublic();

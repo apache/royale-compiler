@@ -250,6 +250,6 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      * Support for access to BindingData from the class definition as key.
      * @return
      */
-    WeakHashMap<IClassDefinition, BindingDatabase> getBindingMap();
+    HashMap<IClassDefinition, BindingDatabase> getBindingMap();
 
 }

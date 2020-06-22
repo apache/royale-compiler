@@ -22,6 +22,7 @@ package org.apache.royale.compiler.utils;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.projects.ICompilerProject;
 
 /**
  * @author Michael Schmalle
@@ -34,4 +35,15 @@ public class DefinitionUtils
                 && (definition.getParent() instanceof IClassDefinition || definition
                         .getParent() instanceof IInterfaceDefinition);
     }
+
+
+    public static final int deltaFromObject(IClassDefinition definition, ICompilerProject project) {
+        int ret = -1;
+        if (definition != null) {
+            return definition.resolveAncestry(project).length - 1;
+        }
+        return ret;
+    }
+
+
 }

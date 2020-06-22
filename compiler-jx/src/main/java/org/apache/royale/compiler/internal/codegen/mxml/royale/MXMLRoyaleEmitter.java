@@ -77,6 +77,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitterTokens;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
@@ -101,6 +102,7 @@ import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.royale.compiler.tree.mxml.*;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.utils.DefinitionUtils;
 import org.apache.royale.compiler.utils.NativeUtils;
 import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.royale.swc.ISWC;
@@ -1462,15 +1464,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     {
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            writeNewline();
-            writeNewline("/**");
-            writeNewline(" * @private");
-            writeNewline(" * @type {" + instance.name + "}");
-            writeNewline(" */");
-            write(ASEmitterTokens.THIS);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write((instance.id != null ? instance.id : instance.effectiveId) + "_");
-            writeNewline(ASEmitterTokens.SEMICOLON);
+			String id = instance.id != null ? instance.id : instance.effectiveId;
+			if (id != null) { //it seems id can be null, for example with a generated Object for Operations via RemoteObject
+				writeNewline();
+				writeNewline("/**");
+				writeNewline(" * @private");
+				writeNewline(" * @type {" + instance.name + "}");
+				writeNewline(" */");
+				write(ASEmitterTokens.THIS);
+				write(ASEmitterTokens.MEMBER_ACCESS);
+
+				if (!id.startsWith(MXMLRoyaleEmitterTokens.ID_PREFIX.getToken())) id += "_";
+				write(id);
+				writeNewline(ASEmitterTokens.SEMICOLON);
+			}
         }
     }
 
@@ -1500,6 +1507,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         writeNewline(" */");
         writeNewline(formatQualifiedName(cname)
                 + ".prototype._bindings = [");
+
+		if (bindingDataBase.getHasAncestorBindings()) {
+			//reference the ancestor binding data (which may in turn reference its owner's ancestor's bindings etc)
+			writeNewline(formatQualifiedName(bindingDataBase.getNearestAncestorWithBindings()) +
+					 ".prototype._bindings,");
+		}
 
         Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
         writeNewline(bindingInfo.size() + ","); // number of bindings
@@ -2252,8 +2265,16 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("i");
 
         MXMLEventSpecifier eventSpecifier = new MXMLEventSpecifier();
-        eventSpecifier.eventHandler = MXMLRoyaleEmitterTokens.EVENT_PREFIX
-                .getToken() + eventCounter++;
+
+		IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+		JSRoyaleEmitter fjs = (JSRoyaleEmitter)asEmitter;
+
+		IClassDefinition currentClass = fjs.getModel().getCurrentClass();
+		//naming needs to avoid conflicts with ancestors - using delta from object which is
+		//a) short and b)provides a 'unique' (not zero risk, but very low risk) option
+        String nameBase = EmitterUtils.getClassDepthNameBase(MXMLRoyaleEmitterTokens.EVENT_PREFIX
+				.getToken(), currentClass, getMXMLWalker().getProject());
+        eventSpecifier.eventHandler = nameBase + eventCounter++;
         eventSpecifier.name = cdef.getBaseName();
         eventSpecifier.type = node.getEventParameterDefinition()
                 .getTypeAsDisplayString();

@@ -30,6 +30,7 @@ import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -67,6 +68,14 @@ public class ClosureUtils
                     {
                         //file-private symbols are emitted like static variables
                         result.add(def.getBaseName());
+                    }
+                    if (def instanceof IVariableDefinition
+                            && !(def instanceof IAccessorDefinition))
+                    {
+                        IVariableDefinition varDef = (IVariableDefinition) def;
+                        if (varDef.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER)) {
+                            result.add(def.getBaseName());
+                        }
                     }
                     if (def instanceof ITypeDefinition)
                     {
@@ -148,6 +157,10 @@ public class ClosureUtils
                     }
                     else
                     {
+                        if (project.isExterns(qualifiedName))
+                        {
+                            return;
+                        }
                         symbolsResult.add(qualifiedName);
                         if(parentQName == null)
                         {
@@ -173,18 +186,22 @@ public class ClosureUtils
                             boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
                             boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
                                     || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
-                            if (localDef instanceof IFunctionDefinition && !(localDef instanceof IVariableDefinition)
-                                    && localDef.isStatic() && isPublic)
+                            if (localDef instanceof IFunctionDefinition
+                                    && !(localDef instanceof IAccessorDefinition)
+                                    // the next two conditions are temporary
+                                    // and more symbols will be exported in the future
+                                    && localDef.isStatic()
+                                    && isPublic)
                             {
                                 if ((isPublic && exportPublic) || (isProtected && exportProtected))
                                 {
                                     if (isFilePrivate)
                                     {
-                                        filePrivateNames.add(qualifiedName + "." + localDef.getBaseName());
+                                        filePrivateNames.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + localDef.getBaseName());
                                     }
                                     else
                                     {
-                                        symbolsResult.add(qualifiedName + "." + localDef.getBaseName());
+                                        symbolsResult.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + localDef.getBaseName());
                                     }
                                 }
                             }
