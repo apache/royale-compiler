@@ -54,11 +54,14 @@ public class WhileLoopEmitter extends JSSubEmitter implements
         if (!EmitterUtils.isImplicit(statementContentsNode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
-        //if we have a while loop that has no body, then emit it the same way as it would be expressed
-        //in the original as3 source, with a semicolon terminator.
+        //if we have a while loop that has no body, then emit it with an explicit 'empty block'.
         //Otherwise the loop body will be considered to be the following statement
+        //the empty block is to avoid this from GCC: "WARNING - If this if/for/while really shouldn't have a body, use {}"
         if (EmitterUtils.isImplicit(statementContentsNode)
                 && statementContentsNode.getChildCount() == 0) {
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_OPEN);
+            write(ASEmitterTokens.BLOCK_CLOSE);
             writeToken(ASEmitterTokens.SEMICOLON);
         } else {
             getWalker().walk(statementContentsNode);
