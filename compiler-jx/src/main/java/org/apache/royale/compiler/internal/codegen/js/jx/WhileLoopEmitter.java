@@ -39,7 +39,6 @@ public class WhileLoopEmitter extends JSSubEmitter implements
     @Override
     public void emit(IWhileLoopNode node)
     {
-        IContainerNode cnode = (IContainerNode) node.getChild(1);
 
         startMapping(node);
         writeToken(ASEmitterTokens.WHILE);
@@ -49,13 +48,20 @@ public class WhileLoopEmitter extends JSSubEmitter implements
         IASNode conditionalExpression = node.getConditionalExpressionNode();
         getWalker().walk(conditionalExpression);
 
-        IASNode statementContentsNode = node.getStatementContentsNode();
+        IContainerNode statementContentsNode = (IContainerNode) node.getStatementContentsNode();
         startMapping(node, conditionalExpression);
         write(ASEmitterTokens.PAREN_CLOSE);
-        if (!EmitterUtils.isImplicit(cnode))
+        if (!EmitterUtils.isImplicit(statementContentsNode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
-
-        getWalker().walk(statementContentsNode);
+        //if we have a while loop that has no body, then emit it the same way as it would be expressed
+        //in the original as3 source, with a semicolon terminator.
+        //Otherwise the loop body will be considered to be the following statement
+        if (EmitterUtils.isImplicit(statementContentsNode)
+                && statementContentsNode.getChildCount() == 0) {
+            writeToken(ASEmitterTokens.SEMICOLON);
+        } else {
+            getWalker().walk(statementContentsNode);
+        }
     }
 }
