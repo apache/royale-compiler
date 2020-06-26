@@ -66,12 +66,18 @@ class MXMLTagDataDepth {
         public FakeMXMLTagData(String tagName, boolean closeTag, boolean emptyTag) {
             this.tagName = tagName;
             nameType = closeTag ? MXMLTokenTypes.TOKEN_CLOSE_TAG_START : MXMLTokenTypes.TOKEN_OPEN_TAG_START;
-            this.emptyTag = emptyTag;
+			this.emptyTag = emptyTag;
+
+			// a call to findMatchingEndTag() will fail without this
+			this.setProblems(new ArrayList<ICompilerProblem>());
         }
         
         public FakeMXMLTagData(MXMLTagData data, boolean emptyTag) {
             super(data);
             this.emptyTag = emptyTag;
+
+			// a call to findMatchingEndTag() will fail without this
+			this.setProblems(new ArrayList<ICompilerProblem>());
         }
 
         @Override

@@ -172,6 +172,11 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return contentEnd;
     }
 
+    protected void setProblems(Collection<ICompilerProblem> problems)
+    {
+        this.problems = problems;
+    }
+
     @SuppressWarnings("fallthrough")
     MutablePrefixMap init(IMXMLData mxmlData, MXMLToken nameToken, ListIterator<MXMLToken> tokenIterator, MXMLDialect dialect, IFileSpecification spec, Collection<ICompilerProblem> problems)
     {
