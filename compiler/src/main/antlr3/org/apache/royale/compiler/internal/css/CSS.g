@@ -649,7 +649,7 @@ HASH_WORD
     :   '#' ( LETTER | DIGIT | '-' | '_' )+
     ;
 
-ID  :   ( '-' | '_'  )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
+ID  :   ( '-' | '_' | '__' | '___' )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
     ;
     
 /**
