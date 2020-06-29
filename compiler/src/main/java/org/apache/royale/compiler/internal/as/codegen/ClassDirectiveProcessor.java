@@ -1006,6 +1006,13 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     for (int i=0;i< others.getSize(); i++) {
                         IDefinition other = others.getDefinition(i);
                         if (other == func) continue;
+                        //ignore code-gen Bindable setters if we are checking against the original setter
+                        if ((func instanceof SyntheticBindableSetterDefinition && other instanceof ISetterDefinition)
+                                || (other instanceof SyntheticBindableSetterDefinition && func instanceof ISetterDefinition)
+                                && (func.getNode().equals(other.getNode()))
+                            ) {
+                            continue;
+                        }
                         if (other.getNamespaceReference().isLanguageNamespace()) {
                             if (!SemanticUtils.isGetterSetterPair(func, other, classScope.getProject())) {
                                 boolean issueProblem = true;
