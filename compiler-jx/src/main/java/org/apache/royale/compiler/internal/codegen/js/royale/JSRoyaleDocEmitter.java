@@ -148,6 +148,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             exportProtected = false;
         }
         emitExports = emitExports && !node.hasModifier(ASModifier.STATIC) && !node.getFunctionClassification().equals(FunctionClassification.PACKAGE_MEMBER);
+        exportProtected = exportProtected && !node.hasModifier(ASModifier.STATIC);
         
         coercionList = null;
         ignoreList = null;
