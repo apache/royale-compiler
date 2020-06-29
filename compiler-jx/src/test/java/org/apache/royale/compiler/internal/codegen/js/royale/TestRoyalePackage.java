@@ -722,6 +722,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
+				" * @nocollapse\n" + 
 				" * @return {string}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +

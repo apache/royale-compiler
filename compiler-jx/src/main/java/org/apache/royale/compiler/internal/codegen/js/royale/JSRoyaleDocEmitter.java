@@ -147,7 +147,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             emitExports = !suppressExports;
             exportProtected = false;
         }
-        emitExports = emitExports && !node.getFunctionClassification().equals(FunctionClassification.PACKAGE_MEMBER);
+        emitExports = emitExports && !node.hasModifier(ASModifier.STATIC) && !node.getFunctionClassification().equals(FunctionClassification.PACKAGE_MEMBER);
         
         coercionList = null;
         ignoreList = null;
@@ -286,6 +286,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                     else
                         begin();
                     emitMethodAccess(node);
+                    emitMethodNoCollapse(node, fjp);
                     hasDoc = true;
                 }
             }
@@ -303,6 +304,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 	                    else
 	                        begin();
 	                    emitMethodAccess(node);
+                        emitMethodNoCollapse(node, fjp);
 	                    hasDoc = true;
 	                }
 	
@@ -332,6 +334,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 	                        else
 	                            begin();
 	                        emitMethodAccess(node);
+                            emitMethodNoCollapse(node, fjp);
 	                        hasDoc = true;
 	                    }
 	
@@ -354,6 +357,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                         else
                             begin();
                         emitMethodAccess(node);
+                        emitMethodNoCollapse(node, fjp);
                         hasDoc = true;
                     }
 
@@ -542,11 +546,45 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
             emitProtected(node);
         }
-        else /*if (ns != null && ns == IASKeywordConstants.PUBLIC)*/
+        else // public or custom namespace
         {
-            if(!node.hasModifier(ASModifier.STATIC))
-                emitPublic(node);
+            emitPublic(node);
         }
+    }
+
+    protected void emitMethodNoCollapse(IFunctionNode node, RoyaleJSProject fjp)
+    {
+        String ns = node.getNamespace();
+        if (ns == IASKeywordConstants.PROTECTED)
+        {
+            boolean preventRenameProtected = fjp.config != null && fjp.config.getPreventRenameProtectedSymbols();
+            if (preventRenameProtected)
+            {
+                emitNoCollapse(node);
+            }
+        }
+        else if(ns != IASKeywordConstants.PRIVATE) // public or custom namespace
+        {
+            boolean preventRenamePublic = fjp.config != null && fjp.config.getPreventRenamePublicSymbols();
+            if (preventRenamePublic)
+            {
+                emitNoCollapse(node);
+            }
+        }
+    }
+
+    protected void emitNoCollapse(IDefinitionNode node)
+    {
+        if (!node.hasModifier(ASModifier.STATIC)
+                || node instanceof IAccessorNode
+                || IASKeywordConstants.PRIVATE.equals(node.getNamespace()))
+        {
+            return;
+        }
+        //dynamically getting/setting a static field won't
+        //work properly if it is collapsed in a release build,
+        //even when it has been exported
+        emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
     }
 
     @Override
@@ -580,12 +618,9 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
             emitProtected(node);
             boolean preventRename = fjp.config != null && fjp.config.getPreventRenameProtectedSymbols();
-            if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+            if (preventRename)
             {
-                //dynamically getting/setting a static variable won't
-                //work properly if it is collapsed in a release build,
-                //even when it has been exported
-                emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+                emitNoCollapse(node);
             }
         }
         else
@@ -631,12 +666,9 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 {
                     emitPublic(node);
                     boolean preventRename = fjp.config != null && fjp.config.getPreventRenamePublicSymbols();
-                    if(preventRename && node.hasModifier(ASModifier.STATIC) && !(node instanceof IAccessorNode))
+                    if(preventRename)
                     {
-                        //dynamically getting/setting a static variable won't
-                        //work properly if it is collapsed in a release build,
-                        //even when it has been exported
-                        emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+                        emitNoCollapse(node);
                     }
                 }
             } else {
