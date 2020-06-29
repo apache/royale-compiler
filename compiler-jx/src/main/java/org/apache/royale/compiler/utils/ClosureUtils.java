@@ -99,7 +99,9 @@ public class ClosureUtils
                             {
                                 if (localDef instanceof IAccessorDefinition)
                                 {
-                                    if ((isPublic && exportPublic) || (isProtected && exportProtected))
+                                    /* disabled temporarily until AccessorEmitter handles @export
+                                        (isProtected && exportProtected) */
+                                    if ((isPublic && exportPublic))
                                     {
                                         //if an accessor is exported, we don't
                                         //need to prevent renaming
