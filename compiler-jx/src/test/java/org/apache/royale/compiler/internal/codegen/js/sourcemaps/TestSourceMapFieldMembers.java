@@ -32,8 +32,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
-        assertMapping(node, 0, 4, 3, 0, 3, 26);  // foo
+        ///**\n * @package\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
+        assertMapping(node, 0, 4, 4, 0, 4, 26);  // foo
     }
 
     @Test
@@ -41,10 +41,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("var foo:String = null;");
         asBlockWalker.visitVariable(node);
-        //**\n * @type {string}\n */\nRoyaleTest_A.prototype.foo = null
-        assertMapping(node, 0, 4, 3, 0, 3, 26);  // foo
-        assertMapping(node, 0, 14, 3, 26, 3, 29);  // =
-        assertMapping(node, 0, 17, 3, 29, 3, 33);  // null
+        //**\n * @package\n * @type {string}\n */\nRoyaleTest_A.prototype.foo = null
+        assertMapping(node, 0, 4, 4, 0, 4, 26);  // foo
+        assertMapping(node, 0, 14, 4, 26, 4, 29);  // =
+        assertMapping(node, 0, 17, 4, 29, 4, 33);  // null
     }
 
     @Test
@@ -52,8 +52,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("var foo:int;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0
-        assertMapping(node, 0, 4, 3, 0, 3, 26);  // foo
+        ///**\n * @package\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0
+        assertMapping(node, 0, 4, 4, 0, 4, 26);  // foo
     }
 
     @Test
@@ -61,10 +61,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("var foo = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {*}\n */\nRoyaleTest_A.prototype.foo = 420
-        assertMapping(node, 0, 4, 3, 0, 3, 26);  // foo
-        assertMapping(node, 0, 7, 3, 26, 3, 29);  // =
-        assertMapping(node, 0, 10, 3, 29, 3, 32);  // 420
+        ///**\n * @package\n * @type {*}\n */\nRoyaleTest_A.prototype.foo = 420
+        assertMapping(node, 0, 4, 4, 0, 4, 26);  // foo
+        assertMapping(node, 0, 7, 4, 26, 4, 29);  // =
+        assertMapping(node, 0, 10, 4, 29, 4, 32);  // 420
     }
 
     @Test
@@ -72,10 +72,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420
-        assertMapping(node, 0, 4, 3, 0, 3, 26);  // foo
-        assertMapping(node, 0, 11, 3, 26, 3, 29);  // =
-        assertMapping(node, 0, 14, 3, 29, 3, 32);  // 420
+        ///**\n * @package\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420
+        assertMapping(node, 0, 4, 4, 0, 4, 26);  // foo
+        assertMapping(node, 0, 11, 4, 26, 4, 29);  // =
+        assertMapping(node, 0, 14, 4, 29, 4, 32);  // 420
     }
 
     @Test
@@ -83,8 +83,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static var foo;");
         asBlockWalker.visitVariable(node);
-        ////**\n * @type {*}\n */\nRoyaleTest_A.foo
-        assertMapping(node, 0, 11, 3, 0, 3, 16);  // foo
+        ////**\n * @package\n * @type {*}\n */\nRoyaleTest_A.foo
+        assertMapping(node, 0, 11, 4, 0, 4, 16);  // foo
     }
 
     @Test
@@ -92,8 +92,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static var foo:int;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {number}\n */\nRoyaleTest_A.foo = 0
-        assertMapping(node, 0, 11, 3, 0, 3, 16);  // foo
+        ///**\n * @package\n * @type {number}\n */\nRoyaleTest_A.foo = 0
+        assertMapping(node, 0, 11, 4, 0, 4, 16);  // foo
     }
 
     @Test
@@ -101,10 +101,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static var foo = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {*}\n */\nRoyaleTest_A.foo = 420
-        assertMapping(node, 0, 11, 3, 0, 3, 16);   // foo
-        assertMapping(node, 0, 14, 3, 16, 3, 19);  // =
-        assertMapping(node, 0, 17, 3, 19, 3, 22);  // 420
+        ///**\n * @package\n * @type {*}\n */\nRoyaleTest_A.foo = 420
+        assertMapping(node, 0, 11, 4, 0, 4, 16);   // foo
+        assertMapping(node, 0, 14, 4, 16, 4, 19);  // =
+        assertMapping(node, 0, 17, 4, 19, 4, 22);  // 420
     }
 
     @Test
@@ -112,10 +112,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @type {number}\n */\nRoyaleTest_A.foo = 420
-        assertMapping(node, 0, 11, 3, 0, 3, 16);  // foo
-        assertMapping(node, 0, 18, 3, 16, 3, 19);  // =
-        assertMapping(node, 0, 21, 3, 19, 3, 22);  // 420
+        ///**\n * @package\n * @type {number}\n */\nRoyaleTest_A.foo = 420
+        assertMapping(node, 0, 11, 4, 0, 4, 16);  // foo
+        assertMapping(node, 0, 18, 4, 16, 4, 19);  // =
+        assertMapping(node, 0, 21, 4, 19, 4, 22);  // 420
     }
 
     @Test
@@ -123,8 +123,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("const foo;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
-        assertMapping(node, 0, 6, 4, 0, 4, 26);  // foo
+        ///**\n * @package\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
+        assertMapping(node, 0, 6, 5, 0, 5, 26);  // foo
     }
 
     @Test
@@ -132,8 +132,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("const foo:int;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0
-        assertMapping(node, 0, 6, 4, 0, 4, 26);  // foo
+        ///**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 0
+        assertMapping(node, 0, 6, 5, 0, 5, 26);  // foo
     }
 
     @Test
@@ -141,10 +141,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("const foo = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo = 420
-        assertMapping(node, 0, 6, 4, 0, 4, 26);  // foo
-        assertMapping(node, 0, 9, 4, 26, 4, 29);  // =
-        assertMapping(node, 0, 12, 4, 29, 4, 32);  // 420
+        ///**\n * @package\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo = 420
+        assertMapping(node, 0, 6, 5, 0, 5, 26);  // foo
+        assertMapping(node, 0, 9, 5, 26, 5, 29);  // =
+        assertMapping(node, 0, 12, 5, 29, 5, 32);  // 420
     }
 
     @Test
@@ -152,10 +152,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420
-        assertMapping(node, 0, 6, 4, 0, 4, 26);  // foo
-        assertMapping(node, 0, 13, 4, 26, 4, 29);  // =
-        assertMapping(node, 0, 16, 4, 29, 4, 32);  // 420
+        ///**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420
+        assertMapping(node, 0, 6, 5, 0, 5, 26);  // foo
+        assertMapping(node, 0, 13, 5, 26, 5, 29);  // =
+        assertMapping(node, 0, 16, 5, 29, 5, 32);  // 420
     }
 
     @Test
@@ -163,8 +163,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo
-        assertMapping(node, 0, 13, 4, 0, 4, 16);  // foo
+        ///**\n * @package\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo
+        assertMapping(node, 0, 13, 5, 0, 5, 16);  // foo
     }
 
     @Test
@@ -172,8 +172,8 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 0
-        assertMapping(node, 0, 13, 4, 0, 4, 16);  // foo
+        ///**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 0
+        assertMapping(node, 0, 13, 5, 0, 5, 16);  // foo
     }
 
     @Test
@@ -181,10 +181,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static const foo = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo = 420
-        assertMapping(node, 0, 13, 4, 0, 4, 16);  // foo
-        assertMapping(node, 0, 16, 4, 16, 4, 19);  // =
-        assertMapping(node, 0, 19, 4, 19, 4, 22);  // 420
+        ///**\n * @package\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo = 420
+        assertMapping(node, 0, 13, 5, 0, 5, 16);  // foo
+        assertMapping(node, 0, 16, 5, 16, 5, 19);  // =
+        assertMapping(node, 0, 19, 5, 19, 5, 22);  // 420
     }
 
     @Test
@@ -192,10 +192,10 @@ public class TestSourceMapFieldMembers extends SourceMapTestBase
     {
         IVariableNode node = getField("static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        ///**\n * @export\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420
-        assertMapping(node, 0, 13, 4, 0, 4, 16);  // foo
-        assertMapping(node, 0, 20, 4, 16, 4, 19);  // =
-        assertMapping(node, 0, 23, 4, 19, 4, 22);  // 420
+        ///**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420
+        assertMapping(node, 0, 13, 5, 0, 5, 16);  // foo
+        assertMapping(node, 0, 20, 5, 16, 5, 19);  // =
+        assertMapping(node, 0, 23, 5, 19, 5, 22);  // 420
     }
 
     protected IBackend createBackend()

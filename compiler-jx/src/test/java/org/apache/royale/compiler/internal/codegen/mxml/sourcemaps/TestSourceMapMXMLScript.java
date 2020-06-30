@@ -44,8 +44,8 @@ public class TestSourceMapMXMLScript extends RoyaleSourceMapTestBase
         String definitionName = definition.getQualifiedName();
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));
         int endColumn = definitionName.length() + 14;
-        ///**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
-        assertMapping(node, 0, 4, 42, 0, 42, endColumn);  // foo
+        ///**\n * @package\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
+        assertMapping(node, 0, 4, 43, 0, 43, endColumn);  // foo
     }
 
     @Test

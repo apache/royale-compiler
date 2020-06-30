@@ -547,6 +547,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
             emitProtected(node);
         }
+        else if (ns == IASKeywordConstants.INTERNAL)
+        {
+            emitInternal(node);
+        }
         else // public or custom namespace
         {
             emitPublic(node);
@@ -623,6 +627,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             {
                 emitNoCollapse(node);
             }
+        }
+        else if (ns == IASKeywordConstants.INTERNAL)
+        {
+            emitInternal(node);
         }
         else
         {

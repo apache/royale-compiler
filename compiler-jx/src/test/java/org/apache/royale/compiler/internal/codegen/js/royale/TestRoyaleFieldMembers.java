@@ -44,7 +44,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @package\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Test
@@ -167,7 +167,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {*}\n */\nRoyaleTest_A.foo");
+        assertOut("/**\n * @package\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
@@ -183,7 +183,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
+        assertOut("/**\n * @package\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
