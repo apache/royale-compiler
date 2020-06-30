@@ -1465,7 +1465,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a.foo = 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
     }
     
     @Test
@@ -1475,7 +1475,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a['foo'] = 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', 'bar');\n}");
     }
     
     @Test
@@ -1485,7 +1485,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var foo:String;a[foo] = 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ foo = null;\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  //var /** @type {string} */ foo = null;\n  a.setProperty(foo, 'bar');\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ foo = null;\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  //var /** @type {string} */ foo = null;\n  a.setProperty(foo, 'bar');\n}");
     }
     
     @Test
@@ -1495,7 +1495,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var foo:uint = 0;a[foo] = 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {number} */ foo = 0;\n  a.setProperty(foo, 'bar');\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {number} */ foo = 0;\n  a.setProperty(foo, 'bar');\n}");
     }
     
     @Test
@@ -1505,7 +1505,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var bar:* = a.foo; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.getProperty('foo');\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.getProperty('foo');\n}");
     }
     
     @Test
@@ -1515,7 +1515,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy(); if (a[0] != null) return; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  if (a.getProperty(0) != null)\n    return;\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  if (a.getProperty(0) != null)\n    return;\n}");
     }
     
     @Test
@@ -1525,7 +1525,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var bar:* = a.foo(10,\"ten\"); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.callProperty('foo', 10, \"ten\");\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {*} */ bar = a.callProperty('foo', 10, \"ten\");\n}");
     }
     
     @Test
@@ -1535,7 +1535,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();var baz:String = a.foo + 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {string} */ baz = a.getProperty('foo') + 'bar';\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  var /** @type {string} */ baz = a.getProperty('foo') + 'bar';\n}");
     }
     
     @Test
@@ -1545,7 +1545,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();a.foo += 'bar'; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', a.getProperty('foo') + 'bar');\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {custom.TestProxy} */ a = new custom.TestProxy();\n  a.setProperty('foo', a.getProperty('foo') + 'bar');\n}");
     }
     
     @Test

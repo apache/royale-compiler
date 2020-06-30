@@ -222,7 +222,6 @@ MyInitialView.prototype.timer = null;
 
 
 /**
- * @export
  */
 MyInitialView.prototype.startTimer = function() {
   this.timer = new org.apache.royale.utils.Timer(1000);
@@ -232,7 +231,6 @@ MyInitialView.prototype.startTimer = function() {
 
 
 /**
- * @export
  * @param {org.apache.royale.events.Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {

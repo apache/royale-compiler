@@ -190,9 +190,8 @@ public class ClosureUtils
                                     || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
                             if (localDef instanceof IFunctionDefinition
                                     && !(localDef instanceof IAccessorDefinition)
-                                    // the next two conditions are temporary
-                                    // and more symbols will be exported in the future
-                                    && localDef.isStatic()
+                                    // the next condition is temporary, and more
+                                    // symbols will be exported in the future
                                     && isPublic)
                             {
                                 if ((isPublic && exportPublic) || (isProtected && exportProtected))

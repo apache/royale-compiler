@@ -51,7 +51,6 @@ LocalFunction.prototype.myMemberMethod = function(value) {
 
 
 /**
- * @export
  */
 LocalFunction.prototype.doIt = function() {
   this.myMemberMethod(624);

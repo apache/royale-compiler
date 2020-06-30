@@ -38,7 +38,6 @@ goog.inherits(Test, classes.A);
 
 
 /**
- * @export
  * @override
  */
 Test.prototype.someFunction = function() {
@@ -47,7 +46,6 @@ Test.prototype.someFunction = function() {
 
 
 /**
- * @export
  * @override
  */
 Test.prototype.someOtherFunction = function() {

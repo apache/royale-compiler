@@ -82,7 +82,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @override\n" +
 				" */\n" +
 				"AppName.prototype.addedToParent = function() {\n" +
@@ -184,7 +183,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" */\n" +
 				"AppName.prototype.bar = function() {\n" +
 				"};\n" +

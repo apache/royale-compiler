@@ -32,13 +32,11 @@ goog.require('interfaces.IB');
 interfaces.IA = function() {
 };
 /**
- * @export
  * @return {classes.B}
  */
 interfaces.IA.prototype.someFunction = function() {
 };
 /**
- * @export
  * @return {interfaces.IB}
  */
 interfaces.IA.prototype.someOtherFunction = function() {

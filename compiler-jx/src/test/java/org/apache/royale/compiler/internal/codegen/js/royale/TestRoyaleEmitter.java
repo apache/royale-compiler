@@ -100,7 +100,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 			"\n" +
 			"\n" +
 			"/**\n" +
-			" * @export\n" +
 			" * @param {string} value\n" +
 			" * @return {string}\n" +
 			" */\n" +

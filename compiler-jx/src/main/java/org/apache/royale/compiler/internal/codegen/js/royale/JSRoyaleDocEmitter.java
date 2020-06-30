@@ -147,8 +147,16 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             emitExports = !suppressExports;
             exportProtected = false;
         }
-        emitExports = emitExports && !node.hasModifier(ASModifier.STATIC) && !node.getFunctionClassification().equals(FunctionClassification.PACKAGE_MEMBER);
-        exportProtected = exportProtected && !node.hasModifier(ASModifier.STATIC);
+        if (node.getAncestorOfType(IClassNode.class) != null)
+        {
+            // export custom namespaces (for now), but not public on a class
+            emitExports = emitExports && !IASKeywordConstants.PUBLIC.equals(node.getNamespace());
+        }
+        else
+        {
+            // don't export public methods on an interface or a package-level function
+            emitExports = false;
+        }
         
         coercionList = null;
         ignoreList = null;

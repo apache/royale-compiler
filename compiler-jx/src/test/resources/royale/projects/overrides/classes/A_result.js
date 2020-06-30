@@ -36,7 +36,6 @@ classes.A = function() {
 
 
 /**
- * @export
  * @return {classes.B}
  */
 classes.A.prototype.someFunction = function() {
@@ -45,7 +44,6 @@ classes.A.prototype.someFunction = function() {
 
 
 /**
- * @export
  * @return {interfaces.IB}
  */
 classes.A.prototype.someOtherFunction = function() {

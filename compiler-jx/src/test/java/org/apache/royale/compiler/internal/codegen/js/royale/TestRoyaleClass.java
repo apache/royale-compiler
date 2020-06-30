@@ -135,7 +135,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var event:Event = new Event(); public function foo():String {return event.type;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n\nthis.event = new Event();\n};\n\n\n/**\n * @export\n * @type {Event}\n */\norg.apache.royale.B.prototype.event = null;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return this.event.type;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n\nthis.event = new Event();\n};\n\n\n/**\n * @export\n * @type {Event}\n */\norg.apache.royale.B.prototype.event = null;\n\n\n/**\n * @return {string}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return this.event.type;\n};";
         assertOut(expected);
     }
 
@@ -144,7 +144,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n */\norg.apache.royale.B.prototype.foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -153,7 +153,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { var a:int = 123; return a; };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123;\n  return a;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123;\n  return a;\n};";
         assertOut(expected);
     }
 
@@ -162,7 +162,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { var a:Number = 123.4; return a; };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123.4;\n  return (a) >> 0;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123.4;\n  return (a) >> 0;\n};";
         assertOut(expected);
     }
 
@@ -171,7 +171,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():int { return 123.4 };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return 123;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return 123;\n};";
         assertOut(expected);
     }
 
@@ -180,7 +180,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { var a:uint = 123; return a; };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123;\n  return a;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123;\n  return a;\n};";
         assertOut(expected);
     }
 
@@ -189,7 +189,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { var a:Number = 123.4; return a; };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123.4;\n  return (a) >>> 0;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123.4;\n  return (a) >>> 0;\n};";
         assertOut(expected);
     }
 
@@ -198,7 +198,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():uint { return 123.4 };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return 123;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {number}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return 123;\n};";
         assertOut(expected);
     }
 
@@ -207,7 +207,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():Boolean { var a:Boolean = true; return a; };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {boolean}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {boolean} */ a = true;\n  return a;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {boolean}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {boolean} */ a = true;\n  return a;\n};";
         assertOut(expected);
     }
 
@@ -216,7 +216,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():Boolean { var a:Number = 123.4; return a; };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {boolean}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123.4;\n  return !!(a);\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {boolean}\n */\norg.apache.royale.B.prototype.foo = function() {\n  var /** @type {number} */ a = 123.4;\n  return !!(a);\n};";
         assertOut(expected);
     }
 
@@ -225,7 +225,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():Boolean { return 123.4 };}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {boolean}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return true;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {boolean}\n */\norg.apache.royale.B.prototype.foo = function() {\n  return true;\n};";
         assertOut(expected);
     }
 
@@ -234,7 +234,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.B.prototype.foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @override\n */\norg.apache.royale.B.prototype.foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -243,7 +243,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo(value:Object):void {baz = ''};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.B.prototype.foo = function(value) {\n  baz = '';\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @override\n */\norg.apache.royale.B.prototype.foo = function(value) {\n  baz = '';\n};";
         assertOut(expected);
     }
 
@@ -252,7 +252,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {super.foo();};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.B.prototype.foo = function() {\n  org.apache.royale.B.superClass_.foo.apply(this);\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @override\n */\norg.apache.royale.B.prototype.foo = function() {\n  org.apache.royale.B.superClass_.foo.apply(this);\n};";
         assertOut(expected);
     }
 
@@ -707,7 +707,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "custom_namespace static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @package\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo6 = function(value) {\n};\n\n\n/**\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @package\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo6 = function(value) {\n};\n\n\n/**\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @export\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__foo7 = function(value) {\n};");
     }
 
     @Test
@@ -718,7 +718,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "public function foo2():Object{function bar2(param1:Object):Object {return null;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return null;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.royale.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return null;\n  };\n  return bar2('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return null;\n  };\n  return bar1();\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return null;\n  };\n  return bar2('foo');\n};");
     }
 
     @Test
@@ -730,7 +730,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "public function foo2():String{function bar2(param1:String):String {return param1 + baz1;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.royale.B.prototype.baz1 = null;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return self.baz1;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.royale.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return param1 + self.baz1;\n  };\n  return bar2('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.royale.B.prototype.baz1 = null;\n\n\n/**\n * @return {string}\n */\norg.apache.royale.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return self.baz1;\n  };\n  return bar1();\n};\n\n\n/**\n * @return {string}\n */\norg.apache.royale.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return param1 + self.baz1;\n  };\n  return bar2('foo');\n};");
     }
 
     @Test
@@ -750,7 +750,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "public function clone():B { return new B() }"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n * @return {org.apache.royale.B}\n */\norg.apache.royale.B.prototype.clone = function() {\n  return new org.apache.royale.B();\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @return {org.apache.royale.B}\n */\norg.apache.royale.B.prototype.clone = function() {\n  return new org.apache.royale.B();\n};");
     }
 
     @Override

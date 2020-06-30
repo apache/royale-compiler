@@ -355,7 +355,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" */\n" +
 				"foo.bar.baz.A.prototype.foo = function() {\n" +
 				"};\n" +
@@ -731,7 +730,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @return {string}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.someMethod = function() {\n" +
@@ -1069,7 +1067,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.test = function() {\n" +
 				"};\n" +

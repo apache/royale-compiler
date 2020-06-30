@@ -1927,7 +1927,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
 				"\n" +
         		"/**\n" +
-        		" * @export\n" +
         		" * @param {string} foo\n" +
         		" */\n" +
         		"AppName.prototype.fn_test = function(foo) {\n" +
