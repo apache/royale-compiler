@@ -45,25 +45,25 @@ RoyaleTest_again = function() {
    * @private
    * @type {org.apache.royale.core.SimpleCSSValuesImpl}
    */
-  this.$ID0_;
+  this.$ID_8_0;
   
   /**
    * @private
    * @type {MyInitialView}
    */
-  this.$ID1_;
+  this.$ID_8_1;
   
   /**
    * @private
    * @type {models.MyModel}
    */
-  this.$ID2_;
+  this.$ID_8_2;
   
   /**
    * @private
    * @type {controllers.MyController}
    */
-  this.$ID3_;
+  this.$ID_8_3;
   
   /**
    * @private
@@ -81,13 +81,13 @@ RoyaleTest_again = function() {
    * @private
    * @type {org.apache.royale.collections.parsers.JSONInputParser}
    */
-  this.$ID4_;
+  this.$ID_8_4;
   
   /**
    * @private
    * @type {StockDataJSONItemConverter}
    */
-  this.$ID5_;
+  this.$ID_8_5;
   
   /**
    * @private
@@ -110,7 +110,7 @@ RoyaleTest_again = function() {
       1,
       '_id',
       true,
-      '$ID2',
+      '$ID_8_2',
       0,
       0,
       null
@@ -122,7 +122,7 @@ RoyaleTest_again = function() {
       1,
       '_id',
       true,
-      '$ID0',
+      '$ID_8_0',
       0,
       0,
       null
@@ -134,7 +134,7 @@ RoyaleTest_again = function() {
       1,
       '_id',
       true,
-      '$ID1',
+      '$ID_8_1',
       0,
       0,
       null
@@ -146,7 +146,7 @@ RoyaleTest_again = function() {
       1,
       '_id',
       true,
-      '$ID3',
+      '$ID_8_3',
       0,
       0,
       null
@@ -174,7 +174,7 @@ RoyaleTest_again = function() {
           1,
           '_id',
           true,
-          '$ID4',
+          '$ID_8_4',
           0,
           0,
           null
@@ -186,7 +186,7 @@ RoyaleTest_again = function() {
           1,
           '_id',
           true,
-          '$ID5',
+          '$ID_8_5',
           0,
           0,
           null
@@ -202,7 +202,7 @@ RoyaleTest_again = function() {
     0,
     1,
     'initialize',
-this.$EH0
+this.$EH_8_0
   ]);
   
 };
@@ -215,7 +215,7 @@ goog.inherits(RoyaleTest_again, org.apache.royale.core.Application);
  * @export
  * @param {org.apache.royale.events.Event} event
  */
-RoyaleTest_again.prototype.$EH0 = function(event)
+RoyaleTest_again.prototype.$EH_8_0 = function(event)
 {
   org.apache.royale.utils.Language.as(this.model, models.MyModel, true).labelText = 'Hello World';
 };

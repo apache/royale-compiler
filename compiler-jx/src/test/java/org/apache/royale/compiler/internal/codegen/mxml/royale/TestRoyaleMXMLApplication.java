@@ -160,7 +160,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.accessories.TextPromptBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -183,7 +183,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"      2,\n" +
         		"      '_id',\n" +
         		"      true,\n" +
-        		"      '$ID0',\n" +
+        		"      '$ID_8_0',\n" +
         		"      'prompt',\n" +
         		"      true,\n" +
         		"      '0-9\\\\',\n" +
@@ -273,7 +273,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.accessories.TextPromptBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -296,7 +296,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"      2,\n" +
         		"      '_id',\n" +
         		"      true,\n" +
-        		"      '$ID0',\n" +
+        		"      '$ID_8_0',\n" +
         		"      'prompt',\n" +
         		"      true,\n" +
         		"      '0-9\\\\',\n" +
@@ -569,13 +569,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -598,7 +598,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -606,7 +606,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        1,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" + 
+				"        '$ID_8_0',\n" + 
 				"        0,\n" +
 				"        0,\n" +
 				"        null\n" +
@@ -629,7 +629,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"1,\n" +
         		"[\"org.apache.royale.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
-        		"[\"$ID0\", \"text\"]\n" +
+        		"[\"$ID_8_0\", \"text\"]\n" +
         		"];\n" +
         		"/**\n" +
         		" * Metadata\n" +
@@ -707,13 +707,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -736,7 +736,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" + 
+				"      '$ID_8_1',\n" + 
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -744,7 +744,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        1,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        0,\n" +
 				"        0,\n" +
 				"        null\n" +
@@ -767,7 +767,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"1,\n" +
         		"[\"org.apache.royale.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
-        		"[\"$ID0\", \"text\"]\n" +
+        		"[\"$ID_8_0\", \"text\"]\n" +
         		"];\n" +
         		"/**\n" +
         		" * Metadata\n" +
@@ -846,13 +846,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -875,7 +875,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -883,7 +883,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        1,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        0,\n" +
 				"        0,\n" +
 				"        null\n" +
@@ -913,7 +913,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"1,\n" +
         		"[\"firstOne\", \"subObject\", \"labelText\"],\n" +
         		"null,\n" +
-        		"[\"$ID0\", \"text\"],\n" +
+        		"[\"$ID_8_0\", \"text\"],\n" +
         		"0,\n" +
         		"2,\n" +
         		"\"firstOne\",\n" +
@@ -1020,13 +1020,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1049,7 +1049,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1057,7 +1057,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'text',\n" +
 				"        true,\n" +
 				"        'Hello World',\n" +
@@ -1162,13 +1162,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1191,7 +1191,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1199,7 +1199,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1302,13 +1302,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID3_;\n" +
+        		"  this.$ID_8_3;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID2_;\n" +
+        		"  this.$ID_8_2;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1331,7 +1331,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID3',\n" +
+				"      '$ID_8_3',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1339,7 +1339,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID2',\n" +
+				"        '$ID_8_2',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1444,13 +1444,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1473,7 +1473,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1481,7 +1481,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1585,13 +1585,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1614,7 +1614,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1622,7 +1622,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1763,7 +1763,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"    0,\n" +
         		"    1,\n" +
         		"    'change',\n" +
-        		"this.$EH0\n" +
+        		"this.$EH_9_0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
@@ -1806,7 +1806,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @export\n" +
         		" * @param {org.apache.royale.events.Event} event\n" +
         		" */\n" +
-        		"AppName.AppName_component0.prototype.$EH0 = function(event)\n" +
+        		"AppName.AppName_component0.prototype.$EH_9_0 = function(event)\n" +
 				"{\n" +
 				"  org.apache.royale.utils.Language.trace('bar');\n" +
 				"};\n" +
@@ -1885,7 +1885,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1908,7 +1908,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      org.apache.royale.utils.Language.closure(this.fn_test, this, 'fn_test'),\n" +
@@ -2008,7 +2008,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -2031,7 +2031,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      org.apache.royale.utils.Language.closure(this.initialView.addedToParent, this.initialView, 'addedToParent'),\n" +
@@ -2121,7 +2121,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -2144,7 +2144,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      AppName.fn_test,\n" +
@@ -2162,7 +2162,8 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"\n" +
 				"\n" +
-        		"/**\n" +
+				"/**\n" +
+				" * @nocollapse\n" + 
         		" * @param {string} foo\n" +
         		" */\n" +
         		"AppName.fn_test = function(foo) {\n" +
@@ -2251,7 +2252,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -2274,7 +2275,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      org.apache.royale.utils.Language.closure(this.AppName_fn_test, this, 'AppName_fn_test'),\n" +
