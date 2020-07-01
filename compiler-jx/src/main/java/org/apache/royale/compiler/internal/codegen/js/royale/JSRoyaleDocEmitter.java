@@ -59,6 +59,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     public boolean emitStringConversions = true;
     private boolean emitExports = true;
     private boolean exportProtected = false;
+    private boolean exportInternal = false;
     
     private boolean suppressClosure = false;
 
@@ -141,11 +142,13 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
         	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
         	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
+        	exportInternal = !suppressExports && fjp.config.getExportInternalSymbols();
         }
         else
         {
             emitExports = !suppressExports;
             exportProtected = false;
+            exportInternal = false;
         }
         if (node.getAncestorOfType(IClassNode.class) != null)
         {
@@ -576,6 +579,14 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 emitNoCollapse(node);
             }
         }
+        else if (ns == IASKeywordConstants.INTERNAL)
+        {
+            boolean preventRenameInternal = fjp.config != null && fjp.config.getPreventRenameInternalSymbols();
+            if (preventRenameInternal)
+            {
+                emitNoCollapse(node);
+            }
+        }
         else if(ns != IASKeywordConstants.PRIVATE) // public or custom namespace
         {
             boolean preventRenamePublic = fjp.config != null && fjp.config.getPreventRenamePublicSymbols();
@@ -612,11 +623,13 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         {
         	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
         	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
+        	exportInternal = !suppressExports && fjp.config.getExportInternalSymbols();
         }
         else
         {
             emitExports = !suppressExports;
             exportProtected = false;
+            exportInternal = false;
         }
         emitExports = emitExports && !node.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER);
 
@@ -639,6 +652,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         else if (ns == IASKeywordConstants.INTERNAL)
         {
             emitInternal(node);
+            boolean preventRename = fjp.config != null && fjp.config.getPreventRenameInternalSymbols();
+            if (preventRename)
+            {
+                emitNoCollapse(node);
+            }
         }
         else
         {
@@ -713,6 +731,15 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     		super.emitPublic(node);
     	else
     		super.emitProtected(node);
+    }
+
+    @Override
+    public void emitInternal(IASNode node)
+    {
+    	if (exportInternal)
+    		super.emitPublic(node);
+    	else
+    		super.emitInternal(node);
     }
     
     @Override

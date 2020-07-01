@@ -48,8 +48,10 @@ public class ClosureUtils
         }
 		boolean preventRenamePublic = project.config != null && project.config.getPreventRenamePublicSymbols();
         boolean preventRenameProtected = project.config != null && project.config.getPreventRenameProtectedSymbols();
+        boolean preventRenameInternal = project.config != null && project.config.getPreventRenameInternalSymbols();
         boolean exportPublic = project.config != null && project.config.getExportPublicSymbols();
         boolean exportProtected = project.config != null && project.config.getExportProtectedSymbols();
+        boolean exportInternal = project.config != null && project.config.getExportInternalSymbols();
         try
         {
             for(IASScope scope : cu.getFileScopeRequest().get().getScopes())
@@ -94,13 +96,17 @@ public class ClosureUtils
                             boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
                             boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
                                     || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
+                            boolean isInternal = nsRef instanceof INamespaceDefinition.IInternalNamespaceDefinition;
                             
-                            if ((isPublic && preventRenamePublic) || (isProtected && preventRenameProtected))
+                            if ((isPublic && preventRenamePublic)
+                                    || (isProtected && preventRenameProtected)
+                                    || (isInternal && preventRenameInternal))
                             {
                                 if (localDef instanceof IAccessorDefinition)
                                 {
                                     /* disabled temporarily until AccessorEmitter handles @export
-                                        (isProtected && exportProtected) */
+                                        (isProtected && exportProtected)
+                                        (isInternal && exportInternal) */
                                     if ((isPublic && exportPublic))
                                     {
                                         //if an accessor is exported, we don't
@@ -129,6 +135,7 @@ public class ClosureUtils
         }
         boolean exportPublic = project.config != null && project.config.getExportPublicSymbols();
         boolean exportProtected = project.config != null && project.config.getExportProtectedSymbols();
+        boolean exportInternal = project.config != null && project.config.getExportInternalSymbols();
         try
         {
             String parentQName = null;
@@ -188,13 +195,16 @@ public class ClosureUtils
                             boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
                             boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
                                     || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
+                            boolean isInternal = nsRef instanceof INamespaceDefinition.IInternalNamespaceDefinition;
                             if (localDef instanceof IFunctionDefinition
                                     && !(localDef instanceof IAccessorDefinition)
                                     // the next condition is temporary, and more
                                     // symbols will be exported in the future
                                     && isPublic)
                             {
-                                if ((isPublic && exportPublic) || (isProtected && exportProtected))
+                                if ((isPublic && exportPublic)
+                                        || (isProtected && exportProtected)
+                                        || (isInternal && exportInternal))
                                 {
                                     if (isFilePrivate)
                                     {

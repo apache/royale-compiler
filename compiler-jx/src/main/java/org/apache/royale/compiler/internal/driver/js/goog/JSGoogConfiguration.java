@@ -444,6 +444,25 @@ public class JSGoogConfiguration extends JSConfiguration
     {
     	exportProtectedSymbols = value;
     }
+    
+    //
+    // 'export-internal-symbols'
+    //
+
+    private boolean exportInternalSymbols = false;
+
+    public boolean getExportInternalSymbols()
+    {
+        return exportInternalSymbols;
+    }
+
+    @Config
+    @Mapping("export-internal-symbols")
+    public void setExportInternalSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	exportInternalSymbols = value;
+    }
 
     //
     // 'prevent-rename-public-symbols'
@@ -481,6 +500,25 @@ public class JSGoogConfiguration extends JSConfiguration
             throws ConfigurationException
     {
     	preventRenameProtectedSymbols = value;
+    }
+
+    //
+    // 'prevent-rename-internal-symbols'
+    //
+
+    private boolean preventRenameInternalSymbols = true;
+
+    public boolean getPreventRenameInternalSymbols()
+    {
+        return preventRenameInternalSymbols;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-symbols")
+    public void setPreventRenameInternalSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalSymbols = value;
     }
 
     
@@ -539,12 +577,14 @@ public class JSGoogConfiguration extends JSConfiguration
         final int HAS_KEEP_CODE_WITH_METADATA = 4;
         final int HAS_EXPORT_PUBLIC_SYMBOLS = 8;
         final int EXPORT_PROTECTED_SYMBOLS = 16;
+        final int EXPORT_INTERNAL_SYMBOLS = 32;
     
         if (getJsDefaultInitializers()) ret |= WITH_DEFAULT_INITIALIZERS;
         if (getCompilerKeepAs3Metadata().size() > 0) ret |= HAS_KEEP_AS3_METADATA;
         if (getCompilerKeepCodeWithMetadata().size() > 0) ret |= HAS_KEEP_CODE_WITH_METADATA;
         if (getExportPublicSymbols()) ret |= HAS_EXPORT_PUBLIC_SYMBOLS;
         if (getExportProtectedSymbols()) ret |= EXPORT_PROTECTED_SYMBOLS;
+        if (getExportInternalSymbols()) ret |= EXPORT_INTERNAL_SYMBOLS;
         
         return ret;
     }
