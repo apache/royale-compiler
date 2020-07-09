@@ -42,6 +42,7 @@ import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IFileScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.NativeUtils;
@@ -666,7 +667,28 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     write(ASEmitterTokens.PAREN_CLOSE);
                     return;
                 }
-            	getWalker().walk(node.getNameNode());
+
+            	if (def != null
+                        && node.getNameNode() instanceof IMemberAccessExpressionNode
+                        && def.getContainingScope() instanceof IFileScope) {
+                    //this code branch covers a scenario where fully qualified imported functions had their package elements
+                    //swapped to dynamic-access when js-dynamic-access-unknown-members=true, which should not happen.
+                    //This was observed when the imported function call was being used 'fully qualified' inside
+                    //a locally defined function with the same name (where fully qualified access was of course needed)
+                    //example:
+                    // import org.apache.royale.test.asserts.assertTrue; //import original function
+                    //
+                    //  public function assertTrue(message:String, condition:Boolean):void{
+                    //    org.apache.royale.test.asserts.assertTrue(condition,message); // without this branch in the compiler it was being expressed as org["apache"]["royale"]...etc
+                    //  }
+
+            	    startMapping(node.getNameNode());
+            	    write(def.getQualifiedName());
+            	    endMapping(node.getNameNode());
+                } else {
+                    getWalker().walk(node.getNameNode());
+                }
+
 
                 getEmitter().emitArguments(node.getArgumentsNode());
     
