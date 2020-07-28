@@ -32,6 +32,7 @@ import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -92,13 +93,17 @@ public class ClosureUtils
                             {
                                 continue;
                             }
+                            INamespaceReference nsRef = localDef.getNamespaceReference();
+                            boolean isCustomNS = !nsRef.isLanguageNamespace();
                             if ((localDef.isPublic() && preventRenamePublic)
+                                    || (isCustomNS && preventRenamePublic)
                                     || (localDef.isProtected() && preventRenameProtected)
                                     || (localDef.isInternal() && preventRenameInternal))
                             {
                                 if (localDef instanceof IAccessorDefinition)
                                 {
                                     if ((localDef.isPublic() && exportPublic)
+                                            || (isCustomNS && exportPublic)
                                             || (localDef.isProtected() && exportProtected)
                                             || (localDef.isInternal() && exportInternal))
                                     {
@@ -107,6 +112,11 @@ public class ClosureUtils
                                         //(not true for other symbol types)
                                         continue;
                                     }
+                                }
+                                if (isCustomNS)
+                                {
+                                    String uri = nsRef.resolveNamespaceReference(project).getURI();
+                                    result.add(JSRoyaleEmitter.formatNamespacedProperty(uri, localDef.getBaseName(), false));
                                 }
                                 result.add(localDef.getBaseName());
                             }
@@ -185,23 +195,28 @@ public class ClosureUtils
                                 continue;
                             }
                             if (localDef instanceof IFunctionDefinition
-                                    && !(localDef instanceof IAccessorDefinition)
-                                    // the next condition is temporary, and more
-                                    // symbols will be exported in the future
-                                    && localDef.getNamespaceReference().isLanguageNamespace())
+                                    && !(localDef instanceof IAccessorDefinition))
                             {
+                                INamespaceReference nsRef = localDef.getNamespaceReference();
+                                boolean isCustomNS = !nsRef.isLanguageNamespace();
                                 if ((localDef.isPublic() && exportPublic)
-                                        || (!localDef.getNamespaceReference().isLanguageNamespace() && exportPublic)
+                                        || (isCustomNS && exportPublic)
                                         || (localDef.isProtected() && exportProtected)
                                         || (localDef.isInternal() && exportInternal))
                                 {
+                                    String baseName = localDef.getBaseName();
+                                    if (isCustomNS)
+                                    {
+                                        String uri = nsRef.resolveNamespaceReference(project).getURI();
+                                        baseName = JSRoyaleEmitter.formatNamespacedProperty(uri, localDef.getBaseName(), false);
+                                    }
                                     if (isFilePrivate)
                                     {
-                                        filePrivateNames.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + localDef.getBaseName());
+                                        filePrivateNames.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + baseName);
                                     }
                                     else
                                     {
-                                        symbolsResult.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + localDef.getBaseName());
+                                        symbolsResult.add(qualifiedName + (localDef.isStatic() ? "." : ".prototype.") + baseName);
                                     }
                                 }
                             }

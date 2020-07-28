@@ -279,7 +279,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("import custom.custom_namespace; use namespace custom_namespace; public class B {public function B() {}; custom_namespace function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n * @export\n */\norg.apache.royale.B.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n/**\n */\norg.apache.royale.B.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -707,7 +707,7 @@ public class TestRoyaleClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "custom_namespace static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @package\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo6 = function(value) {\n};\n\n\n/**\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @export\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.royale.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @override\n */\norg.apache.royale.A.prototype.foo1b = function() {\n  return org.apache.royale.A.superClass_.foo1b.apply(this);\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @package\n * @param {Object} value\n */\norg.apache.royale.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo6 = function(value) {\n};\n\n\n/**\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.foo7 = function(value) {\n};\n\n\n/**\n * @nocollapse\n * @param {Object} value\n */\norg.apache.royale.A.http_$$ns_apache_org$2017$custom$namespace__foo7 = function(value) {\n};");
     }
 
     @Test

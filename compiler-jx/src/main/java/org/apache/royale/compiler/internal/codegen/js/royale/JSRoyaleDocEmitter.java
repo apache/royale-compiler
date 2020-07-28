@@ -134,31 +134,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     {
     	RoyaleJSProject fjp = (RoyaleJSProject)project;
         boolean keepASDoc = fjp.config != null && fjp.config.getKeepASDoc();
-        boolean suppressExports = false;
-        if (emitter instanceof JSRoyaleEmitter) {
-            suppressExports = ((JSRoyaleEmitter) emitter).getModel().suppressExports;
-        }
-        //exporting is handled dynamically in ClosureUtils
+
+        //exporting methods is handled dynamically in ClosureUtils
+        emitExports = false;
         exportProtected = false;
         exportInternal = false;
-        if (fjp.config != null)
-        {
-        	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
-        }
-        else
-        {
-            emitExports = !suppressExports;
-        }
-        if (node.getAncestorOfType(IClassNode.class) != null)
-        {
-            // export custom namespaces (for now), but not public on a class
-            emitExports = emitExports && !IASKeywordConstants.PUBLIC.equals(node.getNamespace());
-        }
-        else
-        {
-            // don't export public methods on an interface or a package-level function
-            emitExports = false;
-        }
         
         coercionList = null;
         ignoreList = null;

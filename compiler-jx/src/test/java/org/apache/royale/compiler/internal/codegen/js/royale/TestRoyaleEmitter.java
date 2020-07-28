@@ -317,7 +317,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("function method1(p1:Number, p2:Number, p3:Number = 3, p4:Number = 4):Number{return p1 + p2 + p3 + p4;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
+        assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "  p3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "  p4 = typeof p4 !== 'undefined' ? p4 : 4;\n"
@@ -330,7 +330,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {number=} bar\n * @param {number=} bax\n */\n"
+        assertOut("/**\n * @param {number=} bar\n * @param {number=} bax\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, bax) {\n"
                 + "  bar = typeof bar !== 'undefined' ? bar : 42;\n"
                 + "  bax = typeof bax !== 'undefined' ? bax : 4;\n"
@@ -343,7 +343,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
+        assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "  p3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "  p4 = typeof p4 !== 'undefined' ? p4 : 4;\n}");
@@ -355,7 +355,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("function method1(bar:int):int{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {number} bar\n * @return {number}\n */\n"
+        assertOut("/**\n * @param {number} bar\n * @return {number}\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar) {\n}");
     }
 
@@ -365,7 +365,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
@@ -375,7 +375,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("/**\n * This is copied from ASDoc.\n */\nfunction method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * This is copied from ASDoc.\n * @export\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+        assertOut("/**\n * This is copied from ASDoc.\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
@@ -384,7 +384,7 @@ public class TestRoyaleEmitter extends TestGoogEmitter
     {
         IFunctionNode node = getMethodWithPackage("/** This is copied from ASDoc. */\nfunction method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/** This is copied from ASDoc. \n * @export\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+        assertOut("/** This is copied from ASDoc. \n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 

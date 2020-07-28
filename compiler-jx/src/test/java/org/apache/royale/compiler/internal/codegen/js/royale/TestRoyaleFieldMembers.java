@@ -210,7 +210,7 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("import custom.custom_namespace;use namespace custom_namespace;public static var foo:Object = initFoo(); custom_namespace static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @export\n * @return {Object}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo();\n\n");
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nRoyaleTest_A.foo;\n\n\n/**\n * @return {Object}\n */\nRoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo = function() {\n  return null;\n};\n\nRoyaleTest_A.foo = RoyaleTest_A.http_$$ns_apache_org$2017$custom$namespace__initFoo();\n\n");
     }
     
     @Test
