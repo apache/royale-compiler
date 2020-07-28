@@ -50,7 +50,6 @@ import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.GetterNode;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
-import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IGetterNode;
@@ -320,11 +319,12 @@ public class AccessorEmitter extends JSSubEmitter implements
                 String baseName = p.name;
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
-            	writeNewline("/**");
-            	//only export if one of the options is public
-            	//if either one is marked as suppressed, both are considered to be
-                if (emitExports && p.resolvedExport && !(p.suppressExport) )
-                	writeNewline("  * @export");
+                writeNewline("/**");
+                //if either one is marked as suppressed, both are considered to be
+                if(p.resolvedExport && !p.suppressExport)
+                {
+                    writeNewline("  * @export");
+                }
                 if (p.type != null)
                 {
                 	String typeName = p.type.getBaseName();
@@ -611,7 +611,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 ISetterNode setterNode = p.setter;
                 String baseName = p.name;
             	writeNewline("/**");
-                if (emitExports && !p.suppressExport)
+                if (p.resolvedExport && !p.suppressExport)
                 	writeNewline("  * @export");
                 if (p.type != null)
                 	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
@@ -692,7 +692,7 @@ public class AccessorEmitter extends JSSubEmitter implements
         boolean suppress = getModel().suppressExports ||
 				(node.getASDocComment() != null &&
 				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
-       if (suppress) getModel().suppressedExportNodes.add(node);
+        if (suppress) getModel().suppressedExportNodes.add(node);
 				
         IDefinition def = node.getDefinition();
         ModifiersSet modifierSet = def.getModifiers();
@@ -712,6 +712,16 @@ public class AccessorEmitter extends JSSubEmitter implements
 			//make sure the key includes the uri to avoid clashing with other equivalent base names
 			key =  uri + "::" + name;
 		}
+        boolean emitExports = true;
+        boolean exportProtected = false;
+        boolean exportInternal = false;
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project != null && project.config != null)
+        {
+            emitExports = project.config.getExportPublicSymbols();
+            exportProtected = project.config.getExportProtectedSymbols();
+            exportInternal = project.config.getExportInternalSymbols();
+        }
 		
 		PropertyNodes p = map.get(key);
         if (p == null)
@@ -721,15 +731,22 @@ public class AccessorEmitter extends JSSubEmitter implements
 			p.name = name;
 			p.originalName = node.getName();
 			p.uri = uri;
-			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
-			p.resolvedExport = uri != null || def.isPublic();
             map.put(key, p);
-        } else {
-			p.resolvedExport = p.resolvedExport || def.isPublic();
-		}
+        }
+        if(uri != null || def.isPublic())
+        {
+            p.resolvedExport = emitExports;
+        }
+        else if(def.isInternal())
+        {
+            p.resolvedExport = exportInternal;
+        }
+        else if(def.isProtected())
+        {
+            p.resolvedExport = exportProtected;
+        }
         p.getter = node;
 		if (!p.suppressExport) p.suppressExport = suppress;
-        ICompilerProject project = getWalker().getProject();
         if (p.type == null && project != null)
         	p.type = node.getDefinition().resolveReturnType(project);
         FunctionNode fn = (FunctionNode) node;
@@ -763,6 +780,16 @@ public class AccessorEmitter extends JSSubEmitter implements
 			//make sure the key includes the uri to avoid clashing with other equivalent base names
 			key =  uri + "::" + name;
 		}
+        boolean emitExports = true;
+        boolean exportProtected = false;
+        boolean exportInternal = false;
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project != null && project.config != null)
+        {
+            emitExports = project.config.getExportPublicSymbols();
+            exportProtected = project.config.getExportProtectedSymbols();
+            exportInternal = project.config.getExportInternalSymbols();
+        }
 		
         PropertyNodes p = map.get(key);
         if (p == null)
@@ -772,15 +799,22 @@ public class AccessorEmitter extends JSSubEmitter implements
             p.name = name;
             p.originalName = node.getName();
             p.uri = uri;
- 			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
-            p.resolvedExport = uri != null || def.isPublic();
             map.put(key, p);
-        } else {
-			p.resolvedExport = p.resolvedExport || def.isPublic();
-		}
+        }
+        if(uri != null || def.isPublic())
+        {
+            p.resolvedExport = emitExports;
+        }
+        else if(def.isInternal())
+        {
+            p.resolvedExport = exportInternal;
+        }
+        else if(def.isProtected())
+        {
+            p.resolvedExport = exportProtected;
+        }
         p.setter = node;
         if (!p.suppressExport) p.suppressExport = suppress;
-        ICompilerProject project = (ICompilerProject)getWalker().getProject();
         if (p.type == null && project != null)
         {
         	IParameterDefinition[] params = def.getParameters();
