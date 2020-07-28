@@ -824,7 +824,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public boolean isProtected()
     {
-        return namespaceReference instanceof INamespaceDefinition.IProtectedNamespaceDefinition;
+        return namespaceReference instanceof INamespaceDefinition.IProtectedNamespaceDefinition
+                || namespaceReference instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
     }
 
     @Override
