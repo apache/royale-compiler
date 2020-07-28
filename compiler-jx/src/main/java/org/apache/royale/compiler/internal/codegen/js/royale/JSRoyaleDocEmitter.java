@@ -138,17 +138,16 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         if (emitter instanceof JSRoyaleEmitter) {
             suppressExports = ((JSRoyaleEmitter) emitter).getModel().suppressExports;
         }
+        //exporting is handled dynamically in ClosureUtils
+        exportProtected = false;
+        exportInternal = false;
         if (fjp.config != null)
         {
         	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
-        	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
-        	exportInternal = !suppressExports && fjp.config.getExportInternalSymbols();
         }
         else
         {
             emitExports = !suppressExports;
-            exportProtected = false;
-            exportInternal = false;
         }
         if (node.getAncestorOfType(IClassNode.class) != null)
         {

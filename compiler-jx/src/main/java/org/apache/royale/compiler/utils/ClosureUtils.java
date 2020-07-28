@@ -188,9 +188,10 @@ public class ClosureUtils
                                     && !(localDef instanceof IAccessorDefinition)
                                     // the next condition is temporary, and more
                                     // symbols will be exported in the future
-                                    && localDef.isPublic())
+                                    && localDef.getNamespaceReference().isLanguageNamespace())
                             {
                                 if ((localDef.isPublic() && exportPublic)
+                                        || (!localDef.getNamespaceReference().isLanguageNamespace() && exportPublic)
                                         || (localDef.isProtected() && exportProtected)
                                         || (localDef.isInternal() && exportInternal))
                                 {
