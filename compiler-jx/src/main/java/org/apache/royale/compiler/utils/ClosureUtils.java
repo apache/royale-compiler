@@ -92,22 +92,15 @@ public class ClosureUtils
                             {
                                 continue;
                             }
-                            INamespaceReference nsRef = localDef.getNamespaceReference();
-                            boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
-                            boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
-                                    || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
-                            boolean isInternal = nsRef instanceof INamespaceDefinition.IInternalNamespaceDefinition;
-                            
-                            if ((isPublic && preventRenamePublic)
-                                    || (isProtected && preventRenameProtected)
-                                    || (isInternal && preventRenameInternal))
+                            if ((localDef.isPublic() && preventRenamePublic)
+                                    || (localDef.isProtected() && preventRenameProtected)
+                                    || (localDef.isInternal() && preventRenameInternal))
                             {
                                 if (localDef instanceof IAccessorDefinition)
                                 {
-                                    /* disabled temporarily until AccessorEmitter handles @export
-                                        (isProtected && exportProtected)
-                                        (isInternal && exportInternal) */
-                                    if ((isPublic && exportPublic))
+                                    if ((localDef.isPublic() && exportPublic)
+                                            || (localDef.isProtected() && exportProtected)
+                                            || (localDef.isInternal() && exportInternal))
                                     {
                                         //if an accessor is exported, we don't
                                         //need to prevent renaming
@@ -191,20 +184,15 @@ public class ClosureUtils
                             {
                                 continue;
                             }
-                            INamespaceReference nsRef = localDef.getNamespaceReference();
-                            boolean isPublic = nsRef instanceof INamespaceDefinition.IPublicNamespaceDefinition;
-                            boolean isProtected = nsRef instanceof INamespaceDefinition.IProtectedNamespaceDefinition
-                                    || nsRef instanceof INamespaceDefinition.IStaticProtectedNamespaceDefinition;
-                            boolean isInternal = nsRef instanceof INamespaceDefinition.IInternalNamespaceDefinition;
                             if (localDef instanceof IFunctionDefinition
                                     && !(localDef instanceof IAccessorDefinition)
                                     // the next condition is temporary, and more
                                     // symbols will be exported in the future
-                                    && isPublic)
+                                    && localDef.isPublic())
                             {
-                                if ((isPublic && exportPublic)
-                                        || (isProtected && exportProtected)
-                                        || (isInternal && exportInternal))
+                                if ((localDef.isPublic() && exportPublic)
+                                        || (localDef.isProtected() && exportProtected)
+                                        || (localDef.isInternal() && exportInternal))
                                 {
                                     if (isFilePrivate)
                                     {
