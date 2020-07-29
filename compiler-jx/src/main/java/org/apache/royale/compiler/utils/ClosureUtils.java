@@ -113,12 +113,13 @@ public class ClosureUtils
                                         continue;
                                     }
                                 }
+                                String baseName = localDef.getBaseName();
                                 if (isCustomNS)
                                 {
                                     String uri = nsRef.resolveNamespaceReference(project).getURI();
-                                    result.add(JSRoyaleEmitter.formatNamespacedProperty(uri, localDef.getBaseName(), false));
+                                    baseName = JSRoyaleEmitter.formatNamespacedProperty(uri, baseName, false);
                                 }
-                                result.add(localDef.getBaseName());
+                                result.add(baseName);
                             }
                         }
                     }
