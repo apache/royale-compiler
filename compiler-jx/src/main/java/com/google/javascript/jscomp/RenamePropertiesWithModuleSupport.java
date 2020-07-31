@@ -138,7 +138,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
    */
   RenamePropertiesWithModuleSupport(AbstractCompiler compiler, boolean generatePseudoNames,
       NameGenerator nameGenerator) {
-    this(compiler, generatePseudoNames, null, null, null, nameGenerator, null);
+    this(compiler, generatePseudoNames, null, null, null, nameGenerator);
   }
 
   /**
@@ -156,10 +156,8 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
   RenamePropertiesWithModuleSupport(AbstractCompiler compiler,
       boolean generatePseudoNames, VariableMap prevUsedPropertyMap,
       NameGenerator nameGenerator) {
-    this(compiler, generatePseudoNames, prevUsedPropertyMap, null, null, nameGenerator, null);
+    this(compiler, generatePseudoNames, prevUsedPropertyMap, null, null, nameGenerator);
   }
-
-  private Set<String> propertyNamesToKeep;
 
   /**
    * Creates an instance.
@@ -181,15 +179,13 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
       VariableMap prevUsedPropertyMap,
       @Nullable char[] reservedFirstCharacters,
       @Nullable char[] reservedNonFirstCharacters,
-      NameGenerator nameGenerator,
-      Set<String> propertyNamesToKeep) {
+      NameGenerator nameGenerator) {
     this.compiler = compiler;
     this.generatePseudoNames = generatePseudoNames;
     this.prevUsedPropertyMap = prevUsedPropertyMap;
     this.reservedFirstCharacters = reservedFirstCharacters;
     this.reservedNonFirstCharacters = reservedNonFirstCharacters;
     this.nameGenerator = nameGenerator;
-    this.propertyNamesToKeep = propertyNamesToKeep;
     externedNames.addAll(compiler.getExternProperties());
   }
 
@@ -230,9 +226,6 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
      */
     reservedNames.addAll(externedNames);
     reservedNames.addAll(quotedNames);
-    if (propertyNamesToKeep != null) {
-      reservedNames.addAll(propertyNamesToKeep);
-    }
     
     generateNames(propsByFreq, reservedNames);
 
@@ -371,8 +364,6 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
                 propNode.getString())) {
               externedNames.add(propNode.getString());
               break;
-            } else if(propertyNamesToKeep.contains(propNode.getString())) {
-              break;
             }
             maybeMarkCandidate(propNode);
           }
@@ -387,9 +378,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
               // that could conflict with this quoted key.
               quotedNames.add(key.getString());
             } else if (compiler.getCodingConvention().blockRenamingForProperty(key.getString())) {
-              externedNames.add(key.getString()); 
-            } else if(propertyNamesToKeep.contains(key.getString())) {
-                continue;
+              externedNames.add(key.getString());
             } else {
               maybeMarkCandidate(key);
             }
@@ -407,8 +396,6 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
               quotedNames.add(key.getString());
             } else if (compiler.getCodingConvention().blockRenamingForProperty(key.getString())) {
               externedNames.add(key.getString());
-            } else if(propertyNamesToKeep.contains(key.getString())) {
-                continue;
             } else {
               maybeMarkCandidate(key);
             }
@@ -450,8 +437,6 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
                   Node fnName = member.getFirstChild();
                   if (compiler.getCodingConvention().blockRenamingForProperty(memberDefName)) {
                     externedNames.add(fnName.getString());
-                  } else if(propertyNamesToKeep.contains(memberDefName)) {
-                      break;
                   } else if (memberDefName.equals("constructor")
                       || memberDefName.equals("superClass_")) {
                     // TODO (simarora) is there a better way to identify these externs?

@@ -344,6 +344,10 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       checks.add(angularPass);
     }
 
+    if (propertyNamesToKeep != null && propertyNamesToKeep.size() > 0) {
+      checks.add(keepPropertyNamesPass);
+    }
+
     if (!options.generateExportsAfterTypeChecking && options.generateExports) {
       checks.add(generateExports);
     }
@@ -1302,6 +1306,47 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         return ES_NEXT;
       }
     };
+
+    private final PassFactory keepPropertyNamesPass = 
+        new PassFactory("keep-property-names", true) {
+          @Override
+          protected CompilerPass create(final AbstractCompiler compiler) {
+            return new CompilerPass() {
+              @Override
+              public void process(Node externs, Node root) {
+
+                Node propsObj = new Node(Token.OBJECTLIT);
+                for(String nameToKeep : propertyNamesToKeep)
+                {
+                  Node nameStringKey = IR.stringKey(nameToKeep);
+                  JSDocInfoBuilder builder = new JSDocInfoBuilder(true);
+                  builder.recordExport();
+                  JSDocInfo jsDocInfo = builder.build();
+                  nameStringKey.setJSDocInfo(jsDocInfo);
+
+                  Node propertyDescriptor = new Node(Token.OBJECTLIT);
+                  propertyDescriptor.addChildToBack(IR.propdef(IR.stringKey("get"), NodeUtil.emptyFunction()));
+
+                  Node prop = IR.propdef(nameStringKey, propertyDescriptor);
+                  propsObj.addChildToBack(prop);
+                }
+
+                Node definePropertiesTarget = NodeUtil.newQName(compiler, "Object.defineProperties");
+                Node definePropertiesCall = IR.call(definePropertiesTarget, IR.objectlit(), propsObj);
+                Node expression = IR.exprResult(definePropertiesCall);
+                
+                Node scriptNode = compiler.getScriptNode(sourceFileName);
+                scriptNode.addChildToBack(expression);
+                compiler.reportChangeToEnclosingScope(expression);
+              }
+            };
+          }
+    
+          @Override
+          protected FeatureSet featureSet() {
+            return ES_NEXT;
+          }
+        };
 
   /** Raw exports processing pass. */
   private final PassFactory gatherRawExports =
@@ -3082,8 +3127,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
                       prevPropertyMap,
                       options.getPropertyReservedNamingFirstChars(),
                       options.getPropertyReservedNamingNonFirstChars(),
-                      options.nameGenerator,
-                      propertyNamesToKeep);
+                      options.nameGenerator);
               rprop.process(externs, root);
               compiler.setPropertyMap(rprop.getPropertyMap());
             }
