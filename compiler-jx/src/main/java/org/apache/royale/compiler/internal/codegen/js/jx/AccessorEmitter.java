@@ -611,8 +611,8 @@ public class AccessorEmitter extends JSSubEmitter implements
                 ISetterNode setterNode = p.setter;
                 String baseName = p.name;
             	writeNewline("/**");
-                if (p.resolvedExport && !p.suppressExport)
-                	writeNewline("  * @export");
+                if (emitExports && !p.suppressExport)
+                    writeNewline("  * @export");
                 if (p.type != null)
                 	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
                 else
@@ -735,15 +735,15 @@ public class AccessorEmitter extends JSSubEmitter implements
         }
         if(uri != null || def.isPublic())
         {
-            p.resolvedExport = emitExports;
+            p.resolvedExport = p.resolvedExport || emitExports;
         }
         else if(def.isInternal())
         {
-            p.resolvedExport = exportInternal;
+            p.resolvedExport = p.resolvedExport || exportInternal;
         }
         else if(def.isProtected())
         {
-            p.resolvedExport = exportProtected;
+            p.resolvedExport = p.resolvedExport || exportProtected;
         }
         p.getter = node;
 		if (!p.suppressExport) p.suppressExport = suppress;
@@ -803,15 +803,15 @@ public class AccessorEmitter extends JSSubEmitter implements
         }
         if(uri != null || def.isPublic())
         {
-            p.resolvedExport = emitExports;
+            p.resolvedExport = p.resolvedExport || emitExports;
         }
         else if(def.isInternal())
         {
-            p.resolvedExport = exportInternal;
+            p.resolvedExport = p.resolvedExport || exportInternal;
         }
         else if(def.isProtected())
         {
-            p.resolvedExport = exportProtected;
+            p.resolvedExport = p.resolvedExport || exportProtected;
         }
         p.setter = node;
         if (!p.suppressExport) p.suppressExport = suppress;
