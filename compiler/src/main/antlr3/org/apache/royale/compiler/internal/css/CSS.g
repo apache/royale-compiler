@@ -140,28 +140,32 @@ private final int endOfSimpleSelector()
 
     // Check if there's white space between the previous token and the next token.
     final CommonToken lastToken = (CommonToken) getTokenStream().LT(-1);
-    final int lastType = lastToken.getType();
-    if (lastType == CHILD) 
-    { 
-        return 1;
-    }
-    if (lastType == PRECEDED)
+    if (lastToken != null)
     {
-        return 2;
-    }
-    if (lastType == TILDE)
-    {
-        return 3;
-    }
-    if (lastToken != null && nextToken != null)
-    {
-        final int lastStop = lastToken.getStopIndex();
-        final int nextStart = nextToken.getStartIndex();
-        if (lastStop + 1 < nextStart)
+        final int lastType = lastToken.getType();
+        if (lastType == CHILD)
         {
-            return 0;
+            return 1;
+        }
+        if (lastType == PRECEDED)
+        {
+            return 2;
+        }
+        if (lastType == TILDE)
+        {
+            return 3;
+        }
+        if (nextToken != null)
+        {
+            final int lastStop = lastToken.getStopIndex();
+            final int nextStart = nextToken.getStartIndex();
+            if (lastStop + 1 < nextStart)
+            {
+                return 0;
+            }
         }
     }
+
     
     // If the next token is "{" or ",", it's also end of a selector.
     if (nextType == BLOCK_OPEN || nextType == COMMA)
