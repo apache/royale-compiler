@@ -97,8 +97,9 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
-				"RoyaleTest_A.get__foo = function() {\n  return -1;\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A, /** @lends {RoyaleTest_A} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: RoyaleTest_A.get__foo}}\n);");
+          "/**\n  * @nocollapse\n  * @export\n  * @type {number}\n  */\nRoyaleTest_A.foo;\n\n\n" +
+          "RoyaleTest_A.get__foo = function() {\n  return -1;\n};\n\n\n" +
+          "Object.defineProperties(RoyaleTest_A, /** @lends {RoyaleTest_A} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nget: RoyaleTest_A.get__foo}}\n);");
     }
 
     @Override
@@ -157,8 +158,9 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
-				"RoyaleTest_A.set__foo = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(RoyaleTest_A, /** @lends {RoyaleTest_A} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.set__foo}}\n);");
+          "/**\n  * @export\n  * @type {number}\n  */\nRoyaleTest_A.foo;\n\n\n" +
+          "RoyaleTest_A.set__foo = function(value) {\n};\n\n\n" +
+          "Object.defineProperties(RoyaleTest_A, /** @lends {RoyaleTest_A} */ {\n/**\n  * @export\n  * @type {number} */\nfoo: {\nset: RoyaleTest_A.set__foo}}\n);");
     }
 
     @Test

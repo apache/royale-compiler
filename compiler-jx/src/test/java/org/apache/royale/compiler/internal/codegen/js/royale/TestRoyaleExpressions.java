@@ -894,7 +894,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"b\"] = 1");
+        assertOut("foo.bar.B.b = 1");
     }
 
     @Test
@@ -906,7 +906,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"b\"] = 1");
+        assertOut("foo.bar.B.b = 1");
     }
 
     @Test
@@ -918,7 +918,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"d\"].b = 1");
+        assertOut("foo.bar.B.d.b = 1");
     }
 
     @Test
@@ -942,7 +942,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
 
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"d\"].b = 1");
+        assertOut("foo.bar.B.d.b = 1");
     }
 
     @Test
@@ -954,7 +954,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"b\"] = foo.bar.B[\"b\"] + 1");
+        assertOut("foo.bar.B.b = foo.bar.B.b + 1");
     }
 
     @Test

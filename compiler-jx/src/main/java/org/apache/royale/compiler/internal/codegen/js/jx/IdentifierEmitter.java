@@ -207,7 +207,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     endMapping(prevSibling);
                     startMapping(parentNode, prevSibling);
                 }
-                if (!isCustomNamespace && (!(identifierIsAccessorFunction && isStatic))) {
+                if (!isCustomNamespace) {
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     wroteMemberAccess = true;
                 }
@@ -358,14 +358,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     	String ns = ((INamespaceResolvedReference)(nodeDef.getNamespaceReference())).resolveAETNamespace(getProject()).getName();
                     	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
                     }
-                    else if (identifierIsAccessorFunction && isStatic)
-                    {
-                        write(ASEmitterTokens.SQUARE_OPEN);
-                        write(ASEmitterTokens.DOUBLE_QUOTE);
-                        write(node.getName());
-                        write(ASEmitterTokens.DOUBLE_QUOTE);
-                        write(ASEmitterTokens.SQUARE_CLOSE);
-                    }
                 	else
                 	{
                 	    if (!(nodeDef.getParent() instanceof IPackageDefinition)) {
@@ -395,14 +387,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                 	String ns = ((INamespaceResolvedReference)nodeDef.getNamespaceReference()).resolveAETNamespace(getProject()).getName();
                 	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
-                }
-                else if (identifierIsAccessorFunction && isStatic)
-                {
-                    write(ASEmitterTokens.SQUARE_OPEN);
-                    write(ASEmitterTokens.DOUBLE_QUOTE);
-                	write(qname);
-                    write(ASEmitterTokens.DOUBLE_QUOTE);
-                    write(ASEmitterTokens.SQUARE_CLOSE);
                 }
                 else
                 {

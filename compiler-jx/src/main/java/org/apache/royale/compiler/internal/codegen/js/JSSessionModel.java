@@ -48,6 +48,7 @@ public class JSSessionModel
         public String originalName;
         public String uri;
         public boolean suppressExport;
+        public boolean preventRename;
     }
 
     public static class BindableVarInfo
