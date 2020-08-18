@@ -155,14 +155,6 @@ public class ASScopeCache
 	            if (to != null)
 	            	project.addDependency(from, to, dt, qname);
         	}
-            if (favorTypes
-                    && result instanceof IFunctionDefinition
-                    && ((IFunctionDefinition) result).isConstructor())
-            {
-                // if it's a constructor, but we prefer a type, switch to the type
-                // this is necessary for private constructors
-                result = result.getParent();
-            }
             return result;
         }
 
@@ -221,14 +213,6 @@ public class ASScopeCache
             {
                 result = def;
             }
-        }
-        if (favorTypes
-                && result instanceof IFunctionDefinition
-                && ((IFunctionDefinition) result).isConstructor())
-        {
-            // if it's a constructor, but we prefer a type, switch to the type
-            // this is necessary for private constructors
-            result = result.getParent();
         }
         return result;
 
