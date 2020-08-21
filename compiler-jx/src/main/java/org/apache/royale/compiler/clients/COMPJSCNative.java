@@ -59,6 +59,7 @@ import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -68,6 +69,7 @@ import org.apache.royale.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.swc.ISWCFileEntry;
 import org.apache.royale.swc.io.SWCReader;
 
 /**
@@ -381,6 +383,64 @@ public class COMPJSCNative extends MXMLJSCNative
                             }
                             writer.close();
                         }
+                    }
+                    else if (cuType == ICompilationUnit.UnitType.SWC_UNIT)
+                    {
+                    	String symbol = cu.getQualifiedNames().get(0);
+                    	if (externs.contains(symbol)) continue;
+                    	if (project.isExternalLinkage(cu)) continue;
+                    	if (!packingSWC)
+                    	{
+                            // we probably shouldn't skip this -JT
+                            continue;
+                        }
+
+                        // if another .swc file is on our library-path, we must
+                        // include the .js (and .js.map) files because the
+                        // bytecode will also be included. if we have the
+                        // bytecode, but not the .js files, the compiler won't
+                        // know where to find the .js files. that's really bad.
+
+                        // if the bytecode and .js files should not be included,
+                        // then the developer is expected to use
+                        // external-library-path instead of library-path.
+
+                        SWCCompilationUnit swcCU = (SWCCompilationUnit) cu;
+                        String outputClassFile = getOutputClassFile(
+                                cu.getQualifiedNames().get(0),
+                                jsOut,
+                                false).getPath();
+                        outputClassFile = outputClassFile.replace('\\', '/');
+                        ISWCFileEntry fileEntry = swcCU.getSWC().getFile(outputClassFile);
+                        if (fileEntry == null)
+                        {
+                            continue;
+                        }
+                        if (config.isVerbose())
+                        {
+                            System.out.println("Writing file: " + outputClassFile + " from SWC: " + swcCU.getAbsoluteFilename());
+                        }
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        InputStream fileStream = fileEntry.createInputStream();
+                        IOUtils.copy(fileStream, baos);
+                        fileStream.close();
+                        writeFileToZip(zipOutputStream, outputClassFile, baos, fileList);
+
+                        String outputMapFile = outputClassFile + ".map";
+                        fileEntry = swcCU.getSWC().getFile(outputMapFile);
+                        if (fileEntry == null)
+                        {
+                            continue;
+                        }
+                        if (config.isVerbose())
+                        {
+                            System.out.println("Writing file: " + outputMapFile + " from SWC: " + swcCU.getAbsoluteFilename());
+                        }
+                        baos = new ByteArrayOutputStream();
+                        fileStream = fileEntry.createInputStream();
+                        IOUtils.copy(fileStream, baos);
+                        fileStream.close();
+                        writeFileToZip(zipOutputStream, outputMapFile, baos, fileList);
                     }
                 }
                 if (packingSWC)
