@@ -347,6 +347,7 @@ public class COMPJSCNative extends MXMLJSCNative
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
+                            outputClassFile = outputClassFile.replace('\\', '/');
                             if (config.isVerbose())
                             {
                                 System.out.println("Writing file: " + outputClassFile);     	
@@ -362,6 +363,7 @@ public class COMPJSCNative extends MXMLJSCNative
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
+                                sourceMapFile = sourceMapFile.replace('\\', '/');
                                 if (config.isVerbose())
                                 {
                                     System.out.println("Writing file: " + sourceMapFile);

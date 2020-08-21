@@ -544,6 +544,7 @@ public class COMPJSC extends MXMLJSC
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
+                                sourceMapFile = sourceMapFile.replace('\\', '/');
                                 if (config.isVerbose())
                                 {
                                     System.out.println("Writing file: " + sourceMapFile);
