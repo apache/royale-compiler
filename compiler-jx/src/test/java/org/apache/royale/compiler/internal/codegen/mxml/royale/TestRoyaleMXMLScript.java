@@ -274,7 +274,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @type {Array}\n" +
 				" */\n" +
 				"AppName.prototype.foo;\n" +
@@ -378,14 +377,12 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"  Object.defineProperty(AppName, 'foo', { value: value, writable: true });\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"AppName.foo;\n" +
 				"\n" +
 				"Object.defineProperties(AppName, /** @lends {AppName} */ {\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"foo: {\n" +
@@ -482,7 +479,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @type {string}\n" +
 				" */\n" +
 				"AppName.foo = 'foo';\n" +
@@ -576,7 +572,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
         		"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @type {Array}\n" +
 				" */\n" +
 				"AppName.foo = ['foo'];\n" +
@@ -677,7 +672,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"  return value;\n" +
 				"};\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {string}\n" +
 				" */\n" +
@@ -685,7 +679,6 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"\n" +
 				"Object.defineProperties(AppName, /** @lends {AppName} */ {\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @const\n" +
 				" * @type {string}\n" +
 				" */\n" +

@@ -73,7 +73,6 @@ MainClass.InternalClass = function() {
 
 
 /**
- * @export
  * @type {OtherClass}
  */
 MainClass.InternalClass.prototype.foo = null;

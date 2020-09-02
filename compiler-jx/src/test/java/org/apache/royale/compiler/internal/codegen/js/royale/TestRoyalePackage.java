@@ -713,7 +713,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @nocollapse\n" +
 				" * @type {string}\n" +
 				" */\n" +
@@ -1146,7 +1145,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @nocollapse\n" +
 				" * @const\n" +
 				" * @type {number}\n" +

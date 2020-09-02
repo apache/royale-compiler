@@ -900,7 +900,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
 				"\n" +
         		"/**\n" +
-        		" * @export\n" +
         		" * @type {binding.ComplexValueObject}\n" +
         		" */\n" +
         		"AppName.prototype.firstOne = null;\n" +
@@ -1077,7 +1076,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
 				"\n" +
         		"/**\n" +
-        		" * @export\n" +
         		" * @type {XML}\n" +
         		" */\n" +
         		"AppName.prototype.xml = null;\n" +

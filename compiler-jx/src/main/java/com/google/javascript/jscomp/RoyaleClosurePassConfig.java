@@ -344,6 +344,10 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       checks.add(angularPass);
     }
 
+    if (extraSymbolNamesToExport != null) {
+      checks.add(generateRoyaleExports);
+    }
+
     if (!options.generateExportsAfterTypeChecking && options.generateExports) {
       checks.add(generateExports);
     }
@@ -360,10 +364,6 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     // and *before* the suspicious code checks. This is enforced in the assertValidOrder method.
     if (options.polymerVersion != null) {
       checks.add(polymerPass);
-    }
-
-    if (extraSymbolNamesToExport != null) {
-      checks.add(extraSymbolsPass);
     }
 
     if (options.checkSuspiciousCode
@@ -1268,31 +1268,15 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         }
       };
   
-  private final PassFactory extraSymbolsPass = 
-    new PassFactory("extra-symbols-to-export", true) {
+  private final PassFactory generateRoyaleExports = 
+    new PassFactory("generate-royale-exports", true) {
       @Override
       protected CompilerPass create(final AbstractCompiler compiler) {
+        final GenerateRoyaleExports pass = new GenerateRoyaleExports(compiler);
         return new CompilerPass() {
           @Override
           public void process(Node externs, Node root) {
-            Node scriptNode = compiler.getScriptNode(sourceFileName);
-            for(String nameToExport : extraSymbolNamesToExport)
-            {
-              Node exportCallTarget = NodeUtil.newQName(compiler,
-                  compiler.getCodingConvention().getExportSymbolFunction(), scriptNode, nameToExport);
-              Node call = IR.call(exportCallTarget);
-              if (exportCallTarget.isName()) {
-                call.putBooleanProp(Node.FREE_CALL, true);
-              }
-              call.addChildToBack(IR.string(nameToExport));
-              call.addChildToBack(NodeUtil.newQName(compiler,
-              nameToExport, scriptNode, nameToExport));
-
-              Node expression = IR.exprResult(call);
-
-              scriptNode.addChildToBack(expression);
-              compiler.reportChangeToEnclosingScope(expression);
-            }
+            pass.process(externs, root, extraSymbolNamesToExport);
           }
         };
       }

@@ -59,53 +59,52 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
 	        assertOutWithMetadata("/**\n" +
-					" * com.example.components.MyEventTarget\n" +
-					" *\n" +
-					" * @fileoverview\n" +
-					" *\n" +
-					" * @suppress {checkTypes|accessControls}\n" +
-					" */\n" +
-					"\n" +
-					"goog.provide('com.example.components.MyEventTarget');\n" +
-					"\n" +
-					"goog.require('custom.TestImplementation');\n" +
-					"\n" +
-					"\n" +
-					"\n" +
-					"/**\n" +
-					" * @constructor\n" +
-					" * @extends {custom.TestImplementation}\n" +
-					" */\n" +
-					"com.example.components.MyEventTarget = function() {\n" +
-					"  com.example.components.MyEventTarget.base(this, 'constructor');\n" +
-					"  if (foo() != 42) {\n" +
-					"    bar();\n" +
-					"  }\n" +
-					"};\n" +
-					"goog.inherits(com.example.components.MyEventTarget, custom.TestImplementation);\n" +
-					"\n" +
-					"\n" +
-					"/**\n" +
-					" * @private\n" +
-					" * @type {string}\n" +
-					" */\n" +
-					"com.example.components.MyEventTarget.prototype._privateVar = \"do \";\n" +
-			"\n" +
-			"\n" +
-			"/**\n" +
-			" * @export\n" +
-			" * @type {number}\n" +
-			" */\n" +
-			"com.example.components.MyEventTarget.prototype.publicProperty = 100;\n" +
-			"\n" +
-			"\n" +
-			"/**\n" +
-			" * @param {string} value\n" +
-			" * @return {string}\n" +
-			" */\n" +
-			"com.example.components.MyEventTarget.prototype.myFunction = function(value) {\n" +
-			"  return \"Don't \" + this._privateVar + value;\n" +
-		"};\n" +
+				" * com.example.components.MyEventTarget\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('com.example.components.MyEventTarget');\n" +
+				"\n" +
+				"goog.require('custom.TestImplementation');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" * @extends {custom.TestImplementation}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget = function() {\n" +
+				"  com.example.components.MyEventTarget.base(this, 'constructor');\n" +
+				"  if (foo() != 42) {\n" +
+				"    bar();\n" +
+				"  }\n" +
+				"};\n" +
+				"goog.inherits(com.example.components.MyEventTarget, custom.TestImplementation);\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @private\n" +
+				" * @type {string}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget.prototype._privateVar = \"do \";\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget.prototype.publicProperty = 100;\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @param {string} value\n" +
+				" * @return {string}\n" +
+				" */\n" +
+				"com.example.components.MyEventTarget.prototype.myFunction = function(value) {\n" +
+				"  return \"Don't \" + this._privateVar + value;\n" +
+				"};\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +

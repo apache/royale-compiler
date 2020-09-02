@@ -195,8 +195,11 @@ public class ClosureUtils
                             {
                                 continue;
                             }
-                            if (localDef instanceof IFunctionDefinition
-                                    && !(localDef instanceof IAccessorDefinition))
+                            boolean isMethod = localDef instanceof IFunctionDefinition
+                                && !(localDef instanceof IAccessorDefinition);
+                            boolean isVar = localDef instanceof IVariableDefinition
+                                && !(localDef instanceof IAccessorDefinition);
+                            if (isMethod || isVar)
                             {
                                 INamespaceReference nsRef = localDef.getNamespaceReference();
                                 boolean isCustomNS = !nsRef.isLanguageNamespace();

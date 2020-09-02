@@ -594,23 +594,11 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     public void emitFieldDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
         RoyaleJSProject fjp =  (RoyaleJSProject)project;
-        boolean suppressExports = false;
-        if (emitter instanceof JSRoyaleEmitter) {
-            suppressExports = ((JSRoyaleEmitter) emitter).getModel().suppressExports;
-        }
-        if (fjp.config != null)
-        {
-        	emitExports = !suppressExports && fjp.config.getExportPublicSymbols();
-        	exportProtected = !suppressExports && fjp.config.getExportProtectedSymbols();
-        	exportInternal = !suppressExports && fjp.config.getExportInternalSymbols();
-        }
-        else
-        {
-            emitExports = !suppressExports;
-            exportProtected = false;
-            exportInternal = false;
-        }
-        emitExports = emitExports && !node.getVariableClassification().equals(VariableClassification.PACKAGE_MEMBER);
+
+        //exporting fields is handled dynamically in ClosureUtils
+        emitExports = false;
+        exportProtected = false;
+        exportInternal = false;
 
         begin();
 
