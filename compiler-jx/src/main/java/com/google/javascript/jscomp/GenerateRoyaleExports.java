@@ -1,20 +1,17 @@
 /*
+ * Copyright 2008 The Closure Compiler Authors.
  *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.javascript.jscomp;
 
@@ -25,6 +22,8 @@ import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
+import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeNative;
 
 public class GenerateRoyaleExports extends AbstractPostOrderCallback {
 
@@ -42,37 +41,82 @@ public class GenerateRoyaleExports extends AbstractPostOrderCallback {
 
 	@Override
 	public void visit(NodeTraversal t, Node n, Node parent) {
-		if(n.getToken() != Token.ASSIGN) {
-			return;
-		}
 		JSDocInfo docInfo = n.getJSDocInfo();
-		if(docInfo == null) {
-			return;
-		}
-		Node firstChild = n.getFirstChild();
-		if (!firstChild.isQualifiedName()) {
-			return;
-		}
-		String qualifiedName = firstChild.getQualifiedName();
-		if(!extraSymbolNamesToExport.contains(qualifiedName)) {
-			//System.err.println("~~~ NO MATCH! " + qualifiedName);
+		if(docInfo == null || docInfo.isExport()) {
+			// if no jsdoc or already exported, we can skip
 			return;
 		}
 
-		Node parentNode = n.getParent();
+		switch(n.getToken()) {
+			case STRING_KEY:{
+				Node parentNode = n.getParent();
+				if(parentNode == null) {
+					return;
+				}
+		
+				Node gpNode = parentNode.getParent();
+				if(gpNode == null || gpNode.getToken() != Token.CALL) {
+					return;
+				}
+				
+				Node objNode = gpNode.getChildAtIndex(1);
+				if (!objNode.isQualifiedName()) {
+					return;
+				}
 
-		if(parentNode == null) {
-			return;
+				String accessorQualifiedName = objNode.getQualifiedName() + "." + n.getString();
+				if(!extraSymbolNamesToExport.contains(accessorQualifiedName)) {
+					return;
+				}
+
+				// we found an accessor that needs to be exported
+				// accessors are defined in Object.defineProperties() calls
+				addExtern(n.getString());
+				return;
+			}
+			case ASSIGN: {
+				Node firstChild = n.getFirstChild();
+				if (!firstChild.isQualifiedName()) {
+					return;
+				}
+				String qualifiedName = firstChild.getQualifiedName();
+				if(!extraSymbolNamesToExport.contains(qualifiedName)) {
+					return;
+				}
+		
+				Node parentNode = n.getParent();
+				if(parentNode == null) {
+					return;
+				}
+		
+				Node gpNode = parentNode.getParent();
+				if(gpNode == null || !gpNode.isScript()) {
+					return;
+				}
+		
+				// we found a variable or constant that needs to be exported
+				addExportSymbolCall(qualifiedName, n);
+				return;
+			}
+			default:
+				return;
 		}
+	}
 
-		Node gpNode = parentNode.getParent();
+	private void addExtern(String export) {
+	  Node objectPrototype = NodeUtil.newQName(compiler, "Object.prototype");
+	  JSType objCtor = compiler.getTypeRegistry().getNativeType(JSTypeNative.OBJECT_FUNCTION_TYPE);
+	  objectPrototype.getFirstChild().setJSType(objCtor);
+	  Node propstmt = IR.exprResult(IR.getprop(objectPrototype, IR.string(export)));
+	  propstmt.useSourceInfoFromForTree(getSynthesizedExternsRoot());
+	  propstmt.setOriginalName(export);
+	  getSynthesizedExternsRoot().addChildToBack(propstmt);
+	  compiler.reportChangeToEnclosingScope(propstmt);
+	}
 
-		if(gpNode == null || !gpNode.isScript()) {
-			return;
-		}
-		//System.err.println("*** MATCH! " + qualifiedName);
-
-		addExportSymbolCall(qualifiedName, n);
+	/** Lazily create a "new" externs root for undeclared variables. */
+	private Node getSynthesizedExternsRoot() {
+	  return  compiler.getSynthesizedExternsInput().getAstRoot(compiler);
 	}
 
 	private void addExportSymbolCall(String export, Node context) {
