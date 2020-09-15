@@ -451,7 +451,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
                   if (compiler.getCodingConvention().blockRenamingForProperty(memberDefName)) {
                     externedNames.add(fnName.getString());
                   } else if(propertyNamesToKeep.contains(memberDefName)) {
-                      break;
+                      continue;
                   } else if (memberDefName.equals("constructor")
                       || memberDefName.equals("superClass_")) {
                     // TODO (simarora) is there a better way to identify these externs?
