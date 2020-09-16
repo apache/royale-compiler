@@ -371,7 +371,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
                 propNode.getString())) {
               externedNames.add(propNode.getString());
               break;
-            } else if(propertyNamesToKeep.contains(propNode.getString())) {
+            } else if(propertyNamesToKeep != null && propertyNamesToKeep.contains(propNode.getString())) {
               break;
             }
             maybeMarkCandidate(propNode);
@@ -388,7 +388,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
               quotedNames.add(key.getString());
             } else if (compiler.getCodingConvention().blockRenamingForProperty(key.getString())) {
               externedNames.add(key.getString()); 
-            } else if(propertyNamesToKeep.contains(key.getString())) {
+            } else if(propertyNamesToKeep != null && propertyNamesToKeep.contains(key.getString())) {
                 continue;
             } else {
               maybeMarkCandidate(key);
@@ -407,7 +407,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
               quotedNames.add(key.getString());
             } else if (compiler.getCodingConvention().blockRenamingForProperty(key.getString())) {
               externedNames.add(key.getString());
-            } else if(propertyNamesToKeep.contains(key.getString())) {
+            } else if(propertyNamesToKeep != null && propertyNamesToKeep.contains(key.getString())) {
                 continue;
             } else {
               maybeMarkCandidate(key);
@@ -450,7 +450,7 @@ class RenamePropertiesWithModuleSupport implements CompilerPass {
                   Node fnName = member.getFirstChild();
                   if (compiler.getCodingConvention().blockRenamingForProperty(memberDefName)) {
                     externedNames.add(fnName.getString());
-                  } else if(propertyNamesToKeep.contains(memberDefName)) {
+                  } else if(propertyNamesToKeep != null && propertyNamesToKeep.contains(memberDefName)) {
                       continue;
                   } else if (memberDefName.equals("constructor")
                       || memberDefName.equals("superClass_")) {
