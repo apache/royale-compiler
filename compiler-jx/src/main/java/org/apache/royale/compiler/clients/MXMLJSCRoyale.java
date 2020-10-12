@@ -784,7 +784,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 						value = value.substring(0, value.length() - 1);
 						value += br.readLine();
 					}
-					sb.append(propName + ": \"" + value + "\",\n");
+					sb.append("'" + propName + "' : \"" + value + "\",\n");
 				}
 			}
 			sb.append("__end_of_bundle__: 0\n};};\n");
