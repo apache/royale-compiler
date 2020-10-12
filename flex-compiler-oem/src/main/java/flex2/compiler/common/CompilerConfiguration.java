@@ -699,7 +699,7 @@ public class CompilerConfiguration implements As3Configuration,
      * double-quote is dropped. The solution is to avoid inner double-quotes and put them around the whole expression:
      *    -define+="CONFIG::foo,'value'"
      */
-	private ObjectList<ConfigVar> jsconfigVars = new ObjectList<ConfigVar>();
+	// private ObjectList<ConfigVar> jsconfigVars = new ObjectList<ConfigVar>();
     
     /**
      * @return A list of ConfigVars
