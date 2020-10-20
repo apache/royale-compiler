@@ -288,8 +288,10 @@ public class BindableEmitter extends JSSubEmitter implements
         // export above did not work in the release build for the static getter/setter bindables,
         // solution below:
         //Commented by JT, in AccessorEmitter:
-        writeNewline("/** @export");
-        writeNewline("  * @type {"+DISPATCHER_CLASS_QNAME+"} */");
+        writeNewline("/**");
+        writeNewline(" * @export");
+        writeNewline(" * @type {"+DISPATCHER_CLASS_QNAME+"}");
+        writeNewline(" */");
         write(STATIC_DISPATCHER_GETTER);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.SPACE);
@@ -368,10 +370,11 @@ public class BindableEmitter extends JSSubEmitter implements
 
         writeNewline("/**");
         if (info.namespace != "public") {
-            writeNewline("  * @private");
+            writeNewline(" * @private");
         }
 
-        writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
+        writeNewline(" * @type {" + convertASTypeToJS(info.type) + "}");
+        writeNewline(" */");
         write(name);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.SPACE);
@@ -443,9 +446,10 @@ public class BindableEmitter extends JSSubEmitter implements
         String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
         writeNewline("/**");
         if (info.namespace != "public") {
-            writeNewline("  * @private");
+            writeNewline(" * @private");
         }
-        writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
+        writeNewline(" * @type {" + convertASTypeToJS(info.type) + "}");
+        writeNewline(" */");
         // 'PropName': {
         writeNewline(qname + ASEmitterTokens.COLON.getToken()
                 + ASEmitterTokens.SPACE.getToken()

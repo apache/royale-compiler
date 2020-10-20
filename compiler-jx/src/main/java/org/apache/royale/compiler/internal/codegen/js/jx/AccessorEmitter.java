@@ -105,11 +105,10 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline();
                 	writeNewline("/**");
                     if (emitExports)
-                    	writeNewline("  * @export");
+                    	writeNewline(" * @export");
                     if (p.type != null)
-                    	writeNewline("  * @type {"+ JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
-                    else
-                    	writeNewline("  */");
+                    	writeNewline(" * @type {"+ JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                    writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     write(JSEmitterTokens.PROTOTYPE);
@@ -325,10 +324,9 @@ public class AccessorEmitter extends JSSubEmitter implements
                 	String typeName = p.type.getBaseName();
                 	if (getModel().isInternalClass(typeName))
     					typeName = getModel().getInternalClasses().get(typeName);
-					writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "} */");
+					writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "}");
                 }
-                else
-                	writeNewline("  */");
+                writeNewline(" */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
                 if (p.uri != null)
                 {
@@ -487,11 +485,10 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline();
                     writeNewline("/**");
                     if (emitExports)
-                    	writeNewline("  * @export");
+                    	writeNewline(" * @export");
                     if (p.type != null)
-                    	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
-                    else
-                    	writeNewline("  */");
+                    	writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                    writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     if (p.uri != null)
                     {
@@ -525,12 +522,12 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline();
                     writeNewline("/**");
                     if (p.preventRename)
-                        writeNewline("  * @nocollapse");
+                        writeNewline(" * @nocollapse");
                     if (p.resolvedExport && !p.suppressExport)
-                        writeNewline("  * @export");
+                        writeNewline(" * @export");
                     if (p.type != null)
-                        writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
-                    writeNewline("  */");
+                        writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
+                    writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     if (p.uri != null)
@@ -641,9 +638,8 @@ public class AccessorEmitter extends JSSubEmitter implements
                 String baseName = p.name;
             	writeNewline("/**");
                 if (p.type != null)
-                	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
-                else
-                	writeNewline("  */");
+                	writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                writeNewline(" */");
 				FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
 				if (p.uri != null)
 				{

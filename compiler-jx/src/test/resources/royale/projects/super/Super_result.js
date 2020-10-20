@@ -51,7 +51,8 @@ Super.prototype.set__text = function(value) {
 
 Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
 /**
-  * @type {string} */
+ * @type {string}
+ */
 text: {
 get: Super.prototype.get__text,
 set: Super.prototype.set__text}}

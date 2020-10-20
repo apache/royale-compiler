@@ -263,19 +263,23 @@ MyInitialView.prototype.get__comboBoxValue = function() {
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /**
-  * @type {string} */
+ * @type {string}
+ */
 symbol: {
 get: MyInitialView.prototype.get__symbol},
 /**
-  * @type {string} */
+ * @type {string}
+ */
 city: {
 get: MyInitialView.prototype.get__city},
 /**
-  * @type {string} */
+ * @type {string}
+ */
 inputText: {
 get: MyInitialView.prototype.get__inputText},
 /**
-  * @type {string} */
+ * @type {string}
+ */
 comboBoxValue: {
 get: MyInitialView.prototype.get__comboBoxValue}}
 );/**

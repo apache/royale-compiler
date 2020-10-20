@@ -838,7 +838,8 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
 				"/**\n" +
-				"  * @type {string} */\n" +
+				" * @type {string}\n" +
+				" */\n" +
 				"myString: {\n" +
 				"get: foo.bar.baz.A.prototype.get__myString,\n" +
 				"set: foo.bar.baz.A.prototype.set__myString}}\n" +
@@ -899,7 +900,8 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
 				"/**\n" +
-				"  * @type {string} */\n" +
+				" * @type {string}\n" +
+				" */\n" +
 				"someString: {\n" +
 				"get: foo.bar.baz.A.InternalClass.prototype.get__someString,\n" +
 				"set: foo.bar.baz.A.InternalClass.prototype.set__someString}}\n" +
