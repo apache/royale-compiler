@@ -366,11 +366,9 @@ public class BindableEmitter extends JSSubEmitter implements
         String qname = fjs.formatQualifiedName(cdef.getQualifiedName());
         // 'PropName': {
 
+        writeNewline("/**");
         if (info.namespace != "public") {
-            writeNewline("/** @export");
             writeNewline("  * @private");
-        } else {
-            writeNewline("/** @export");
         }
 
         writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
@@ -442,12 +440,10 @@ public class BindableEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-    		String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
+        String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
+        writeNewline("/**");
         if (info.namespace != "public") {
-            writeNewline("/** @export");
             writeNewline("  * @private");
-        } else {
-            writeNewline("/** @export");
         }
         writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
         // 'PropName': {

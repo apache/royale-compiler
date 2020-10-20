@@ -85,18 +85,15 @@ models.MyModel.prototype.get__cities = function() {
 
 Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
 /**
-  * @export
   * @type {string} */
 labelText: {
 get: models.MyModel.prototype.get__labelText,
 set: models.MyModel.prototype.set__labelText},
 /**
-  * @export
   * @type {Array} */
 strings: {
 get: models.MyModel.prototype.get__strings},
 /**
-  * @export
   * @type {Array} */
 cities: {
 get: models.MyModel.prototype.get__cities}}

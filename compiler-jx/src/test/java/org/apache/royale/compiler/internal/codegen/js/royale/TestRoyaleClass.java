@@ -261,7 +261,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\norg.apache.royale.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.royale.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\nbaz: {\nset: org.apache.royale.B.prototype.set__baz},\n/**\n  * @export\n  * @type {Object} */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\norg.apache.royale.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.royale.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n  * @type {Object} */\nbaz: {\nset: org.apache.royale.B.prototype.set__baz},\n/**\n  * @type {Object} */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -270,7 +270,7 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n * @extends {org.apache.royale.A}\n */\norg.apache.royale.B = function() {\n  org.apache.royale.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.B, org.apache.royale.A);\n\n\norg.apache.royale.B.prototype.set__foo = function(value) {\n  org.apache.royale.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n * @extends {org.apache.royale.A}\n */\norg.apache.royale.B = function() {\n  org.apache.royale.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.B, org.apache.royale.A);\n\n\norg.apache.royale.B.prototype.set__foo = function(value) {\n  org.apache.royale.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n  * @type {Object} */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -335,7 +335,6 @@ public class TestRoyaleClass extends TestGoogClass
                           "\n" + 
                           "Object.defineProperties(org.apache.royale.B.A.prototype, /** @lends {org.apache.royale.B.A.prototype} */ {\n" + 
                           "/**\n" + 
-                          "  * @export\n" + 
                           "  * @type {org.apache.royale.B.A} */\n" + 
                           "a: {\n" + 
                           "get: org.apache.royale.B.A.prototype.get__a}}\n" + 
@@ -426,7 +425,7 @@ public class TestRoyaleClass extends TestGoogClass
         		  " * @type {number}\n" +
         		  " */\n" +
         		  "org.apache.royale.A.prototype.e = NaN;Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n" +
-        		  "/** @export\n" +
+        		  "/**\n" +
     			  "  * @type {Object} */\n" +
     			  "a: {\n" +
     			  "/** @this {org.apache.royale.A} */\n" +
@@ -443,7 +442,7 @@ public class TestRoyaleClass extends TestGoogClass
     			  "         this, \"a\", oldValue, value));\n" +
     			  "}\n" +
     			  "}}," +
-    			  "/** @export\n" +
+    			  "/**\n" +
         		  "  * @private\n" +
         		  "  * @type {string} */\n" +
         		  "b: {\n" +
@@ -460,7 +459,7 @@ public class TestRoyaleClass extends TestGoogClass
     			  "    this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(\n" +
     			  "         this, \"b\", oldValue, value));\n" +
     			  "}\n" +
-    			  "}},/** @export\n" +
+    			  "}},/**\n" +
     			  "  * @private\n" +
     			  "  * @type {number} */\n" +
     			  "c: {\n" +
@@ -515,7 +514,7 @@ public class TestRoyaleClass extends TestGoogClass
         		  " * @type {number}\n" +
         		  " */\n" +
         		  "org.apache.royale.A.prototype.e = NaN;Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n" +
-        		  "/** @export\n" +
+        		  "/**\n" +
     			  "  * @type {Object} */\n" +
     			  "a: {\n" +
     			  "/** @this {org.apache.royale.A} */\n" +
@@ -532,7 +531,7 @@ public class TestRoyaleClass extends TestGoogClass
     			  "         this, \"a\", oldValue, value));\n" +
     			  "}\n" +
     			  "}}," +
-    			  "/** @export\n" +
+    			  "/**\n" +
         		  "  * @private\n" +
         		  "  * @type {string} */\n" +
         		  "b: {\n" +
@@ -549,7 +548,7 @@ public class TestRoyaleClass extends TestGoogClass
     			  "    this.dispatchEvent(org.apache.royale.events.ValueChangeEvent.createUpdateEvent(\n" +
     			  "         this, \"b\", oldValue, value));\n" +
     			  "}\n" +
-    			  "}},/** @export\n" +
+    			  "}},/**\n" +
     			  "  * @private\n" +
     			  "  * @type {number} */\n" +
     			  "c: {\n" +
@@ -603,7 +602,7 @@ public class TestRoyaleClass extends TestGoogClass
         		  " * @type {number}\n" +
         		  " */\n" +
         		  "org.apache.royale.A.prototype.e = NaN;Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n" +
-        		  "/** @export\n" +
+        		  "/**\n" +
         		  "  * @type {Object} */\n" +
     			  "a: {\n" +
     			  "/** @this {org.apache.royale.A} */\n" +
@@ -680,11 +679,11 @@ public class TestRoyaleClass extends TestGoogClass
         		"org.apache.royale.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
         		"org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__get__foo6 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__set__foo6 = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n/**\n  * @export\n  * @type {Object} */\n" +
+        		"Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n/**\n  * @type {Object} */\n" +
         		    "foo1: {\nget: org.apache.royale.A.prototype.get__foo1,\nset: org.apache.royale.A.prototype.set__foo1},\n/**\n  * @type {Object} */\n" +
         		    "foo2: {\nget: org.apache.royale.A.prototype.get__foo2,\nset: org.apache.royale.A.prototype.set__foo2},\n/**\n  * @type {Object} */\n" +
         		    "foo3: {\nget: org.apache.royale.A.prototype.get__foo3,\nset: org.apache.royale.A.prototype.set__foo3},\n/**\n  * @type {Object} */\n" +
-        		    "foo5: {\nget: org.apache.royale.A.prototype.get__foo5,\nset: org.apache.royale.A.prototype.set__foo5},\n/**\n  * @export\n  * @type {Object} */\n" +
+        		    "foo5: {\nget: org.apache.royale.A.prototype.get__foo5,\nset: org.apache.royale.A.prototype.set__foo5},\n/**\n  * @type {Object} */\n" +
         		    "http_$$ns_apache_org$2017$custom$namespace__foo6: {\nget: org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__get__foo6,\n" +
         		    																"set: org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__set__foo6}}\n);");
     }
