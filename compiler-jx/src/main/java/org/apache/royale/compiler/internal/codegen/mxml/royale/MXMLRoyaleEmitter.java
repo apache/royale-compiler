@@ -2122,7 +2122,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (instanceId != null)
             {
                 indentPush();
-    	        writeNewline("/** @export */");
                 writeNewline(instanceId + ": {");
                 writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();
