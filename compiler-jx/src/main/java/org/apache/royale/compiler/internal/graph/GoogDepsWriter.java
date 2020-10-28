@@ -50,6 +50,7 @@ import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.MainDefinitionQNameProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.utils.SourceMapUtils;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
 
@@ -68,6 +69,7 @@ public class GoogDepsWriter {
 		this.mainName = mainClassName;
 		removeCirculars = config.getRemoveCirculars();
 		sourceMaps = config.getSourceMap();
+		sourceMapsSourceRoot = config.getSourceMapSourceRoot();
 		otherPaths = config.getSDKJSLib();
 		verbose = config.isVerbose();
 		otherPaths.add(new File(outputFolder.getParent(), "royale/Royale/src").getPath());
@@ -89,6 +91,7 @@ public class GoogDepsWriter {
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
 	private boolean sourceMaps = false;
+	private String sourceMapsSourceRoot = null;
 	private boolean verbose = false;
 	private ArrayList<GoogDep> dps;
 	private DependencyGraph graph;
@@ -122,7 +125,12 @@ public class GoogDepsWriter {
 			else
 				files.add(gd.filePath);
 			visited.put(gd.className, gd);
+			if(sourceMaps && sourceMapsSourceRoot != null)
+			{
+				rewriteSourceMapSourceRoot(gd);
+			}
 		}
+		rewriteSourceMapSourceRoot(depMap.get(mainName));
 		if (removeCirculars)
 		{
 			GoogDep mainDep = depMap.get(mainName);
@@ -140,6 +148,55 @@ public class GoogDepsWriter {
 			files.add(mainDep.filePath);
 		}
 		return files;
+	}
+
+	private void rewriteSourceMapSourceRoot(GoogDep gd)
+	{
+		if (!sourceMaps || sourceMapsSourceRoot == null || sourceMapsSourceRoot.length() == 0)
+		{
+			return;
+		}
+		File sourceMapFile = new File(gd.filePath + ".map");
+		if (!sourceMapFile.exists())
+		{
+			return;
+		}
+		String sourceMapContents = null;
+		try
+		{
+			sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
+		}
+		catch(IOException e)
+		{
+			return;
+		}
+		SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+		try
+		{
+			sourceMapConsumer.parse(sourceMapContents);
+		}
+		catch(SourceMapParseException e)
+		{
+			sourceMapConsumer = null;
+		}
+		if (sourceMapConsumer != null)
+		{
+			if (sourceMapsSourceRoot.equals(sourceMapConsumer.getSourceRoot()))
+			{
+				//no need to rewrite
+				return;
+			}
+			SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGeneratorWithRemappedSourceRoot(sourceMapConsumer, sourceMapsSourceRoot, gd.className);
+			String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, new File(gd.filePath).getName());
+			try
+			{
+				FileUtils.write(sourceMapFile, newSourceMapContents, "utf8");
+			}
+			catch(IOException e)
+			{
+				return;
+			}
+		}
 	}
 	
 	public String generateDeps(CompilerProject project, ProblemQuery problems) throws FileNotFoundException
@@ -588,7 +645,7 @@ public class GoogDepsWriter {
                 if (!isGoogProvided(s))
                 {
                 	fileLines.remove(j);
-					sourceMapConsumer = removeLineFromSourceMap(sourceMapConsumer, mainFile.getName(), j);
+					sourceMapConsumer = SourceMapUtils.removeLineFromSourceMap(sourceMapConsumer, mainFile.getName(), j);
                 }
 				else
 				{
@@ -606,15 +663,15 @@ public class GoogDepsWriter {
 					.append(dep)
 					.append("');");
 				fileLines.add(main.fileInfo.googProvideLine + 1, lineBuilder.toString());
-				sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
+				sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
 			}
 
 			FileUtils.writeLines(mainFile, "utf8", fileLines);
 
 			if (sourceMapConsumer != null)
 			{
-				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
-				FileUtils.write(sourceMapFile, newSourceMap, "utf8");
+				String newSourceMapContents = SourceMapUtils.sourceMapConsumerToString(sourceMapConsumer, mainFile.getName());
+				FileUtils.write(sourceMapFile, newSourceMapContents, "utf8");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -759,7 +816,7 @@ public class GoogDepsWriter {
                     			sb.append(",");
                     		sb.append(s);
 							firstDependency = false;
-							sourceMapConsumer = removeLineFromSourceMap(sourceMapConsumer, depFile.getName(), finalLines.size());
+							sourceMapConsumer = SourceMapUtils.removeLineFromSourceMap(sourceMapConsumer, depFile.getName(), finalLines.size());
                         	continue;
 	                    }
                         else
@@ -788,7 +845,7 @@ public class GoogDepsWriter {
 							.append(dep)
 							.append("');");
             			finalLines.add(lastRequireLine++, lineBuilder.toString());
-						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, new File(gd.filePath).getName(), lastRequireLine);
+						sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, new File(gd.filePath).getName(), lastRequireLine);
             			if (verbose)
 						{
 							System.out.println("adding require for static dependency " + dep + " to " + className);
@@ -825,7 +882,7 @@ public class GoogDepsWriter {
                 		{
                 			// there is already a fileOverview but no @suppress
                 			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
-							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.fileoverviewLine + 1);
+							sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.fileoverviewLine + 1);
                 		}
                 		else if (fi.googProvideLine > -1)
                 		{
@@ -833,10 +890,10 @@ public class GoogDepsWriter {
                 			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
                 			finalLines.add(fi.googProvideLine, " *  @fileoverview");
                 			finalLines.add(fi.googProvideLine, "/**");
-							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
-							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
-							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
-							sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+							sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
                 		}
                 		else
                 		{
@@ -850,7 +907,7 @@ public class GoogDepsWriter {
             		{
             			// there is already a fileoverview but no @suppress
             			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
-						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.fileoverviewLine + 1);
+						sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.fileoverviewLine + 1);
             		}
             		else if (fi.googProvideLine > -1)
             		{
@@ -858,10 +915,10 @@ public class GoogDepsWriter {
             			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
             			finalLines.add(fi.googProvideLine, " *  @fileoverview");
             			finalLines.add(fi.googProvideLine, "/**");
-						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
-						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
-						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
-						sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
+						sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), fi.googProvideLine);
             		}
             		else
             		{
@@ -872,201 +929,20 @@ public class GoogDepsWriter {
 
             sb.append("*/");
             finalLines.add(gd.fileInfo.googProvideLine + 1, sb.toString());
-			sourceMapConsumer = addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
+			sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, depFile.getName(), gd.fileInfo.googProvideLine + 1);
 
 			FileUtils.writeLines(depFile, "utf8", finalLines);
 
 			if (sourceMapConsumer != null)
 			{
-				String newSourceMap = sourceMapConsumerToString(sourceMapConsumer, depFile.getName());
-				FileUtils.write(sourceMapFile, newSourceMap, "utf8");
+				String newSourceMapContents = SourceMapUtils.sourceMapConsumerToString(sourceMapConsumer, depFile.getName());
+				FileUtils.write(sourceMapFile, newSourceMapContents, "utf8");
 			}
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }		
-	}
-
-	String sourceMapConsumerToString(SourceMapConsumerV3 consumer, String file)
-	{
-		SourceMapGeneratorV3 generator = sourceMapConsumerToGenerator(consumer);
-		StringBuilder builder = new StringBuilder();
-		try
-		{
-			generator.appendTo(builder, file);
-		}
-		catch(IOException e)
-		{
-			return "";
-		}
-		return builder.toString();
-	}
-
-	private void appendExtraMappingToGenerator(SourceMapGeneratorV3 generator,
-		String sourceName,
-		String symbolName,
-		FilePosition sourceStartPosition,
-		FilePosition startPosition,
-		FilePosition endPosition)
-	{
-		//add an extra mapping because there seems to be a bug in
-		//SourceMapGeneratorV3's appendTo() that omits the last
-		//entry, for some reason
-		FilePosition newEndPosition = new FilePosition(endPosition.getLine(), endPosition.getColumn() + 1);
-		generator.addMapping(sourceName, null, sourceStartPosition, endPosition, newEndPosition);
-	}
-
-	private SourceMapGeneratorV3 sourceMapConsumerToGenerator(SourceMapConsumerV3 consumer)
-	{
-		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
-		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
-		generator.setSourceRoot(consumer.getSourceRoot());
-		consumer.visitMappings(counter);
-		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
-		{
-			private int index = 0;
-
-			@Override
-			public void visit(String sourceName,
-				String symbolName,
-				FilePosition sourceStartPosition,
-				FilePosition startPosition,
-				FilePosition endPosition) {
-				generator.addMapping(sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
-				index++;
-				if(index == counter.count)
-				{
-					//add an extra mapping because there seems to be a bug in
-					//SourceMapGeneratorV3's appendTo() that omits the last
-					//entry, for some reason
-					appendExtraMappingToGenerator(generator, sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
-				}
-			}
-		});
-		return generator;
-	}
-
-	class SourceMapEntryCounter implements SourceMapConsumerV3.EntryVisitor
-	{
-		private int count = 0;
-
-		@Override
-		public void visit(String sourceName,
-			String symbolName,
-			FilePosition sourceStartPosition,
-			FilePosition startPosition,
-			FilePosition endPosition) {
-			count++;
-		}
-	}
-
-	SourceMapConsumerV3 sourceMapGeneratorToConsumer(SourceMapGeneratorV3 generator, String fileName)
-	{
-		StringBuilder builder = new StringBuilder();
-		try
-		{
-			generator.appendTo(builder, fileName);
-		}
-		catch(IOException e)
-		{
-			return null;
-		}
-		SourceMapConsumerV3 consumer = new SourceMapConsumerV3();
-		try
-		{
-			consumer.parse(builder.toString());
-		}
-		catch(SourceMapParseException e)
-		{
-			return null;
-		}
-		return consumer;
-	}
-
-	SourceMapConsumerV3 addLineToSourceMap(SourceMapConsumerV3 consumer, String sourceFileName, final int lineToAdd)
-	{
-		if (consumer == null)
-		{
-			return null;
-		}
-		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
-		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
-		generator.setSourceRoot(consumer.getSourceRoot());
-		consumer.visitMappings(counter);
-		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
-		{
-			private int index = 0;
-
-			@Override
-			public void visit(String sourceName,
-				String symbolName,
-				FilePosition sourceStartPosition,
-				FilePosition startPosition,
-				FilePosition endPosition) {
-				if(startPosition.getLine() >= lineToAdd)
-				{
-					startPosition = new FilePosition(startPosition.getLine() + 1, startPosition.getColumn());
-					endPosition = new FilePosition(endPosition.getLine() + 1, endPosition.getColumn());
-				}
-				generator.addMapping(sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
-				index++;
-				if(index == counter.count)
-				{
-					//add an extra mapping because there seems to be a bug in
-					//SourceMapGeneratorV3's appendTo() that omits the last
-					//entry, for some reason
-					appendExtraMappingToGenerator(generator, sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
-				}
-			}
-		});
-		return sourceMapGeneratorToConsumer(generator, sourceFileName);
-	}
-
-	SourceMapConsumerV3 removeLineFromSourceMap(SourceMapConsumerV3 consumer, String sourceFileName, final int lineToRemove)
-	{
-		if (consumer == null)
-		{
-			return null;
-		}
-		final SourceMapGeneratorV3 generator = new SourceMapGeneratorV3();
-		final SourceMapEntryCounter counter = new SourceMapEntryCounter();
-		generator.setSourceRoot(consumer.getSourceRoot());
-		consumer.visitMappings(counter);
-		consumer.visitMappings(new SourceMapConsumerV3.EntryVisitor()
-		{
-			private int index = 0;
-
-			@Override
-			public void visit(String sourceName,
-				String symbolName,
-				FilePosition sourceStartPosition,
-				FilePosition startPosition,
-				FilePosition endPosition) {
-				if(startPosition.getLine() == lineToRemove)
-				{
-					return;
-				}
-				if(startPosition.getLine() > lineToRemove)
-				{
-					startPosition = new FilePosition(startPosition.getLine() - 1, startPosition.getColumn());
-				}
-				if(endPosition.getLine() > lineToRemove)
-				{
-					endPosition = new FilePosition(endPosition.getLine() - 1, endPosition.getColumn());
-				}
-				generator.addMapping(sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
-				index++;
-				if(index == counter.count)
-				{
-					//add an extra mapping because there seems to be a bug in
-					//SourceMapGeneratorV3's appendTo() that omits the last
-					//entry, for some reason
-					appendExtraMappingToGenerator(generator, sourceName, symbolName, sourceStartPosition, startPosition, endPosition);
-				}
-			}
-		});
-		return sourceMapGeneratorToConsumer(generator, sourceFileName);
 	}
 		
 	FileInfo getFileInfo(List<String> lines, String className)
@@ -1353,42 +1229,33 @@ public class GoogDepsWriter {
 							File sourceMapDestFile = new File(sourceMapFn);
 							inStream = sourceMapFileEntry.createInputStream();
 							String sourceMapContents = IOUtils.toString(inStream, Charset.forName("utf8"));
-							SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
-							try
+							if (sourceMapsSourceRoot == null)
 							{
-								sourceMapConsumer.parse(sourceMapContents);
-							}
-							catch(SourceMapParseException e)
-							{
-								sourceMapConsumer = null;
-							}
-							if(sourceMapConsumer != null)
-							{
-								String sourceRoot = sourceMapConsumer.getSourceRoot();
-								int index = sourceRoot.indexOf("/frameworks/js/projects/");
-								if(index != -1)
+								SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+								try
 								{
-									File royalelib = new File(System.getProperty("royalelib"));
-									File newSourceRoot = new File(royalelib.getParent(), sourceRoot.substring(index + 1));
-									SourceMapGeneratorV3 sourceMapGenerator = sourceMapConsumerToGenerator(sourceMapConsumer);
-									String newSourceRootUri = convertSourcePathToURI(newSourceRoot.getAbsolutePath());
-									sourceMapGenerator.setSourceRoot(newSourceRootUri);
-									StringBuilder builder = new StringBuilder();
-									try
-									{
-										sourceMapGenerator.appendTo(builder, destFile.getName());
-									}
-									catch(IOException e)
-									{
-										return "";
-									}
-									FileUtils.writeStringToFile(sourceMapDestFile, builder.toString(), Charset.forName("utf8"));
+									sourceMapConsumer.parse(sourceMapContents);
 								}
-								else
+								catch(SourceMapParseException e)
 								{
-									FileUtils.writeStringToFile(sourceMapDestFile, sourceMapContents, Charset.forName("utf8"));
+									sourceMapConsumer = null;
+								}
+								if(sourceMapConsumer != null)
+								{
+									String sourceRoot = sourceMapConsumer.getSourceRoot();
+									int index = sourceRoot.indexOf("/frameworks/js/projects/");
+									if(index != -1)
+									{
+										File royalelib = new File(System.getProperty("royalelib"));
+										File newSourceRoot = new File(royalelib.getParent(), sourceRoot.substring(index + 1));
+										SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGenerator(sourceMapConsumer);
+										String newSourceRootUri = convertSourcePathToURI(newSourceRoot.getAbsolutePath());
+										sourceMapGenerator.setSourceRoot(newSourceRootUri);
+										sourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, destFile.getName());
+									}
 								}
 							}
+							FileUtils.writeStringToFile(sourceMapDestFile, sourceMapContents, Charset.forName("utf8"));
 						}
 					}
 
