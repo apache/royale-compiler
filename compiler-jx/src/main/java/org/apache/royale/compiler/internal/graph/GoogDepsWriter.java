@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.DependencyTypeSet;
@@ -1351,15 +1352,43 @@ public class GoogDepsWriter {
 							String sourceMapFn = outputFolderPath + File.separator + classPath + ".js.map";
 							File sourceMapDestFile = new File(sourceMapFn);
 							inStream = sourceMapFileEntry.createInputStream();
-							outStream = FileUtils.openOutputStream(sourceMapDestFile);
-							b = new byte[1024 * 1024];
-							while ((bytes_read = inStream.read(b)) != -1)
+							String sourceMapContents = IOUtils.toString(inStream, Charset.forName("utf8"));
+							SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+							try
 							{
-								outStream.write(b, 0, bytes_read);
+								sourceMapConsumer.parse(sourceMapContents);
 							}
-							outStream.flush();
-							outStream.close();    					
-							inStream.close();
+							catch(SourceMapParseException e)
+							{
+								sourceMapConsumer = null;
+							}
+							if(sourceMapConsumer != null)
+							{
+								String sourceRoot = sourceMapConsumer.getSourceRoot();
+								int index = sourceRoot.indexOf("/frameworks/js/projects/");
+								if(index != -1)
+								{
+									File royalelib = new File(System.getProperty("royalelib"));
+									File newSourceRoot = new File(royalelib.getParent(), sourceRoot.substring(index + 1));
+									SourceMapGeneratorV3 sourceMapGenerator = sourceMapConsumerToGenerator(sourceMapConsumer);
+									String newSourceRootUri = convertSourcePathToURI(newSourceRoot.getAbsolutePath());
+									sourceMapGenerator.setSourceRoot(newSourceRootUri);
+									StringBuilder builder = new StringBuilder();
+									try
+									{
+										sourceMapGenerator.appendTo(builder, destFile.getName());
+									}
+									catch(IOException e)
+									{
+										return "";
+									}
+									FileUtils.writeStringToFile(sourceMapDestFile, builder.toString(), Charset.forName("utf8"));
+								}
+								else
+								{
+									FileUtils.writeStringToFile(sourceMapDestFile, sourceMapContents, Charset.forName("utf8"));
+								}
+							}
 						}
 					}
 
@@ -1533,6 +1562,21 @@ public class GoogDepsWriter {
 		path = path.replace('\\', '/');
 		return path;
 	}
+    
+    private String convertSourcePathToURI(String sourcePath)
+    {
+        if (sourcePath == null)
+        {
+            return null;
+        }
+        File file = new File(sourcePath);
+        if (file.isAbsolute())
+        {
+            sourcePath = "file:///" + sourcePath;
+        }
+        //prefer forward slash because web browser devtools expect it
+        return sourcePath.replace('\\', '/');
+    }
 	
 	boolean isGoogProvided(String className)
 	{
