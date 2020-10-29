@@ -125,9 +125,16 @@ public class GoogDepsWriter {
 			else
 				files.add(gd.filePath);
 			visited.put(gd.className, gd);
-			if(sourceMaps && sourceMapsSourceRoot != null)
+			if(sourceMaps)
 			{
-				rewriteSourceMapSourceRoot(gd);
+				if(sourceMapsSourceRoot != null && sourceMapsSourceRoot.length() > 0)
+				{
+					rewriteSourceMapSourceRoot(gd);
+				}
+				else
+				{
+					rewriteSourceMapSourceRootForFramework(gd);
+				}
 			}
 		}
 		rewriteSourceMapSourceRoot(depMap.get(mainName));
@@ -148,6 +155,70 @@ public class GoogDepsWriter {
 			files.add(mainDep.filePath);
 		}
 		return files;
+	}
+
+	private void rewriteSourceMapSourceRootForFramework(GoogDep gd)
+	{
+		if (!sourceMaps)
+		{
+			return;
+		}
+		File sourceMapFile = new File(gd.filePath + ".map");
+		if (!sourceMapFile.exists())
+		{
+			return;
+		}
+		String sourceMapContents = null;
+		try
+		{
+			sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
+		}
+		catch(IOException e)
+		{
+			return;
+		}
+		SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+		try
+		{
+			sourceMapConsumer.parse(sourceMapContents);
+		}
+		catch(SourceMapParseException e)
+		{
+			sourceMapConsumer = null;
+		}
+		if (sourceMapConsumer == null)
+		{
+			return;
+		}
+		String sourceRoot = sourceMapConsumer.getSourceRoot();
+		int index = sourceRoot.indexOf("/frameworks/js/projects/");
+		if(index == -1)
+		{
+			index = sourceRoot.indexOf("/frameworks/projects/");
+		}
+		if(index == -1)
+		{
+			return;
+		}
+		File royalelib = new File(System.getProperty("royalelib"));
+		File newSourceRoot = new File(royalelib.getParent(), sourceRoot.substring(index + 1));
+		String newSourceRootUri = convertSourcePathToURI(newSourceRoot.getAbsolutePath());
+		if (newSourceRootUri.equals(sourceMapConsumer.getSourceRoot()))
+		{
+			//no need to rewrite
+			return;
+		}
+		SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGenerator(sourceMapConsumer);
+		sourceMapGenerator.setSourceRoot(newSourceRootUri);
+		String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, new File(gd.filePath).getName());
+		try
+		{
+			FileUtils.write(sourceMapFile, newSourceMapContents, "utf8");
+		}
+		catch(IOException e)
+		{
+			return;
+		}
 	}
 
 	private void rewriteSourceMapSourceRoot(GoogDep gd)
@@ -179,23 +250,24 @@ public class GoogDepsWriter {
 		{
 			sourceMapConsumer = null;
 		}
-		if (sourceMapConsumer != null)
+		if (sourceMapConsumer == null)
 		{
-			if (sourceMapsSourceRoot.equals(sourceMapConsumer.getSourceRoot()))
-			{
-				//no need to rewrite
-				return;
-			}
-			SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGeneratorWithRemappedSourceRoot(sourceMapConsumer, sourceMapsSourceRoot, gd.className);
-			String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, new File(gd.filePath).getName());
-			try
-			{
-				FileUtils.write(sourceMapFile, newSourceMapContents, "utf8");
-			}
-			catch(IOException e)
-			{
-				return;
-			}
+			return;
+		}
+		if (sourceMapsSourceRoot.equals(sourceMapConsumer.getSourceRoot()))
+		{
+			//no need to rewrite
+			return;
+		}
+		SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGeneratorWithRemappedSourceRoot(sourceMapConsumer, sourceMapsSourceRoot, gd.className);
+		String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, new File(gd.filePath).getName());
+		try
+		{
+			FileUtils.write(sourceMapFile, newSourceMapContents, "utf8");
+		}
+		catch(IOException e)
+		{
+			return;
 		}
 	}
 	
@@ -1229,32 +1301,6 @@ public class GoogDepsWriter {
 							File sourceMapDestFile = new File(sourceMapFn);
 							inStream = sourceMapFileEntry.createInputStream();
 							String sourceMapContents = IOUtils.toString(inStream, Charset.forName("utf8"));
-							if (sourceMapsSourceRoot == null)
-							{
-								SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
-								try
-								{
-									sourceMapConsumer.parse(sourceMapContents);
-								}
-								catch(SourceMapParseException e)
-								{
-									sourceMapConsumer = null;
-								}
-								if(sourceMapConsumer != null)
-								{
-									String sourceRoot = sourceMapConsumer.getSourceRoot();
-									int index = sourceRoot.indexOf("/frameworks/js/projects/");
-									if(index != -1)
-									{
-										File royalelib = new File(System.getProperty("royalelib"));
-										File newSourceRoot = new File(royalelib.getParent(), sourceRoot.substring(index + 1));
-										SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGenerator(sourceMapConsumer);
-										String newSourceRootUri = convertSourcePathToURI(newSourceRoot.getAbsolutePath());
-										sourceMapGenerator.setSourceRoot(newSourceRootUri);
-										sourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, destFile.getName());
-									}
-								}
-							}
 							FileUtils.writeStringToFile(sourceMapDestFile, sourceMapContents, Charset.forName("utf8"));
 						}
 					}
