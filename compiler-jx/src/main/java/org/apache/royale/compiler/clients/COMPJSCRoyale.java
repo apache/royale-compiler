@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -552,28 +553,39 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
         String sourceMapSourceRoot = project.config.getSourceMapSourceRoot();
         if(sourceMapSourceRoot != null && sourceMapSourceRoot.length() > 0)
         {
-            String sourceMapContents = sourceMapTemp.toString(Charset.forName("utf8"));
-            SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+            String sourceMapContents = null;
             try
             {
-                sourceMapConsumer.parse(sourceMapContents);
+                sourceMapContents = sourceMapTemp.toString("utf8");
             }
-            catch(SourceMapParseException e)
+            catch(UnsupportedEncodingException e)
             {
-                sourceMapConsumer = null;
+                sourceMapContents = null;
             }
-            if (sourceMapConsumer != null && !sourceMapSourceRoot.equals(sourceMapConsumer.getSourceRoot()))
+            if(sourceMapContents != null)
             {
-                SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGeneratorWithRemappedSourceRoot(sourceMapConsumer, sourceMapSourceRoot, symbol);
-                String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, outputClassFile.getName());
+                SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
                 try
                 {
-                    IOUtils.write(newSourceMapContents, baos, Charset.forName("utf8"));
+                    sourceMapConsumer.parse(sourceMapContents);
                 }
-                catch(IOException e)
+                catch(SourceMapParseException e)
                 {
+                    sourceMapConsumer = null;
                 }
-                return;
+                if (sourceMapConsumer != null && !sourceMapSourceRoot.equals(sourceMapConsumer.getSourceRoot()))
+                {
+                    SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGeneratorWithRemappedSourceRoot(sourceMapConsumer, sourceMapSourceRoot, symbol);
+                    String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, outputClassFile.getName());
+                    try
+                    {
+                        IOUtils.write(newSourceMapContents, baos, Charset.forName("utf8"));
+                    }
+                    catch(IOException e)
+                    {
+                    }
+                    return;
+                }
             }
         }
         try
