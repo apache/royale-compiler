@@ -191,6 +191,11 @@ public class GoogDepsWriter {
 			return;
 		}
 		String sourceRoot = sourceMapConsumer.getSourceRoot();
+		if (sourceRoot == null)
+		{
+			// sometimes, the source root is null, and that's expected
+			return;
+		}
 		int index = sourceRoot.indexOf("/frameworks/js/projects/");
 		if(index == -1)
 		{
