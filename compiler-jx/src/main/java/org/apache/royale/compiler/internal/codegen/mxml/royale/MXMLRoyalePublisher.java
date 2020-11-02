@@ -56,6 +56,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.regex.Matcher;
 
 public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPublisher
 {
@@ -859,6 +860,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         return code;
     }
 
+    private String safeReplacement(String source) {
+        return source!=null ? Matcher.quoteReplacement(source) : "";
+    }
+
     protected void writeTemplate(File template, String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
     		throws IOException
 	{
@@ -883,31 +888,31 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
 
         String result = null;
         if (type.equals("release")) {
-            result = input.replaceAll("\\$\\{application\\}", projectName + ".min");
+            result = input.replaceAll("\\$\\{application\\}", safeReplacement(projectName + ".min"));
         } else {
-            result = input.replaceAll("\\$\\{application\\}", projectName);
+            result = input.replaceAll("\\$\\{application\\}", safeReplacement(projectName));
         }
         if (bgcolor != null)
-            result = result.replaceAll("\\$\\{bgcolor\\}", bgcolor);
+            result = result.replaceAll("\\$\\{bgcolor\\}", safeReplacement(bgcolor));
         //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
         if (height != null)
-        	result = result.replaceAll("\\$\\{height\\}", height.toString());
+        	result = result.replaceAll("\\$\\{height\\}", safeReplacement(height.toString()));
         if (pageTitle != null)
-            result = result.replaceAll("\\$\\{title\\}", pageTitle);
+            result = result.replaceAll("\\$\\{title\\}", safeReplacement(pageTitle));
         //result = result.replaceAll("\\$\\{version_major\\}", versionMajor);
         //result = result.replaceAll("\\$\\{version_minor\\}", versionMinor);
         //result = result.replaceAll("\\$\\{version_revision\\}", versionRevision);
         if (width != null)
-        	result = result.replaceAll("\\$\\{width\\}", width.toString());
+        	result = result.replaceAll("\\$\\{width\\}", safeReplacement(width.toString()));
         //result = result.replaceAll("\\$\\{useBrowserHistory\\}", useBrowserHistory);
 
         StringBuilder addHTML = new StringBuilder();
         addHTML.append(getTemplateAdditionalHTML(additionalHTML));
 		addHTML.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
-        result = result.replaceAll("\\$\\{head\\}", addHTML.toString());
+        result = result.replaceAll("\\$\\{head\\}", safeReplacement(addHTML.toString()));
 
         String templateBody = getTemplateBody("release".equals(type) ? projectName : mainClassQName);
-        result = result.replaceAll("\\$\\{body\\}", templateBody);
+        result = result.replaceAll("\\$\\{body\\}", safeReplacement(templateBody));
 
 		writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), result, false);
 	}
