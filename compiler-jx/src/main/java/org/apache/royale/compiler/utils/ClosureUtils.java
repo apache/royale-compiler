@@ -47,12 +47,29 @@ public class ClosureUtils
         {
             return;
         }
-		boolean preventRenamePublic = project.config != null && project.config.getPreventRenamePublicSymbols();
-        boolean preventRenameProtected = project.config != null && project.config.getPreventRenameProtectedSymbols();
-        boolean preventRenameInternal = project.config != null && project.config.getPreventRenameInternalSymbols();
-        boolean exportPublic = project.config != null && project.config.getExportPublicSymbols();
-        boolean exportProtected = project.config != null && project.config.getExportProtectedSymbols();
-        boolean exportInternal = project.config != null && project.config.getExportInternalSymbols();
+        boolean preventRenamePublicSymbols = project.config != null && project.config.getPreventRenamePublicSymbols();
+        boolean preventRenamePublicInstanceMethods = project.config != null && project.config.getPreventRenamePublicInstanceMethods();
+        boolean preventRenamePublicStaticMethods = project.config != null && project.config.getPreventRenamePublicStaticMethods();
+        boolean preventRenamePublicInstanceVariables = project.config != null && project.config.getPreventRenamePublicInstanceVariables();
+        boolean preventRenamePublicStaticVariables = project.config != null && project.config.getPreventRenamePublicStaticVariables();
+        boolean preventRenamePublicInstanceAccessors = project.config != null && project.config.getPreventRenamePublicInstanceAccessors();
+        boolean preventRenamePublicStaticAccessors = project.config != null && project.config.getPreventRenamePublicStaticAccessors();
+        
+        boolean preventRenameProtectedSymbols = project.config != null && project.config.getPreventRenameProtectedSymbols();
+        boolean preventRenameProtectedInstanceMethods = project.config != null && project.config.getPreventRenameProtectedInstanceMethods();
+        boolean preventRenameProtectedStaticMethods = project.config != null && project.config.getPreventRenameProtectedStaticMethods();
+        boolean preventRenameProtectedInstanceVariables = project.config != null && project.config.getPreventRenameProtectedInstanceVariables();
+        boolean preventRenameProtectedStaticVariables = project.config != null && project.config.getPreventRenameProtectedStaticVariables();
+        boolean preventRenameProtectedInstanceAccessors = project.config != null && project.config.getPreventRenameProtectedInstanceAccessors();
+        boolean preventRenameProtectedStaticAccessors = project.config != null && project.config.getPreventRenameProtectedStaticAccessors();
+
+        boolean preventRenameInternalSymbols = project.config != null && project.config.getPreventRenameInternalSymbols();
+        boolean preventRenameInternalInstanceMethods = project.config != null && project.config.getPreventRenameInternalInstanceMethods();
+        boolean preventRenameInternalStaticMethods =  project.config != null && project.config.getPreventRenameInternalStaticMethods();
+        boolean preventRenameInternalInstanceVariables = project.config != null && project.config.getPreventRenameInternalInstanceVariables();
+        boolean preventRenameInternalStaticVariables = project.config != null && project.config.getPreventRenameInternalStaticVariables();
+        boolean preventRenameInternalInstanceAccessors = project.config != null && project.config.getPreventRenameInternalInstanceAccessors();
+        boolean preventRenameInternalStaticAccessors = project.config != null && project.config.getPreventRenameInternalStaticAccessors();
         try
         {
             for(IASScope scope : cu.getFileScopeRequest().get().getScopes())
@@ -89,38 +106,140 @@ public class ClosureUtils
                         ITypeDefinition typeDef = (ITypeDefinition) def;
                         for (IDefinition localDef : typeDef.getContainedScope().getAllLocalDefinitions())
                         {
-                            if (localDef.isImplicit())
+                            if (localDef.isImplicit() || localDef.isPrivate())
                             {
                                 continue;
                             }
                             INamespaceReference nsRef = localDef.getNamespaceReference();
                             boolean isCustomNS = !nsRef.isLanguageNamespace();
-                            if ((localDef.isPublic() && preventRenamePublic)
-                                    || (isCustomNS && preventRenamePublic)
-                                    || (localDef.isProtected() && preventRenameProtected)
-                                    || (localDef.isInternal() && preventRenameInternal))
+                            boolean isMethod = localDef instanceof IFunctionDefinition
+                                && !(localDef instanceof IAccessorDefinition);
+                            boolean isVar = localDef instanceof IVariableDefinition
+                                && !(localDef instanceof IAccessorDefinition);
+                            boolean isAccessor = localDef instanceof IAccessorDefinition;
+                            if(localDef.isPublic() || isCustomNS)
                             {
-                                if (localDef instanceof IAccessorDefinition)
+                                if(!preventRenamePublicSymbols)
                                 {
-                                    if ((localDef.isPublic() && exportPublic)
-                                            || (isCustomNS && exportPublic)
-                                            || (localDef.isProtected() && exportProtected)
-                                            || (localDef.isInternal() && exportInternal))
+                                    continue;
+                                }
+                                if(localDef.isStatic())
+                                {
+                                    if(isMethod && !preventRenamePublicStaticMethods)
                                     {
-                                        //if an accessor is exported, we don't
-                                        //need to prevent renaming
-                                        //(not true for other symbol types)
+                                        continue;
+                                    }
+                                    else if(isVar && !preventRenamePublicStaticVariables)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isAccessor && !preventRenamePublicStaticAccessors)
+                                    {
                                         continue;
                                     }
                                 }
-                                String baseName = localDef.getBaseName();
-                                if (isCustomNS)
+                                else // instance
                                 {
-                                    String uri = nsRef.resolveNamespaceReference(project).getURI();
-                                    baseName = JSRoyaleEmitter.formatNamespacedProperty(uri, baseName, false);
+                                    if(isMethod && !preventRenamePublicInstanceMethods)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isVar && !preventRenamePublicInstanceVariables)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isAccessor && !preventRenamePublicInstanceAccessors)
+                                    {
+                                        continue;
+                                    }
                                 }
-                                result.add(baseName);
                             }
+                            else if(localDef.isProtected())
+                            {
+                                if(!preventRenameProtectedSymbols)
+                                {
+                                    continue;
+                                }
+                                if(localDef.isStatic())
+                                {
+                                    if(isMethod && !preventRenameProtectedStaticMethods)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isVar && !preventRenameProtectedStaticVariables)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isAccessor && !preventRenameProtectedStaticAccessors)
+                                    {
+                                        continue;
+                                    }
+                                }
+                                else // instance
+                                {
+                                    if(isMethod && !preventRenameProtectedInstanceMethods)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isVar && !preventRenameProtectedInstanceVariables)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isAccessor && !preventRenameProtectedInstanceAccessors)
+                                    {
+                                        continue;
+                                    }
+                                }
+                            }
+                            else if(localDef.isInternal())
+                            {
+                                if(!preventRenameInternalSymbols)
+                                {
+                                    continue;
+                                }
+                                if(localDef.isStatic())
+                                {
+                                    if(isMethod && !preventRenameInternalStaticMethods)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isVar && !preventRenameInternalStaticVariables)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isAccessor && !preventRenameInternalStaticAccessors)
+                                    {
+                                        continue;
+                                    }
+                                }
+                                else // instance
+                                {
+                                    if(isMethod && !preventRenameInternalInstanceMethods)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isVar && !preventRenameInternalInstanceVariables)
+                                    {
+                                        continue;
+                                    }
+                                    else if(isAccessor && !preventRenameInternalInstanceAccessors)
+                                    {
+                                        continue;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //skip anything else not covered by the above cases
+                                continue;
+                            }
+                            String baseName = localDef.getBaseName();
+                            if (isCustomNS)
+                            {
+                                String uri = nsRef.resolveNamespaceReference(project).getURI();
+                                baseName = JSRoyaleEmitter.formatNamespacedProperty(uri, baseName, false);
+                            }
+                            result.add(baseName);
                         }
                     }
                 }
