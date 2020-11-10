@@ -205,8 +205,14 @@ public class GoogDepsWriter {
 		{
 			return;
 		}
-		File royalelib = new File(System.getProperty("royalelib"));
-		File newSourceRoot = new File(royalelib.getParent(), sourceRoot.substring(index + 1));
+		String royalelib = System.getProperty("royalelib");
+		if(royalelib == null)
+		{
+			//can't rewrite if we don't know where to find frameworks
+			return;
+		}
+		File royalelibFile = new File(royalelib);
+		File newSourceRoot = new File(royalelibFile.getParent(), sourceRoot.substring(index + 1));
 		String newSourceRootUri = convertSourcePathToURI(newSourceRoot.getAbsolutePath());
 		if (newSourceRootUri.equals(sourceMapConsumer.getSourceRoot()))
 		{
