@@ -484,6 +484,120 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     //
+    // 'prevent-rename-public-instance-methods'
+    //
+
+    private boolean preventRenamePublicInstanceMethods = true;
+
+    public boolean getPreventRenamePublicInstanceMethods()
+    {
+        return preventRenamePublicInstanceMethods;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-instance-methods")
+    public void setPreventRenamePublicInstanceMethods(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicInstanceMethods = value;
+    }
+
+    //
+    // 'prevent-rename-public-static-methods'
+    //
+
+    private boolean preventRenamePublicStaticMethods = true;
+
+    public boolean getPreventRenamePublicStaticMethods()
+    {
+        return preventRenamePublicStaticMethods;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-static-methods")
+    public void setPreventRenamePublicStaticMethods(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicStaticMethods = value;
+    }
+
+    //
+    // 'prevent-rename-public-instance-variables'
+    //
+
+    private boolean preventRenamePublicInstanceVariables = true;
+
+    public boolean getPreventRenamePublicInstanceVariables()
+    {
+        return preventRenamePublicInstanceVariables;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-instance-variables")
+    public void setPreventRenamePublicInstanceVariables(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicInstanceVariables = value;
+    }
+
+    //
+    // 'prevent-rename-public-static-variables'
+    //
+
+    private boolean preventRenamePublicStaticVariables = true;
+
+    public boolean getPreventRenamePublicStaticVariables()
+    {
+        return preventRenamePublicStaticVariables;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-static-variables")
+    public void setPreventRenamePublicStaticVariables(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicStaticVariables = value;
+    }
+
+    //
+    // 'prevent-rename-public-instance-accessors'
+    //
+
+    private boolean preventRenamePublicInstanceAccessors = true;
+
+    public boolean getPreventRenamePublicInstanceAccessors()
+    {
+        return preventRenamePublicInstanceAccessors;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-instance-accessors")
+    public void setPreventRenamePublicInstanceAccessors(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicInstanceAccessors = value;
+    }
+
+    //
+    // 'prevent-rename-public-static-accessors'
+    //
+
+    private boolean preventRenamePublicStaticAccessors = true;
+
+    public boolean getPreventRenamePublicStaticAccessors()
+    {
+        return preventRenamePublicStaticAccessors;
+    }
+
+    @Config
+    @Mapping("prevent-rename-public-static-accessors")
+    public void setPreventRenamePublicStaticAccessors(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenamePublicStaticAccessors = value;
+    }
+
+    //
     // 'prevent-rename-protected-symbols'
     //
 
@@ -503,6 +617,120 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     //
+    // 'prevent-rename-protected-instance-methods'
+    //
+
+    private boolean preventRenameProtectedInstanceMethods = true;
+
+    public boolean getPreventRenameProtectedInstanceMethods()
+    {
+        return preventRenameProtectedInstanceMethods;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-instance-methods")
+    public void setPreventRenameProtectedInstanceMethods(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedInstanceMethods = value;
+    }
+
+    //
+    // 'prevent-rename-protected-static-methods'
+    //
+
+    private boolean preventRenameProtectedStaticMethods = true;
+
+    public boolean getPreventRenameProtectedStaticMethods()
+    {
+        return preventRenameProtectedStaticMethods;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-static-methods")
+    public void setPreventRenameProtectedStaticMethods(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedStaticMethods = value;
+    }
+
+    //
+    // 'prevent-rename-protected-instance-variables'
+    //
+
+    private boolean preventRenameProtectedInstanceVariables = true;
+
+    public boolean getPreventRenameProtectedInstanceVariables()
+    {
+        return preventRenameProtectedInstanceVariables;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-instance-variables")
+    public void setPreventRenameProtectedInstanceVariables(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedInstanceVariables = value;
+    }
+
+    //
+    // 'prevent-rename-protected-static-variables'
+    //
+
+    private boolean preventRenameProtectedStaticVariables = true;
+
+    public boolean getPreventRenameProtectedStaticVariables()
+    {
+        return preventRenameProtectedStaticVariables;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-static-variables")
+    public void setPreventRenameProtectedStaticVariables(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedStaticVariables = value;
+    }
+
+    //
+    // 'prevent-rename-protected-instance-accessors'
+    //
+
+    private boolean preventRenameProtectedInstanceAccessors = true;
+
+    public boolean getPreventRenameProtectedInstanceAccessors()
+    {
+        return preventRenameProtectedInstanceAccessors;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-instance-accessors")
+    public void setPreventRenameProtectedInstanceAccessors(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedInstanceAccessors = value;
+    }
+
+    //
+    // 'prevent-rename-protected-static-accessors'
+    //
+
+    private boolean preventRenameProtectedStaticAccessors = true;
+
+    public boolean getPreventRenameProtectedStaticAccessors()
+    {
+        return preventRenameProtectedStaticAccessors;
+    }
+
+    @Config
+    @Mapping("prevent-rename-protected-static-accessors")
+    public void setPreventRenameProtectedStaticAccessors(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameProtectedStaticAccessors = value;
+    }
+
+    //
     // 'prevent-rename-internal-symbols'
     //
 
@@ -519,6 +747,120 @@ public class JSGoogConfiguration extends JSConfiguration
             throws ConfigurationException
     {
     	preventRenameInternalSymbols = value;
+    }
+
+    //
+    // 'prevent-rename-internal-instance-methods'
+    //
+
+    private boolean preventRenameInternalInstanceMethods = true;
+
+    public boolean getPreventRenameInternalInstanceMethods()
+    {
+        return preventRenameInternalInstanceMethods;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-instance-methods")
+    public void setPreventRenameInternalInstanceMethods(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalInstanceMethods = value;
+    }
+
+    //
+    // 'prevent-rename-internal-static-methods'
+    //
+
+    private boolean preventRenameInternalStaticMethods = true;
+
+    public boolean getPreventRenameInternalStaticMethods()
+    {
+        return preventRenameInternalStaticMethods;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-static-methods")
+    public void setPreventRenameInternalStaticMethods(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalStaticMethods = value;
+    }
+
+    //
+    // 'prevent-rename-internal-instance-variables'
+    //
+
+    private boolean preventRenameInternalInstanceVariables = true;
+
+    public boolean getPreventRenameInternalInstanceVariables()
+    {
+        return preventRenameInternalInstanceVariables;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-instance-variables")
+    public void setPreventRenameInternalInstanceVariables(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalInstanceVariables = value;
+    }
+
+    //
+    // 'prevent-rename-internal-static-variables'
+    //
+
+    private boolean preventRenameInternalStaticVariables = true;
+
+    public boolean getPreventRenameInternalStaticVariables()
+    {
+        return preventRenameInternalStaticVariables;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-static-variables")
+    public void setPreventRenameInternalStaticVariables(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalStaticVariables = value;
+    }
+
+    //
+    // 'prevent-rename-internal-instance-accessors'
+    //
+
+    private boolean preventRenameInternalInstanceAccessors = true;
+
+    public boolean getPreventRenameInternalInstanceAccessors()
+    {
+        return preventRenameInternalInstanceAccessors;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-instance-accessors")
+    public void setPreventRenameInternalInstanceAccessors(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalInstanceAccessors = value;
+    }
+
+    //
+    // 'prevent-rename-internal-static-accessors'
+    //
+
+    private boolean preventRenameInternalStaticAccessors = true;
+
+    public boolean getPreventRenameInternalStaticAccessors()
+    {
+        return preventRenameInternalStaticAccessors;
+    }
+
+    @Config
+    @Mapping("prevent-rename-internal-static-accessors")
+    public void setPreventRenameInternalStaticAccessors(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameInternalStaticAccessors = value;
     }
 
     
