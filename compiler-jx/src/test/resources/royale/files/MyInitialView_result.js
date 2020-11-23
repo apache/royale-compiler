@@ -263,23 +263,23 @@ MyInitialView.prototype.get__comboBoxValue = function() {
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 symbol: {
 get: MyInitialView.prototype.get__symbol},
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 city: {
 get: MyInitialView.prototype.get__city},
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 inputText: {
 get: MyInitialView.prototype.get__inputText},
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 comboBoxValue: {
 get: MyInitialView.prototype.get__comboBoxValue}}
 );/**
@@ -354,8 +354,7 @@ MyInitialView.prototype.$EH_11_6 = function(event)
 
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
-/** @export */
-    lbl: {
+lbl: {
     /** @this {MyInitialView} */
     get: function() {
       return this.lbl_;
@@ -368,8 +367,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    timerLabel: {
+  timerLabel: {
     /** @this {MyInitialView} */
     get: function() {
       return this.timerLabel_;
@@ -382,8 +380,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    cityList: {
+  cityList: {
     /** @this {MyInitialView} */
     get: function() {
       return this.cityList_;
@@ -396,8 +393,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    input: {
+  input: {
     /** @this {MyInitialView} */
     get: function() {
       return this.input_;
@@ -410,8 +406,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    checkbox: {
+  checkbox: {
     /** @this {MyInitialView} */
     get: function() {
       return this.checkbox_;
@@ -424,8 +419,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    list: {
+  list: {
     /** @this {MyInitialView} */
     get: function() {
       return this.list_;
@@ -438,8 +432,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    comboBox: {
+  comboBox: {
     /** @this {MyInitialView} */
     get: function() {
       return this.comboBox_;

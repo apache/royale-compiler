@@ -222,8 +222,7 @@ RoyaleTest_again.prototype.$EH_8_0 = function(event)
 
 
 Object.defineProperties(RoyaleTest_again.prototype, /** @lends {RoyaleTest_again.prototype} */ {
-/** @export */
-    service: {
+service: {
     /** @this {RoyaleTest_again} */
     get: function() {
       return this.service_;
@@ -236,8 +235,7 @@ Object.defineProperties(RoyaleTest_again.prototype, /** @lends {RoyaleTest_again
       }
     }
   },
-  /** @export */
-    collection: {
+  collection: {
     /** @this {RoyaleTest_again} */
     get: function() {
       return this.collection_;

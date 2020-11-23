@@ -125,7 +125,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +
         		  "Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n" +
-        		  "/**\n  * @export\n  * @type {Object} */\n" +
+        		  "/**\n * @type {Object}\n */\n" +
         		  "defaultPrevented: {\nget: RoyaleTest_A.prototype.get__defaultPrevented}}\n);");
     }
 

@@ -61,10 +61,7 @@ import com.google.javascript.jscomp.lint.CheckUselessBlocks;
 import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.jscomp.parsing.parser.FeatureSet;
 import com.google.javascript.rhino.IR;
-import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -345,7 +342,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     }
 
     if (propertyNamesToKeep != null && propertyNamesToKeep.size() > 0) {
-      checks.add(keepPropertyNamesPass);
+      checks.add(keepRoyalePropertyNamesPass);
     }
 
     if (extraSymbolNamesToExport != null) {
@@ -1291,39 +1288,11 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       }
     };
 
-    private final PassFactory keepPropertyNamesPass = 
-        new PassFactory("keep-property-names", true) {
+    private final PassFactory keepRoyalePropertyNamesPass = 
+        new PassFactory("keep-royale-property-names", true) {
           @Override
           protected CompilerPass create(final AbstractCompiler compiler) {
-            return new CompilerPass() {
-              @Override
-              public void process(Node externs, Node root) {
-
-                Node propsObj = new Node(Token.OBJECTLIT);
-                for(String nameToKeep : propertyNamesToKeep)
-                {
-                  Node nameStringKey = IR.stringKey(nameToKeep);
-                  JSDocInfoBuilder builder = new JSDocInfoBuilder(true);
-                  builder.recordExport();
-                  JSDocInfo jsDocInfo = builder.build();
-                  nameStringKey.setJSDocInfo(jsDocInfo);
-
-                  Node propertyDescriptor = new Node(Token.OBJECTLIT);
-                  propertyDescriptor.addChildToBack(IR.propdef(IR.stringKey("get"), NodeUtil.emptyFunction()));
-
-                  Node prop = IR.propdef(nameStringKey, propertyDescriptor);
-                  propsObj.addChildToBack(prop);
-                }
-
-                Node definePropertiesTarget = NodeUtil.newQName(compiler, "Object.defineProperties");
-                Node definePropertiesCall = IR.call(definePropertiesTarget, IR.objectlit(), propsObj);
-                Node expression = IR.exprResult(definePropertiesCall);
-
-                Node scriptNode = compiler.getScriptNode(sourceFileName);
-                scriptNode.addChildToBack(expression);
-                compiler.reportChangeToEnclosingScope(expression);
-              }
-            };
+            return new KeepRoyalePropertyNames(compiler, propertyNamesToKeep);
           }
 
           @Override

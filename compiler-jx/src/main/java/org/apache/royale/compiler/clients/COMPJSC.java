@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -36,6 +38,10 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.debugging.sourcemap.SourceMapGeneratorV3;
+import com.google.debugging.sourcemap.SourceMapParseException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -60,6 +66,7 @@ import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.utils.SourceMapUtils;
 import org.apache.royale.swc.ISWCFileEntry;
 import org.apache.royale.swc.io.SWCReader;
 import org.apache.royale.utils.ArgumentUtil;
@@ -489,32 +496,33 @@ public class COMPJSC extends MXMLJSC
 	                        }
                             writer.writeTo(temp, sourceMapTemp, null);
 
-                    		String outputClassFile = getOutputClassFile(
+                    		File outputClassFile = getOutputClassFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
-                                    false).getPath();
-                    		outputClassFile = outputClassFile.replace('\\', '/');
+                                    false);
+                            String outputClassFilePath = outputClassFile.getPath();
+                    		outputClassFilePath = outputClassFilePath.replace('\\', '/');
 	                        if (config.isVerbose())
                             {
-                                System.out.println("Writing file: " + outputClassFile);     	
+                                System.out.println("Writing file: " + outputClassFilePath);     	
                             }
 	                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	                        temp.writeTo(baos);
-                            writeFileToZip(zipOutputStream, outputClassFile, baos, fileList);
+                            writeFileToZip(zipOutputStream, outputClassFilePath, baos, fileList);
                             if(sourceMapTemp != null)
                             {
-                                String sourceMapFile = getOutputSourceMapFile(
+                                String sourceMapFilePath = getOutputSourceMapFile(
                                     cu.getQualifiedNames().get(0),
                                     isExterns ? externsOut : jsOut,
                                     false).getPath();
-                                sourceMapFile = sourceMapFile.replace('\\', '/');
+                                sourceMapFilePath = sourceMapFilePath.replace('\\', '/');
                                 if (config.isVerbose())
                                 {
-                                    System.out.println("Writing file: " + sourceMapFile);
+                                    System.out.println("Writing file: " + sourceMapFilePath);
                                 }
     	                        baos = new ByteArrayOutputStream();
-                                sourceMapTemp.writeTo(baos);
-                                writeFileToZip(zipOutputStream, sourceMapFile, baos, fileList);
+                                processSourceMap(sourceMapTemp, baos, outputClassFile, symbol);
+                                writeFileToZip(zipOutputStream, sourceMapFilePath, baos, fileList);
                             }
                             writer.close();
                         }
@@ -674,6 +682,56 @@ public class COMPJSC extends MXMLJSC
         }
 
         return compilationSuccess;
+    }
+
+    private void processSourceMap(ByteArrayOutputStream sourceMapTemp, ByteArrayOutputStream baos, File outputClassFile, String symbol)
+    {
+        String sourceMapSourceRoot = project.config.getSourceMapSourceRoot();
+        if(sourceMapSourceRoot != null && sourceMapSourceRoot.length() > 0)
+        {
+            String sourceMapContents = null;
+            try
+            {
+                sourceMapContents = sourceMapTemp.toString("utf8");
+            }
+            catch(UnsupportedEncodingException e)
+            {
+                sourceMapContents = null;
+            }
+            if(sourceMapContents != null)
+            {
+                SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+                try
+                {
+                    sourceMapConsumer.parse(sourceMapContents);
+                }
+                catch(SourceMapParseException e)
+                {
+                    sourceMapConsumer = null;
+                }
+                if (sourceMapConsumer != null && !sourceMapSourceRoot.equals(sourceMapConsumer.getSourceRoot()))
+                {
+                    SourceMapGeneratorV3 sourceMapGenerator = SourceMapUtils.sourceMapConsumerToGeneratorWithRemappedSourceRoot(sourceMapConsumer, sourceMapSourceRoot, symbol);
+                    String newSourceMapContents = SourceMapUtils.sourceMapGeneratorToString(sourceMapGenerator, outputClassFile.getName());
+                    try
+                    {
+                        IOUtils.write(newSourceMapContents, baos, Charset.forName("utf8"));
+                    }
+                    catch(IOException e)
+                    {
+                    }
+                    return;
+                }
+            }
+        }
+        try
+        {
+            sourceMapTemp.writeTo(baos);
+        }
+        catch(IOException e)
+        {
+
+        }
     }
 
     private void writeFileToZip(ZipOutputStream zipOutputStream, String entryFilePath, ByteArrayOutputStream baos, StringBuilder fileList) throws IOException

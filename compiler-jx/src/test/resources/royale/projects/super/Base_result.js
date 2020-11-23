@@ -49,8 +49,8 @@ Base.prototype.set__text = function(value) {
 
 Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 text: {
 get: Base.prototype.get__text,
 set: Base.prototype.set__text}}

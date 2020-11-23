@@ -57,9 +57,9 @@ import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassReferenceNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
 
-class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstanceNode
+public class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstanceNode
 {
-	private static boolean isStateClass(String instanceType, RoyaleProject project)
+	public static boolean isStateClass(String instanceType, RoyaleProject project)
 	{
 		// we are going to require that all subclasses are also named State
 		// but just in different packages.  That way we don't have to keep resolving

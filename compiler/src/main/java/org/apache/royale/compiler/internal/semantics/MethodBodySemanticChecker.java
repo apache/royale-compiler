@@ -595,6 +595,8 @@ public class MethodBodySemanticChecker
         {
             this.currentScope.addProblem(new LocalBindablePropertyProblem(iNode));
         }
+        
+        checkVariableDeclaration(iNode);
     }
     
     /**
@@ -2614,7 +2616,7 @@ public class MethodBodySemanticChecker
 
         //  Check for ambiguity.
         IDefinition def = utils.getDefinition(var);
-        checkVariableForConflictingDefinitions(iNode, (VariableDefinition)def);
+        checkVariableForConflictingDefinitions(iNode, (IVariableDefinition)def);
 
         checkNamespaceOfDefinition(var, def, project);
         
@@ -2666,11 +2668,14 @@ public class MethodBodySemanticChecker
             checkAssignmentValue(def, rightNode);
         }
 
-        if(SemanticUtils.isNestedClassProperty(iNode, (VariableDefinition)def))
+        if(def instanceof VariableDefinition)
         {
-            // TODO: Issue a better, mor specific diagnostic
-            // TODO: once we are allowed to add new error strings.
-            addProblem(new BURMDiagnosticNotAllowedHereProblem(iNode));
+            if(SemanticUtils.isNestedClassProperty(iNode, (VariableDefinition)def))
+            {
+                // TODO: Issue a better, mor specific diagnostic
+                // TODO: once we are allowed to add new error strings.
+                addProblem(new BURMDiagnosticNotAllowedHereProblem(iNode));
+            }
         }
     }
 
@@ -3043,7 +3048,7 @@ public class MethodBodySemanticChecker
      * @param iNode     The node that produced the variable definition.  Used for location info for any diagnostics.
      * @param varDef   The VariableDefinition of the variable to check
      */
-    public void checkVariableForConflictingDefinitions( IASNode iNode, VariableDefinition varDef )
+    public void checkVariableForConflictingDefinitions( IASNode iNode, IVariableDefinition varDef )
     {
         MultiDefinitionType ambiguity = SemanticUtils.getMultiDefinitionType(varDef, project);
         if (ambiguity != MultiDefinitionType.NONE)

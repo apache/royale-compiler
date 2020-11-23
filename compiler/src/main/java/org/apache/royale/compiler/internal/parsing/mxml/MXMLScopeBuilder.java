@@ -30,6 +30,7 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.royale.compiler.internal.tree.mxml.MXMLInstanceNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.common.IFileSpecificationGetter;
 import org.apache.royale.compiler.common.Multiname;
@@ -662,7 +663,7 @@ public class MXMLScopeBuilder
 
     private void processState(IMXMLTagData tag, String qname)
     {
-        if (!qname.equals(project.getStateClass()) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
+        if (!MXMLInstanceNode.isStateClass(qname, project) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
             return;
 
         // if there is no name attribute, ignore it as a state, as name is
