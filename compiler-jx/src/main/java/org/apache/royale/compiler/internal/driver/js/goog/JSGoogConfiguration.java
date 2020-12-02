@@ -865,6 +865,26 @@ public class JSGoogConfiguration extends JSConfiguration
 
     
     //
+    // 'allow-dynamic-bindings'
+    //
+
+    private boolean allowDynamicBindings = true;
+
+    public boolean getAllowDynamicBindings()
+    {
+        return allowDynamicBindings;
+    }
+
+    @Config
+    @Mapping("allow-dynamic-bindings")
+    public void setAllowDynamicBindings(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	allowDynamicBindings = value;
+    }
+
+    
+    //
     // 'warn-public-vars'
     //
 

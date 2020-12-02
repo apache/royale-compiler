@@ -1499,8 +1499,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     private void outputBindingInfoAsData(String cname, BindingDatabase bindingDataBase)
     {
+        RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
+        boolean allowDynamicBindings = project.config != null && project.config.getAllowDynamicBindings();
         
         writeNewline("/**");
         writeNewline(" * @export"); // must export or else GCC will remove it
@@ -1526,7 +1528,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (node instanceof IMXMLSingleDataBindingNode)
             {
             	IMXMLSingleDataBindingNode sbdn = (IMXMLSingleDataBindingNode)node;
-            	RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
             	IDefinition bdef = sbdn.getExpressionNode().resolve(project);
             	if (bdef != null)
             	{
@@ -1537,10 +1538,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             s = bi.getSourceString();
             if (s == null && bi.isSourceSimplePublicProperty())
                 s = getSourceStringFromGetter(bi.getExpressionNodesForGetter());
-            if (s == null || s.length() == 0)
+            if (!allowDynamicBindings || s == null || s.length() == 0)
             {
                 List<IExpressionNode> getterNodes = bi.getExpressionNodesForGetter();
                 StringBuilder sb = new StringBuilder();
+                sb.append("/** @this {");
+                sb.append(formatQualifiedName(cname));
+                sb.append("} */\n");
                 sb.append("function() { return ");
                 int n = getterNodes.size();
                 for (int i = 0; i < n; i++)
@@ -1593,7 +1597,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
             IExpressionNode destNode = bi.getExpressionNodeForDestination();
             s = bi.getDestinationString();
-            if (destNode != null && s == null)
+            if (!allowDynamicBindings && destNode == null && s != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.append("/** @this {");
+                sb.append(formatQualifiedName(cname));
+                sb.append("} */\n");
+                sb.append("function(value) { ");
+                sb.append("this.");
+                sb.append(s);
+                sb.append(" = value; },");
+                writeNewline(sb.toString());
+                s = null;
+            }
+            else if (destNode != null && s == null)
             {
                 StringBuilder sb = new StringBuilder();
                 sb.append(generateSetterFunction(bi, destNode));
@@ -1620,8 +1637,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 write(ASEmitterTokens.SQUARE_CLOSE.getToken());
             }
             else
+            {
                 write(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
                         ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            }
             
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
