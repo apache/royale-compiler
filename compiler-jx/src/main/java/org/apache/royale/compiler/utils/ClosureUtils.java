@@ -115,8 +115,10 @@ public class ClosureUtils
                             boolean isMethod = localDef instanceof IFunctionDefinition
                                 && !(localDef instanceof IAccessorDefinition);
                             boolean isVar = localDef instanceof IVariableDefinition
-                                && !(localDef instanceof IAccessorDefinition);
-                            boolean isAccessor = localDef instanceof IAccessorDefinition;
+                                && !(localDef instanceof IAccessorDefinition)
+                                && !localDef.isBindable();
+                            boolean isAccessor = localDef instanceof IAccessorDefinition
+                                || (localDef instanceof IVariableDefinition && localDef.isBindable());
                             if(localDef.isPublic() || isCustomNS)
                             {
                                 if(!preventRenamePublicSymbols)
@@ -317,8 +319,10 @@ public class ClosureUtils
                             boolean isMethod = localDef instanceof IFunctionDefinition
                                 && !(localDef instanceof IAccessorDefinition);
                             boolean isVar = localDef instanceof IVariableDefinition
-                                && !(localDef instanceof IAccessorDefinition);
-                            boolean isAccessor = localDef instanceof IAccessorDefinition;
+                                && !(localDef instanceof IAccessorDefinition)
+                                && !localDef.isBindable();
+                            boolean isAccessor = localDef instanceof IAccessorDefinition
+                                || (localDef instanceof IVariableDefinition && localDef.isBindable());
                             if (isMethod || isVar || isAccessor)
                             {
                                 INamespaceReference nsRef = localDef.getNamespaceReference();
