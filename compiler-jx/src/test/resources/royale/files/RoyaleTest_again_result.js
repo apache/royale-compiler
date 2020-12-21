@@ -202,7 +202,7 @@ RoyaleTest_again = function() {
     0,
     1,
     'initialize',
-this.$EH_8_0
+    this.$EH_8_0
   ]);
   
 };

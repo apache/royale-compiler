@@ -1761,7 +1761,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"    0,\n" +
         		"    1,\n" +
         		"    'change',\n" +
-        		"this.$EH_9_0\n" +
+        		"    this.$EH_9_0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
