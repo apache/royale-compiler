@@ -74,6 +74,22 @@ public class GenerateRoyaleExports extends AbstractPostOrderCallback {
 				addExtern(n.getString());
 				return;
 			}
+			case GETPROP: {
+				String qualifiedName = n.getQualifiedName();
+				if(!qualifiedName.startsWith("this.$ID_")) {
+					return;
+				}
+				Node gp = n.getGrandparent();
+				if(gp == null) {
+					return;
+				}
+				Node ggp = gp.getParent();
+				if(ggp == null || !ggp.isFunction()) {
+					return;
+				}
+				addExtern(n.getOriginalName());
+				return;
+			}
 			case ASSIGN: {
 				Node firstChild = n.getFirstChild();
 				if (!firstChild.isQualifiedName()) {
