@@ -22,7 +22,6 @@ package org.apache.royale.compiler.internal.codegen.mxml.royale;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
@@ -48,7 +47,7 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     //
     //--------------------------------------------------------------------------
 
-    static List<String> nameMap = Arrays.asList(
+    public static List<String> nameMap = Arrays.asList(
     		"rollOver",
     		"rollOut",
     		"mouseDown",
@@ -81,21 +80,6 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     //---------------------------------
     //    output
     //---------------------------------
-
-    public String output(boolean writeNewline)
-    {
-        String handler = ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler;
-        if (nameMap.contains(name))
-        	name = name.toLowerCase();
-		else if (name.equals("doubleClick"))
-			name = "dblclick";
-		else if (name.equals("mouseWheel"))
-			name = "wheel";
-        writeSimpleDescriptor(name, null, handler, writeNewline);
-
-        return sb.toString();
-    }
 
     public static String getJSEventName(String name)
     {

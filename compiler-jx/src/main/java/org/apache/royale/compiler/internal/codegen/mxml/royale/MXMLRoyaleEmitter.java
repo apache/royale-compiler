@@ -38,13 +38,13 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.abc.semantics.Instruction;
-import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.abc.semantics.OneOperandInstruction;
+import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.codegen.js.IMappingEmitter;
+import org.apache.royale.compiler.codegen.mxml.js.IMXMLJSEmitter;
 import org.apache.royale.compiler.codegen.mxml.royale.IMXMLRoyaleEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
@@ -71,13 +71,13 @@ import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.PropertyNod
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleBasicMXMLDescriptorEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.royale.compiler.internal.codegen.mxml.MXMLEmitterTokens;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
@@ -102,7 +102,6 @@ import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.royale.compiler.tree.mxml.*;
 import org.apache.royale.compiler.units.ICompilationUnit;
-import org.apache.royale.compiler.utils.DefinitionUtils;
 import org.apache.royale.compiler.utils.NativeUtils;
 import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.royale.swc.ISWC;
@@ -115,7 +114,7 @@ import com.google.debugging.sourcemap.FilePosition;
  * @author Erik de Bruin
  */
 public class MXMLRoyaleEmitter extends MXMLEmitter implements
-        IMXMLRoyaleEmitter, IMappingEmitter
+        IMXMLRoyaleEmitter, IMXMLJSEmitter
 {
 
 	// the instances in a container
@@ -154,6 +153,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     private String interfaceList;
     private boolean emitExports = true;
 
+    private ISubEmitter<MXMLDescriptorSpecifier> mxmlDescriptorEmitter;
+
     /**
      * This keeps track of the entries in our temporary array of
      * DeferredInstanceFromFunction objects that we CG to help with
@@ -179,6 +180,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     {
         super(out);
         sourceMapMappings = new ArrayList<SourceMapMapping>();
+
+        mxmlDescriptorEmitter = new JSRoyaleBasicMXMLDescriptorEmitter(this);
     }
 
     @Override
@@ -840,6 +843,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         descriptorTree = new ArrayList<MXMLDescriptorSpecifier>();
         propertiesTree = new MXMLDescriptorSpecifier();
+        propertiesTree.name = node.getQualifiedName();
 
         events = new ArrayList<MXMLEventSpecifier>();
         instances = new ArrayList<MXMLDescriptorSpecifier>();
@@ -1112,8 +1116,15 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	        writeNewline(" * @type {Array}");
 	        writeNewline(" */");
 	        writeNewline("this.mxmlsd = " + ASEmitterTokens.SQUARE_OPEN.getToken());
-	        indentPush();
-	        write(root.outputStateDescriptors(false));
+            indentPush();
+            
+            for (MXMLDescriptorSpecifier md : root.propertySpecifiers)
+            {
+                write(ASEmitterTokens.SQUARE_OPEN);
+                mxmlDescriptorEmitter.emit(md);
+                write(ASEmitterTokens.SQUARE_CLOSE);
+                writeNewline(ASEmitterTokens.COMMA);
+            }
 	        write("null");
 	        write(ASEmitterTokens.SQUARE_CLOSE);
 	        indentPop();
@@ -1141,11 +1152,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
             MXMLDescriptorSpecifier root = propertiesTree;
             root.isTopNode = true;
-            for(int i = 0; i < getCurrentIndent(); i++)
-            {
-                root.indentPush();
-            }
-            write(root.output(true));
+            mxmlDescriptorEmitter.emit(root);
             indentPop();
             writeNewline();
 
@@ -2205,11 +2212,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("var data = [");
 
-            for(int i = 0; i < getCurrentIndent(); i++)
-            {
-                root.indentPush();
-            }
-            write(root.output(true));
+            mxmlDescriptorEmitter.emit(root);
             indentPop();
             writeNewline();
 
