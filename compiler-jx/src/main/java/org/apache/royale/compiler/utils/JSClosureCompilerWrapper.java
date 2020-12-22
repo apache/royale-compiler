@@ -407,7 +407,16 @@ public class JSClosureCompilerWrapper
             options_.setCrossChunkCodeMotion(true);
             options_.setCoalesceVariableNames(true);
             options_.setCrossChunkMethodMotion(true);
-            options_.setInlineProperties(true);
+            // we cannot guarantee that public member variables (called
+            // "properties" by closure) are constant because they may get
+            // set dynamically by the MXML data interpreter. closure assumes
+            // that a variable is constant if it cannot detect any code that
+            // makes changes, even if it isn't meant to be constant.
+            // in my tests, this kind of inlining happened very rarely, and
+            // there's virtually zero impact to file size by turning it off.
+            // however, there's a big upside to avoiding unexpected inlining
+            // that's very hard to debug. -JT
+            options_.setInlineProperties(false);
             options_.setInlineVariables(true);
             options_.setSmartNameRemoval(true);
             options_.setRemoveDeadCode(true);
