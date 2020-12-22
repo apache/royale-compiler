@@ -815,12 +815,18 @@ public class AccessorEmitter extends JSSubEmitter implements
         boolean emitExports = true;
         boolean exportProtected = false;
         boolean exportInternal = false;
+        boolean preventRenamePublicSymbols = true;
+        boolean preventRenameProtectedSymbols = true;
+        boolean preventRenameInternalSymbols = true;
         RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
         if (project != null && project.config != null)
         {
             emitExports = project.config.getExportPublicSymbols();
             exportProtected = project.config.getExportProtectedSymbols();
             exportInternal = project.config.getExportInternalSymbols();
+            preventRenamePublicSymbols = project.config.getPreventRenamePublicSymbols();
+            preventRenameProtectedSymbols = project.config.getPreventRenameProtectedSymbols();
+            preventRenameInternalSymbols = project.config.getPreventRenameInternalSymbols();
         }
 		
         PropertyNodes p = map.get(key);
@@ -836,14 +842,17 @@ public class AccessorEmitter extends JSSubEmitter implements
         if(uri != null || def.isPublic())
         {
             p.resolvedExport = p.resolvedExport || emitExports;
+            p.preventRename = p.preventRename || preventRenamePublicSymbols;
         }
         else if(def.isInternal())
         {
             p.resolvedExport = p.resolvedExport || exportInternal;
+            p.preventRename = p.preventRename || preventRenameInternalSymbols;
         }
         else if(def.isProtected())
         {
             p.resolvedExport = p.resolvedExport || exportProtected;
+            p.preventRename = p.preventRename || preventRenameProtectedSymbols;
         }
         p.setter = node;
         if (!p.suppressExport) p.suppressExport = suppress;

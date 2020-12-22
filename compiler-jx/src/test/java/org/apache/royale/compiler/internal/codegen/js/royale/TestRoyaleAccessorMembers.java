@@ -158,7 +158,7 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
-          "/**\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo;\n\n\n" +
+          "/**\n * @nocollapse\n * @export\n * @type {number}\n */\nRoyaleTest_A.foo;\n\n\n" +
           "RoyaleTest_A.set__foo = function(value) {\n};\n\n\n" +
           "Object.defineProperties(RoyaleTest_A, /** @lends {RoyaleTest_A} */ {\n/**\n * @type {number}\n */\nfoo: {\nset: RoyaleTest_A.set__foo}}\n);");
     }
