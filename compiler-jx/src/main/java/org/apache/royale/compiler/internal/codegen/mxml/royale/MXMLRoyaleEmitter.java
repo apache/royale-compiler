@@ -1510,6 +1510,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
         boolean allowDynamicBindings = project.config != null && project.config.getAllowDynamicBindings();
+        boolean useMxmlReflectObjectProperty = project.config != null && project.config.getMxmlReflectObjectProperty();
         
         writeNewline("/**");
         writeNewline(" * @export"); // must export or else GCC will remove it
@@ -1528,7 +1529,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         boolean hadOutput = false;
         for (BindingInfo bi : bindingInfo)
         {
-            if (hadOutput) writeNewline(ASEmitterTokens.COMMA.getToken());
+            if (hadOutput)
+            {
+                writeNewline(ASEmitterTokens.COMMA);
+            }
             hadOutput = true;
             String s;
             IMXMLNode node = bi.node;
@@ -1559,7 +1563,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 	IExpressionNode getterNode = getterNodes.get(i);
                     sb.append(asEmitter.stringifyNode(getterNode));
                     if (i < n - 1)
-                    	sb.append(ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.PLUS.getToken() + ASEmitterTokens.SPACE.getToken());
+                    {
+                        sb.append(ASEmitterTokens.SPACE.getToken());
+                        sb.append(ASEmitterTokens.PLUS.getToken());
+                        sb.append(ASEmitterTokens.SPACE.getToken());
+                    }
                 }
                 sb.append("; },");
                 writeNewline(sb.toString());
@@ -1568,39 +1576,107 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             {
             	if (bi.classDef != null)
             	{
-	                String[] parts = s.split("\\.");
-	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
-	                        bi.classDef.getQualifiedName() + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                    String[] parts = s.split("\\.");
 	                String qname = bi.classDef.getQualifiedName();
+                    write(ASEmitterTokens.SQUARE_OPEN);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    write(qname);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
 	                if (!usedNames.contains(qname))
 	                	usedNames.add(qname);
 	                if (!staticUsedNames.contains(qname))
 	                	staticUsedNames.add(qname);
+                    StringBuilder objString = null;
+                    if (useMxmlReflectObjectProperty)
+                    {
+                        objString = new StringBuilder();
+                        objString.append(qname);
+                    }
 	                int n = parts.length;
 	                for (int i = 1; i < n; i++)
 	                {
 	                    String part = parts[i];
-	                    write(", " +  ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                        write(", ");
+                        if(useMxmlReflectObjectProperty)
+                        {
+                            write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                        }
+                        write(ASEmitterTokens.DOUBLE_QUOTE);
+                        write(part);
+                        write(ASEmitterTokens.DOUBLE_QUOTE);
+                        if(useMxmlReflectObjectProperty)
+                        {
+                            write(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.SPACE);
+                            write(objString.toString());
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                            objString.append(".");
+                            objString.append(part);
+                        }
 	                }
-	                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+                    write(ASEmitterTokens.SQUARE_CLOSE);
+                    writeNewline(ASEmitterTokens.COMMA);
             	}
             	else
             	{
 	                String[] parts = s.split("\\.");
-	                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
-	                        parts[0] + ASEmitterTokens.DOUBLE_QUOTE.getToken());
-	                int n = parts.length;
-	                for (int i = 1; i < n; i++)
+                    write(ASEmitterTokens.SQUARE_OPEN);
+                    StringBuilder objString = null;
+                    if (useMxmlReflectObjectProperty)
+                    {
+                        objString = new StringBuilder();
+                        objString.append("this");
+                    }
+                    int n = parts.length;
+	                for (int i = 0; i < n; i++)
 	                {
-	                    String part = parts[i];
-	                    write(", " +  ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
-	                }
-	                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+                        String part = parts[i];
+                        if (i > 0)
+                        {
+                            write(", ");
+                        }
+                        if(useMxmlReflectObjectProperty)
+                        {
+                            write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                        }
+                        write(ASEmitterTokens.DOUBLE_QUOTE);
+                        write(part);
+                        write(ASEmitterTokens.DOUBLE_QUOTE);
+                        if(useMxmlReflectObjectProperty)
+                        {
+                            write(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.SPACE);
+                            write(objString.toString());
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                            objString.append(".");
+                            objString.append(part);
+                        }
+                    }
+                    write(ASEmitterTokens.SQUARE_CLOSE);
+	                writeNewline(ASEmitterTokens.COMMA);
             	}
             }
             else
-                writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
-                        ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+            {
+                if(useMxmlReflectObjectProperty)
+                {
+                    write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                }
+                write(ASEmitterTokens.DOUBLE_QUOTE);
+                write(s);
+                write(ASEmitterTokens.DOUBLE_QUOTE);
+                if(useMxmlReflectObjectProperty)
+                {
+                    write(ASEmitterTokens.COMMA);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                }
+                writeNewline(ASEmitterTokens.COMMA);
+            }
 
             IExpressionNode destNode = bi.getExpressionNodeForDestination();
             s = bi.getDestinationString();
@@ -1621,32 +1697,75 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             {
                 StringBuilder sb = new StringBuilder();
                 sb.append(generateSetterFunction(bi, destNode));
-                writeNewline(sb.toString() + ASEmitterTokens.COMMA.getToken());
+                write(sb.toString());
+                writeNewline(ASEmitterTokens.COMMA);
             }
             else
-                writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
+            {
+                write(ASEmitterTokens.NULL);
+                writeNewline(ASEmitterTokens.COMMA);
+            }
 
             if (s == null)
             {
-                write(ASEmitterTokens.NULL.getToken());
+                write(ASEmitterTokens.NULL);
             }
             else if (s.contains("."))
             {
                 String[] parts = s.split("\\.");
-                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
-                        parts[0] + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                write(ASEmitterTokens.SQUARE_OPEN);
+                StringBuilder objString = null;
+                if (useMxmlReflectObjectProperty)
+                {
+                    objString = new StringBuilder();
+                    objString.append("this");
+                }
                 int n = parts.length;
-                for (int i = 1; i < n; i++)
+                for (int i = 0; i < n; i++)
                 {
                     String part = parts[i];
-                    write(", " + ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                    if (i > 0)
+                    {
+                        write(", ");
+                    }
+                    if(useMxmlReflectObjectProperty)
+                    {
+                        write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                    }
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    write(part);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    if(useMxmlReflectObjectProperty)
+                    {
+                        write(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.SPACE);
+                        write(objString.toString());
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        objString.append(".");
+                        objString.append(part);
+                    }
                 }
-                write(ASEmitterTokens.SQUARE_CLOSE.getToken());
+                write(ASEmitterTokens.SQUARE_CLOSE);
             }
             else
             {
-                write(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
-                        ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                if(useMxmlReflectObjectProperty)
+                {
+                    write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                }
+                write(ASEmitterTokens.DOUBLE_QUOTE);
+                write(s);
+                write(ASEmitterTokens.DOUBLE_QUOTE);
+                if(useMxmlReflectObjectProperty)
+                {
+                    write(ASEmitterTokens.COMMA);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                }
+                writeNewline(ASEmitterTokens.COMMA);
             }
             
         }
@@ -1670,7 +1789,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (hadOutput) writeNewline();
         }
 
-        writeNewline( ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
+        write(ASEmitterTokens.SQUARE_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
     }
 
     private String generateSetterFunction(BindingInfo bi, IExpressionNode destNode) {

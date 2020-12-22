@@ -38,7 +38,8 @@ public enum JSGoogEmitterTokens implements IEmitterTokens
     ARRAY("Array"),
     ERROR("Error"),
     SELF("self"),
-    SUPERCLASS("superClass_");
+    SUPERCLASS("superClass_"),
+    GOOG_REFLECT_OBJECTPROPERTY("goog.reflect.objectProperty");
 
     private String token;
 

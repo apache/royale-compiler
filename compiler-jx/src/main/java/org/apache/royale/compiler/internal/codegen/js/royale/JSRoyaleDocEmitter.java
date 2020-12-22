@@ -627,7 +627,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
         else
         {
-            boolean warnPublicVars = fjp.config != null && fjp.config.getWarnPublicVars() && !fjp.config.getPreventRenamePublicSymbols();
+            boolean warnPublicVars = fjp.config != null
+                    && fjp.config.getWarnPublicVars()
+                    && !fjp.config.getPreventRenamePublicSymbols()
+                    && !fjp.config.getMxmlReflectObjectProperty();
             IMetaTagsNode meta = node.getMetaTags();
             boolean bindable = false;
             if (meta != null)
@@ -652,12 +655,12 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 }
                 
                 if (!suppressedWarning(node, fjp))
+                {
                 	fjp.getProblems().add(new PublicVarWarningProblem(node.getSourcePath(),
                             node.getStart(), node.getEnd(),
                             warningNode.getLine(), warningNode.getColumn(),
                             node.getEndLine(), node.getEndColumn()));
-               
-
+                }
             }
             boolean avoidExport = (node.getASDocComment() instanceof ASDocComment
                     && ((ASDocComment)node.getASDocComment()).commentNoEnd()

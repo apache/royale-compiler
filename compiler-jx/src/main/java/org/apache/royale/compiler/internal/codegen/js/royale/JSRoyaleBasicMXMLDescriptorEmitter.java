@@ -22,12 +22,16 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.mxml.js.IMXMLJSEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLSubEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLDescriptorSpecifier;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLEventSpecifier;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 
 public class JSRoyaleBasicMXMLDescriptorEmitter extends MXMLSubEmitter implements ISubEmitter<MXMLDescriptorSpecifier>
 {
+    private boolean useGoogReflectObjectProperty = false;
+
     public JSRoyaleBasicMXMLDescriptorEmitter(IMXMLJSEmitter emitter)
     {
         super(emitter);
@@ -36,6 +40,8 @@ public class JSRoyaleBasicMXMLDescriptorEmitter extends MXMLSubEmitter implement
     @Override
     public void emit(MXMLDescriptorSpecifier root)
     {
+        RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
+        useGoogReflectObjectProperty = project.config != null && project.config.getMxmlReflectObjectProperty();
 		outputDescriptorSpecifier(root, true);
 	}
 
@@ -201,9 +207,35 @@ public class JSRoyaleBasicMXMLDescriptorEmitter extends MXMLSubEmitter implement
 
     private void outputPropertySpecifier(MXMLDescriptorSpecifier specifier, boolean writeNewline)
     {
-        write((specifier.isProperty) ? ASEmitterTokens.SINGLE_QUOTE.getToken() : "");
-        write(specifier.name);
-        write((specifier.isProperty) ? ASEmitterTokens.SINGLE_QUOTE.getToken() : "");
+        if(specifier.isProperty)
+        {
+            if(useGoogReflectObjectProperty)
+            {
+                write(JSGoogEmitterTokens.GOOG_REFLECT_OBJECTPROPERTY);
+                write(ASEmitterTokens.PAREN_OPEN);
+            }
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(specifier.name);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            if(useGoogReflectObjectProperty)
+            {
+                MXMLDescriptorSpecifier parentSpecifier = specifier.parent;
+                String id = (parentSpecifier.id != null) ? parentSpecifier.id : parentSpecifier.effectiveId;
+                write(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.SPACE);
+                write(ASEmitterTokens.THIS);
+                if (id != null)
+                {
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(id);
+                }
+                write(ASEmitterTokens.PAREN_CLOSE);
+            }
+        }
+        else
+        {
+            write(specifier.name);
+        }
         writeDelimiter(writeNewline);
 
         if (specifier.isProperty)
@@ -252,13 +284,17 @@ public class JSRoyaleBasicMXMLDescriptorEmitter extends MXMLSubEmitter implement
             {
                 write(specifier.propertySpecifiers.size() + 1 + "");
                 writeDelimiter(writeNewline);
-                String idPropName = (specifier.effectiveId != null) ? "_id"
-                        : "id";
-                writeSimpleDescriptor(idPropName, ASEmitterTokens.TRUE.getToken(),
-                        ASEmitterTokens.SINGLE_QUOTE.getToken()
-                                + ((specifier.id != null) ? specifier.id : specifier.effectiveId) + ASEmitterTokens.SINGLE_QUOTE.getToken(),
-                        writeNewline);
-
+                String idPropName = (specifier.effectiveId != null) ? "_id" : "id";
+                String id = (specifier.id != null) ? specifier.id : specifier.effectiveId;
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(idPropName);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                writeDelimiter(writeNewline);
+                write(ASEmitterTokens.TRUE);
+                writeDelimiter(writeNewline);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(id);
+                write(ASEmitterTokens.SINGLE_QUOTE);
                 writeDelimiter(writeNewline);
             }
             else
