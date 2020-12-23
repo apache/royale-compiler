@@ -532,7 +532,8 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     if (p.uri != null)
                     {
-                        INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
+                        IAccessorNode node = (getterNode != null) ? getterNode : setterNode;
+                        INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
                         INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                         fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
                         write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
