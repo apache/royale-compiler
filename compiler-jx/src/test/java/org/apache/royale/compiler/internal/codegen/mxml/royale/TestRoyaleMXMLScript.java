@@ -370,11 +370,11 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"\n" +
 				"AppName.get__foo = function() {\n" +
 				"  var value = org.apache.royale.events.CloseEvent.CLOSE;\n" +
-				"  Object.defineProperty(AppName, 'foo', { value: value, writable: true });\n" +
+				"  Object.defineProperties(AppName, { foo: { value: value, writable: true }});\n" +
 				"  return value;\n" +
 				"};\n" +
 				"AppName.set__foo = function(value) {\n" +
-				"  Object.defineProperty(AppName, 'foo', { value: value, writable: true });\n" +
+				"  Object.defineProperties(AppName, { foo: { value: value, writable: true }});\n" +
 				"};\n" +
 				"/**\n" +
 				" * @type {string}\n" +
@@ -668,7 +668,7 @@ public class TestRoyaleMXMLScript extends RoyaleTestBase
 				"\n" +
 				"AppName.get__foo = function() {\n" +
 				"  var value = org.apache.royale.events.CloseEvent.CLOSE;\n" +
-				"  Object.defineProperty(AppName, 'foo', { value: value, writable: false });\n" +
+				"  Object.defineProperties(AppName, { foo: { value: value, writable: false }});\n" +
 				"  return value;\n" +
 				"};\n" +
 				"/**\n" +

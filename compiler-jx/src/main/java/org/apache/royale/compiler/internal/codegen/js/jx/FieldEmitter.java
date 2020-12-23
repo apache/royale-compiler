@@ -183,18 +183,18 @@ public class FieldEmitter extends JSSubEmitter implements
                 writeNewline(ASEmitterTokens.SEMICOLON);
                 write(IASLanguageConstants.Object);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.DEFINE_PROPERTY);
+                write(JSEmitterTokens.DEFINE_PROPERTIES);
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(className);
                 writeToken(ASEmitterTokens.COMMA);
-                write(ASEmitterTokens.SINGLE_QUOTE);
+                writeToken(ASEmitterTokens.BLOCK_OPEN);
 	            writeFieldName(node, fjs);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                writeToken(ASEmitterTokens.COMMA);
+                writeToken(ASEmitterTokens.COLON);
                 if (node.isConst())
                 	write("{ value: value, writable: false }");
                 else
-                	write("{ value: value, writable: true }");
+                    write("{ value: value, writable: true }");
+                write(ASEmitterTokens.BLOCK_CLOSE);
                 write(ASEmitterTokens.PAREN_CLOSE);
                 writeNewline(ASEmitterTokens.SEMICOLON);
                 writeToken(ASEmitterTokens.RETURN);
@@ -217,15 +217,15 @@ public class FieldEmitter extends JSSubEmitter implements
 	                writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 	                write(IASLanguageConstants.Object);
 	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(JSEmitterTokens.DEFINE_PROPERTY);
+	                write(JSEmitterTokens.DEFINE_PROPERTIES);
 	                write(ASEmitterTokens.PAREN_OPEN);
 	                write(className);
 	                writeToken(ASEmitterTokens.COMMA);
-	                write(ASEmitterTokens.SINGLE_QUOTE);
+                    writeToken(ASEmitterTokens.BLOCK_OPEN);
 		            writeFieldName(node, fjs);
-	                write(ASEmitterTokens.SINGLE_QUOTE);
-	                writeToken(ASEmitterTokens.COMMA);
+	                writeToken(ASEmitterTokens.COLON);
 	                write("{ value: value, writable: true }");
+                    write(ASEmitterTokens.BLOCK_CLOSE);
 	                write(ASEmitterTokens.PAREN_CLOSE);
 	                indentPop();
 	                writeNewline(ASEmitterTokens.SEMICOLON);
