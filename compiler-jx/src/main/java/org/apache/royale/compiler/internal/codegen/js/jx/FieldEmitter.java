@@ -36,16 +36,10 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.royale.compiler.utils.NativeUtils;
@@ -84,6 +78,12 @@ public class FieldEmitter extends JSSubEmitter implements
     		if (def == null)  // saw this for a package reference (org in org.apache)
     			return false;
     		String qname = def.getQualifiedName();
+    		if (def instanceof IFunctionDefinition) {
+                if (vnode.getAncestorOfType(FunctionCallNode.class) != null){
+                    def = ((IFunctionDefinition) def).resolveReturnType(getProject());
+                    qname = def.getQualifiedName();
+                }
+            }
     		if (NativeUtils.isJSNative(qname))
     			return false;
     		if (def instanceof IClassDefinition)
@@ -103,9 +103,28 @@ public class FieldEmitter extends JSSubEmitter implements
     		{
     			if (isExternalReference((IExpressionNode)childNode, cdef))
     				return true;
-    		}
+    		} else if (childNode instanceof IContainerNode) {
+    		    if (checkContainer((IContainerNode)childNode,cdef ))
+    		        return true;
+            }
     	}
     	return false;
+    }
+
+    private boolean checkContainer(IContainerNode containerNode, IClassDefinition cdef){
+        int n = containerNode.getChildCount();
+        for (int i = 0; i < n; i++)
+        {
+            IASNode childNode = containerNode.getChild(i);
+            if (childNode instanceof IExpressionNode) {
+                if (isExternalReference((IExpressionNode)childNode, cdef))
+                    return true;
+            } else if (childNode instanceof IContainerNode) {
+                if (checkContainer((IContainerNode) childNode,cdef ))
+                    return true;
+            }
+        }
+        return false;
     }
     
     @Override
