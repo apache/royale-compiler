@@ -265,21 +265,33 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	        	{
 	        		writeLeftSide(node, leftNode, rightNode);
 	        		if (child)
-	        			write(".getProperty('");
+	        			write(".getProperty(");
 	        		String s = fjs.stringifyNode(rightNode);
 	        		int dot = s.indexOf('.');
 	        		if (dot != -1)
 	        		{
 	        			String name = s.substring(0, dot);
 	        			String afterDot = s.substring(dot);
+	        			write("'");
 	        			write(name);
-	        			write("')");
+	        			write("'");
+	        			write(")");
 	        			write(afterDot);
 	        		}
 	        		else
 	        		{
-	        			write(s);
-	        			write("')");
+	        			if ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\"")))
+	        			{
+	        				// already quoted
+		        			write(s);
+		        		}
+		        		else
+		        		{
+		        			write("'");
+		        			write(s);
+		        			write("'");
+		        		}
+	        			write(")");
 	        		}
 	        		return;
 	        	}
