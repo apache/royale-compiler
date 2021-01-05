@@ -2254,10 +2254,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     	String formattedCName = formatQualifiedName(cname);
 
-    	write("Object.defineProperties(");
+        write(JSGoogEmitterTokens.OBJECT);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.DEFINE_PROPERTIES);
+        write(ASEmitterTokens.PAREN_OPEN);
     	write(formattedCName);
-    	writeNewline(".prototype, /** @lends {" + formattedCName + ".prototype} */ {");
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.PROTOTYPE);
+        write(ASEmitterTokens.COMMA);
+        write(ASEmitterTokens.SPACE);
+        write("/** @lends {");
+        write(formattedCName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.PROTOTYPE);
+    	write("} */ {");
         indentPush();
+        writeNewline();
         int i = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {

@@ -222,7 +222,7 @@ RoyaleTest_again.prototype.$EH_8_0 = function(event)
 
 
 Object.defineProperties(RoyaleTest_again.prototype, /** @lends {RoyaleTest_again.prototype} */ {
-service: {
+  service: {
     /** @this {RoyaleTest_again} */
     get: function() {
       return this.service_;

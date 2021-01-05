@@ -386,7 +386,7 @@ MyInitialView.prototype.$EH_11_6 = function(event)
 
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
-lbl: {
+  lbl: {
     /** @this {MyInitialView} */
     get: function() {
       return this.lbl_;
