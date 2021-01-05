@@ -35,14 +35,6 @@ Base = function() {
 goog.inherits(Base, Super);
 
 
-/**
- * @nocollapse
- * @export
- * @type {string}
- */
-Base.prototype.text;
-
-
 Base.prototype.get__text = function() {
   return "A" + Base.superClass_.get__text.apply(this);
 };

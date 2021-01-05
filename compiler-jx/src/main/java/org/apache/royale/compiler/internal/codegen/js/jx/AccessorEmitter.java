@@ -128,42 +128,45 @@ public class AccessorEmitter extends JSSubEmitter implements
                 }
                 else
                 {
-                    // start by writing out the instance accessors as regular variables
-                    // because Closure Compiler doesn't properly analyze calls to
-                    // defineProperties() alone.
-                    // since there's no analysis, Closure assumes that getters/setters
-                    // have no side effects, which results in important get/set calls
-                    // being removed as dead code.
-                    // defining the accessors as variables first convinces Closure to
-                    // handle them more intelligently while not preventing them from
-                    // being real accessors.
-                    // Source: https://developers.google.com/closure/compiler/docs/limitations
-                    writeNewline();
-                    writeNewline();
-                    writeNewline();
-                    writeNewline("/**");
-                    if (p.preventRename)
-                        writeNewline(" * @nocollapse");
-                    if (p.resolvedExport && !p.suppressExport)
-                        writeNewline(" * @export");
-                    if (p.type != null)
-                        writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
-                    writeNewline(" */");
-                    write(getEmitter().formatQualifiedName(qname));
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    write(JSEmitterTokens.PROTOTYPE);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    if (p.uri != null)
+                    IAccessorNode accessorNode = (getterNode != null) ? getterNode : setterNode;
+                    if(!accessorNode.getDefinition().isOverride())
                     {
-                        IAccessorNode node = (getterNode != null) ? getterNode : setterNode;
-                        INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
-                        INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
-                        fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
-                        write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
+                        // start by writing out the instance accessors as regular variables
+                        // because Closure Compiler doesn't properly analyze calls to
+                        // defineProperties() alone.
+                        // since there's no analysis, Closure assumes that getters/setters
+                        // have no side effects, which results in important get/set calls
+                        // being removed as dead code.
+                        // defining the accessors as variables first convinces Closure to
+                        // handle them more intelligently while not preventing them from
+                        // being real accessors.
+                        // Source: https://developers.google.com/closure/compiler/docs/limitations
+                        writeNewline();
+                        writeNewline();
+                        writeNewline();
+                        writeNewline("/**");
+                        if (p.preventRename)
+                            writeNewline(" * @nocollapse");
+                        if (p.resolvedExport && !p.suppressExport)
+                            writeNewline(" * @export");
+                        if (p.type != null)
+                            writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
+                        writeNewline(" */");
+                        write(getEmitter().formatQualifiedName(qname));
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSEmitterTokens.PROTOTYPE);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        if (p.uri != null)
+                        {
+                            INamespaceDecorationNode ns = ((FunctionNode) accessorNode).getActualNamespaceNode();
+                            INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+                            fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                            write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
+                        }
+                        else
+                            write(baseName);
+                        write(ASEmitterTokens.SEMICOLON);
                     }
-                    else
-                        write(baseName);
-                    write(ASEmitterTokens.SEMICOLON);
 
                     if (getterNode != null)
 	                {
