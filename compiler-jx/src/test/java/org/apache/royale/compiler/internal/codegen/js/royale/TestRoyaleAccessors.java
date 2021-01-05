@@ -47,6 +47,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nRoyaleTest_A.prototype.label;\n\n\n" +
         		"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
         		"RoyaleTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
         		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {string}\n */\n" +
@@ -62,6 +63,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n */\nB.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nB.prototype.label;\n\n\n" +
 				"B.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {string}\n */\nlabel: {\n" +
@@ -77,6 +79,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nRoyaleTest_A.prototype.label;\n\n\n" +
 				"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"RoyaleTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
 				"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {string}\n */\nlabel: {\n" +
@@ -92,6 +95,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n */\nB.prototype.doStuff = function() {\n  this.label = this.label;\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nB.prototype.label;\n\n\n" +
 				"B.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
 				"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {string}\n */\nlabel: {\n" +
@@ -107,6 +111,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this.http_$$ns_apache_org$2017$custom$namespace__label;\n  this.http_$$ns_apache_org$2017$custom$namespace__label = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__label;\n\n\n" +
 				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {string}\n */\nhttp_$$ns_apache_org$2017$custom$namespace__label: {\nget: B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label,\nset: B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label}}\n);";
@@ -121,6 +126,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this.http_$$ns_apache_org$2017$custom$namespace__label;\n  this.http_$$ns_apache_org$2017$custom$namespace__label = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__label;\n\n\n" +
 				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {string}\n */\nhttp_$$ns_apache_org$2017$custom$namespace__label: {\nget: B.prototype.http_$$ns_apache_org$2017$custom$namespace__get__label,\nset: B.prototype.http_$$ns_apache_org$2017$custom$namespace__set__label}}\n);";
@@ -165,6 +171,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         String expected ="/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nRoyaleTest_A.prototype.label;\n\n\n" +
                 "RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
                 "RoyaleTest_A.prototype.bindable__set__label_RoyaleTest_A = function(value) {\n" +
                 "  this._label = value;" +
@@ -195,6 +202,7 @@ public class TestRoyaleAccessors extends ASTestBase
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n */\nRoyaleTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype._label = null;\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {string}\n */\nRoyaleTest_A.prototype.label;\n\n\n" +
 				"RoyaleTest_A.prototype.get__label = function() {\n  return this._label;\n};\n\n\n" +
 				"RoyaleTest_A.prototype.set__label = function(value) {\n  this._label = value;\n};\n\n\n" +
         		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {string}\n */\n" +

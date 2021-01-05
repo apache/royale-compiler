@@ -37,6 +37,14 @@ Super = function() {
 Super.prototype._text = '';
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+Super.prototype.text;
+
+
 Super.prototype.get__text = function() {
   return this._text;
 };

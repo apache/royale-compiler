@@ -241,9 +241,25 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.symbol;
+
+
 MyInitialView.prototype.get__symbol = function() {
   return org.apache.royale.utils.Language.as(this.list.selectedItem, String);
 };
+
+
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.city;
 
 
 MyInitialView.prototype.get__city = function() {
@@ -251,9 +267,25 @@ MyInitialView.prototype.get__city = function() {
 };
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.inputText;
+
+
 MyInitialView.prototype.get__inputText = function() {
   return this.input.text;
 };
+
+
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.comboBoxValue;
 
 
 MyInitialView.prototype.get__comboBoxValue = function() {

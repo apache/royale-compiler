@@ -827,6 +827,14 @@ public class TestRoyalePackage extends TestGoogPackage
 				"};\n" +
 				"\n" +
 				"\n" +
+				"/**\n" +
+				" * @nocollapse\n" +
+				" * @export\n" +
+				" * @type {string}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.myString;\n" +
+				"\n" +
+				"\n" +
 				"foo.bar.baz.A.prototype.get__myString = function() {\n" +
 				"  return null;\n" +
 				"};\n" +
@@ -887,6 +895,14 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass = function() {\n" +
 				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @nocollapse\n" +
+				" * @export\n" +
+				" * @type {string}\n" +
+				" */\n" +
+				"foo.bar.baz.A.InternalClass.prototype.someString;\n" +
 				"\n" +
 				"\n" +
 				"foo.bar.baz.A.InternalClass.prototype.get__someString = function() {\n" +

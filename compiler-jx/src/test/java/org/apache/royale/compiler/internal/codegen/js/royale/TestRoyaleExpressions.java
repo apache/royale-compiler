@@ -120,7 +120,8 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  " */\n" +
         		  "RoyaleTest_A.prototype.isDefaultPrevented = function() {\n" +
         		  "  return this.defaultPrevented;\n" +
-        		  "};\n\n\n" +
+                  "};\n\n\n" +
+                  "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\nRoyaleTest_A.prototype.defaultPrevented;\n\n\n" +
         		  "RoyaleTest_A.prototype.get__defaultPrevented = function() {\n" +
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +

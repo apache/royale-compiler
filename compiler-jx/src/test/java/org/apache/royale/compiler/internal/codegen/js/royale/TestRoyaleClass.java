@@ -261,7 +261,12 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\norg.apache.royale.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.royale.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n * @type {Object}\n */\nbaz: {\nset: org.apache.royale.B.prototype.set__baz},\n/**\n * @type {Object}\n */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n */\norg.apache.royale.B = function() {\n};\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\norg.apache.royale.B.prototype.baz;\n\n\n" +
+                "org.apache.royale.B.prototype.set__baz = function(value) {\n};\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\norg.apache.royale.B.prototype.foo;\n\n\n" +
+                "org.apache.royale.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\n" +
+                "Object.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n * @type {Object}\n */\nbaz: {\nset: org.apache.royale.B.prototype.set__baz},\n/**\n * @type {Object}\n */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -270,7 +275,10 @@ public class TestRoyaleClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n * @extends {org.apache.royale.A}\n */\norg.apache.royale.B = function() {\n  org.apache.royale.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.B, org.apache.royale.A);\n\n\norg.apache.royale.B.prototype.set__foo = function(value) {\n  org.apache.royale.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\nObject.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n * @type {Object}\n */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
+        String expected = "/**\n * @constructor\n * @extends {org.apache.royale.A}\n */\norg.apache.royale.B = function() {\n  org.apache.royale.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.B, org.apache.royale.A);\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\norg.apache.royale.B.prototype.foo;\n\n\n" +
+                "org.apache.royale.B.prototype.set__foo = function(value) {\n  org.apache.royale.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\n" +
+                "Object.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n * @type {Object}\n */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -328,6 +336,14 @@ public class TestRoyaleClass extends TestGoogClass
                           "};\n" + 
                           "\n" + 
                           "\n" + 
+                          "/**\n" +
+                          " * @nocollapse\n" +
+                          " * @export\n" +
+                          " * @type {A}\n" +
+                          " */\n" +
+                          "org.apache.royale.B.A.prototype.a;\n" +
+                          "\n" +
+                          "\n" +
                           "org.apache.royale.B.A.prototype.get__a = function() {\n" + 
                           "  return null;\n" + 
                           "};\n" + 
@@ -676,14 +692,19 @@ public class TestRoyaleClass extends TestGoogClass
                 + "custom_namespace function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.royale.A = function() {\n};\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo1;\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo1 = function() {\n  return null;\n};\n\n\n" +
-        		"org.apache.royale.A.prototype.set__foo1 = function(value) {\n};\n\n\n" +
+                "org.apache.royale.A.prototype.set__foo1 = function(value) {\n};\n\n\n" +
+                "/**\n * @nocollapse\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo2;\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo2 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.royale.A.prototype.set__foo2 = function(value) {\n};\n\n\n" +
+                "/**\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo3;\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo3 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.royale.A.prototype.set__foo3 = function(value) {\n};\n\n\n" +
+                "/**\n * @nocollapse\n * @type {Object}\n */\norg.apache.royale.A.prototype.foo5;\n\n\n" +
         		"org.apache.royale.A.prototype.get__foo5 = function() {\n  return null;\n};\n\n\n" +
-        		"org.apache.royale.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
+                "org.apache.royale.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
+                "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\norg.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo6;\n\n\n" +
         		"org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__get__foo6 = function() {\n  return null;\n};\n\n\n" +
         		"org.apache.royale.A.prototype.http_$$ns_apache_org$2017$custom$namespace__set__foo6 = function(value) {\n};\n\n\n" +
         		"Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {\n/**\n * @type {Object}\n */\n" +
