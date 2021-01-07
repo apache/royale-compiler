@@ -78,12 +78,6 @@ public class FieldEmitter extends JSSubEmitter implements
     		if (def == null)  // saw this for a package reference (org in org.apache)
     			return false;
     		String qname = def.getQualifiedName();
-    		if (def instanceof IFunctionDefinition) {
-                if (vnode.getAncestorOfType(FunctionCallNode.class) != null){
-                    def = ((IFunctionDefinition) def).resolveReturnType(getProject());
-                    qname = def.getQualifiedName();
-                }
-            }
     		if (NativeUtils.isJSNative(qname))
     			return false;
     		if (def instanceof IClassDefinition)
@@ -92,6 +86,8 @@ public class FieldEmitter extends JSSubEmitter implements
     		if (def != null)
     		{
     			qname = def.getQualifiedName();
+                if (NativeUtils.isJSNative(qname))
+                    return false;
     			return !(qname.contentEquals(cdef.getQualifiedName()));
     		}
     	}
@@ -103,28 +99,12 @@ public class FieldEmitter extends JSSubEmitter implements
     		{
     			if (isExternalReference((IExpressionNode)childNode, cdef))
     				return true;
-    		} else if (childNode instanceof IContainerNode) {
-    		    if (checkContainer((IContainerNode)childNode,cdef ))
-    		        return true;
-            }
+    		}
+    		//if  childNode is a ContainerNode (e.g. argumentsNode of FunctionCallNode),
+            //should we be checking the arguments as well? Doing so (*and* returning true because one of the argument nodes is an external reference)
+            //seems to cause issues, so avoiding this for now.
     	}
     	return false;
-    }
-
-    private boolean checkContainer(IContainerNode containerNode, IClassDefinition cdef){
-        int n = containerNode.getChildCount();
-        for (int i = 0; i < n; i++)
-        {
-            IASNode childNode = containerNode.getChild(i);
-            if (childNode instanceof IExpressionNode) {
-                if (isExternalReference((IExpressionNode)childNode, cdef))
-                    return true;
-            } else if (childNode instanceof IContainerNode) {
-                if (checkContainer((IContainerNode) childNode,cdef ))
-                    return true;
-            }
-        }
-        return false;
     }
     
     @Override
