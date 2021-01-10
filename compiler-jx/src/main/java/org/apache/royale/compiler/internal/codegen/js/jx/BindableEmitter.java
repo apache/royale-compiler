@@ -423,7 +423,7 @@ public class BindableEmitter extends JSSubEmitter implements
                 + "var dispatcher = "
                 + qname
                 + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                + BINDABLE_DISPATCHER_NAME
+                + STATIC_DISPATCHER_GETTER
                 + ASEmitterTokens.SEMICOLON.getToken());
         writeNewline(ASEmitterTokens.INDENT.getToken()
                 + ASEmitterTokens.INDENT.getToken()
