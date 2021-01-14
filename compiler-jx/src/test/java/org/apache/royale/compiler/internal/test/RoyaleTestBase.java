@@ -26,7 +26,9 @@ import java.util.List;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
+import org.apache.royale.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
@@ -56,6 +58,17 @@ public class RoyaleTestBase extends TestBase
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
         mxmlBlockWalker = backend.createMXMLWalker(project, errors,
                 mxmlEmitter, asEmitter, asBlockWalker);
+    }
+
+    @Override
+    protected void addNamespaceMappings(
+            List<IMXMLNamespaceMapping> namespaceMappings)
+    {
+        namespaceMappings.add(new MXMLNamespaceMapping(
+                "http://ns.adobe.com/mxml/2009",
+                FilenameNormalization.normalize("../compiler/src/test/resources/mxml-2009-manifest.xml")));
+
+        super.addNamespaceMappings(namespaceMappings);
     }
 
     @Override
