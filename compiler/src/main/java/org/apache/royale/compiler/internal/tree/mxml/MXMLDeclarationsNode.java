@@ -19,7 +19,6 @@
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
-import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -28,6 +27,7 @@ import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLDeclarationsNode;
@@ -90,23 +90,9 @@ class MXMLDeclarationsNode extends MXMLNodeBase implements IMXMLDeclarationsNode
             }
             else 
             {
-                String uri = childTag.getURI();
-                if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
-                {
-                    String shortName = childTag.getShortName();
-                    // for some reason, the factory is looking for the full qname
-                    if (shortName.equals(IASLanguageConstants.Vector))
-                        shortName = IASLanguageConstants.Vector_qname;
-                    MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
-                            builder, shortName, this);
-                    instanceNode.setClassReference(project, childTag.getShortName());
-                    instanceNode.initializeFromTag(builder, childTag);
-                    info.addChildNode(instanceNode);
-                }
-                else
-                {
-                    super.processChildTag(builder, tag, childTag, info);
-                }
+                MXMLUnresolvedTagProblem problem = new MXMLUnresolvedTagProblem(childTag);
+                builder.addProblem(problem);
+                return;
             }
         }
     }

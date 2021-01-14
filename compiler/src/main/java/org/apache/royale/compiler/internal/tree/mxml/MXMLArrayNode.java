@@ -30,13 +30,11 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
-import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
 import org.apache.royale.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
-import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
@@ -160,20 +158,9 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         }
         else
         {
-            String uri = childTag.getURI();
-            if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
-            {
-                MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
-                        builder, childTag.getShortName(), this);
-                instanceNode.setClassReference(project, childTag.getShortName());
-                instanceNode.initializeFromTag(builder, childTag);
-                info.addChildNode(instanceNode);
-            }
-            else
-            {
-                builder.addProblem(new MXMLUnresolvedTagProblem(childTag));
-                return;
-            }
+            MXMLUnresolvedTagProblem problem = new MXMLUnresolvedTagProblem(childTag);
+            builder.addProblem(problem);
+            return;
         }
     }
 

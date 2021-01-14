@@ -27,6 +27,7 @@ import org.apache.royale.compiler.problems.MXMLIncompatibleVectorElementProblem;
 import org.apache.royale.compiler.problems.MXMLInvalidVectorFixedAttributeProblem;
 import org.apache.royale.compiler.problems.MXMLInvalidVectorTypeAttributeProblem;
 import org.apache.royale.compiler.problems.MXMLMissingVectorTypeAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -220,7 +221,9 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
         }
         else
         {
-            super.processChildTag(builder, tag, childTag, info);
+            MXMLUnresolvedTagProblem problem = new MXMLUnresolvedTagProblem(childTag);
+            builder.addProblem(problem);
+            return;
         }
     }
 

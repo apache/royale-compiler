@@ -47,7 +47,6 @@ import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.MXMLFileScope;
 import org.apache.royale.compiler.internal.scopes.TypeScope;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
-import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
@@ -527,19 +526,9 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                 }
                 else
                 {
-                    String uri = childTag.getURI();
-                    if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
-                    {
-                        instanceNode = MXMLInstanceNode.createInstanceNode(
-                                builder, childTag.getShortName(), this);
-                        instanceNode.setClassReference(project, childTag.getShortName());
-                        instanceNode.initializeFromTag(builder, childTag);
-                    }
-                    else
-                    {
-                        ICompilerProblem problem = new MXMLUnresolvedTagProblem(childTag);
-                        builder.addProblem(problem);
-                    }
+                    MXMLUnresolvedTagProblem problem = new MXMLUnresolvedTagProblem(childTag);
+                    builder.addProblem(problem);
+                    return;
                 }
             }
 
