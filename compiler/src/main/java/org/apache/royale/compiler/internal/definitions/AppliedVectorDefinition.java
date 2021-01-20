@@ -43,6 +43,7 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.exceptions.MissingBuiltinException;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
@@ -603,6 +604,10 @@ public final class AppliedVectorDefinition extends ClassDefinitionBase implement
         
         IResolvedQualifiersReference vectorReference = ReferenceFactory.resolvedQualifierQualifiedReference(project.getWorkspace(), vectorImplPackage, baseName);
         IDefinition vectorIDefinition = vectorReference.resolve(project);
+        if(vectorIDefinition == null)
+        {
+            throw new MissingBuiltinException(baseName);
+        }
         assert vectorIDefinition instanceof IClassDefinition :
             "Unable to find: " + vectorReference.getDisplayString();
         return (IClassDefinition) vectorIDefinition;
