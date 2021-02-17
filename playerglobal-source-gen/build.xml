@@ -79,8 +79,8 @@
             <src path="${playerglobal-source-gen}/src/main/java"/>
             <classpath>
                 <pathelement location="${playerglobal-source-gen}/target/classes"/>
-                <fileset dir="${playerglobal-source-gen}/../compiler-jx/lib/google" includes="**/*.jar"/>
-                <fileset dir="${playerglobal-source-gen}/../compiler/lib" includes="compiler-common.jar,external/flex-tool-api.jar"/>
+                <fileset dir="${playerglobal-source-gen}/../compiler-jx/lib" includes="dom4j.jar"/>
+                <fileset dir="${playerglobal-source-gen}/../compiler/lib/external" includes="commons-io.jar"/>
             </classpath>
         </javac>
     </target>

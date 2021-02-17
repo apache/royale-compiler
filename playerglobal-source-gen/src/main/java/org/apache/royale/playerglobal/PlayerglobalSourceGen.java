@@ -233,11 +233,11 @@ class PlayerglobalSourceGen {
 		boolean isAIROnly = isAIROnly(apiClassifierElement.element("prolog"));
 		boolean isVector = className.startsWith("Vector$");
 
-		Set<String> importFullyQualifiedNames = new HashSet<>();
+		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiClassifierElement, packageName, importFullyQualifiedNames);
 
 		String baseClassFullyQualifiedName = "";
-		List<String> interfaceFullyQualifiedNames = new ArrayList<>();
+		List<String> interfaceFullyQualifiedNames = new ArrayList<String>();
 		String access = null;
 		boolean isFinal = false;
 		boolean isDynamic = false;
@@ -364,10 +364,10 @@ class PlayerglobalSourceGen {
 
 		boolean isAIROnly = isAIROnly(apiClassifierElement.element("prolog"));
 
-		Set<String> importFullyQualifiedNames = new HashSet<>();
+		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiClassifierElement, packageName, importFullyQualifiedNames);
 
-		List<String> interfaceFullyQualifiedNames = new ArrayList<>();
+		List<String> interfaceFullyQualifiedNames = new ArrayList<String>();
 		String access = null;
 
 		Element apiClassifierDetailElement = apiClassifierElement.element("apiClassifierDetail");
@@ -458,7 +458,7 @@ class PlayerglobalSourceGen {
 			fullyQualifiedName = packageName + "." + parts[1];
 		}
 
-		Set<String> importFullyQualifiedNames = new HashSet<>();
+		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiOperationElement, packageName, importFullyQualifiedNames);
 
 		boolean isAIROnly = isAIROnly(apiOperationElement.element("prolog"));
@@ -504,7 +504,7 @@ class PlayerglobalSourceGen {
 			return;
 		}
 
-		Set<String> importFullyQualifiedNames = new HashSet<>();
+		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiValueElement, packageName, importFullyQualifiedNames);
 
 		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
@@ -791,32 +791,28 @@ class PlayerglobalSourceGen {
 
 	private String parseReturnOrParamType(Element apiTypeElement, String contextClassName) throws Exception {
 		String apiTypeValue = apiTypeElement.attributeValue("value");
-		switch (apiTypeValue) {
-			case "restParam": {
-				return null;
+		if ("restParam".equals(apiTypeValue)) {
+			return null;
+		}
+		if ("any".equals(apiTypeValue)) {
+			return "*";
+		}
+		if ("T".equals(apiTypeValue)) {
+			return "T";
+		}
+		if ("void".equals(apiTypeValue)) {
+			return "void";
+		}
+		if (apiTypeValue.startsWith("Vector$")) {
+			String[] parts = apiTypeValue.split("\\$");
+			String vectorItemType = parts[1];
+			vectorItemType = vectorItemType.replace(":", ".");
+			if (contextClassName != null && contextClassName.startsWith("Vector$") && vectorItemType.equals("T")) {
+				return contextClassName;
 			}
-			case "any": {
-				return "*";
-			}
-			case "T": {
-				return "T";
-			}
-			case "void": {
-				return "void";
-			}
-			default:
-				if (apiTypeValue.startsWith("Vector$")) {
-					String[] parts = apiTypeValue.split("\\$");
-					String vectorItemType = parts[1];
-					vectorItemType = vectorItemType.replace(":", ".");
-					if (contextClassName != null && contextClassName.startsWith("Vector$")
-							&& vectorItemType.equals("T")) {
-						return contextClassName;
-					}
-					return "Vector.<" + vectorItemType + ">";
-				} else {
-					throw new Exception("Unknown apiType value: " + apiTypeValue);
-				}
+			return "Vector.<" + vectorItemType + ">";
+		} else {
+			throw new Exception("Unknown apiType value: " + apiTypeValue);
 		}
 	}
 
@@ -889,146 +885,140 @@ class PlayerglobalSourceGen {
 	}
 
 	private void collectImports(Element element, String forPackage, Set<String> result) throws Exception {
-		switch (element.getName()) {
-			case "apiClassifier": {
-				String className = element.element("apiName").getTextTrim();
+		String elementName = element.getName();
+		if ("apiClassifier".equals(elementName)) {
+			String className = element.element("apiName").getTextTrim();
 
-				Element apiClassifierDetailElement = element.element("apiClassifierDetail");
-				if (apiClassifierDetailElement == null) {
-					throw new Exception("apiClassifierDetail not found for: " + className);
-				}
-				Element apiClassifierDefElement = apiClassifierDetailElement.element("apiClassifierDef");
-				if (apiClassifierDefElement == null) {
-					throw new Exception("apiClassifierDef not found for: " + className);
-				}
-
-				Element apiBaseClassifierElement = apiClassifierDefElement.element("apiBaseClassifier");
-				if (apiBaseClassifierElement != null) {
-					String baseClassType = apiBaseClassifierElement.getTextTrim();
-					collectImport(baseClassType, forPackage, result);
-				}
-
-				List<Element> apiBaseInterfaceElements = apiClassifierDefElement.elements("apiBaseInterface");
-				for (Element apiBaseInterfaceElement : apiBaseInterfaceElements) {
-					String interfaceType = apiBaseInterfaceElement.getTextTrim();
-					collectImport(interfaceType, forPackage, result);
-				}
-
-				Element apiConstructorElement = element.element("apiConstructor");
-				if (apiConstructorElement != null) {
-					collectImports(apiConstructorElement, forPackage, result);
-				}
-
-				List<Element> apiOperationElements = element.elements("apiOperation");
-				for (Element apiOperationElement : apiOperationElements) {
-					collectImports(apiOperationElement, forPackage, result);
-				}
-
-				List<Element> apiValueElements = element.elements("apiValue");
-				for (Element apiValueElement : apiValueElements) {
-					collectImports(apiValueElement, forPackage, result);
-				}
-
-				break;
+			Element apiClassifierDetailElement = element.element("apiClassifierDetail");
+			if (apiClassifierDetailElement == null) {
+				throw new Exception("apiClassifierDetail not found for: " + className);
 			}
-			case "apiOperation": {
-				String functionName = element.element("apiName").getTextTrim();
-
-				Element apiOperationDetailElement = element.element("apiOperationDetail");
-				if (apiOperationDetailElement == null) {
-					throw new Exception("apiOperationDetail not found for: " + functionName);
-				}
-				Element apiOperationDefElement = apiOperationDetailElement.element("apiOperationDef");
-				if (apiOperationDefElement == null) {
-					throw new Exception("apiOperationDef not found for: " + functionName);
-				}
-
-				Element apiReturnElement = apiOperationDefElement.element("apiReturn");
-				if (apiReturnElement != null) {
-					Element apiTypeElement = apiOperationDefElement.element("apiType");
-					if (apiTypeElement != null) {
-						String apiTypeValue = apiTypeElement.attributeValue("value");
-						if (apiTypeValue.startsWith("Vector$")) {
-							String[] parts = apiTypeValue.split("\\$");
-							String vectorItemType = parts[1];
-							collectImport(vectorItemType, forPackage, result);
-						}
-					}
-					Element apiOperationClassifierElement = apiReturnElement.element("apiOperationClassifier");
-					if (apiOperationClassifierElement != null) {
-						String returnType = apiOperationClassifierElement.getTextTrim();
-						collectImport(returnType, forPackage, result);
-					}
-				}
-
-				List<Element> apiParamElements = apiOperationDefElement.elements("apiParam");
-				for (Element apiParamElement : apiParamElements) {
-					Element apiTypeElement = apiParamElement.element("apiType");
-					if (apiTypeElement != null) {
-						String apiTypeValue = apiTypeElement.attributeValue("value");
-						if (apiTypeValue.startsWith("Vector$")) {
-							String[] parts = apiTypeValue.split("\\$");
-							String vectorItemType = parts[1];
-							collectImport(vectorItemType, forPackage, result);
-						}
-					}
-					Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
-					if (apiOperationClassifierElement != null) {
-						String paramType = apiOperationClassifierElement.getTextTrim();
-						collectImport(paramType, forPackage, result);
-					}
-				}
-				break;
+			Element apiClassifierDefElement = apiClassifierDetailElement.element("apiClassifierDef");
+			if (apiClassifierDefElement == null) {
+				throw new Exception("apiClassifierDef not found for: " + className);
 			}
-			case "apiConstructor": {
-				String functionName = element.element("apiName").getTextTrim();
 
-				Element aapiConstructorDetailElement = element.element("apiConstructorDetail");
-				if (aapiConstructorDetailElement == null) {
-					throw new Exception("apiConstructor not found for: " + functionName);
-				}
-				Element apiConstructorDefElement = aapiConstructorDetailElement.element("apiConstructorDef");
-				if (apiConstructorDefElement == null) {
-					throw new Exception("apiConstructorDef not found for: " + functionName);
-				}
-
-				List<Element> apiParamElements = apiConstructorDefElement.elements("apiParam");
-				for (Element apiParamElement : apiParamElements) {
-					Element apiTypeElement = apiParamElement.element("apiType");
-					if (apiTypeElement != null) {
-						String apiTypeValue = apiTypeElement.attributeValue("value");
-						if (apiTypeValue.startsWith("Vector$")) {
-							String[] parts = apiTypeValue.split("\\$");
-							String vectorItemType = parts[1];
-							collectImport(vectorItemType, forPackage, result);
-						}
-					}
-					Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
-					if (apiOperationClassifierElement != null) {
-						String paramType = apiOperationClassifierElement.getTextTrim();
-						collectImport(paramType, forPackage, result);
-					}
-				}
-				break;
+			Element apiBaseClassifierElement = apiClassifierDefElement.element("apiBaseClassifier");
+			if (apiBaseClassifierElement != null) {
+				String baseClassType = apiBaseClassifierElement.getTextTrim();
+				collectImport(baseClassType, forPackage, result);
 			}
-			case "apiValue": {
-				String variableName = element.element("apiName").getTextTrim();
 
-				Element apiValueDetailElement = element.element("apiValueDetail");
-				if (apiValueDetailElement == null) {
-					throw new Exception("apiValueDetail not found for: " + variableName);
-				}
-				Element apiValueDefElement = apiValueDetailElement.element("apiValueDef");
-				if (apiValueDefElement == null) {
-					throw new Exception("apiValueDef not found for: " + variableName);
-				}
+			List<Element> apiBaseInterfaceElements = apiClassifierDefElement.elements("apiBaseInterface");
+			for (Element apiBaseInterfaceElement : apiBaseInterfaceElements) {
+				String interfaceType = apiBaseInterfaceElement.getTextTrim();
+				collectImport(interfaceType, forPackage, result);
+			}
 
-				Element apiValueClassifierElement = apiValueDefElement.element("apiValueClassifier");
-				if (apiValueClassifierElement != null) {
-					String variableType = apiValueClassifierElement.getTextTrim();
-					collectImport(variableType, forPackage, result);
+			Element apiConstructorElement = element.element("apiConstructor");
+			if (apiConstructorElement != null) {
+				collectImports(apiConstructorElement, forPackage, result);
+			}
+
+			List<Element> apiOperationElements = element.elements("apiOperation");
+			for (Element apiOperationElement : apiOperationElements) {
+				collectImports(apiOperationElement, forPackage, result);
+			}
+
+			List<Element> apiValueElements = element.elements("apiValue");
+			for (Element apiValueElement : apiValueElements) {
+				collectImports(apiValueElement, forPackage, result);
+			}
+		}
+		if ("apiOperation".equals(elementName)) {
+			String functionName = element.element("apiName").getTextTrim();
+
+			Element apiOperationDetailElement = element.element("apiOperationDetail");
+			if (apiOperationDetailElement == null) {
+				throw new Exception("apiOperationDetail not found for: " + functionName);
+			}
+			Element apiOperationDefElement = apiOperationDetailElement.element("apiOperationDef");
+			if (apiOperationDefElement == null) {
+				throw new Exception("apiOperationDef not found for: " + functionName);
+			}
+
+			Element apiReturnElement = apiOperationDefElement.element("apiReturn");
+			if (apiReturnElement != null) {
+				Element apiTypeElement = apiOperationDefElement.element("apiType");
+				if (apiTypeElement != null) {
+					String apiTypeValue = apiTypeElement.attributeValue("value");
+					if (apiTypeValue.startsWith("Vector$")) {
+						String[] parts = apiTypeValue.split("\\$");
+						String vectorItemType = parts[1];
+						collectImport(vectorItemType, forPackage, result);
+					}
 				}
-				break;
+				Element apiOperationClassifierElement = apiReturnElement.element("apiOperationClassifier");
+				if (apiOperationClassifierElement != null) {
+					String returnType = apiOperationClassifierElement.getTextTrim();
+					collectImport(returnType, forPackage, result);
+				}
+			}
+
+			List<Element> apiParamElements = apiOperationDefElement.elements("apiParam");
+			for (Element apiParamElement : apiParamElements) {
+				Element apiTypeElement = apiParamElement.element("apiType");
+				if (apiTypeElement != null) {
+					String apiTypeValue = apiTypeElement.attributeValue("value");
+					if (apiTypeValue.startsWith("Vector$")) {
+						String[] parts = apiTypeValue.split("\\$");
+						String vectorItemType = parts[1];
+						collectImport(vectorItemType, forPackage, result);
+					}
+				}
+				Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
+				if (apiOperationClassifierElement != null) {
+					String paramType = apiOperationClassifierElement.getTextTrim();
+					collectImport(paramType, forPackage, result);
+				}
+			}
+		}
+		if ("apiConstructor".equals(elementName)) {
+			String functionName = element.element("apiName").getTextTrim();
+
+			Element aapiConstructorDetailElement = element.element("apiConstructorDetail");
+			if (aapiConstructorDetailElement == null) {
+				throw new Exception("apiConstructor not found for: " + functionName);
+			}
+			Element apiConstructorDefElement = aapiConstructorDetailElement.element("apiConstructorDef");
+			if (apiConstructorDefElement == null) {
+				throw new Exception("apiConstructorDef not found for: " + functionName);
+			}
+
+			List<Element> apiParamElements = apiConstructorDefElement.elements("apiParam");
+			for (Element apiParamElement : apiParamElements) {
+				Element apiTypeElement = apiParamElement.element("apiType");
+				if (apiTypeElement != null) {
+					String apiTypeValue = apiTypeElement.attributeValue("value");
+					if (apiTypeValue.startsWith("Vector$")) {
+						String[] parts = apiTypeValue.split("\\$");
+						String vectorItemType = parts[1];
+						collectImport(vectorItemType, forPackage, result);
+					}
+				}
+				Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
+				if (apiOperationClassifierElement != null) {
+					String paramType = apiOperationClassifierElement.getTextTrim();
+					collectImport(paramType, forPackage, result);
+				}
+			}
+		}
+		if ("apiValue".equals(elementName)) {
+			String variableName = element.element("apiName").getTextTrim();
+
+			Element apiValueDetailElement = element.element("apiValueDetail");
+			if (apiValueDetailElement == null) {
+				throw new Exception("apiValueDetail not found for: " + variableName);
+			}
+			Element apiValueDefElement = apiValueDetailElement.element("apiValueDef");
+			if (apiValueDefElement == null) {
+				throw new Exception("apiValueDef not found for: " + variableName);
+			}
+
+			Element apiValueClassifierElement = apiValueDefElement.element("apiValueClassifier");
+			if (apiValueClassifierElement != null) {
+				String variableType = apiValueClassifierElement.getTextTrim();
+				collectImport(variableType, forPackage, result);
 			}
 		}
 	}
