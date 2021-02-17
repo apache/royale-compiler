@@ -859,8 +859,9 @@ class PlayerglobalSourceGen {
 		if ("unknown".equals(paramValue)) {
 			paramValue = "null";
 		}
-		boolean isString = ("String".equals(varType) || paramValue.matches("[A-Za-z]+")) && !"null".equals(paramValue)
-				&& !"NaN".equals(paramValue) && !"true".equals(paramValue) && !"false".equals(paramValue);
+		boolean isString = ("String".equals(varType) || paramValue.matches("[A-Za-z\\*]+"))
+				&& !"undefined".equals(paramValue) && !"null".equals(paramValue) && !"NaN".equals(paramValue)
+				&& !"true".equals(paramValue) && !"false".equals(paramValue);
 		if (isString) {
 			builder.append("\"");
 		}
