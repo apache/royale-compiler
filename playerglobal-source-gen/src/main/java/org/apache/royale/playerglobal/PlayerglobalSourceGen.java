@@ -166,13 +166,16 @@ class PlayerglobalSourceGen {
 	}
 
 	private void parsePackage(Element apiPackageElement) throws Exception {
-		for (Element apiOperationElement : apiPackageElement.elements("apiOperation")) {
+		List<Element> apiOperationElements = apiPackageElement.elements("apiOperation");
+		for (Element apiOperationElement : apiOperationElements) {
 			parsePackageFunction(apiOperationElement);
 		}
-		for (Element apiValueElement : apiPackageElement.elements("apiValue")) {
+		List<Element> apiValueElements = apiPackageElement.elements("apiValue");
+		for (Element apiValueElement : apiValueElements) {
 			parsePackageVariable(apiValueElement);
 		}
-		for (Element apiClassifierElement : apiPackageElement.elements("apiClassifier")) {
+		List<Element> apiClassifierElements = apiPackageElement.elements("apiClassifier");
+		for (Element apiClassifierElement : apiClassifierElements) {
 			Element apiClassifierDetailElement = apiClassifierElement.element("apiClassifierDetail");
 			if (apiClassifierDetailElement == null) {
 				String fullyQualifiedName = apiClassifierElement.attributeValue("id");
