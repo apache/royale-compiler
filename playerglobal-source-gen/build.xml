@@ -1,0 +1,141 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="playerglobal-source-gen" default="main" basedir=".">
+
+    <!-- 
+
+        PROPERTIES
+
+    -->
+
+    <!-- The 'playerglobal-source-gen' property is the absolute path, with forward slashes, -->
+    <!-- to the 'playerglobal-source-gen' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${playerglobal-source-gen}. -->
+    <pathconvert property="playerglobal-source-gen" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    
+    <!-- The 'compiler-jx' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler-jx' directory that is a sibling of the parent folder of this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-jx}. -->
+    <pathconvert property="compiler-jx" dirsep="/">
+        <path location="${basedir}/../compiler-jx"/>
+    </pathconvert>
+
+    <property name="sdk" value="${compiler-jx}/lib"/>
+
+    <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
+    <property file="${playerglobal-source-gen}/local.properties"/>
+    
+    <property name="src.depend" value="true"/>
+
+    <!-- Options for <javac> tasks -->
+    <property name="javac.debug" value="true"/>
+    <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
+
+    <!-- JAR manifest entries -->
+    <property name="manifest.sealed" value="false"/>
+    <property name="manifest.Implementation-Title" value="Apache Royale PlayerGlobal Source Generator"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
+    <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+    
+    <!-- label is set by CruiseControl script based on P4 label incrementer -->
+    <condition property="build.number" value="${env.BUILD_NUMBER}">
+        <isset property="env.BUILD_NUMBER"/>
+    </condition>
+    
+    <!--
+
+        playerglobal-source-gen
+
+    -->
+    
+    <target name="compile" >
+        <mkdir dir="${playerglobal-source-gen}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${playerglobal-source-gen}/target/classes" includeAntRuntime="true" includes="**/*.java"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${playerglobal-source-gen}/src/main/java"/>
+            <classpath>
+                <pathelement location="${playerglobal-source-gen}/target/classes"/>
+                <fileset dir="${playerglobal-source-gen}/../compiler-jx/lib/google" includes="**/*.jar"/>
+                <fileset dir="${playerglobal-source-gen}/../compiler/lib" includes="compiler-common.jar,external/flex-tool-api.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="prebuild">
+        <mkdir dir="${playerglobal-source-gen}/target/classes" />
+        <mkdir dir="${playerglobal-source-gen}/target/classes/META-INF" />
+    </target>
+    
+    <target name="main" depends="prebuild,compile" >
+        <mkdir dir="${sdk}"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${playerglobal-source-gen}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${playerglobal-source-gen}/target/classes/META-INF/NOTICE"/>
+        <jar file="${sdk}/playerglobal-source-gen.jar" basedir="${playerglobal-source-gen}/target/classes" includes="**/*.properties,org/apache/**/*,com/google/javascript/**/*,META-INF/**/*">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+                <attribute name="Main-Class" value="org.apache.royale.playerglobal.PlayerglobalSourceGen" />
+                <attribute name="Class-Path" value="../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler-jx/lib/dom4j.jar dom4j.jar"/>
+                <!-- The .. in the line above allows the compiler to load the env.properties file -->
+            </manifest>
+        </jar>
+        <antcall target="test" />
+        <antcall target="jar-test" />
+    </target>
+
+    <target name="test" >
+        <!--<ant dir="src/test" />-->
+    </target>
+    
+    <target name="jar-test" >
+        <!--<echo>using playerglobal-source-gen.jar from ${sdk}</echo>
+        <java jar="${sdk}/playerglobal-source-gen.jar" fork="true"
+            failonerror="true">
+            <arg value="playerglobal/bundles/en_US/docs"/>
+        </java>-->
+    </target>
+    
+    <!--
+
+        CLEANUP
+
+    -->
+
+    <target name="clean" description="clean">
+        <delete dir="${playerglobal-source-gen}/target/classes"/>
+        <delete file="${playerglobal-source-gen}/target/playerglobal.swc"/>
+    </target>
+
+    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
+        <delete dir="${playerglobal-source-gen}/target"/>
+    </target>
+
+ </project>
