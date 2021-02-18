@@ -78,7 +78,7 @@
       <version>2.4</version>
     </dependency>
     <dependency>
-      <groupId>org.dom4j</groupId>
+      <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6.1</version>
     </dependency>
