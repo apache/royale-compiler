@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -285,7 +286,7 @@ class PlayerglobalSourceGen {
 			isDynamic = true;
 		}
 
-		Element apiConstructorElement = apiClassifierElement.element("apiConstructor");
+		List<Element> apiConstructorElements = apiClassifierElement.elements("apiConstructor");
 		List<Element> apiOperationElements = apiClassifierElement.elements("apiOperation");
 		List<Element> apiValueElements = apiClassifierElement.elements("apiValue");
 
@@ -332,8 +333,8 @@ class PlayerglobalSourceGen {
 		classBuilder.append(" ");
 		classBuilder.append("{");
 		classBuilder.append("\n");
-		if (apiConstructorElement != null) {
-			parseConstructor(apiConstructorElement, className, classBuilder);
+		if (apiConstructorElements.size() > 0) {
+			parseConstructor(apiConstructorElements, className, classBuilder);
 		}
 		for (Element apiOperationElement : apiOperationElements) {
 			parseFunction(apiOperationElement, className, false, classBuilder);
@@ -754,28 +755,34 @@ class PlayerglobalSourceGen {
 		functionBuilder.append("\n");
 	}
 
-	private void parseConstructor(Element apiConstructorElement, String contextClassName, StringBuilder functionBuilder)
-			throws Exception {
-		String constructorName = contextClassName != null ? contextClassName
-				: apiConstructorElement.element("apiName").getTextTrim();
-
+	private void parseConstructor(List<Element> apiConstructorElements, String contextClassName,
+			StringBuilder functionBuilder) throws Exception {
+		String constructorName = contextClassName;
 		String access = null;
+		List<Element> apiParamElements = null;
 
-		Element apiConstructorDetailElement = apiConstructorElement.element("apiConstructorDetail");
-		if (apiConstructorDetailElement == null) {
-			throw new Exception("apiConstructorDetail not found for: " + constructorName);
-		}
-		Element apiConstructorDefElement = apiConstructorDetailElement.element("apiConstructorDef");
-		if (apiConstructorDefElement == null) {
-			throw new Exception("apiConstructorDef not found for: " + constructorName);
-		}
+		for (Element apiConstructorElement : apiConstructorElements) {
+			if (constructorName == null) {
+				constructorName = apiConstructorElement.element("apiName").getTextTrim();
+			}
 
-		Element apiAccessElement = apiConstructorDefElement.element("apiAccess");
-		if (apiAccessElement != null) {
-			access = apiAccessElement.attributeValue("value");
-		}
+			Element apiConstructorDetailElement = apiConstructorElement.element("apiConstructorDetail");
+			if (apiConstructorDetailElement == null) {
+				throw new Exception("apiConstructorDetail not found for: " + constructorName);
+			}
+			Element apiConstructorDefElement = apiConstructorDetailElement.element("apiConstructorDef");
+			if (apiConstructorDefElement == null) {
+				throw new Exception("apiConstructorDef not found for: " + constructorName);
+			}
 
-		List<Element> apiParamElements = apiConstructorDefElement.elements("apiParam");
+			Element apiAccessElement = apiConstructorDefElement.element("apiAccess");
+			if (apiAccessElement != null) {
+				access = apiAccessElement.attributeValue("value");
+			}
+
+			List<Element> newApiParamElements = apiConstructorDefElement.elements("apiParam");
+			apiParamElements = mergeParameters(apiParamElements, newApiParamElements);
+		}
 
 		functionBuilder.append("\t");
 		if (access != null && access.length() > 0) {
@@ -790,6 +797,138 @@ class PlayerglobalSourceGen {
 		functionBuilder.append(")");
 		functionBuilder.append(";");
 		functionBuilder.append("\n");
+	}
+
+	private List<Element> mergeParameters(List<Element> apiParamElements1, List<Element> apiParamElements2)
+			throws Exception {
+		if (apiParamElements1 == null) {
+			return apiParamElements2;
+		}
+		if (apiParamElements2 == null) {
+			return apiParamElements1;
+		}
+		ArrayList<Element> result = new ArrayList<Element>();
+		for (int i = 0, count = Math.max(apiParamElements1.size(), apiParamElements2.size()); i < count; i++) {
+			Element apiParamElement1 = (apiParamElements1.size() > i) ? apiParamElements1.get(i) : null;
+			Element apiParamElement2 = (apiParamElements2.size() > i) ? apiParamElements2.get(i) : null;
+			if (apiParamElement1 == null) {
+				Element apiDataElement2 = apiParamElement2.element("apiData");
+				if (apiDataElement2 == null) {
+					apiDataElement2 = DocumentHelper.createElement("apiData");
+					apiDataElement2.setText("null");
+					apiParamElement2.add(apiDataElement2);
+				}
+				boolean isRest = false;
+				Element apiTypeElement2 = apiParamElement2.element("apiType");
+				if (apiTypeElement2 != null) {
+					String apiTypeValue2 = apiTypeElement2.attributeValue("value");
+					if ("restParam".equals(apiTypeValue2)) {
+						isRest = true;
+					}
+					apiParamElement2.remove(apiTypeElement2);
+				}
+				apiTypeElement2 = DocumentHelper.createElement("apiType");
+				if (isRest) {
+					apiTypeElement2.addAttribute("value", "restParam");
+				} else {
+					apiTypeElement2.addAttribute("value", "any");
+				}
+				apiParamElement2.add(apiTypeElement2);
+				Element apiOperationClassifierElement2 = apiParamElement2.element("apiOperationClassifier");
+				if (apiOperationClassifierElement2 != null) {
+					apiParamElement2.remove(apiOperationClassifierElement2);
+				}
+				result.add(apiParamElement2);
+				if (isRest) {
+					//nothing after rest
+					break;
+				}
+				continue;
+			}
+			if (apiParamElement2 == null) {
+				Element apiDataElement1 = apiParamElement1.element("apiData");
+				if (apiDataElement1 == null) {
+					apiDataElement1 = DocumentHelper.createElement("apiData");
+					apiDataElement1.setText("null");
+					apiParamElement1.add(apiDataElement1);
+				}
+				boolean isRest = false;
+				Element apiTypeElement1 = apiParamElement1.element("apiType");
+				if (apiTypeElement1 != null) {
+					String apiTypeValue1 = apiTypeElement1.attributeValue("value");
+					if ("restParam".equals(apiTypeValue1)) {
+						isRest = true;
+					}
+					apiParamElement1.remove(apiTypeElement1);
+				}
+				apiTypeElement1 = DocumentHelper.createElement("apiType");
+				if (isRest) {
+					apiTypeElement1.addAttribute("value", "restParam");
+				} else {
+					apiTypeElement1.addAttribute("value", "any");
+				}
+				apiParamElement1.add(apiTypeElement1);
+				Element apiOperationClassifierElement1 = apiParamElement1.element("apiOperationClassifier");
+				if (apiOperationClassifierElement1 != null) {
+					apiParamElement1.remove(apiOperationClassifierElement1);
+				}
+				result.add(apiParamElement1);
+				if (isRest) {
+					//nothing after rest
+					break;
+				}
+				continue;
+			}
+
+			String paramName = "param" + i;
+			boolean isRest = false;
+			Element apiTypeElement1 = apiParamElement1.element("apiType");
+			if (apiTypeElement1 != null) {
+				String apiTypeValue1 = apiTypeElement1.attributeValue("value");
+				if ("restParam".equals(apiTypeValue1)) {
+					isRest = true;
+					Element apiItemNameElement1 = apiParamElement1.element("apiItemName");
+					if (apiItemNameElement1 != null) {
+						//keep the existing name
+						paramName = apiItemNameElement1.getTextTrim();
+					}
+				}
+			}
+			Element apiTypeElement2 = apiParamElement2.element("apiType");
+			if (apiTypeElement2 != null) {
+				String apiTypeValue2 = apiTypeElement2.attributeValue("value");
+				if ("restParam".equals(apiTypeValue2)) {
+					isRest = true;
+					Element apiItemNameElement2 = apiParamElement2.element("apiItemName");
+					if (apiItemNameElement2 != null) {
+						//keep the existing name
+						paramName = apiItemNameElement2.getTextTrim();
+					}
+				}
+			}
+			Element newApiParamElement = DocumentHelper.createElement("apiParam");
+			Element apiItemNameElement = DocumentHelper.createElement("apiItemName");
+			apiItemNameElement.setText(paramName);
+			newApiParamElement.add(apiItemNameElement);
+			Element newApiTypeElement = DocumentHelper.createElement("apiType");
+			if (isRest) {
+				newApiTypeElement.addAttribute("value", "restParam");
+			} else {
+				newApiTypeElement.addAttribute("value", "any");
+			}
+			newApiParamElement.add(newApiTypeElement);
+			if (!isRest) {
+				Element newApiDataElement = DocumentHelper.createElement("apiData");
+				newApiDataElement.setText("null");
+				newApiParamElement.add(newApiDataElement);
+			}
+			result.add(newApiParamElement);
+			if (isRest) {
+				//nothing after rest
+				break;
+			}
+		}
+		return result;
 	}
 
 	private String parseReturnOrParamType(Element apiTypeElement, String contextClassName) throws Exception {
