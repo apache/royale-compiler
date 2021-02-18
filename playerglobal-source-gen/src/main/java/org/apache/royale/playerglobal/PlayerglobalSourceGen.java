@@ -67,6 +67,9 @@ class PlayerglobalSourceGen {
 	}
 
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
+	//From the docs: Methods of the Object class are dynamically created on Object's prototype.
+	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
+			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
 	private static final List<String> XML_ANY_METHODS = Arrays.asList("addNamespace", "appendChild", "attribute",
 			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
 			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
@@ -728,9 +731,10 @@ class PlayerglobalSourceGen {
 
 		List<Element> apiParamElements = apiOperationDefElement.elements("apiParam");
 
-		if ("public".equals(access) && ("toString".equals(functionName) || "toLocaleString".equals(functionName))
-				|| "valueOf".equals(functionName) || "hasOwnProperty".equals(functionName)
-				|| "propertyIsEnumerable".equals(functionName)) {
+		if ("Object".equals(contextClassName) && OBJECT_PROTOTYPE_METHODS.contains(functionName)) {
+			return;
+		}
+		if ("toString".equals(functionName) && isOverride) {
 			return;
 		}
 
