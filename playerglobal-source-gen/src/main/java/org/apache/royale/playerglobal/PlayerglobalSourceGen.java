@@ -67,6 +67,10 @@ class PlayerglobalSourceGen {
 	}
 
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
+	private static final List<String> XML_ANY_METHODS = Arrays.asList("addNamespace", "appendChild", "attribute",
+			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
+			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
+			"setNamespace");
 
 	private File sourceFolder;
 	private File targetFolder;
@@ -958,10 +962,18 @@ class PlayerglobalSourceGen {
 		}
 	}
 
+	private boolean isXMLMethodThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
+		if (!"XML".equals(contextClassName) && !"XMLList".equals(contextClassName)) {
+			return false;
+		}
+		return XML_ANY_METHODS.contains(contextFunctionName);
+	}
+
 	private void parseParameters(List<Element> apiParamElements, String contextClassName, String contextFunctionName,
 			StringBuilder functionBuilder) throws Exception {
 		boolean isXMLConstructor = ("XML".equals(contextClassName) && "XML".equals(contextFunctionName))
 				|| ("XMLList".equals(contextClassName) && "XMLList".equals(contextFunctionName));
+		boolean forceAnyType = isXMLMethodThatNeedsParamsTypedAsAny(contextClassName, contextFunctionName);
 		for (int i = 0; i < apiParamElements.size(); i++) {
 			if (i > 0) {
 				functionBuilder.append(", ");
@@ -989,6 +1001,9 @@ class PlayerglobalSourceGen {
 				if (apiOperationClassifierElement != null) {
 					paramType = apiOperationClassifierElement.getTextTrim();
 					paramType = paramType.replace(":", ".");
+				}
+				if (forceAnyType) {
+					paramType = "*";
 				}
 				if (paramType != null) {
 					functionBuilder.append(":");
