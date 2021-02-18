@@ -747,7 +747,7 @@ class PlayerglobalSourceGen {
 		functionBuilder.append("function ");
 		functionBuilder.append(functionName);
 		functionBuilder.append("(");
-		parseParameters(apiParamElements, contextClassName, functionBuilder);
+		parseParameters(apiParamElements, contextClassName, functionName, functionBuilder);
 		functionBuilder.append(")");
 		functionBuilder.append(":");
 		functionBuilder.append(returnType);
@@ -793,7 +793,7 @@ class PlayerglobalSourceGen {
 		functionBuilder.append("function ");
 		functionBuilder.append(constructorName);
 		functionBuilder.append("(");
-		parseParameters(apiParamElements, contextClassName, functionBuilder);
+		parseParameters(apiParamElements, contextClassName, constructorName, functionBuilder);
 		functionBuilder.append(")");
 		functionBuilder.append(";");
 		functionBuilder.append("\n");
@@ -958,8 +958,10 @@ class PlayerglobalSourceGen {
 		}
 	}
 
-	private void parseParameters(List<Element> apiParamElements, String contextClassName, StringBuilder functionBuilder)
-			throws Exception {
+	private void parseParameters(List<Element> apiParamElements, String contextClassName, String contextFunctionName,
+			StringBuilder functionBuilder) throws Exception {
+		boolean isXMLConstructor = ("XML".equals(contextClassName) && "XML".equals(contextFunctionName))
+				|| ("XMLList".equals(contextClassName) && "XMLList".equals(contextFunctionName));
 		for (int i = 0; i < apiParamElements.size(); i++) {
 			if (i > 0) {
 				functionBuilder.append(", ");
@@ -979,18 +981,23 @@ class PlayerglobalSourceGen {
 				throw new Exception("apiItemName not found");
 			}
 			functionBuilder.append(apiItemNameElement.getTextTrim());
-			Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
-			if (apiOperationClassifierElement != null) {
-				paramType = apiOperationClassifierElement.getTextTrim();
-				paramType = paramType.replace(":", ".");
-			}
-			if (paramType != null) {
-				functionBuilder.append(":");
-				functionBuilder.append(paramType);
-			}
-			Element apiDataElement = apiParamElement.element("apiData");
-			if (apiDataElement != null) {
-				writeVariableOrParameterValue(apiDataElement, paramType, functionBuilder);
+			if (isXMLConstructor) {
+				//workaround for missing data in asdoc dita
+				functionBuilder.append(":* = null");
+			} else {
+				Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
+				if (apiOperationClassifierElement != null) {
+					paramType = apiOperationClassifierElement.getTextTrim();
+					paramType = paramType.replace(":", ".");
+				}
+				if (paramType != null) {
+					functionBuilder.append(":");
+					functionBuilder.append(paramType);
+				}
+				Element apiDataElement = apiParamElement.element("apiData");
+				if (apiDataElement != null) {
+					writeVariableOrParameterValue(apiDataElement, paramType, functionBuilder);
+				}
 			}
 		}
 	}
