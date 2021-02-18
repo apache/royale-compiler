@@ -39,6 +39,7 @@ import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.abc.semantics.MethodBodyInfo;
 import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.abc.semantics.PooledValue;
 import org.apache.royale.abc.visitors.IMethodBodyVisitor;
 import org.apache.royale.abc.visitors.IMethodVisitor;
@@ -325,7 +326,17 @@ public class ABCGenerator implements ICodeGenerator
         // but for native types, as the burm isn't run, we need to set
         // the return type here.
         String returnType = func.getReturnType();
-        mi.setReturnType(new Name(returnType));
+        int lastDotIndex = returnType.lastIndexOf('.');
+        if (lastDotIndex != -1)
+        {
+            Namespace ns = new Namespace(CONSTANT_PackageNs, returnType.substring(0, lastDotIndex));
+            String baseName = returnType.substring(lastDotIndex + 1);
+            mi.setReturnType(new Name(ns, baseName));
+        }
+        else
+        {
+            mi.setReturnType(new Name(returnType));
+        }
         
         mv.visitEnd();
     }
