@@ -262,6 +262,9 @@ public class ABCGenerator implements ICodeGenerator
         MethodInfo mi = createMethodInfo(enclosing_scope, func, alternate_name);
         if (mi.isNative())
         {
+            // previous versions didn't add the default argument values to
+            // native methods, but that led to broken signatures -JT
+            mi = createMethodInfoWithOptionalDefaultArgumentValues(enclosing_scope, func, true, alternate_name);
             generateNativeMethod(func, mi, enclosing_scope);
         }
         else
@@ -294,6 +297,9 @@ public class ABCGenerator implements ICodeGenerator
         MethodInfo mi = createMethodInfo(enclosing_scope, func, null);
         if (mi.isNative())
         {
+            // previous versions didn't add the default argument values to
+            // native methods, but that led to broken signatures -JT
+            mi = createMethodInfoWithOptionalDefaultArgumentValues(enclosing_scope, func, true, null);
             generateNativeMethod(func, mi, enclosing_scope);
             return new GenerateFunctionInParallelResult(Futures.immediateFuture(null), mi, Collections.<IVisitor>emptyList());
         }
