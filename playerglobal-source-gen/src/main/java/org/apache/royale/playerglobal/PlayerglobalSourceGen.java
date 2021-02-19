@@ -70,6 +70,8 @@ class PlayerglobalSourceGen {
 	//From the docs: Methods of the Object class are dynamically created on Object's prototype.
 	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
 			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
+	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("Boolean", "Date", "int", "Number", "RegExp",
+			"String", "uint", "XML", "XMLList");
 	private static final List<String> XML_ANY_METHODS = Arrays.asList("addNamespace", "appendChild", "attribute",
 			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
 			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
@@ -966,6 +968,13 @@ class PlayerglobalSourceGen {
 		}
 	}
 
+	private boolean isConstructorThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
+		if (!contextFunctionName.equals(contextClassName)) {
+			return false;
+		}
+		return ANY_CONSTRUCTORS.contains(contextFunctionName);
+	}
+
 	private boolean isXMLMethodThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
 		if (!"XML".equals(contextClassName) && !"XMLList".equals(contextClassName)) {
 			return false;
@@ -975,8 +984,8 @@ class PlayerglobalSourceGen {
 
 	private void parseParameters(List<Element> apiParamElements, String contextClassName, String contextFunctionName,
 			StringBuilder functionBuilder) throws Exception {
-		boolean isXMLConstructor = ("XML".equals(contextClassName) && "XML".equals(contextFunctionName))
-				|| ("XMLList".equals(contextClassName) && "XMLList".equals(contextFunctionName));
+		boolean forceOptionalConstructor = isConstructorThatNeedsParamsTypedAsAny(contextClassName,
+				contextFunctionName);
 		boolean forceAnyType = isXMLMethodThatNeedsParamsTypedAsAny(contextClassName, contextFunctionName);
 		for (int i = 0; i < apiParamElements.size(); i++) {
 			if (i > 0) {
@@ -997,7 +1006,7 @@ class PlayerglobalSourceGen {
 				throw new Exception("apiItemName not found");
 			}
 			functionBuilder.append(apiItemNameElement.getTextTrim());
-			if (isXMLConstructor) {
+			if (forceOptionalConstructor) {
 				//workaround for missing data in asdoc dita
 				functionBuilder.append(":* = null");
 			} else {
