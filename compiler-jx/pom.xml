@@ -39,8 +39,7 @@
           <archive>
             <manifestEntries>
               <Sealed>false</Sealed>
-              <Class-Path>commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar</Class-Path>
-              <!-- google-closure-library-0.0-20170809-b9c14c6b.jar google-closure-library-third-party-0.0-20170809-b9c14c6b.jar external/closure-compiler-v20181210.jar -->
+              <Class-Path>commons-io.jar guava.jar ../../lib/external/antlr.jar ../../lib/external/commons-lang.jar google/closure-compiler/compiler.jar ../../lib/compiler.jar ../../lib/compiler-common.jar</Class-Path>
             </manifestEntries>
           </archive>
         </configuration>
