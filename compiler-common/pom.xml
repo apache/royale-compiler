@@ -30,6 +30,23 @@
 
     <name>Apache Royale: Compiler: Compiler-Common</name>
     <description>The Apache Royale Compiler Common classes</description>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <Sealed>false</Sealed>
+                <Class-Path>external/commons-cli.jar external/commons-io.jar external/ guava.jar ..</Class-Path>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
   
   <dependencies>
     <dependency>
