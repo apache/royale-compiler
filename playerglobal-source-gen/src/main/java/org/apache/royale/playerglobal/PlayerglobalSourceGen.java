@@ -1055,6 +1055,9 @@ class PlayerglobalSourceGen {
 					if (apiDataElement != null) {
 						writeVariableOrParameterValue(apiDataElement, paramType, functionBuilder);
 					}
+					else if(("int".equals(contextClassName) || "uint".equals(contextClassName)) && "toString".equals(contextFunctionName)) {
+						functionBuilder.append(" = 10");
+					}
 				}
 			}
 		}
