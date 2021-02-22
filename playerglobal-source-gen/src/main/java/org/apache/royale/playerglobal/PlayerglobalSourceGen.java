@@ -25,8 +25,10 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -72,10 +74,24 @@ class PlayerglobalSourceGen {
 			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
 	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("Boolean", "Date", "int", "Number", "RegExp",
 			"String", "uint", "XML", "XMLList");
-	private static final List<String> XML_ANY_METHODS = Arrays.asList("addNamespace", "appendChild", "attribute",
+	private static final Map<String, List<String>> REST_METHODS = new HashMap<String, List<String>>();
+	{
+		REST_METHODS.put("Vector$object", Arrays.asList("sort"));
+		REST_METHODS.put("Vector$double", Arrays.asList("sort"));
+		REST_METHODS.put("Vector$int", Arrays.asList("sort"));
+		REST_METHODS.put("Vector$uint", Arrays.asList("sort"));
+	}
+	private static final Map<String, List<String>> ANY_METHODS = new HashMap<String, List<String>>();
+	{
+		REST_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute",
 			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
 			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
-			"setNamespace");
+			"setNamespace"));
+		REST_METHODS.put("XMLList", Arrays.asList("addNamespace", "appendChild", "attribute",
+			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
+			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
+			"setNamespace"));
+	}
 
 	private File sourceFolder;
 	private File targetFolder;
@@ -975,18 +991,26 @@ class PlayerglobalSourceGen {
 		return ANY_CONSTRUCTORS.contains(contextFunctionName);
 	}
 
-	private boolean isXMLMethodThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
-		if (!"XML".equals(contextClassName) && !"XMLList".equals(contextClassName)) {
+	private boolean isMethodThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
+		if(!ANY_METHODS.containsKey(contextClassName)) {
 			return false;
 		}
-		return XML_ANY_METHODS.contains(contextFunctionName);
+		return ANY_METHODS.get(contextClassName).contains(contextFunctionName);
+	}
+
+	private boolean isMethodThatNeedsRestParamOnly(String contextClassName, String contextFunctionName) {
+		if(!REST_METHODS.containsKey(contextClassName)) {
+			return false;
+		}
+		return REST_METHODS.get(contextClassName).contains(contextFunctionName);
 	}
 
 	private void parseParameters(List<Element> apiParamElements, String contextClassName, String contextFunctionName,
 			StringBuilder functionBuilder) throws Exception {
 		boolean forceOptionalConstructor = isConstructorThatNeedsParamsTypedAsAny(contextClassName,
 				contextFunctionName);
-		boolean forceAnyType = isXMLMethodThatNeedsParamsTypedAsAny(contextClassName, contextFunctionName);
+		boolean forceRest = isMethodThatNeedsRestParamOnly(contextClassName, contextFunctionName);
+		boolean forceAnyType = isMethodThatNeedsParamsTypedAsAny(contextClassName, contextFunctionName);
 		for (int i = 0; i < apiParamElements.size(); i++) {
 			if (i > 0) {
 				functionBuilder.append(", ");
@@ -994,37 +1018,43 @@ class PlayerglobalSourceGen {
 			Element apiParamElement = apiParamElements.get(i);
 			Element apiTypeElement = apiParamElement.element("apiType");
 			String paramType = null;
-			if (apiTypeElement != null) {
-				String apiTypeValue = apiTypeElement.attributeValue("value");
-				if ("restParam".equals(apiTypeValue)) {
-					functionBuilder.append("...");
-				}
-				paramType = parseReturnOrParamType(apiTypeElement, contextClassName);
+			if(forceRest) {
+				functionBuilder.append("...args");
+				break;
 			}
-			Element apiItemNameElement = apiParamElement.element("apiItemName");
-			if (apiItemNameElement == null) {
-				throw new Exception("apiItemName not found");
-			}
-			functionBuilder.append(apiItemNameElement.getTextTrim());
-			if (forceOptionalConstructor) {
-				//workaround for missing data in asdoc dita
-				functionBuilder.append(":* = null");
-			} else {
-				Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
-				if (apiOperationClassifierElement != null) {
-					paramType = apiOperationClassifierElement.getTextTrim();
-					paramType = paramType.replace(":", ".");
+			else {
+				if (apiTypeElement != null) {
+					String apiTypeValue = apiTypeElement.attributeValue("value");
+					if ("restParam".equals(apiTypeValue)) {
+						functionBuilder.append("...");
+					}
+					paramType = parseReturnOrParamType(apiTypeElement, contextClassName);
 				}
-				if (forceAnyType) {
-					paramType = "*";
+				Element apiItemNameElement = apiParamElement.element("apiItemName");
+				if (apiItemNameElement == null) {
+					throw new Exception("apiItemName not found");
 				}
-				if (paramType != null) {
-					functionBuilder.append(":");
-					functionBuilder.append(paramType);
-				}
-				Element apiDataElement = apiParamElement.element("apiData");
-				if (apiDataElement != null) {
-					writeVariableOrParameterValue(apiDataElement, paramType, functionBuilder);
+				functionBuilder.append(apiItemNameElement.getTextTrim());
+				if (forceOptionalConstructor) {
+					//workaround for missing data in asdoc dita
+					functionBuilder.append(":* = null");
+				} else {
+					Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
+					if (apiOperationClassifierElement != null) {
+						paramType = apiOperationClassifierElement.getTextTrim();
+						paramType = paramType.replace(":", ".");
+					}
+					if (forceAnyType) {
+						paramType = "*";
+					}
+					if (paramType != null) {
+						functionBuilder.append(":");
+						functionBuilder.append(paramType);
+					}
+					Element apiDataElement = apiParamElement.element("apiData");
+					if (apiDataElement != null) {
+						writeVariableOrParameterValue(apiDataElement, paramType, functionBuilder);
+					}
 				}
 			}
 		}
