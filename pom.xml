@@ -106,6 +106,7 @@
     <module>swfutils</module>
     <module>debugger</module>
     <module>flex-compiler-oem</module>
+    <module>playerglobal-source-gen</module>
     <module>royale-ant-tasks</module>
     <module>royaleunit-ant-tasks</module>
     <!--<module>royale-maven-extension</module>-->
