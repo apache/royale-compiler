@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.playerglobal;
+package org.apache.royale.compiler.clients;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.flex.tools.FlexTool;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -46,28 +47,9 @@ import org.dom4j.io.SAXReader;
  * java -jar playerglobal-source-gen.jar flex-sdk/frameworks/projects/playerglobal/bundles/en_US/docs/
  * java -jar playerglobal-source-gen.jar flex-sdk/frameworks/projects/playerglobal/bundles/en_US/docs/ target/generated-sources/
  */
-class PlayerglobalSourceGen {
-	public static void main(String[] args) {
-		if (args.length == 0) {
-			System.err.println("Must specify docs folder path");
-			System.exit(1);
-		}
-		if (args.length > 2) {
-			System.err.println("Too many arguments. Required docs folder path. Optional target folder path.");
-			System.exit(1);
-		}
-		File sourceFolder = new File(args[0]);
-		File targetFolder = (args.length == 2) ? new File(args[1])
-				: new File(System.getProperty("user.dir"), "target/generated-sources/");
-		PlayerglobalSourceGen sourceGen = new PlayerglobalSourceGen(sourceFolder, targetFolder);
-		try {
-			sourceGen.generateSources();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			System.exit(1);
-		}
-	}
+class PLAYERGLOBALC implements FlexTool {
 
+	private static final String OUTPUT_FOLDER_NAME = "playerglobal";
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
 	//From the docs: Methods of the Object class are dynamically created on Object's prototype.
 	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
@@ -97,9 +79,43 @@ class PlayerglobalSourceGen {
 	private File targetFolder;
 	private File currentFile;
 
-	public PlayerglobalSourceGen(File sourceFolder, File targetFolder) {
-		this.sourceFolder = sourceFolder;
-		this.targetFolder = targetFolder;
+    /**
+     * Java program entry point.
+     * 
+     * @param args command line arguments
+     */
+    public static void main(final String[] args)
+    {
+		PLAYERGLOBALC compiler = new PLAYERGLOBALC();
+        int exitCode = compiler.execute(args);
+        System.exit(exitCode);
+    }
+
+	public PLAYERGLOBALC() {
+
+	}
+
+    @Override
+    public String getName() {
+        // TODO: Change this to a flex-tool-api constant ...
+        return "PLAYERGLOBALC";
+    }
+
+    @Override
+    public int execute(String[] args) {
+		if(sourceFolder == null) {
+			sourceFolder = new File(System.getProperty("user.dir"), "src/main/docs/");
+		}
+		if(targetFolder == null) {
+			targetFolder = new File(System.getProperty("user.dir"), "target/generated-sources/");
+		}
+		try {
+			generateSources();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			return 1;
+		}
+		return 0;
 	}
 
 	public void generateSources() throws Exception {
@@ -121,20 +137,14 @@ class PlayerglobalSourceGen {
 	}
 
 	private void preclean() throws Exception {
-		File playerglobalFolder = new File(targetFolder, "playerglobal");
+		File playerglobalFolder = new File(targetFolder, OUTPUT_FOLDER_NAME);
 		FileUtils.deleteDirectory(playerglobalFolder);
-		File airglobalFolder = new File(targetFolder, "airglobal");
-		FileUtils.deleteDirectory(airglobalFolder);
 	}
 
 	private void writeFileForDefinition(String fullyQualifiedName, boolean airOnly, String contents)
 			throws IOException {
 		StringBuilder fileNameBuilder = new StringBuilder();
-		if (airOnly) {
-			fileNameBuilder.append("airglobal");
-		} else {
-			fileNameBuilder.append("playerglobal");
-		}
+		fileNameBuilder.append(OUTPUT_FOLDER_NAME);
 		String[] parts = fullyQualifiedName.split("\\.");
 		for (String part : parts) {
 			fileNameBuilder.append("/");

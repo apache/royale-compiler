@@ -19,7 +19,7 @@
 
 -->
 
-<project name="playerglobal-source-gen" default="main" basedir=".">
+<project name="compiler-playerglobalc" default="main" basedir=".">
 
     <!-- 
 
@@ -27,10 +27,10 @@
 
     -->
 
-    <!-- The 'playerglobal-source-gen' property is the absolute path, with forward slashes, -->
-    <!-- to the 'playerglobal-source-gen' directory that contains this file. -->
-    <!-- All input paths are expressed as absolute paths starting with ${playerglobal-source-gen}. -->
-    <pathconvert property="playerglobal-source-gen" dirsep="/">
+    <!-- The 'compiler-playerglobalc' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler-playerglobalc' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-playerglobalc}. -->
+    <pathconvert property="compiler-playerglobalc" dirsep="/">
         <path location="${basedir}"/>
     </pathconvert>
     
@@ -45,7 +45,8 @@
 
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
-    <property file="${playerglobal-source-gen}/local.properties"/>
+    <property file="${compiler-playerglobalc}/local.properties"/>
+    <property file="${basedir}/../env.properties"/>
     
     <property name="src.depend" value="true"/>
 
@@ -67,34 +68,35 @@
     
     <!--
 
-        playerglobal-source-gen
+        compiler-playerglobalc
 
     -->
     
     <target name="compile" >
-        <mkdir dir="${playerglobal-source-gen}/target/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${playerglobal-source-gen}/target/classes" includeAntRuntime="true" includes="**/*.java"
+        <mkdir dir="${compiler-playerglobalc}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-playerglobalc}/target/classes" includeAntRuntime="true" includes="**/*.java"
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${playerglobal-source-gen}/src/main/java"/>
+            <src path="${compiler-playerglobalc}/src/main/java"/>
             <classpath>
-                <pathelement location="${playerglobal-source-gen}/target/classes"/>
-                <fileset dir="${playerglobal-source-gen}/../compiler-jx/lib" includes="dom4j.jar"/>
-                <fileset dir="${playerglobal-source-gen}/../compiler/lib/external" includes="commons-io.jar"/>
+                <pathelement location="${compiler-playerglobalc}/target/classes"/>
+                <fileset dir="${compiler-playerglobalc}/../compiler-jx/lib" includes="dom4j.jar"/>
+                <fileset dir="${compiler-playerglobalc}/../compiler/lib" includes="compiler-common.jar,external/flex-tool-api.jar"/>
+                <fileset dir="${compiler-playerglobalc}/../compiler/lib/external" includes="commons-io.jar"/>
             </classpath>
         </javac>
     </target>
     
     <target name="prebuild">
-        <mkdir dir="${playerglobal-source-gen}/target/classes" />
-        <mkdir dir="${playerglobal-source-gen}/target/classes/META-INF" />
+        <mkdir dir="${compiler-playerglobalc}/target/classes" />
+        <mkdir dir="${compiler-playerglobalc}/target/classes/META-INF" />
     </target>
     
     <target name="main" depends="prebuild,compile" >
         <mkdir dir="${sdk}"/>
-        <copy file="${basedir}/../LICENSE.base" tofile="${playerglobal-source-gen}/target/classes/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.base" tofile="${playerglobal-source-gen}/target/classes/META-INF/NOTICE"/>
-        <jar file="${sdk}/playerglobal-source-gen.jar" basedir="${playerglobal-source-gen}/target/classes" includes="**/*.properties,org/apache/**/*,com/google/javascript/**/*,META-INF/**/*">
+        <copy file="${basedir}/../LICENSE.base" tofile="${compiler-playerglobalc}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${compiler-playerglobalc}/target/classes/META-INF/NOTICE"/>
+        <jar file="${sdk}/compiler-playerglobalc.jar" basedir="${compiler-playerglobalc}/target/classes" includes="**/*.properties,org/apache/**/*,com/google/javascript/**/*,META-INF/**/*">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -102,8 +104,8 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.royale.playerglobal.PlayerglobalSourceGen" />
-                <attribute name="Class-Path" value="../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler-jx/lib/dom4j.jar dom4j.jar"/>
+                <attribute name="Main-Class" value="org.apache.royale.compiler.clients.PLAYERGLOBALC" />
+                <attribute name="Class-Path" value="../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler-jx/lib/dom4j.jar dom4j.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar ../../compiler/lib/external/flex-tool-api.jar ../../lib/external/flex-tool-api.jar"/>
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>
@@ -116,8 +118,8 @@
     </target>
     
     <target name="jar-test" >
-        <!--<echo>using playerglobal-source-gen.jar from ${sdk}</echo>
-        <java jar="${sdk}/playerglobal-source-gen.jar" fork="true"
+        <!--<echo>using compiler-playerglobalc.jar from ${sdk}</echo>
+        <java jar="${sdk}/compiler-playerglobalc.jar" fork="true"
             failonerror="true">
             <arg value="playerglobal/bundles/en_US/docs"/>
         </java>-->
@@ -130,12 +132,13 @@
     -->
 
     <target name="clean" description="clean">
-        <delete dir="${playerglobal-source-gen}/target/classes"/>
-        <delete file="${playerglobal-source-gen}/target/playerglobal.swc"/>
+        <delete dir="${compiler-playerglobalc}/target/classes"/>
+        <delete file="${compiler-playerglobalc}/target/playerglobal.swc"/>
+        <delete file="${compiler-playerglobalc}/target/airglobal.swc"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
-        <delete dir="${playerglobal-source-gen}/target"/>
+        <delete dir="${compiler-playerglobalc}/target"/>
     </target>
 
  </project>

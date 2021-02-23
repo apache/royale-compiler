@@ -100,13 +100,13 @@
   <modules>
     <module>compiler-common</module>
     <module>compiler-externc</module>
+    <module>compiler-playerglobalc</module>
     <module>compiler</module>
     <module>compiler-jx</module>
     <module>compiler-test-utils</module>
     <module>swfutils</module>
     <module>debugger</module>
     <module>flex-compiler-oem</module>
-    <module>playerglobal-source-gen</module>
     <module>royale-ant-tasks</module>
     <module>royaleunit-ant-tasks</module>
     <!--<module>royale-maven-extension</module>-->

@@ -65,18 +65,15 @@
         <ant dir="compiler-test-utils" />
         <ant dir="compiler-common" />
         <ant dir="compiler-externc" />
+        <ant dir="compiler-playerglobalc" />
         <ant dir="compiler" />
     </target>
 
     <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="main" depends="swf, jx, oem, debugger, anttasks, royaleunit.anttasks, playerglobal-source-gen" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
+    <target name="main" depends="swf, jx, oem, debugger, anttasks, royaleunit.anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
-
-    <target name="playerglobal-source-gen" depends="compiler.jx">
-        <ant dir="playerglobal-source-gen" />
-    </target>
     
     <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
@@ -135,6 +132,7 @@
         <ant dir="compiler-jburg-types" target="clean"/>
         <ant dir="compiler-common" target="clean"/>
         <ant dir="compiler-externc" target="clean"/>
+        <ant dir="compiler-playerglobalc" target="clean"/>
         <ant dir="compiler" target="clean"/>
         <ant dir="compiler/src/test" target="clean"/>
         <ant dir="compiler-jx" target="clean"/>
@@ -144,7 +142,6 @@
         <ant dir="royale-ant-tasks" target="clean"/>
         <ant dir="royaleunit-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
-        <ant dir="playerglobal-source-gen" target="clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
@@ -153,6 +150,7 @@
         <ant dir="compiler-jburg-types" target="wipe"/>
         <ant dir="compiler-common" target="wipe"/>
         <ant dir="compiler-externc" target="wipe"/>
+        <ant dir="compiler-playerglobalc" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/tests" target="wipe"/>
     </target>
@@ -163,6 +161,7 @@
         <ant dir="compiler-test-utils" target="wipe"/>
         <ant dir="compiler-common" target="wipe"/>
         <ant dir="compiler-externc" target="wipe"/>
+        <ant dir="compiler-playerglobalc" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/test" target="wipe"/>
 		<ant dir="compiler-jx" target="super-clean"/>
@@ -172,7 +171,6 @@
         <ant dir="royale-ant-tasks" target="wipe"/>
         <ant dir="royaleunit-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
-        <ant dir="playerglobal-source-gen" target="wipe"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
         <!-- remove legacy folders if they exist -->

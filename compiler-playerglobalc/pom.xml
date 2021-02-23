@@ -27,31 +27,31 @@
     <version>0.9.8-SNAPSHOT</version>
   </parent>
 
-  <artifactId>playerglobal-source-gen</artifactId>
+  <artifactId>compiler-playerglobalc</artifactId>
   <version>0.9.8-SNAPSHOT</version>
   
   <build>
-    <finalName>${project.artifactId}</finalName>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>org.apache.royale.playerglobal.PlayerglobalSourceGen</mainClass>
-            </manifest>
-            <manifestEntries>
-              <Sealed>false</Sealed>
-              <Class-Path>../../lib/external/commons-io.jar dom4j.jar</Class-Path>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>test-jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-common</artifactId>
+      <version>0.9.8-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
