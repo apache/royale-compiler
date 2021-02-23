@@ -186,6 +186,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
+      <artifactId>compiler-playerglobalc</artifactId>
+      <version>0.9.8-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
       <version>0.9.8-SNAPSHOT</version>
     </dependency>

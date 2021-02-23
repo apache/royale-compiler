@@ -71,8 +71,12 @@
         compiler-playerglobalc
 
     -->
+
+  <target name="download" description="Downloads third-party JARs">
+      <ant antfile="${compiler-playerglobalc}/src/main/resources/downloads.xml" dir="${compiler-playerglobalc}/src/main/resources" inheritAll="false"/>
+  </target>
     
-    <target name="compile" >
+    <target name="compile" depends="download">
         <mkdir dir="${compiler-playerglobalc}/target/classes"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-playerglobalc}/target/classes" includeAntRuntime="true" includes="**/*.java"
             source="${javac.src}" target="${javac.src}">
