@@ -41,11 +41,6 @@ import org.dom4j.io.SAXReader;
 /**
  * Generates .as source files to build playerglobal.swc and airglobal.swc from
  * the ASDoc DITA XML files.
- * 
- * Usage:
- * 
- * java -jar playerglobal-source-gen.jar flex-sdk/frameworks/projects/playerglobal/bundles/en_US/docs/
- * java -jar playerglobal-source-gen.jar flex-sdk/frameworks/projects/playerglobal/bundles/en_US/docs/ target/generated-sources/
  */
 class PLAYERGLOBALC implements FlexTool {
 
