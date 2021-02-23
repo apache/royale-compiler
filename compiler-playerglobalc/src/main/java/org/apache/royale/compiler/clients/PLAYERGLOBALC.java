@@ -33,6 +33,12 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.tools.FlexTool;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemPrinter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.config.PlayerglobalcConfigurator;
+import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -44,7 +50,22 @@ import org.dom4j.io.SAXReader;
  */
 class PLAYERGLOBALC implements FlexTool {
 
-	private static final String OUTPUT_FOLDER_NAME = "playerglobal";
+    static enum ExitCode
+    {
+        SUCCESS(0),
+        PRINT_HELP(1),
+        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_EXCEPTIONS(3),
+        FAILED_WITH_CONFIG_PROBLEMS(4);
+
+        ExitCode(int code)
+        {
+            this.code = code;
+        }
+
+        final int code;
+    }
+
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
 	//From the docs: Methods of the Object class are dynamically created on Object's prototype.
 	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
@@ -70,6 +91,9 @@ class PLAYERGLOBALC implements FlexTool {
 			"setNamespace"));
 	}
 
+    protected ProblemQuery problems;
+    protected Configurator projectConfigurator;
+	protected PlayerglobalcConfiguration configuration;
 	private File sourceFolder;
 	private File targetFolder;
 	private File currentFile;
@@ -96,21 +120,63 @@ class PLAYERGLOBALC implements FlexTool {
         return "PLAYERGLOBALC";
     }
 
+    /**
+     * Create a new Configurator. This method may be overridden to allow
+     * Configurator subclasses to be created that have custom configurations.
+     * 
+     * @return a new instance or subclass of {@link Configurator}.
+     */
+    protected Configurator createConfigurator()
+    {
+        return new PlayerglobalcConfigurator(PlayerglobalcConfiguration.class);
+    }
+
+    protected boolean configure(String[] args)
+    {
+		projectConfigurator = createConfigurator();
+        projectConfigurator.setConfiguration(args, "asdoc-root", false);
+        projectConfigurator.getTargetSettings(TargetType.SWC);
+        configuration = ((PlayerglobalcConfiguration) projectConfigurator.getConfiguration());
+        problems = new ProblemQuery(
+                projectConfigurator.getCompilerProblemSettings());
+        problems.addAll(projectConfigurator.getConfigurationProblems());
+        if (problems.hasErrors() || configuration == null)
+        {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public int execute(String[] args) {
-		if(sourceFolder == null) {
-			sourceFolder = new File(System.getProperty("user.dir"), "src/main/docs/");
-		}
-		if(targetFolder == null) {
-			targetFolder = new File(System.getProperty("user.dir"), "target/generated-sources/");
-		}
+        ExitCode exitCode = ExitCode.SUCCESS;
 		try {
-			generateSources();
+			boolean continueGeneration = configure(args);
+			if (continueGeneration) {
+				sourceFolder = configuration.getASDocRoot();
+				targetFolder = configuration.getAsRoot();
+				generateSources();
+			}
+            else if (problems.hasFilteredProblems())
+            {
+                exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
+            }
+            else
+            {
+                exitCode = ExitCode.PRINT_HELP;
+            }
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			return 1;
+            exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 		}
-		return 0;
+        finally
+        {
+            final ProblemFormatter formatter = new ProblemFormatter();
+            final ProblemPrinter printer = new ProblemPrinter(formatter, System.err);
+            printer.printProblems(problems.getFilteredProblems());
+        }
+
+        return exitCode.code;
 	}
 
 	public void generateSources() throws Exception {
@@ -132,14 +198,12 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 
 	private void preclean() throws Exception {
-		File playerglobalFolder = new File(targetFolder, OUTPUT_FOLDER_NAME);
-		FileUtils.deleteDirectory(playerglobalFolder);
+		FileUtils.deleteDirectory(targetFolder);
 	}
 
 	private void writeFileForDefinition(String fullyQualifiedName, boolean airOnly, String contents)
 			throws IOException {
 		StringBuilder fileNameBuilder = new StringBuilder();
-		fileNameBuilder.append(OUTPUT_FOLDER_NAME);
 		String[] parts = fullyQualifiedName.split("\\.");
 		for (String part : parts) {
 			fileNameBuilder.append("/");
