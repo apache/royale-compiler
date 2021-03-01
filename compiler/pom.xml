@@ -36,13 +36,29 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifestEntries>
-                <Class-Path>compiler-common.jar external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar ..</Class-Path>
-              </manifestEntries>
-            </archive>
-          </configuration>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Class-Path>compiler-common.jar external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar ..</Class-Path>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>scripts-jar</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <classesDirectory>src/assembly/scripts</classesDirectory>
+                <classifier>scripts</classifier>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
