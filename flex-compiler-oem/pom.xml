@@ -30,6 +30,25 @@
 
   <name>Apache Royale: Compiler: OEM Layer</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+              <mainClass>flex2.tools.Mxmlc</mainClass>
+            </manifest>
+            <manifestEntries>
+              <Class-Path>compiler.jar swfutils.jar ../js/lib/jsc.jar</Class-Path>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>

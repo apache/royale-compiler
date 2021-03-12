@@ -74,6 +74,19 @@ Do all the JBurg code generation.
           </dependency>
         </dependencies>
       </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <Class-Path>compiler.jar compiler-common.jar swfutils.jar external/commons-lang.jar</Class-Path>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

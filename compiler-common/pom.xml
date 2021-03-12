@@ -40,7 +40,7 @@
             <archive>
               <manifestEntries>
                 <Sealed>false</Sealed>
-                <Class-Path>external/commons-cli.jar external/commons-io.jar external/ guava.jar ..</Class-Path>
+                <Class-Path>external/commons-cli.jar external/commons-io.jar external/guava.jar ..</Class-Path>
               </manifestEntries>
             </archive>
           </configuration>
