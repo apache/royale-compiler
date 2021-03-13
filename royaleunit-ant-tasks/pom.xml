@@ -38,6 +38,7 @@
         <configuration>
           <archive>
             <manifestEntries>
+              <!-- These paths are all defined the way the layout will be in the distribution -->
               <Class-Path>dom4j.jar java-websocket.jar slf4j-api.jar</Class-Path>
             </manifestEntries>
           </archive>

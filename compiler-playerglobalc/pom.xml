@@ -41,6 +41,7 @@
                     <configuration>
                         <archive>
                             <manifestEntries>
+                                <!-- These paths are all defined the way the layout will be in the distribution -->
                                 <Class-Path>../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler-jx/lib/dom4j.jar dom4j.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar ../../compiler/lib/external/flex-tool-api.jar ../../lib/external/flex-tool-api.jar</Class-Path>
                             </manifestEntries>
                         </archive>

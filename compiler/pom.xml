@@ -42,6 +42,7 @@
               <configuration>
                 <archive>
                   <manifestEntries>
+                    <!-- These paths are all defined the way the layout will be in the distribution -->
                     <Class-Path>compiler-common.jar external/antlr.jar external/antlr-runtime.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk-4j.jar external/flex-tool-api.jar ..</Class-Path>
                   </manifestEntries>
                 </archive>
