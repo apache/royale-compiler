@@ -40,6 +40,7 @@
             <archive>
               <manifestEntries>
                 <Sealed>false</Sealed>
+                <!-- These paths are all defined the way the layout will be in the distribution -->
                 <Class-Path>external/commons-cli.jar external/commons-io.jar external/guava.jar ..</Class-Path>
               </manifestEntries>
             </archive>

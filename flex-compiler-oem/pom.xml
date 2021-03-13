@@ -41,6 +41,7 @@
               <mainClass>flex2.tools.Mxmlc</mainClass>
             </manifest>
             <manifestEntries>
+              <!-- These paths are all defined the way the layout will be in the distribution -->
               <Class-Path>compiler.jar swfutils.jar ../js/lib/jsc.jar</Class-Path>
             </manifestEntries>
           </archive>

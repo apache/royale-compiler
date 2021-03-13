@@ -39,6 +39,7 @@
           <archive>
             <manifestEntries>
               <Sealed>false</Sealed>
+              <!-- These paths are all defined the way the layout will be in the distribution -->
               <Class-Path>commons-io.jar guava.jar ../../lib/external/antlr.jar  ../../lib/external/antlr-runtime.jar ../../lib/external/commons-lang.jar ../../lib/external/closure-compiler.jar ../../lib/compiler.jar ../../lib/compiler-common.jar</Class-Path>
             </manifestEntries>
           </archive>

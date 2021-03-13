@@ -82,6 +82,7 @@ Do all the JBurg code generation.
               <addClasspath>false</addClasspath>
             </manifest>
             <manifestEntries>
+              <!-- These paths are all defined the way the layout will be in the distribution -->
               <Class-Path>compiler.jar compiler-common.jar swfutils.jar external/commons-lang.jar</Class-Path>
             </manifestEntries>
           </archive>
