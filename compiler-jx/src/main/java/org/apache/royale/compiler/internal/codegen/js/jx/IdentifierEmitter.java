@@ -160,7 +160,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
             	if (baseName.equals("MAX_VALUE"))
             	{
                     startMapping(parentNode);
-            		write("2147483648");
+            		write("2147483647");
                     endMapping(parentNode);
             		return;
             	}
