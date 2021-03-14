@@ -51,8 +51,8 @@ public class TestSourceMapGlobalClasses extends SourceMapTestBase
     {
         IVariableNode node = getVariable("var a:Number = int.MAX_VALUE");
         asBlockWalker.visitVariable(node);
-        //var /** @type {number} */ a = 2147483648
-        assertMapping(node, 0, 15, 0, 30, 0, 40);    // 2147483648
+        //var /** @type {number} */ a = 2147483647
+        assertMapping(node, 0, 15, 0, 30, 0, 40);    // 2147483647
     }
 
     @Test
