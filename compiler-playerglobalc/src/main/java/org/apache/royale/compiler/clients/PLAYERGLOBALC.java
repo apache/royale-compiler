@@ -81,11 +81,11 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 	private static final Map<String, List<String>> ANY_METHODS = new HashMap<String, List<String>>();
 	{
-		REST_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute",
+		ANY_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute",
 			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
 			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
 			"setNamespace"));
-		REST_METHODS.put("XMLList", Arrays.asList("addNamespace", "appendChild", "attribute",
+		ANY_METHODS.put("XMLList", Arrays.asList("addNamespace", "appendChild", "attribute",
 			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
 			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
 			"setNamespace"));
