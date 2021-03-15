@@ -38,14 +38,17 @@ import org.apache.maven.project.MavenProjectHelper;
 public class CompilePlayerglobalMojo
     extends BaseMojo
 {
-    @Parameter(defaultValue = "src/main/asdoc")
-    private String asdocDirectoryName;
+    @Parameter(defaultValue = "src/main/playerglobal")
+    private String playerglobalSourceDirectory;
 
     @Parameter(defaultValue = "${project.artifactId}-${project.version}.swc")
     protected String outputFileName;
 
     @Parameter(defaultValue = "false")
     private boolean skipPlayerglobal;
+
+    @Parameter(defaultValue = "false")
+    private boolean playerglobalAir;
 
     @Component
     private MavenProjectHelper projectHelper;
@@ -81,7 +84,7 @@ public class CompilePlayerglobalMojo
         if(skipPlayerglobal) {
             return true;
         }
-        File inputFolder = new File(asdocDirectoryName);
+        File inputFolder = new File(project.getBasedir(), playerglobalSourceDirectory);
         return !inputFolder.exists() || !inputFolder.isDirectory();
     }
 

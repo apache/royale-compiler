@@ -19,4 +19,5 @@
 <royale-config>
     <as-root>${output.path}</as-root>
     <asdoc-root>${asdocRoot.path}</asdoc-root>
+    <air>${air}</air>
 </royale-config>
