@@ -1073,7 +1073,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function d() { var seed:Number; seed = new Date().time - Math.random() * int.MAX_VALUE; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("seed = new Date().getTime() - Math.random() * 2147483648");
+        assertOut("seed = new Date().getTime() - Math.random() * 2147483647");
     }
 
     @Test
