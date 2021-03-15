@@ -35,14 +35,17 @@ import org.apache.velocity.VelocityContext;
 public class GeneratePlayerglobalMojo
         extends BaseMojo
 {
-    @Parameter(defaultValue = "src/main/asdoc")
-    private String asdocDirectoryName;
+    @Parameter(defaultValue = "src/main/playerglobal")
+    private String playerglobalSourceDirectory;
 
     @Parameter(defaultValue = "generated-sources/playerglobal")
     private String outputDirectoryName;
 
     @Parameter(defaultValue = "false")
     private boolean skipPlayerglobal;
+
+    @Parameter(defaultValue = "false")
+    private boolean playerglobalAir;
 
     @Override
     protected String getToolGroupName() {
@@ -67,7 +70,8 @@ public class GeneratePlayerglobalMojo
     @Override
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = super.getVelocityContext();
-        context.put("asdocRoot", new File(asdocDirectoryName));
+        context.put("asdocRoot", new File(project.getBasedir(), playerglobalSourceDirectory));
+        context.put("air", playerglobalAir);
         return context;
     }
 
@@ -76,7 +80,7 @@ public class GeneratePlayerglobalMojo
         if(skipPlayerglobal) {
             return true;
         }
-        File inputFolder = new File(asdocDirectoryName);
+        File inputFolder = new File(project.getBasedir(), playerglobalSourceDirectory);
         return !inputFolder.exists() || !inputFolder.isDirectory();
     }
 
