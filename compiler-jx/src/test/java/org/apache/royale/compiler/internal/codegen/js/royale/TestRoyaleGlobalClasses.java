@@ -270,7 +270,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Number = int.MAX_VALUE");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = 2147483648");
+        assertOut("var /** @type {number} */ a = 2147483647");
     }
 
     @Test
