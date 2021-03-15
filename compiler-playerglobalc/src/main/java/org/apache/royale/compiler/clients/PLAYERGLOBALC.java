@@ -329,7 +329,11 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 
 		boolean isAIROnly = isAIROnly(apiClassifierElement.element("prolog"));
-		boolean isVector = className.startsWith("Vector$");
+		if(isAIROnly && !configuration.getAir() && !fullyQualifiedName.equals("flash.display.NativeMenu") && !fullyQualifiedName.equals("flash.display.NativeMenuItem")) {
+			return;
+		}
+
+		boolean isVector = fullyQualifiedName.startsWith("__AS3__.vec.Vector$");
 
 		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiClassifierElement, packageName, importFullyQualifiedNames);
@@ -428,10 +432,10 @@ class PLAYERGLOBALC implements FlexTool {
 		classBuilder.append("{");
 		classBuilder.append("\n");
 		if (apiConstructorElements.size() > 0) {
-			parseConstructor(apiConstructorElements, className, classBuilder);
+			parseConstructor(apiConstructorElements, fullyQualifiedName, classBuilder);
 		}
 		for (Element apiOperationElement : apiOperationElements) {
-			parseFunction(apiOperationElement, className, false, classBuilder);
+			parseFunction(apiOperationElement, fullyQualifiedName, false, classBuilder);
 		}
 		for (Element apiValueElement : apiValueElements) {
 			parseVariable(apiValueElement, false, classBuilder);
@@ -461,6 +465,9 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 
 		boolean isAIROnly = isAIROnly(apiClassifierElement.element("prolog"));
+		if(isAIROnly && !configuration.getAir()) {
+			return;
+		}
 
 		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiClassifierElement, packageName, importFullyQualifiedNames);
@@ -556,10 +563,13 @@ class PLAYERGLOBALC implements FlexTool {
 			fullyQualifiedName = packageName + "." + parts[1];
 		}
 
+		boolean isAIROnly = isAIROnly(apiOperationElement.element("prolog"));
+		if(isAIROnly && !configuration.getAir()) {
+			return;
+		}
+
 		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiOperationElement, packageName, importFullyQualifiedNames);
-
-		boolean isAIROnly = isAIROnly(apiOperationElement.element("prolog"));
 
 		StringBuilder functionBuilder = new StringBuilder();
 		functionBuilder.append("// generated from: ");
@@ -602,10 +612,13 @@ class PLAYERGLOBALC implements FlexTool {
 			return;
 		}
 
+		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
+		if(isAIROnly && !configuration.getAir()) {
+			return;
+		}
+
 		Set<String> importFullyQualifiedNames = new HashSet<String>();
 		collectImports(apiValueElement, packageName, importFullyQualifiedNames);
-
-		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
 
 		StringBuilder variableBuilder = new StringBuilder();
 		variableBuilder.append("// generated from: ");
@@ -629,6 +642,11 @@ class PLAYERGLOBALC implements FlexTool {
 
 	private void parseVariable(Element apiValueElement, boolean forInterface, StringBuilder variableBuilder)
 			throws Exception {
+		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
+		if(isAIROnly && !configuration.getAir()) {
+			return;
+		}
+	
 		String variableName = apiValueElement.element("apiName").getTextTrim();
 
 		boolean isGetter = false;
@@ -772,6 +790,11 @@ class PLAYERGLOBALC implements FlexTool {
 
 	private void parseFunction(Element apiOperationElement, String contextClassName, boolean forInterface,
 			StringBuilder functionBuilder) throws Exception {
+		boolean isAIROnly = isAIROnly(apiOperationElement.element("prolog"));
+		if(isAIROnly && !configuration.getAir()) {
+			return;
+		}
+
 		String functionName = apiOperationElement.element("apiName").getTextTrim();
 
 		boolean isStatic = false;
@@ -791,6 +814,9 @@ class PLAYERGLOBALC implements FlexTool {
 		Element apiIsOverrideElement = apiOperationDefElement.element("apiIsOverride");
 		if (apiIsOverrideElement != null) {
 			isOverride = true;
+			if(!configuration.getAir() && "clone".equals(functionName) && "flash.ui.ContextMenuItem".equals(contextClassName)) {
+				isOverride = false;
+			}
 		}
 
 		Element apiReturnElement = apiOperationDefElement.element("apiReturn");
@@ -852,7 +878,7 @@ class PLAYERGLOBALC implements FlexTool {
 
 	private void parseConstructor(List<Element> apiConstructorElements, String contextClassName,
 			StringBuilder functionBuilder) throws Exception {
-		String constructorName = contextClassName;
+		String constructorName = null;
 		String access = null;
 		List<Element> apiParamElements = null;
 
@@ -1044,7 +1070,7 @@ class PLAYERGLOBALC implements FlexTool {
 			String[] parts = apiTypeValue.split("\\$");
 			String vectorItemType = parts[1];
 			vectorItemType = vectorItemType.replace(":", ".");
-			if (contextClassName != null && contextClassName.startsWith("Vector$") && vectorItemType.equals("T")) {
+			if (contextClassName != null && contextClassName.startsWith("__AS3__.vec.Vector$") && vectorItemType.equals("T")) {
 				return contextClassName;
 			}
 			return "Vector.<" + vectorItemType + ">";
@@ -1206,6 +1232,11 @@ class PLAYERGLOBALC implements FlexTool {
 			}
 		}
 		if ("apiOperation".equals(elementName)) {
+			boolean isAIROnly = isAIROnly(element.element("prolog"));
+			if(isAIROnly && !configuration.getAir()) {
+				return;
+			}
+
 			String functionName = element.element("apiName").getTextTrim();
 
 			Element apiOperationDetailElement = element.element("apiOperationDetail");
@@ -1284,6 +1315,11 @@ class PLAYERGLOBALC implements FlexTool {
 			}
 		}
 		if ("apiValue".equals(elementName)) {
+			boolean isAIROnly = isAIROnly(element.element("prolog"));
+			if(isAIROnly && !configuration.getAir()) {
+				return;
+			}
+
 			String variableName = element.element("apiName").getTextTrim();
 
 			Element apiValueDetailElement = element.element("apiValueDetail");

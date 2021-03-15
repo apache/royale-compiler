@@ -68,4 +68,19 @@ public class PlayerglobalcConfiguration extends Configuration
 		assertThatAllPathsAreDirectories(Arrays.asList(filename), cfgval);
         this.asdocRoot = new File(FilenameNormalization.normalize(filename));
     }
+
+    private boolean air = false;
+
+    public boolean getAir()
+    {
+        return air;
+    }
+
+    @Config
+    @Mapping("air")
+    public void setAir(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        air = value;
+    }
 }
