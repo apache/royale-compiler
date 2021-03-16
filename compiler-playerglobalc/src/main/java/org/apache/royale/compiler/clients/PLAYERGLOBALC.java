@@ -116,9 +116,23 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 	private static final Map<String, List<String>> EXTRA_MEMBERS = new HashMap<String, List<String>>();
 	{
+		EXTRA_MEMBERS.put("Array", Arrays.asList("AS3 native function insertAt(index:int, element:*):void",
+				"AS3 native function removeAt(index:int):*"));
 		EXTRA_MEMBERS.put("Function", Arrays.asList("public native function get prototype():*",
 				"public native function set prototype(value:*):void", "public native function get length():int;"));
 		EXTRA_MEMBERS.put("String", Arrays.asList("AS3 native function toString():String"));
+		EXTRA_MEMBERS.put("__AS3__.vec.Vector$double",
+				Arrays.asList("AS3 native function insertAt(index:int, element:Number):void",
+						"AS3 native function removeAt(index:int):Number"));
+		EXTRA_MEMBERS.put("__AS3__.vec.Vector$int",
+				Arrays.asList("AS3 native function insertAt(index:int, element:int):void",
+						"AS3 native function removeAt(index:int):int"));
+		EXTRA_MEMBERS.put("__AS3__.vec.Vector$uint",
+				Arrays.asList("AS3 native function insertAt(index:int, element:uint):void",
+						"AS3 native function removeAt(index:int):uint"));
+		EXTRA_MEMBERS.put("__AS3__.vec.Vector$object",
+				Arrays.asList("AS3 native function insertAt(index:int, element:Object):void",
+						"AS3 native function removeAt(index:int):Object"));
 		EXTRA_MEMBERS.put("flash.display.DisplayObjectContainer", Arrays
 				.asList("public native function removeChildren(beginIndex:int = 0, endIndex:int = 0x7fffffff):void"));
 		EXTRA_MEMBERS.put("flash.display.Graphics", Arrays.asList(
@@ -126,9 +140,40 @@ class PLAYERGLOBALC implements FlexTool {
 				"public native function drawRoundRectComplex(x:Number, y:Number, width:Number, height:Number, topLeftRadius:Number, topRightRadius:Number, bottomLeftRadius:Number, bottomRightRadius:Number):void"));
 		EXTRA_MEMBERS.put("flash.display.MovieClip",
 				Arrays.asList("public native function addFrameScript(...args):void"));
+		EXTRA_MEMBERS.put("flash.display.Stage",
+				Arrays.asList("public native function get contentsScaleFactor():Number",
+						"public native function get browserZoomFactor():Number"));
+		EXTRA_MEMBERS.put("flash.events.Event",
+				Arrays.asList("public static const BROWSER_ZOOM_CHANGE:String = \"browserZoomChange\""));
 		EXTRA_MEMBERS.put("flash.events.EventDispatcher", Arrays.asList("public native function toString():String"));
+		EXTRA_MEMBERS.put("flash.geom.Matrix", Arrays.asList(
+				"public native function copyFrom(sourceMatrix:flash.geom.Matrix):void",
+				"public native function copyColumnFrom(column:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyColumnTo(column:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyRowFrom(row:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyRowTo(row:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function setTo(a:Number, b:Number, c:Number, d:Number, tx:Number, ty:Number):void"));
+		EXTRA_MEMBERS.put("flash.geom.Matrix3D", Arrays.asList(
+				"public native function copyFrom(sourceMatrix3D:flash.geom.Matrix3D):void",
+				"public native function copyColumnFrom(column:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyColumnTo(column:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyRowFrom(row:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyRowTo(row:uint, vector3D:flash.geom.Vector3D):void",
+				"public native function copyRawDataFrom(vector:Vector.<Number>, index:uint = 0, transpose:Boolean = false):void",
+				"public native function copyRawDataTo(vector:Vector.<Number>, index:uint = 0, transpose:Boolean = false):void"));
+		EXTRA_MEMBERS.put("flash.geom.Point",
+				Arrays.asList("public native function copyFrom(sourcePoint:flash.geom.Point):void",
+						"public native function setTo(x:Number, y:Number):void"));
+		EXTRA_MEMBERS.put("flash.geom.Rectangle",
+				Arrays.asList("public native function copyFrom(sourceRect:flash.geom.Rectangle):void",
+						"public native function setTo(x:Number, y:Number, width:Number, height:Number):void"));
+		EXTRA_MEMBERS.put("flash.geom.Vector3D",
+				Arrays.asList("public native function copyFrom(sourceVector3D:flash.geom.Vector3D):void",
+						"public native function setTo(x:Number, y:Number, z:Number):void"));
 		EXTRA_MEMBERS.put("flash.media.Camera",
 				Arrays.asList("public native function copyToByteArray(rect:Rectangle, destination:ByteArray):void"));
+		EXTRA_MEMBERS.put("flash.text.TextFormatAlign", Arrays.asList("public static const START:String = \"start\"",
+				"public static const END:String = \"end\""));
 	}
 
 	protected ProblemQuery problems;
