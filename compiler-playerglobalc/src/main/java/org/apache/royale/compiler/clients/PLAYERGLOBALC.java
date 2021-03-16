@@ -100,6 +100,10 @@ class PLAYERGLOBALC implements FlexTool {
 				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
 				"processingInstructions", "removeNamespace", "replace", "setChildren", "setName", "setNamespace"));
 	}
+	private static final Map<String, List<String>> ANY_VARIABLES = new HashMap<String, List<String>>();
+	{
+		ANY_VARIABLES.put("Object", Arrays.asList("constructor"));
+	}
 	private static final Map<String, List<String>> EXTRA_MEMBERS = new HashMap<String, List<String>>();
 	{
 		EXTRA_MEMBERS.put("flash.display.Graphics", Arrays.asList(
@@ -444,7 +448,7 @@ class PLAYERGLOBALC implements FlexTool {
 			parseFunction(apiOperationElement, fullyQualifiedName, false, classBuilder);
 		}
 		for (Element apiValueElement : apiValueElements) {
-			parseVariable(apiValueElement, false, false, classBuilder);
+			parseVariable(apiValueElement, fullyQualifiedName, false, classBuilder);
 		}
 		if (EXTRA_MEMBERS.containsKey(fullyQualifiedName)) {
 			for (String member : EXTRA_MEMBERS.get(fullyQualifiedName)) {
@@ -549,7 +553,7 @@ class PLAYERGLOBALC implements FlexTool {
 			parseFunction(apiOperationElement, null, true, interfaceBuilder);
 		}
 		for (Element apiValueElement : apiValueElements) {
-			parseVariable(apiValueElement, true, false, interfaceBuilder);
+			parseVariable(apiValueElement, fullyQualifiedName, true, interfaceBuilder);
 		}
 		interfaceBuilder.append("\t");
 		interfaceBuilder.append("}");
@@ -647,14 +651,14 @@ class PLAYERGLOBALC implements FlexTool {
 		variableBuilder.append("{");
 		variableBuilder.append("\n");
 		writeImports(importFullyQualifiedNames, variableBuilder);
-		parseVariable(apiValueElement, false, true, variableBuilder);
+		parseVariable(apiValueElement, null, false, variableBuilder);
 		variableBuilder.append("}");
 		variableBuilder.append("\n");
 
 		writeFileForDefinition(fullyQualifiedName, isAIROnly, variableBuilder.toString());
 	}
 
-	private void parseVariable(Element apiValueElement, boolean forInterface, boolean isInPackage,
+	private void parseVariable(Element apiValueElement, String contextClassName, boolean forInterface,
 			StringBuilder variableBuilder) throws Exception {
 		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
 		if (isAIROnly && !configuration.getAir()) {
@@ -669,6 +673,7 @@ class PLAYERGLOBALC implements FlexTool {
 		boolean isStatic = false;
 		boolean isOverride = false;
 		String variableType = "*";
+		boolean forceAnyType = isVariableTypedAsAny(contextClassName, variableName);
 		String access = null;
 
 		Element apiValueDetailElement = apiValueElement.element("apiValueDetail");
@@ -743,7 +748,11 @@ class PLAYERGLOBALC implements FlexTool {
 			variableBuilder.append("(");
 			variableBuilder.append(")");
 			variableBuilder.append(":");
-			variableBuilder.append(variableType);
+			if (forceAnyType) {
+				variableBuilder.append("*");
+			} else {
+				variableBuilder.append(variableType);
+			}
 			variableBuilder.append(";");
 			variableBuilder.append("\n");
 		}
@@ -769,7 +778,11 @@ class PLAYERGLOBALC implements FlexTool {
 			variableBuilder.append("(");
 			variableBuilder.append("value");
 			variableBuilder.append(":");
-			variableBuilder.append(variableType);
+			if (forceAnyType) {
+				variableBuilder.append("*");
+			} else {
+				variableBuilder.append(variableType);
+			}
 			variableBuilder.append(")");
 			variableBuilder.append(":");
 			variableBuilder.append("void");
@@ -786,15 +799,19 @@ class PLAYERGLOBALC implements FlexTool {
 			if (isStatic) {
 				variableBuilder.append("static ");
 			}
-			if (isConst || (isInPackage && GLOBAL_CONSTANTS.containsKey(variableName))) {
+			if (isConst || (contextClassName == null && GLOBAL_CONSTANTS.containsKey(variableName))) {
 				variableBuilder.append("const ");
 			} else {
 				variableBuilder.append("var ");
 			}
 			variableBuilder.append(variableName);
 			variableBuilder.append(":");
-			variableBuilder.append(variableType);
-			if (isInPackage && GLOBAL_CONSTANTS.containsKey(variableName)) {
+			if (forceAnyType) {
+				variableBuilder.append("*");
+			} else {
+				variableBuilder.append(variableType);
+			}
+			if (contextClassName == null && GLOBAL_CONSTANTS.containsKey(variableName)) {
 				variableBuilder.append(" = ");
 				variableBuilder.append(GLOBAL_CONSTANTS.get(variableName));
 			} else if (apiDataElement != null) {
@@ -1124,6 +1141,13 @@ class PLAYERGLOBALC implements FlexTool {
 			return false;
 		}
 		return REST_METHODS.get(contextClassName).contains(contextFunctionName);
+	}
+
+	private boolean isVariableTypedAsAny(String contextClassName, String contextVariableName) {
+		if (!ANY_VARIABLES.containsKey(contextClassName)) {
+			return false;
+		}
+		return ANY_VARIABLES.get(contextClassName).contains(contextVariableName);
 	}
 
 	private void parseParameters(List<Element> apiParamElements, String contextClassName, String contextFunctionName,
