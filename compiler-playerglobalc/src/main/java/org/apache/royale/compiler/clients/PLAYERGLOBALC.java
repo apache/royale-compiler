@@ -65,8 +65,9 @@ class PLAYERGLOBALC implements FlexTool {
 	// Object's prototype.
 	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
 			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
-	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("Boolean", "Date", "int", "Number", "RegExp",
-			"String", "uint", "XML", "XMLList");
+	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("ArgumentError", "Boolean", "Date",
+			"DefinitionError", "Error", "EvalError", "int", "Number", "RangeError", "ReferenceError", "RegExp",
+			"SecurityError", "String", "SyntaxError", "TypeError", "uint", "URIError", "VerifyError", "XML", "XMLList");
 	private static final Map<String, String> GLOBAL_CONSTANTS = new HashMap<String, String>();
 	{
 		GLOBAL_CONSTANTS.put("Infinity", "1 / 0");
