@@ -76,6 +76,10 @@ class PLAYERGLOBALC implements FlexTool {
 		GLOBAL_CONSTANTS.put("NaN", "0 / 0");
 		GLOBAL_CONSTANTS.put("undefined", "void 0");
 	}
+	private static final Map<String, List<String>> WRITABLE_VARIABLES = new HashMap<String, List<String>>();
+	{
+		WRITABLE_VARIABLES.put("flash.external.ExternalInterface", Arrays.asList("marshallExceptions"));
+	}
 	private static final Map<String, List<String>> REST_METHODS = new HashMap<String, List<String>>();
 	{
 		REST_METHODS.put("Array", Arrays.asList("splice"));
@@ -685,7 +689,7 @@ class PLAYERGLOBALC implements FlexTool {
 
 		boolean isGetter = false;
 		boolean isSetter = false;
-		boolean isConst = true;
+		boolean isConst = !isVariableThatShouldBeWritable(contextClassName, variableName);
 		boolean isStatic = false;
 		boolean isOverride = false;
 		String variableType = "*";
@@ -1171,6 +1175,13 @@ class PLAYERGLOBALC implements FlexTool {
 			return false;
 		}
 		return ANY_VARIABLES.get(contextClassName).contains(contextVariableName);
+	}
+
+	private boolean isVariableThatShouldBeWritable(String contextClassName, String contextVariableName) {
+		if (!WRITABLE_VARIABLES.containsKey(contextClassName)) {
+			return false;
+		}
+		return WRITABLE_VARIABLES.get(contextClassName).contains(contextVariableName);
 	}
 
 	private void parseParameters(List<Element> apiParamElements, String contextClassName, String contextFunctionName,
