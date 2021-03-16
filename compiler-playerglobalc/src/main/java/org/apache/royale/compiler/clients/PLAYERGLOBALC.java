@@ -100,6 +100,12 @@ class PLAYERGLOBALC implements FlexTool {
 				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
 				"processingInstructions", "removeNamespace", "replace", "setChildren", "setName", "setNamespace"));
 	}
+	private static final Map<String, List<String>> EXTRA_MEMBERS = new HashMap<String, List<String>>();
+	{
+		EXTRA_MEMBERS.put("flash.display.Graphics", Arrays.asList(
+				"public native function cubicCurveTo(controlX1:Number, controlY1:Number, controlX2:Number, controlY2:Number, anchorX:Number, anchorY:Number):void",
+				"public native function drawRoundRectComplex(x:Number, y:Number, width:Number, height:Number, topLeftRadius:Number, topRightRadius:Number, bottomLeftRadius:Number, bottomRightRadius:Number):void"));
+	}
 
 	protected ProblemQuery problems;
 	protected Configurator projectConfigurator;
@@ -439,6 +445,14 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 		for (Element apiValueElement : apiValueElements) {
 			parseVariable(apiValueElement, false, false, classBuilder);
+		}
+		if (EXTRA_MEMBERS.containsKey(fullyQualifiedName)) {
+			for (String member : EXTRA_MEMBERS.get(fullyQualifiedName)) {
+				classBuilder.append("\t");
+				classBuilder.append(member);
+				classBuilder.append(";");
+				classBuilder.append("\n");
+			}
 		}
 		classBuilder.append("\t");
 		classBuilder.append("}");
