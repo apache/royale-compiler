@@ -50,24 +50,19 @@ import org.dom4j.io.SAXReader;
  */
 class PLAYERGLOBALC implements FlexTool {
 
-    static enum ExitCode
-    {
-        SUCCESS(0),
-        PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
-        FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_PROBLEMS(4);
+	static enum ExitCode {
+		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
 
-        ExitCode(int code)
-        {
-            this.code = code;
-        }
+		ExitCode(int code) {
+			this.code = code;
+		}
 
-        final int code;
-    }
+		final int code;
+	}
 
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
-	//From the docs: Methods of the Object class are dynamically created on Object's prototype.
+	// From the docs: Methods of the Object class are dynamically created on
+	// Object's prototype.
 	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
 			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
 	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("Boolean", "Date", "int", "Number", "RegExp",
@@ -79,104 +74,102 @@ class PLAYERGLOBALC implements FlexTool {
 		REST_METHODS.put("__AS3__.vec.Vector$int", Arrays.asList("sort"));
 		REST_METHODS.put("__AS3__.vec.Vector$uint", Arrays.asList("sort"));
 	}
+	private static final Map<String, List<String>> NULL_DEFAULT_METHODS = new HashMap<String, List<String>>();
+	{
+		NULL_DEFAULT_METHODS.put("Date",
+				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
+						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
+						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime"));
+	}
 	private static final Map<String, List<String>> ANY_METHODS = new HashMap<String, List<String>>();
 	{
-		ANY_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute",
-			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
-			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
-			"setNamespace"));
-		ANY_METHODS.put("XMLList", Arrays.asList("addNamespace", "appendChild", "attribute",
-			"child", "contains", "descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace",
-			"prependChild", "processingInstructions", "removeNamespace", "replace", "setChildren", "setName",
-			"setNamespace"));
+		ANY_METHODS.put("Date",
+				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
+						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
+						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime", "UTC"));
+		ANY_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute", "child", "contains",
+				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
+				"processingInstructions", "removeNamespace", "replace", "setChildren", "setName", "setNamespace"));
+		ANY_METHODS.put("XMLList", Arrays.asList("addNamespace", "appendChild", "attribute", "child", "contains",
+				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
+				"processingInstructions", "removeNamespace", "replace", "setChildren", "setName", "setNamespace"));
 	}
 
-    protected ProblemQuery problems;
-    protected Configurator projectConfigurator;
+	protected ProblemQuery problems;
+	protected Configurator projectConfigurator;
 	protected PlayerglobalcConfiguration configuration;
 	private File sourceFolder;
 	private File targetFolder;
 	private File currentFile;
 
-    /**
-     * Java program entry point.
-     * 
-     * @param args command line arguments
-     */
-    public static void main(final String[] args)
-    {
+	/**
+	 * Java program entry point.
+	 * 
+	 * @param args command line arguments
+	 */
+	public static void main(final String[] args) {
 		PLAYERGLOBALC compiler = new PLAYERGLOBALC();
-        int exitCode = compiler.execute(args);
-        System.exit(exitCode);
-    }
+		int exitCode = compiler.execute(args);
+		System.exit(exitCode);
+	}
 
 	public PLAYERGLOBALC() {
 
 	}
 
-    @Override
-    public String getName() {
-        // TODO: Change this to a flex-tool-api constant ...
-        return "PLAYERGLOBALC";
-    }
+	@Override
+	public String getName() {
+		// TODO: Change this to a flex-tool-api constant ...
+		return "PLAYERGLOBALC";
+	}
 
-    /**
-     * Create a new Configurator. This method may be overridden to allow
-     * Configurator subclasses to be created that have custom configurations.
-     * 
-     * @return a new instance or subclass of {@link Configurator}.
-     */
-    protected Configurator createConfigurator()
-    {
-        return new PlayerglobalcConfigurator(PlayerglobalcConfiguration.class);
-    }
+	/**
+	 * Create a new Configurator. This method may be overridden to allow
+	 * Configurator subclasses to be created that have custom configurations.
+	 * 
+	 * @return a new instance or subclass of {@link Configurator}.
+	 */
+	protected Configurator createConfigurator() {
+		return new PlayerglobalcConfigurator(PlayerglobalcConfiguration.class);
+	}
 
-    protected boolean configure(String[] args)
-    {
+	protected boolean configure(String[] args) {
 		projectConfigurator = createConfigurator();
-        projectConfigurator.setConfiguration(args, "asdoc-root", false);
-        projectConfigurator.getTargetSettings(TargetType.SWC);
-        configuration = ((PlayerglobalcConfiguration) projectConfigurator.getConfiguration());
-        problems = new ProblemQuery(
-                projectConfigurator.getCompilerProblemSettings());
-        problems.addAll(projectConfigurator.getConfigurationProblems());
-        if (problems.hasErrors() || configuration == null)
-        {
-            return false;
-        }
-        return true;
-    }
+		projectConfigurator.setConfiguration(args, "asdoc-root", false);
+		projectConfigurator.getTargetSettings(TargetType.SWC);
+		configuration = ((PlayerglobalcConfiguration) projectConfigurator.getConfiguration());
+		problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
+		problems.addAll(projectConfigurator.getConfigurationProblems());
+		if (problems.hasErrors() || configuration == null) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public int execute(String[] args) {
-        ExitCode exitCode = ExitCode.SUCCESS;
+	@Override
+	public int execute(String[] args) {
+		ExitCode exitCode = ExitCode.SUCCESS;
 		try {
 			boolean continueGeneration = configure(args);
 			if (continueGeneration) {
 				sourceFolder = configuration.getASDocRoot();
 				targetFolder = configuration.getAsRoot();
 				generateSources();
+			} else if (problems.hasFilteredProblems()) {
+				exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
+			} else {
+				exitCode = ExitCode.PRINT_HELP;
 			}
-            else if (problems.hasFilteredProblems())
-            {
-                exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
-            }
-            else
-            {
-                exitCode = ExitCode.PRINT_HELP;
-            }
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-            exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+		} finally {
+			final ProblemFormatter formatter = new ProblemFormatter();
+			final ProblemPrinter printer = new ProblemPrinter(formatter, System.err);
+			printer.printProblems(problems.getFilteredProblems());
 		}
-        finally
-        {
-            final ProblemFormatter formatter = new ProblemFormatter();
-            final ProblemPrinter printer = new ProblemPrinter(formatter, System.err);
-            printer.printProblems(problems.getFilteredProblems());
-        }
 
-        return exitCode.code;
+		return exitCode.code;
 	}
 
 	public void generateSources() throws Exception {
@@ -296,7 +289,7 @@ class PLAYERGLOBALC implements FlexTool {
 			fullyQualifiedName = fullyQualifiedName.substring(17);
 		}
 		if (fullyQualifiedName.equals("Vector")) {
-			//special case in the compiler that doesn't get exposed in docs
+			// special case in the compiler that doesn't get exposed in docs
 			fullyQualifiedName = "__AS3__.vec:Vector";
 			StringBuilder vectorBuilder = new StringBuilder();
 			vectorBuilder.append("// generated from: ");
@@ -329,7 +322,8 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 
 		boolean isAIROnly = isAIROnly(apiClassifierElement.element("prolog"));
-		if(isAIROnly && !configuration.getAir() && !fullyQualifiedName.equals("flash.display.NativeMenu") && !fullyQualifiedName.equals("flash.display.NativeMenuItem")) {
+		if (isAIROnly && !configuration.getAir() && !fullyQualifiedName.equals("flash.display.NativeMenu")
+				&& !fullyQualifiedName.equals("flash.display.NativeMenuItem")) {
 			return;
 		}
 
@@ -465,7 +459,7 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 
 		boolean isAIROnly = isAIROnly(apiClassifierElement.element("prolog"));
-		if(isAIROnly && !configuration.getAir()) {
+		if (isAIROnly && !configuration.getAir()) {
 			return;
 		}
 
@@ -552,7 +546,7 @@ class PLAYERGLOBALC implements FlexTool {
 			fullyQualifiedName = fullyQualifiedName.substring(16);
 		}
 		if (fullyQualifiedName.equals("Vector")) {
-			//special case in the compiler that doesn't get exposed in docs
+			// special case in the compiler that doesn't get exposed in docs
 			return;
 		}
 
@@ -564,7 +558,7 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 
 		boolean isAIROnly = isAIROnly(apiOperationElement.element("prolog"));
-		if(isAIROnly && !configuration.getAir()) {
+		if (isAIROnly && !configuration.getAir()) {
 			return;
 		}
 
@@ -607,13 +601,13 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 
 		if (variableName.startsWith("-")) {
-			//nothing to do here
-			//it's just a negative value getting documented (like -Infinity)
+			// nothing to do here
+			// it's just a negative value getting documented (like -Infinity)
 			return;
 		}
 
 		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
-		if(isAIROnly && !configuration.getAir()) {
+		if (isAIROnly && !configuration.getAir()) {
 			return;
 		}
 
@@ -643,10 +637,10 @@ class PLAYERGLOBALC implements FlexTool {
 	private void parseVariable(Element apiValueElement, boolean forInterface, StringBuilder variableBuilder)
 			throws Exception {
 		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
-		if(isAIROnly && !configuration.getAir()) {
+		if (isAIROnly && !configuration.getAir()) {
 			return;
 		}
-	
+
 		String variableName = apiValueElement.element("apiName").getTextTrim();
 
 		boolean isGetter = false;
@@ -701,8 +695,8 @@ class PLAYERGLOBALC implements FlexTool {
 
 		if (!forInterface && isGetter && isSetter && !isOverride
 				&& apiValueElement.attributeValue("id").endsWith(":set")) {
-			//skip the getter because it is already defined on the base class
-			//example: flash.text.engine.TextElement.text
+			// skip the getter because it is already defined on the base class
+			// example: flash.text.engine.TextElement.text
 			isGetter = false;
 		}
 
@@ -791,7 +785,7 @@ class PLAYERGLOBALC implements FlexTool {
 	private void parseFunction(Element apiOperationElement, String contextClassName, boolean forInterface,
 			StringBuilder functionBuilder) throws Exception {
 		boolean isAIROnly = isAIROnly(apiOperationElement.element("prolog"));
-		if(isAIROnly && !configuration.getAir()) {
+		if (isAIROnly && !configuration.getAir()) {
 			return;
 		}
 
@@ -814,7 +808,8 @@ class PLAYERGLOBALC implements FlexTool {
 		Element apiIsOverrideElement = apiOperationDefElement.element("apiIsOverride");
 		if (apiIsOverrideElement != null) {
 			isOverride = true;
-			if(!configuration.getAir() && "clone".equals(functionName) && "flash.ui.ContextMenuItem".equals(contextClassName)) {
+			if (!configuration.getAir() && "clone".equals(functionName)
+					&& "flash.ui.ContextMenuItem".equals(contextClassName)) {
 				isOverride = false;
 			}
 		}
@@ -961,7 +956,7 @@ class PLAYERGLOBALC implements FlexTool {
 				}
 				result.add(apiParamElement2);
 				if (isRest) {
-					//nothing after rest
+					// nothing after rest
 					break;
 				}
 				continue;
@@ -995,7 +990,7 @@ class PLAYERGLOBALC implements FlexTool {
 				}
 				result.add(apiParamElement1);
 				if (isRest) {
-					//nothing after rest
+					// nothing after rest
 					break;
 				}
 				continue;
@@ -1010,7 +1005,7 @@ class PLAYERGLOBALC implements FlexTool {
 					isRest = true;
 					Element apiItemNameElement1 = apiParamElement1.element("apiItemName");
 					if (apiItemNameElement1 != null) {
-						//keep the existing name
+						// keep the existing name
 						paramName = apiItemNameElement1.getTextTrim();
 					}
 				}
@@ -1022,7 +1017,7 @@ class PLAYERGLOBALC implements FlexTool {
 					isRest = true;
 					Element apiItemNameElement2 = apiParamElement2.element("apiItemName");
 					if (apiItemNameElement2 != null) {
-						//keep the existing name
+						// keep the existing name
 						paramName = apiItemNameElement2.getTextTrim();
 					}
 				}
@@ -1045,7 +1040,7 @@ class PLAYERGLOBALC implements FlexTool {
 			}
 			result.add(newApiParamElement);
 			if (isRest) {
-				//nothing after rest
+				// nothing after rest
 				break;
 			}
 		}
@@ -1070,7 +1065,8 @@ class PLAYERGLOBALC implements FlexTool {
 			String[] parts = apiTypeValue.split("\\$");
 			String vectorItemType = parts[1];
 			vectorItemType = vectorItemType.replace(":", ".");
-			if (contextClassName != null && contextClassName.startsWith("__AS3__.vec.Vector$") && vectorItemType.equals("T")) {
+			if (contextClassName != null && contextClassName.startsWith("__AS3__.vec.Vector$")
+					&& vectorItemType.equals("T")) {
 				return contextClassName;
 			}
 			return "Vector.<" + vectorItemType + ">";
@@ -1087,14 +1083,21 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 
 	private boolean isMethodThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
-		if(!ANY_METHODS.containsKey(contextClassName)) {
+		if (!ANY_METHODS.containsKey(contextClassName)) {
 			return false;
 		}
 		return ANY_METHODS.get(contextClassName).contains(contextFunctionName);
 	}
 
+	private boolean isMethodThatNeedsParamsWithDefaultNull(String contextClassName, String contextFunctionName) {
+		if (!NULL_DEFAULT_METHODS.containsKey(contextClassName)) {
+			return false;
+		}
+		return NULL_DEFAULT_METHODS.get(contextClassName).contains(contextFunctionName);
+	}
+
 	private boolean isMethodThatNeedsRestParamOnly(String contextClassName, String contextFunctionName) {
-		if(!REST_METHODS.containsKey(contextClassName)) {
+		if (!REST_METHODS.containsKey(contextClassName)) {
 			return false;
 		}
 		return REST_METHODS.get(contextClassName).contains(contextFunctionName);
@@ -1106,6 +1109,7 @@ class PLAYERGLOBALC implements FlexTool {
 				contextFunctionName);
 		boolean forceRest = isMethodThatNeedsRestParamOnly(contextClassName, contextFunctionName);
 		boolean forceAnyType = isMethodThatNeedsParamsTypedAsAny(contextClassName, contextFunctionName);
+		boolean forceNullDefault = isMethodThatNeedsParamsWithDefaultNull(contextClassName, contextFunctionName);
 		for (int i = 0; i < apiParamElements.size(); i++) {
 			if (i > 0) {
 				functionBuilder.append(", ");
@@ -1113,11 +1117,10 @@ class PLAYERGLOBALC implements FlexTool {
 			Element apiParamElement = apiParamElements.get(i);
 			Element apiTypeElement = apiParamElement.element("apiType");
 			String paramType = null;
-			if(forceRest) {
+			if (forceRest) {
 				functionBuilder.append("...args");
 				break;
-			}
-			else {
+			} else {
 				if (apiTypeElement != null) {
 					String apiTypeValue = apiTypeElement.attributeValue("value");
 					if ("restParam".equals(apiTypeValue)) {
@@ -1131,7 +1134,7 @@ class PLAYERGLOBALC implements FlexTool {
 				}
 				functionBuilder.append(apiItemNameElement.getTextTrim());
 				if (forceOptionalConstructor) {
-					//workaround for missing data in asdoc dita
+					// workaround for missing data in asdoc dita
 					functionBuilder.append(":* = null");
 				} else {
 					Element apiOperationClassifierElement = apiParamElement.element("apiOperationClassifier");
@@ -1147,10 +1150,12 @@ class PLAYERGLOBALC implements FlexTool {
 						functionBuilder.append(paramType);
 					}
 					Element apiDataElement = apiParamElement.element("apiData");
-					if (apiDataElement != null) {
+					if (forceNullDefault) {
+						functionBuilder.append(" = null");
+					} else if (apiDataElement != null) {
 						writeVariableOrParameterValue(apiDataElement, paramType, functionBuilder);
-					}
-					else if(("int".equals(contextClassName) || "uint".equals(contextClassName)) && "toString".equals(contextFunctionName)) {
+					} else if (("int".equals(contextClassName) || "uint".equals(contextClassName))
+							&& "toString".equals(contextFunctionName)) {
 						functionBuilder.append(" = 10");
 					}
 				}
@@ -1179,12 +1184,12 @@ class PLAYERGLOBALC implements FlexTool {
 	private void collectImport(String fullyQualifiedName, String forPackage, Set<String> result) throws Exception {
 		String[] parts = fullyQualifiedName.split(":");
 		if (parts.length == 1) {
-			//top-level package
+			// top-level package
 			return;
 		}
 		String packageName = parts[0];
 		if (packageName.equals(forPackage)) {
-			//same package
+			// same package
 			return;
 		}
 		result.add(packageName + "." + parts[1]);
@@ -1233,7 +1238,7 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 		if ("apiOperation".equals(elementName)) {
 			boolean isAIROnly = isAIROnly(element.element("prolog"));
-			if(isAIROnly && !configuration.getAir()) {
+			if (isAIROnly && !configuration.getAir()) {
 				return;
 			}
 
@@ -1316,7 +1321,7 @@ class PLAYERGLOBALC implements FlexTool {
 		}
 		if ("apiValue".equals(elementName)) {
 			boolean isAIROnly = isAIROnly(element.element("prolog"));
-			if(isAIROnly && !configuration.getAir()) {
+			if (isAIROnly && !configuration.getAir()) {
 				return;
 			}
 
