@@ -112,12 +112,16 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 	private static final Map<String, List<String>> EXTRA_MEMBERS = new HashMap<String, List<String>>();
 	{
-		EXTRA_MEMBERS.put("Function", Arrays.asList("public var prototype:Object"));
+		EXTRA_MEMBERS.put("Function", Arrays.asList("public native function get prototype():*",
+				"public native function set prototype(value:*):void", "public native function get length():int;"));
+		EXTRA_MEMBERS.put("String", Arrays.asList("AS3 native function toString():String"));
 		EXTRA_MEMBERS.put("flash.display.DisplayObjectContainer", Arrays
 				.asList("public native function removeChildren(beginIndex:int = 0, endIndex:int = 0x7fffffff):void"));
 		EXTRA_MEMBERS.put("flash.display.Graphics", Arrays.asList(
 				"public native function cubicCurveTo(controlX1:Number, controlY1:Number, controlX2:Number, controlY2:Number, anchorX:Number, anchorY:Number):void",
 				"public native function drawRoundRectComplex(x:Number, y:Number, width:Number, height:Number, topLeftRadius:Number, topRightRadius:Number, bottomLeftRadius:Number, bottomRightRadius:Number):void"));
+		EXTRA_MEMBERS.put("flash.display.MovieClip",
+				Arrays.asList("public native function addFrameScript(...args):void"));
 		EXTRA_MEMBERS.put("flash.events.EventDispatcher", Arrays.asList("public native function toString():String"));
 		EXTRA_MEMBERS.put("flash.media.Camera",
 				Arrays.asList("public native function copyToByteArray(rect:Rectangle, destination:ByteArray):void"));
