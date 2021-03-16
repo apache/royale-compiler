@@ -67,6 +67,12 @@ class PLAYERGLOBALC implements FlexTool {
 			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
 	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("Boolean", "Date", "int", "Number", "RegExp",
 			"String", "uint", "XML", "XMLList");
+	private static final Map<String, String> GLOBAL_CONSTANTS = new HashMap<String, String>();
+	{
+		GLOBAL_CONSTANTS.put("Infinity", "1 / 0");
+		GLOBAL_CONSTANTS.put("NaN", "0 / 0");
+		GLOBAL_CONSTANTS.put("undefined", "void 0");
+	}
 	private static final Map<String, List<String>> REST_METHODS = new HashMap<String, List<String>>();
 	{
 		REST_METHODS.put("__AS3__.vec.Vector$object", Arrays.asList("sort"));
@@ -432,7 +438,7 @@ class PLAYERGLOBALC implements FlexTool {
 			parseFunction(apiOperationElement, fullyQualifiedName, false, classBuilder);
 		}
 		for (Element apiValueElement : apiValueElements) {
-			parseVariable(apiValueElement, false, classBuilder);
+			parseVariable(apiValueElement, false, false, classBuilder);
 		}
 		classBuilder.append("\t");
 		classBuilder.append("}");
@@ -529,7 +535,7 @@ class PLAYERGLOBALC implements FlexTool {
 			parseFunction(apiOperationElement, null, true, interfaceBuilder);
 		}
 		for (Element apiValueElement : apiValueElements) {
-			parseVariable(apiValueElement, true, interfaceBuilder);
+			parseVariable(apiValueElement, true, false, interfaceBuilder);
 		}
 		interfaceBuilder.append("\t");
 		interfaceBuilder.append("}");
@@ -627,15 +633,15 @@ class PLAYERGLOBALC implements FlexTool {
 		variableBuilder.append("{");
 		variableBuilder.append("\n");
 		writeImports(importFullyQualifiedNames, variableBuilder);
-		parseVariable(apiValueElement, false, variableBuilder);
+		parseVariable(apiValueElement, false, true, variableBuilder);
 		variableBuilder.append("}");
 		variableBuilder.append("\n");
 
 		writeFileForDefinition(fullyQualifiedName, isAIROnly, variableBuilder.toString());
 	}
 
-	private void parseVariable(Element apiValueElement, boolean forInterface, StringBuilder variableBuilder)
-			throws Exception {
+	private void parseVariable(Element apiValueElement, boolean forInterface, boolean isInPackage,
+			StringBuilder variableBuilder) throws Exception {
 		boolean isAIROnly = isAIROnly(apiValueElement.element("prolog"));
 		if (isAIROnly && !configuration.getAir()) {
 			return;
@@ -766,7 +772,7 @@ class PLAYERGLOBALC implements FlexTool {
 			if (isStatic) {
 				variableBuilder.append("static ");
 			}
-			if (isConst) {
+			if (isConst || (isInPackage && GLOBAL_CONSTANTS.containsKey(variableName))) {
 				variableBuilder.append("const ");
 			} else {
 				variableBuilder.append("var ");
@@ -774,7 +780,10 @@ class PLAYERGLOBALC implements FlexTool {
 			variableBuilder.append(variableName);
 			variableBuilder.append(":");
 			variableBuilder.append(variableType);
-			if (apiDataElement != null) {
+			if (isInPackage && GLOBAL_CONSTANTS.containsKey(variableName)) {
+				variableBuilder.append(" = ");
+				variableBuilder.append(GLOBAL_CONSTANTS.get(variableName));
+			} else if (apiDataElement != null) {
 				writeVariableOrParameterValue(apiDataElement, variableType, variableBuilder);
 			}
 			variableBuilder.append(";");
