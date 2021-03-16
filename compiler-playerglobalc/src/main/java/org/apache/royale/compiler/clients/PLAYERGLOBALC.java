@@ -97,7 +97,7 @@ class PLAYERGLOBALC implements FlexTool {
 		ANY_METHODS.put("Date",
 				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
 						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
-						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime", "UTC"));
+						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime", "UTC", "parse"));
 		ANY_METHODS.put("Object", Arrays.asList("hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable"));
 		ANY_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute", "child", "contains",
 				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
