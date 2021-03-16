@@ -63,8 +63,10 @@ class PLAYERGLOBALC implements FlexTool {
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
 	// From the docs: Methods of the Object class are dynamically created on
 	// Object's prototype.
-	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
-			"propertyIsEnumerable", "setPropertyIsEnumerable", "toString", "toLocaleString", "valueOf");
+	private static final List<String> OBJECT_PROTOTYPE_METHODS = Arrays.asList("setPropertyIsEnumerable", "toString",
+			"toLocaleString", "valueOf");
+	private static final List<String> OBJECT_AS3_METHODS = Arrays.asList("hasOwnProperty", "isPrototypeOf",
+			"propertyIsEnumerable");
 	private static final List<String> ANY_CONSTRUCTORS = Arrays.asList("ArgumentError", "Boolean", "Date",
 			"DefinitionError", "Error", "EvalError", "int", "Number", "RangeError", "ReferenceError", "RegExp",
 			"SecurityError", "String", "SyntaxError", "TypeError", "uint", "URIError", "VerifyError", "XML", "XMLList");
@@ -88,6 +90,7 @@ class PLAYERGLOBALC implements FlexTool {
 				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
 						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
 						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime"));
+		NULL_DEFAULT_METHODS.put("Object", Arrays.asList("hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable"));
 	}
 	private static final Map<String, List<String>> ANY_METHODS = new HashMap<String, List<String>>();
 	{
@@ -95,6 +98,7 @@ class PLAYERGLOBALC implements FlexTool {
 				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
 						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
 						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime", "UTC"));
+		ANY_METHODS.put("Object", Arrays.asList("hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable"));
 		ANY_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute", "child", "contains",
 				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
 				"processingInstructions", "removeNamespace", "replace", "setChildren", "setName", "setNamespace"));
@@ -887,6 +891,13 @@ class PLAYERGLOBALC implements FlexTool {
 
 		List<Element> apiParamElements = apiOperationDefElement.elements("apiParam");
 
+		if (OBJECT_AS3_METHODS.contains(functionName)) {
+			if ("Object".equals(contextClassName)) {
+				access = "AS3";
+			} else {
+				return;
+			}
+		}
 		if ("Object".equals(contextClassName) && OBJECT_PROTOTYPE_METHODS.contains(functionName)) {
 			return;
 		}
