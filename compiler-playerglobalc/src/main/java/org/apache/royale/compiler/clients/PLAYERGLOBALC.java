@@ -76,6 +76,7 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 	private static final Map<String, List<String>> REST_METHODS = new HashMap<String, List<String>>();
 	{
+		REST_METHODS.put("Array", Arrays.asList("splice"));
 		REST_METHODS.put("__AS3__.vec.Vector$object", Arrays.asList("sort"));
 		REST_METHODS.put("__AS3__.vec.Vector$double", Arrays.asList("sort"));
 		REST_METHODS.put("__AS3__.vec.Vector$int", Arrays.asList("sort"));
