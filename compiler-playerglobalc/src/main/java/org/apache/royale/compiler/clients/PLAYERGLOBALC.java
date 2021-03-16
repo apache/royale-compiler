@@ -108,6 +108,7 @@ class PLAYERGLOBALC implements FlexTool {
 	}
 	private static final Map<String, List<String>> EXTRA_MEMBERS = new HashMap<String, List<String>>();
 	{
+		EXTRA_MEMBERS.put("Function", Arrays.asList("public var prototype:Object"));
 		EXTRA_MEMBERS.put("flash.display.DisplayObjectContainer", Arrays
 				.asList("public native function removeChildren(beginIndex:int = 0, endIndex:int = 0x7fffffff):void"));
 		EXTRA_MEMBERS.put("flash.display.Graphics", Arrays.asList(
