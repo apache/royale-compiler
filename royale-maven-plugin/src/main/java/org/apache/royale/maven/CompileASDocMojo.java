@@ -20,6 +20,7 @@
 package org.apache.royale.maven;
 
 import org.apache.flex.tools.FlexTool;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -157,6 +158,23 @@ public class CompileASDocMojo
                 break;
         }
         return defines;
+    }
+
+    @Override
+    protected boolean includeLibrary(Artifact library) {
+        switch (type.get()) {
+            case SWF: {
+                String classifier = library.getClassifier();
+                return "swf".equalsIgnoreCase(classifier) ||
+                    ((classifier == null) && "runtime".equalsIgnoreCase(library.getScope()));
+            }
+            case JS: {
+                String classifier = library.getClassifier();
+                return "typedefs".equalsIgnoreCase(classifier) ||
+                    "js".equalsIgnoreCase(classifier);
+            }
+        }
+        return false;
     }
 
     private enum Type {
