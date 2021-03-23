@@ -95,7 +95,7 @@ public class CompilePlayerglobalMojo
 
         if(getOutput().exists()) {
             // Add the extern to the artifact.
-            projectHelper.attachArtifact(project, getOutput(), "typedefs");
+            projectHelper.attachArtifact(project, getOutput(), "swf");
         }
     }
 
