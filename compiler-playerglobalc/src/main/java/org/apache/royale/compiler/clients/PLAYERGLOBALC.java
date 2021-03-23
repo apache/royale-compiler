@@ -94,6 +94,7 @@ class PLAYERGLOBALC implements FlexTool {
 				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
 						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
 						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime"));
+		NULL_DEFAULT_METHODS.put("Number", Arrays.asList("toExponential", "toFixed", "toPrecision"));
 		NULL_DEFAULT_METHODS.put("Object", Arrays.asList("hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable"));
 	}
 	private static final Map<String, List<String>> ANY_METHODS = new HashMap<String, List<String>>();
@@ -102,6 +103,7 @@ class PLAYERGLOBALC implements FlexTool {
 				Arrays.asList("setFullYear", "setMonth", "setDate", "setHours", "setMinutes", "setSeconds",
 						"setMilliseconds", "setUTCFullYear", "setUTCMonth", "setUTCDate", "setUTCHours",
 						"setUTCMinutes", "setUTCSeconds", "setUTCMilliseconds", "setTime", "UTC", "parse"));
+		ANY_METHODS.put("Number", Arrays.asList("toExponential", "toFixed", "toPrecision", "toString"));
 		ANY_METHODS.put("Object", Arrays.asList("hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable"));
 		ANY_METHODS.put("XML", Arrays.asList("addNamespace", "appendChild", "attribute", "child", "contains",
 				"descendants", "elements", "insertChildAfter", "insertChildBefore", "namespace", "prependChild",
