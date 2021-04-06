@@ -152,7 +152,7 @@
         <ant dir="compiler-externc" target="wipe"/>
         <ant dir="compiler-playerglobalc" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
-        <ant dir="compiler/src/tests" target="wipe"/>
+        <ant dir="compiler/src/test" target="wipe"/>
     </target>
     
     <target name="wipe-all" description="Wipes out everything that didn't come from Git.">
