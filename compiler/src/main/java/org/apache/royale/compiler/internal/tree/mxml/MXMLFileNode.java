@@ -56,6 +56,7 @@ import org.apache.royale.compiler.problems.MXMLConstructorHasParametersProblem;
 import org.apache.royale.compiler.problems.MXMLContentAfterRootTagProblem;
 import org.apache.royale.compiler.problems.MXMLContentBeforeRootTagProblem;
 import org.apache.royale.compiler.problems.MXMLFinalClassProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidComponentNameProblem;
 import org.apache.royale.compiler.problems.MXMLMissingRootTagProblem;
 import org.apache.royale.compiler.problems.MXMLMultipleRootTagsProblem;
 import org.apache.royale.compiler.problems.MXMLNotAClassProblem;
@@ -224,10 +225,34 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         }
     }
 
+    private boolean isValidClassName(String className)
+    {
+        if (className == null || className.length() == 0 || !Character.isJavaIdentifierStart(className.charAt(0)))
+        {
+            return false;
+        }
+
+        for (int i=1; i < className.length(); i++)
+        {
+            if (!Character.isJavaIdentifierPart((className.charAt(i))))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void processRootTag(MXMLTreeBuilder builder, IMXMLTagData rootTag, IMXMLTextData asDoc)
     {
         ClassDefinition fileDef = fileScope.getMainClassDefinition();
         assert fileDef != null;
+
+        if(!isValidClassName(fileDef.getBaseName())) {
+            ICompilerProblem problem = new MXMLInvalidComponentNameProblem(this, fileDef.getBaseName());
+            builder.addProblem(problem);
+            return;
+        }
 
         IDefinition tagDef = builder.getFileScope().resolveTagToDefinition(rootTag);
 
