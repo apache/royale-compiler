@@ -702,6 +702,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     
     void specialCaseDate(IBinaryOperatorNode node, MemberAccessExpressionNode leftSide)
     {
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_OPEN);
+
     	MemberAccessExpressionNode dateNode = (MemberAccessExpressionNode)leftSide;
         IIdentifierNode rightSide = (IIdentifierNode)dateNode.getRightOperandNode();
         String op = node.getOperator().getOperatorText();
@@ -744,5 +747,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         	write(ASEmitterTokens.SPACE);
 	        getWalker().walk(node.getRightOperandNode());
         }
+
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 }
