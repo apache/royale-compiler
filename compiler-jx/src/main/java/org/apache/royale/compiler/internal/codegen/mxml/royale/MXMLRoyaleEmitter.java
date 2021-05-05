@@ -2342,7 +2342,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             writeNewline("var arr = " + formatQualifiedName(cname) + ".superClass_.get__MXMLDescriptor.apply(this);");
             writeNewline("/** @type {Array} */");
             indentPush();
-            writeNewline("var data = [");
+            writeNewline("var mxmldd = [");
 
             mxmlDescriptorEmitter.emit(root);
             indentPop();
@@ -2352,12 +2352,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("if (arr)");
             indentPop();
-            writeNewline("this.mxmldd = arr.concat(data);");
+            writeNewline("this.mxmldd = arr.concat(mxmldd);");
             indentPush();
             writeNewline("else");
             indentPop();
             indentPop();
-            writeNewline("this.mxmldd = data;");
+            writeNewline("this.mxmldd = mxmldd;");
             writeNewline("}");
             indentPop();
             writeNewline("return this.mxmldd;");

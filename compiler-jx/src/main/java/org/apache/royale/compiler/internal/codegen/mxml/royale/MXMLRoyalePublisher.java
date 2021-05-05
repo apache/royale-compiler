@@ -586,6 +586,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
             compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
             compilerWrapper.setVerbose(googConfiguration.isVerbose());
+            compilerWrapper.setPreventRenameMxmlSymbolReferences(googConfiguration.getPreventRenameMxmlSymbolReferences());
 
             ok = compilerWrapper.compile();
 

@@ -465,6 +465,25 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     //
+    // 'prevent-rename-mxml-symbol-references'
+    //
+
+    private boolean preventRenameMxmlSymbolReferences = true;
+
+    public boolean getPreventRenameMxmlSymbolReferences()
+    {
+        return preventRenameMxmlSymbolReferences;
+    }
+
+    @Config
+    @Mapping("prevent-rename-mxml-symbol-references")
+    public void setPreventRenameMxmlSymbolReferences(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	preventRenameMxmlSymbolReferences = value;
+    }
+
+    //
     // 'prevent-rename-public-symbols'
     //
 

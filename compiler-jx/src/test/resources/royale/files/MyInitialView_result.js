@@ -485,7 +485,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
         /** @type {Array} */
         var arr = MyInitialView.superClass_.get__MXMLDescriptor.apply(this);
         /** @type {Array} */
-        var data = [
+        var mxmldd = [
           org.apache.royale.html.Label,
           4,
           'id',
@@ -961,9 +961,9 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
           null
         ];
         if (arr)
-          this.mxmldd = arr.concat(data);
+          this.mxmldd = arr.concat(mxmldd);
         else
-          this.mxmldd = data;
+          this.mxmldd = mxmldd;
       }
       return this.mxmldd;
     }
