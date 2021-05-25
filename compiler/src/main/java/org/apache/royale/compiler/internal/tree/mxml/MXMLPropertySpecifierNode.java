@@ -601,7 +601,10 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         // then create an implicit Array tag and initialize it from the
         // child tags of the property tag.
         IDefinition definition = getDefinition();
-        if (definition != null && definition.getTypeAsDisplayString().equals(IASLanguageConstants.Array))
+        if (definition != null
+                && definition.getTypeAsDisplayString().equals(IASLanguageConstants.Array)
+                // don't crate an implicit MXML Array if the contents parse to a data binding expression -JT
+                && !MXMLDataBindingParser.willParse(info.getSourceFragments()))
         {
             if (instanceNode == null || ((!(instanceNode instanceof MXMLArrayNode)) &&
                 !instanceNode.getClassReference(project).getQualifiedName().equals(IASLanguageConstants.Array)))
