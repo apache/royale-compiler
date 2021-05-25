@@ -155,11 +155,13 @@ public class FindRoyaleMXMLPropertyNamesToKeep extends AbstractPostOrderCallback
 			while(i < minNumPropsChildren) {
 				Node nameNode = arrayArg.getChildAtIndex(i);
 				i++;
-				if (!nameNode.isString()) {
-					throwParseException(nameNode);
+				String propName = null;
+				if (nameNode.isString()) {
+					//no parse exception if it's not a string because non-string
+					//values are allowed when using -mxml-reflect-object-property=true
+					propName = nameNode.getString();
+					propertyNamesToKeep.add(propName);
 				}
-				String propName = nameNode.getString();
-				propertyNamesToKeep.add(propName);
 				Node propTypeNode = arrayArg.getChildAtIndex(i);
 				i++;
 				if((IMXMLLanguageConstants.ATTRIBUTE_ID.equals(propName) || "_id".equals(propName)) && propTypeNode.isTrue()) {
