@@ -48,6 +48,7 @@ import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBindingAttributeNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
@@ -301,6 +302,13 @@ public class BindingInfo implements Comparable<BindingInfo>
         {
             // We are an MXML primitive (like sf:String), so the dest string is just our ID
             String id = ((IMXMLExpressionNode)parent).getEffectiveID();
+            assert id != null;
+            destString = id;
+        }
+        else if (parent instanceof IMXMLArrayNode)
+        {
+            // We are an MXML primitive, so the dest string is just our ID
+            String id = ((IMXMLArrayNode)parent).getEffectiveID();
             assert id != null;
             destString = id;
         }
