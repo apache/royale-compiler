@@ -3663,43 +3663,57 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	    		case MXMLStringID:
 	    		{
 	    			IMXMLStringNode stringNode = (IMXMLStringNode)declNode;
-	    			varname = stringNode.getEffectiveID();
-	                writeNewline();
-	                write(ASEmitterTokens.THIS);
-	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(varname);
-	                write(ASEmitterTokens.SPACE);
-	                writeToken(ASEmitterTokens.EQUAL);
-	                IMXMLLiteralNode valueNode = (IMXMLLiteralNode)(stringNode.getExpressionNode());
-	                Object value = valueNode.getValue();
-	                write(objectToString(value));
-	                write(ASEmitterTokens.SEMICOLON);
+                    IASNode expressionNode = stringNode.getExpressionNode();
+                    // it might be a binding expression instead of a literal
+                    if (expressionNode instanceof IMXMLLiteralNode)
+                    {
+                        varname = stringNode.getEffectiveID();
+                        writeNewline();
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(varname);
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        IMXMLLiteralNode valueNode = (IMXMLLiteralNode) expressionNode;
+                        Object value = valueNode.getValue();
+                        write(objectToString(value));
+                        write(ASEmitterTokens.SEMICOLON);
+                    }
 	                break;
 	    		}
 				case MXMLArrayID:
 				{
 					IMXMLArrayNode arrayNode = (IMXMLArrayNode)declNode;
-					varname = arrayNode.getEffectiveID();
-		            writeNewline();
-		            write(ASEmitterTokens.THIS);
-		            write(ASEmitterTokens.MEMBER_ACCESS);
-		            write(varname);
-		            write(ASEmitterTokens.SPACE);
-		            writeToken(ASEmitterTokens.EQUAL);
-		            write("[");
-		            int m = arrayNode.getChildCount();
-	            	boolean firstOne = true;
-		            for (int j = 0; j < m; j++)
-		            {
-			            IMXMLInstanceNode valueNode = (IMXMLInstanceNode)(arrayNode.getChild(j));
-		            	if (firstOne)
-		            		firstOne = false;
-		            	else
-		            		writeToken(",");
-			            write(instanceToString(valueNode));
-		            }
-		            write("]");
-		            write(ASEmitterTokens.SEMICOLON);
+                    int m = arrayNode.getChildCount();
+                    boolean isDataBinding = false;
+                    if(m == 1)
+                    {
+                        IASNode child = arrayNode.getChild(0);
+                        isDataBinding = child instanceof IMXMLDataBindingNode;
+                    }
+                    if (!isDataBinding)
+                    {
+                        varname = arrayNode.getEffectiveID();
+                        writeNewline();
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(varname);
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.SQUARE_OPEN);
+                        boolean firstOne = true;
+                        for (int j = 0; j < m; j++)
+                        {
+                            IMXMLInstanceNode valueNode = (IMXMLInstanceNode)(arrayNode.getChild(j));
+                            if (firstOne)
+                                firstOne = false;
+                            else
+                                writeToken(ASEmitterTokens.COMMA);
+                            write(instanceToString(valueNode));
+                        }
+                        write(ASEmitterTokens.SQUARE_CLOSE);
+                        write(ASEmitterTokens.SEMICOLON);
+                    }
 		            break;
 				}
 				case MXMLXMLID:
@@ -3748,17 +3762,22 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	    		case MXMLUintID:
 				{
 	    			IMXMLExpressionNode scalarNode = (IMXMLExpressionNode)declNode;
-	    			varname = scalarNode.getEffectiveID();
-	                writeNewline();
-	                write(ASEmitterTokens.THIS);
-	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(varname);
-	                write(ASEmitterTokens.SPACE);
-	                writeToken(ASEmitterTokens.EQUAL);
-	                IMXMLLiteralNode valueNode = (IMXMLLiteralNode)(scalarNode.getExpressionNode());
-	                Object value = valueNode.getValue();
-	                write(value.toString());
-	                write(ASEmitterTokens.SEMICOLON);
+                    IASNode expressionNode = scalarNode.getExpressionNode();
+                    // it might be a binding expression instead of a literal
+                    if (expressionNode instanceof IMXMLLiteralNode)
+                    {
+                        varname = scalarNode.getEffectiveID();
+                        writeNewline();
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(varname);
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        IMXMLLiteralNode valueNode = (IMXMLLiteralNode) expressionNode;
+                        Object value = valueNode.getValue();
+                        write(value.toString());
+                        write(ASEmitterTokens.SEMICOLON);
+                    }
 	                break;
 				}
 
@@ -3790,46 +3809,60 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            return objectToString(value);
     		}
     		else
+            {
     			return "''";
+            }
     	}
     	else if (instanceNode instanceof IMXMLObjectNode)
     	{
     		IMXMLObjectNode objectNode = (IMXMLObjectNode)instanceNode;
             StringBuilder sb = new StringBuilder();
-            sb.append("{");
+            sb.append(ASEmitterTokens.BLOCK_OPEN.getToken());
             int m = objectNode.getChildCount();
         	boolean firstOne = true;
             for (int j = 0; j < m; j++)
             {
             	if (firstOne)
+                {
             		firstOne = false;
-            	else
-            		sb.append(", ");
+                }
+                else
+                {
+                    sb.append(ASEmitterTokens.COMMA.getToken());
+                    sb.append(ASEmitterTokens.SPACE.getToken());
+                }
                 IMXMLPropertySpecifierNode propName = (IMXMLPropertySpecifierNode)objectNode.getChild(j);
-                sb.append(propName.getName() + ": ");
+                sb.append(propName.getName());
+                sb.append(ASEmitterTokens.COLON.getToken());
+                sb.append(ASEmitterTokens.SPACE.getToken());
                 IMXMLInstanceNode valueNode = propName.getInstanceNode();
 	            sb.append(instanceToString(valueNode));
             }
-            sb.append("}");
+            sb.append(ASEmitterTokens.BLOCK_CLOSE.getToken());
             return sb.toString();
     	}
     	else if (instanceNode instanceof IMXMLArrayNode)
     	{
     		IMXMLArrayNode arrayNode = (IMXMLArrayNode)instanceNode;
             StringBuilder sb = new StringBuilder();
-            sb.append("[");
+            sb.append(ASEmitterTokens.SQUARE_OPEN.getToken());
             int m = arrayNode.getChildCount();
         	boolean firstOne = true;
             for (int j = 0; j < m; j++)
             {
 	            IMXMLInstanceNode valueNode = (IMXMLInstanceNode)(arrayNode.getChild(j));
             	if (firstOne)
+                {
             		firstOne = false;
+                }
             	else
-            		sb.append(", ");
+                {
+            		sb.append(ASEmitterTokens.COMMA.getToken());
+            		sb.append(ASEmitterTokens.SPACE.getToken());
+                }
 	            sb.append(instanceToString(valueNode));
             }
-            sb.append("]");
+            sb.append(ASEmitterTokens.SQUARE_CLOSE.getToken());
             return sb.toString();
     	}
     	else if ((instanceNode instanceof IMXMLIntNode) ||
