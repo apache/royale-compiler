@@ -3598,7 +3598,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @SuppressWarnings("incomplete-switch")
 	private void emitComplexInitializers(IASNode node)
     {
-    	int n = node.getChildCount();
+        boolean wroteSelf = false;
+        int n = node.getChildCount();
     	for (int i = 0; i < n; i++)
     	{
     		IASNode child = node.getChild(i);
@@ -3615,12 +3616,23 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     					IVariableNode varnode = (IVariableNode)schild;
     			        IExpressionNode vnode = varnode.getAssignedValueNode();
 
-
                         if (vnode != null && (!EmitterUtils.isScalar(vnode)))
     			        {
     	                    IDefinition varDef = varnode.getDefinition();
     	                    if (varDef.isStatic())
+                            {
     	                    	continue;
+                            }
+                            if(!wroteSelf && vnode instanceof IFunctionObjectNode)
+                            {
+                                writeNewline();
+                                writeToken(ASEmitterTokens.VAR);
+                                writeToken(JSGoogEmitterTokens.SELF);
+                                writeToken(ASEmitterTokens.EQUAL);
+                                write(ASEmitterTokens.THIS);
+                                writeNewline(ASEmitterTokens.SEMICOLON);
+                                wroteSelf = true;
+                            }
     	                    writeNewline();
     	                    write(ASEmitterTokens.THIS);
     	                    write(ASEmitterTokens.MEMBER_ACCESS);

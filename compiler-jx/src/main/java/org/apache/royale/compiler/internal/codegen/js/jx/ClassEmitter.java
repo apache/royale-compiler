@@ -31,6 +31,7 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
@@ -249,6 +250,7 @@ public class ClassEmitter extends JSSubEmitter implements
     
     public void emitComplexInitializers(IClassNode node)
     {
+        boolean wroteSelf = false;
     	boolean wroteOne = false;
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
@@ -259,6 +261,16 @@ public class ClassEmitter extends JSSubEmitter implements
                 IExpressionNode vnode = varnode.getAssignedValueNode();
                 if (vnode != null && (!(dnode.getDefinition().isStatic() || EmitterUtils.isScalar(vnode))))
                 {
+                    if(!wroteSelf && vnode instanceof IFunctionObjectNode)
+                    {
+                        writeNewline();
+                        writeToken(ASEmitterTokens.VAR);
+                        writeToken(JSGoogEmitterTokens.SELF);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        write(ASEmitterTokens.THIS);
+                        writeNewline(ASEmitterTokens.SEMICOLON);
+                        wroteSelf = true;
+                    }
                     writeNewline();
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.MEMBER_ACCESS);
