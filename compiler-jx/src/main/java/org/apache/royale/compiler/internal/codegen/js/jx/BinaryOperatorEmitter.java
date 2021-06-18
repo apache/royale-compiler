@@ -610,6 +610,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				else if (node.getNodeID() == ASTNodeID.Op_InID &&
 						((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
 				{
+					//@todo: add loop target null safety (see changes in ForEachEmitter)
 					write(".propertyNames()");
 				}
 			}
