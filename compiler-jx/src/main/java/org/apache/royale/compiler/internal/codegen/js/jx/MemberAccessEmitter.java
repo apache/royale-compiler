@@ -575,37 +575,45 @@ public class MemberAccessEmitter extends JSSubEmitter implements
             {
                 getWalker().walk(node.getLeftOperandNode());
             }
-            else if (leftNode.getNodeID() == ASTNodeID.SuperID
-                    && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
-            {
-                write(getEmitter().formatQualifiedName(
-                        getEmitter().getModel().getCurrentClass().getQualifiedName()));
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSGoogEmitterTokens.SUPERCLASS);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-                if (rightDef != null)
-                    write(rightDef.getBaseName());
-                else
-                    write(((GetterNode) rightNode).getName());
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.APPLY);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.THIS);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                return false;
-            }
-            else if (leftNode.getNodeID() == ASTNodeID.SuperID
-                    && (rightDef != null && rightDef instanceof FunctionDefinition))
-            {
-                write(getEmitter().formatQualifiedName(
-                        getEmitter().getModel().getCurrentClass().getQualifiedName()));
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSGoogEmitterTokens.SUPERCLASS);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(rightDef.getBaseName());
-                return false;
-            }
+            else
+			{
+				if (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition))
+				{
+					write(getEmitter().formatQualifiedName(
+							getEmitter().getModel().getCurrentClass().getQualifiedName()));
+					write(ASEmitterTokens.MEMBER_ACCESS);
+					write(JSGoogEmitterTokens.SUPERCLASS);
+					write(ASEmitterTokens.MEMBER_ACCESS);
+					write(JSRoyaleEmitterTokens.GETTER_PREFIX);
+					if (rightDef != null)
+						write(rightDef.getBaseName());
+					else
+						write(((GetterNode) rightNode).getName());
+					write(ASEmitterTokens.MEMBER_ACCESS);
+					write(JSEmitterTokens.APPLY);
+					write(ASEmitterTokens.PAREN_OPEN);
+					write(ASEmitterTokens.THIS);
+					write(ASEmitterTokens.PAREN_CLOSE);
+					return false;
+				}
+				else if (rightDef != null && rightDef instanceof FunctionDefinition)
+				{
+					write(getEmitter().formatQualifiedName(
+							getEmitter().getModel().getCurrentClass().getQualifiedName()));
+					write(ASEmitterTokens.MEMBER_ACCESS);
+					write(JSGoogEmitterTokens.SUPERCLASS);
+					write(ASEmitterTokens.MEMBER_ACCESS);
+					write(rightDef.getBaseName());
+					return false;
+				}
+				else if (rightDef != null && rightDef instanceof VariableDefinition)
+				{
+					//for variables, replace super with this
+					startMapping(leftNode);
+					write(ASEmitterTokens.THIS);
+					endMapping(leftNode);
+				}
+			}
         }
         else
         {

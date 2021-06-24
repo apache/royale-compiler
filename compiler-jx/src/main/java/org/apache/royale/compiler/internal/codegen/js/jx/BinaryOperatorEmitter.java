@@ -610,6 +610,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				else if (node.getNodeID() == ASTNodeID.Op_InID &&
 						((JSRoyaleEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
 				{
+					//@todo: add loop target null safety (see changes in ForEachEmitter)
 					write(".propertyNames()");
 				}
 			}
@@ -702,6 +703,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     
     void specialCaseDate(IBinaryOperatorNode node, MemberAccessExpressionNode leftSide)
     {
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_OPEN);
+
     	MemberAccessExpressionNode dateNode = (MemberAccessExpressionNode)leftSide;
         IIdentifierNode rightSide = (IIdentifierNode)dateNode.getRightOperandNode();
         String op = node.getOperator().getOperatorText();
@@ -744,5 +748,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         	write(ASEmitterTokens.SPACE);
 	        getWalker().walk(node.getRightOperandNode());
         }
+
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 }

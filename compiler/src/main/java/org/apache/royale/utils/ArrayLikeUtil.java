@@ -933,6 +933,14 @@ class ArrayLikeLoopMutation implements ForLoopNode.ILoopMutation {
         BlockNode block = target.getContentsNode();
         //'insert' at position 0 to prepend this to the original loop's block content
         block.addChild(iteratee, 0);
+        //if a) the child count was one previously [it is now 2] *and* b) it was an implicit Block
+        if (block.getChildCount() == 2 && block.getContainerType() == IContainerNode.ContainerType.IMPLICIT) {
+            //we set it as 'explicit' even though it is not. This is particularly helpful in implementations like compiler-jx because it
+            //provides a clue for expression of the loop content with explicit block braces, instead of as it is in the original
+            //code where they were not needed. For swf bytecode expression this change is not needed, but also has no downside.
+            block.setContainerType(IContainerNode.ContainerType.BRACES);
+        }
+
         EnumSet<PostProcessStep> set = EnumSet.of(
                 PostProcessStep.POPULATE_SCOPE);
         //only add the iteratee to the analysis. re-evaluating the original variable node (if it is not a pre-existing identifier)

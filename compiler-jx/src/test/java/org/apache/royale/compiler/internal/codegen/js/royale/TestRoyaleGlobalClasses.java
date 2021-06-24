@@ -1565,7 +1565,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
                 "import custom.TestProxy; public class B {public function b() { var a:TestProxy = new TestProxy();for each (var p:String in a) var i:int = p.length; }}",
                 IForLoopNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitForLoop(node);
-        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = (p.length) >> 0;}\n");
+        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target && foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = (p.length) >> 0;}\n");
     }
     
     @Test

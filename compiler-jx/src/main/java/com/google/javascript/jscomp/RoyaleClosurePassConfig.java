@@ -134,8 +134,12 @@ public final class RoyaleClosurePassConfig extends PassConfig {
   private Set<String> propertyNamesToKeep;
 
   private Set<String> extraSymbolNamesToExport;
+
+  private boolean preventRenameMxmlSymbolReferences;
   
-  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName, File varRenameMapFile, Set<String> propertyNamesToKeep, Set<String> extraSymbolNamesToExport) {
+  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName,
+      File varRenameMapFile, Set<String> propertyNamesToKeep,
+      Set<String> extraSymbolNamesToExport, boolean preventRenameMxmlSymbolReferences) {
     super(options);
 
     // The current approach to protecting "hidden" side-effects is to
@@ -145,8 +149,9 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     preprocessorSymbolTableFactory = new PreprocessorSymbolTable.CachedInstanceFactory();
     this.varRenameMapFile = varRenameMapFile;
     this.sourceFileName = sourceFileName;
-    this.propertyNamesToKeep = propertyNamesToKeep;
+    this.propertyNamesToKeep = propertyNamesToKeep != null ? propertyNamesToKeep : new HashSet<String>();
     this.extraSymbolNamesToExport = extraSymbolNamesToExport;
+    this.preventRenameMxmlSymbolReferences = preventRenameMxmlSymbolReferences;
   }
 
   GlobalNamespace getGlobalNamespace() {
@@ -341,9 +346,11 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       checks.add(angularPass);
     }
 
-    if (propertyNamesToKeep != null && propertyNamesToKeep.size() > 0) {
-      checks.add(keepRoyalePropertyNamesPass);
+    if (preventRenameMxmlSymbolReferences) {
+      checks.add(findRoyaleMxmlPropertiesToKeep);
     }
+
+    checks.add(keepRoyalePropertyNamesPass);
 
     if (extraSymbolNamesToExport != null) {
       checks.add(generateRoyaleExports);
@@ -1287,6 +1294,25 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         return ES_NEXT;
       }
     };
+  
+    private final PassFactory findRoyaleMxmlPropertiesToKeep = 
+      new PassFactory("find-royale-mxml-properties", true) {
+        @Override
+        protected CompilerPass create(final AbstractCompiler compiler) {
+          final FindRoyaleMXMLPropertyNamesToKeep pass = new FindRoyaleMXMLPropertyNamesToKeep(compiler);
+          return new CompilerPass() {
+            @Override
+            public void process(Node externs, Node root) {
+              pass.process(externs, root, propertyNamesToKeep);
+            }
+          };
+        }
+  
+        @Override
+        protected FeatureSet featureSet() {
+          return ES_NEXT;
+        }
+      };
 
     private final PassFactory keepRoyalePropertyNamesPass = 
         new PassFactory("keep-royale-property-names", true) {

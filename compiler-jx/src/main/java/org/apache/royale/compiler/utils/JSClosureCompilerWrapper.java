@@ -94,6 +94,7 @@ public class JSClosureCompilerWrapper
     private boolean skipTypeInference;
     private boolean sourceMap = false;
     private boolean verbose = false;
+    private boolean preventRenameMxmlSymbolReferences = true;
     
     public String targetFilePath;
     
@@ -125,6 +126,11 @@ public class JSClosureCompilerWrapper
     public void setVerbose(boolean enabled)
     {
         verbose = enabled;
+    }
+
+    public void setPreventRenameMxmlSymbolReferences(boolean enabled)
+    {
+        preventRenameMxmlSymbolReferences = enabled;
     }
 
     public void setPropertyNamesToKeep(Set<String> propertyNames)
@@ -173,7 +179,8 @@ public class JSClosureCompilerWrapper
 
         compiler_.setPassConfig(new RoyaleClosurePassConfig(options_, 
         		jsSourceFiles_.get(jsSourceFiles_.size() - 1).getName(), 
-        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath), propertyNamesToKeep, extraSymbolNamesToExport));
+        		variableMapInputPath == null ? null : new File(outputFolder, variableMapInputPath),
+                propertyNamesToKeep, extraSymbolNamesToExport, preventRenameMxmlSymbolReferences));
         Result result = compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
         
         try
