@@ -1818,7 +1818,9 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
     private boolean handleParsingError(final RecognitionException ex, final ASToken current, final ASToken errorToken, final int endToken)
     {
         // Ignore ASDoc problems.
-        if (current.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)
+        if (current.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT
+                || current.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+                || current.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)
         {
             consume();
             return true;
