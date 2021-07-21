@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.8</version>
   </parent>
 
   <artifactId>compiler-externc</artifactId>
-  <version>0.9.8-SNAPSHOT</version>
+  <version>0.9.8</version>
 
   <name>Apache Royale: Compiler: Externc</name>
   <description>The Apache Royale Compiler Externs Compiler</description>
@@ -254,7 +254,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.8-SNAPSHOT</version>
+      <version>0.9.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.javascript</groupId>
@@ -265,7 +265,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.8-SNAPSHOT</version>
+      <version>0.9.8</version>
       <scope>test</scope>
     </dependency>
     <dependency>
