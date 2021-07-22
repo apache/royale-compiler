@@ -127,7 +127,7 @@ public class RepairingTokenBuffer extends BaseRepairingTokenBuffer implements IR
     public ASToken previous()
     {
         final int prevPos = position - 1;
-        if (prevPos < size && prevPos > 0)
+        if (prevPos < size && prevPos >= 0)
             return tokens[prevPos];
         else
             return eofToken;
