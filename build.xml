@@ -418,6 +418,21 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
+	<copy todir="${staging-dir}/compiler-playerglobalc" includeEmptyDirs="false">
+		<fileset dir="${basedir}/compiler-playerglobalc">
+			<include name="**"/>
+			<exclude name=".classpath" />
+			<exclude name=".project" />
+			<exclude name=".settings/**" />
+			<exclude name="in/**"/>
+			<exclude name="lib/**"/>
+			<exclude name="target/classes/**"/>
+			<exclude name="target/test-classes/**"/>
+			<exclude name="target/junit-temp/**"/>
+			<exclude name="target/junit-reports/**"/>
+			<exclude name="**/unittest.properties" />
+		</fileset>
+	</copy>
 
         <tstamp>
             <format property="build.number.date" pattern="yyyyMMdd" />
