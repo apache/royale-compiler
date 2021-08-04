@@ -593,9 +593,17 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         }
         write("  \"return\": \"");
         if (node.getReturnType().equals("void"))
+		{
         	write("void");
+		}
         else if (node.getReturnTypeNode() != null)
-        	write(formatQualifiedName(node.getReturnTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
+		{
+			ITypeDefinition returnDef = node.getReturnTypeNode().resolveType(getWalker().getProject());
+			if (returnDef != null)
+			{
+        		write(formatQualifiedName(returnDef.getQualifiedName()));
+			}
+		}
         writeNewline("\",");
         write("  \"params\": [");
         boolean firstParam = true;
