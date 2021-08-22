@@ -1,3 +1,4 @@
+For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
 Apache Royale Compiler 0.9.8
 =================
@@ -6,6 +7,7 @@ Apache Royale Compiler 0.9.8
 - Fixed issue where unrecognized characters in .mxml files were sometimes ignored, and now an error is reported.
 - Fixed some missing syntax checks for bindable variables that should have been the same as non-bindable variables. This may produce some new errors that weren't there before (such as duplicate variable names), but they should have been.
 - Fixed issue where a type annotation referencing a class with a private constructor was not correctly resolved.
+- Improvements/Fixes in Binding support, added support for binding inheritance, similar to Flex.
 - (JS) Source map debugging paths of SDK classes are updated to allow breakpoints in the original .as or .mxml files in the SDK when debugging in a browser or IDE.
 - (JS) Added source-map-source-root compiler option to optionally customize the source root of source maps.
 - (JS) No longer generates @export annotations for exported symbols in debug builds. Exports are smartly generated when creating a release build, and if they are disabled, they will be omitted from framework classes now too. This can help reduce the size of a release build.
@@ -52,8 +54,7 @@ Apache Royale Compiler 0.9.7
  - (JS) Fix "missing var keyword" warning from Closure compiler for type definitions.
  - (SWF/JS) Fix missing error for calling a getter as a function (similar to attempting to call a variable as a function) when it is the wrong type.
  - (JS) Fix missing . in generated JS when using static getter/setter in a custom namespace.
-
- For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
+ 
 
 Apache Royale Compiler 0.9.6
 =================
