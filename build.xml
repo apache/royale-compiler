@@ -274,7 +274,7 @@
                 <include name="NOTICE.base"/>
                 <include name="NOTICE.fdb"/>
                 <include name="NOTICE.oem"/>
-                <include name="RELEASE_NOTES"/>
+                <include name="RELEASE_NOTES.md"/>
                 <include name="installer.xml"/>
                 <include name="installer.properties/**"/>
                 <include name="pom.xml"/>
