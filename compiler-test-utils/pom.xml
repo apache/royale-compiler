@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.8</version>
   </parent>
 
   <artifactId>compiler-test-utils</artifactId>
-  <version>0.9.8-SNAPSHOT</version>
+  <version>0.9.8</version>
 
   <name>Apache Royale: Compiler: Test Utils</name>
   <description>
