@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="formatter.tests" default="main" basedir=".">
+
+    <pathconvert property="formatter.tests" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    
+    <property environment="env"/>
+	<property file="unittest.properties" />
+	<property name="test.timeout" value="3000000" />
+	<property name="maxmem" value="512" />
+	
+	<condition property="sdk" value="${ROYALE_HOME}" else="${env.ROYALE_HOME}">
+	    <isset property="ROYALE_HOME" />
+	</condition>
+	
+    <property name="formatter" value="${formatter.tests}/../.."/>
+    <property name="royale" value="${formatter}/../compiler"/>
+    
+    <target name="jar.tests">
+        <java jar="${royale}/lib/formatter.jar" fork="true"/>
+    </target>
+    
+    <target name="compile.tests">
+        <echo>formatter is ${formatter} royale is ${royale}</echo>
+        <delete dir="${formatter}/target/test-classes"/>
+        <mkdir dir="${formatter}/target/test-classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${formatter}/target/test-classes" includeAntRuntime="true">
+            <src path="${formatter.tests}/java"/>
+            <compilerarg value="-Xlint:all,-path"/>
+            <classpath>
+                <pathelement location="${formatter}/../compiler-test-utils/target/classes"/>
+                <fileset dir="${royale}/lib" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="tests" depends="compile.tests">
+        <mkdir dir="${formatter}/target/junit-reports"/>
+        <mkdir dir="${formatter}/target/junit-temp"/>
+        <junit dir="${formatter}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${formatter}/target/classes"/>
+                <pathelement location="${formatter}/target/test-classes"/>
+                <pathelement location="${formatter}/../compiler-test-utils/target/classes"/>
+                <fileset dir="${royale}/lib" includes="**/*.jar"/>
+            </classpath>
+            <batchtest todir="${formatter}/target/junit-reports">
+                <fileset dir="${formatter}/target/test-classes">
+                    <include name="**/Test*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
+    
+    <target name="main" depends="jar.tests, tests"/>
+
+    <target name="clean">
+        <delete dir="${formatter}/target/junit-reports"/>
+        <delete dir="${formatter}/target/junit-temp"/>
+    </target>
+
+    <target name="wipe" depends="clean">
+    </target>
+
+</project>
