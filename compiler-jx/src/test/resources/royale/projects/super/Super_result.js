@@ -31,16 +31,18 @@ Super = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Super', Super);
-
-
-/**
  * @private
  * @type {string}
  */
 Super.prototype._text = '';
+
+
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+Super.prototype.text;
 
 
 Super.prototype.get__text = function() {
@@ -57,8 +59,8 @@ Super.prototype.set__text = function(value) {
 
 Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 text: {
 get: Super.prototype.get__text,
 set: Super.prototype.set__text}}

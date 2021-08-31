@@ -43,7 +43,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @package\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @package\n * @type {number}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
+        assertOut("/**\n * @package\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo:int = -420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = -420");
+        assertOut("/**\n * @package\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = -420");
     }
 
     @Override
@@ -137,7 +137,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo");
+        assertOut("/**\n * @package\n * @const\n * @type {*}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @package\n * @const\n * @type {*}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -154,7 +154,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo");
+        assertOut("/**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo");
     }
 
     @Test
@@ -162,7 +162,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo");
+        assertOut("/**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo");
     }
 
     @Override
@@ -171,7 +171,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
+        assertOut("/**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.foo = 420");
     }
 
     @Test
@@ -179,7 +179,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
+        assertOut("/**\n * @package\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.foo = 420");
     }
 
     @Override

@@ -270,6 +270,15 @@ public class TestRoyaleStatements extends TestGoogStatements
         assertOut("var /** @type {number} */ a = this.b.getFullYear()");
     }
 
+    @Test
+    public void testVarDeclaration_withTypeNumberAndAssignedDatePropertyWithRequiredParentheses()
+    {
+        IVariableNode node = (IVariableNode) getNode("function royaleTest_a():Object { var a:Number = (b.fullYear + 1) / 2; }var b:Date;",
+            IVariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = (this.b.getFullYear() + 1) / 2");
+    }
+
     //----------------------------------
     // const declaration
     //----------------------------------
@@ -718,7 +727,7 @@ public class TestRoyaleStatements extends TestGoogStatements
         		              " * @constructor\n" +
         		              " */\n" +
         		              "RoyaleTest_A = function() {\n" +
-        		              "};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
+        		              "};\n\n\n" +
         		              "RoyaleTest_A.prototype.royaleTest_a = function() {\n" +
                               "  var self = this;\n" +
                               "  var /** @type {number} */ len = 0;\n" +

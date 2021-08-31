@@ -22,7 +22,7 @@ import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 public enum JSGoogDocEmitterTokens implements IEmitterTokens
 {
-    PARAM("param"), STAR("*"), TYPE("type"), EXPOSE("expose"), EXPORT("export"), NOCOLLAPSE("nocollapse");
+    PARAM("param"), STAR("*"), TYPE("type"), EXPOSE("expose"), EXPORT("export"), NOCOLLAPSE("nocollapse"), PACKAGE("package");
 
     private String token;
 

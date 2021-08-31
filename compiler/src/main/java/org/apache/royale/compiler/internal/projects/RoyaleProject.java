@@ -92,6 +92,7 @@ import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.requests.IOutgoingDependenciesRequestResult;
 import org.apache.royale.compiler.units.requests.IRequest;
@@ -2249,9 +2250,10 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
      * it isn't allowed in an ActionScript identifier or MXML id. It also can't
      * conflict with any dynamic properties, because MXML classes are sealed.
      */
-    public String getGeneratedIDBase()
+    public String getGeneratedIDBase(IMXMLClassDefinitionNode definitionNode)
     {
-        return "#";
+        IClassDefinition classDefinition = definitionNode.getDefinition();
+        return "#_"+classDefinition.resolveAncestry(this).length+"_";
     }
     
     @Override
@@ -2620,12 +2622,12 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     }
 
 
-    private WeakHashMap<IClassDefinition, BindingDatabase> bindingMap = new WeakHashMap<IClassDefinition, BindingDatabase>();
+    private HashMap<IClassDefinition, BindingDatabase> bindingMap = new HashMap<IClassDefinition, BindingDatabase>();
     /**
      * Support for access to BindingData from the class definition as key.
      * @return
      */
-    public WeakHashMap<IClassDefinition, BindingDatabase> getBindingMap(){
+    public HashMap<IClassDefinition, BindingDatabase> getBindingMap(){
         return bindingMap;
     }
 

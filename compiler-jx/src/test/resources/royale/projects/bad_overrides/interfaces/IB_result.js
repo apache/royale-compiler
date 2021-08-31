@@ -31,12 +31,6 @@ interfaces.IB = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('interfaces.IB', interfaces.IB);
-
-
-/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

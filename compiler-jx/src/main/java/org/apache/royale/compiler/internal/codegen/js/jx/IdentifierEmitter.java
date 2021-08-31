@@ -92,7 +92,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 startMapping(parentNode);
                 if(initialValue instanceof String)
                 {
-                    write("\"" + initialValue + "\"");
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    write((String) initialValue);
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
                 }
                 else if(initialValue == ABCConstants.UNDEFINED_VALUE)
                 {
@@ -158,7 +160,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
             	if (baseName.equals("MAX_VALUE"))
             	{
                     startMapping(parentNode);
-            		write("2147483648");
+            		write("2147483647");
                     endMapping(parentNode);
             		return;
             	}
@@ -205,7 +207,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     endMapping(prevSibling);
                     startMapping(parentNode, prevSibling);
                 }
-                if (!isCustomNamespace && (!(identifierIsAccessorFunction && isStatic))) {
+                if (!isCustomNamespace) {
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     wroteMemberAccess = true;
                 }
@@ -356,10 +358,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     	String ns = ((INamespaceResolvedReference)(nodeDef.getNamespaceReference())).resolveAETNamespace(getProject()).getName();
                     	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
                     }
-                    else if (identifierIsAccessorFunction && isStatic)
-                    {
-                    	write("[\"" +node.getName() + "\"]");
-                    }
                 	else
                 	{
                 	    if (!(nodeDef.getParent() instanceof IPackageDefinition)) {
@@ -389,10 +387,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                 	String ns = ((INamespaceResolvedReference)nodeDef.getNamespaceReference()).resolveAETNamespace(getProject()).getName();
                 	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
-                }
-                else if (identifierIsAccessorFunction && isStatic)
-                {
-                	write("[\"" + qname + "\"]");
                 }
                 else
                 {

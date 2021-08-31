@@ -34,12 +34,6 @@ UseWindow = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('UseWindow', UseWindow);
-
-
-/**
  * @private
  * @type {mypackage.TestClass}
  */

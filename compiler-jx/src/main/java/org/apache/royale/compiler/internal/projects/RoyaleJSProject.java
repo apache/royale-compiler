@@ -39,6 +39,7 @@ import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
 import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
@@ -48,6 +49,7 @@ import org.apache.royale.compiler.definitions.references.IResolvedQualifiersRefe
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.common.JSModuleRequireDescription;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
@@ -68,6 +70,7 @@ import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.ICompilationUnit.UnitType;
 import org.apache.royale.swc.ISWC;
@@ -522,9 +525,10 @@ public class RoyaleJSProject extends RoyaleProject
     }
     
     @Override
-    public String getGeneratedIDBase()
+    public String getGeneratedIDBase(IMXMLClassDefinitionNode definitionNode)
     {
-        return MXMLRoyaleEmitterTokens.ID_PREFIX.getToken();
+        IClassDefinition classDefinition = definitionNode.getDefinition();
+        return EmitterUtils.getClassDepthNameBase(MXMLRoyaleEmitterTokens.ID_PREFIX.getToken(), classDefinition, this);
     }
 
     public ITargetAttributes computeTargetAttributes()

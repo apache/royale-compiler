@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.7</version>
+    <version>0.9.8</version>
   </parent>
 
   <artifactId>compiler</artifactId>
-  <version>0.9.7</version>
+  <version>0.9.8</version>
 
   <name>Apache Royale: Compiler: Compiler</name>
   <description>The Apache Royale Compiler</description>
@@ -36,14 +36,30 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifestEntries>
-                <Class-Path>external/closure-compiler-v20181210.jar compiler-common.jar external/antlr-2.7.7.jar external/antlr-3.3.jar external/antlr-runtime-3.3.jar external/commons-cli-1.2.jar external/commons-io-2.4.jar external/guava-25.1-jre.jar external/lzma-sdk-4j-9.22.0.jar external/flex-tool-api-1.0.0.jar ..</Class-Path>
-                <!-- <Class-Path>compiler-common.jar external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar ..</Class-Path> -->
-              </manifestEntries>
-            </archive>
-          </configuration>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <!-- These paths are all defined the way the layout will be in the distribution -->
+                    <Class-Path>compiler-common.jar external/antlr.jar external/antlr-runtime.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk-4j.jar external/flex-tool-api.jar ..</Class-Path>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>scripts-jar</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <classesDirectory>src/assembly/scripts</classesDirectory>
+                <classifier>scripts</classifier>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
@@ -426,6 +442,19 @@
               <goal>generate-problems-resource-bundle</goal>
             </goals>
           </execution>
+          <execution>
+            <id>order-jflex-switch-statements</id>
+            <goals>
+              <goal>order-jflex-switches</goal>
+            </goals>
+            <configuration>
+              <includes>
+              <include>jflex/org/apache/royale/compiler/internal/parsing/as/RawASDocTokenizer.java</include>
+              <include>jflex/org/apache/royale/compiler/internal/parsing/as/RawASTokenizer.java</include>
+              <include>jflex/org/apache/royale/compiler/internal/parsing/mxml/RawMXMLTokenizer.java</include>
+              </includes>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -552,7 +581,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.flex</groupId>
@@ -604,13 +633,13 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-externc</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -627,4 +656,4 @@
     </dependency>
   </dependencies>
 
-<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>
+<properties /></project>

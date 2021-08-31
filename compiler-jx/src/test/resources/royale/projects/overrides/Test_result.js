@@ -38,13 +38,6 @@ goog.inherits(Test, classes.A);
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('Test', Test);
-
-
-/**
- * @export
  * @override
  */
 Test.prototype.someFunction = function() {
@@ -53,7 +46,6 @@ Test.prototype.someFunction = function() {
 
 
 /**
- * @export
  * @override
  */
 Test.prototype.someOtherFunction = function() {

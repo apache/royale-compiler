@@ -133,6 +133,25 @@ public class JSConfiguration extends Configuration
     }
 
     //
+    // 'source-map-source-root'
+    //
+
+    private String sourceMapSourceRoot = null;
+
+    public String getSourceMapSourceRoot()
+    {
+        return sourceMapSourceRoot;
+    }
+
+    @Config
+    @Mapping("source-map-source-root")
+    public void setSourceMapSourceRoot(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        sourceMapSourceRoot = value;
+    }
+
+    //
     // 'js-default-initializers'
     //
 

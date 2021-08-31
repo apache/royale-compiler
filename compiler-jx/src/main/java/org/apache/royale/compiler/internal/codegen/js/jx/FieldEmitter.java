@@ -36,16 +36,10 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.tree.as.ChainedVariableNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
-import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.royale.compiler.utils.NativeUtils;
@@ -92,6 +86,8 @@ public class FieldEmitter extends JSSubEmitter implements
     		if (def != null)
     		{
     			qname = def.getQualifiedName();
+                if (NativeUtils.isJSNative(qname))
+                    return false;
     			return !(qname.contentEquals(cdef.getQualifiedName()));
     		}
     	}
@@ -104,6 +100,9 @@ public class FieldEmitter extends JSSubEmitter implements
     			if (isExternalReference((IExpressionNode)childNode, cdef))
     				return true;
     		}
+    		//if  childNode is a ContainerNode (e.g. argumentsNode of FunctionCallNode),
+            //should we be checking the arguments as well? Doing so (*and* returning true because one of the argument nodes is an external reference)
+            //seems to cause issues, so avoiding this for now.
     	}
     	return false;
     }
@@ -183,18 +182,18 @@ public class FieldEmitter extends JSSubEmitter implements
                 writeNewline(ASEmitterTokens.SEMICOLON);
                 write(IASLanguageConstants.Object);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.DEFINE_PROPERTY);
+                write(JSEmitterTokens.DEFINE_PROPERTIES);
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(className);
                 writeToken(ASEmitterTokens.COMMA);
-                write(ASEmitterTokens.SINGLE_QUOTE);
+                writeToken(ASEmitterTokens.BLOCK_OPEN);
 	            writeFieldName(node, fjs);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                writeToken(ASEmitterTokens.COMMA);
+                writeToken(ASEmitterTokens.COLON);
                 if (node.isConst())
                 	write("{ value: value, writable: false }");
                 else
-                	write("{ value: value, writable: true }");
+                    write("{ value: value, writable: true }");
+                write(ASEmitterTokens.BLOCK_CLOSE);
                 write(ASEmitterTokens.PAREN_CLOSE);
                 writeNewline(ASEmitterTokens.SEMICOLON);
                 writeToken(ASEmitterTokens.RETURN);
@@ -217,15 +216,15 @@ public class FieldEmitter extends JSSubEmitter implements
 	                writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 	                write(IASLanguageConstants.Object);
 	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(JSEmitterTokens.DEFINE_PROPERTY);
+	                write(JSEmitterTokens.DEFINE_PROPERTIES);
 	                write(ASEmitterTokens.PAREN_OPEN);
 	                write(className);
 	                writeToken(ASEmitterTokens.COMMA);
-	                write(ASEmitterTokens.SINGLE_QUOTE);
+                    writeToken(ASEmitterTokens.BLOCK_OPEN);
 		            writeFieldName(node, fjs);
-	                write(ASEmitterTokens.SINGLE_QUOTE);
-	                writeToken(ASEmitterTokens.COMMA);
+	                writeToken(ASEmitterTokens.COLON);
 	                write("{ value: value, writable: true }");
+                    write(ASEmitterTokens.BLOCK_CLOSE);
 	                write(ASEmitterTokens.PAREN_CLOSE);
 	                indentPop();
 	                writeNewline(ASEmitterTokens.SEMICOLON);

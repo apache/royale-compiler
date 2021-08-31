@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
@@ -295,6 +296,18 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         }
         if (isConstructor())
         {
+            IFunctionNode funcNode = getFunctionNode();
+            if (funcNode != null
+                    && INamespaceConstants.private_.equals(funcNode.getNamespace()))
+            {
+                // super.isPrivate() checks the namespace reference, but all
+                // constructors always use this namespace reference:
+                // NamespaceDefinition.getCodeModelImplicitDefinitionNamespace()
+                // constructors can't use the normal private reference or
+                // they'll incorrectly show up in scope searches.
+                return true;
+            }
+
             IDefinition parent = getParent();
             if (parent == null)
             {

@@ -30,11 +30,11 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.royale.compiler.internal.tree.mxml.MXMLInstanceNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.common.IFileSpecificationGetter;
 import org.apache.royale.compiler.common.Multiname;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
-import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
@@ -68,7 +68,6 @@ import org.apache.royale.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
-import org.apache.royale.compiler.problems.MXMLUnresolvedTagProblem;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -107,7 +106,6 @@ public class MXMLScopeBuilder
         fileScope.addDefinition(packageDefinition);
         
         problems = new LinkedList<ICompilerProblem>();
-        problems.addAll(mxmlData.getProblems());
 
         includeHandler = new IncludeHandler(fileSpecGetter);
         includeHandler.setProjectAndCompilationUnit(project, compilationUnit);
@@ -211,11 +209,11 @@ public class MXMLScopeBuilder
 
         if (baseClass instanceof IResolvedQualifiersReference)
         {
-            IDefinition baseDef = ((IResolvedQualifiersReference)baseClass).resolve(project);
-            if (baseDef == null)
-                problems.add(new MXMLUnresolvedTagProblem(rootTag));
-            else
-                currentClassScope.addImport(baseDef.getQualifiedName());           
+            // don't try to resolve the definition here because it can lead to
+            // the compiler getting into a deadlock. previously, we checked
+            // whether the definition resolved, but that is also handled in
+            // MXMLFileNode, so it was redundant and we can skip it. -JT
+            currentClassScope.addImport(baseClass.getDisplayString());
         }
 
         currentClassDefinition.setContainedScope(currentClassScope);
@@ -663,7 +661,7 @@ public class MXMLScopeBuilder
 
     private void processState(IMXMLTagData tag, String qname)
     {
-        if (!qname.equals(project.getStateClass()) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
+        if (!MXMLInstanceNode.isStateClass(qname, project) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
             return;
 
         // if there is no name attribute, ignore it as a state, as name is

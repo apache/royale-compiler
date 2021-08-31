@@ -295,12 +295,21 @@
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler" />
         </antcall>
+	<antcall target="sign-file" >
+		<param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/compiler/${release.version}/compiler-${release.version}-scripts.jar" />
+	</antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler-common" />
         </antcall>
         <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="compiler-externc" />
         </antcall>
+	<antcall target="sign-jar-artifacts" >
+		<param name="jarname" value="compiler-playerglobalc" />
+	</antcall>
+	<antcall target="sign-file" >
+		<param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/compiler-playerglobalc/${release.version}/compiler-playerglobalc-${release.version}-tests.jar" />
+	</antcall>
         <antcall target="sign-file" >
             <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/compiler-externc/${release.version}/compiler-externc-${release.version}-tests.jar" />
         </antcall>
@@ -386,7 +395,6 @@
             unless="release.version"/>
         <exec executable="${mvn}" failonerror="true" >
             <arg value="wagon:upload" />
-            <arg value="-X" />
             <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/target/local-release-dir" />
             <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
             <arg value="-Dwagon.serverId=apache.releases.https" />

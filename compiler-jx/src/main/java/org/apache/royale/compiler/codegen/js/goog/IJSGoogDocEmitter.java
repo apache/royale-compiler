@@ -130,6 +130,8 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitProtected(IASNode node);
 
+    void emitInternal(IASNode node);
+
     void emitReturn(IFunctionNode node, String packageName);
 
     void emitThis(ITypeDefinition node, String packageName);

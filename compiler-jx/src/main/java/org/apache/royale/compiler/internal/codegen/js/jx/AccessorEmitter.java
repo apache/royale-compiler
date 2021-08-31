@@ -50,7 +50,6 @@ import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.GetterNode;
 import org.apache.royale.compiler.internal.tree.as.SetterNode;
-import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IGetterNode;
@@ -86,7 +85,7 @@ public class AccessorEmitter extends JSSubEmitter implements
         RoyaleJSProject project = (RoyaleJSProject)getWalker().getProject();
         boolean emitExports = true;
         if (project != null && project.config != null)
-        	emitExports = project.config.getExportPublicSymbols();
+            emitExports = project.config.getExportPublicSymbols();
 
         if (!getModel().getPropertyMap().isEmpty())
         {
@@ -106,11 +105,10 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline();
                 	writeNewline("/**");
                     if (emitExports)
-                    	writeNewline("  * @export");
+                    	writeNewline(" * @export");
                     if (p.type != null)
-                    	writeNewline("  * @type {"+ JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
-                    else
-                    	writeNewline("  */");
+                    	writeNewline(" * @type {"+ JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                    writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     write(JSEmitterTokens.PROTOTYPE);
@@ -130,7 +128,47 @@ public class AccessorEmitter extends JSSubEmitter implements
                 }
                 else
                 {
-	                if (getterNode != null)
+                    IAccessorNode accessorNode = (getterNode != null) ? getterNode : setterNode;
+                    if(!accessorNode.getDefinition().isOverride())
+                    {
+                        // start by writing out the instance accessors as regular variables
+                        // because Closure Compiler doesn't properly analyze calls to
+                        // defineProperties() alone.
+                        // since there's no analysis, Closure assumes that getters/setters
+                        // have no side effects, which results in important get/set calls
+                        // being removed as dead code.
+                        // defining the accessors as variables first convinces Closure to
+                        // handle them more intelligently while not preventing them from
+                        // being real accessors.
+                        // Source: https://developers.google.com/closure/compiler/docs/limitations
+                        writeNewline();
+                        writeNewline();
+                        writeNewline();
+                        writeNewline("/**");
+                        if (p.preventRename)
+                            writeNewline(" * @nocollapse");
+                        if (p.resolvedExport && !p.suppressExport)
+                            writeNewline(" * @export");
+                        if (p.type != null)
+                            writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
+                        writeNewline(" */");
+                        write(getEmitter().formatQualifiedName(qname));
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSEmitterTokens.PROTOTYPE);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        if (p.uri != null)
+                        {
+                            INamespaceDecorationNode ns = ((FunctionNode) accessorNode).getActualNamespaceNode();
+                            INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+                            fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                            write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
+                        }
+                        else
+                            write(baseName);
+                        write(ASEmitterTokens.SEMICOLON);
+                    }
+
+                    if (getterNode != null)
 	                {
 	                    writeNewline();
 	                    writeNewline();
@@ -277,7 +315,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 	                        write(ASEmitterTokens.PAREN_CLOSE);
 	                        writeNewline(ASEmitterTokens.SEMICOLON);
 	                        writeNewline("    this.dispatchEvent("+fjs.formatQualifiedName(BindableEmitter.VALUECHANGE_EVENT_QNAME)+".createUpdateEvent(");
-	                        writeNewline("         this, \"" + baseName + "\", oldValue, value));");
+	                        writeNewline("         this, \"" + p.originalName + "\", oldValue, value));");
 	                        writeNewline(ASEmitterTokens.BLOCK_CLOSE);
 	                        write(ASEmitterTokens.BLOCK_CLOSE);
 	                        write(ASEmitterTokens.SEMICOLON);                        
@@ -320,20 +358,15 @@ public class AccessorEmitter extends JSSubEmitter implements
                 String baseName = p.name;
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
-            	writeNewline("/**");
-            	//only export if one of the options is public
-            	//if either one is marked as suppressed, both are considered to be
-                if (emitExports && p.resolvedExport && !(p.suppressExport) )
-                	writeNewline("  * @export");
+                writeNewline("/**");
                 if (p.type != null)
                 {
                 	String typeName = p.type.getBaseName();
                 	if (getModel().isInternalClass(typeName))
     					typeName = getModel().getInternalClasses().get(typeName);
-					writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "} */");
+					writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "}");
                 }
-                else
-                	writeNewline("  */");
+                writeNewline(" */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
                 if (p.uri != null)
                 {
@@ -490,13 +523,12 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline();
                     writeNewline();
                     writeNewline();
-                	writeNewline("/**");
+                    writeNewline("/**");
                     if (emitExports)
-                    	writeNewline("  * @export");
+                    	writeNewline(" * @export");
                     if (p.type != null)
-                    	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
-                    else
-                    	writeNewline("  */");
+                    	writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                    writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     if (p.uri != null)
                     {
@@ -515,7 +547,42 @@ public class AccessorEmitter extends JSSubEmitter implements
                 }
                 else
                 {
-	                if (getterNode != null)
+                    // start by writing out the static accessors as regular variables
+                    // because Closure Compiler doesn't properly analyze calls to
+                    // defineProperties() alone.
+                    // since there's no analysis, Closure assumes that getters/setters
+                    // have no side effects, which results in important get/set calls
+                    // being removed as dead code.
+                    // defining the accessors as variables first convinces Closure to
+                    // handle them more intelligently while not preventing them from
+                    // being real accessors.
+                    // Source: https://developers.google.com/closure/compiler/docs/limitations
+                    writeNewline();
+                    writeNewline();
+                    writeNewline();
+                    writeNewline("/**");
+                    if (p.preventRename)
+                        writeNewline(" * @nocollapse");
+                    if (p.resolvedExport && !p.suppressExport)
+                        writeNewline(" * @export");
+                    if (p.type != null)
+                        writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
+                    writeNewline(" */");
+                    write(getEmitter().formatQualifiedName(qname));
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    if (p.uri != null)
+                    {
+                        IAccessorNode node = (getterNode != null) ? getterNode : setterNode;
+                        INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
+                        INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+                        fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+                        write(JSRoyaleEmitter.formatNamespacedProperty(p.uri, baseName, false));
+                    }
+                    else
+                        write(baseName);
+                    write(ASEmitterTokens.SEMICOLON);
+
+                    if (getterNode != null)
 	                {
 	                    writeNewline();
 	                    writeNewline();
@@ -611,12 +678,9 @@ public class AccessorEmitter extends JSSubEmitter implements
                 ISetterNode setterNode = p.setter;
                 String baseName = p.name;
             	writeNewline("/**");
-                if (emitExports && !p.suppressExport)
-                	writeNewline("  * @export");
                 if (p.type != null)
-                	writeNewline("  * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "} */");
-                else
-                	writeNewline("  */");
+                	writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                writeNewline(" */");
 				FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
 				if (p.uri != null)
 				{
@@ -692,7 +756,7 @@ public class AccessorEmitter extends JSSubEmitter implements
         boolean suppress = getModel().suppressExports ||
 				(node.getASDocComment() != null &&
 				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
-       if (suppress) getModel().suppressedExportNodes.add(node);
+        if (suppress) getModel().suppressedExportNodes.add(node);
 				
         IDefinition def = node.getDefinition();
         ModifiersSet modifierSet = def.getModifiers();
@@ -712,6 +776,22 @@ public class AccessorEmitter extends JSSubEmitter implements
 			//make sure the key includes the uri to avoid clashing with other equivalent base names
 			key =  uri + "::" + name;
 		}
+        boolean emitExports = true;
+        boolean exportProtected = false;
+        boolean exportInternal = false;
+        boolean preventRenamePublicSymbols = true;
+        boolean preventRenameProtectedSymbols = true;
+        boolean preventRenameInternalSymbols = true;
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project != null && project.config != null)
+        {
+            emitExports = project.config.getExportPublicSymbols();
+            exportProtected = project.config.getExportProtectedSymbols();
+            exportInternal = project.config.getExportInternalSymbols();
+            preventRenamePublicSymbols = project.config.getPreventRenamePublicSymbols();
+            preventRenameProtectedSymbols = project.config.getPreventRenameProtectedSymbols();
+            preventRenameInternalSymbols = project.config.getPreventRenameInternalSymbols();
+        }
 		
 		PropertyNodes p = map.get(key);
         if (p == null)
@@ -719,16 +799,27 @@ public class AccessorEmitter extends JSSubEmitter implements
             p = new PropertyNodes();
 			//track name and uri separately:
 			p.name = name;
+			p.originalName = node.getName();
 			p.uri = uri;
-			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
-			p.resolvedExport = uri != null || def.isPublic();
             map.put(key, p);
-        } else {
-			p.resolvedExport = p.resolvedExport || def.isPublic();
-		}
+        }
+        if(uri != null || def.isPublic())
+        {
+            p.resolvedExport = p.resolvedExport || emitExports;
+            p.preventRename = p.preventRename || preventRenamePublicSymbols;
+        }
+        else if(def.isInternal())
+        {
+            p.resolvedExport = p.resolvedExport || exportInternal;
+            p.preventRename = p.preventRename || preventRenameInternalSymbols;
+        }
+        else if(def.isProtected())
+        {
+            p.resolvedExport = p.resolvedExport || exportProtected;
+            p.preventRename = p.preventRename || preventRenameProtectedSymbols;
+        }
         p.getter = node;
 		if (!p.suppressExport) p.suppressExport = suppress;
-        ICompilerProject project = getWalker().getProject();
         if (p.type == null && project != null)
         	p.type = node.getDefinition().resolveReturnType(project);
         FunctionNode fn = (FunctionNode) node;
@@ -762,6 +853,22 @@ public class AccessorEmitter extends JSSubEmitter implements
 			//make sure the key includes the uri to avoid clashing with other equivalent base names
 			key =  uri + "::" + name;
 		}
+        boolean emitExports = true;
+        boolean exportProtected = false;
+        boolean exportInternal = false;
+        boolean preventRenamePublicSymbols = true;
+        boolean preventRenameProtectedSymbols = true;
+        boolean preventRenameInternalSymbols = true;
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project != null && project.config != null)
+        {
+            emitExports = project.config.getExportPublicSymbols();
+            exportProtected = project.config.getExportProtectedSymbols();
+            exportInternal = project.config.getExportInternalSymbols();
+            preventRenamePublicSymbols = project.config.getPreventRenamePublicSymbols();
+            preventRenameProtectedSymbols = project.config.getPreventRenameProtectedSymbols();
+            preventRenameInternalSymbols = project.config.getPreventRenameInternalSymbols();
+        }
 		
         PropertyNodes p = map.get(key);
         if (p == null)
@@ -769,16 +876,27 @@ public class AccessorEmitter extends JSSubEmitter implements
             p = new PropertyNodes();
             //track name and uri separately:
             p.name = name;
+            p.originalName = node.getName();
             p.uri = uri;
- 			//resolvedExport is true if it is a custom namespace or one of a paired of accessor definitions is public
-            p.resolvedExport = uri != null || def.isPublic();
             map.put(key, p);
-        } else {
-			p.resolvedExport = p.resolvedExport || def.isPublic();
-		}
+        }
+        if(uri != null || def.isPublic())
+        {
+            p.resolvedExport = p.resolvedExport || emitExports;
+            p.preventRename = p.preventRename || preventRenamePublicSymbols;
+        }
+        else if(def.isInternal())
+        {
+            p.resolvedExport = p.resolvedExport || exportInternal;
+            p.preventRename = p.preventRename || preventRenameInternalSymbols;
+        }
+        else if(def.isProtected())
+        {
+            p.resolvedExport = p.resolvedExport || exportProtected;
+            p.preventRename = p.preventRename || preventRenameProtectedSymbols;
+        }
         p.setter = node;
         if (!p.suppressExport) p.suppressExport = suppress;
-        ICompilerProject project = (ICompilerProject)getWalker().getProject();
         if (p.type == null && project != null)
         {
         	IParameterDefinition[] params = def.getParameters();

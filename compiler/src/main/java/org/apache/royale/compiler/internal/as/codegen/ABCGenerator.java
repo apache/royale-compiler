@@ -39,6 +39,7 @@ import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.abc.semantics.MethodBodyInfo;
 import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.Name;
+import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.abc.semantics.PooledValue;
 import org.apache.royale.abc.visitors.IMethodBodyVisitor;
 import org.apache.royale.abc.visitors.IMethodVisitor;
@@ -261,6 +262,9 @@ public class ABCGenerator implements ICodeGenerator
         MethodInfo mi = createMethodInfo(enclosing_scope, func, alternate_name);
         if (mi.isNative())
         {
+            // previous versions didn't add the default argument values to
+            // native methods, but that led to broken signatures -JT
+            mi = createMethodInfoWithOptionalDefaultArgumentValues(enclosing_scope, func, true, alternate_name);
             generateNativeMethod(func, mi, enclosing_scope);
         }
         else
@@ -293,6 +297,9 @@ public class ABCGenerator implements ICodeGenerator
         MethodInfo mi = createMethodInfo(enclosing_scope, func, null);
         if (mi.isNative())
         {
+            // previous versions didn't add the default argument values to
+            // native methods, but that led to broken signatures -JT
+            mi = createMethodInfoWithOptionalDefaultArgumentValues(enclosing_scope, func, true, null);
             generateNativeMethod(func, mi, enclosing_scope);
             return new GenerateFunctionInParallelResult(Futures.immediateFuture(null), mi, Collections.<IVisitor>emptyList());
         }
@@ -325,7 +332,17 @@ public class ABCGenerator implements ICodeGenerator
         // but for native types, as the burm isn't run, we need to set
         // the return type here.
         String returnType = func.getReturnType();
-        mi.setReturnType(new Name(returnType));
+        int lastDotIndex = returnType.lastIndexOf('.');
+        if (lastDotIndex != -1)
+        {
+            Namespace ns = new Namespace(CONSTANT_PackageNs, returnType.substring(0, lastDotIndex));
+            String baseName = returnType.substring(lastDotIndex + 1);
+            mi.setReturnType(new Name(ns, baseName));
+        }
+        else
+        {
+            mi.setReturnType(new Name(returnType));
+        }
         
         mv.visitEnd();
     }

@@ -280,7 +280,6 @@
             unless="release.version"/>
         <exec executable="${mvn}" failonerror="true" >
             <arg value="wagon:upload" />
-            <arg value="-X" />
             <arg value="-Dwagon.fromDir=${artifactfolder}/artifacts/archive/compiler-build-tools/target/local-release-dir" />
             <arg value="-Dwagon.url=https://repository.apache.org/service/local/staging/deploy/maven2" />
             <arg value="-Dwagon.serverId=apache.releases.https" />

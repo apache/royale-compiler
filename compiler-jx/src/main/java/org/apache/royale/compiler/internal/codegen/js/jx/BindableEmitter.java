@@ -288,8 +288,10 @@ public class BindableEmitter extends JSSubEmitter implements
         // export above did not work in the release build for the static getter/setter bindables,
         // solution below:
         //Commented by JT, in AccessorEmitter:
-        writeNewline("/** @export");
-        writeNewline("  * @type {"+DISPATCHER_CLASS_QNAME+"} */");
+        writeNewline("/**");
+        writeNewline(" * @export");
+        writeNewline(" * @type {"+DISPATCHER_CLASS_QNAME+"}");
+        writeNewline(" */");
         write(STATIC_DISPATCHER_GETTER);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.SPACE);
@@ -366,14 +368,13 @@ public class BindableEmitter extends JSSubEmitter implements
         String qname = fjs.formatQualifiedName(cdef.getQualifiedName());
         // 'PropName': {
 
+        writeNewline("/**");
         if (info.namespace != "public") {
-            writeNewline("/** @export");
-            writeNewline("  * @private");
-        } else {
-            writeNewline("/** @export");
+            writeNewline(" * @private");
         }
 
-        writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
+        writeNewline(" * @type {" + convertASTypeToJS(info.type) + "}");
+        writeNewline(" */");
         write(name);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.SPACE);
@@ -422,7 +423,7 @@ public class BindableEmitter extends JSSubEmitter implements
                 + "var dispatcher = "
                 + qname
                 + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                + BINDABLE_DISPATCHER_NAME
+                + STATIC_DISPATCHER_GETTER
                 + ASEmitterTokens.SEMICOLON.getToken());
         writeNewline(ASEmitterTokens.INDENT.getToken()
                 + ASEmitterTokens.INDENT.getToken()
@@ -442,14 +443,13 @@ public class BindableEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-    		String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
+        String qname = (info.namespace.equals("private") && getProject().getAllowPrivateNameConflicts()) ? fjs.formatPrivateName(cdef.getQualifiedName(), name) : name;
+        writeNewline("/**");
         if (info.namespace != "public") {
-            writeNewline("/** @export");
-            writeNewline("  * @private");
-        } else {
-            writeNewline("/** @export");
+            writeNewline(" * @private");
         }
-        writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");
+        writeNewline(" * @type {" + convertASTypeToJS(info.type) + "}");
+        writeNewline(" */");
         // 'PropName': {
         writeNewline(qname + ASEmitterTokens.COLON.getToken()
                 + ASEmitterTokens.SPACE.getToken()

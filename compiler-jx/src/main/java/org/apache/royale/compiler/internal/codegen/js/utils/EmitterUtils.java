@@ -52,6 +52,7 @@ import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.utils.DefinitionUtils;
 import org.apache.royale.compiler.utils.NativeUtils;
 
 /**
@@ -938,6 +939,10 @@ public class EmitterUtils
                     ));
         }
         return false;
+    }
+
+    public static final String getClassDepthNameBase(String base, IClassDefinition definition, ICompilerProject project) {
+        return base + "_" + DefinitionUtils.deltaFromObject(definition, project) +"_";
     }
 
 }

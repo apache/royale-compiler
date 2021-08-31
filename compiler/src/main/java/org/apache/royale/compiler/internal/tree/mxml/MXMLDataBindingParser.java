@@ -78,6 +78,11 @@ class MXMLDataBindingParser
      */
     private static final char BACKSLASH = '\\';
 
+    public static boolean willParse(ISourceFragment[] fragments)
+    {
+        return scan(fragments) != null;
+    }
+
     /**
      * Parses source fragments looking for databinding expressions.
      * <p>

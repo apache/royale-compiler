@@ -45,8 +45,10 @@ public class JSSessionModel
         public ITypeDefinition type;
         public boolean resolvedExport;
         public String name;
+        public String originalName;
         public String uri;
         public boolean suppressExport;
+        public boolean preventRename;
     }
 
     public static class BindableVarInfo

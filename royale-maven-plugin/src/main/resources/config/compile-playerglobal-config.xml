@@ -1,0 +1,101 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+	  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<royale-config>
+
+    <compiler>
+
+        <accessible>false</accessible>
+        <debug>$debug</debug>
+
+        <library-path>
+#foreach($artifact in $libraries)           <path-element>$artifact.file</path-element>
+#end
+        </library-path>
+
+        <external-library-path>
+#foreach($artifact in $externalLibraries)           <path-element>$artifact.file</path-element>
+#end
+        </external-library-path>
+
+        <source-path>
+#foreach($sourcePath in $sourcePaths)           <path-element>$sourcePath</path-element>
+#end
+        </source-path>
+
+        <namespaces>
+#foreach($namespace in $namespaces)            <namespace>
+                <uri>$namespace.uri</uri>
+                <manifest>$namespace.manifest</manifest>
+            </namespace>
+#end
+#if($languageNamespace)
+            <namespace>
+                <uri>$languageNamespace.uri</uri>
+                <manifest>$languageNamespace.manifest</manifest>
+            </namespace>
+#end
+        </namespaces>
+
+        <warn-no-constructor>false</warn-no-constructor>
+
+        <mxml>
+            <children-as-data>true</children-as-data>
+        </mxml>
+
+        <show-deprecation-warnings>false</show-deprecation-warnings>
+
+#foreach($define in $defines)        <define>
+            <name>$define.name</name>
+            <value>$define.value</value>
+        </define>
+#end
+
+        <strict-xml>true</strict-xml>
+    </compiler>
+
+#if($includeSources)
+    <include-sources>
+#foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
+#end
+    </include-sources>
+#end
+
+#if($includeClasses)
+    <include-classes>
+#foreach($includeClass in $includeClasses)        <class>$includeClass</class>
+#end
+    </include-classes>
+#end
+
+#if($namespaceUris)
+    <include-namespaces>
+#foreach($namespaceUri in $namespaceUris)        <uri>$namespaceUri</uri>
+#end
+    </include-namespaces>
+#end
+
+#foreach($includeFile in $includeFiles)    <include-file>
+        <name>$includeFile.name</name>
+        <path>$includeFile.path</path>
+    </include-file>
+#end
+
+    <output>${output}</output>
+
+</royale-config>

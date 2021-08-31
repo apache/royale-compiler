@@ -22,17 +22,18 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
@@ -111,7 +112,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         	}
             if (((JSRoyaleEmitter)getEmitter()).isProxy((IdentifierNode)obj))
             {
-                write(".propertyNames()");
+                emitNullSafeProxyTarget(targetName);
                 isProxy = true;
             }
         }
@@ -133,8 +134,8 @@ public class ForEachEmitter extends JSSubEmitter implements
             }
             if (((JSRoyaleEmitter)getEmitter()).isProxy((IMemberAccessExpressionNode)obj))
             {
-                write(".propertyNames()");
-                isXML = true;
+                emitNullSafeProxyTarget(targetName);
+                isProxy = true;
             }
         }
         else if (obj.getNodeID() == ASTNodeID.Op_AsID)
@@ -147,7 +148,17 @@ public class ForEachEmitter extends JSSubEmitter implements
         		{
                     write(".elementNames()");
                     isXML = true;
-        		}
+        		} else {
+                    IClassDefinition asTarget = (IClassDefinition) ((IdentifierNode) asChild).resolve(getProject());
+                    if (asTarget != null) {
+                        //check ancestry for proxy
+                        RoyaleProject project = (RoyaleProject) getProject();
+                        if (asTarget.isInstanceOf(project.getProxyBaseClass(), project)){
+                            emitNullSafeProxyTarget(targetName);
+                            isProxy = true;
+                        }
+                    }
+                }
         	}
         }
         else if (obj.getNodeID() == ASTNodeID.FunctionCallID)
@@ -161,7 +172,23 @@ public class ForEachEmitter extends JSSubEmitter implements
         		{
                     write(".elementNames()");
                     isXML = true;
-        		}        		
+        		} else {
+        		    IDefinition funcNameDef = funcName.resolve(getProject());
+                    //if it is IClassDefinition, then it is a type cast, otherwise...
+        		    if (funcNameDef instanceof IFunctionDefinition) {
+                        //then it is a regular function call, so check the return type, and use that for the IClassDefinition type check:
+                        funcNameDef = ((IFunctionDefinition)funcNameDef).resolveReturnType(getProject());
+                    }
+        		    if (funcNameDef instanceof IClassDefinition) {
+        		        //this is a a hard cast
+                        //check ancestry for proxy
+                        RoyaleProject project = (RoyaleProject) getProject();
+                        if (((IClassDefinition) funcNameDef).isInstanceOf(project.getProxyBaseClass(), project)){
+                            emitNullSafeProxyTarget(targetName);
+                            isProxy = true;
+                        }
+                    }
+                }
         	} else if (funcName instanceof IMemberAccessExpressionNode) {
                 IFunctionDefinition funcDef = (IFunctionDefinition) ((IMemberAccessExpressionNode) funcName).getRightOperandNode().resolve(getProject());
                 if (funcDef == null) {
@@ -196,7 +223,16 @@ public class ForEachEmitter extends JSSubEmitter implements
                     // It is probably rare and ill-advised, but it definitely won't work well in javascript currently for those classes, for example.
 
                 } else {
-                    isXML = SemanticUtils.isXMLish(funcDef.resolveReturnType(getProject()), getProject());
+                    IClassDefinition returnType = (IClassDefinition) funcDef.resolveReturnType(getProject());
+                    isXML = SemanticUtils.isXMLish(returnType, getProject());
+                    if (!isXML) {
+                        //check for Proxy
+                        RoyaleProject project = (RoyaleProject) getProject();
+                        if (returnType.isInstanceOf(project.getProxyBaseClass(), project)){
+                            emitNullSafeProxyTarget(targetName);
+                            isProxy = true;
+                        }
+                    }
                 }
                 if (isXML) {
                     write(".elementNames()");
@@ -259,5 +295,26 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.BLOCK_CLOSE);
         writeNewline();
     }
+
+    void emitNullSafeProxyTarget(String targetName) {
+        //output the null-safe target expression:
+        // for something:Object in targetName && targetName.propertyNames()
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.LOGICAL_AND);
+        write(targetName);
+        write(".propertyNames()");
+    }
+
+    //@todo, check XML also at some point, maybe switch to the following
+    /*
+    void emitNullSafeXMLishTarget(String targetName) {
+        //output the null-safe target expression:
+        // for something:Object in targetName && targetName.propertyNames()
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.LOGICAL_AND);
+        write(targetName);
+        write(".elementNames()");
+    }
+    */
 
 }

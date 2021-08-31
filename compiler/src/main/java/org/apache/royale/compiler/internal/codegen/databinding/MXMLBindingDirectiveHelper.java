@@ -33,6 +33,8 @@ import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.visitors.IABCVisitor;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
@@ -63,9 +65,10 @@ import org.apache.royale.compiler.workspaces.IWorkspace;
  * TODO: 
  *      Document the runtime dependencies on SDK
  *      add problem reporting.
- *      
+ *
+ *      bind to function, This should be fixed now
  * Cases not yet working:
- *      bind to function, xml, xml list, array
+ *      xml, xml list, array
  *      
  * Improve code gen
  *      don't make getter functions when not needed
@@ -145,6 +148,15 @@ public class MXMLBindingDirectiveHelper
                 return null;
        
         bindingDataBase.finishAnalysis();
+
+        for (IClassDefinition ancestor: host.getClassDefinition().resolveAncestry(host.getProject())) {
+            if (ancestor.equals(host.getClassDefinition())) continue;
+            if (ancestor.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_BINDINGS) != null) {
+                //System.out.println("Ancestor bindings for "+host.getClassDefinition().getQualifiedName()+" at "+ancestor.getQualifiedName());
+                bindingDataBase.setNearestAncestorWithBindings(ancestor.getQualifiedName());
+                break;
+            }
+        }
         
         // Please leave this in here - it is a very commonly used diagnostic
         // Just comment it out before checking
@@ -159,8 +171,15 @@ public class MXMLBindingDirectiveHelper
                 makeSpecialMemberVariablesForBinding();
                 isFlexSDK = true;
             }
-            else
-                host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
+            else {
+                //if the variable is already declared on an ancestor, we should not redeclare it (as it is currently public)
+                //redeclaring it will essentially prevent the inherited value from being accessed at the current level (in swf)
+                //accessing the super class value allows 'nesting' which permits inheritance
+                if (!bindingDataBase.getHasAncestorBindings())
+                    host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
+                //this should already be set, the following may be able to be removed (tbc):
+                host.getClassDefinition().setRoyaleBindings();
+            }
         }
         else
         {
@@ -169,8 +188,14 @@ public class MXMLBindingDirectiveHelper
                 makeSpecialMemberVariablesForBinding();
                 isFlexSDK = true;
             }
-            else
-                host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
+            else{
+                //redeclaring it will essentially prevent the inherited value from being accessed at the current level (in swf)
+                if (!bindingDataBase.getHasAncestorBindings())
+                    host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
+                //this should already be set, the following may be able to be removed (tbc):
+                host.getClassDefinition().setRoyaleBindings();
+
+            }
         }
         
         if (host.getProject().getTargetSettings().getMxmlChildrenAsData())
@@ -191,11 +216,20 @@ public class MXMLBindingDirectiveHelper
     
     private InstructionList outputBindingInfoAsData(boolean isFlexSDK)
     {
-        //System.out.println("outputBindingInfoAsData");
 
         InstructionList ret = new InstructionList();
         int propertyCount = 0;
-        
+        if (!isFlexSDK && bindingDataBase.getHasAncestorBindings()) {
+            //add the ancestor bindings reference as the first item in this current _bindings array
+            //this approach permits binding evaluation to work recursively by checking the first element only
+
+            ret.addInstruction(OP_getlocal0);
+            // stack: ..., this
+            ret.addInstruction(OP_getproperty, IMXMLTypeConstants.NAME_BINDINGS);
+            //propertyCount needs to be incremented for the current array:
+            propertyCount++;
+        }
+
         Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
         ret.pushNumericConstant(bindingInfo.size()); // number of bindings
         propertyCount++;

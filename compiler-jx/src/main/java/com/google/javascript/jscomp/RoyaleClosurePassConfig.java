@@ -61,10 +61,7 @@ import com.google.javascript.jscomp.lint.CheckUselessBlocks;
 import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.jscomp.parsing.parser.FeatureSet;
 import com.google.javascript.rhino.IR;
-import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -135,8 +132,14 @@ public final class RoyaleClosurePassConfig extends PassConfig {
   private File varRenameMapFile;
 
   private Set<String> propertyNamesToKeep;
+
+  private Set<String> extraSymbolNamesToExport;
+
+  private boolean preventRenameMxmlSymbolReferences;
   
-  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName, File varRenameMapFile, Set<String> propertyNamesToKeep) {
+  public RoyaleClosurePassConfig(CompilerOptions options, String sourceFileName,
+      File varRenameMapFile, Set<String> propertyNamesToKeep,
+      Set<String> extraSymbolNamesToExport, boolean preventRenameMxmlSymbolReferences) {
     super(options);
 
     // The current approach to protecting "hidden" side-effects is to
@@ -146,7 +149,9 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     preprocessorSymbolTableFactory = new PreprocessorSymbolTable.CachedInstanceFactory();
     this.varRenameMapFile = varRenameMapFile;
     this.sourceFileName = sourceFileName;
-    this.propertyNamesToKeep = propertyNamesToKeep;
+    this.propertyNamesToKeep = propertyNamesToKeep != null ? propertyNamesToKeep : new HashSet<String>();
+    this.extraSymbolNamesToExport = extraSymbolNamesToExport;
+    this.preventRenameMxmlSymbolReferences = preventRenameMxmlSymbolReferences;
   }
 
   GlobalNamespace getGlobalNamespace() {
@@ -341,8 +346,14 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       checks.add(angularPass);
     }
 
-    if (propertyNamesToKeep != null && propertyNamesToKeep.size() > 0) {
-      checks.add(keepPropertyNamesPass);
+    if (preventRenameMxmlSymbolReferences) {
+      checks.add(findRoyaleMxmlPropertiesToKeep);
+    }
+
+    checks.add(keepRoyalePropertyNamesPass);
+
+    if (extraSymbolNamesToExport != null) {
+      checks.add(generateRoyaleExports);
     }
 
     if (!options.generateExportsAfterTypeChecking && options.generateExports) {
@@ -1264,42 +1275,52 @@ public final class RoyaleClosurePassConfig extends PassConfig {
           return ES_NEXT;
         }
       };
+  
+  private final PassFactory generateRoyaleExports = 
+    new PassFactory("generate-royale-exports", true) {
+      @Override
+      protected CompilerPass create(final AbstractCompiler compiler) {
+        final GenerateRoyaleExports pass = new GenerateRoyaleExports(compiler);
+        return new CompilerPass() {
+          @Override
+          public void process(Node externs, Node root) {
+            pass.process(externs, root, extraSymbolNamesToExport);
+          }
+        };
+      }
 
-    private final PassFactory keepPropertyNamesPass = 
-        new PassFactory("keep-property-names", true) {
+      @Override
+      protected FeatureSet featureSet() {
+        return ES_NEXT;
+      }
+    };
+  
+    private final PassFactory findRoyaleMxmlPropertiesToKeep = 
+      new PassFactory("find-royale-mxml-properties", true) {
+        @Override
+        protected CompilerPass create(final AbstractCompiler compiler) {
+          final FindRoyaleMXMLPropertyNamesToKeep pass = new FindRoyaleMXMLPropertyNamesToKeep(compiler);
+          return new CompilerPass() {
+            @Override
+            public void process(Node externs, Node root) {
+              pass.process(externs, root, propertyNamesToKeep);
+            }
+          };
+        }
+  
+        @Override
+        protected FeatureSet featureSet() {
+          return ES_NEXT;
+        }
+      };
+
+    private final PassFactory keepRoyalePropertyNamesPass = 
+        new PassFactory("keep-royale-property-names", true) {
           @Override
           protected CompilerPass create(final AbstractCompiler compiler) {
-            return new CompilerPass() {
-              @Override
-              public void process(Node externs, Node root) {
-
-                Node propsObj = new Node(Token.OBJECTLIT);
-                for(String nameToKeep : propertyNamesToKeep)
-                {
-                  Node nameStringKey = IR.stringKey(nameToKeep);
-                  JSDocInfoBuilder builder = new JSDocInfoBuilder(true);
-                  builder.recordExport();
-                  JSDocInfo jsDocInfo = builder.build();
-                  nameStringKey.setJSDocInfo(jsDocInfo);
-
-                  Node propertyDescriptor = new Node(Token.OBJECTLIT);
-                  propertyDescriptor.addChildToBack(IR.propdef(IR.stringKey("get"), NodeUtil.emptyFunction()));
-
-                  Node prop = IR.propdef(nameStringKey, propertyDescriptor);
-                  propsObj.addChildToBack(prop);
-                }
-
-                Node definePropertiesTarget = NodeUtil.newQName(compiler, "Object.defineProperties");
-                Node definePropertiesCall = IR.call(definePropertiesTarget, IR.objectlit(), propsObj);
-                Node expression = IR.exprResult(definePropertiesCall);
-                
-                Node scriptNode = compiler.getScriptNode(sourceFileName);
-                scriptNode.addChildToBack(expression);
-                compiler.reportChangeToEnclosingScope(expression);
-              }
-            };
+            return new KeepRoyalePropertyNames(compiler, propertyNamesToKeep);
           }
-    
+
           @Override
           protected FeatureSet featureSet() {
             return ES_NEXT;
@@ -3085,7 +3106,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
                       prevPropertyMap,
                       options.getPropertyReservedNamingFirstChars(),
                       options.getPropertyReservedNamingNonFirstChars(),
-                      options.nameGenerator);
+                      options.nameGenerator,
+                      null);
               rprop.process(externs, root);
               compiler.setPropertyMap(rprop.getPropertyMap());
             }

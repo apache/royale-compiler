@@ -81,7 +81,8 @@ public class CSSStringPropertyValue extends CSSPropertyValue
     {
         int idx = 0;
         int c = value.indexOf('\\');
-        while (c != -1)
+
+        while (c != -1 && c + 1 < value.length())
         {
             char cnext = value.charAt(c + 1);
             if (cnext != '\\' && cnext != 'n' && cnext != 't' && cnext != 'r')
@@ -94,15 +95,28 @@ public class CSSStringPropertyValue extends CSSPropertyValue
                 for (; i < n; i++)
                 {
                     char cc = value.charAt(c + i + 1);
-                    if (cc != ' ')
+                    if (cc != ' ') {
                         sub.append(cc);
+                        idx++; //this represents each 'digit' char
+                    }
                     else
                         break;
                 }
+                idx++; //this represents the first escape char
                 int ccode = Integer.parseInt(sub.toString(), 16);
-                sub = new StringBuilder();
-                sub.append(Character.toChars(ccode));
-                value = value.substring(0, c) + sub.toString() + value.substring(c + i + 1);
+                String insert;
+
+                if (ccode == /* nbsp */ 0xA0) {
+                    insert = "\\a0"; //restore nbsp as the encoded form
+                } else if (ccode == /* ZERO WIDTH SPACE */ 0x200B) {
+                    insert = "\\200b"; //restore zero-width space as the encoded form
+                } else {
+                    sub = new StringBuilder();
+                    sub.append(Character.toChars(ccode));
+                    insert = sub.toString();
+                }
+
+                value = value.substring(0, c) + insert + value.substring(c + i + 1);
             }
             else
                 idx += 2;

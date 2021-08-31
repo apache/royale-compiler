@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.7</version>
+    <version>0.9.8</version>
   </parent>
 
   <artifactId>debugger</artifactId>
-  <version>0.9.7</version>
+  <version>0.9.8</version>
 
   <name>Apache Royale: Compiler: Debugger</name>
 
@@ -74,6 +74,20 @@ Do all the JBurg code generation.
           </dependency>
         </dependencies>
       </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <!-- These paths are all defined the way the layout will be in the distribution -->
+              <Class-Path>compiler.jar compiler-common.jar swfutils.jar external/commons-lang.jar</Class-Path>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -81,12 +95,12 @@ Do all the JBurg code generation.
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>swfutils</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -123,4 +137,4 @@ Do all the JBurg code generation.
     </dependency>
   </dependencies>
 
-<properties><project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties></project>
+<properties /></project>

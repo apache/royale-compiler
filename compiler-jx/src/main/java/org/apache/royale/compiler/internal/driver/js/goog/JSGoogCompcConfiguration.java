@@ -441,6 +441,25 @@ public class JSGoogCompcConfiguration extends JSConfiguration
     	exportProtectedSymbols = value;
     }
 
+    //
+    // 'export-internal-symbols'
+    //
+
+    private boolean exportInternalSymbols = false;
+
+    public boolean getExportInternalSymbols()
+    {
+        return exportInternalSymbols;
+    }
+
+    @Config
+    @Mapping("export-internal-symbols")
+    public void setExportInternalSymbols(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	exportInternalSymbols = value;
+    }
+
     
     //
     // 'warn-public-vars'

@@ -1141,7 +1141,7 @@ public abstract class ASScope extends ASScopeBase
     {
 
         assert accumulator.isEmpty() : "findProperty() should not be called with a non-empty collection";
-        assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname";
+        assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname " + baseName;
 
         // Walk the scope chain starting with this scope.
         // This loop may go as far as the file scope, whose containing scope is null. 
@@ -1462,7 +1462,7 @@ public abstract class ASScope extends ASScopeBase
             // which may have already computed and cached the result.
             return getContainingScope().findProperty(project, baseName, dt, canEscapeWith);
         }
-        assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname";
+        assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname " + baseName;
         CompilerProject compilerProject = (CompilerProject)project;
         ASScopeCache scopeCache = compilerProject.getCacheForScope(this);
         return filterWith(scopeCache.findProperty(baseName, dt, canEscapeWith), canEscapeWith);
@@ -1622,7 +1622,7 @@ public abstract class ASScope extends ASScopeBase
      */
     public IDefinition findPropertyQualified(ICompilerProject project, INamespaceDefinition qual, String baseName, DependencyType dt, boolean canEscapeWith)
     {
-        assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname";
+        assert baseName.indexOf('.') == -1 : "baseName must not be any sort of qname " + baseName;
 
         // Can't find a property if we don't know what its qualifier is
         if( qual == null )

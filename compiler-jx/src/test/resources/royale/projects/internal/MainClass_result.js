@@ -34,12 +34,6 @@ MainClass = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MainClass', MainClass);
-
-
-/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
@@ -79,13 +73,6 @@ MainClass.InternalClass = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
-
-
-/**
- * @export
  * @type {OtherClass}
  */
 MainClass.InternalClass.prototype.foo = null;

@@ -46,12 +46,6 @@ controllers.MyController = function(app) {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('controllers.MyController', controllers.MyController);
-
-
-/**
  * @private
  * @type {string}
  */
@@ -143,7 +137,6 @@ controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
 
 
 /**
- * @export
  * @param {Object} document
  * @param {string=} id
  */

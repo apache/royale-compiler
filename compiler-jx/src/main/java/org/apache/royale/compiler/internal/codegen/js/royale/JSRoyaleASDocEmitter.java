@@ -41,6 +41,7 @@ import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
@@ -592,9 +593,17 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
         }
         write("  \"return\": \"");
         if (node.getReturnType().equals("void"))
+		{
         	write("void");
+		}
         else if (node.getReturnTypeNode() != null)
-        	write(formatQualifiedName(node.getReturnTypeNode().resolveType(getWalker().getProject()).getQualifiedName()));
+		{
+			ITypeDefinition returnDef = node.getReturnTypeNode().resolveType(getWalker().getProject());
+			if (returnDef != null)
+			{
+        		write(formatQualifiedName(returnDef.getQualifiedName()));
+			}
+		}
         writeNewline("\",");
         write("  \"params\": [");
         boolean firstParam = true;
@@ -607,9 +616,11 @@ public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmit
     		write("{ \"name\": \"");
     		write(param.getBaseName());
     		write("\", \"type\": \"");
-    		if (param.getTypeReference() != null)
-    			write(formatQualifiedName(param.getTypeReference().resolve(getWalker().getProject(), 
-    					node.getContainingScope().getScope(), DependencyType.SIGNATURE, false).getQualifiedName()));
+			ITypeDefinition paramDef = param.resolveType(getWalker().getProject());
+    		if (paramDef != null)
+			{
+    			write(formatQualifiedName(paramDef.getQualifiedName()));
+			}
             write("\"}");    		
     	}
     	write("]");

@@ -315,7 +315,7 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
         this.constructor = constructor;
 
         if(this.constructor.isPrivate()
-                && this.constructor.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR) == null)
+                && getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_PRIVATE_CONSTRUCTOR) == null)
         {
             // ensures that the constructor remains private when compiled into
             // a library because the metadata is how private constructors are
@@ -1381,6 +1381,18 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
     {
         MetaTag excludeClassMetaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_EXCLUDECLASS, new IMetaTagAttribute[0]);
         addMetaTag(excludeClassMetaTag);
+    }
+
+
+    /**
+     * Mark this class as being generated with mxml bindings [RoyaleBindings] meta data.
+     */
+    public void setRoyaleBindings()
+    {
+        if (!hasMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_BINDINGS)) {
+            MetaTag bindingsMarker = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_BINDINGS, new IMetaTagAttribute[0]);
+            addMetaTag(bindingsMarker);
+        }
     }
 
     /**

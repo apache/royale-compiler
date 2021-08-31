@@ -353,7 +353,10 @@ public class MXMLTreeBuilder
     {
         Object result = null;
 
-        String typeName = type.getQualifiedName();
+        String typeName = IASLanguageConstants.ANY_TYPE;
+        if (type != null) {
+            typeName = type.getQualifiedName();
+        }
 
         if (typeName.equals(IASLanguageConstants.Boolean))
         {

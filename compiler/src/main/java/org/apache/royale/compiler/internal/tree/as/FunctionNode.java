@@ -675,16 +675,8 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                         classNode.constructorNode = this;
                     }
                 }
-                // if the namespace reference is private, don't change it
-                if(!(funcDef.getNamespaceReference() instanceof INamespaceDefinition.IPrivateNamespaceDefinition))
-                {
-                    funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
-                }
             }
-            else
-            {
-                funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
-            }
+            funcDef.setNamespaceReference(NamespaceDefinition.getCodeModelImplicitDefinitionNamespace());
         }
     }
 

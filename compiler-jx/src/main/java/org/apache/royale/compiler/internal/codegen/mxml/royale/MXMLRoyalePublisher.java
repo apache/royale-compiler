@@ -56,6 +56,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.regex.Matcher;
 
 public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPublisher
 {
@@ -103,6 +104,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     private boolean useStrictPublishing;
     private List<String> additionalHTML = new ArrayList<String>();
     private Set<String> closurePropertyNamesToKeep;
+    private Set<String> closureSymbolNamesToExport;
 
     private GoogDepsWriter getGoogDepsWriter(File intermediateDir, 
     										String mainClassQName, 
@@ -186,6 +188,11 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     public void setClosurePropertyNamesToKeep(Set<String> propertyNames)
     {
         closurePropertyNamesToKeep = propertyNames;
+    }
+
+    public void setClosureSymbolNamesToExport(Set<String> symbolNames)
+    {
+        closureSymbolNamesToExport = symbolNames;
     }
 
     @Override
@@ -387,6 +394,13 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         {
             compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
             compilerWrapper.setPropertyNamesToKeep(closurePropertyNamesToKeep);
+            if (closureSymbolNamesToExport == null) {
+                closureSymbolNamesToExport = new HashSet<String>();
+            }
+            //the HTML template always needs this name to be exported, even if
+            //other class names are not exported
+            closureSymbolNamesToExport.add(mainClassQName);
+            compilerWrapper.setExtraSymbolNamesToExport(closureSymbolNamesToExport);
         }
 
         if (compilerWrapper != null)
@@ -398,8 +412,6 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             for (SourceFile closureSourceFile : closureSourceFiles) {
                 compilerWrapper.addJSSourceFile(closureSourceFile);
             }
-
-            writeExportedNames(compilerWrapper);
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -504,41 +516,45 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         // is generated here so it can be used for outputting the html templates.
         String depsFileData = gdw.generateDeps(project, problems);
 
-        // FOR MODULES: this generate inject_html lines for js to be added to __deps.js
-        String moduleAdditionHTML = "";
+        // FOR MODULES: this generates inject_script lines for js to be added to __deps.js
+        String additionalScript = "";
 
         if (project.isModule(mainClassQName))
         {
             for (String s : additionalHTML)
             {
-                moduleAdditionHTML += "document.head.innerHTML += '"+ s.trim() + "';";
+                additionalScript += s.trim() + System.lineSeparator();
             }
             
         	// need better test someday
         	depsFileData += "\ngoog.require('" + mainClassQName + "');\n";
-            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + moduleAdditionHTML + "\n", false);
+            writeFile(new File(intermediateDir, projectName + "__deps.js"), depsFileData + additionalScript + "\n", false);
             gdw.needCSS = true;
             if (configuration.release()) {
-            	writeFile(new File(releaseDir, projectName + ".js"), moduleAdditionHTML, false);
+            	writeFile(new File(releaseDir, projectName + ".js"), additionalScript, false);
             }
         }
         else
         {
 	        File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
+			List<String> wrappedScript = new ArrayList<String>();
+			wrappedScript.add("<script type=\"text/javascript\">");
+			wrappedScript.addAll(additionalHTML);
+			wrappedScript.add("</script>");
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
-	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
+	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
 	            } else {
-	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, additionalHTML);
+	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
 	            }
 	        }
 	        // Create the index.html for the release-js version.
 	        if (configuration.release()) {
 	            if (template != null) {
-	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, additionalHTML);
+	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, wrappedScript);
 	            } else {
-	                writeHTML("release", projectName, mainClassQName, releaseDir, null, additionalHTML);
+	                writeHTML("release", projectName, mainClassQName, releaseDir, null, wrappedScript);
 	            }
 	        }
         }        
@@ -570,14 +586,15 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
             compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
             compilerWrapper.setVerbose(googConfiguration.isVerbose());
+            compilerWrapper.setPreventRenameMxmlSymbolReferences(googConfiguration.getPreventRenameMxmlSymbolReferences());
 
             ok = compilerWrapper.compile();
 
-            // FOR MODULES: add moduleAdditionHTML to main js release file too
+            // FOR MODULES: add additionalScript to main js release file too
             if (project.isModule(mainClassQName))
             {
                 StringBuilder appendString = new StringBuilder();
-                appendString.append(moduleAdditionHTML);
+                appendString.append(additionalScript);
                 writeFile(projectReleaseMainFile, appendString.toString(), true);
             }
 
@@ -677,17 +694,17 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     {
         boolean inDocComment = false;
         boolean inConstructor = false;
-        boolean inInjectHTML = false;
+        boolean inInjectScript = false;
 	    for (int i = 0; i < lines.size(); i++)
 	    {
             String line = lines.get(i);
             if (inDocComment)
             {
-                if (inInjectHTML)
+                if (inInjectScript)
                 {
-                    if (line.indexOf("</inject_html>") > -1)
+                    if (line.indexOf("</inject_script>") > -1)
                     {
-                        inInjectHTML = false;
+                        inInjectScript = false;
                         continue;
                     }
                     line = line.trim();
@@ -696,10 +713,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
                     additionalHTML.add(line);
                     continue;
                 }
-                int c = line.indexOf("<inject_html>");
+                int c = line.indexOf("<inject_script>");
                 if (c != -1)
                 {
-                    inInjectHTML = true;
+                    inInjectScript = true;
                     continue;
                 }
                 if (!inConstructor)
@@ -719,7 +736,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
                         //we're done
                         break;
                     }
-                    inInjectHTML = false;
+                    inInjectScript = false;
                     inDocComment = false;
                     inConstructor = false;
                 }
@@ -844,6 +861,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         return code;
     }
 
+    private String safeReplacement(String source) {
+        return source!=null ? Matcher.quoteReplacement(source) : "";
+    }
+
     protected void writeTemplate(File template, String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
     		throws IOException
 	{
@@ -868,31 +889,31 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
 
         String result = null;
         if (type.equals("release")) {
-            result = input.replaceAll("\\$\\{application\\}", projectName + ".min");
+            result = input.replaceAll("\\$\\{application\\}", safeReplacement(projectName + ".min"));
         } else {
-            result = input.replaceAll("\\$\\{application\\}", projectName);
+            result = input.replaceAll("\\$\\{application\\}", safeReplacement(projectName));
         }
         if (bgcolor != null)
-            result = result.replaceAll("\\$\\{bgcolor\\}", bgcolor);
+            result = result.replaceAll("\\$\\{bgcolor\\}", safeReplacement(bgcolor));
         //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
         if (height != null)
-        	result = result.replaceAll("\\$\\{height\\}", height.toString());
+        	result = result.replaceAll("\\$\\{height\\}", safeReplacement(height.toString()));
         if (pageTitle != null)
-            result = result.replaceAll("\\$\\{title\\}", pageTitle);
+            result = result.replaceAll("\\$\\{title\\}", safeReplacement(pageTitle));
         //result = result.replaceAll("\\$\\{version_major\\}", versionMajor);
         //result = result.replaceAll("\\$\\{version_minor\\}", versionMinor);
         //result = result.replaceAll("\\$\\{version_revision\\}", versionRevision);
         if (width != null)
-        	result = result.replaceAll("\\$\\{width\\}", width.toString());
+        	result = result.replaceAll("\\$\\{width\\}", safeReplacement(width.toString()));
         //result = result.replaceAll("\\$\\{useBrowserHistory\\}", useBrowserHistory);
 
         StringBuilder addHTML = new StringBuilder();
         addHTML.append(getTemplateAdditionalHTML(additionalHTML));
 		addHTML.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
-        result = result.replaceAll("\\$\\{head\\}", addHTML.toString());
+        result = result.replaceAll("\\$\\{head\\}", safeReplacement(addHTML.toString()));
 
         String templateBody = getTemplateBody("release".equals(type) ? projectName : mainClassQName);
-        result = result.replaceAll("\\$\\{body\\}", templateBody);
+        result = result.replaceAll("\\$\\{body\\}", safeReplacement(templateBody));
 
 		writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), result, false);
 	}
@@ -1096,41 +1117,6 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             }
         }
         return true;
-    }
-    
-    private void writeExportedNames(JSClosureCompilerWrapper compilerWrapper)
-    {
-    	if (!googConfiguration.getExportPublicSymbols())
-    	{
-    		// if not generating exports for every public symbol
-    		// generate an externs file that blocks renaming
-    		// of properties used by MXML and dataBinding.
-	        Set<String> exportedNames = project.getExportedNames();
-	        if (exportedNames.size() > 0)
-	        {
-	        	StringBuilder sb = new StringBuilder();
-	        	sb.append("/**\n");
-	        	sb.append(" * generated by Apache Royale compiler\n");
-	        	sb.append(" * @externs\n");
-	        	sb.append(" */\n");
-	        	for (String name : exportedNames)
-	        	{
-	        		sb.append("\n\n");
-		        	sb.append("/**\n");
-		        	sb.append(" * @export\n");
-		        	sb.append(" */\n");
-		        	sb.append("Object.prototype." + name + ";\n");
-	        	}
-	        	File exportsFile = new File(outputFolder, "dontrename.js");
-	        	try {
-					writeFile(exportsFile, sb.toString(), false);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	        	compilerWrapper.addJSExternsFile(exportsFile.getAbsolutePath());
-	        }
-    	}
     }
     
     private String getFactoryClass(IMetaTag node)

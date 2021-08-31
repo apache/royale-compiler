@@ -34,12 +34,6 @@ A = function() {
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('A', A);
-
-
-/**
  * @private
  */
 A.prototype.test = function() {

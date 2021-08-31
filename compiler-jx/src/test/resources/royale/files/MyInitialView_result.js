@@ -57,19 +57,19 @@ MyInitialView = function() {
    * @private
    * @type {org.apache.royale.binding.SimpleBinding}
    */
-  this.$ID0_;
+  this.$ID_11_0;
   
   /**
    * @private
    * @type {org.apache.royale.html.TextButton}
    */
-  this.$ID1_;
+  this.$ID_11_1;
   
   /**
    * @private
    * @type {org.apache.royale.html.TextButton}
    */
-  this.$ID2_;
+  this.$ID_11_2;
   
   /**
    * @private
@@ -87,19 +87,19 @@ MyInitialView = function() {
    * @private
    * @type {org.apache.royale.binding.ConstantBinding}
    */
-  this.$ID3_;
+  this.$ID_11_3;
   
   /**
    * @private
    * @type {org.apache.royale.html.TextArea}
    */
-  this.$ID5_;
+  this.$ID_11_5;
   
   /**
    * @private
    * @type {org.apache.royale.binding.SimpleBinding}
    */
-  this.$ID4_;
+  this.$ID_11_4;
   
   /**
    * @private
@@ -111,7 +111,7 @@ MyInitialView = function() {
    * @private
    * @type {org.apache.royale.html.TextButton}
    */
-  this.$ID6_;
+  this.$ID_11_6;
   
   /**
    * @private
@@ -123,37 +123,37 @@ MyInitialView = function() {
    * @private
    * @type {org.apache.royale.html.RadioButton}
    */
-  this.$ID7_;
+  this.$ID_11_7;
   
   /**
    * @private
    * @type {org.apache.royale.html.RadioButton}
    */
-  this.$ID8_;
+  this.$ID_11_8;
   
   /**
    * @private
    * @type {org.apache.royale.html.RadioButton}
    */
-  this.$ID9_;
+  this.$ID_11_9;
   
   /**
    * @private
    * @type {org.apache.royale.html.RadioButton}
    */
-  this.$ID10_;
+  this.$ID_11_10;
   
   /**
    * @private
    * @type {org.apache.royale.html.RadioButton}
    */
-  this.$ID11_;
+  this.$ID_11_11;
   
   /**
    * @private
    * @type {org.apache.royale.html.RadioButton}
    */
-  this.$ID12_;
+  this.$ID_11_12;
   
   /**
    * @private
@@ -165,13 +165,13 @@ MyInitialView = function() {
    * @private
    * @type {org.apache.royale.binding.ConstantBinding}
    */
-  this.$ID13_;
+  this.$ID_11_13;
   
   /**
    * @private
    * @type {org.apache.royale.html.TextButton}
    */
-  this.$ID14_;
+  this.$ID_11_14;
   
   /**
    * @private
@@ -183,7 +183,7 @@ MyInitialView = function() {
    * @private
    * @type {org.apache.royale.binding.ConstantBinding}
    */
-  this.$ID15_;
+  this.$ID_11_15;
   
   /**
    * @private
@@ -199,11 +199,6 @@ MyInitialView = function() {
 };
 goog.inherits(MyInitialView, org.apache.royale.core.View);
 
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MyInitialView', MyInitialView);
 
 
 
@@ -227,7 +222,6 @@ MyInitialView.prototype.timer = null;
 
 
 /**
- * @export
  */
 MyInitialView.prototype.startTimer = function() {
   this.timer = new org.apache.royale.utils.Timer(1000);
@@ -237,7 +231,6 @@ MyInitialView.prototype.startTimer = function() {
 
 
 /**
- * @export
  * @param {org.apache.royale.events.Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {
@@ -248,9 +241,25 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.symbol;
+
+
 MyInitialView.prototype.get__symbol = function() {
   return org.apache.royale.utils.Language.as(this.list.selectedItem, String);
 };
+
+
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.city;
 
 
 MyInitialView.prototype.get__city = function() {
@@ -258,9 +267,25 @@ MyInitialView.prototype.get__city = function() {
 };
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.inputText;
+
+
 MyInitialView.prototype.get__inputText = function() {
   return this.input.text;
 };
+
+
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+MyInitialView.prototype.comboBoxValue;
 
 
 MyInitialView.prototype.get__comboBoxValue = function() {
@@ -270,30 +295,30 @@ MyInitialView.prototype.get__comboBoxValue = function() {
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 symbol: {
 get: MyInitialView.prototype.get__symbol},
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 city: {
 get: MyInitialView.prototype.get__city},
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 inputText: {
 get: MyInitialView.prototype.get__inputText},
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 comboBoxValue: {
 get: MyInitialView.prototype.get__comboBoxValue}}
 );/**
  * @export
  * @param {org.apache.royale.events.MouseEvent} event
  */
-MyInitialView.prototype.$EH0 = function(event)
+MyInitialView.prototype.$EH_11_0 = function(event)
 {
   this.startTimer();
 };
@@ -303,7 +328,7 @@ MyInitialView.prototype.$EH0 = function(event)
  * @export
  * @param {org.apache.royale.events.MouseEvent} event
  */
-MyInitialView.prototype.$EH1 = function(event)
+MyInitialView.prototype.$EH_11_1 = function(event)
 {
   this.timer.removeEventListener('timer', org.apache.royale.utils.Language.closure(this.timerHandler, this, 'timerHandler'));
   this.timer.stop();
@@ -314,7 +339,7 @@ MyInitialView.prototype.$EH1 = function(event)
  * @export
  * @param {org.apache.royale.events.Event} event
  */
-MyInitialView.prototype.$EH2 = function(event)
+MyInitialView.prototype.$EH_11_2 = function(event)
 {
   this.dispatchEvent(new org.apache.royale.events.CustomEvent('cityListChanged'));
 };
@@ -324,7 +349,7 @@ MyInitialView.prototype.$EH2 = function(event)
  * @export
  * @param {org.apache.royale.events.MouseEvent} event
  */
-MyInitialView.prototype.$EH3 = function(event)
+MyInitialView.prototype.$EH_11_3 = function(event)
 {
   this.dispatchEvent(new org.apache.royale.events.CustomEvent('transferClicked'));
 };
@@ -334,7 +359,7 @@ MyInitialView.prototype.$EH3 = function(event)
  * @export
  * @param {org.apache.royale.events.Event} event
  */
-MyInitialView.prototype.$EH4 = function(event)
+MyInitialView.prototype.$EH_11_4 = function(event)
 {
   this.dispatchEvent(new org.apache.royale.events.CustomEvent('listChanged'));
 };
@@ -344,7 +369,7 @@ MyInitialView.prototype.$EH4 = function(event)
  * @export
  * @param {org.apache.royale.events.MouseEvent} event
  */
-MyInitialView.prototype.$EH5 = function(event)
+MyInitialView.prototype.$EH_11_5 = function(event)
 {
   this.dispatchEvent(new org.apache.royale.events.CustomEvent('buttonClicked'));
 };
@@ -354,15 +379,14 @@ MyInitialView.prototype.$EH5 = function(event)
  * @export
  * @param {org.apache.royale.events.Event} event
  */
-MyInitialView.prototype.$EH6 = function(event)
+MyInitialView.prototype.$EH_11_6 = function(event)
 {
   this.dispatchEvent(new org.apache.royale.events.CustomEvent('comboBoxChanged'));
 };
 
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
-/** @export */
-    lbl: {
+  lbl: {
     /** @this {MyInitialView} */
     get: function() {
       return this.lbl_;
@@ -375,8 +399,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    timerLabel: {
+  timerLabel: {
     /** @this {MyInitialView} */
     get: function() {
       return this.timerLabel_;
@@ -389,8 +412,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    cityList: {
+  cityList: {
     /** @this {MyInitialView} */
     get: function() {
       return this.cityList_;
@@ -403,8 +425,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    input: {
+  input: {
     /** @this {MyInitialView} */
     get: function() {
       return this.input_;
@@ -417,8 +438,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    checkbox: {
+  checkbox: {
     /** @this {MyInitialView} */
     get: function() {
       return this.checkbox_;
@@ -431,8 +451,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    list: {
+  list: {
     /** @this {MyInitialView} */
     get: function() {
       return this.list_;
@@ -445,8 +464,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @export */
-    comboBox: {
+  comboBox: {
     /** @this {MyInitialView} */
     get: function() {
       return this.comboBox_;
@@ -467,7 +485,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
         /** @type {Array} */
         var arr = MyInitialView.superClass_.get__MXMLDescriptor.apply(this);
         /** @type {Array} */
-        var data = [
+        var mxmldd = [
           org.apache.royale.html.Label,
           4,
           'id',
@@ -486,7 +504,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
             5,
             '_id',
             true,
-            '$ID0',
+            '$ID_11_0',
             'eventName',
             true,
             'labelTextChanged',
@@ -510,7 +528,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
           4,
           '_id',
           true,
-          '$ID1',
+          '$ID_11_1',
           'text',
           true,
           'Let\'s Start Timer',
@@ -523,13 +541,13 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
           0,
           1,
           'click',
-this.$EH0,
+          this.$EH_11_0,
           null,
           org.apache.royale.html.TextButton,
           4,
           '_id',
           true,
-          '$ID2',
+          '$ID_11_2',
           'text',
           true,
           'Stop Timer',
@@ -542,7 +560,7 @@ this.$EH0,
           0,
           1,
           'click',
-this.$EH1,
+          this.$EH_11_1,
           null,
           org.apache.royale.html.Label,
           3,
@@ -582,7 +600,7 @@ this.$EH1,
             4,
             '_id',
             true,
-            '$ID3',
+            '$ID_11_3',
             'sourceID',
             true,
             'applicationModel',
@@ -599,13 +617,13 @@ this.$EH1,
           0,
           1,
           'change',
-this.$EH2,
+          this.$EH_11_2,
           null,
           org.apache.royale.html.TextArea,
           6,
           '_id',
           true,
-          '$ID5',
+          '$ID_11_5',
           'x',
           true,
           320,
@@ -625,7 +643,7 @@ this.$EH2,
             5,
             '_id',
             true,
-            '$ID4',
+            '$ID_11_4',
             'eventName',
             true,
             'labelTextChanged',
@@ -663,7 +681,7 @@ this.$EH2,
           4,
           '_id',
           true,
-          '$ID6',
+          '$ID_11_6',
           'text',
           true,
           'Transfer',
@@ -676,7 +694,7 @@ this.$EH2,
           0,
           1,
           'click',
-this.$EH3,
+          this.$EH_11_3,
           null,
           org.apache.royale.html.CheckBox,
           4,
@@ -699,7 +717,7 @@ this.$EH3,
           6,
           '_id',
           true,
-          '$ID7',
+          '$ID_11_7',
           'groupName',
           true,
           'group1',
@@ -722,7 +740,7 @@ this.$EH3,
           7,
           '_id',
           true,
-          '$ID8',
+          '$ID_11_8',
           'groupName',
           true,
           'group1',
@@ -748,7 +766,7 @@ this.$EH3,
           6,
           '_id',
           true,
-          '$ID9',
+          '$ID_11_9',
           'groupName',
           true,
           'group1',
@@ -771,7 +789,7 @@ this.$EH3,
           7,
           '_id',
           true,
-          '$ID10',
+          '$ID_11_10',
           'groupName',
           true,
           'group2',
@@ -797,7 +815,7 @@ this.$EH3,
           6,
           '_id',
           true,
-          '$ID11',
+          '$ID_11_11',
           'groupName',
           true,
           'group2',
@@ -820,7 +838,7 @@ this.$EH3,
           6,
           '_id',
           true,
-          '$ID12',
+          '$ID_11_12',
           'groupName',
           true,
           'group2',
@@ -863,7 +881,7 @@ this.$EH3,
             4,
             '_id',
             true,
-            '$ID13',
+            '$ID_11_13',
             'sourceID',
             true,
             'applicationModel',
@@ -880,13 +898,13 @@ this.$EH3,
           0,
           1,
           'change',
-this.$EH4,
+          this.$EH_11_4,
           null,
           org.apache.royale.html.TextButton,
           4,
           '_id',
           true,
-          '$ID14',
+          '$ID_11_14',
           'text',
           true,
           'OK',
@@ -899,7 +917,7 @@ this.$EH4,
           0,
           1,
           'click',
-this.$EH5,
+          this.$EH_11_5,
           null,
           org.apache.royale.html.ComboBox,
           5,
@@ -922,7 +940,7 @@ this.$EH5,
             4,
             '_id',
             true,
-            '$ID15',
+            '$ID_11_15',
             'sourceID',
             true,
             'applicationModel',
@@ -939,13 +957,13 @@ this.$EH5,
           0,
           1,
           'change',
-this.$EH6,
+          this.$EH_11_6,
           null
         ];
         if (arr)
-          this.mxmldd = arr.concat(data);
+          this.mxmldd = arr.concat(mxmldd);
         else
-          this.mxmldd = data;
+          this.mxmldd = mxmldd;
       }
       return this.mxmldd;
     }

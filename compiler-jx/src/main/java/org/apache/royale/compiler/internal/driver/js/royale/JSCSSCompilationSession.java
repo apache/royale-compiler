@@ -347,9 +347,21 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     
     private String escapeDoubleQuotes(String s)
     {
+        s = replaceUnicodeEncoded(s);
     	if (s.contains("\""))
     		s = s.replace("\"", "\\\"");
     	return s;
+    }
+
+    private String replaceUnicodeEncoded(String s)
+    {
+        //almost all escape sequences are converted to actual character sequences, except for some that don't have
+        //a good result for Character.toChars (e.g. zero width space or non-breaking-space)
+        //convert hex char values to unicode
+        if (s.matches("\\\\[0-9a-fA-F]{1,4}")) {
+            s = s.replaceAll("\\\\([0-9a-fA-F]{1,4})\\s?","\\\\u$1");
+        }
+        return s;
     }
     
     private String encodeRule(ICSSRule rule)
@@ -378,7 +390,6 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 
         ImmutableList<ICSSSelector> slist = rule.getSelectorGroup();
         result.append(slist.size());
-
         for (ICSSSelector sel : slist)
         {
             result.append(",\n");
@@ -525,7 +536,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             }
             else if (value instanceof CSSStringPropertyValue)
             {
-                line.append("\"" + ((CSSStringPropertyValue)value).getValue() + "\"");
+                line.append("\"" + replaceUnicodeEncoded(((CSSStringPropertyValue)value).getValue()) + "\"");
             }
             else if (value instanceof CSSColorPropertyValue)
             {

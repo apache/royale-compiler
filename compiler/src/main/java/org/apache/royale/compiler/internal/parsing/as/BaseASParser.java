@@ -1256,6 +1256,33 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             metadataTokens = tokenizer.parseTokens();
         }
 
+        // manage namespace variables 
+        int i = 2;// skip the metadata type 
+        while (i<metadataTokens.size()-1) {
+            MetadataToken t = metadataTokens.get(i);
+            if (t.getType()==MetadataTokenTypes.TOKEN_ATTR_OPERATOR_NS_QUALIFIER) {
+                // get the previous and next tokens to check there types and transform them as the left and right parts of the operator
+                MetadataToken prev = metadataTokens.get(i - 1);
+                MetadataToken next = metadataTokens.get(i + 1);
+                if (prev.getType()==MetadataTokenTypes.TOKEN_ATTR_UNKNOWN && next.getType()==MetadataTokenTypes.TOKEN_ATTR_UNKNOWN) {
+                    // trasform to literal node if possible
+                    NamespaceIdentifierNode nsNode = new NamespaceIdentifierNode(prev.getText());
+                    nsNode.setIsConfigNamespace(true);
+                    ASToken op = new ASToken(TOKEN_OPERATOR_NS_QUALIFIER, t.getStart(), t.getEnd(), t.getLine(), t.getColumn(), t.getText());
+                    IdentifierNode idNode = new IdentifierNode(next.getText());
+                    IASNode n = transformToNSAccessExpression(nsNode, (ASToken) op, idNode);
+                    if (n instanceof LiteralNode) {
+                        // replace the left, operator and right tokens by the result string token
+                        t = new MetadataToken(MetadataTokenTypes.TOKEN_STRING, prev.getSourcePath(), prev.getStart(), next.getEnd(), prev.getLine(), prev.getColumn(), ((LiteralNode)n).getValue());
+                        metadataTokens.remove(i+1);
+                        metadataTokens.remove(i--);
+                        metadataTokens.set(i, t);
+                    }
+                }
+            }
+            ++i;
+        }
+
         // Initialize metadata parser.
         final GenericTokenStream metadataTokenStream = new GenericTokenStream(metadataTokens);
         final MetadataParser metadataParser = new MetadataParser(metadataTokenStream);
@@ -1791,7 +1818,9 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
     private boolean handleParsingError(final RecognitionException ex, final ASToken current, final ASToken errorToken, final int endToken)
     {
         // Ignore ASDoc problems.
-        if (current.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)
+        if (current.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT
+                || current.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+                || current.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)
         {
             consume();
             return true;

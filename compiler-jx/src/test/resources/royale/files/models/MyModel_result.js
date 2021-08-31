@@ -40,12 +40,6 @@ goog.inherits(models.MyModel, org.apache.royale.events.EventDispatcher);
 
 
 /**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('models.MyModel', models.MyModel);
-
-
-/**
  * @private
  * @type {string}
  */
@@ -66,6 +60,14 @@ models.MyModel.prototype._strings = null;
 models.MyModel.prototype._cities = null;
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {string}
+ */
+models.MyModel.prototype.labelText;
+
+
 models.MyModel.prototype.get__labelText = function() {
   return this._labelText;
 };
@@ -79,9 +81,25 @@ models.MyModel.prototype.set__labelText = function(value) {
 };
 
 
+/**
+ * @nocollapse
+ * @export
+ * @type {Array}
+ */
+models.MyModel.prototype.strings;
+
+
 models.MyModel.prototype.get__strings = function() {
   return this._strings;
 };
+
+
+/**
+ * @nocollapse
+ * @export
+ * @type {Array}
+ */
+models.MyModel.prototype.cities;
 
 
 models.MyModel.prototype.get__cities = function() {
@@ -91,19 +109,19 @@ models.MyModel.prototype.get__cities = function() {
 
 Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
 /**
-  * @export
-  * @type {string} */
+ * @type {string}
+ */
 labelText: {
 get: models.MyModel.prototype.get__labelText,
 set: models.MyModel.prototype.set__labelText},
 /**
-  * @export
-  * @type {Array} */
+ * @type {Array}
+ */
 strings: {
 get: models.MyModel.prototype.get__strings},
 /**
-  * @export
-  * @type {Array} */
+ * @type {Array}
+ */
 cities: {
 get: models.MyModel.prototype.get__cities}}
 );

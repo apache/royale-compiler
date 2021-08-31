@@ -76,6 +76,7 @@
             <file name="guava.jar" />
 			<file name="flex-tool-api.jar" />
             <file name="externc.jar" />
+            <file name="compiler-playerglobalc.jar" />
         </filelist>
 		<filelist dir="${lib}/google/closure-compiler">
             <file name="compiler.jar" />

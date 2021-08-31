@@ -82,7 +82,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" * @constructor\n" +
         		" */\n" +
         		"A = function() {\n" +
-        		"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('A', A);\n" +
+        		"};\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -131,7 +131,7 @@ public class TestRoyalePackage extends TestGoogPackage
         		" * @constructor\n" +
         		" */\n" +
         		"foo.bar.baz.A = function() {\n" +
-        		"};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+        		"};\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -181,12 +181,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A = function() {\n" +
 				"};\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
@@ -252,12 +246,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
@@ -309,12 +297,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A = function() {\n" +
 				"};\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
@@ -373,13 +355,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * @export\n" +
 				" */\n" +
 				"foo.bar.baz.A.prototype.foo = function() {\n" +
 				"};\n" +
@@ -452,12 +427,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
@@ -493,12 +462,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.InternalClass = function() {\n" +
 				"};\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
@@ -561,12 +524,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"foo.bar.baz.A = function() {\n" +
 				"  foo.bar.baz.A.internalFunction();\n" +
 				"};\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
 				"\n" +
 				"\n" +
 				"/**\n" +
@@ -636,12 +593,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
@@ -673,7 +624,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				//" * @export\n" +
+				" * @package\n" +
 				" * @type {number}\n" +
 				" */\n" +
 				"foo.bar.baz.A.internalVar = 2"
@@ -724,12 +675,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
@@ -768,13 +713,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * @export\n" +
 				" * @nocollapse\n" +
 				" * @type {string}\n" +
 				" */\n" +
@@ -782,7 +720,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
+				" * @nocollapse\n" + 
 				" * @return {string}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +
@@ -791,7 +729,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @return {string}\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.someMethod = function() {\n" +
@@ -891,9 +828,11 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
+				" * @nocollapse\n" +
+				" * @export\n" +
+				" * @type {string}\n" +
 				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+				"foo.bar.baz.A.prototype.myString;\n" +
 				"\n" +
 				"\n" +
 				"foo.bar.baz.A.prototype.get__myString = function() {\n" +
@@ -907,8 +846,8 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
 				"/**\n" +
-				"  * @export\n" +
-				"  * @type {string} */\n" +
+				" * @type {string}\n" +
+				" */\n" +
 				"myString: {\n" +
 				"get: foo.bar.baz.A.prototype.get__myString,\n" +
 				"set: foo.bar.baz.A.prototype.set__myString}}\n" +
@@ -959,9 +898,11 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
+				" * @nocollapse\n" +
+				" * @export\n" +
+				" * @type {string}\n" +
 				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
+				"foo.bar.baz.A.InternalClass.prototype.someString;\n" +
 				"\n" +
 				"\n" +
 				"foo.bar.baz.A.InternalClass.prototype.get__someString = function() {\n" +
@@ -975,8 +916,8 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
 				"/**\n" +
-				"  * @export\n" +
-				"  * @type {string} */\n" +
+				" * @type {string}\n" +
+				" */\n" +
 				"someString: {\n" +
 				"get: foo.bar.baz.A.InternalClass.prototype.get__someString,\n" +
 				"set: foo.bar.baz.A.InternalClass.prototype.set__someString}}\n" +
@@ -1062,12 +1003,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
 				" * Metadata\n" +
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
@@ -1103,12 +1038,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				" */\n" +
 				"foo.bar.baz.A.ITestInterface = function() {\n" +
 				"};\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A.ITestInterface', foo.bar.baz.A.ITestInterface);\n" +
 				"foo.bar.baz.A.ITestInterface.prototype.test = function() {\n" +
 				"};\n" +
 				"\n" +
@@ -1153,13 +1082,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * @export\n" +
 				" */\n" +
 				"foo.bar.baz.A.InternalClass.prototype.test = function() {\n" +
 				"};\n" +
@@ -1224,7 +1146,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * @export\n" +
 				" * @return {number}\n" +
 				" */\n" +
 				"foo.bar.A = function() {\n" +
@@ -1240,13 +1161,6 @@ public class TestRoyalePackage extends TestGoogPackage
 				"\n" +
 				"\n" +
 				"/**\n" +
-				" * Prevent renaming of class. Needed for reflection.\n" +
-				" */\n" +
-				"goog.exportSymbol('foo.bar.A.Internal', foo.bar.A.Internal);\n" +
-				"\n" +
-				"\n" +
-				"/**\n" +
-				" * @export\n" +
 				" * @nocollapse\n" +
 				" * @const\n" +
 				" * @type {number}\n" +
@@ -1290,7 +1204,7 @@ public class TestRoyalePackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package {public function A(){}}");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @export\n */\nA = function() {\n}");
+		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n */\nA = function() {\n}");
 	}
 
 	@Test
@@ -1298,7 +1212,7 @@ public class TestRoyalePackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package foo.bar.baz {public function A(){}}");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @export\n */\nfoo.bar.baz.A = function() {\n}");
+		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n */\nfoo.bar.baz.A = function() {\n}");
 	}
 
 	@Test
@@ -1306,7 +1220,7 @@ public class TestRoyalePackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package {public var A:String = \"Hello\";}");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @export\n * @type {string}\n */\nA = \"Hello\"");
+		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @type {string}\n */\nA = \"Hello\"");
 	}
 
 	@Test
@@ -1314,7 +1228,7 @@ public class TestRoyalePackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package foo.bar.baz {public var A:String = \"Hello\";}");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @export\n * @type {string}\n */\nfoo.bar.baz.A = \"Hello\"");
+		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @type {string}\n */\nfoo.bar.baz.A = \"Hello\"");
 	}
     
     @Override

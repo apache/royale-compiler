@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.royale.compiler.constants.IASKeywordConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -34,6 +35,8 @@ import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
+import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDatabindingSourceNotBindableProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -271,6 +274,52 @@ public class WatcherAnalyzer
         }
     }
 
+    private boolean isLeftXML(MemberAccessExpressionNode maen)
+    {
+        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
+		if (maen.getLeftOperandNode().getNodeID() == ASTNodeID.Op_AsID)
+		{
+			if (maen.getLeftOperandNode().getChild(1).getNodeID() == ASTNodeID.IdentifierID)
+			{
+				IdentifierNode child = (IdentifierNode)maen.getLeftOperandNode().getChild(1);
+				IDefinition def = child.resolve(project);
+	    		if (def == xmlDef)
+	    			return true;
+				ITypeDefinition type = child.resolveType(project);
+	    		if (type != null && type.isInstanceOf("XML", project))
+	    			return true;    				
+			}
+		} 
+		else if (maen.getLeftOperandNode().getNodeID() == ASTNodeID.MemberAccessExpressionID)
+		{
+			maen = (MemberAccessExpressionNode)maen.getLeftOperandNode();
+			if (isLeftXML(maen))
+				return true;
+		}
+    	return false;
+    }
+    
+    private boolean nodeIsXML(IASNode node)
+    {
+        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
+    	IASNode parent = node.getParent();
+    	while (parent != null && (parent.getNodeID() == ASTNodeID.MemberAccessExpressionID))
+    	{
+    		MemberAccessExpressionNode maen = ((MemberAccessExpressionNode)parent);
+    		IDefinition def = maen.resolve(project);
+    		if (def == xmlDef)
+    			return true;
+    		ITypeDefinition type = maen.resolveType(project);
+    		if (type != null && type.isInstanceOf("XML", project))
+    			return true;
+    		if (def != null)
+    			break;
+			if (isLeftXML(maen))
+				return true;
+    		parent = parent.getParent();
+    	}
+    	return false;
+    }
     
     private void analyzeIdentifierNode(IIdentifierNode node, AnalysisState state)
     {
@@ -288,6 +337,8 @@ public class WatcherAnalyzer
                         // may very well be a dynamic property with no definition,
                         // so will will continue on (with the knowledge that we have no
                         // IDefinition
+            if (nodeIsXML(node))
+            	return;
             this.problems.add(new MXMLDatabindingSourceNotBindableProblem(node, node.getName()));
             return;
         }

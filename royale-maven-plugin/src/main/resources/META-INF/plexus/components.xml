@@ -32,7 +32,8 @@
                         <phases>
                             <!-- Generate ActionScript from JavaScript -->
                             <generate-sources>
-                                org.apache.royale.compiler:royale-maven-plugin:generate-extern
+                                org.apache.royale.compiler:royale-maven-plugin:generate-extern,
+                                org.apache.royale.compiler:royale-maven-plugin:generate-playerglobal,
                             </generate-sources>
                             <!--
                                 Generate JavaScript sources from the ActionScript sources.
@@ -47,6 +48,7 @@
                                 org.apache.royale.compiler:royale-maven-plugin:compile-as,
                                 org.apache.royale.compiler:royale-maven-plugin:compile-js,
                                 org.apache.royale.compiler:royale-maven-plugin:compile-extern,
+                                org.apache.royale.compiler:royale-maven-plugin:compile-playerglobal,
                             </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources

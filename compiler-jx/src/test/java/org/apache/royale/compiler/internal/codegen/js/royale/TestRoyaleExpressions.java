@@ -116,21 +116,17 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         		  "RoyaleTest_A = function() {\n" +
         		  "};\n\n\n" +
         		  "/**\n" +
-        		  " * Prevent renaming of class. Needed for reflection.\n" +
-        		  " */\n" +
-        		  "goog.exportSymbol('RoyaleTest_A', RoyaleTest_A);\n\n\n" +
-        		  "/**\n" +
-        		  " * @export\n" +
         		  " * @override\n" +
         		  " */\n" +
         		  "RoyaleTest_A.prototype.isDefaultPrevented = function() {\n" +
         		  "  return this.defaultPrevented;\n" +
-        		  "};\n\n\n" +
+                  "};\n\n\n" +
+                  "/**\n * @nocollapse\n * @export\n * @type {Object}\n */\nRoyaleTest_A.prototype.defaultPrevented;\n\n\n" +
         		  "RoyaleTest_A.prototype.get__defaultPrevented = function() {\n" +
         		  "  return RoyaleTest_A.superClass_.isDefaultPrevented.apply(this);\n" +
         		  "};\n\n\n" +
         		  "Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n" +
-        		  "/**\n  * @export\n  * @type {Object} */\n" +
+        		  "/**\n * @type {Object}\n */\n" +
         		  "defaultPrevented: {\nget: RoyaleTest_A.prototype.get__defaultPrevented}}\n);");
     }
 
@@ -158,7 +154,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionNode node = (IFunctionNode)getNode("import custom.TestProxy;import custom.custom_namespace;use namespace custom_namespace;public class RoyaleTest_A extends TestProxy { custom_namespace function foo(){if (a) super.setProperty(a, b);}}",
         					IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.http_$$ns_apache_org$2017$custom$namespace__setProperty.apply(this, [ a, b] );\n}");
+        assertOut("/**\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.http_$$ns_apache_org$2017$custom$namespace__setProperty.apply(this, [ a, b] );\n}");
     }
 
     @Test
@@ -173,7 +169,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
+        assertOut("/**\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
     }
     
     @Test
@@ -188,7 +184,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
+        assertOut("/**\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(RoyaleTest_A.superClass_.foo, this, 'foo');\n}");
     }
     
     @Test
@@ -203,7 +199,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IClassDefinition def = classnode.getDefinition();
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitFunction(fnode);
-        assertOut("/**\n * @export\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  RoyaleTest_A.superClass_.foo.apply(this, [a, b, c]);\n}");
+        assertOut("/**\n * @override\n */\nRoyaleTest_A.prototype.foo = function() {\n  RoyaleTest_A.superClass_.foo.apply(this, [a, b, c]);\n}");
     }
     
     //----------------------------------
@@ -475,7 +471,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         // the asdoc so the emitter will suppress the output
         docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("/**\n * @royalenoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
+        assertOut("/**\n * @royalenoimplicitstringconversion\n */\nthis.b = this.c");
     }
 
     @Test
@@ -486,6 +482,22 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         assertOut("var1 = org.apache.royale.utils.Language.string(var2.child('child'))");
     }
 
+    @Test
+    public void testVisitBinaryOperatorNode_XMLChildEqualsTrue()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var2:XML;var2.child == true");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var2.child('child') == 'true'");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_XMLChildEqualsFalse()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var var2:XML;var2.child == false");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("var2.child('child') == 'false'");
+    }
+    
     @Test
     public void testVisitBinaryOperatorNode_AssignmentStringLiteralToString()
     {
@@ -883,7 +895,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"b\"] = 1");
+        assertOut("foo.bar.B.b = 1");
     }
 
     @Test
@@ -895,7 +907,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"b\"] = 1");
+        assertOut("foo.bar.B.b = 1");
     }
 
     @Test
@@ -907,7 +919,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"d\"].b = 1");
+        assertOut("foo.bar.B.d.b = 1");
     }
 
     @Test
@@ -931,7 +943,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
 
         ((JSRoyaleEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"d\"].b = 1");
+        assertOut("foo.bar.B.d.b = 1");
     }
 
     @Test
@@ -943,7 +955,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo.bar.B[\"b\"] = foo.bar.B[\"b\"] + 1");
+        assertOut("foo.bar.B.b = foo.bar.B.b + 1");
     }
 
     @Test
@@ -1061,7 +1073,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function d() { var seed:Number; seed = new Date().time - Math.random() * int.MAX_VALUE; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("seed = new Date().getTime() - Math.random() * 2147483648");
+        assertOut("seed = new Date().getTime() - Math.random() * 2147483647");
     }
 
     @Test
@@ -1071,7 +1083,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; function d():void {}; c(d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  function d() {\n  };\n  c(d);\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  function d() {\n  };\n  c(d);\n}");
     }
 
     @Test
@@ -1081,7 +1093,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(s:String, f:Function):void {}; function d():void {}; c('foo', d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', d);\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', d);\n}");
     }
 
     @Test
@@ -1091,7 +1103,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() {  c('foo', d); function c(s:String, f:Function):void {}; function d():void {};}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', d);\n  \n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(s, f) {\n  };\n  function d() {\n  };\n  c('foo', d);\n  \n}");
     }
 
     @Test
@@ -1101,7 +1113,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function d():void {}; c('foo', d); } public function c(s:String, f:Function):void {};}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function d() {\n  };\n  this.c('foo', d);\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function d() {\n  };\n  this.c('foo', d);\n}");
     }
 
     @Test
@@ -1111,7 +1123,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b(ff:Function) { function c(f:Function):void {}; c(ff); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Function} ff\n */\nB.prototype.b = function(ff) {\n  var self = this;\n  function c(f) {\n  };\n  c(ff);\n}");
+        assertOut("/**\n * @param {Function} ff\n */\nB.prototype.b = function(ff) {\n  var self = this;\n  function c(f) {\n  };\n  c(ff);\n}");
     }
 
     @Test
@@ -1121,7 +1133,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public static function b(ff:Function) { function c(f:Function):void {}; c(ff); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Function} ff\n */\nB.b = function(ff) {\n  function c(f) {\n  };\n  c(ff);\n}");
+        assertOut("/**\n * @nocollapse\n * @param {Function} ff\n */\nB.b = function(ff) {\n  function c(f) {\n  };\n  c(ff);\n}");
     }
 
     @Test
@@ -1131,7 +1143,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.b, this, 'b'));\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.b, this, 'b'));\n}");
     }
 
     @Test
@@ -1141,7 +1153,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  c(foo.bar.B.b);\n}");
+        assertOut("/**\n * @nocollapse\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  c(foo.bar.B.b);\n}");
     }
 
     @Test
@@ -1151,7 +1163,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
     }
     
     @Test
@@ -1161,7 +1173,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b'));\n}");
+        assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b'));\n}");
     }
     
     @Test
@@ -1171,7 +1183,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; c(custom_namespace::b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b'));\n}");
+        assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b'));\n}");
     }
     
     @Test
@@ -1181,7 +1193,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
+        assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this.http_$$ns_apache_org$2017$custom$namespace__b, this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
     }
     
     @Test
@@ -1191,7 +1203,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace;;public class B {custom_namespace function b() { function c(f:Function):void {}; var f:Function = this.custom_namespace::b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this[new QName(custom.custom_namespace, 'b').objectAccessFormat()], this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
+        assertOut("/**\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.royale.utils.Language.closure(this[new QName(custom.custom_namespace, 'b').objectAccessFormat()], this, 'http://ns.apache.org/2017/custom/namespace::b');\n  c(f);\n}");
     }
     
     @Test
@@ -1201,7 +1213,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace; use namespace custom_namespace;public class B {custom_namespace function b():int { return this.b(); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @return {number}\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  return this.http_$$ns_apache_org$2017$custom$namespace__b();\n}");
+        assertOut("/**\n * @return {number}\n */\nB.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  return this.http_$$ns_apache_org$2017$custom$namespace__b();\n}");
     }
     
     @Test
@@ -1211,7 +1223,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = foo.bar.B.b;\n  c(f);\n}");
+        assertOut("/**\n * @nocollapse\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = foo.bar.B.b;\n  c(f);\n}");
     }
     
     @Test
@@ -1221,7 +1233,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; var f:Function = foo.bar.B.b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = foo.bar.B.b;\n  c(f);\n}");
+        assertOut("/**\n * @nocollapse\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = foo.bar.B.b;\n  c(f);\n}");
     }
     
     @Test
@@ -1231,7 +1243,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; var f:Function = null; f = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = org.apache.royale.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
     }
     
     @Test
@@ -1241,7 +1253,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; var f:Function = null; f = b; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = foo.bar.B.b;\n  c(f);\n}");
+        assertOut("/**\n * @nocollapse\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = null;\n  f = foo.bar.B.b;\n  c(f);\n}");
     }
     
     @Test
@@ -1251,7 +1263,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; var f:Array = [b]; c(f[0]); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Array} */ f = [org.apache.royale.utils.Language.closure(this.b, this, 'b')];\n  c(/* implicit cast */ org.apache.royale.utils.Language.as(f[0], Function, true));\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Array} */ f = [org.apache.royale.utils.Language.closure(this.b, this, 'b')];\n  c(/* implicit cast */ org.apache.royale.utils.Language.as(f[0], Function, true));\n}");
     }
     
     @Test
@@ -1261,7 +1273,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; var f:Array = [b]; c(f); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Array} */ f = [foo.bar.B.b];\n  c(f);\n}");
+        assertOut("/**\n * @nocollapse\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Array} */ f = [foo.bar.B.b];\n  c(f);\n}");
     }
     
     @Test
@@ -1271,7 +1283,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; c(this.b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.b, this, 'b'));\n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  c(org.apache.royale.utils.Language.closure(this.b, this, 'b'));\n}");
     }
     
     @Test
@@ -1281,7 +1293,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {c(d); }; } public function d() {}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n    c(org.apache.royale.utils.Language.closure(self.d, self, 'd'));\n  };\n  \n}");
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n    c(org.apache.royale.utils.Language.closure(self.d, self, 'd'));\n  };\n  \n}");
     }
     
     @Test
@@ -1292,7 +1304,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ s = null;\n  return s.length;\n}");
+        assertOut("/**\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ s = null;\n  return s.length;\n}");
     }
 
     @Test
@@ -1303,7 +1315,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array.<string>} */ a = null;\n  return a.length;\n}");
+        assertOut("/**\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Array.<string>} */ a = null;\n  return a.length;\n}");
     }
 
     @Test
@@ -1313,7 +1325,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B { public function a():void { b(c); } public function set b(v:Function):void {}  public function get b():Function { return null; } public function get c():Object { return null; } public function set c(v:Object):void {} }",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nB.prototype.a = function() {\n  this.b(this.c);\n}");
+        assertOut("/**\n */\nB.prototype.a = function() {\n  this.b(this.c);\n}");
     }
     
     //----------------------------------
@@ -1325,7 +1337,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import custom.TestOtherInterface; public class B implements TestOtherInterface { public function B() { TestOtherInterface(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {custom.TestOtherInterface}\n */\nB = function() {\n  org.apache.royale.utils.Language.as(b, custom.TestOtherInterface, true).type = '';\n};\n\n\n/**\n * Prevent renaming of class. Needed for reflection.\n */\ngoog.exportSymbol('B', B);");
+        assertOut("/**\n * @constructor\n * @implements {custom.TestOtherInterface}\n */\nB = function() {\n  org.apache.royale.utils.Language.as(b, custom.TestOtherInterface, true).type = '';\n};");
     }
 
     @Test
@@ -1351,7 +1363,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import goog.bind; public class B {public function b() { goog.bind(b, this); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  goog.bind(org.apache.royale.utils.Language.closure(this.b, this, 'b'), this);\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  goog.bind(org.apache.royale.utils.Language.closure(this.b, this, 'b'), this);\n}");
     }
     
     @Test
@@ -1372,7 +1384,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.custom_namespace; public class B {custom_namespace function b() { custom_namespace::b(); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  this.http_$$ns_apache_org$2017$custom$namespace__b();\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.http_$$ns_apache_org$2017$custom$namespace__b = function() {\n  this.http_$$ns_apache_org$2017$custom$namespace__b();\n}");
     }
 
     @Test
@@ -1382,7 +1394,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "import custom.TestGlobalFunction; public class B {public function b() { TestGlobalFunction.length; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  custom.TestGlobalFunction.length;\n}");
+        assertOut("/**\n */\nfoo.bar.B.prototype.b = function() {\n  custom.TestGlobalFunction.length;\n}");
     }
 
     @Test
@@ -1390,7 +1402,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String = null; var d:String = null; if (!(b ? c : d)) { return b;}}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {boolean} b\n * @return {boolean}\n */\nRoyaleTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c = null;\n  var /** @type {string} */ d = null;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
+        assertOut("/**\n * @param {boolean} b\n * @return {boolean}\n */\nRoyaleTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c = null;\n  var /** @type {string} */ d = null;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
     }
 
     @Override
@@ -1507,7 +1519,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "});}",
                 IFunctionNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\n" + 
+        assertOut("/**\n */\n" + 
       		  "RoyaleTest_A.prototype.foo = function() {\n" +
       		  "  var self = this;\n" +
       		  "  function isEven(element, index, arr) {\n    return element % 2 == 0;\n  };\n  var /** @type {Array} */ a = [];\n"
@@ -1521,7 +1533,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public var bar:String = baz; public function foo():void { function localFunction():void { trace(bar); } localFunction() }",
                 IFunctionNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\n" + 
+        assertOut("/**\n */\n" + 
         		  "RoyaleTest_A.prototype.foo = function() {\n" +
         		  "  var self = this;\n" +
         		  "  function localFunction() {\n    org.apache.royale.utils.Language.trace(self.bar);\n  };\n" +
@@ -1535,7 +1547,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "internal var bar:String = baz; public function foo():void { trace(bar); }",
                 IFunctionNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\n" + 
+        assertOut("/**\n */\n" + 
         		  "RoyaleTest_A.prototype.foo = function() {\n" +
         		  "  org.apache.royale.utils.Language.trace(this.bar);\n}");
     }
@@ -1556,7 +1568,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {public function b(o:Object):int { var a:B = null; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.B);\n}");
+        assertOut("/**\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.B);\n}");
     }
 
     @Test
@@ -1582,7 +1594,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
+        assertOut("/**\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
     }
     
      @Test
@@ -1592,7 +1604,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                  "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                  IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
          asBlockWalker.visitFunction(node);
-         assertOut("/**\n * @royalesuppresscompleximplicitcoercion\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
      }
     
      @Test
@@ -1602,7 +1614,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                  "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion true\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                  IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
          asBlockWalker.visitFunction(node);
-         assertOut("/**\n * @royalesuppresscompleximplicitcoercion true\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion true\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
      }
     
      @Test
@@ -1612,7 +1624,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                  "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion foo.bar.B\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                  IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
          asBlockWalker.visitFunction(node);
-         assertOut("/**\n * @royalesuppresscompleximplicitcoercion foo.bar.B\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion foo.bar.B\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
      }
     
     
@@ -1630,7 +1642,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                  "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                  IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
          asBlockWalker.visitFunction(node);
-         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
+         assertOut("/**\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, this.memberVar);\n}");
      }
     
      @Test
@@ -1647,7 +1659,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                  "public class B {private var memberVar:Class; /**\n * @royalesuppresscompleximplicitcoercion false\n */\n public function b(o:Object):int { var a:B = null; a = o as memberVar; }}",
                  IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
          asBlockWalker.visitFunction(node);
-         assertOut("/**\n * @royalesuppresscompleximplicitcoercion false\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
+         assertOut("/**\n * @royalesuppresscompleximplicitcoercion false\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
      }
 
     @Test
@@ -1657,7 +1669,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
                 "public class LinkableString {public function b(o:Object):int { var a:LinkableString = null; a = o as LinkableString; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.LinkableString.prototype.b = function(o) {\n  var /** @type {foo.bar.LinkableString} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.LinkableString);\n}");
+        assertOut("/**\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.LinkableString.prototype.b = function(o) {\n  var /** @type {foo.bar.LinkableString} */ a = null;\n  a = org.apache.royale.utils.Language.as(o, foo.bar.LinkableString);\n}");
     }
 
     @Override

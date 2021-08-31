@@ -239,7 +239,7 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
                     ((AccessorDefinition) check).problematic = true;
                     //checking occurs twice, don't add multiple duplicate problems for the same check
                     problematic = true;
-                    project.getProblems().add(new DuplicateFunctionDefinitionProblem(getFunctionNode().getNameExpressionNode(), this.getBaseName()));
+                    project.getProblems().add(new DuplicateFunctionDefinitionProblem(getNode().getNameExpressionNode(), this.getBaseName()));
                 }
                 return true;
             }

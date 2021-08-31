@@ -160,7 +160,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.accessories.TextPromptBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -183,7 +183,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"      2,\n" +
         		"      '_id',\n" +
         		"      true,\n" +
-        		"      '$ID0',\n" +
+        		"      '$ID_8_0',\n" +
         		"      'prompt',\n" +
         		"      true,\n" +
         		"      '0-9\\\\',\n" +
@@ -198,11 +198,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -278,7 +273,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.accessories.TextPromptBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -301,7 +296,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"      2,\n" +
         		"      '_id',\n" +
         		"      true,\n" +
-        		"      '$ID0',\n" +
+        		"      '$ID_8_0',\n" +
         		"      'prompt',\n" +
         		"      true,\n" +
         		"      '0-9\\\\',\n" +
@@ -316,11 +311,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -409,11 +399,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -504,14 +489,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"  this.mxmldp;\n" +
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
-          		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
+				"\n" +
 				"\n" +
         		"/**\n" +
         		" * Metadata\n" +
@@ -589,13 +569,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -618,7 +598,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -626,7 +606,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        1,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" + 
+				"        '$ID_8_0',\n" + 
 				"        0,\n" +
 				"        0,\n" +
 				"        null\n" +
@@ -640,11 +620,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -654,7 +629,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"1,\n" +
         		"[\"org.apache.royale.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
-        		"[\"$ID0\", \"text\"]\n" +
+        		"[\"$ID_8_0\", \"text\"]\n" +
         		"];\n" +
         		"/**\n" +
         		" * Metadata\n" +
@@ -732,13 +707,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -761,7 +736,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" + 
+				"      '$ID_8_1',\n" + 
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -769,7 +744,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        1,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        0,\n" +
 				"        0,\n" +
 				"        null\n" +
@@ -783,11 +758,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -797,7 +767,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"1,\n" +
         		"[\"org.apache.royale.net.HTTPConstants\", \"GET\"],\n" +
         		"null,\n" +
-        		"[\"$ID0\", \"text\"]\n" +
+        		"[\"$ID_8_0\", \"text\"]\n" +
         		"];\n" +
         		"/**\n" +
         		" * Metadata\n" +
@@ -876,13 +846,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -905,7 +875,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -913,7 +883,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        1,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        0,\n" +
 				"        0,\n" +
 				"        null\n" +
@@ -927,15 +897,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
-        		" * @export\n" +
         		" * @type {binding.ComplexValueObject}\n" +
         		" */\n" +
         		"AppName.prototype.firstOne = null;\n" +
@@ -948,7 +912,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"1,\n" +
         		"[\"firstOne\", \"subObject\", \"labelText\"],\n" +
         		"null,\n" +
-        		"[\"$ID0\", \"text\"],\n" +
+        		"[\"$ID_8_0\", \"text\"],\n" +
         		"0,\n" +
         		"2,\n" +
         		"\"firstOne\",\n" +
@@ -1055,13 +1019,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.Label}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1084,7 +1048,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1092,7 +1056,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'text',\n" +
 				"        true,\n" +
 				"        'Hello World',\n" +
@@ -1109,15 +1073,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
-        		" * @export\n" +
         		" * @type {XML}\n" +
         		" */\n" +
         		"AppName.prototype.xml = null;\n" +
@@ -1202,13 +1160,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1231,7 +1189,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1239,7 +1197,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1255,11 +1213,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -1288,6 +1241,426 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"    variables: function () {\n" +
         		"      return {\n" +
         		"        'foo': { type: 'String', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" + 
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+    
+    @Test
+    public void testFXNumberDeclaration()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Declarations><fx:Number id=\"foo\">20.19</fx:Number>"
+                + "</fx:Declarations><basic:initialView><basic:View><basic:DropDownList dataProvider=\"['Hello', 'World']\"/></basic:View></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.DropDownList');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = 20.19;\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_1;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.html.DropDownList}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_0;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes([\n" +
+        		"    1,\n" +
+        		"    'initialView',\n" +
+        		"    false,\n" +
+				"    [\n" +
+				"      org.apache.royale.core.View,\n" +
+				"      1,\n" +
+				"      '_id',\n" +
+				"      true,\n" +
+				"      '$ID_8_1',\n" +
+				"      0,\n" +
+				"      0,\n" +
+				"      [\n" +
+				"        org.apache.royale.html.DropDownList,\n" +
+				"        2,\n" +
+				"        '_id',\n" +
+				"        true,\n" +
+				"        '$ID_8_0',\n" +
+				"        'dataProvider',\n" +
+				"        true,\n" +
+				"        ['Hello','World'],\n" +
+				"        0,\n" +
+				"        0,\n" +
+				"        null\n" +
+				"      ]\n" +
+				"    ],\n" +
+        		"    0,\n" +
+        		"    0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.foo;\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"        'foo': { type: 'Number', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" + 
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+    
+    @Test
+    public void testFXBooleanDeclaration()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Declarations><fx:Boolean id=\"foo\">true</fx:Boolean>"
+                + "</fx:Declarations><basic:initialView><basic:View><basic:DropDownList dataProvider=\"['Hello', 'World']\"/></basic:View></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.DropDownList');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = true;\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_1;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.html.DropDownList}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_0;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes([\n" +
+        		"    1,\n" +
+        		"    'initialView',\n" +
+        		"    false,\n" +
+				"    [\n" +
+				"      org.apache.royale.core.View,\n" +
+				"      1,\n" +
+				"      '_id',\n" +
+				"      true,\n" +
+				"      '$ID_8_1',\n" +
+				"      0,\n" +
+				"      0,\n" +
+				"      [\n" +
+				"        org.apache.royale.html.DropDownList,\n" +
+				"        2,\n" +
+				"        '_id',\n" +
+				"        true,\n" +
+				"        '$ID_8_0',\n" +
+				"        'dataProvider',\n" +
+				"        true,\n" +
+				"        ['Hello','World'],\n" +
+				"        0,\n" +
+				"        0,\n" +
+				"        null\n" +
+				"      ]\n" +
+				"    ],\n" +
+        		"    0,\n" +
+        		"    0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @type {boolean}\n" +
+        		" */\n" +
+        		"AppName.prototype.foo;\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"        'foo': { type: 'Boolean', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" + 
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+    
+    @Test
+    public void testFXIntDeclaration()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Declarations><fx:int id=\"foo\">2020</fx:int>"
+                + "</fx:Declarations><basic:initialView><basic:View><basic:DropDownList dataProvider=\"['Hello', 'World']\"/></basic:View></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.DropDownList');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = 2020;\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_1;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.html.DropDownList}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_0;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes([\n" +
+        		"    1,\n" +
+        		"    'initialView',\n" +
+        		"    false,\n" +
+				"    [\n" +
+				"      org.apache.royale.core.View,\n" +
+				"      1,\n" +
+				"      '_id',\n" +
+				"      true,\n" +
+				"      '$ID_8_1',\n" +
+				"      0,\n" +
+				"      0,\n" +
+				"      [\n" +
+				"        org.apache.royale.html.DropDownList,\n" +
+				"        2,\n" +
+				"        '_id',\n" +
+				"        true,\n" +
+				"        '$ID_8_0',\n" +
+				"        'dataProvider',\n" +
+				"        true,\n" +
+				"        ['Hello','World'],\n" +
+				"        0,\n" +
+				"        0,\n" +
+				"        null\n" +
+				"      ]\n" +
+				"    ],\n" +
+        		"    0,\n" +
+        		"    0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.foo;\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"        'foo': { type: 'int', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
         		"      };\n" +
         		"    },\n" +
         		"    methods: function () {\n" +
@@ -1347,13 +1720,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID3_;\n" +
+        		"  this.$ID_8_3;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID2_;\n" +
+        		"  this.$ID_8_2;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1376,7 +1749,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID3',\n" +
+				"      '$ID_8_3',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1384,7 +1757,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID2',\n" +
+				"        '$ID_8_2',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1401,10 +1774,145 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
+        		"\n" +
+				"\n" +
         		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" * @export\n" +
+        		" * @type {Array}\n" +
         		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
+        		"AppName.prototype.foo;\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"        'foo': { type: 'Array', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" + 
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+    
+    @Test
+    public void testFXArrayOfObjectsDeclaration()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Declarations><fx:Array id=\"foo\"><fx:Object stringProp=\"A String\" intProp=\"2000\" numProp=\"20.19\" boolProp=\"true\"/><fx:Object stringProp=\"Another String\" intProp=\"2021\" numProp=\"20.21\" boolProp=\"false\"/></fx:Array>"
+                + "</fx:Declarations><basic:initialView><basic:View><basic:DropDownList dataProvider=\"['Hello', 'World']\"/></basic:View></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.DropDownList');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = [{stringProp: 'A String', intProp: 2000, numProp: 20.19, boolProp: true}, {stringProp: 'Another String', intProp: 2021, numProp: 20.21, boolProp: false}];\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_3;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.html.DropDownList}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_2;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes([\n" +
+        		"    1,\n" +
+        		"    'initialView',\n" +
+        		"    false,\n" +
+				"    [\n" +
+				"      org.apache.royale.core.View,\n" +
+				"      1,\n" +
+				"      '_id',\n" +
+				"      true,\n" +
+				"      '$ID_8_3',\n" +
+				"      0,\n" +
+				"      0,\n" +
+				"      [\n" +
+				"        org.apache.royale.html.DropDownList,\n" +
+				"        2,\n" +
+				"        '_id',\n" +
+				"        true,\n" +
+				"        '$ID_8_2',\n" +
+				"        'dataProvider',\n" +
+				"        true,\n" +
+				"        ['Hello','World'],\n" +
+				"        0,\n" +
+				"        0,\n" +
+				"        null\n" +
+				"      ]\n" +
+				"    ],\n" +
+        		"    0,\n" +
+        		"    0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -1494,13 +2002,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1523,7 +2031,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1531,7 +2039,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1547,11 +2055,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -1640,13 +2143,13 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.core.View}\n" +
         		"   */\n" +
-        		"  this.$ID1_;\n" +
+        		"  this.$ID_8_1;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
         		"   * @type {org.apache.royale.html.DropDownList}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1669,7 +2172,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      1,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID1',\n" +
+				"      '$ID_8_1',\n" +
 				"      0,\n" +
 				"      0,\n" +
 				"      [\n" +
@@ -1677,7 +2180,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"        2,\n" +
 				"        '_id',\n" +
 				"        true,\n" +
-				"        '$ID0',\n" +
+				"        '$ID_8_0',\n" +
 				"        'dataProvider',\n" +
 				"        true,\n" +
 				"        ['Hello','World'],\n" +
@@ -1693,11 +2196,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -1797,11 +2295,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
@@ -1828,17 +2321,12 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"    0,\n" +
         		"    1,\n" +
         		"    'change',\n" +
-        		"this.$EH0\n" +
+        		"    this.$EH_9_0\n" +
         		"  ]);\n" +
         		"  \n" +
         		"};\n" +
         		"goog.inherits(AppName.AppName_component0, org.apache.royale.html.DropDownList);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName.AppName_component0', AppName.AppName_component0);\n" +
 				"\n" +
 				"\n" +
         		"/**\n" +
@@ -1876,7 +2364,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" * @export\n" +
         		" * @param {org.apache.royale.events.Event} event\n" +
         		" */\n" +
-        		"AppName.AppName_component0.prototype.$EH0 = function(event)\n" +
+        		"AppName.AppName_component0.prototype.$EH_9_0 = function(event)\n" +
 				"{\n" +
 				"  org.apache.royale.utils.Language.trace('bar');\n" +
 				"};\n" +
@@ -1955,7 +2443,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -1978,7 +2466,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      org.apache.royale.utils.Language.closure(this.fn_test, this, 'fn_test'),\n" +
@@ -1994,15 +2482,9 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
         		"/**\n" +
-        		" * @export\n" +
         		" * @param {string} foo\n" +
         		" */\n" +
         		"AppName.prototype.fn_test = function(foo) {\n" +
@@ -2083,7 +2565,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -2106,7 +2588,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      org.apache.royale.utils.Language.closure(this.initialView.addedToParent, this.initialView, 'addedToParent'),\n" +
@@ -2121,11 +2603,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +
@@ -2201,7 +2678,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -2224,7 +2701,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      AppName.fn_test,\n" +
@@ -2240,15 +2717,10 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
         		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
-        		"\n" +
         		"\n" +
 				"\n" +
-        		"/**\n" +
-        		" * @export\n" +
+				"/**\n" +
+				" * @nocollapse\n" + 
         		" * @param {string} foo\n" +
         		" */\n" +
         		"AppName.fn_test = function(foo) {\n" +
@@ -2337,7 +2809,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"   * @private\n" +
         		"   * @type {org.apache.royale.charts.beads.DataTipBead}\n" +
         		"   */\n" +
-        		"  this.$ID0_;\n" +
+        		"  this.$ID_8_0;\n" +
         		"  \n" +
         		"  /**\n" +
         		"   * @private\n" +
@@ -2360,7 +2832,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
 				"      2,\n" +
 				"      '_id',\n" +
 				"      true,\n" +
-				"      '$ID0',\n" +
+				"      '$ID_8_0',\n" +
 				"      'labelFunction',\n" +
 				"      true,\n" +
 				"      org.apache.royale.utils.Language.closure(this.AppName_fn_test, this, 'AppName_fn_test'),\n" +
@@ -2375,11 +2847,6 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"};\n" +
         		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
           		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * Prevent renaming of class. Needed for reflection.\n" +
-        		" */\n" +
-        		"goog.exportSymbol('AppName', AppName);\n" +
         		"\n" +
         		"\n" +
 				"\n" +

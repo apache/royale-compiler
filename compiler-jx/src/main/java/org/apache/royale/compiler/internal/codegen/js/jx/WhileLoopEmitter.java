@@ -39,7 +39,6 @@ public class WhileLoopEmitter extends JSSubEmitter implements
     @Override
     public void emit(IWhileLoopNode node)
     {
-        IContainerNode cnode = (IContainerNode) node.getChild(1);
 
         startMapping(node);
         writeToken(ASEmitterTokens.WHILE);
@@ -49,13 +48,23 @@ public class WhileLoopEmitter extends JSSubEmitter implements
         IASNode conditionalExpression = node.getConditionalExpressionNode();
         getWalker().walk(conditionalExpression);
 
-        IASNode statementContentsNode = node.getStatementContentsNode();
+        IContainerNode statementContentsNode = (IContainerNode) node.getStatementContentsNode();
         startMapping(node, conditionalExpression);
         write(ASEmitterTokens.PAREN_CLOSE);
-        if (!EmitterUtils.isImplicit(cnode))
+        if (!EmitterUtils.isImplicit(statementContentsNode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
-
-        getWalker().walk(statementContentsNode);
+        //if we have a while loop that has no body, then emit it with an explicit 'empty block'.
+        //Otherwise the loop body will be considered to be the following statement
+        //the empty block is to avoid this from GCC: "WARNING - If this if/for/while really shouldn't have a body, use {}"
+        if (EmitterUtils.isImplicit(statementContentsNode)
+                && statementContentsNode.getChildCount() == 0) {
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_OPEN);
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            writeToken(ASEmitterTokens.SEMICOLON);
+        } else {
+            getWalker().walk(statementContentsNode);
+        }
     }
 }

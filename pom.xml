@@ -27,7 +27,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.7</version>
+  <version>0.9.8</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -37,7 +37,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
     <url>https://github.com/apache/royale-compiler</url>
-    <tag>org.apache.royale.compiler-0.9.7-rc5</tag>
+    <tag>org.apache.royale.compiler-0.9.8-rc7</tag>
   </scm>
 
   <properties>
@@ -46,7 +46,7 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
     <maven.version>3.3.1</maven.version>
 
-    <compiler-build-tools.version>1.2.0</compiler-build-tools.version>
+    <compiler-build-tools.version>1.2.1</compiler-build-tools.version>
     <compiler-jburg-types.version>1.1.0</compiler-jburg-types.version>
 
     <flex.version>4.15.0</flex.version>
@@ -55,7 +55,17 @@
     <option.withSwf.enabled>false</option.withSwf.enabled>
 
     <release-profiles>apache-release,option-with-swf</release-profiles>
-  <project.build.outputTimestamp>2020-05-07T15:02:12Z</project.build.outputTimestamp></properties>
+
+    <!-- Dont't open multiple connections to one service to upload multiple artifacts at the same time -->
+    <maven.wagon.httpconnectionManager.maxPerRoute>1</maven.wagon.httpconnectionManager.maxPerRoute>
+    <!-- Dont't open multiple connections in total to upload multiple artifacts at the same time -->
+    <maven.wagon.httpconnectionManager.maxTotal>1</maven.wagon.httpconnectionManager.maxTotal>
+    <!-- Change the retry handler to a version that supports retries -->
+    <maven.wagon.http.retryHandler.class>standard</maven.wagon.http.retryHandler.class>
+    <!-- Try at most 6 times to deploy every artifact -->
+    <maven.wagon.http.retryHandler.count>6</maven.wagon.http.retryHandler.count>
+    <project.build.outputTimestamp>2021-08-27T11:57:25Z</project.build.outputTimestamp>
+  </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>
@@ -90,6 +100,7 @@
   <modules>
     <module>compiler-common</module>
     <module>compiler-externc</module>
+    <module>compiler-playerglobalc</module>
     <module>compiler</module>
     <module>compiler-jx</module>
     <module>compiler-test-utils</module>
@@ -103,6 +114,14 @@
   </modules>
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http</artifactId>
+        <version>3.4.0</version>
+      </extension>
+    </extensions>
+
     <plugins>
       <!-- Execute some checks if the environment ist correctly configured -->
       <plugin>
@@ -143,7 +162,7 @@
             <exclude>LICENSE*</exclude>
             <exclude>NOTICE*</exclude>
             <exclude>README*</exclude>
-            <exclude>RELEASE_NOTES*</exclude>
+            <exclude>**/RELEASE_NOTES*</exclude>
             <!-- Modules which are excluded from the build -->
             <!-- FlashBuilder settings. frameworks/fb.properties contains Alex' path entries and should be removed -->
             <exclude>fb.properties</exclude>
@@ -323,24 +342,6 @@
         </executions>
       </plugin>
 
-      <!-- This plugin cleans up the jars for anything that might cause problems for reproducible builds -->
-      <!--
-        Even if the core maven plugins currently would support doing this without, we would be required
-        to set the line-separator and the Antlr3 plugin crashes if this is set to something non-default
-      -->
-      <plugin>
-        <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.11</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>strip-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Plugin to detect problems with JDK incompatibilities -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -454,7 +455,6 @@
           <version>0.8.5</version>
         </plugin>
 
-        <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
@@ -487,14 +487,12 @@
           <version>2.22.1</version>
         </plugin>
 
-        <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.2.1</version>
         </plugin>
 
-        <!-- Update to a version able to do reproducible builds -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -510,7 +508,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.2.0</version>
           <configuration>
             <tags>
               <tag>
@@ -566,12 +564,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>3.0.0-M1</version>
-        </plugin>
-
-        <plugin>
-          <groupId>com.theoryinpractise</groupId>
-          <artifactId>reproducible-maven-plugin</artifactId>
-          <version>1.0.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -722,21 +714,6 @@
       <id>apache-release</id>
       <build>
         <plugins>
-          <plugin>
-            <groupId>com.theoryinpractise</groupId>
-            <artifactId>reproducible-maven-plugin</artifactId>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <configuration>
-              <preparationGoals>clean com.theoryinpractise:reproducible-maven-plugin:apply install</preparationGoals>
-              <completionGoals>com.theoryinpractise:reproducible-maven-plugin:clear</completionGoals>
-            </configuration>
-          </plugin>
-          <!--
-            Create MD5 and SHA512 checksum files for the release artifacts.
-          -->
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
             <artifactId>checksum-maven-plugin</artifactId>

@@ -1551,6 +1551,18 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         	((RoyaleJSProject)project).needLanguage = true;
         getModel().needLanguage = true;
     }
+
+    @Override
+    public void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition)
+    {
+        super.emitAssignmentCoercion(assignedNode, definition);
+        if (getModel().inStaticInitializer)
+        {
+        	if (!staticUsedNames.contains(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()))
+        		staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+        }
+
+    }
     
 	boolean isGoogProvided(String className)
 	{

@@ -122,6 +122,10 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         {
             emitProtected(node);
         }
+        else if (ns == IASKeywordConstants.INTERNAL)
+        {
+            emitInternal(node);
+        }
 
         if (node.isConst())
             emitConst(node);
@@ -336,6 +340,12 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emitProtected(IASNode node)
     {
         emitJSDocLine(ASEmitterTokens.PROTECTED);
+    }
+
+    @Override
+    public void emitInternal(IASNode node)
+    {
+        emitJSDocLine(JSGoogDocEmitterTokens.PACKAGE);
     }
 
     @Override
