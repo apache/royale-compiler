@@ -64,7 +64,7 @@
     <maven.wagon.http.retryHandler.class>standard</maven.wagon.http.retryHandler.class>
     <!-- Try at most 6 times to deploy every artifact -->
     <maven.wagon.http.retryHandler.count>6</maven.wagon.http.retryHandler.count>
-    <project.build.outputTimestamp>2021-08-27T11:51:26Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2021-08-27T12:13:11Z</project.build.outputTimestamp>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
