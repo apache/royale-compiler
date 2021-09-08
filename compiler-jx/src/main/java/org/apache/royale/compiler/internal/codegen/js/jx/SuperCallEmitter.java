@@ -53,6 +53,7 @@ public class SuperCallEmitter extends JSSubEmitter
 
     public void emit(IASNode node, String type)
     {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
                 : null;
         IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node
@@ -102,10 +103,13 @@ public class SuperCallEmitter extends JSSubEmitter
                 write(JSGoogEmitterTokens.SUPERCLASS);
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 if (fnode.getNodeID() == ASTNodeID.GetterID)
-                    write(JSRoyaleEmitterTokens.GETTER_PREFIX);
+                {
+                    write(fjs.formatGetter(fnode.getName()));
+                }
                 else
-                    write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-                write(fnode.getName());
+                {
+                    write(fjs.formatSetter(fnode.getName()));
+                }
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.APPLY);
                 write(ASEmitterTokens.PAREN_OPEN);

@@ -156,8 +156,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSGoogEmitterTokens.SUPERCLASS);
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-                        write(rnodeDef.getBaseName());
+                        write(fjs.formatSetter(rnodeDef.getBaseName()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSEmitterTokens.APPLY);
                         write(ASEmitterTokens.PAREN_OPEN);
@@ -171,8 +170,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSGoogEmitterTokens.SUPERCLASS);
                             write(ASEmitterTokens.MEMBER_ACCESS);
-                            write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-                            write(rnodeDef.getBaseName());
+							write(fjs.formatGetter(rnodeDef.getBaseName()));
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSEmitterTokens.APPLY);
                             write(ASEmitterTokens.PAREN_OPEN);

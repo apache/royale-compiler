@@ -164,9 +164,9 @@ public class FieldEmitter extends JSSubEmitter implements
             className = getEmitter().formatQualifiedName(definition.getQualifiedName());
             if (isComplexInitializedStatic)
             {
-	            write(className
-	                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + JSRoyaleEmitterTokens.GETTER_PREFIX.getToken());
-	            writeFieldName(node, fjs);
+	            write(className);
+                write(ASEmitterTokens.MEMBER_ACCESS.getToken());
+                write(fjs.formatGetter(getFieldName(node, fjs)));
 	            endMapping(node.getNameExpressionNode());
                 write(ASEmitterTokens.SPACE);
                 writeToken(ASEmitterTokens.EQUAL);
@@ -187,7 +187,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 write(className);
                 writeToken(ASEmitterTokens.COMMA);
                 writeToken(ASEmitterTokens.BLOCK_OPEN);
-	            writeFieldName(node, fjs);
+	            write(getFieldName(node, fjs));
                 writeToken(ASEmitterTokens.COLON);
                 if (node.isConst())
                 	write("{ value: value, writable: false }");
@@ -204,9 +204,9 @@ public class FieldEmitter extends JSSubEmitter implements
                 writeNewline(ASEmitterTokens.SEMICOLON);
                 if (!node.isConst())
                 {
-		            write(className
-		                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + JSRoyaleEmitterTokens.SETTER_PREFIX.getToken());
-		            writeFieldName(node, fjs);
+		            write(className);
+                    write(ASEmitterTokens.MEMBER_ACCESS.getToken());
+                    write(fjs.formatSetter(getFieldName(node, fjs)));
 	                write(ASEmitterTokens.SPACE);
 	                writeToken(ASEmitterTokens.EQUAL);
 	                write(ASEmitterTokens.FUNCTION);
@@ -221,7 +221,7 @@ public class FieldEmitter extends JSSubEmitter implements
 	                write(className);
 	                writeToken(ASEmitterTokens.COMMA);
                     writeToken(ASEmitterTokens.BLOCK_OPEN);
-		            writeFieldName(node, fjs);
+		            write(getFieldName(node, fjs));
 	                writeToken(ASEmitterTokens.COLON);
 	                write("{ value: value, writable: true }");
                     write(ASEmitterTokens.BLOCK_CLOSE);
@@ -239,7 +239,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 }
                 write(className);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                writeFieldName(node, fjs);
+                write(getFieldName(node, fjs));
                 write(ASEmitterTokens.SEMICOLON);
                 writeNewline();
                 writeNewline();
@@ -257,7 +257,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 {
                     ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
                 }
-	            writeFieldName(node, fjs);
+	            write(getFieldName(node, fjs));
                 writeToken(ASEmitterTokens.COLON);
                 writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
                 write(ASEmitterTokens.GET);
@@ -265,8 +265,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.SPACE);
                 write(className);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSRoyaleEmitterTokens.GETTER_PREFIX);
-	            writeFieldName(node, fjs);
+                write(fjs.formatGetter(getFieldName(node, fjs)));
 	            if (!node.isConst())
 	            {
 	            	writeNewline(ASEmitterTokens.COMMA);
@@ -275,8 +274,7 @@ public class FieldEmitter extends JSSubEmitter implements
 	                write(ASEmitterTokens.SPACE);
 	                write(className);
 	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-		            writeFieldName(node, fjs);
+	                write(fjs.formatSetter(getFieldName(node, fjs)));
 	            }
             	writeNewline(ASEmitterTokens.COMMA);
                 write("configurable: true");
@@ -480,7 +478,7 @@ public class FieldEmitter extends JSSubEmitter implements
         }
     }
     
-    private void writeFieldName(IVariableNode node, JSRoyaleEmitter fjs)
+    private String getFieldName(IVariableNode node, JSRoyaleEmitter fjs)
     {
         String qname = node.getName();
         IDefinition nodeDef = node.getDefinition();
@@ -492,9 +490,9 @@ public class FieldEmitter extends JSSubEmitter implements
             INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(getProject());
             fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
             String s = nsDef.getURI();
-            write(JSRoyaleEmitter.formatNamespacedProperty(s, qname, false));
+            return JSRoyaleEmitter.formatNamespacedProperty(s, qname, false);
         }
-        else write(qname);
+        return qname;
     }
 
     public boolean emitFieldInitializer(IVariableNode node)

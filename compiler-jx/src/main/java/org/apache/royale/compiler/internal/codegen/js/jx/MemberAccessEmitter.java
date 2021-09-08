@@ -563,6 +563,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 
     private boolean writeLeftSide(IMemberAccessExpressionNode node, IASNode leftNode, IASNode rightNode)
     {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
                 .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
         {
@@ -584,11 +585,14 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 					write(ASEmitterTokens.MEMBER_ACCESS);
 					write(JSGoogEmitterTokens.SUPERCLASS);
 					write(ASEmitterTokens.MEMBER_ACCESS);
-					write(JSRoyaleEmitterTokens.GETTER_PREFIX);
 					if (rightDef != null)
-						write(rightDef.getBaseName());
+					{
+						write(fjs.formatGetter(rightDef.getBaseName()));
+					}
 					else
-						write(((GetterNode) rightNode).getName());
+					{
+						write(fjs.formatGetter(((IGetterNode) rightNode).getName()));
+					}
 					write(ASEmitterTokens.MEMBER_ACCESS);
 					write(JSEmitterTokens.APPLY);
 					write(ASEmitterTokens.PAREN_OPEN);

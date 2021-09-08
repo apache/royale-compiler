@@ -305,6 +305,34 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	return Joiner.on("\n").join(finalLines);
     }
 
+    public String formatGetter(String name) {
+        String prefix = JSRoyaleEmitterTokens.GETTER_PREFIX.getToken();
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project.config != null)
+        {
+            String configPrefix = project.config.getJsGetterPrefix();
+            if(configPrefix != null && configPrefix.length() > 0)
+            {
+                prefix = configPrefix;
+            }
+        }
+        return prefix + name;
+    }
+
+    public String formatSetter(String name) {
+        String prefix = JSRoyaleEmitterTokens.SETTER_PREFIX.getToken();
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project.config != null)
+        {
+            String configPrefix = project.config.getJsSetterPrefix();
+            if(configPrefix != null && configPrefix.length() > 0)
+            {
+                prefix = configPrefix;
+            }
+        }
+        return prefix + name;
+    }
+
     public BindableEmitter getBindableEmitter()
     {
         return bindableEmitter;
