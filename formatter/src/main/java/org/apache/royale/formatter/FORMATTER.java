@@ -566,8 +566,6 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN:
 					case ASTokenTypes.TOKEN_OPERATOR_LESS_THAN_EQUALS:
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN_EQUALS:
-					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
-					case ASTokenTypes.TOKEN_OPERATOR_MINUS:
 					case ASTokenTypes.TOKEN_OPERATOR_STAR:
 					case ASTokenTypes.TOKEN_OPERATOR_DIVISION:
 					case ASTokenTypes.TOKEN_OPERATOR_MODULO:
@@ -593,6 +591,14 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
 						if (insertSpaceBeforeAndAfterBinaryOperators) {
+							requiredSpace = true;
+						}
+						break;
+					}
+					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
+					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
+						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
+						if (!isUnary && insertSpaceBeforeAndAfterBinaryOperators) {
 							requiredSpace = true;
 						}
 						break;
@@ -986,8 +992,6 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN:
 					case ASTokenTypes.TOKEN_OPERATOR_LESS_THAN_EQUALS:
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN_EQUALS:
-					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
-					case ASTokenTypes.TOKEN_OPERATOR_MINUS:
 					case ASTokenTypes.TOKEN_OPERATOR_STAR:
 					case ASTokenTypes.TOKEN_OPERATOR_DIVISION:
 					case ASTokenTypes.TOKEN_OPERATOR_MODULO:
@@ -1014,6 +1018,14 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
 						if (insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
+							requiredSpace = true;
+						}
+						break;
+					}
+					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
+					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
+						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
+						if (!isUnary && insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -1214,6 +1226,13 @@ class FORMATTER {
 			}
 		}
 		return builder.toString();
+	}
+
+	private boolean checkTokenBeforeUnaryOperator(IASToken token) {
+		return (token instanceof ASToken) ? ((ASToken) token).isOperator()
+				|| token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN || token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN
+				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN || token.getType() == ASTokenTypes.TOKEN_SEMICOLON
+				: (token == null);
 	}
 
 	private int increaseIndent(int indent) {
