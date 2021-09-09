@@ -698,6 +698,25 @@ public class TestRoyaleStatements extends TestGoogStatements
 
     @Override
     @Test
+    public void testVisitElseIf_NoBody()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) b; else if (a);", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a)\n  b;\nelse if (a) {}\n");
+    }
+
+    @Test
+    public void testVisitElse_NoBody()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) b; else;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a)\n  b;\nelse {}\n");
+    }
+
+    @Override
+    @Test
     public void testVisit()
     {
         IFileNode node = (IFileNode) getNode(

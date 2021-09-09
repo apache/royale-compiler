@@ -68,14 +68,6 @@ public class IfEmitter extends JSSubEmitter implements
         {
             emitElse(elseNode);
         }
-        // if no actual work is done in the if clause, and there are no else/elseif causes
-        // emit an empty block.  Closure doesn't like a plain semicolon.
-        if (nodes.length == 0 && elseNode == null && conditional.getChild(1).getChildCount() == 0)
-        {
-        	write(ASEmitterTokens.BLOCK_OPEN);
-        	writeNewline(ASEmitterTokens.BLOCK_CLOSE);
-        }
-        
     }
 
     protected void emitConditional(IConditionalNode node, boolean isElseIf)
@@ -96,7 +88,17 @@ public class IfEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.PAREN_CLOSE);
         IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
         if (!EmitterUtils.isImplicit(xnode))
+        {
             write(ASEmitterTokens.SPACE);
+        }
+        else if (xnode.getChildCount() == 0)
+        {
+            // if no actual work is done in the if body, emit an empty block.
+            // Closure doesn't like a plain semicolon.
+            write(ASEmitterTokens.SPACE);
+        	write(ASEmitterTokens.BLOCK_OPEN);
+        	write(ASEmitterTokens.BLOCK_CLOSE);
+        }
         endMapping(node);
 
         getWalker().walk(node.getChild(1)); // BlockNode
@@ -116,7 +118,18 @@ public class IfEmitter extends JSSubEmitter implements
         startMapping(node);
         write(ASEmitterTokens.ELSE);
         if (!isImplicit)
+        {
             write(ASEmitterTokens.SPACE);
+        }
+        else if (cnode.getChildCount() == 0)
+        {
+            // if no actual work is done in the if body, emit an empty block.
+            // Closure doesn't like a plain semicolon.
+            write(ASEmitterTokens.SPACE);
+        	write(ASEmitterTokens.BLOCK_OPEN);
+        	write(ASEmitterTokens.BLOCK_CLOSE);
+        }
+
         endMapping(node);
 
         getWalker().walk(node); // TerminalNode
