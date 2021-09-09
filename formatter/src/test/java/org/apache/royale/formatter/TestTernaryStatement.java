@@ -61,4 +61,22 @@ public class TestTernaryStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+	@Test
+	public void testObjectLiterals() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"condition ? {} : {};",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+			"condition ? {} : {};",
+				// @formatter:on
+				result);
+	}
 }

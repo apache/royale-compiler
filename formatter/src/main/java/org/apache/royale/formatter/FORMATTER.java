@@ -484,8 +484,13 @@ class FORMATTER {
 							blockOpenPending = prevTokenNotComment == null
 									|| prevTokenNotComment.getType() == ASTokenTypes.TOKEN_SEMICOLON
 									|| prevTokenNotComment.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
-									|| prevTokenNotComment.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE
-									|| prevTokenNotComment.getType() == ASTokenTypes.TOKEN_COLON;
+									|| prevTokenNotComment.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
+							if (!blockOpenPending && prevTokenNotComment.getType() == ASTokenTypes.TOKEN_COLON
+									&& !blockStack.isEmpty()) {
+								IASToken blockToken = blockStack.get(blockStack.size() - 1).token;
+								blockOpenPending = blockToken.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT
+										|| blockToken.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE;
+							}
 							if (blockOpenPending) {
 								blockStack.add(new BlockStackItem(token));
 							}
@@ -719,9 +724,8 @@ class FORMATTER {
 										&& prevStackItem.blockDepth <= 0) {
 									blockStack.remove(blockStack.size() - 1);
 									if (prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_CLASS
-										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_INTERFACE
-										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_FUNCTION)
-									{
+											&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_INTERFACE
+											&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_FUNCTION) {
 										indent = decreaseIndent(indent);
 									}
 								}
@@ -763,11 +767,11 @@ class FORMATTER {
 							if (item.blockDepth <= 0) {
 								blockStack.remove(blockStack.size() - 1);
 							}
+							if (!(item instanceof ObjectLiteralBlockStackItem)
+									&& (nextToken == null || nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON)) {
+								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+							}
 						}
-						if (nextToken == null || nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON) {
-							numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-						}
-
 						break;
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_INCREMENT:
