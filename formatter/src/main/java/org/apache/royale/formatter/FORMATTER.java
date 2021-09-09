@@ -718,7 +718,12 @@ class FORMATTER {
 										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_DEFAULT
 										&& prevStackItem.blockDepth <= 0) {
 									blockStack.remove(blockStack.size() - 1);
-									indent = decreaseIndent(indent);
+									if (prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_CLASS
+										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_INTERFACE
+										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_FUNCTION)
+									{
+										indent = decreaseIndent(indent);
+									}
 								}
 							}
 						}

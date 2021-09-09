@@ -115,4 +115,56 @@ public class TestInterfaceDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testOneMethod() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"interface MyInterface\n" +
+			"{\n" +
+			"\tfunction myMethod():void;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"interface MyInterface\n" +
+				"{\n" +
+				"\tfunction myMethod():void;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMultipleMethods() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"interface MyInterface\n" +
+			"{\n" +
+			"\tfunction myMethod1():void;\n" +
+			"\tfunction myMethod2():void;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"interface MyInterface\n" +
+				"{\n" +
+				"\tfunction myMethod1():void;\n" +
+				"\tfunction myMethod2():void;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }
