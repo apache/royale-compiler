@@ -1591,6 +1591,14 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
 
     }
+
+    @Override
+    public void emitNamespaceAccessExpression(
+            INamespaceAccessExpressionNode node)
+    {
+        // the namespace will be handled by the emitter for the right operand
+        getWalker().walk(node.getRightOperandNode());
+    }
     
 	boolean isGoogProvided(String className)
 	{

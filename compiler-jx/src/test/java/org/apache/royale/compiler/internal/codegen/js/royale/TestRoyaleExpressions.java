@@ -37,6 +37,7 @@ import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
@@ -2160,6 +2161,34 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:Number):void {}; var b:Date; a(b.month);", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
         assertOut("a(b.getMonth())");
+    }
+
+    @Override
+    @Test
+    public void testVisitBinaryOperator_NamespaceAccess_1()
+    {
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b");
+        asBlockWalker.visitNamespaceAccessExpression(node);
+        //skips the namespace because that is handled by the identifier emitter
+        assertOut("b");
+    }
+
+    @Override
+    @Test
+    public void testVisitBinaryOperator_NamespaceAccess_2()
+    {
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b::c");
+        asBlockWalker.visitNamespaceAccessExpression(node);
+        //skips the namespaces because that is handled by the identifier emitter
+        assertOut("c");
+    }
+
+    @Test
+    public void testVisitBinaryOperator_NamespaceAccess_3()
+    {
+        IFunctionNode node = getMethodWithPackage("import custom.custom_namespace;custom_namespace var b:String;function foo(){custom_namespace::b;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("foo.bar.RoyaleTest_A.prototype.foo = function() {\n  this.http_$$ns_apache_org$2017$custom$namespace__b;\n}");
     }
 
     protected IBackend createBackend()
