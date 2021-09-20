@@ -1,5 +1,11 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
+Apache Royale Compiler 0.9.9
+
+=================
+
+- **asformat** is a new formatter for ActionScript code
+
 Apache Royale Compiler 0.9.8
 =================
 
