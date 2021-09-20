@@ -242,7 +242,7 @@ public class Configuration {
     // 'open-brace-new-line' option
     //
 
-    private boolean placeOpenBraceOnNewLine = false;
+    private boolean placeOpenBraceOnNewLine = true;
 
     public boolean getPlaceOpenBraceOnNewLine()
     {
@@ -260,7 +260,7 @@ public class Configuration {
     // 'insert-space-for-loop-semicolon' option
     //
 
-    private boolean insertSpaceAfterSemicolonInForStatements = false;
+    private boolean insertSpaceAfterSemicolonInForStatements = true;
 
     public boolean getInsertSpaceAfterSemicolonInForStatements()
     {
@@ -278,7 +278,7 @@ public class Configuration {
     // 'insert-space-control-flow-keywords' option
     //
 
-    private boolean insertSpaceAfterKeywordsInControlFlowStatements = false;
+    private boolean insertSpaceAfterKeywordsInControlFlowStatements = true;
 
     public boolean getInsertSpaceAfterKeywordsInControlFlowStatements()
     {
@@ -314,7 +314,7 @@ public class Configuration {
     // 'insert-space-binary-operators' option
     //
 
-    private boolean insertSpaceBeforeAndAfterBinaryOperators = false;
+    private boolean insertSpaceBeforeAndAfterBinaryOperators = true;
 
     public boolean getInsertSpaceBeforeAndAfterBinaryOperators()
     {
@@ -332,7 +332,7 @@ public class Configuration {
     // 'insert-space-comma-delimiter' option
     //
 
-    private boolean insertSpaceAfterCommaDelimiter = false;
+    private boolean insertSpaceAfterCommaDelimiter = true;
 
     public boolean getInsertSpaceAfterCommaDelimiter()
     {
