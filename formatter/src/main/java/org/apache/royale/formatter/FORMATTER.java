@@ -25,8 +25,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.clients.problems.ProblemFormatter;
@@ -34,6 +36,7 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
@@ -49,9 +52,12 @@ import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.formatter.config.CommandLineConfigurator;
 import org.apache.royale.formatter.config.Configuration;
 import org.apache.royale.formatter.config.ConfigurationBuffer;
+import org.apache.royale.formatter.config.ConfigurationValue;
 import org.apache.royale.formatter.config.Configurator;
+import org.apache.royale.formatter.config.Semicolons;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**
@@ -59,6 +65,10 @@ import org.apache.royale.utils.FilenameNormalization;
  */
 class FORMATTER {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
+    
+    private static final String NEWLINE = System.getProperty("line.separator");
+    private static final String DEFAULT_VAR = "files";
+    private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
@@ -68,16 +78,6 @@ class FORMATTER {
 		}
 
 		final int code;
-	}
-
-	public static enum Semicolons {
-		IGNORE("ignore"), INSERT("insert"), REMOVE("remove");
-
-		Semicolons(String value) {
-			this.value = value;
-		}
-
-		final String value;
 	}
 
 	/**
@@ -113,6 +113,8 @@ class FORMATTER {
 	private List<File> inputFiles = new ArrayList<File>();
 	private boolean writeBackToInputFiles = false;
 	private boolean listChangedFiles = false;
+	private Configuration configuration;
+	private ConfigurationBuffer configBuffer;
 
 	public int execute(String[] args) {
 		ExitCode exitCode = ExitCode.SUCCESS;
@@ -207,6 +209,61 @@ class FORMATTER {
 	public String formatText(String text) {
 		return formatText(text, null);
 	}
+    
+    /**
+     * Get the start up message that contains the program name 
+     * with the copyright notice.
+     * 
+     * @return The startup message.
+     */
+    protected String getStartMessage()
+    {
+        // This message should not be localized.
+        String message = "Apache Royale ActionScript Formatter (asformat)" + NEWLINE +
+            VersionInfo.buildMessage() + NEWLINE;
+        return message;
+    }
+
+    /**
+     * Get my program name.
+     * 
+     * @return always "mxmlc".
+     */
+    protected String getProgramName()
+    {
+        return "asformat";
+    }
+
+    /**
+     * Print detailed help information if -help is provided.
+     */
+    private void processHelp(final List<ConfigurationValue> helpVar)
+    {
+        final Set<String> keywords = new LinkedHashSet<String>();
+        for (final ConfigurationValue val : helpVar)
+        {
+            for (final Object element : val.getArgs())
+            {
+                String keyword = (String)element;
+                while (keyword.startsWith("-"))
+                    keyword = keyword.substring(1);
+                keywords.add(keyword);
+            }
+        }
+
+        if (keywords.size() == 0)
+            keywords.add("help");
+
+        final String usages = CommandLineConfigurator.usage(
+                    getProgramName(),
+                    DEFAULT_VAR,
+                    configBuffer,
+                    keywords,
+                    LocalizationManager.get(),
+                    L10N_CONFIG_PREFIX);
+        System.out.println(getStartMessage());
+        System.out.println(usages);
+    }
 
 	private boolean configure(String[] args) {
 		if (args.length == 0) {
@@ -218,20 +275,43 @@ class FORMATTER {
 
 			Configurator configurator = new Configurator();
 			configurator.setConfiguration(args, "files");
-			Configuration config = configurator.getConfiguration();
-			ConfigurationBuffer configBuffer = configurator.getConfigurationBuffer();
+			configuration = configurator.getConfiguration();
+			configBuffer = configurator.getConfigurationBuffer();
 
 			problems.addAll(configurator.getConfigurationProblems());
 
-			if (configBuffer.getVar("version") != null)
+			if (configBuffer.getVar("version") != null) {
+				System.out.println(VersionInfo.buildMessage());
 				return false;
+			}
+            
+            // Print help if "-help" is present.
+            final List<ConfigurationValue> helpVar = configBuffer.getVar("help");
+            if (helpVar != null)
+            {
+                processHelp(helpVar);
+                return false;
+            }
 
 			if (problems.hasErrors())
 				return false;
 
-			writeBackToInputFiles = config.getWriteFiles();
-			listChangedFiles = config.getListFiles();
-			for (String filePath : config.getFiles()) {
+			collapseEmptyBlocks = configuration.getCollapseEmptyBlocks();
+			ignoreProblems = configuration.getIgnoreParsingProblems();
+			insertFinalNewLine = configuration.getInsertFinalNewLine();
+			insertSpaceAfterCommaDelimiter = configuration.getInsertSpaceAfterCommaDelimiter();
+			insertSpaceAfterFunctionKeywordForAnonymousFunctions = configuration.getInsertSpaceAfterFunctionKeywordForAnonymousFunctions();
+			insertSpaceAfterKeywordsInControlFlowStatements = configuration.getInsertSpaceAfterKeywordsInControlFlowStatements();
+			insertSpaceAfterSemicolonInForStatements = configuration.getInsertSpaceAfterSemicolonInForStatements();
+			insertSpaceBeforeAndAfterBinaryOperators = configuration.getInsertSpaceBeforeAndAfterBinaryOperators();
+			insertSpaces = configuration.getInsertSpaces();
+			listChangedFiles = configuration.getListFiles();
+			maxPreserveNewLines = configuration.getMaxPreserveNewLines();
+			placeOpenBraceOnNewLine = configuration.getPlaceOpenBraceOnNewLine();
+			semicolons = Semicolons.valueOf(configuration.getSemicolons().toUpperCase());
+			tabSize = configuration.getTabSize();
+			writeBackToInputFiles = configuration.getWriteFiles();
+			for (String filePath : configuration.getFiles()) {
 				File inputFile = new File(filePath);
 				if (!inputFile.exists()) {
 					throw new ConfigurationException("Input file does not exist: " + filePath, null, -1);

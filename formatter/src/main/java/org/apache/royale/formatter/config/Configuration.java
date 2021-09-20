@@ -201,4 +201,238 @@ public class Configuration {
     {
         this.listFiles = b;
     }
+
+    //
+    // 'insert-spaces' option
+    //
+
+    private boolean insertSpaces = false;
+
+    public boolean getInsertSpaces()
+    {
+        return insertSpaces;
+    }
+
+    @Config
+    @Mapping("insert-spaces")
+    public void setInsertSpaces(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaces = b;
+    }
+
+    //
+    // 'insert-final-new-line' option
+    //
+
+    private boolean insertFinalNewLine = false;
+
+    public boolean getInsertFinalNewLine()
+    {
+        return insertFinalNewLine;
+    }
+
+    @Config
+    @Mapping("insert-final-new-line")
+    public void setInsertFinalNewLine(ConfigurationValue cv, boolean b)
+    {
+        this.insertFinalNewLine = b;
+    }
+
+    //
+    // 'open-brace-new-line' option
+    //
+
+    private boolean placeOpenBraceOnNewLine = false;
+
+    public boolean getPlaceOpenBraceOnNewLine()
+    {
+        return placeOpenBraceOnNewLine;
+    }
+
+    @Config
+    @Mapping("open-brace-new-line")
+    public void setPlaceOpenBraceOnNewLine(ConfigurationValue cv, boolean b)
+    {
+        this.placeOpenBraceOnNewLine = b;
+    }
+
+    //
+    // 'insert-space-for-loop-semicolon' option
+    //
+
+    private boolean insertSpaceAfterSemicolonInForStatements = false;
+
+    public boolean getInsertSpaceAfterSemicolonInForStatements()
+    {
+        return insertSpaceAfterSemicolonInForStatements;
+    }
+
+    @Config
+    @Mapping("insert-space-for-loop-semicolon")
+    public void setInsertSpaceAfterSemicolonInForStatements(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceAfterSemicolonInForStatements = b;
+    }
+
+    //
+    // 'insert-space-control-flow-keywords' option
+    //
+
+    private boolean insertSpaceAfterKeywordsInControlFlowStatements = false;
+
+    public boolean getInsertSpaceAfterKeywordsInControlFlowStatements()
+    {
+        return insertSpaceAfterKeywordsInControlFlowStatements;
+    }
+
+    @Config
+    @Mapping("insert-space-control-flow-keywords")
+    public void setInsertSpaceAfterKeywordsInControlFlowStatements(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceAfterKeywordsInControlFlowStatements = b;
+    }
+
+    //
+    // 'insert-space-anonymous-function-keyword' option
+    //
+
+    private boolean insertSpaceAfterFunctionKeywordForAnonymousFunctions = false;
+
+    public boolean getInsertSpaceAfterFunctionKeywordForAnonymousFunctions()
+    {
+        return insertSpaceAfterFunctionKeywordForAnonymousFunctions;
+    }
+
+    @Config
+    @Mapping("insert-space-control-flow-keywords")
+    public void setInsertSpaceAfterFunctionKeywordForAnonymousFunctions(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceAfterFunctionKeywordForAnonymousFunctions = b;
+    }
+
+    //
+    // 'insert-space-binary-operators' option
+    //
+
+    private boolean insertSpaceBeforeAndAfterBinaryOperators = false;
+
+    public boolean getInsertSpaceBeforeAndAfterBinaryOperators()
+    {
+        return insertSpaceBeforeAndAfterBinaryOperators;
+    }
+
+    @Config
+    @Mapping("insert-space-binary-operators")
+    public void setInsertSpaceBeforeAndAfterBinaryOperators(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceBeforeAndAfterBinaryOperators = b;
+    }
+
+    //
+    // 'insert-space-comma-delimiter' option
+    //
+
+    private boolean insertSpaceAfterCommaDelimiter = false;
+
+    public boolean getInsertSpaceAfterCommaDelimiter()
+    {
+        return insertSpaceAfterCommaDelimiter;
+    }
+
+    @Config
+    @Mapping("insert-space-comma-delimiter")
+    public void setInsertSpaceAfterCommaDelimiter(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceAfterCommaDelimiter = b;
+    }
+
+    //
+    // 'collapse-empty-blocks' option
+    //
+
+    private boolean collapseEmptyBlocks = false;
+
+    public boolean getCollapseEmptyBlocks()
+    {
+        return collapseEmptyBlocks;
+    }
+
+    @Config
+    @Mapping("collapse-empty-blocks")
+    public void setCollapseEmptyBlocks(ConfigurationValue cv, boolean b)
+    {
+        this.collapseEmptyBlocks = b;
+    }
+
+    //
+    // 'tab-size' option
+    //
+
+    private int tabSize = 4;
+
+    public int getTabSize()
+    {
+        return tabSize;
+    }
+
+    @Config
+    @Mapping("tab-size")
+    public void setTabSize(ConfigurationValue cv, int b)
+    {
+        this.tabSize = b;
+    }
+
+    //
+    // 'max-preserve-new-lines' option
+    //
+
+    private int maxPreserveNewLines = 2;
+
+    public int getMaxPreserveNewLines()
+    {
+        return maxPreserveNewLines;
+    }
+
+    @Config
+    @Mapping("max-preserve-new-lines")
+    public void setMaxPreserveNewLines(ConfigurationValue cv, int b)
+    {
+        this.maxPreserveNewLines = b;
+    }
+
+    //
+    // 'semicolons' option
+    //
+
+    private Semicolons semicolons = Semicolons.INSERT;
+
+    public String getSemicolons()
+    {
+        return semicolons.value;
+    }
+
+    @Config
+    @Mapping("semicolons")
+    public void setSemicolons(ConfigurationValue cv, String b)
+    {
+        this.semicolons = Semicolons.valueOf(b.toUpperCase());
+    }
+
+    //
+    // 'ignore-parsing-problems' option
+    //
+
+    private boolean ignoreParsingProblems = false;
+
+    public boolean getIgnoreParsingProblems()
+    {
+        return ignoreParsingProblems;
+    }
+
+    @Config(advanced = true)
+    @Mapping("ignore-parsing-problems")
+    public void setIgnoreParsingProblems(ConfigurationValue cv, boolean b)
+    {
+        this.ignoreParsingProblems = b;
+    }
 }
