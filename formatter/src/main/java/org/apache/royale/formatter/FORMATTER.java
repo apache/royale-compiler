@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.royale.compiler.clients.problems.ProblemFormatter;
+import org.apache.royale.compiler.clients.problems.ProblemPrinter;
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
@@ -43,8 +46,12 @@ import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.royale.formatter.config.Configuration;
+import org.apache.royale.formatter.config.ConfigurationBuffer;
+import org.apache.royale.formatter.config.Configurator;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**
@@ -102,12 +109,14 @@ class FORMATTER {
 	public boolean ignoreProblems = false;
 	public boolean collapseEmptyBlocks = false;
 
+	private ProblemQuery problems;
 	private List<File> inputFiles = new ArrayList<File>();
 	private boolean writeBackToInputFiles = false;
 	private boolean listChangedFiles = false;
 
 	public int execute(String[] args) {
 		ExitCode exitCode = ExitCode.SUCCESS;
+		problems = new ProblemQuery();
 
 		try {
 			boolean continueFormatting = configure(args);
@@ -151,13 +160,19 @@ class FORMATTER {
 						}
 					}
 				}
+			} else if (problems.hasFilteredProblems()) {
+				exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
+			} else {
+				exitCode = ExitCode.PRINT_HELP;
 			}
-		} catch (ConfigurationException e) {
-			System.err.println(e.getMessage());
-			exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+		} finally {
+			if (problems.hasFilteredProblems()) {
+				final ProblemPrinter printer = new ProblemPrinter(ProblemFormatter.DEFAULT_FORMATTER);
+				printer.printProblems(problems.getFilteredProblems());
+			}
 		}
 		return exitCode.code;
 	}
@@ -193,28 +208,33 @@ class FORMATTER {
 		return formatText(text, null);
 	}
 
-	private boolean configure(String[] args) throws ConfigurationException {
+	private boolean configure(String[] args) {
 		if (args.length == 0) {
 			printHelp();
 			return false;
 		}
-		for (int i = 0; i < args.length; i++) {
-			String arg = args[i];
-			if (arg.charAt(0) == '-') {
-				if (arg.equals("-write") || arg.equals("-w")) {
-					writeBackToInputFiles = true;
-				} else if (arg.equals("-list") || arg.equals("-l")) {
-					listChangedFiles = true;
-				} else if (arg.equals("-help") || arg.equals("-h")) {
-					printHelp();
-					return false;
-				} else {
-					throw new ConfigurationException("Unknown command-line argument: " + arg, null, -1);
-				}
-			} else {
-				File inputFile = new File(arg);
+		try {
+			problems = new ProblemQuery();
+
+			Configurator configurator = new Configurator();
+			configurator.setConfiguration(args, "files");
+			Configuration config = configurator.getConfiguration();
+			ConfigurationBuffer configBuffer = configurator.getConfigurationBuffer();
+
+			problems.addAll(configurator.getConfigurationProblems());
+
+			if (configBuffer.getVar("version") != null)
+				return false;
+
+			if (problems.hasErrors())
+				return false;
+
+			writeBackToInputFiles = config.getWriteFiles();
+			listChangedFiles = config.getListFiles();
+			for (String filePath : config.getFiles()) {
+				File inputFile = new File(filePath);
 				if (!inputFile.exists()) {
-					throw new ConfigurationException("Input file does not exist: " + arg, null, -1);
+					throw new ConfigurationException("Input file does not exist: " + filePath, null, -1);
 				}
 				if (inputFile.isDirectory()) {
 					addDirectory(inputFile);
@@ -222,21 +242,29 @@ class FORMATTER {
 					inputFiles.add(inputFile);
 				}
 			}
-		}
-		if (inputFiles.size() == 0 && writeBackToInputFiles) {
-			throw new ConfigurationException("Cannot use -w with standard input", null, -1);
-		}
-		if (writeBackToInputFiles) {
-			if (inputFiles.size() == 0) {
-				throw new ConfigurationException("Cannot use -w with standard input", null, -1);
+			if (inputFiles.size() == 0 && listChangedFiles) {
+				throw new ConfigurationException("Cannot use -list-files with standard input", null, -1);
 			}
-			for (File inputFile : inputFiles) {
-				if (!inputFile.canWrite()) {
-					throw new ConfigurationException("File is read-only: " + inputFile.getPath(), null, -1);
+			if (writeBackToInputFiles) {
+				if (inputFiles.size() == 0) {
+					throw new ConfigurationException("Cannot use -write-files with standard input", null, -1);
+				}
+				for (File inputFile : inputFiles) {
+					if (!inputFile.canWrite()) {
+						throw new ConfigurationException("File is read-only: " + inputFile.getPath(), null, -1);
+					}
 				}
 			}
+			return true;
+		} catch (ConfigurationException e) {
+			final ICompilerProblem problem = new ConfigurationProblem(e);
+			problems.add(problem);
+			return false;
+		} catch (Exception e) {
+			final ICompilerProblem problem = new ConfigurationProblem(null, -1, -1, -1, -1, e.getMessage());
+			problems.add(problem);
+			return false;
 		}
-		return true;
 	}
 
 	private void addDirectory(File inputFile) {

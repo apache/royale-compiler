@@ -115,9 +115,14 @@
     
     <target name="jar-test" >
         <echo>using formatter.jar from ${sdk}</echo>
-        <java jar="${sdk}/formatter.jar" fork="true"
-            failonerror="true">
-        </java>
+        <java jar="${sdk}/formatter.jar" fork="true" resultproperty="formatter.result"/>
+        <fail message="Starting Failed">
+            <condition>
+                <not>
+                    <equals arg1="${formatter.result}" arg2="1"/>
+                </not>
+            </condition>
+        </fail>
     </target>
     
     <!--
