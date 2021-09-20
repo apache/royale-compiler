@@ -408,6 +408,18 @@ class FORMATTER {
 			tokens.add(token);
 			prevToken = token;
 		}
+		if(prevToken != null) {
+			int start = prevToken.getAbsoluteEnd();
+			int end = text.length();
+			if (end > start) {
+				String tokenText = text.substring(start, end);
+				ASToken extraToken = new ASToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getEndLine(),
+						prevToken.getEndColumn(), tokenText);
+				extraToken.setEndLine(prevToken.getLine());
+				extraToken.setEndLine(prevToken.getColumn());
+				tokens.add(extraToken);
+			}
+		}
 		try {
 			return parseTokens(filePath, tokens, node);
 		} catch (Exception e) {
@@ -471,6 +483,12 @@ class FORMATTER {
 		for (int i = 0; i < tokens.size(); i++) {
 			token = tokens.get(i);
 			if (token.getType() == TOKEN_TYPE_EXTRA) {
+				if(i == (tokens.size() - 1)) {
+					//if the last token is whitespace, include new lines
+					numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
+					appendNewLines(builder, numRequiredNewLines);
+					break;
+				}
 				if (!blockOpenPending) {
 					numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
 					if (!indentedStatement && numRequiredNewLines > 0 && prevTokenNotComment != null
@@ -701,12 +719,7 @@ class FORMATTER {
 			}
 			if (prevToken != null) {
 				if (numRequiredNewLines > 0) {
-					if (maxPreserveNewLines != 0) {
-						numRequiredNewLines = Math.min(maxPreserveNewLines, numRequiredNewLines);
-					}
-					for (int j = 0; j < numRequiredNewLines; j++) {
-						builder.append('\n');
-					}
+					appendNewLines(builder, numRequiredNewLines);
 					appendIndent(builder, indent);
 				} else if (requiredSpace) {
 					builder.append(' ');
@@ -1280,6 +1293,15 @@ class FORMATTER {
 			} else {
 				builder.append("\t");
 			}
+		}
+	}
+
+	private void appendNewLines(StringBuilder builder, int numRequiredNewLines) {
+		if (maxPreserveNewLines != 0) {
+			numRequiredNewLines = Math.min(maxPreserveNewLines, numRequiredNewLines);
+		}
+		for (int j = 0; j < numRequiredNewLines; j++) {
+			builder.append('\n');
 		}
 	}
 
