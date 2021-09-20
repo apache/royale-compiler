@@ -155,7 +155,7 @@ class FORMATTER {
 								FileUtils.write(inputFile, formattedText, "utf8");
 							}
 						}
-						if (!listChangedFiles || !writeBackToInputFiles) {
+						if (!listChangedFiles && !writeBackToInputFiles) {
 							System.out.println(formattedText);
 						}
 					}
