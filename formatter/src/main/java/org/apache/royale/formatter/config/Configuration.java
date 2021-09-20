@@ -304,7 +304,7 @@ public class Configuration {
     }
 
     @Config
-    @Mapping("insert-space-control-flow-keywords")
+    @Mapping("insert-space-anonymous-function-keyword")
     public void setInsertSpaceAfterFunctionKeywordForAnonymousFunctions(ConfigurationValue cv, boolean b)
     {
         this.insertSpaceAfterFunctionKeywordForAnonymousFunctions = b;
