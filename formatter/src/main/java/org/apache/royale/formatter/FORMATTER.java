@@ -65,10 +65,10 @@ import org.apache.royale.utils.FilenameNormalization;
  */
 class FORMATTER {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
-    
-    private static final String NEWLINE = System.getProperty("line.separator");
-    private static final String DEFAULT_VAR = "files";
-    private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
+
+	private static final String NEWLINE = System.getProperty("line.separator");
+	private static final String DEFAULT_VAR = "files";
+	private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
@@ -209,67 +209,55 @@ class FORMATTER {
 	public String formatText(String text) {
 		return formatText(text, null);
 	}
-    
-    /**
-     * Get the start up message that contains the program name 
-     * with the copyright notice.
-     * 
-     * @return The startup message.
-     */
-    protected String getStartMessage()
-    {
-        // This message should not be localized.
-        String message = "Apache Royale ActionScript Formatter (asformat)" + NEWLINE +
-            VersionInfo.buildMessage() + NEWLINE;
-        return message;
-    }
 
-    /**
-     * Get my program name.
-     * 
-     * @return always "mxmlc".
-     */
-    protected String getProgramName()
-    {
-        return "asformat";
-    }
+	/**
+	 * Get the start up message that contains the program name with the copyright
+	 * notice.
+	 * 
+	 * @return The startup message.
+	 */
+	protected String getStartMessage() {
+		// This message should not be localized.
+		String message = "Apache Royale ActionScript Formatter (asformat)" + NEWLINE + VersionInfo.buildMessage()
+				+ NEWLINE;
+		return message;
+	}
 
-    /**
-     * Print detailed help information if -help is provided.
-     */
-    private void processHelp(final List<ConfigurationValue> helpVar)
-    {
-        final Set<String> keywords = new LinkedHashSet<String>();
-        for (final ConfigurationValue val : helpVar)
-        {
-            for (final Object element : val.getArgs())
-            {
-                String keyword = (String)element;
-                while (keyword.startsWith("-"))
-                    keyword = keyword.substring(1);
-                keywords.add(keyword);
-            }
-        }
+	/**
+	 * Get my program name.
+	 * 
+	 * @return always "mxmlc".
+	 */
+	protected String getProgramName() {
+		return "asformat";
+	}
 
-        if (keywords.size() == 0)
-            keywords.add("help");
+	/**
+	 * Print detailed help information if -help is provided.
+	 */
+	private void processHelp(final List<ConfigurationValue> helpVar) {
+		final Set<String> keywords = new LinkedHashSet<String>();
+		if (helpVar != null) {
+			for (final ConfigurationValue val : helpVar) {
+				for (final Object element : val.getArgs()) {
+					String keyword = (String) element;
+					while (keyword.startsWith("-"))
+						keyword = keyword.substring(1);
+					keywords.add(keyword);
+				}
+			}
+		}
 
-        final String usages = CommandLineConfigurator.usage(
-                    getProgramName(),
-                    DEFAULT_VAR,
-                    configBuffer,
-                    keywords,
-                    LocalizationManager.get(),
-                    L10N_CONFIG_PREFIX);
-        System.out.println(getStartMessage());
-        System.out.println(usages);
-    }
+		if (keywords.size() == 0)
+			keywords.add("help");
+
+		final String usages = CommandLineConfigurator.usage(getProgramName(), DEFAULT_VAR, configBuffer, keywords,
+				LocalizationManager.get(), L10N_CONFIG_PREFIX);
+		System.out.println(getStartMessage());
+		System.out.println(usages);
+	}
 
 	private boolean configure(String[] args) {
-		if (args.length == 0) {
-			printHelp();
-			return false;
-		}
 		try {
 			problems = new ProblemQuery();
 
@@ -284,14 +272,13 @@ class FORMATTER {
 				System.out.println(VersionInfo.buildMessage());
 				return false;
 			}
-            
-            // Print help if "-help" is present.
-            final List<ConfigurationValue> helpVar = configBuffer.getVar("help");
-            if (helpVar != null)
-            {
-                processHelp(helpVar);
-                return false;
-            }
+
+			// Print help if "-help" is present.
+			final List<ConfigurationValue> helpVar = configBuffer.getVar("help");
+			if (helpVar != null || args.length == 0) {
+				processHelp(helpVar);
+				return false;
+			}
 
 			if (problems.hasErrors())
 				return false;
@@ -300,8 +287,10 @@ class FORMATTER {
 			ignoreProblems = configuration.getIgnoreParsingProblems();
 			insertFinalNewLine = configuration.getInsertFinalNewLine();
 			insertSpaceAfterCommaDelimiter = configuration.getInsertSpaceAfterCommaDelimiter();
-			insertSpaceAfterFunctionKeywordForAnonymousFunctions = configuration.getInsertSpaceAfterFunctionKeywordForAnonymousFunctions();
-			insertSpaceAfterKeywordsInControlFlowStatements = configuration.getInsertSpaceAfterKeywordsInControlFlowStatements();
+			insertSpaceAfterFunctionKeywordForAnonymousFunctions = configuration
+					.getInsertSpaceAfterFunctionKeywordForAnonymousFunctions();
+			insertSpaceAfterKeywordsInControlFlowStatements = configuration
+					.getInsertSpaceAfterKeywordsInControlFlowStatements();
 			insertSpaceAfterSemicolonInForStatements = configuration.getInsertSpaceAfterSemicolonInForStatements();
 			insertSpaceBeforeAndAfterBinaryOperators = configuration.getInsertSpaceBeforeAndAfterBinaryOperators();
 			insertSpaces = configuration.getInsertSpaces();
@@ -359,17 +348,6 @@ class FORMATTER {
 				inputFiles.add(file);
 			}
 		}
-	}
-
-	private void printHelp() {
-		System.err.println("Apache Royale ActionScript Formatter (asformat)");
-		System.err.println(VersionInfo.buildMessage());
-		System.err.println("");
-		System.err.println("-h, -help    Prints program usage information.");
-		System.err.println(
-				"-l, -list    Lists file names of files that are formatted, and does not print reformatted sources to standard output.");
-		System.err.println(
-				"-w, -write   Overwrites the input files that are foramtted, and does not print the reformatted sources to standard output.");
 	}
 
 	private String formatTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
@@ -488,7 +466,7 @@ class FORMATTER {
 			tokens.add(token);
 			prevToken = token;
 		}
-		if(prevToken != null) {
+		if (prevToken != null) {
 			int start = prevToken.getAbsoluteEnd();
 			int end = text.length();
 			if (end > start) {
@@ -563,8 +541,8 @@ class FORMATTER {
 		for (int i = 0; i < tokens.size(); i++) {
 			token = tokens.get(i);
 			if (token.getType() == TOKEN_TYPE_EXTRA) {
-				if(i == (tokens.size() - 1)) {
-					//if the last token is whitespace, include new lines
+				if (i == (tokens.size() - 1)) {
+					// if the last token is whitespace, include new lines
 					numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
 					appendNewLines(builder, numRequiredNewLines);
 					break;
