@@ -71,7 +71,7 @@
 
     <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="main" depends="swf, jx, oem, debugger, anttasks, royaleunit.anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
+    <target name="main" depends="swf, jx, oem, debugger, formatter, anttasks, royaleunit.anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
     
@@ -99,6 +99,10 @@
 
     <target name="debugger" depends="swfutils" description="Builds FDB JAR">
         <ant dir="debugger" target="jar"/>
+    </target>
+
+    <target name="formatter" description="Builds formatter JAR">
+        <ant dir="formatter" target="main"/>
     </target>
     
     <target name="compiler.jx" description="Builds Royale JS Transpiler.">
@@ -142,6 +146,7 @@
         <ant dir="royale-ant-tasks" target="clean"/>
         <ant dir="royaleunit-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
+        <ant dir="formatter" target="clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
@@ -171,6 +176,7 @@
         <ant dir="royale-ant-tasks" target="wipe"/>
         <ant dir="royaleunit-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
+        <ant dir="formatter" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
         <!-- remove legacy folders if they exist -->
@@ -287,6 +293,9 @@
         
         <!-- compiler -->
         <antcall target="stage-compiler"/>
+        
+        <!-- formatter -->
+        <antcall target="stage-formatter"/>
         
         <!-- flex-compiler-oem and fdb -->
         <antcall target="stage-fb-integration"/>
@@ -441,6 +450,24 @@
         
         <!-- Update all Version.as files in the kit frameworks directory with build.number -->
         <!--<antcall target="version-update"/>-->
+    </target>
+
+    <target name="stage-formatter">
+        <copy todir="${staging-dir}/formatter" includeEmptyDirs="false">
+            <fileset dir="${basedir}/formatter">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="stage-fb-integration">
