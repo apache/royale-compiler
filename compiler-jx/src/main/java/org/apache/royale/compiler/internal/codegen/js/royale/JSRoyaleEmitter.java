@@ -1004,7 +1004,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                     if (nameNode instanceof IdentifierNode)
                     {
                         //see FLEX-35283
-                        LiteralNode appendedArgument = new NumericLiteralNode("undefined");
+                        LiteralNode appendedArgument = new NumericLiteralNode("0");
                         appendedArgument.setSynthetic(true);
                         newNode = EmitterUtils.insertArgumentsAfter(node, appendedArgument);
                     }
