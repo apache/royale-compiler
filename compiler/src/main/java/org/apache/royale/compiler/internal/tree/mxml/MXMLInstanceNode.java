@@ -215,8 +215,9 @@ public class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXM
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_ID)) {
-            if (builder.getProject().getMXMLForceLocalId())
+            if (builder.getProject().getMXMLForceLocalId()) {
                 localId = processIDAttribute(builder, attribute);
+            }
             else
                 id = processIDAttribute(builder, attribute);
         }

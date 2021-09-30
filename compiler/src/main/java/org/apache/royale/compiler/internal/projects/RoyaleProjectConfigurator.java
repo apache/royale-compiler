@@ -190,6 +190,8 @@ public class RoyaleProjectConfigurator extends Configurator
         project.setRepeaterClass(IMXMLTypeConstants.Repeater);
         
         project.setNamedColors(NAMED_COLORS);
+
+        project.setMXMLForceLocalId(false);
         
         if (configuration != null)
         {
