@@ -261,6 +261,8 @@ public class RoyaleProjectConfigurator extends Configurator
             configValue = configuration.getProxyBaseClass();
             project.setProxyBaseClass(configValue);
 
+            project.setMXMLForceLocalId(configuration.getCompilerMxmlForceLocalId());
+
             project.setStrictXML(configuration.isStrictXML());
             project.setAllowPrivateNameConflicts(configuration.getCompilerAllowPrivateNameConflicts());
 

@@ -2614,6 +2614,30 @@ public class Configuration
     }
 
     //
+    // 'compiler.mxml.force-local-id' option
+    //
+    private Boolean forceLocalId = false;
+
+    public Boolean getCompilerMxmlForceLocalId()
+    {
+        return forceLocalId;
+    }
+
+    /**
+     * Specifies whether localId behavior should be 'forced' for the current compilation target. This has the
+     * effect of treating all mxml id="name" specifications as localId="name" for the current compilation target.
+     * This is false by default and the results of usage will vary by compilation target depending on the effect of using
+     * localId vs. id (e.g. for swf target it has no effect, because they are effectively the same)
+     */
+    @Config
+    @Mapping({ "compiler", "mxml", "force-local-id" })
+    @RoyaleOnly
+    public void setCompilerMxmlMxmlForceLocalId(ConfigurationValue cv, Boolean asData) throws ConfigurationException
+    {
+        forceLocalId = asData;
+    }
+
+    //
     // 'compiler.info.flex' option
     // used to suppress some of info() fields
     //
