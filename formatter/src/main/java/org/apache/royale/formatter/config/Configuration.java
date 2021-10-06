@@ -347,6 +347,24 @@ public class Configuration {
     }
 
     //
+    // 'insert-space-line-comment' option
+    //
+
+    private boolean insertSpaceAtStartOfLineComment = true;
+
+    public boolean getInsertSpaceAtStartOfLineComment()
+    {
+        return insertSpaceAtStartOfLineComment;
+    }
+
+    @Config
+    @Mapping("insert-space-line-comment")
+    public void setInsertSpaceAtStartOfLineComment(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceAtStartOfLineComment = b;
+    }
+
+    //
     // 'collapse-empty-blocks' option
     //
 

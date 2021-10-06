@@ -104,6 +104,7 @@ class FORMATTER {
 	public boolean insertSpaceAfterFunctionKeywordForAnonymousFunctions = false;
 	public boolean insertSpaceBeforeAndAfterBinaryOperators = true;
 	public boolean insertSpaceAfterCommaDelimiter = true;
+	public boolean insertSpaceAtStartOfLineComment = true;
 	public int maxPreserveNewLines = 2;
 	public Semicolons semicolons = Semicolons.INSERT;
 	public boolean ignoreProblems = false;
@@ -293,6 +294,7 @@ class FORMATTER {
 					.getInsertSpaceAfterKeywordsInControlFlowStatements();
 			insertSpaceAfterSemicolonInForStatements = configuration.getInsertSpaceAfterSemicolonInForStatements();
 			insertSpaceBeforeAndAfterBinaryOperators = configuration.getInsertSpaceBeforeAndAfterBinaryOperators();
+			insertSpaceAtStartOfLineComment = configuration.getInsertSpaceAtStartOfLineComment();
 			insertSpaces = configuration.getInsertSpaces();
 			listChangedFiles = configuration.getListFiles();
 			maxPreserveNewLines = configuration.getMaxPreserveNewLines();
@@ -1187,7 +1189,13 @@ class FORMATTER {
 
 	private String formatSingleLineComment(String comment) {
 		comment = comment.substring(2).trim();
-		return "// " + comment;
+		StringBuilder builder = new StringBuilder();
+		builder.append("//");
+		if(insertSpaceAtStartOfLineComment) {
+			builder.append(" ");
+		}
+		builder.append(comment);
+		return builder.toString();
 	}
 
 	private String formatMultiLineComment(String comment) {

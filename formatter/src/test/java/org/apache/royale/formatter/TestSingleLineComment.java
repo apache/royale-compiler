@@ -25,11 +25,12 @@ import org.junit.Test;
 
 public class TestSingleLineComment extends BaseFormatterTests {
 	@Test
-	public void testWithoutSpace() {
+	public void testInsertSpaceAtStartOfLineComment() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
 		String result = formatter.formatText(
 		// @formatter:off
 			"//this is a comment",
@@ -42,6 +43,25 @@ public class TestSingleLineComment extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+	@Test
+	public void testDisableInsertSpaceAtStartOfLineComment() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"// this is a comment",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"//this is a comment",
+				// @formatter:on
+				result);
+	}
 
 	@Test
 	public void testAtEndOfStatement() {
@@ -49,6 +69,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
 		String result = formatter.formatText(
 		// @formatter:off
 			"statement; // this is a comment",
@@ -68,6 +89,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
 		String result = formatter.formatText(
 		// @formatter:off
 			"// this is a comment\n" +
@@ -89,6 +111,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
 		String result = formatter.formatText(
 		// @formatter:off
 			"statement;\n" +
@@ -110,6 +133,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
 		String result = formatter.formatText(
 		// @formatter:off
 			"if (statement) // this is a comment\n" +
