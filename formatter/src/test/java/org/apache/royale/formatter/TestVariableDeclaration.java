@@ -81,4 +81,42 @@ public class TestVariableDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testWithAnyType() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"var myVar:*;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var myVar:*;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithVectorAnyType() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"var myVar:Vector.<*>;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var myVar:Vector.<*>;",
+				// @formatter:on
+				result);
+	}
 }

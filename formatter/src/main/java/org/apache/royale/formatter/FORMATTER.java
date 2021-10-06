@@ -685,7 +685,6 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN:
 					case ASTokenTypes.TOKEN_OPERATOR_LESS_THAN_EQUALS:
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN_EQUALS:
-					case ASTokenTypes.TOKEN_OPERATOR_STAR:
 					case ASTokenTypes.TOKEN_OPERATOR_DIVISION:
 					case ASTokenTypes.TOKEN_OPERATOR_MODULO:
 					case ASTokenTypes.TOKEN_OPERATOR_BITWISE_AND:
@@ -710,6 +709,15 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
 						if (insertSpaceBeforeAndAfterBinaryOperators) {
+							requiredSpace = true;
+						}
+						break;
+					}
+					case ASTokenTypes.TOKEN_OPERATOR_STAR: {
+						boolean isAnyType = checkTokenBeforeAnyType(prevTokenNotComment);
+						boolean isAnyVectorType = checkTokensForAnyVectorType(prevTokenNotComment, nextTokenNotComment);
+						if (!isAnyType && !isAnyVectorType && insertSpaceBeforeAndAfterBinaryOperators
+								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -1113,7 +1121,6 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN:
 					case ASTokenTypes.TOKEN_OPERATOR_LESS_THAN_EQUALS:
 					case ASTokenTypes.TOKEN_OPERATOR_GREATER_THAN_EQUALS:
-					case ASTokenTypes.TOKEN_OPERATOR_STAR:
 					case ASTokenTypes.TOKEN_OPERATOR_DIVISION:
 					case ASTokenTypes.TOKEN_OPERATOR_MODULO:
 					case ASTokenTypes.TOKEN_OPERATOR_TERNARY:
@@ -1139,6 +1146,15 @@ class FORMATTER {
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
 						if (insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
+							requiredSpace = true;
+						}
+						break;
+					}
+					case ASTokenTypes.TOKEN_OPERATOR_STAR: {
+						boolean isAnyType = checkTokenBeforeAnyType(prevTokenNotComment);
+						boolean isAnyVectorType = checkTokensForAnyVectorType(prevTokenNotComment, nextTokenNotComment);
+						if (!isAnyType && !isAnyVectorType && insertSpaceBeforeAndAfterBinaryOperators
+								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -1353,6 +1369,15 @@ class FORMATTER {
 			}
 		}
 		return builder.toString();
+	}
+
+	private boolean checkTokenBeforeAnyType(IASToken token) {
+		return token.getType() == ASTokenTypes.TOKEN_COLON;
+	}
+
+	private boolean checkTokensForAnyVectorType(IASToken prevToken, IASToken nextToken) {
+		return prevToken != null && nextToken != null && prevToken.getType() == ASTokenTypes.TOKEN_TYPED_COLLECTION_OPEN
+				&& nextToken.getType() == ASTokenTypes.TOKEN_TYPED_COLLECTION_CLOSE;
 	}
 
 	private boolean checkTokenBeforeUnaryOperator(IASToken token) {
