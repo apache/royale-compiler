@@ -1357,7 +1357,7 @@ class FORMATTER {
 				|| token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN || token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN
 				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN || token.getType() == ASTokenTypes.TOKEN_SEMICOLON
 				|| token.getType() == ASTokenTypes.TOKEN_KEYWORD_RETURN || token.getType() == ASTokenTypes.TOKEN_COMMA
-				: (token == null);
+				|| token.getType() == ASTokenTypes.TOKEN_COLON : (token == null);
 	}
 
 	private int increaseIndent(int indent) {
