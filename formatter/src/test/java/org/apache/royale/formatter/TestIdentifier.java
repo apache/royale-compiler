@@ -200,6 +200,23 @@ public class TestIdentifier extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testUnaryMinusWithComma() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		String result = formatter.formatText(
+		// @formatter:off
+			"var array = [identifier, -identifier];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array = [identifier, -identifier];",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testNot() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;

@@ -1356,7 +1356,8 @@ class FORMATTER {
 		return (token instanceof ASToken) ? ((ASToken) token).isOperator()
 				|| token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN || token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN
 				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN || token.getType() == ASTokenTypes.TOKEN_SEMICOLON
-				|| token.getType() == ASTokenTypes.TOKEN_KEYWORD_RETURN : (token == null);
+				|| token.getType() == ASTokenTypes.TOKEN_KEYWORD_RETURN || token.getType() == ASTokenTypes.TOKEN_COMMA
+				: (token == null);
 	}
 
 	private int increaseIndent(int indent) {
