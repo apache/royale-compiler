@@ -899,7 +899,9 @@ class FORMATTER {
 								blockStack.remove(blockStack.size() - 1);
 							}
 							if (!(item instanceof ObjectLiteralBlockStackItem)
-									&& (nextToken == null || nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON)) {
+									&& (nextToken == null || (nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON
+											&& nextToken.getType() != ASTokenTypes.TOKEN_PAREN_CLOSE
+											&& nextToken.getType() != ASTokenTypes.TOKEN_COMMA))) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 							}
 						}
