@@ -550,7 +550,11 @@ class FORMATTER {
 					break;
 				}
 				if (!blockOpenPending) {
-					numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
+					int newLinesInExtra = countNewLinesInExtra(token);
+					if(prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
+						newLinesInExtra++;
+					}
+					numRequiredNewLines = Math.max(numRequiredNewLines, newLinesInExtra);
 					if (!indentedStatement && numRequiredNewLines > 0 && prevTokenNotComment != null
 							&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_SEMICOLON
 							&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE

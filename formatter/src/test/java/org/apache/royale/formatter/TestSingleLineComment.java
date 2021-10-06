@@ -106,6 +106,31 @@ public class TestSingleLineComment extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testWithExtraLineBeforeStatement() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
+		formatter.maxPreserveNewLines = 2;
+		String result = formatter.formatText(
+		// @formatter:off
+			"// this is a comment\n" +
+			"\n" +
+			"statement;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"// this is a comment\n" +
+				"\n" +
+				"statement;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testOnLineAfterStatement() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
