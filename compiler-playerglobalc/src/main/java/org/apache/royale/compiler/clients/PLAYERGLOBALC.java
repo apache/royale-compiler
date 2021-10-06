@@ -464,6 +464,7 @@ class PLAYERGLOBALC implements FlexTool {
 		List<Element> apiConstructorElements = apiClassifierElement.elements("apiConstructor");
 		List<Element> apiOperationElements = apiClassifierElement.elements("apiOperation");
 		List<Element> apiValueElements = apiClassifierElement.elements("apiValue");
+		List<Element> adobeApiEventElements = apiClassifierElement.elements("adobeApiEvent");
 
 		StringBuilder classBuilder = new StringBuilder();
 		classBuilder.append("// generated from: ");
@@ -478,6 +479,9 @@ class PLAYERGLOBALC implements FlexTool {
 		classBuilder.append("{");
 		classBuilder.append("\n");
 		writeImports(importFullyQualifiedNames, classBuilder);
+		for (Element adobeApiEventElement : adobeApiEventElements) {
+			parseEvent(adobeApiEventElement, classBuilder);
+		}
 		classBuilder.append("\t");
 		if (access != null && access.length() > 0) {
 			classBuilder.append(access);
@@ -1187,6 +1191,39 @@ class PLAYERGLOBALC implements FlexTool {
 		} else {
 			throw new Exception("Unknown apiType value: " + apiTypeValue);
 		}
+	}
+
+	private void parseEvent(Element adobeApiEventElement, StringBuilder eventBuilder) throws Exception {
+		String eventName = null;
+		Element apiNameElement = adobeApiEventElement.element("apiName");
+		if (apiNameElement != null) {
+			eventName = apiNameElement.getTextTrim();
+		}
+		String eventType = null;
+		Element adobeApiEventDetailElement = adobeApiEventElement.element("adobeApiEventDetail");
+		if (adobeApiEventDetailElement != null) {
+			Element adobeApiEventDefElement = adobeApiEventDetailElement.element("adobeApiEventDef");
+			if (adobeApiEventDefElement != null) {
+				Element adobeApiEventClassifierElement = adobeApiEventDefElement.element("adobeApiEventClassifier");
+				if (adobeApiEventClassifierElement != null) {
+					eventType = adobeApiEventClassifierElement.getTextTrim();
+				}
+			}
+		}
+		eventBuilder.append("\t");
+		eventBuilder.append("[Event(");
+		if (eventName != null) {
+			eventBuilder.append("name=\"");
+			eventBuilder.append(eventName);
+			eventBuilder.append("\"");
+		}
+		if (eventType != null) {
+			eventBuilder.append(", type=\"");
+			eventBuilder.append(eventType);
+			eventBuilder.append("\"");
+		}
+		eventBuilder.append(")]");
+		eventBuilder.append("\n");
 	}
 
 	private boolean isConstructorThatNeedsParamsTypedAsAny(String contextClassName, String contextFunctionName) {
