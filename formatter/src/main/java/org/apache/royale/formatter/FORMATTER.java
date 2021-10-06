@@ -551,7 +551,7 @@ class FORMATTER {
 				}
 				if (!blockOpenPending) {
 					int newLinesInExtra = countNewLinesInExtra(token);
-					if(prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
+					if (prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
 						newLinesInExtra++;
 					}
 					numRequiredNewLines = Math.max(numRequiredNewLines, newLinesInExtra);
@@ -656,6 +656,15 @@ class FORMATTER {
 						}
 						break;
 					}
+					case ASTokenTypes.TOKEN_SQUARE_CLOSE:
+						if (!blockStack.isEmpty()) {
+							BlockStackItem item = blockStack.get(blockStack.size() - 1);
+							if (item.token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN) {
+								indent = decreaseIndent(indent);
+								blockStack.remove(item);
+							}
+						}
+						break;
 					case ASTokenTypes.TOKEN_KEYWORD_AS:
 					case ASTokenTypes.TOKEN_KEYWORD_IS:
 					case ASTokenTypes.TOKEN_KEYWORD_IN:
@@ -885,6 +894,10 @@ class FORMATTER {
 						}
 						break;
 					}
+					case ASTokenTypes.TOKEN_SQUARE_OPEN:
+						indent = increaseIndent(indent);
+						blockStack.add(new BlockStackItem(token));
+						break;
 					case ASTokenTypes.TOKEN_OPERATOR_INCREMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_DECREMENT: {
 						if (!inControlFlowStatement && prevToken != null
@@ -1195,7 +1208,7 @@ class FORMATTER {
 		comment = comment.substring(2).trim();
 		StringBuilder builder = new StringBuilder();
 		builder.append("//");
-		if(insertSpaceAtStartOfLineComment) {
+		if (insertSpaceAtStartOfLineComment) {
 			builder.append(" ");
 		}
 		builder.append(comment);
