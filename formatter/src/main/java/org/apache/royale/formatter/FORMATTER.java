@@ -1241,14 +1241,20 @@ class FORMATTER {
 	}
 
 	private String formatLiteralString(String string) {
-		String charsToEscape = "\b\t\n\f\r\"\'\\";
-		String escapeChars = "btnfr\"\'\\";
+		String charsToEscape = "\b\t\n\f\r\\";
+		String escapeChars = "btnfr\\";
 		int escapeIndex = -1;
 		char currChar;
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < string.length(); ++i) {
 			currChar = string.charAt(i);
-			if (i == 0 || i == string.length() - 1) {
+			if (i == 0) {
+				charsToEscape += currChar;
+				escapeChars += currChar;
+				builder.append(currChar);
+				continue;
+			}
+			if (i == string.length() - 1) {
 				builder.append(currChar);
 				continue;
 			}

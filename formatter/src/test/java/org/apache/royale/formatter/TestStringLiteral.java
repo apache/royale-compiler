@@ -63,7 +63,7 @@ public class TestStringLiteral extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithEscapedDoubleQuote() {
+	public void testDoubleQuoteWithEscapedDoubleQuote() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -82,7 +82,26 @@ public class TestStringLiteral extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithEscapedSingleQuote() {
+	public void testDoubleQuoteWithUnescapedSingleQuote() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"\"'\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"'\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testSingleQuoteWithEscapedSingleQuote() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -96,6 +115,25 @@ public class TestStringLiteral extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"'\\'';",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testSingleQuoteWithUnescapedDoubleQuote() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"'\"';",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"'\"';",
 				// @formatter:on
 				result);
 	}
