@@ -85,4 +85,27 @@ public class TestMultiLineComment extends BaseFormatterTests {
 				result);
 	}
 
+	@Test
+	public void testPreserveMultilineFormatting() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"/*\n" +
+			"\tthis is a comment\n" +
+			"*/",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/*\n" +
+				"\tthis is a comment\n" +
+				"*/",
+				// @formatter:on
+				result);
+	}
+
 }
