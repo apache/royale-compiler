@@ -220,4 +220,54 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testParametersWithRest() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"function myFunction(p1:String, ...rest)\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"function myFunction(p1:String, ...rest)\n" +
+				"{\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testParametersRestOnly() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatText(
+		// @formatter:off
+			"function myFunction(...rest)\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"function myFunction(...rest)\n" +
+				"{\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

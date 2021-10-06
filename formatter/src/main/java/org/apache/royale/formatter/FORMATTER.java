@@ -737,7 +737,10 @@ class FORMATTER {
 						break;
 					}
 					case ASTokenTypes.TOKEN_ELLIPSIS: {
-						requiredSpace = true;
+						boolean isFirstArg = prevToken == null || prevToken.getType() == ASTokenTypes.TOKEN_PAREN_OPEN;
+						if (!isFirstArg) {
+							requiredSpace = true;
+						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_DEFAULT:
