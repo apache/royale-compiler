@@ -106,6 +106,7 @@ public class FORMATTER {
 	public boolean insertSpaceAfterFunctionKeywordForAnonymousFunctions = false;
 	public boolean insertSpaceBeforeAndAfterBinaryOperators = true;
 	public boolean insertSpaceAfterCommaDelimiter = true;
+	public boolean insertSpaceBetweenMetadataAttributes = true;
 	public boolean insertSpaceAtStartOfLineComment = true;
 	public int maxPreserveNewLines = 2;
 	public Semicolons semicolons = Semicolons.INSERT;
@@ -305,6 +306,7 @@ public class FORMATTER {
 			ignoreProblems = configuration.getIgnoreParsingProblems();
 			insertFinalNewLine = configuration.getInsertFinalNewLine();
 			insertSpaceAfterCommaDelimiter = configuration.getInsertSpaceAfterCommaDelimiter();
+			insertSpaceBetweenMetadataAttributes = configuration.getInsertSpaceBetweenMetadataAttributes();
 			insertSpaceAfterFunctionKeywordForAnonymousFunctions = configuration
 					.getInsertSpaceAfterFunctionKeywordForAnonymousFunctions();
 			insertSpaceAfterKeywordsInControlFlowStatements = configuration
@@ -1425,7 +1427,10 @@ public class FORMATTER {
 				case MetadataTokenTypes.TOKEN_ATTR_IMPLEMENTATION:
 				case MetadataTokenTypes.TOKEN_ATTR_OPERATOR_NS_QUALIFIER:
 					if (needsComma) {
-						builder.append(", ");
+						builder.append(",");
+						if (insertSpaceBetweenMetadataAttributes) {
+							builder.append(" ");
+						}
 					}
 					needsComma = true;
 					builder.append(metaToken.getText());
@@ -1440,7 +1445,10 @@ public class FORMATTER {
 					break;
 				case MetadataTokenTypes.TOKEN_STRING:
 					if (needsComma) {
-						builder.append(", ");
+						builder.append(",");
+						if (insertSpaceBetweenMetadataAttributes) {
+							builder.append(" ");
+						}
 					}
 					builder.append("\"");
 					builder.append(metaToken.getText());

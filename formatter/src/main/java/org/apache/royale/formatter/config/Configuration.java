@@ -347,6 +347,24 @@ public class Configuration {
     }
 
     //
+    // 'insert-space-meta-attributes' option
+    //
+
+    private boolean insertSpaceBetweenMetadataAttributes = true;
+
+    public boolean getInsertSpaceBetweenMetadataAttributes()
+    {
+        return insertSpaceBetweenMetadataAttributes;
+    }
+
+    @Config
+    @Mapping("insert-space-meta-attributes")
+    public void setInsertSpaceBetweenMetadataAttributes(ConfigurationValue cv, boolean b)
+    {
+        this.insertSpaceBetweenMetadataAttributes = b;
+    }
+
+    //
     // 'insert-space-line-comment' option
     //
 
