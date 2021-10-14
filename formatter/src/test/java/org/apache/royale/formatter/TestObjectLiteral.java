@@ -28,7 +28,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testEmpty() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {};",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testOneFieldOnSingleLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {one: 123.4};",
 			// @formatter:on
@@ -62,7 +62,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testOneFieldOnMultipleLines() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {\n" +
 			"\tone: 123.4\n" +
@@ -85,7 +85,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testMultipleFields() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {one: 123.4, two: \"hello world\"};",
 			// @formatter:on
@@ -102,7 +102,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testMultipleFieldsOnMultipleLines() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {\n" +
 			"\tone: 123.4,\n" +
@@ -128,7 +128,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testMultipleFieldsOnMultipleLines2() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {\n" +
 			"\tone: 123.4,\n" +
@@ -153,7 +153,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	public void testStringField() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj:Object = {\"string-field\": 123.4};",
 			// @formatter:on

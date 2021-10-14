@@ -30,7 +30,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++) {\n" +
 			"}",
@@ -52,7 +52,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++)\n" +
 			"{\n" +
@@ -74,7 +74,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for(var i:int = 0; i < 3; i++)\n" +
 			"{\n" +
@@ -99,7 +99,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = false;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++)\n" +
 			"{\n" +
@@ -124,7 +124,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++) {\n" +
 			"\tstatement;\n" +
@@ -148,7 +148,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++)\n" +
 			"{\n" +
@@ -172,7 +172,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++) statement;",
 			// @formatter:on
@@ -192,7 +192,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var i:int = 0; i < 3; i++);",
 			// @formatter:on
@@ -210,7 +210,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -241,7 +241,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var i:int = 0; i < 3; i++)\n" +
@@ -270,7 +270,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var i:int = 0; i < 3; i++)\n" +
@@ -297,7 +297,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var i:int = 0; i < 3; i++)\n" +
@@ -328,7 +328,7 @@ public class TestForStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var i:int = 0; i < 3; i++);\n" +

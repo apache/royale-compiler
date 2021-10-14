@@ -28,7 +28,7 @@ public class TestXML extends BaseFormatterTests {
 	public void testEmptyRootElementOnOneLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"<root></root>;",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestXML extends BaseFormatterTests {
 	public void testEmptyRootElementOnMultipleLines() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"<root>\n" +
 			"</root>;",
@@ -64,7 +64,7 @@ public class TestXML extends BaseFormatterTests {
 	public void testSelfClosingRootElement() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"<root/>;",
 			// @formatter:on

@@ -28,7 +28,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseNotOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"~a;",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseAndOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a&b;",
 			// @formatter:on
@@ -62,7 +62,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseOrOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a|b;",
 			// @formatter:on
@@ -79,7 +79,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseXorOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a^b;",
 			// @formatter:on
@@ -96,7 +96,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseLeftShiftOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a<<b;",
 			// @formatter:on
@@ -113,7 +113,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseRightShiftOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a>>b;",
 			// @formatter:on
@@ -130,7 +130,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseRightUnsignedShiftOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a>>>b;",
 			// @formatter:on
@@ -147,7 +147,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseAndCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a&=b;",
 			// @formatter:on
@@ -164,7 +164,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseOrCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a|=b;",
 			// @formatter:on
@@ -181,7 +181,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseXorCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a^=b;",
 			// @formatter:on
@@ -198,7 +198,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseLeftShiftCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a<<=b;",
 			// @formatter:on
@@ -215,7 +215,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseRightShiftCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a>>=b;",
 			// @formatter:on
@@ -232,7 +232,7 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 	public void testBitwiseRightUnsignedShiftCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a>>>=b;",
 			// @formatter:on

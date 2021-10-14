@@ -30,7 +30,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object) {\n" +
 			"}",
@@ -53,7 +53,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object)\n" +
 			"{\n" +
@@ -75,7 +75,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for(var key:String in object)\n" +
 			"{\n" +
@@ -100,7 +100,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = false;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object)\n" +
 			"{\n" +
@@ -125,7 +125,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object) {\n" +
 			"\tstatement;\n" +
@@ -149,7 +149,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object)\n" +
 			"{\n" +
@@ -173,7 +173,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object) statement;",
 			// @formatter:on
@@ -193,7 +193,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"for (var key:String in object);",
 			// @formatter:on
@@ -212,7 +212,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor each (var key:String in object)\n" +
@@ -241,7 +241,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var key:String in object)\n" +
@@ -268,7 +268,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var key:String in object)\n" +
@@ -299,7 +299,7 @@ public class TestForInStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tfor (var key:String in object);\n" +

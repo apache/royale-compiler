@@ -30,7 +30,7 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"package {\n" +
 			"}",
@@ -53,7 +53,7 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"package\n" +
 			"{\n" +
@@ -75,7 +75,7 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"package {\n" +
 			"\tstatement;\n" +
@@ -99,7 +99,7 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"package\n" +
 			"{\n" +
@@ -123,7 +123,7 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"package com.example {\n" +
 			"\tstatement;\n" +

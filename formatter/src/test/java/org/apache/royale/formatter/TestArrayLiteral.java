@@ -28,7 +28,7 @@ public class TestArrayLiteral extends BaseFormatterTests {
 	public void testEmpty() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var array:Array = [];",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestArrayLiteral extends BaseFormatterTests {
 	public void testSingleNumberOnOneLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var array:Array = [123.4];",
 			// @formatter:on
@@ -62,7 +62,7 @@ public class TestArrayLiteral extends BaseFormatterTests {
 	public void testMultipleNumbersOnOneLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var array:Array = [123.4, 567.8, 901.2];",
 			// @formatter:on
@@ -79,7 +79,7 @@ public class TestArrayLiteral extends BaseFormatterTests {
 	public void testMultipleStringsOnOneLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var array:Array = [\"abc\", \"hello world\", \"\"];",
 			// @formatter:on

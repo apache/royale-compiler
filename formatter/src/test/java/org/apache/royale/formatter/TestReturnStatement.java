@@ -31,7 +31,7 @@ public class TestReturnStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"return;",
 			// @formatter:on
@@ -50,7 +50,7 @@ public class TestReturnStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"return",
 			// @formatter:on
@@ -69,7 +69,7 @@ public class TestReturnStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"return 123;",
 			// @formatter:on
@@ -88,7 +88,7 @@ public class TestReturnStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"return 123",
 			// @formatter:on
@@ -107,7 +107,7 @@ public class TestReturnStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"return\n" +
 			"123;",

@@ -30,7 +30,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition) {\n" +
 			"\tstatement;\n" +
@@ -59,7 +59,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -88,7 +88,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition) {\n" +
 			"}\n" +
@@ -115,7 +115,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -142,7 +142,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition) {\n" +
 			"\tstatement;\n" +
@@ -173,7 +173,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = false;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -204,7 +204,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition) statement;\n" +
 			"else statement;",
@@ -227,7 +227,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (true);\n" +
 			"else;",
@@ -249,7 +249,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"function myFunction():void\n" +
 			"{\n" +
@@ -288,7 +288,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tif (condition)\n" +
@@ -323,7 +323,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tif (true)\n" +
@@ -354,7 +354,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tif (true)\n" +
@@ -393,7 +393,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\tif (true);\n" +
@@ -421,7 +421,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (true)\n" +
 			"{\n" +
@@ -454,7 +454,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (true)\n" +
 			"{\n" +
@@ -485,7 +485,7 @@ public class TestElseStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +

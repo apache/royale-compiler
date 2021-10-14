@@ -28,7 +28,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testEqualityOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a==b;",
 			// @formatter:on
@@ -44,7 +44,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testInqualityOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a!=b;",
 			// @formatter:on
@@ -61,7 +61,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testStrictEqualityOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a===b;",
 			// @formatter:on
@@ -77,7 +77,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testStrictInqualityOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a!==b;",
 			// @formatter:on
@@ -94,7 +94,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testGreaterThanOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a>b;",
 			// @formatter:on
@@ -111,7 +111,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testLessThanOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a<b;",
 			// @formatter:on
@@ -128,7 +128,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testGreaterThanOrEqualOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a>=b;",
 			// @formatter:on
@@ -145,7 +145,7 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	public void testLessThanOrEqualOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a<=b;",
 			// @formatter:on

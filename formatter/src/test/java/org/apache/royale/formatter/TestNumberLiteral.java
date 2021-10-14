@@ -28,7 +28,7 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	public void testFloat() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"123.4;",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	public void testInt() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"123;",
 			// @formatter:on
@@ -62,7 +62,7 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	public void testNegative() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"-123;",
 			// @formatter:on

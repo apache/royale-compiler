@@ -29,6 +29,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.clients.problems.ProblemFormatter;
@@ -182,7 +184,7 @@ public class FORMATTER {
 
 	public String formatFile(File file, Collection<ICompilerProblem> problems) throws IOException {
 		String fileText = FileUtils.readFileToString(file, "utf8");
-		String filePath = FilenameNormalization.normalize(file.getAbsolutePath());
+		String filePath = file.getAbsolutePath();
 		return formatFileText(filePath, fileText, problems);
 	}
 
@@ -191,7 +193,13 @@ public class FORMATTER {
 	}
 
 	public String formatFileText(String filePath, String text, Collection<ICompilerProblem> problems) {
-		String result = formatTextInternal(filePath, text, problems);
+		filePath = FilenameNormalization.normalize(filePath);
+		String result = null;
+		if (filePath.endsWith(".mxml")) {
+			result = formatMXMLTextInternal(filePath, text, problems);
+		} else {
+			result = formatAS3TextInternal(filePath, text, problems);
+		}
 		if (insertFinalNewLine && result.charAt(result.length() - 1) != '\n') {
 			return result + '\n';
 		}
@@ -202,13 +210,22 @@ public class FORMATTER {
 		return formatFileText(filePath, text, null);
 	}
 
-	public String formatText(String text, Collection<ICompilerProblem> problems) {
-		String filePath = FilenameNormalization.normalize("source.as");
-		return formatTextInternal(filePath, text, problems);
+	public String formatActionScriptText(String text, Collection<ICompilerProblem> problems) {
+		String filePath = FilenameNormalization.normalize("stdin.as");
+		return formatAS3TextInternal(filePath, text, problems);
 	}
 
-	public String formatText(String text) {
-		return formatText(text, null);
+	public String formatActionScriptText(String text) {
+		return formatActionScriptText(text, null);
+	}
+
+	public String formatMXMLText(String text, Collection<ICompilerProblem> problems) {
+		String filePath = FilenameNormalization.normalize("stdin.mxml");
+		return formatMXMLTextInternal(filePath, text, problems);
+	}
+
+	public String formatMXMLText(String text) {
+		return formatMXMLText(text, null);
 	}
 
 	/**
@@ -346,13 +363,71 @@ public class FORMATTER {
 			}
 			if (file.isDirectory()) {
 				addDirectory(file);
-			} else if (fileName.endsWith(".as")) {
+			} else if (fileName.endsWith(".as") || fileName.endsWith(".mxml")) {
 				inputFiles.add(file);
 			}
 		}
 	}
 
-	private String formatTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
+	private String formatMXMLTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
+		String indent = "\t";
+		if (insertSpaces) {
+			indent = "";
+			for (int i = 0; i < tabSize; i++) {
+				indent += " ";
+			}
+		}
+		int lastIndex = 0;
+		StringBuilder builder = new StringBuilder();
+		Pattern scriptPattern = Pattern.compile(
+				"[\t ]*<((?:mx|fx):Script)>\\s*(?:<!\\[CDATA\\[)?((?:.|\\n)*?)(?:\\]\\]>)?\\s*<\\/(?:mx|fx):Script>");
+		Matcher scriptMatcher = scriptPattern.matcher(text);
+		if (problems == null) {
+			// we need to know if there were problems because it means that we
+			// need to return the original, unformatted text
+			problems = new ArrayList<ICompilerProblem>();
+		}
+		while (scriptMatcher.find()) {
+			int start = scriptMatcher.start();
+			int end = scriptMatcher.end();
+			String scriptTagText = scriptMatcher.group(1);
+			String scriptText = scriptMatcher.group(2);
+			String formattedScriptText = formatAS3TextInternal(filePath, scriptText, problems);
+			if (problems.size() > 0) {
+				return text;
+			}
+			String[] formattedLines = formattedScriptText.split("\n");
+			String lineIndent = indent + indent + indent;
+			for (int i = 0; i < formattedLines.length; i++) {
+				formattedLines[i] = lineIndent + formattedLines[i];
+			}
+			formattedScriptText = String.join("\n", formattedLines);
+			builder.append(text.substring(lastIndex, start));
+			builder.append(indent);
+			builder.append("<");
+			builder.append(scriptTagText);
+			builder.append(">\n");
+			builder.append(indent);
+			builder.append(indent);
+			builder.append("<![CDATA[\n");
+			builder.append(formattedScriptText);
+			builder.append("\n");
+			builder.append(indent);
+			builder.append(indent);
+			builder.append("]]>\n");
+			builder.append(indent);
+			builder.append("</");
+			builder.append(scriptTagText);
+			builder.append(">");
+			lastIndex = end;
+		}
+		if (lastIndex < text.length()) {
+			builder.append(text.substring(lastIndex));
+		}
+		return builder.toString();
+	}
+
+	private String formatAS3TextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
 		StringReader textReader = new StringReader(text);
 		StreamingASTokenizer tokenizer = null;
 		ASToken[] streamingTokens = null;

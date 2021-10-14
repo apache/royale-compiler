@@ -29,7 +29,7 @@ public class TestPreserveNewLines extends BaseFormatterTests {
 		FORMATTER formatter = new FORMATTER();
 		formatter.maxPreserveNewLines = 0;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"/* this is a comment */\n" +
 			"\n" +
@@ -53,7 +53,7 @@ public class TestPreserveNewLines extends BaseFormatterTests {
 		FORMATTER formatter = new FORMATTER();
 		formatter.maxPreserveNewLines = 2;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"/* this is a comment */\n" +
 			"\n" +
@@ -76,7 +76,7 @@ public class TestPreserveNewLines extends BaseFormatterTests {
 		FORMATTER formatter = new FORMATTER();
 		formatter.maxPreserveNewLines = 0;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"1 + 2" +
 			"\n" +

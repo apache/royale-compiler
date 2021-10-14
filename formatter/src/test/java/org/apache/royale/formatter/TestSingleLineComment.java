@@ -31,7 +31,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"//this is a comment",
 			// @formatter:on
@@ -50,7 +50,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"// this is a comment",
 			// @formatter:on
@@ -70,7 +70,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"statement; // this is a comment",
 			// @formatter:on
@@ -90,7 +90,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"// this is a comment\n" +
 			"statement;",
@@ -113,7 +113,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = true;
 		formatter.maxPreserveNewLines = 2;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"// this is a comment\n" +
 			"\n" +
@@ -137,7 +137,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"statement;\n" +
 			"// this is a comment",
@@ -159,7 +159,7 @@ public class TestSingleLineComment extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"if (statement) // this is a comment\n" +
 			"{\n" +

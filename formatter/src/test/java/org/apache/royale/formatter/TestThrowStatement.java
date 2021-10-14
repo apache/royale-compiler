@@ -32,7 +32,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.ignoreProblems = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"throw;",
 			// @formatter:on
@@ -53,7 +53,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.ignoreProblems = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"throw",
 			// @formatter:on
@@ -72,7 +72,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"throw new Error();",
 			// @formatter:on
@@ -91,7 +91,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"throw new Error()",
 			// @formatter:on
@@ -111,7 +111,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
 		formatter.ignoreProblems = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"throw\n" +
 			"new Error();",

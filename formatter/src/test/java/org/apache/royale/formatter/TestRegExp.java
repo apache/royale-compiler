@@ -28,7 +28,7 @@ public class TestRegExp extends BaseFormatterTests {
 	public void testRegExp() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"/\\d/g;",
 			// @formatter:on

@@ -27,7 +27,7 @@ public class TestMiscellaneousOperators extends BaseFormatterTests {
 	@Test
 	public void testAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a=b;",
 			// @formatter:on
@@ -43,7 +43,7 @@ public class TestMiscellaneousOperators extends BaseFormatterTests {
 	@Test
 	public void testNamespaceQualifierOperator() {
 		FORMATTER formatter = new FORMATTER();
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"ns::myVar;",
 			// @formatter:on

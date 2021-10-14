@@ -29,7 +29,7 @@ public class TestAutomaticSemicolonInsertion extends BaseFormatterTests {
 	public void testInvalid() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"identifier1 identifier2;",
 			// @formatter:on

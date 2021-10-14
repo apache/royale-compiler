@@ -28,7 +28,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testAdditionOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a+b;",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testSubtractionOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a-b;",
 			// @formatter:on
@@ -62,7 +62,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testMultiplicationOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a*b;",
 			// @formatter:on
@@ -79,7 +79,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testDivisionOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a/b;",
 			// @formatter:on
@@ -96,7 +96,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testModuloOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a%b;",
 			// @formatter:on
@@ -113,7 +113,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testAdditionCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a+=b;",
 			// @formatter:on
@@ -130,7 +130,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testSubtractionCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a-=b;",
 			// @formatter:on
@@ -147,7 +147,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testMultiplicationCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a*=b;",
 			// @formatter:on
@@ -164,7 +164,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testDivisionCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a/=b;",
 			// @formatter:on
@@ -181,7 +181,7 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 	public void testModuloCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a%=b;",
 			// @formatter:on

@@ -30,7 +30,7 @@ public class TestDefaultXMLNamespaceDirective extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"default xml namespace = ns;",
 			// @formatter:on

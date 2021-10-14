@@ -27,7 +27,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testBasic() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"identifier;",
 			// @formatter:on
@@ -44,7 +44,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryPlus() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"+identifier;",
 			// @formatter:on
@@ -61,7 +61,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryPlusWithLeadingOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var a = +identifier;",
 			// @formatter:on
@@ -78,7 +78,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinus() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"-identifier;",
 			// @formatter:on
@@ -95,7 +95,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithLeadingOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var a = -identifier;",
 			// @formatter:on
@@ -112,7 +112,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithParentheses() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"(-identifier);",
 			// @formatter:on
@@ -129,7 +129,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithBrackets() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a[-identifier];",
 			// @formatter:on
@@ -146,7 +146,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithBlock() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"{\n" +
 			"\t-identifier;\n" +
@@ -167,7 +167,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithSemicolon() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a;\n" +
 			"-identifier;",
@@ -186,7 +186,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithReturn() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"return -identifier;",
 			// @formatter:on
@@ -203,7 +203,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithComma() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var array = [identifier, -identifier];",
 			// @formatter:on
@@ -220,7 +220,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testUnaryMinusWithColon() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"var obj = {field: -identifier};",
 			// @formatter:on
@@ -237,7 +237,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testNot() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"!identifier;",
 			// @formatter:on
@@ -254,7 +254,7 @@ public class TestIdentifier extends BaseFormatterTests {
 	public void testDoubleNot() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"!!identifier;",
 			// @formatter:on

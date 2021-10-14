@@ -28,7 +28,7 @@ public class TestLogicalOperators extends BaseFormatterTests {
 	public void testLogicalNotOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"!a;",
 			// @formatter:on
@@ -45,7 +45,7 @@ public class TestLogicalOperators extends BaseFormatterTests {
 	public void testLogicalAndOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a&&b;",
 			// @formatter:on
@@ -62,7 +62,7 @@ public class TestLogicalOperators extends BaseFormatterTests {
 	public void testLogicalOrOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a||b;",
 			// @formatter:on
@@ -79,7 +79,7 @@ public class TestLogicalOperators extends BaseFormatterTests {
 	public void testLogicalAndCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a&&=b;",
 			// @formatter:on
@@ -96,7 +96,7 @@ public class TestLogicalOperators extends BaseFormatterTests {
 	public void testLogicalOrCompoundAssignmentOperator() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"a||=b;",
 			// @formatter:on

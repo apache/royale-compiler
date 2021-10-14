@@ -30,7 +30,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"[UnknownMetaTag]\n" +
 			"class MyClass\n" +
@@ -55,7 +55,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"[UnknownMetaTag(\"value\")]\n" +
 			"class MyClass\n" +
@@ -80,7 +80,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"[UnknownMetaTag(unknownAttr=\"value\")]\n" +
 			"class MyClass\n" +
@@ -105,7 +105,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"[UnknownMetaTag(unknownAttr1=\"value1\",unknownAttr2=\"value2\")]\n" +
 			"class MyClass\n" +
@@ -130,7 +130,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"[Event(name=\"change\", type=\"flash.events.Event\")]\n" +
 			"class MyClass\n" +
@@ -155,7 +155,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"class MyClass\n" +
 			"{\n" +
@@ -182,7 +182,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"class MyClass\n" +
 			"{\n" +
@@ -209,7 +209,7 @@ public class TestMetadata extends BaseFormatterTests {
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
 		formatter.insertSpaces = false;
-		String result = formatter.formatText(
+		String result = formatter.formatActionScriptText(
 		// @formatter:off
 			"class MyClass\n" +
 			"{\n" +
