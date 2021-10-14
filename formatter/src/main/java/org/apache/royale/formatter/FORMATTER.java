@@ -63,7 +63,7 @@ import org.apache.royale.utils.FilenameNormalization;
 /**
  * Formats .as source files.
  */
-class FORMATTER {
+public class FORMATTER {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
 
 	private static final String NEWLINE = System.getProperty("line.separator");
