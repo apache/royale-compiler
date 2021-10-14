@@ -224,4 +224,40 @@ public class TestAsDocComment  extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+	@Test
+	public void testListing() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"/**\n" +
+			" * Description.\n" +
+			" * \n" +
+			" * <listing>\n" +
+			" * // before\n" +
+			" * \n" +
+			" * </listing>\n" +
+			" * \n" +
+			" * @see test\n" +
+			" */",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/**\n" +
+				" * Description.\n" +
+				" *\n" +
+				" * <listing>\n" +
+				" * // before\n" +
+				" * \n" +
+				" * </listing>\n" +
+				" *\n" +
+				" * @see test\n" +
+				" */",
+				// @formatter:on
+				result);
+	}
 }

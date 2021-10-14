@@ -71,6 +71,7 @@ public class FORMATTER {
 	private static final String NEWLINE = System.getProperty("line.separator");
 	private static final String DEFAULT_VAR = "files";
 	private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
+	private static final Pattern ASDOC_START_LINE_PATTERN = Pattern.compile("^\\*(\\s*)");
 
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
@@ -1346,18 +1347,59 @@ public class FORMATTER {
 		return builder.toString();
 	}
 
+	private boolean isInListing(String lineText, boolean alreadyInListing) {
+		int searchIndex = 0;
+		boolean inListing = alreadyInListing;
+		while (searchIndex < lineText.length()) {
+			System.err.println(searchIndex + " " + lineText.length() + " " + inListing);
+			if (!inListing) {
+				searchIndex = lineText.indexOf("<listing", searchIndex);
+				if (searchIndex == -1) {
+					return false;
+				}
+				searchIndex += 8;
+				inListing = true;
+			}
+			searchIndex = lineText.indexOf("</listing>", searchIndex);
+			if (searchIndex == -1) {
+				return true;
+			}
+			searchIndex += 10;
+			inListing = false;
+		}
+		return inListing;
+	}
+
 	private String formatASDocComment(String comment, int indent) {
 		String[] lines = comment.split("\n");
 		StringBuilder builder = new StringBuilder();
-		builder.append(lines[0].trim());
+		String lineText = lines[0].trim();
+		builder.append(lineText);
+		boolean inListing = isInListing(lineText, false);
 		if (lines.length > 1) {
 			builder.append('\n');
 		}
+		String listingIndent = null;
 		for (int i = 1; i < lines.length - 1; i++) {
+			lineText = lines[i].trim();
+			if (inListing) {
+				Matcher startMatcher = ASDOC_START_LINE_PATTERN.matcher(lineText);
+				if (startMatcher.find()) {
+					if (listingIndent == null) {
+						listingIndent = startMatcher.group(1);
+					} else if (startMatcher.group().length() >= lineText.length()) {
+						lineText = "*" + listingIndent;
+					}
+				}
+			}
 			appendIndent(builder, indent);
 			builder.append(' ');
-			builder.append(lines[i].trim());
+			builder.append(lineText);
 			builder.append('\n');
+			inListing = isInListing(lineText, inListing);
+			if (!inListing) {
+				listingIndent = null;
+			}
 		}
 		if (lines.length > 1) {
 			appendIndent(builder, indent);
