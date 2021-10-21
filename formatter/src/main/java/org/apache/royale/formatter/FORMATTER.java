@@ -401,12 +401,14 @@ public class FORMATTER {
 			if (!ignoreProblems && hasErrors(problems)) {
 				return text;
 			}
-			String[] formattedLines = formattedScriptText.split("\n");
-			String lineIndent = indent + indent + indent;
-			for (int i = 0; i < formattedLines.length; i++) {
-				formattedLines[i] = lineIndent + formattedLines[i];
+			if (formattedScriptText.length() > 0) {
+				String[] formattedLines = formattedScriptText.split("\n");
+				String lineIndent = indent + indent + indent;
+				for (int i = 0; i < formattedLines.length; i++) {
+					formattedLines[i] = lineIndent + formattedLines[i];
+				}
+				formattedScriptText = String.join("\n", formattedLines);
 			}
-			formattedScriptText = String.join("\n", formattedLines);
 			builder.append(text.substring(lastIndex, start));
 			builder.append(indent);
 			builder.append("<");
@@ -415,8 +417,10 @@ public class FORMATTER {
 			builder.append(indent);
 			builder.append(indent);
 			builder.append("<![CDATA[\n");
-			builder.append(formattedScriptText);
-			builder.append("\n");
+			if (formattedScriptText.length() > 0) {
+				builder.append(formattedScriptText);
+				builder.append("\n");
+			}
 			builder.append(indent);
 			builder.append(indent);
 			builder.append("]]>\n");
