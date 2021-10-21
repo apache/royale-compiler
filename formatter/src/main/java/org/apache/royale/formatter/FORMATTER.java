@@ -175,6 +175,7 @@ public class FORMATTER {
 				exitCode = ExitCode.PRINT_HELP;
 			}
 		} catch (Exception e) {
+			problems.add(new UnexpectedExceptionProblem(e));
 			System.err.println(e.getMessage());
 			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 		} finally {
@@ -375,6 +376,36 @@ public class FORMATTER {
 	}
 
 	private String formatMXMLTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
+		StringBuilder builder = new StringBuilder();
+		Pattern scriptPattern = Pattern.compile(
+				"[\t ]*<((?:mx|fx):(?:Script|Metadata))>\\s*(?:<!\\[CDATA\\[)?(?:.|\\n)*?(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:Script|Metadata)>");
+		Matcher scriptMatcher = scriptPattern.matcher(text);
+		if (problems == null) {
+			// we need to know if there were problems because it means that we
+			// need to return the original, unformatted text
+			problems = new ArrayList<ICompilerProblem>();
+		}
+		int lastIndex = 0;
+		while (scriptMatcher.find()) {
+			int start = scriptMatcher.start();
+			int end = scriptMatcher.end();
+			String scriptText = scriptMatcher.group().trim();
+
+			builder.append(text.substring(lastIndex, start));
+			String formattedText = formatMXMLScriptElement(scriptText, problems);
+			if (!ignoreProblems && hasErrors(problems)) {
+				return text;
+			}
+			builder.append(formattedText);
+			lastIndex = end;
+		}
+		if (lastIndex < text.length()) {
+			builder.append(text.substring(lastIndex));
+		}
+		return builder.toString();
+	}
+
+	private String formatMXMLScriptElement(String text, Collection<ICompilerProblem> problems) {
 		String indent = "\t";
 		if (insertSpaces) {
 			indent = "";
@@ -382,57 +413,58 @@ public class FORMATTER {
 				indent += " ";
 			}
 		}
-		int lastIndex = 0;
 		StringBuilder builder = new StringBuilder();
 		Pattern scriptPattern = Pattern.compile(
-				"[\t ]*<((?:mx|fx):Script)>\\s*(?:<!\\[CDATA\\[)?((?:.|\\n)*?)(?:\\]\\]>)?\\s*<\\/(?:mx|fx):Script>");
+				"^<((?:mx|fx):(\\w+))>\\s*(<!\\[CDATA\\[)?((?:.|\\n)*?)(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:\\w+)>$");
 		Matcher scriptMatcher = scriptPattern.matcher(text);
+		if (!scriptMatcher.matches()) {
+			return text;
+		}
 		if (problems == null) {
 			// we need to know if there were problems because it means that we
 			// need to return the original, unformatted text
 			problems = new ArrayList<ICompilerProblem>();
 		}
-		while (scriptMatcher.find()) {
-			int start = scriptMatcher.start();
-			int end = scriptMatcher.end();
-			String scriptTagText = scriptMatcher.group(1);
-			String scriptText = scriptMatcher.group(2);
-			String formattedScriptText = formatAS3TextInternal(filePath, scriptText, problems);
-			if (!ignoreProblems && hasErrors(problems)) {
-				return text;
+		String scriptTagText = scriptMatcher.group(1);
+		String scriptTagName = scriptMatcher.group(2);
+		String cdataText = scriptMatcher.group(3);
+		String scriptText = scriptMatcher.group(4);
+		boolean requireCdata = cdataText != null || "Script".equals(scriptTagName);
+		String formattedScriptText = formatAS3TextInternal("script.as", scriptText, problems);
+		if (!ignoreProblems && hasErrors(problems)) {
+			return text;
+		}
+		if (formattedScriptText.length() > 0) {
+			String[] formattedLines = formattedScriptText.split("\n");
+			String lineIndent = requireCdata ? (indent + indent + indent) : (indent + indent);
+			for (int i = 0; i < formattedLines.length; i++) {
+				formattedLines[i] = lineIndent + formattedLines[i];
 			}
-			if (formattedScriptText.length() > 0) {
-				String[] formattedLines = formattedScriptText.split("\n");
-				String lineIndent = indent + indent + indent;
-				for (int i = 0; i < formattedLines.length; i++) {
-					formattedLines[i] = lineIndent + formattedLines[i];
-				}
-				formattedScriptText = String.join("\n", formattedLines);
-			}
-			builder.append(text.substring(lastIndex, start));
-			builder.append(indent);
-			builder.append("<");
-			builder.append(scriptTagText);
-			builder.append(">\n");
+			formattedScriptText = String.join("\n", formattedLines);
+		}
+		builder.append(indent);
+		builder.append("<");
+		builder.append(scriptTagText);
+		builder.append(">\n");
+		if (requireCdata) {
 			builder.append(indent);
 			builder.append(indent);
 			builder.append("<![CDATA[\n");
-			if (formattedScriptText.length() > 0) {
-				builder.append(formattedScriptText);
-				builder.append("\n");
-			}
+		}
+		if (formattedScriptText.length() > 0) {
+			builder.append(formattedScriptText);
+			builder.append("\n");
+		}
+		if (requireCdata) {
 			builder.append(indent);
 			builder.append(indent);
 			builder.append("]]>\n");
-			builder.append(indent);
-			builder.append("</");
-			builder.append(scriptTagText);
-			builder.append(">");
-			lastIndex = end;
 		}
-		if (lastIndex < text.length()) {
-			builder.append(text.substring(lastIndex));
-		}
+		builder.append(indent);
+		builder.append("</");
+		builder.append(scriptTagText);
+		builder.append(">");
+
 		return builder.toString();
 	}
 

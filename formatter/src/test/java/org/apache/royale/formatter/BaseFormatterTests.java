@@ -24,6 +24,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.junit.After;
 import org.junit.Before;
@@ -38,10 +40,11 @@ public class BaseFormatterTests {
 
 	@After
 	public void teardown() {
-		int numProblems = problems.size();
-		if (numProblems > 0) {
-			for (ICompilerProblem problem : problems) {
-				fail(problem.toString() + " (" + problem.getLine() +", " + problem.getColumn() + ")");
+		CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(null);
+		for (ICompilerProblem problem : problems) {
+			CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
+			if(CompilerProblemSeverity.ERROR.equals(severity)) {
+				fail(problem.toString() + " (" + problem.getLine() + ", " + problem.getColumn() + ")");
 			}
 		}
 		problems = null;
