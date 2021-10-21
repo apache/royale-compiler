@@ -1354,7 +1354,6 @@ public class FORMATTER {
 		int searchIndex = 0;
 		boolean inListing = alreadyInListing;
 		while (searchIndex < lineText.length()) {
-			System.err.println(searchIndex + " " + lineText.length() + " " + inListing);
 			if (!inListing) {
 				searchIndex = lineText.indexOf("<listing", searchIndex);
 				if (searchIndex == -1) {
