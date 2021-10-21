@@ -36,7 +36,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		// @formatter:off
 			"throw;",
 			// @formatter:on
-			problems
+			null
 		);
 		assertEquals(
 		// @formatter:off
@@ -57,7 +57,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 		// @formatter:off
 			"throw",
 			// @formatter:on
-			problems
+			null
 		);
 		assertEquals(
 		// @formatter:off
@@ -116,7 +116,7 @@ public class TestThrowStatement extends BaseFormatterTests {
 			"throw\n" +
 			"new Error();",
 			// @formatter:on
-			problems
+			null
 		);
 		assertEquals(
 		// @formatter:off

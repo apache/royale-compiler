@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.clients.problems.ProblemFormatter;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
@@ -51,6 +52,7 @@ import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
@@ -396,7 +398,7 @@ public class FORMATTER {
 			String scriptTagText = scriptMatcher.group(1);
 			String scriptText = scriptMatcher.group(2);
 			String formattedScriptText = formatAS3TextInternal(filePath, scriptText, problems);
-			if (problems.size() > 0) {
+			if (!ignoreProblems && hasErrors(problems)) {
 				return text;
 			}
 			String[] formattedLines = formattedScriptText.split("\n");
@@ -431,6 +433,10 @@ public class FORMATTER {
 	}
 
 	private String formatAS3TextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
+		if(problems == null) {
+			problems = new ArrayList<ICompilerProblem>();
+		}
+
 		StringReader textReader = new StringReader(text);
 		StreamingASTokenizer tokenizer = null;
 		ASToken[] streamingTokens = null;
@@ -448,10 +454,11 @@ public class FORMATTER {
 			}
 		}
 
-		if (!ignoreProblems && tokenizer.hasTokenizationProblems()) {
-			if (problems != null) {
-				problems.addAll(tokenizer.getTokenizationProblems());
-			}
+		if (tokenizer.hasTokenizationProblems()) {
+			problems.addAll(tokenizer.getTokenizationProblems());
+		}
+
+		if(!ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -477,23 +484,19 @@ public class FORMATTER {
 			parser.file(node);
 		} catch (Exception e) {
 			parser = null;
-			if (problems != null) {
-				problems.add(new UnexpectedExceptionProblem(e));
-			}
+			problems.add(new UnexpectedExceptionProblem(e));
 			return text;
 		}
 
-		if (!ignoreProblems && tokenizer.hasTokenizationProblems()) {
-			if (problems != null) {
-				problems.addAll(tokenizer.getTokenizationProblems());
-			}
-			return text;
+		if (tokenizer.hasTokenizationProblems()) {
+			problems.addAll(tokenizer.getTokenizationProblems());
 		}
 
-		if (!ignoreProblems && parser.getSyntaxProblems().size() > 0) {
-			if (problems != null) {
-				problems.addAll(parser.getSyntaxProblems());
-			}
+		if (parser.getSyntaxProblems().size() > 0) {
+			problems.addAll(parser.getSyntaxProblems());
+		}
+
+		if(!ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -1548,6 +1551,17 @@ public class FORMATTER {
 		for (int j = 0; j < numRequiredNewLines; j++) {
 			builder.append('\n');
 		}
+	}
+
+	private boolean hasErrors(Collection<ICompilerProblem> problems) {
+		CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(null);
+		for(ICompilerProblem problem : problems) {
+			CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
+			if(CompilerProblemSeverity.ERROR.equals(severity)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static class BlockStackItem {
