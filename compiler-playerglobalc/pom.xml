@@ -27,6 +27,9 @@
 
   <artifactId>compiler-playerglobalc</artifactId>
   <version>0.9.9-SNAPSHOT</version>
+
+  <name>Apache Royale: Compiler: playerglobal.swc support</name>
+  <description>The Apache Royale Compiler playerglobal/airglobal swc support</description>
   
   <build>
     <plugins>

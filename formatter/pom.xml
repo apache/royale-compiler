@@ -27,7 +27,10 @@
 
   <artifactId>formatter</artifactId>
   <version>0.9.9-SNAPSHOT</version>
-  
+
+  <name>Apache Royale: Compiler: AS3/MXML Code Formatter</name>
+  <description>The Apache Royale Compiler AS3/MXML Code Formatter</description>
+
   <build>
     <plugins>
         <plugin>
