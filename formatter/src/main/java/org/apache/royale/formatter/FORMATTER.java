@@ -1677,7 +1677,18 @@ public class FORMATTER {
 				prevTokenOrExtra = token;
 				continue;
 			} else if (token.getType() == MXMLTokenTypes.TOKEN_WHITESPACE) {
-				numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
+				if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+					numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
+				}
+				else {
+					// if the parent element contains text, treat whitespace
+					// the same as text, and don't reformat it
+					// text is never reformatted because some components use it
+					// without collapsing whitespace, and developers would be
+					// confused if whitespace that they deliberately added were
+					// to be removed
+					builder.append(token.getText());
+				}
 				if (i == (tokens.size() - 1)) {
 					// if the last token is whitespace, append new lines
 					appendNewLines(builder, numRequiredNewLines);
@@ -1721,29 +1732,21 @@ public class FORMATTER {
 			// characters that must appear before the token
 			switch (token.getType()) {
 				case MXMLTokenTypes.TOKEN_OPEN_TAG_START: {
-					if (prevToken == null || prevToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
-						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-					}
 					inOpenTag = true;
-					elementStack.add(new ElementStackItem(token.getText().substring(1)));
+					// if the parent contains text, children should be the same
+					boolean containsText = !elementStack.isEmpty() && elementStack.get(elementStack.size() - 1).containsText;
+					elementStack.add(new ElementStackItem(token, token.getText().substring(1), containsText));
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START: {
-					if (prevToken == null || prevToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
-						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+						indent = decreaseIndent(indent);
 					}
-					indent = decreaseIndent(indent);
 					inCloseTag = true;
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_NAME: {
 					requiredSpace = true;
-					break;
-				}
-				case MXMLTokenTypes.TOKEN_TAG_END: {
-					break;
-				}
-				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END: {
 					break;
 				}
 			}
@@ -1762,6 +1765,8 @@ public class FORMATTER {
 			}
 
 			// include the token's own text
+			// no token gets reformatted before being appended
+			// whitespace is the only special case, but that's not handled here
 			builder.append(token.getText());
 
 			// characters that must appear after the token
@@ -1798,11 +1803,19 @@ public class FORMATTER {
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_TAG_END: {
-					if (!inOpenTag || nextToken == null || nextToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
-						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-					}
 					if (inOpenTag) {
-						indent = increaseIndent(indent);
+						ElementStackItem element = elementStack.get(elementStack.size() - 1);
+						if (!element.containsText) {
+							element.containsText = elementContainsText(tokens, i + 1, element.token);
+						}
+						if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+							indent = increaseIndent(indent);
+						}
+					}
+					else {
+						if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+							numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+						}
 					}
 					inOpenTag = false;
 					if (indentedAttributes) {
@@ -1813,11 +1826,13 @@ public class FORMATTER {
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END: {
-					if (!inOpenTag || nextToken == null || nextToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
-						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-					}
 					if (inOpenTag) {
 						elementStack.remove(elementStack.size() - 1);
+					}
+					else {
+						if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+							numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+						}
 					}
 					inOpenTag = false;
 					// no need to change nested indent after this tag
@@ -1839,6 +1854,37 @@ public class FORMATTER {
 		return builder.toString();
 	}
 
+	private boolean elementContainsText(List<IMXMLToken> tokens, int startIndex, IMXMLToken openTagToken) {
+		ArrayList<IMXMLToken> elementStack = new ArrayList<IMXMLToken>();
+		elementStack.add(openTagToken);
+		for(int i = startIndex; i < tokens.size(); i++) {
+			IMXMLToken token = tokens.get(i);
+			switch(token.getType()) {
+				case MXMLTokenTypes.TOKEN_TEXT:
+					if(elementStack.size() == 1) {
+						return true;
+					}
+					break;
+				case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
+					elementStack.add(token);
+					break;
+				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END:
+					elementStack.remove(elementStack.size() - 1);
+					if(elementStack.size() == 0) {
+						return false;
+					}
+					break;
+				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START:
+					elementStack.remove(elementStack.size() - 1);
+					if(elementStack.size() == 0) {
+						return false;
+					}
+					break;
+			}
+		}
+		return false;
+	}
+
 	private int countNewLinesInExtra(IMXMLToken token) {
 		if (token == null
 				|| (token.getType() != MXMLTokenTypes.TOKEN_WHITESPACE && token.getType() != TOKEN_TYPE_EXTRA)) {
@@ -1854,10 +1900,14 @@ public class FORMATTER {
 	}
 
 	private static class ElementStackItem {
-		public ElementStackItem(String elementName) {
+		public ElementStackItem(IMXMLToken token, String elementName, boolean containsText) {
+			this.token = token;
 			this.elementName = elementName;
+			this.containsText = containsText;
 		}
 
+		public IMXMLToken token;
 		public String elementName;
+		public boolean containsText = false;
 	}
 }
