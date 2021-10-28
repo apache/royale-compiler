@@ -211,4 +211,64 @@ public class TestMXMLTag extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testMultipleAttributes() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaces = false;
+		formatter.mxmlInsertNewLineBetweenAttributes = false;
+		formatter.mxmlAlignAttributes = false;
+		String result = formatter.formatMXMLText(
+		// @formatter:off
+			"<s:Tag one=\"1\"   two=\"2\"/>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Tag one=\"1\" two=\"2\"/>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMultipleAttributesOnePerLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaces = false;
+		formatter.mxmlInsertNewLineBetweenAttributes = true;
+		formatter.mxmlAlignAttributes = false;
+		String result = formatter.formatMXMLText(
+		// @formatter:off
+			"<s:Tag one=\"1\" two=\"2\"/>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Tag one=\"1\"\n" +
+				"\ttwo=\"2\"/>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMXMLAlignAttributes() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaces = false;
+		formatter.mxmlInsertNewLineBetweenAttributes = true;
+		formatter.mxmlAlignAttributes = true;
+		String result = formatter.formatMXMLText(
+		// @formatter:off
+			"<s:Tag one=\"1\" two=\"2\" three=\"3\"/>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Tag one=\"1\"\n" +
+				"\t   two=\"2\"\n" +
+				"\t   three=\"3\"/>",
+				// @formatter:on
+				result);
+	}
 }

@@ -471,4 +471,40 @@ public class Configuration {
     {
         this.ignoreParsingProblems = b;
     }
+
+    //
+    // 'mxml-align-attributes' option
+    //
+
+    private boolean mxmlAlignAttributes = false;
+
+    public boolean getMxmlAlignAttributes()
+    {
+        return mxmlAlignAttributes;
+    }
+
+    @Config(advanced = true)
+    @Mapping("mxml-align-attributes")
+    public void setMxmlAlignAttributes(ConfigurationValue cv, boolean b)
+    {
+        this.mxmlAlignAttributes = b;
+    }
+
+    //
+    // 'mxml-insert-new-line-attributes' option
+    //
+
+    private boolean mxmlInsertNewLineBetweenAttributes = false;
+
+    public boolean getMxmlInsertNewLineBetweenAttributes()
+    {
+        return mxmlInsertNewLineBetweenAttributes;
+    }
+
+    @Config(advanced = true)
+    @Mapping("mxml-insert-new-line-attributes")
+    public void setMxmlInsertNewLineBetweenAttributes(ConfigurationValue cv, boolean b)
+    {
+        this.mxmlInsertNewLineBetweenAttributes = b;
+    }
 }

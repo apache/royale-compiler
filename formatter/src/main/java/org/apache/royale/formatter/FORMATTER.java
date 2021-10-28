@@ -120,6 +120,8 @@ public class FORMATTER {
 	public Semicolons semicolons = Semicolons.INSERT;
 	public boolean ignoreProblems = false;
 	public boolean collapseEmptyBlocks = false;
+	public boolean mxmlAlignAttributes = false;
+	public boolean mxmlInsertNewLineBetweenAttributes = false;
 
 	private ProblemQuery problems;
 	private List<File> inputFiles = new ArrayList<File>();
@@ -324,6 +326,8 @@ public class FORMATTER {
 			insertSpaceBeforeAndAfterBinaryOperators = configuration.getInsertSpaceBeforeAndAfterBinaryOperators();
 			insertSpaceAtStartOfLineComment = configuration.getInsertSpaceAtStartOfLineComment();
 			insertSpaces = configuration.getInsertSpaces();
+			mxmlInsertNewLineBetweenAttributes = configuration.getMxmlInsertNewLineBetweenAttributes();
+			mxmlAlignAttributes = configuration.getMxmlAlignAttributes();
 			listChangedFiles = configuration.getListFiles();
 			maxPreserveNewLines = configuration.getMaxPreserveNewLines();
 			placeOpenBraceOnNewLine = configuration.getPlaceOpenBraceOnNewLine();
@@ -1573,15 +1577,37 @@ public class FORMATTER {
 		return Math.max(0, indent - 1);
 	}
 
-	private void appendIndent(StringBuilder builder, int indent) {
-		for (int i = 0; i < indent; i++) {
-			if (insertSpaces) {
-				for (int j = 0; j < tabSize; j++) {
-					builder.append(" ");
-				}
-			} else {
-				builder.append("\t");
+	private String getIndent() {
+		if (insertSpaces) {
+			String result = "";
+			for (int j = 0; j < tabSize; j++) {
+				result += " ";
 			}
+			return result;
+		}
+		return "\t";
+	}
+
+	private String getAttributeIndent(IMXMLToken openTagToken) {
+		if (!mxmlAlignAttributes) {
+			return getIndent();
+		}
+		int indentSize = openTagToken.getText().length() + 1;
+		String result = "";
+		while (indentSize >= tabSize) {
+			result += getIndent();
+			indentSize -= tabSize;
+		}
+		for (int i = 0; i < indentSize; i++) {
+			result += " ";
+		}
+		return result;
+	}
+
+	private void appendIndent(StringBuilder builder, int indent) {
+		String indentString = getIndent();
+		for (int i = 0; i < indent; i++) {
+			builder.append(indentString);
 		}
 	}
 
@@ -1634,8 +1660,7 @@ public class FORMATTER {
 		IMXMLToken[] originalTokens = null;
 		try {
 			originalTokens = mxmlTokenizer.getTokens(textReader);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(textReader);
 			IOUtils.closeQuietly(mxmlTokenizer);
 		}
@@ -1653,7 +1678,7 @@ public class FORMATTER {
 		boolean requiredSpace = false;
 		boolean inOpenTag = false;
 		boolean inCloseTag = false;
-		boolean indentedAttributes = false;
+		String attributeIndent = "";
 		IMXMLToken prevToken = null;
 		IMXMLToken prevTokenOrExtra = null;
 		IMXMLToken token = null;
@@ -1677,10 +1702,9 @@ public class FORMATTER {
 				prevTokenOrExtra = token;
 				continue;
 			} else if (token.getType() == MXMLTokenTypes.TOKEN_WHITESPACE) {
-				if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+				if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
 					numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
-				}
-				else {
+				} else {
 					// if the parent element contains text, treat whitespace
 					// the same as text, and don't reformat it
 					// text is never reformatted because some components use it
@@ -1734,12 +1758,13 @@ public class FORMATTER {
 				case MXMLTokenTypes.TOKEN_OPEN_TAG_START: {
 					inOpenTag = true;
 					// if the parent contains text, children should be the same
-					boolean containsText = !elementStack.isEmpty() && elementStack.get(elementStack.size() - 1).containsText;
+					boolean containsText = !elementStack.isEmpty()
+							&& elementStack.get(elementStack.size() - 1).containsText;
 					elementStack.add(new ElementStackItem(token, token.getText().substring(1), containsText));
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START: {
-					if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+					if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
 						indent = decreaseIndent(indent);
 					}
 					inCloseTag = true;
@@ -1753,12 +1778,11 @@ public class FORMATTER {
 
 			if (prevToken != null) {
 				if (numRequiredNewLines > 0) {
-					if (inOpenTag && token.getType() != MXMLTokenTypes.TOKEN_OPEN_TAG_START && !indentedAttributes) {
-						indentedAttributes = true;
-						indent = increaseIndent(indent);
-					}
 					appendNewLines(builder, numRequiredNewLines);
 					appendIndent(builder, indent);
+					if (attributeIndent.length() > 0) {
+						builder.append(attributeIndent);
+					}
 				} else if (requiredSpace) {
 					builder.append(' ');
 				}
@@ -1798,6 +1822,7 @@ public class FORMATTER {
 				case MXMLTokenTypes.TOKEN_OPEN_TAG_START: {
 					if (nextToken != null && nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
+						attributeIndent = getAttributeIndent(token);
 						requiredSpace = true;
 					}
 					break;
@@ -1808,41 +1833,41 @@ public class FORMATTER {
 						if (!element.containsText) {
 							element.containsText = elementContainsText(tokens, i + 1, element.token);
 						}
-						if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+						if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
 							indent = increaseIndent(indent);
 						}
-					}
-					else {
-						if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+					} else {
+						if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
 							numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 						}
 					}
 					inOpenTag = false;
-					if (indentedAttributes) {
-						indentedAttributes = false;
-						indent = decreaseIndent(indent);
-					}
+					attributeIndent = "";
 					inCloseTag = false;
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END: {
 					if (inOpenTag) {
 						elementStack.remove(elementStack.size() - 1);
-					}
-					else {
-						if(elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+					} else {
+						if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
 							numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 						}
 					}
 					inOpenTag = false;
 					// no need to change nested indent after this tag
 					// however, we may need to remove attribute indent
-					if (indentedAttributes) {
-						indentedAttributes = false;
-						indent = decreaseIndent(indent);
-					}
+					attributeIndent = "";
 					// we shouldn't find an empty close tag, but clear flag anyway
 					inCloseTag = false;
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_STRING: {
+					if (inOpenTag && mxmlInsertNewLineBetweenAttributes && nextToken != null
+							&& nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
+							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
+						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					}
 					break;
 				}
 			}
@@ -1857,11 +1882,11 @@ public class FORMATTER {
 	private boolean elementContainsText(List<IMXMLToken> tokens, int startIndex, IMXMLToken openTagToken) {
 		ArrayList<IMXMLToken> elementStack = new ArrayList<IMXMLToken>();
 		elementStack.add(openTagToken);
-		for(int i = startIndex; i < tokens.size(); i++) {
+		for (int i = startIndex; i < tokens.size(); i++) {
 			IMXMLToken token = tokens.get(i);
-			switch(token.getType()) {
+			switch (token.getType()) {
 				case MXMLTokenTypes.TOKEN_TEXT:
-					if(elementStack.size() == 1) {
+					if (elementStack.size() == 1) {
 						return true;
 					}
 					break;
@@ -1870,13 +1895,13 @@ public class FORMATTER {
 					break;
 				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END:
 					elementStack.remove(elementStack.size() - 1);
-					if(elementStack.size() == 0) {
+					if (elementStack.size() == 0) {
 						return false;
 					}
 					break;
 				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START:
 					elementStack.remove(elementStack.size() - 1);
-					if(elementStack.size() == 0) {
+					if (elementStack.size() == 0) {
 						return false;
 					}
 					break;
