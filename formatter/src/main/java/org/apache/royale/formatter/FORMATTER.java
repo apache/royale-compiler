@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.clients.problems.ProblemFormatter;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
@@ -49,9 +50,13 @@ import org.apache.royale.compiler.internal.parsing.as.MetadataToken;
 import org.apache.royale.compiler.internal.parsing.as.MetadataTokenTypes;
 import org.apache.royale.compiler.internal.parsing.as.RepairingTokenBuffer;
 import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.royale.compiler.internal.parsing.mxml.MXMLTokenizer;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -138,7 +143,7 @@ public class FORMATTER {
 							builder.append(sysInScanner.next());
 						}
 					} finally {
-						sysInScanner.close();
+						IOUtils.closeQuietly(sysInScanner);
 					}
 					String filePath = FilenameNormalization.normalize("stdin.as");
 					String fileText = builder.toString();
@@ -375,36 +380,6 @@ public class FORMATTER {
 		}
 	}
 
-	private String formatMXMLTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
-		StringBuilder builder = new StringBuilder();
-		Pattern scriptPattern = Pattern.compile(
-				"[\t ]*<((?:mx|fx):(?:Script|Metadata))>\\s*(?:<!\\[CDATA\\[)?(?:.|\\n)*?(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:Script|Metadata)>");
-		Matcher scriptMatcher = scriptPattern.matcher(text);
-		if (problems == null) {
-			// we need to know if there were problems because it means that we
-			// need to return the original, unformatted text
-			problems = new ArrayList<ICompilerProblem>();
-		}
-		int lastIndex = 0;
-		while (scriptMatcher.find()) {
-			int start = scriptMatcher.start();
-			int end = scriptMatcher.end();
-			String scriptText = scriptMatcher.group().trim();
-
-			builder.append(text.substring(lastIndex, start));
-			String formattedText = formatMXMLScriptElement(scriptText, problems);
-			if (!ignoreProblems && hasErrors(problems)) {
-				return text;
-			}
-			builder.append(formattedText);
-			lastIndex = end;
-		}
-		if (lastIndex < text.length()) {
-			builder.append(text.substring(lastIndex));
-		}
-		return builder.toString();
-	}
-
 	private String formatMXMLScriptElement(String text, Collection<ICompilerProblem> problems) {
 		String indent = "\t";
 		if (insertSpaces) {
@@ -469,7 +444,7 @@ public class FORMATTER {
 	}
 
 	private String formatAS3TextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
-		if(problems == null) {
+		if (problems == null) {
 			problems = new ArrayList<ICompilerProblem>();
 		}
 
@@ -483,18 +458,15 @@ public class FORMATTER {
 			tokenizer.setFollowIncludes(false);
 			streamingTokens = tokenizer.getTokens(textReader);
 		} finally {
-			try {
-				textReader.close();
-				tokenizer.close();
-			} catch (IOException e) {
-			}
+			IOUtils.closeQuietly(textReader);
+			IOUtils.closeQuietly(tokenizer);
 		}
 
 		if (tokenizer.hasTokenizationProblems()) {
 			problems.addAll(tokenizer.getTokenizationProblems());
 		}
 
-		if(!ignoreProblems && hasErrors(problems)) {
+		if (!ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -532,7 +504,7 @@ public class FORMATTER {
 			problems.addAll(parser.getSyntaxProblems());
 		}
 
-		if(!ignoreProblems && hasErrors(problems)) {
+		if (!ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -557,11 +529,25 @@ public class FORMATTER {
 		// there may be some comments left that didn't appear before any
 		// of the repaired tokens, so add them all at the end
 		repairedTokensList.addAll(comments);
-		IASToken[] repairedTokens = repairedTokensList.toArray(new IASToken[0]);
 
-		IASToken prevToken = null;
+		List<IASToken> tokens = insertExtraAS3Tokens(repairedTokensList, text);
+		try {
+			return parseTokens(filePath, tokens, node);
+		} catch (Exception e) {
+			if (problems != null) {
+				System.err.println(e);
+				e.printStackTrace(System.err);
+				problems.add(new UnexpectedExceptionProblem(e));
+			}
+			return text;
+		}
+
+	}
+
+	private List<IASToken> insertExtraAS3Tokens(List<IASToken> originalTokens, String text) {
 		ArrayList<IASToken> tokens = new ArrayList<IASToken>();
-		for (IASToken token : repairedTokens) {
+		IASToken prevToken = null;
+		for (IASToken token : originalTokens) {
 			if (prevToken != null) {
 
 				boolean skipSemicolon = token.getType() == ASTokenTypes.TOKEN_SEMICOLON && token.isImplicit()
@@ -597,17 +583,41 @@ public class FORMATTER {
 				tokens.add(extraToken);
 			}
 		}
-		try {
-			return parseTokens(filePath, tokens, node);
-		} catch (Exception e) {
-			if (problems != null) {
-				System.err.println(e);
-				e.printStackTrace(System.err);
-				problems.add(new UnexpectedExceptionProblem(e));
-			}
-			return text;
-		}
+		return tokens;
+	}
 
+	private List<IMXMLToken> insertExtraMXMLTokens(IMXMLToken[] originalTokens, String text) {
+		ArrayList<IMXMLToken> tokens = new ArrayList<IMXMLToken>();
+		IMXMLToken prevToken = null;
+		for (IMXMLToken token : originalTokens) {
+			if (prevToken != null) {
+				int start = prevToken.getEnd();
+				int end = token.getStart();
+				if (end > start) {
+					String tokenText = text.substring(start, end);
+					MXMLToken extraToken = new MXMLToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getLine(),
+							prevToken.getColumn() + end - start, tokenText);
+					extraToken.setEndLine(token.getLine());
+					extraToken.setEndLine(token.getColumn());
+					tokens.add(extraToken);
+				}
+			}
+			tokens.add(token);
+			prevToken = token;
+		}
+		if (prevToken != null) {
+			int start = prevToken.getEnd();
+			int end = text.length();
+			if (end > start) {
+				String tokenText = text.substring(start, end);
+				MXMLToken extraToken = new MXMLToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getLine(),
+						prevToken.getColumn() + end - start, tokenText);
+				extraToken.setEndLine(prevToken.getLine());
+				extraToken.setEndLine(prevToken.getColumn());
+				tokens.add(extraToken);
+			}
+		}
+		return tokens;
 	}
 
 	private IASToken getNextTokenSkipExtra(List<IASToken> tokens, int startIndex) {
@@ -765,8 +775,8 @@ public class FORMATTER {
 							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 							if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_SWITCH) {
 								SwitchBlockStackItem switchStackItem = (SwitchBlockStackItem) stackItem;
-								if (switchStackItem.clauseCount > 0 && (prevToken == null
-										|| prevToken.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE)) {
+								if (switchStackItem.clauseCount > 0
+										&& (prevToken == null || prevToken.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE)) {
 									indent = decreaseIndent(indent);
 								}
 							}
@@ -929,8 +939,7 @@ public class FORMATTER {
 			switch (token.getType()) {
 				case ASTokenTypes.TOKEN_BLOCK_OPEN: {
 					if (blockOpenPending) {
-						boolean oneLineBlock = nextToken != null
-								&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
+						boolean oneLineBlock = nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
 						if (placeOpenBraceOnNewLine && (!collapseEmptyBlocks || !oneLineBlock)) {
 							indent = increaseIndent(indent);
 						}
@@ -957,9 +966,8 @@ public class FORMATTER {
 			} else {
 				switch (token.getType()) {
 					case ASTokenTypes.TOKEN_SEMICOLON: {
-						if (inControlFlowStatement && !blockStack.isEmpty()
-								&& blockStack.get(blockStack.size() - 1).token
-										.getType() == ASTokenTypes.TOKEN_KEYWORD_FOR) {
+						if (inControlFlowStatement && !blockStack.isEmpty() && blockStack.get(blockStack.size() - 1).token
+								.getType() == ASTokenTypes.TOKEN_KEYWORD_FOR) {
 							if (insertSpaceAfterSemicolonInForStatements) {
 								requiredSpace = true;
 							}
@@ -980,9 +988,8 @@ public class FORMATTER {
 							}
 						}
 						if (!inControlFlowStatement) {
-							if (nextToken != null
-									&& (nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-											|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+							if (nextToken != null && (nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+									|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
 								requiredSpace = true;
 							} else {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
@@ -1108,8 +1115,7 @@ public class FORMATTER {
 						break;
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_ELSE: {
-						if (nextTokenNotComment != null
-								&& nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_IF) {
+						if (nextTokenNotComment != null && nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_IF) {
 							requiredSpace = true;
 						} else {
 							blockStack.add(new BlockStackItem(token));
@@ -1590,9 +1596,9 @@ public class FORMATTER {
 
 	private boolean hasErrors(Collection<ICompilerProblem> problems) {
 		CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(null);
-		for(ICompilerProblem problem : problems) {
+		for (ICompilerProblem problem : problems) {
 			CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
-			if(CompilerProblemSeverity.ERROR.equals(severity)) {
+			if (CompilerProblemSeverity.ERROR.equals(severity)) {
 				return true;
 			}
 		}
@@ -1620,5 +1626,238 @@ public class FORMATTER {
 		}
 
 		public int clauseCount = 0;
+	}
+
+	private String formatMXMLTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
+		StringReader textReader = new StringReader(text);
+		MXMLTokenizer mxmlTokenizer = new MXMLTokenizer();
+		IMXMLToken[] originalTokens = null;
+		try {
+			originalTokens = mxmlTokenizer.getTokens(textReader);
+		}
+		finally {
+			IOUtils.closeQuietly(textReader);
+			IOUtils.closeQuietly(mxmlTokenizer);
+		}
+
+		if (mxmlTokenizer.hasTokenizationProblems()) {
+			return text;
+		}
+
+		Pattern scriptStartPattern = Pattern.compile("<((?:mx|fx):(Script|Metadata))");
+
+		List<IMXMLToken> tokens = insertExtraMXMLTokens(originalTokens, text);
+
+		int indent = 0;
+		int numRequiredNewLines = 0;
+		boolean requiredSpace = false;
+		boolean inOpenTag = false;
+		boolean inCloseTag = false;
+		boolean indentedAttributes = false;
+		IMXMLToken prevToken = null;
+		IMXMLToken prevTokenOrExtra = null;
+		IMXMLToken token = null;
+		IMXMLToken nextToken = null;
+		List<ElementStackItem> elementStack = new ArrayList<ElementStackItem>();
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < tokens.size(); i++) {
+			token = tokens.get(i);
+			nextToken = null;
+			if (i < (tokens.size() - 1)) {
+				nextToken = tokens.get(i + 1);
+			}
+			if (token.getType() == TOKEN_TYPE_EXTRA) {
+				if (i == (tokens.size() - 1)) {
+					// if the last token is whitespace, include new lines
+					numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
+					appendNewLines(builder, numRequiredNewLines);
+					break;
+				}
+				numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
+				prevTokenOrExtra = token;
+				continue;
+			} else if (token.getType() == MXMLTokenTypes.TOKEN_WHITESPACE) {
+				numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
+				if (i == (tokens.size() - 1)) {
+					// if the last token is whitespace, append new lines
+					appendNewLines(builder, numRequiredNewLines);
+				}
+				continue;
+			} else if (token.getType() == MXMLTokenTypes.TOKEN_OPEN_TAG_START
+					&& scriptStartPattern.matcher(token.getText()).matches()) {
+
+				if (prevToken != null && numRequiredNewLines > 0) {
+					appendNewLines(builder, numRequiredNewLines);
+				}
+				StringBuilder scriptBuilder = new StringBuilder();
+				scriptBuilder.append(token.getText());
+				boolean inScriptCloseTag = false;
+				while (i < (tokens.size() - 1)) {
+					i++;
+					token = tokens.get(i);
+					scriptBuilder.append(token.getText());
+					if (token.getType() == MXMLTokenTypes.TOKEN_CLOSE_TAG_START) {
+						inScriptCloseTag = true;
+					} else if (inScriptCloseTag && token.getType() == MXMLTokenTypes.TOKEN_TAG_END) {
+						break;
+					}
+				}
+				if (problems == null) {
+					// we need to know if there were problems because it means that we
+					// need to return the original, unformatted text
+					problems = new ArrayList<ICompilerProblem>();
+				}
+				builder.append(formatMXMLScriptElement(scriptBuilder.toString(), problems));
+				if (hasErrors(problems)) {
+					return text;
+				}
+				prevToken = token;
+				prevTokenOrExtra = token;
+				requiredSpace = false;
+				numRequiredNewLines = 1;
+				continue;
+			}
+
+			// characters that must appear before the token
+			switch (token.getType()) {
+				case MXMLTokenTypes.TOKEN_OPEN_TAG_START: {
+					if (prevToken == null || prevToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
+						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					}
+					inOpenTag = true;
+					elementStack.add(new ElementStackItem(token.getText().substring(1)));
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START: {
+					if (prevToken == null || prevToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
+						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					}
+					indent = decreaseIndent(indent);
+					inCloseTag = true;
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_NAME: {
+					requiredSpace = true;
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_TAG_END: {
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END: {
+					break;
+				}
+			}
+
+			if (prevToken != null) {
+				if (numRequiredNewLines > 0) {
+					if (inOpenTag && token.getType() != MXMLTokenTypes.TOKEN_OPEN_TAG_START && !indentedAttributes) {
+						indentedAttributes = true;
+						indent = increaseIndent(indent);
+					}
+					appendNewLines(builder, numRequiredNewLines);
+					appendIndent(builder, indent);
+				} else if (requiredSpace) {
+					builder.append(' ');
+				}
+			}
+
+			// include the token's own text
+			builder.append(token.getText());
+
+			// characters that must appear after the token
+			requiredSpace = false;
+			numRequiredNewLines = 0;
+
+			switch (token.getType()) {
+				case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION: {
+					numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START: {
+					if (nextToken != null && nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
+							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
+						requiredSpace = true;
+					}
+					if (elementStack.isEmpty()) {
+						// something is very wrong!
+						return text;
+					}
+					String elementName = token.getText().substring(2);
+					ElementStackItem elementItem = elementStack.remove(elementStack.size() - 1);
+					if (!elementName.equals(elementItem.elementName)) {
+						// there's a unclosed tag with a different name somewhere
+						return text;
+					}
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_OPEN_TAG_START: {
+					if (nextToken != null && nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
+							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
+						requiredSpace = true;
+					}
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_TAG_END: {
+					if (!inOpenTag || nextToken == null || nextToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
+						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					}
+					if (inOpenTag) {
+						indent = increaseIndent(indent);
+					}
+					inOpenTag = false;
+					if (indentedAttributes) {
+						indentedAttributes = false;
+						indent = decreaseIndent(indent);
+					}
+					inCloseTag = false;
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END: {
+					if (!inOpenTag || nextToken == null || nextToken.getType() != MXMLTokenTypes.TOKEN_TEXT) {
+						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					}
+					if (inOpenTag) {
+						elementStack.remove(elementStack.size() - 1);
+					}
+					inOpenTag = false;
+					// no need to change nested indent after this tag
+					// however, we may need to remove attribute indent
+					if (indentedAttributes) {
+						indentedAttributes = false;
+						indent = decreaseIndent(indent);
+					}
+					// we shouldn't find an empty close tag, but clear flag anyway
+					inCloseTag = false;
+					break;
+				}
+			}
+
+			prevToken = token;
+			prevTokenOrExtra = token;
+		}
+
+		return builder.toString();
+	}
+
+	private int countNewLinesInExtra(IMXMLToken token) {
+		if (token == null
+				|| (token.getType() != MXMLTokenTypes.TOKEN_WHITESPACE && token.getType() != TOKEN_TYPE_EXTRA)) {
+			return 0;
+		}
+		int numNewLinesInWhitespace = 0;
+		String whitespace = token.getText();
+		int index = -1;
+		while ((index = whitespace.indexOf('\n', index + 1)) != -1) {
+			numNewLinesInWhitespace++;
+		}
+		return numNewLinesInWhitespace;
+	}
+
+	private static class ElementStackItem {
+		public ElementStackItem(String elementName) {
+			this.elementName = elementName;
+		}
+
+		public String elementName;
 	}
 }
