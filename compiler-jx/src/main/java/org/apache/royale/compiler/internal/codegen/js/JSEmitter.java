@@ -645,20 +645,22 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 if (project.getBuiltinType(BuiltinType.NUMBER).equals(dynamicAccessIndexDef))
                 {
                     IDefinition leftDef = dynamicAccess.getLeftOperandNode().resolveType(project);
-                    IMetaTag[] metas = leftDef.getAllMetaTags();
-                    for (IMetaTag meta : metas)
-                    {
-                        if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
+                    if (leftDef != null) {
+                        IMetaTag[] metas = leftDef.getAllMetaTags();
+                        for (IMetaTag meta : metas)
                         {
-                            IMetaTagAttribute[] attrs = meta.getAllAttributes();
-                            for (IMetaTagAttribute attr : attrs)
+                            if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
                             {
-                                String t = attr.getValue();
-                                if (t.equals(IASLanguageConstants.Number))
+                                IMetaTagAttribute[] attrs = meta.getAllAttributes();
+                                for (IMetaTagAttribute attr : attrs)
                                 {
-                                    needsCoercion = false;
-                                    //explicitly prevent other coercion detection rules from picking this up
-                                    avoidCoercion = true;
+                                    String t = attr.getValue();
+                                    if (t.equals(IASLanguageConstants.Number))
+                                    {
+                                        needsCoercion = false;
+                                        //explicitly prevent other coercion detection rules from picking this up
+                                        avoidCoercion = true;
+                                    }
                                 }
                             }
                         }
