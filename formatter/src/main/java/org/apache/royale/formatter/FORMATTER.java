@@ -1562,8 +1562,11 @@ public class FORMATTER {
 	}
 
 	private boolean checkTokensForAnyVectorType(IASToken prevToken, IASToken nextToken) {
-		return prevToken != null && nextToken != null && prevToken.getType() == ASTokenTypes.TOKEN_TYPED_COLLECTION_OPEN
-				&& nextToken.getType() == ASTokenTypes.TOKEN_TYPED_COLLECTION_CLOSE;
+		return prevToken != null && nextToken != null
+				&& ((prevToken.getType() == ASTokenTypes.TOKEN_TYPED_COLLECTION_OPEN
+						&& nextToken.getType() == ASTokenTypes.TOKEN_TYPED_COLLECTION_CLOSE)
+						|| (prevToken.getType() == ASTokenTypes.TOKEN_TYPED_LITERAL_OPEN
+								&& nextToken.getType() == ASTokenTypes.TOKEN_TYPED_LITERAL_CLOSE));
 	}
 
 	private boolean checkTokenBeforeUnaryOperator(IASToken token) {
