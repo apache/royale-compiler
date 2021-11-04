@@ -397,4 +397,29 @@ public class TestIfStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testNestedBodiesWithoutParentheses() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		System.err.println("**** BEFORE");
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"{if (condition1) if (condition2) statement;}",
+			// @formatter:on
+			problems
+		);
+		System.err.println("**** AFTER");
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1)\n" +
+				"\t\tif (condition2)\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

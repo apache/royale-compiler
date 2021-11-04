@@ -977,7 +977,9 @@ public class FORMATTER {
 							}
 							// else no space
 						} else {
-							if (!blockStack.isEmpty()) {
+							boolean checkNext = true;
+							while (!blockStack.isEmpty() && checkNext) {
+								checkNext = false;
 								BlockStackItem prevStackItem = blockStack.get(blockStack.size() - 1);
 								if (prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_CASE
 										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_DEFAULT
@@ -986,6 +988,7 @@ public class FORMATTER {
 									if (prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_CLASS
 											&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_INTERFACE
 											&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_FUNCTION) {
+										checkNext = !prevStackItem.braces;
 										indent = decreaseIndent(indent);
 									}
 								}
@@ -1192,6 +1195,8 @@ public class FORMATTER {
 										&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
 										&& !skipWhitespaceBeforeSemicolon) {
 									indent = increaseIndent(indent);
+									BlockStackItem item = blockStack.get(blockStack.size() - 1);
+									item.braces = false;
 									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 								}
 							}
@@ -1638,6 +1643,7 @@ public class FORMATTER {
 
 		public IASToken token;
 		public int blockDepth = 0;
+		public boolean braces = true;
 	}
 
 	private static class ObjectLiteralBlockStackItem extends BlockStackItem {
