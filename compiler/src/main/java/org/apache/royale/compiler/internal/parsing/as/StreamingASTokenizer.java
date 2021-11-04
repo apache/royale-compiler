@@ -1391,6 +1391,8 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         {
             switch (lastToken.getType())
             {
+                case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:
+                case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
                 case TOKEN_ASDOC_COMMENT:
                 case TOKEN_SEMICOLON:
                 case TOKEN_ATTRIBUTE:

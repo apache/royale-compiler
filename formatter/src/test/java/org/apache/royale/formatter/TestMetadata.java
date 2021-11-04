@@ -229,4 +229,46 @@ public class TestMetadata extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testAfterSingleLineComment() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"// comment\n" +
+			"[UnknownMetaTag(attr1=\"one\")]\n",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"// comment\n" +
+				"[UnknownMetaTag(attr1=\"one\")]\n",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAfterMultiLineComment() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"/* comment */\n" +
+			"[UnknownMetaTag(attr1=\"one\")]\n",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/* comment */\n" +
+				"[UnknownMetaTag(attr1=\"one\")]\n",
+				// @formatter:on
+				result);
+	}
 }
