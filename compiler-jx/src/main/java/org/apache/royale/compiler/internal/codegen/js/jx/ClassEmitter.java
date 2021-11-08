@@ -45,6 +45,7 @@ import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class ClassEmitter extends JSSubEmitter implements
         ISubEmitter<IClassNode>
@@ -92,7 +93,7 @@ public class ClassEmitter extends JSSubEmitter implements
             }
         }
         
-        boolean suppressExport = (asDoc != null && DocEmitterUtils.hasSuppressExport(fjs, asDoc.commentNoEnd()));
+        boolean suppressExport = ASNodeUtils.hasExportSuppressed(node);
 
         getModel().suppressExports = suppressExport;
 

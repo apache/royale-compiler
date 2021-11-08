@@ -54,6 +54,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
+import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
@@ -207,6 +208,11 @@ public class COMPJSC extends MXMLJSC
                         System.out.println("COMPC");
 	                    COMPC compc = new COMPC();
 	                    mxmlc = compc;
+                        //passing true to RoyaleASDocDelegate constructor, to make it behave (outwardly) the same
+                        //as NilASDocDelegate, which would be the default ASDocDelegate, if the following
+                        //setASDocDelegate assignment was not made. This allows for 'processing' of ASDocComments in
+                        //the 'afterDefinition' call.
+                        compc.workspace.setASDocDelegate(new RoyaleASDocDelegate(true));
 	                    compc.configurationClass = JSGoogCompcConfiguration.class;
 	                    result = compc.mainNoExit(removeJSArgs(args));
 	                    if (result != 0)

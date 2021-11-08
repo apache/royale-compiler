@@ -22,7 +22,6 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.ASModifier;
@@ -55,6 +54,7 @@ import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IGetterNode;
 import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class AccessorEmitter extends JSSubEmitter implements
         ISubEmitter<IAccessorNode>
@@ -739,9 +739,8 @@ public class AccessorEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
-        boolean suppress = getModel().suppressExports ||
-				(node.getASDocComment() != null &&
-				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
+        boolean suppress = getModel().suppressExports || ASNodeUtils.hasExportSuppressed(node);
+;
         if (suppress) getModel().suppressedExportNodes.add(node);
 				
         IDefinition def = node.getDefinition();
@@ -817,9 +816,8 @@ public class AccessorEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) fjs.getDocEmitter();
-		boolean suppress = getModel().suppressExports ||
-				(node.getASDocComment() != null &&
-				((ASDocComment)node.getASDocComment()).commentNoEnd().contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
+		boolean suppress = getModel().suppressExports || ASNodeUtils.hasExportSuppressed(node);
+
 		if (suppress) getModel().suppressedExportNodes.add(node);
 
         IFunctionDefinition def = node.getDefinition();

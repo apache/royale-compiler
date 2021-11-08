@@ -22,9 +22,13 @@ package org.apache.royale.compiler.internal.codegen.js.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.utils.ASNodeUtils;
+import org.apache.royale.compiler.utils.DefinitionUtils;
 
 public class DocEmitterUtils
 {
@@ -47,13 +51,12 @@ public class DocEmitterUtils
         ((JSRoyaleDocEmitter)emitter.getDocEmitter()).setClassIgnoreList(ignoreList);
         return ignoreList;
     }
-    
-    
-    public static Boolean hasSuppressExport(JSRoyaleEmitter emitter, String doc)
-    {
 
-        String ignoreToken = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
-        int index = doc.indexOf(ignoreToken);
+
+    public static Boolean hasSuppressExport(String doc) {
+        String suppressToken = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
+        int index = doc.indexOf(suppressToken);
         return index != -1;
     }
+
 }
