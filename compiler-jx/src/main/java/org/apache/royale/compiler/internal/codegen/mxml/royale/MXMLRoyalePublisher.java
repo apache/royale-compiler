@@ -246,7 +246,16 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         }
 		if (baseDef != null)
 		{
-			String factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
+			String factoryClassName = null;
+            IClassDefinition.IClassIterator classIterator = baseDef.classIterator(project, true);
+            while (classIterator.hasNext())
+            {
+                baseDef = classIterator.next();
+                if (baseDef.hasMetaTagByName("Frame")) {
+                    factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
+                    break;
+                }
+            }
 			if (factoryClassName != null)
 			{
 				mainClassQName = generateFactoryClass(factoryClassName, projectName, mainClassQName, intermediateDir);
