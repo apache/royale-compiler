@@ -6,6 +6,9 @@ Apache Royale Compiler 0.9.9
 
 - **asformat** is a new formatter for ActionScript code
 - Added a boolean new compiler option 'compiler.mxml.force-local-id' - (short commandline form 'force-local-id'). This is a quick way to avoid propagating id attributes to browser DOM in JSRoyale. 
+- (JS) Fix for @royalesuppressexport feature which had stopped working
+- (JS) Fix for mx.managers.SystemManager subclass not being generated for applications that were not direct subclasses of the relevant application classes.
+
 
 Apache Royale Compiler 0.9.8
 =================

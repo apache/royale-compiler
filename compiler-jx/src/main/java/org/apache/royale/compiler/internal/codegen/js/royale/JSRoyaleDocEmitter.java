@@ -270,12 +270,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     
                         if (docText.contains(suppressClosureToken))
                             suppressClosure = true;
-
-/*                        if (ASNodeUtils.hasExportSuppressed(node)) {
-                            emitExports = false;
-                            if (IASKeywordConstants.PUBLIC.equals(ns)) // suppress it for reflection data checks:
-                                ((JSRoyaleEmitter) (emitter)).getModel().suppressedExportNodes.add(node);
-                        }*/
                         
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
