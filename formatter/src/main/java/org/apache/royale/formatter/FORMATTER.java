@@ -1858,7 +1858,8 @@ public class FORMATTER {
 				}
 				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START: {
 					if (nextToken != null && nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
-							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
+							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END
+							&& nextToken.getType() != TOKEN_TYPE_EXTRA) {
 						requiredSpace = true;
 					}
 					if (elementStack.isEmpty()) {
@@ -1877,7 +1878,9 @@ public class FORMATTER {
 					if (nextToken != null && nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
 						attributeIndent = getAttributeIndent(token);
-						requiredSpace = true;
+						if(nextToken.getType() != TOKEN_TYPE_EXTRA) {
+							requiredSpace = true;
+						}
 					}
 					break;
 				}

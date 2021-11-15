@@ -82,12 +82,12 @@ public class TestFormatterOff extends BaseFormatterTests {
 		// @formatter:off
 			"<mx:Application>\n" +
 			"\t<!-- @formatter:off -->\n" +
-			"\t<mx:Button/>\n" +
+			"\t<mx:Button />\n" +
 			"\n" +
 			"\n" +
 			"\n" +
 			"\t<!-- @formatter:on -->\n" +
-			"\t<mx:Button/>\n" +
+			"\t<mx:Button />\n" +
 			"\n" +
 			"\n" +
 			"\n" +
@@ -99,7 +99,7 @@ public class TestFormatterOff extends BaseFormatterTests {
 		// @formatter:off
 				"<mx:Application>\n" +
 				"  <!-- @formatter:off -->\n" +
-				"\t<mx:Button/>\n" +
+				"\t<mx:Button />\n" +
 				"\n" +
 				"\n" +
 				"\n" +

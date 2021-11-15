@@ -30,7 +30,7 @@ public class TestMXMLTag extends BaseFormatterTests {
 		formatter.insertSpaces = false;
 		String result = formatter.formatMXMLText(
 		// @formatter:off
-			"<s:Tag/>",
+			"<s:Tag />",
 			// @formatter:on
 			problems
 		);
