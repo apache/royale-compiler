@@ -79,6 +79,8 @@ public class FORMATTER {
 	private static final String DEFAULT_VAR = "files";
 	private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
 	private static final Pattern ASDOC_START_LINE_PATTERN = Pattern.compile("^\\*(\\s*)");
+	private static final String FORMATTER_TAG_OFF = "@formatter:off";
+	private static final String FORMATTER_TAG_ON = "@formatter:on";
 
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
@@ -658,6 +660,7 @@ public class FORMATTER {
 		boolean blockOpenPending = false;
 		boolean indentedStatement = false;
 		boolean caseOrDefaultBlockOpenPending = false;
+		boolean skipFormatting = false;
 		List<BlockStackItem> blockStack = new ArrayList<BlockStackItem>();
 		int controlFlowParenStack = 0;
 		int ternaryStack = 0;
@@ -674,30 +677,34 @@ public class FORMATTER {
 		for (int i = 0; i < tokens.size(); i++) {
 			token = tokens.get(i);
 			if (token.getType() == TOKEN_TYPE_EXTRA) {
-				if (i == (tokens.size() - 1)) {
-					// if the last token is whitespace, include new lines
-					numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
-					appendNewLines(builder, numRequiredNewLines);
-					break;
-				}
-				if (!blockOpenPending) {
-					int newLinesInExtra = countNewLinesInExtra(token);
-					if (prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
-						newLinesInExtra++;
+				if (skipFormatting) {
+					builder.append(token.getText());
+				} else {
+					if (i == (tokens.size() - 1)) {
+						// if the last token is whitespace, include new lines
+						numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
+						appendNewLines(builder, numRequiredNewLines);
+						break;
 					}
-					numRequiredNewLines = Math.max(numRequiredNewLines, newLinesInExtra);
-					if (!indentedStatement && numRequiredNewLines > 0 && prevTokenNotComment != null
-							&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_SEMICOLON
-							&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE
-							&& !(caseOrDefaultBlockOpenPending
-									&& prevTokenNotComment.getType() == ASTokenTypes.TOKEN_COLON)
-							&& !(prevTokenNotComment instanceof MetaDataPayloadToken)) {
-						boolean needsIndent = prevTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
-								|| (!blockStack.isEmpty() && blockStack
-										.get(blockStack.size() - 1) instanceof ObjectLiteralBlockStackItem);
-						if (needsIndent) {
-							indentedStatement = true;
-							indent = increaseIndent(indent);
+					if (!blockOpenPending) {
+						int newLinesInExtra = countNewLinesInExtra(token);
+						if (prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
+							newLinesInExtra++;
+						}
+						numRequiredNewLines = Math.max(numRequiredNewLines, newLinesInExtra);
+						if (!indentedStatement && numRequiredNewLines > 0 && prevTokenNotComment != null
+								&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_SEMICOLON
+								&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE
+								&& !(caseOrDefaultBlockOpenPending
+										&& prevTokenNotComment.getType() == ASTokenTypes.TOKEN_COLON)
+								&& !(prevTokenNotComment instanceof MetaDataPayloadToken)) {
+							boolean needsIndent = prevTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
+									|| (!blockStack.isEmpty() && blockStack
+											.get(blockStack.size() - 1) instanceof ObjectLiteralBlockStackItem);
+							if (needsIndent) {
+								indentedStatement = true;
+								indent = increaseIndent(indent);
+							}
 						}
 					}
 				}
@@ -802,10 +809,23 @@ public class FORMATTER {
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EACH:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EXTENDS:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_IMPLEMENTS:
-					case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT:
+					case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT: {
+						// needs an extra space before the token
+						requiredSpace = true;
+						break;
+					}
 					case ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT: {
 						// needs an extra space before the token
 						requiredSpace = true;
+
+						String trimmed = token.getText().substring(2).trim();
+						if (!skipFormatting && FORMATTER_TAG_OFF.equals(trimmed)) {
+							skipFormatting = true;
+						} else if (skipFormatting && FORMATTER_TAG_ON.equals(trimmed)) {
+							skipFormatting = false;
+							numRequiredNewLines = 0;
+							requiredSpace = false;
+						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_EQUAL:
@@ -932,7 +952,7 @@ public class FORMATTER {
 					}
 				}
 			}
-			if (prevToken != null) {
+			if (!skipFormatting && prevToken != null) {
 				if (numRequiredNewLines > 0) {
 					appendNewLines(builder, numRequiredNewLines);
 					appendIndent(builder, indent);
@@ -953,7 +973,7 @@ public class FORMATTER {
 			}
 
 			// include the token's own text
-			builder.append(getTokenText(token, indent));
+			builder.append(getTokenText(token, indent, skipFormatting));
 
 			// characters that must appear after the token
 			if (token.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
@@ -1462,7 +1482,7 @@ public class FORMATTER {
 		return builder.toString();
 	}
 
-	private String getTokenText(IASToken token, int indent) {
+	private String getTokenText(IASToken token, int indent, boolean skipFormatting) {
 
 		if (token instanceof MetaDataPayloadToken) {
 			MetaDataPayloadToken metaPlayloadToken = (MetaDataPayloadToken) token;
@@ -1470,18 +1490,30 @@ public class FORMATTER {
 		} else {
 			switch (token.getType()) {
 				case ASTokenTypes.TOKEN_ASDOC_COMMENT: {
+					if (skipFormatting) {
+						return token.getText();
+					}
 					return formatASDocComment(token.getText(), indent);
 				}
 				case ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT: {
+					if (skipFormatting) {
+						return token.getText();
+					}
 					return formatSingleLineComment(token.getText());
 				}
 				case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT: {
+					if (skipFormatting) {
+						return token.getText();
+					}
 					return formatMultiLineComment(token.getText());
 				}
 				case ASTokenTypes.TOKEN_LITERAL_STRING: {
 					return formatLiteralString(token.getText());
 				}
 				case ASTokenTypes.TOKEN_SEMICOLON: {
+					if (skipFormatting) {
+						return token.isImplicit() ? "" : token.getText();
+					}
 					boolean skipSemicolon = Semicolons.REMOVE.equals(semicolons)
 							|| (Semicolons.IGNORE.equals(semicolons) && token.isImplicit());
 					if (!skipSemicolon) {
