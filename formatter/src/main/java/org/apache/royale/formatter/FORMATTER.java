@@ -794,7 +794,7 @@ public class FORMATTER {
 						}
 						break;
 					}
-					case ASTokenTypes.TOKEN_SQUARE_CLOSE:
+					case ASTokenTypes.TOKEN_SQUARE_CLOSE: {
 						if (!blockStack.isEmpty()) {
 							BlockStackItem item = blockStack.get(blockStack.size() - 1);
 							if (item.token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN) {
@@ -803,6 +803,7 @@ public class FORMATTER {
 							}
 						}
 						break;
+					}
 					case ASTokenTypes.TOKEN_KEYWORD_AS:
 					case ASTokenTypes.TOKEN_KEYWORD_IS:
 					case ASTokenTypes.TOKEN_KEYWORD_IN:
@@ -1552,7 +1553,7 @@ public class FORMATTER {
 				case MetadataTokenTypes.TOKEN_ATTR_DEFAULT_VALUE:
 				case MetadataTokenTypes.TOKEN_ATTR_STATES:
 				case MetadataTokenTypes.TOKEN_ATTR_IMPLEMENTATION:
-				case MetadataTokenTypes.TOKEN_ATTR_OPERATOR_NS_QUALIFIER:
+				case MetadataTokenTypes.TOKEN_ATTR_OPERATOR_NS_QUALIFIER: {
 					if (needsComma) {
 						builder.append(",");
 						if (insertSpaceBetweenMetadataAttributes) {
@@ -1570,7 +1571,8 @@ public class FORMATTER {
 						i++;
 					}
 					break;
-				case MetadataTokenTypes.TOKEN_STRING:
+				}
+				case MetadataTokenTypes.TOKEN_STRING: {
 					if (needsComma) {
 						builder.append(",");
 						if (insertSpaceBetweenMetadataAttributes) {
@@ -1582,8 +1584,10 @@ public class FORMATTER {
 					builder.append("\"");
 					needsComma = true;
 					break;
-				default:
+				}
+				default: {
 					builder.append(metaToken.getText());
+				}
 			}
 		}
 		return builder.toString();
@@ -1926,26 +1930,30 @@ public class FORMATTER {
 		for (int i = startIndex; i < tokens.size(); i++) {
 			IMXMLToken token = tokens.get(i);
 			switch (token.getType()) {
-				case MXMLTokenTypes.TOKEN_TEXT:
+				case MXMLTokenTypes.TOKEN_TEXT: {
 					if (elementStack.size() == 1) {
 						return true;
 					}
 					break;
-				case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
+				}
+				case MXMLTokenTypes.TOKEN_OPEN_TAG_START: {
 					elementStack.add(token);
 					break;
-				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END:
+				}
+				case MXMLTokenTypes.TOKEN_EMPTY_TAG_END: {
 					elementStack.remove(elementStack.size() - 1);
 					if (elementStack.size() == 0) {
 						return false;
 					}
 					break;
-				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START:
+				}
+				case MXMLTokenTypes.TOKEN_CLOSE_TAG_START: {
 					elementStack.remove(elementStack.size() - 1);
 					if (elementStack.size() == 0) {
 						return false;
 					}
 					break;
+				}
 			}
 		}
 		return false;
