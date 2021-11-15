@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class TestFormatterOff extends BaseFormatterTests {
 	@Test
-	public void testFormatterOff() {
+	public void testAS3FormatterOff() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -66,6 +66,47 @@ public class TestFormatterOff extends BaseFormatterTests {
 				"  trace(i); // print to console\n" +
 				"\n" +
 				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMXMLFormatterOff() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = true;
+		formatter.tabSize = 2;
+		formatter.maxPreserveNewLines = 2;
+		String result = formatter.formatMXMLText(
+		// @formatter:off
+			"<mx:Application>\n" +
+			"\t<!-- @formatter:off -->\n" +
+			"\t<mx:Button/>\n" +
+			"\n" +
+			"\n" +
+			"\n" +
+			"\t<!-- @formatter:on -->\n" +
+			"\t<mx:Button/>\n" +
+			"\n" +
+			"\n" +
+			"\n" +
+			"</mx:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<mx:Application>\n" +
+				"  <!-- @formatter:off -->\n" +
+				"\t<mx:Button/>\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"\t<!-- @formatter:on -->\n" +
+				"  <mx:Button/>\n" +
+				"\n" +
+				"</mx:Application>",
 				// @formatter:on
 				result);
 	}

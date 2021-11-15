@@ -1723,6 +1723,7 @@ public class FORMATTER {
 		boolean requiredSpace = false;
 		boolean inOpenTag = false;
 		boolean inCloseTag = false;
+		boolean skipFormatting = false;
 		String attributeIndent = "";
 		IMXMLToken prevToken = null;
 		IMXMLToken prevTokenOrExtra = null;
@@ -1737,30 +1738,38 @@ public class FORMATTER {
 				nextToken = tokens.get(i + 1);
 			}
 			if (token.getType() == TOKEN_TYPE_EXTRA) {
-				if (i == (tokens.size() - 1)) {
-					// if the last token is whitespace, include new lines
-					numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
-					appendNewLines(builder, numRequiredNewLines);
-					break;
+				if (skipFormatting) {
+					builder.append(token.getText());
+				} else {
+					if (i == (tokens.size() - 1)) {
+						// if the last token is whitespace, include new lines
+						numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
+						appendNewLines(builder, numRequiredNewLines);
+						break;
+					}
+					numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
 				}
-				numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
 				prevTokenOrExtra = token;
 				continue;
 			} else if (token.getType() == MXMLTokenTypes.TOKEN_WHITESPACE) {
-				if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
-					numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
-				} else {
-					// if the parent element contains text, treat whitespace
-					// the same as text, and don't reformat it
-					// text is never reformatted because some components use it
-					// without collapsing whitespace, and developers would be
-					// confused if whitespace that they deliberately added were
-					// to be removed
+				if (skipFormatting) {
 					builder.append(token.getText());
-				}
-				if (i == (tokens.size() - 1)) {
-					// if the last token is whitespace, append new lines
-					appendNewLines(builder, numRequiredNewLines);
+				} else {
+					if (elementStack.isEmpty() || !elementStack.get(elementStack.size() - 1).containsText) {
+						numRequiredNewLines = Math.max(numRequiredNewLines, countNewLinesInExtra(token));
+					} else {
+						// if the parent element contains text, treat whitespace
+						// the same as text, and don't reformat it
+						// text is never reformatted because some components use it
+						// without collapsing whitespace, and developers would be
+						// confused if whitespace that they deliberately added were
+						// to be removed
+						builder.append(token.getText());
+					}
+					if (i == (tokens.size() - 1)) {
+						// if the last token is whitespace, append new lines
+						appendNewLines(builder, numRequiredNewLines);
+					}
 				}
 				continue;
 			} else if (token.getType() == MXMLTokenTypes.TOKEN_OPEN_TAG_START
@@ -1821,7 +1830,7 @@ public class FORMATTER {
 				}
 			}
 
-			if (prevToken != null) {
+			if (!skipFormatting && prevToken != null) {
 				if (numRequiredNewLines > 0) {
 					appendNewLines(builder, numRequiredNewLines);
 					appendIndent(builder, indent);
@@ -1912,6 +1921,16 @@ public class FORMATTER {
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
 						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+					}
+					break;
+				}
+				case MXMLTokenTypes.TOKEN_COMMENT: {
+					String tokenText = token.getText();
+					String trimmed = tokenText.substring(4, tokenText.length() - 3).trim();
+					if (!skipFormatting && FORMATTER_TAG_OFF.equals(trimmed)) {
+						skipFormatting = true;
+					} else if (skipFormatting && FORMATTER_TAG_ON.equals(trimmed)) {
+						skipFormatting = false;
 					}
 					break;
 				}
