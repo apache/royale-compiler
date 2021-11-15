@@ -34,14 +34,14 @@ public class TestFormatterOff extends BaseFormatterTests {
 		formatter.maxPreserveNewLines = 2;
 		String result = formatter.formatActionScriptText(
 		// @formatter:off
-			"// @formatter:off\n" +
+			"\t// @formatter:off\n" +
 			"for(var i:int=0;i<3;i++){\n" +
 			"\ttrace(i)//print to console\n" +
 			"\n" +
 			"\n" +
 			"\n" +
 			"}\n" +
-			"// @formatter:on\n" +
+			"\t// @formatter:on\n" +
 			"for(var i:int=0;i<3;i++){\n" +
 			"\ttrace(i)//print to console\n" +
 			"\n" +
@@ -60,7 +60,7 @@ public class TestFormatterOff extends BaseFormatterTests {
 				"\n" +
 				"\n" +
 				"}\n" +
-				"// @formatter:on\n" +
+				"\t// @formatter:on\n" +
 				"for (var i:int = 0; i < 3; i++)\n" +
 				"{\n" +
 				"  trace(i); // print to console\n" +

@@ -810,23 +810,10 @@ public class FORMATTER {
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EACH:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EXTENDS:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_IMPLEMENTS:
-					case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT: {
-						// needs an extra space before the token
-						requiredSpace = true;
-						break;
-					}
+					case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT:
 					case ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT: {
 						// needs an extra space before the token
 						requiredSpace = true;
-
-						String trimmed = token.getText().substring(2).trim();
-						if (!skipFormatting && FORMATTER_TAG_OFF.equals(trimmed)) {
-							skipFormatting = true;
-						} else if (skipFormatting && FORMATTER_TAG_ON.equals(trimmed)) {
-							skipFormatting = false;
-							numRequiredNewLines = 0;
-							requiredSpace = false;
-						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_EQUAL:
@@ -1330,6 +1317,15 @@ public class FORMATTER {
 					}
 					case ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT: {
 						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+
+						String trimmed = token.getText().substring(2).trim();
+						if (!skipFormatting && FORMATTER_TAG_OFF.equals(trimmed)) {
+							skipFormatting = true;
+							appendNewLines(builder, 1);
+						} else if (skipFormatting && FORMATTER_TAG_ON.equals(trimmed)) {
+							skipFormatting = false;
+							numRequiredNewLines = 0;
+						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_ASDOC_COMMENT:
