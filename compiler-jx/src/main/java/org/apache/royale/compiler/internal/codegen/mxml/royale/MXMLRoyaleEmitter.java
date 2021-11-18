@@ -3113,7 +3113,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (!makingSimpleArray)
     	{
             MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-            if (ps.hasObject || ps.parent == null) //('ps.parent == null' was added to allow a top level fx:Object definition, they were not being output without that)
+			//GD - hasArray below allows a dataProvider with <fx:Object's>
+            if (ps.hasObject || ps.hasArray || ps.parent == null) //('ps.parent == null' was added to allow a top level fx:Object definition, they were not being output without that)
             {
             	emitInstance(node);
             	return;
@@ -3156,7 +3157,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         {
             final IASNode child = node.getChild(i);
             ASTNodeID nodeID = child.getNodeID();
-            if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID || nodeID == ASTNodeID.MXMLStateID)
+			//a single <fx:Object> inside an array also makes it non-simple (@todo test mixed simple and non-simple)
+            if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID || nodeID == ASTNodeID.MXMLObjectID || nodeID == ASTNodeID.MXMLStateID)
             {
                 isSimple = false;
                 break;
