@@ -108,4 +108,30 @@ public class TestMultiLineComment extends BaseFormatterTests {
 				result);
 	}
 
+	@Test
+	public void testAtEndOfBlock() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		formatter.insertSpaceAtStartOfLineComment = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"{\n" +
+			"\tstatement;\n" +
+			"} /* this is a comment */\n" +
+			"statement;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tstatement;\n" +
+				"} /* this is a comment */\n" +
+				"statement;",
+				// @formatter:on
+				result);
+	}
+
 }

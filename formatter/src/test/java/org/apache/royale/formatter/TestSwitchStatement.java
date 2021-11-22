@@ -699,4 +699,56 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testCommentOnSameLineAsCaseClause() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tcase clause://what\n" +
+			"\t\tbreak;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition)\n" +
+				"{\n" +
+				"\tcase clause: // what\n" +
+				"\t\tbreak;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCommentOnSameLineAsDefaultClause() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tdefault://what\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition)\n" +
+				"{\n" +
+				"\tdefault: // what\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

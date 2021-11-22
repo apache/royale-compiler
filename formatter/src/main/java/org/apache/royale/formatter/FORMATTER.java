@@ -972,7 +972,11 @@ public class FORMATTER {
 					&& token.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN) {
 				blockOpenPending = false;
 			}
-			caseOrDefaultBlockOpenPending = false;
+			if (token.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+					&& token.getType() != ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
+					&& token.getType() != ASTokenTypes.TOKEN_ASDOC_COMMENT) {
+				caseOrDefaultBlockOpenPending = false;
+			}
 			requiredSpace = false;
 			numRequiredNewLines = 0;
 			if (token instanceof MetaDataPayloadToken) {
@@ -1041,7 +1045,9 @@ public class FORMATTER {
 							if (!(item instanceof ObjectLiteralBlockStackItem)
 									&& (nextToken == null || (nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON
 											&& nextToken.getType() != ASTokenTypes.TOKEN_PAREN_CLOSE
-											&& nextToken.getType() != ASTokenTypes.TOKEN_COMMA))) {
+											&& nextToken.getType() != ASTokenTypes.TOKEN_COMMA
+											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT))) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 							}
 						}
@@ -1173,7 +1179,12 @@ public class FORMATTER {
 								inCaseOrDefaultClause = false;
 								caseOrDefaultBlockOpenPending = true;
 								indent = increaseIndent(indent);
-								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+								if (nextToken != null && (nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+									|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+									requiredSpace = true;
+								} else {
+									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+								}
 							} else if (ternaryStack > 0) {
 								ternaryStack--;
 								requiredSpace = true;
