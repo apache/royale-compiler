@@ -980,8 +980,7 @@ public class FORMATTER {
 			} else {
 				switch (token.getType()) {
 					case ASTokenTypes.TOKEN_SEMICOLON: {
-						if (inControlFlowStatement && !blockStack.isEmpty() && blockStack.get(blockStack.size() - 1).token
-								.getType() == ASTokenTypes.TOKEN_KEYWORD_FOR) {
+						if (inControlFlowStatement && isInForStatement(blockStack)) {
 							if (insertSpaceAfterSemicolonInForStatements) {
 								requiredSpace = true;
 							}
@@ -1185,15 +1184,19 @@ public class FORMATTER {
 						break;
 					}
 					case ASTokenTypes.TOKEN_PAREN_OPEN: {
+						blockStack.add(new BlockStackItem(token));
 						if (inControlFlowStatement) {
 							controlFlowParenStack++;
-						}
-						else {
-							blockStack.add(new BlockStackItem(token));
 						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_PAREN_CLOSE: {
+						if (!blockStack.isEmpty()) {
+							BlockStackItem item = blockStack.get(blockStack.size() - 1);
+							if (item.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
+								blockStack.remove(item);
+							}
+						}
 						if (inControlFlowStatement) {
 							controlFlowParenStack--;
 							if (controlFlowParenStack <= 0) {
@@ -1212,14 +1215,6 @@ public class FORMATTER {
 									BlockStackItem item = blockStack.get(blockStack.size() - 1);
 									item.braces = false;
 									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-								}
-							}
-						}
-						else {
-							if (!blockStack.isEmpty()) {
-								BlockStackItem item = blockStack.get(blockStack.size() - 1);
-								if (item.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
-									blockStack.remove(item);
 								}
 							}
 						}
@@ -1433,6 +1428,27 @@ public class FORMATTER {
 			}
 		}
 		return builder.toString();
+	}
+
+	private boolean isInForStatement(List<BlockStackItem> blockStack) {
+		for (int i = blockStack.size() - 1; i >= 0; i--) {
+			BlockStackItem item = blockStack.get(i);
+			switch (item.token.getType()) {
+				case ASTokenTypes.TOKEN_BLOCK_OPEN:
+				case ASTokenTypes.TOKEN_SQUARE_OPEN:
+				case ASTokenTypes.TOKEN_PAREN_OPEN: {
+					// these tokens are fine, keep searching
+					break;
+				}
+				case ASTokenTypes.TOKEN_KEYWORD_FOR: {
+					return true;
+				}
+				default: {
+					return false;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean isInListing(String lineText, boolean alreadyInListing) {
