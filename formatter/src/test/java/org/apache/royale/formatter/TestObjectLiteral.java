@@ -99,7 +99,7 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testMultipleFieldsOnMultipleLines() {
+	public void testMultipleFieldsOnMultipleLines1() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
 		String result = formatter.formatActionScriptText(
@@ -122,7 +122,6 @@ public class TestObjectLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
-
 
 	@Test
 	public void testMultipleFieldsOnMultipleLines2() {

@@ -76,6 +76,56 @@ public class TestArrayLiteral extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testMultipleNumbersOnMultipleLines1() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"var array:Array = [123.4, 567.8,\n" +
+			"\t901.2];\n" +
+			"statement;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array = [123.4, 567.8,\n" +
+				"\t\t901.2];\n" +
+				"statement;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMultipleNumbersOnMultipleLines2() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"var array:Array =\n" +
+			"\t[\n" +
+			"\t\t123.4,\n" +
+			"\t\t567.8,\n" +
+			"\t\t901.2\n" +
+			"\t];\n" +
+			"statement;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array =\n" +
+				"\t[\n" +
+				"\t\t123.4,\n" +
+				"\t\t567.8,\n" +
+				"\t\t901.2\n" +
+				"\t];\n" +
+				"statement;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testMultipleStringsOnOneLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
