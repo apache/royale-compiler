@@ -119,4 +119,23 @@ public class TestVariableDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testChained() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"var myVar:Number = what(hi, 2), myVar2:Number = 456.7;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var myVar:Number = what(hi, 2), myVar2:Number = 456.7;",
+				// @formatter:on
+				result);
+	}
 }

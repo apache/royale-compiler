@@ -661,6 +661,7 @@ public class FORMATTER {
 		boolean indentedStatement = false;
 		boolean caseOrDefaultBlockOpenPending = false;
 		boolean skipFormatting = false;
+		int varOrConstChainLevel = -1;
 		List<BlockStackItem> blockStack = new ArrayList<BlockStackItem>();
 		int controlFlowParenStack = 0;
 		int ternaryStack = 0;
@@ -927,6 +928,7 @@ public class FORMATTER {
 							indent = decreaseIndent(indent);
 						}
 						inVarOrConstDeclaration = false;
+						varOrConstChainLevel = -1;
 						break;
 					}
 					case ASTokenTypes.TOKEN_ASDOC_COMMENT: {
@@ -1099,6 +1101,7 @@ public class FORMATTER {
 					case ASTokenTypes.TOKEN_KEYWORD_CONST: {
 						inVarOrConstDeclaration = true;
 						requiredSpace = true;
+						varOrConstChainLevel = blockStack.size();
 						break;
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_CATCH:
@@ -1185,6 +1188,9 @@ public class FORMATTER {
 						if (inControlFlowStatement) {
 							controlFlowParenStack++;
 						}
+						else {
+							blockStack.add(new BlockStackItem(token));
+						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_PAREN_CLOSE: {
@@ -1206,6 +1212,14 @@ public class FORMATTER {
 									BlockStackItem item = blockStack.get(blockStack.size() - 1);
 									item.braces = false;
 									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+								}
+							}
+						}
+						else {
+							if (!blockStack.isEmpty()) {
+								BlockStackItem item = blockStack.get(blockStack.size() - 1);
+								if (item.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
+									blockStack.remove(item);
 								}
 							}
 						}
@@ -1310,6 +1324,9 @@ public class FORMATTER {
 						break;
 					}
 					case ASTokenTypes.TOKEN_COMMA: {
+						if (varOrConstChainLevel == blockStack.size()) {
+							inVarOrConstDeclaration = true;
+						}
 						if (insertSpaceAfterCommaDelimiter && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
