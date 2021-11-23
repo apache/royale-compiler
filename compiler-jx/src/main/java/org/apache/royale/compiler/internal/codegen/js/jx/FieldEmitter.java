@@ -497,6 +497,8 @@ public class FieldEmitter extends JSSubEmitter implements
 
     public boolean emitFieldInitializer(IVariableNode node)
     {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+
         IDefinition definition = EmitterUtils.getClassDefinition(node);
 
         IDefinition ndef = node.getDefinition();
@@ -517,7 +519,15 @@ public class FieldEmitter extends JSSubEmitter implements
                 writeNewline();
                 write(className);
                 write(ASEmitterTokens.MEMBER_ACCESS.getToken());
-                write(node.getName());
+
+                if (EmitterUtils.isCustomNamespace(node.getNamespace())) {
+	                INamespaceDecorationNode ns = ((VariableNode) node).getNamespaceNode();
+	                INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(getProject());
+	                fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
+	                String s = nsDef.getURI();
+	                write(JSRoyaleEmitter.formatNamespacedProperty(s, node.getName(), false));
+	            }
+	            else write(node.getName());
 	
 	            if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
 	            {
