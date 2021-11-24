@@ -156,6 +156,11 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 	yybegin(WHITESPACE);
 }
 
+<YYINITIAL> "<!---->"
+{
+	return buildToken(TOKEN_COMMENT);
+}
+
 <YYINITIAL> "<!--"
 {
 	startAggregate();

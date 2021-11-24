@@ -84,7 +84,6 @@ public class MXMLTokenizerTests
 	 * Smallest normal comment.
 	 * This is getting incorrectly lexed as an ASDoc comment.
 	 */
-	@Ignore
 	@Test
 	public void comment1()
 	{
