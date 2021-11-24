@@ -23,7 +23,7 @@ import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.problems.annotations.ProblemClassification;
 
 /**
- * Syntax error: input ended before ASDoc is closed.
+ * Syntax error: input ended before CDATA is closed.
  */
 @ProblemClassification(CompilerProblemClassification.SYNTAX_ERROR)
 public final class CDataNotClosedProblem extends ParserProblem
