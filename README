@@ -297,7 +297,7 @@ Using the Binary Distribution
 
        ant -DROYALE_COMPILER_REPO=<path to binary distribution> copy-compiler
 
-Thanks for using Apache Royale.  Enjoy!
+Thanks for using Apache Royale. Enjoy!
 
                                           The Apache Royale Project
                                           <http://royale.apache.org>
