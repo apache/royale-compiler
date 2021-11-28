@@ -83,6 +83,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
             write(propGetter.getFunctionName());
             write(ASEmitterTokens.PAREN_OPEN);
             write(ASEmitterTokens.PAREN_CLOSE);
+			if (ASNodeUtils.hasParenClose(node))
+				write(ASEmitterTokens.PAREN_CLOSE);
     		return;
         }
         IDefinition def = node.resolve(getProject());
@@ -253,6 +255,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 						write(s);
 						write(closeMethodCall);
 					}
+					if (ASNodeUtils.hasParenClose(node))
+						write(ASEmitterTokens.PAREN_CLOSE);
 					return;
 				}
         	}

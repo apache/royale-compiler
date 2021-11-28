@@ -30,16 +30,7 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
-import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
-import org.apache.royale.compiler.tree.as.IFileNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.IReturnNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -53,6 +44,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         backend = createBackend();
         project = new RoyaleJSProject(workspace, backend);
+        project.setProxyBaseClass("custom.TestProxy");
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	try {
@@ -2190,6 +2182,24 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("foo.bar.RoyaleTest_A.prototype.foo = function() {\n  this.http_$$ns_apache_org$2017$custom$namespace__b;\n}");
     }
+
+     @Test
+     public void testSpecialMemberAccessWithEnclosingParentheses()
+     {
+         IUnaryOperatorNode node = (IUnaryOperatorNode) getNode(
+                 "public class TestDateNegate { public function TestDateNegate() { var d:Date = new Date();var n:Number = -(d.date); } }", IUnaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+         asBlockWalker.visitUnaryOperator(node);
+         assertOut("-(d.getDate())");
+     }
+
+     @Test
+     public void testProxyMemberAccessWithEnclosingParentheses()
+     { //also with dynamic string literal access and implicit int coercion
+         IVariableNode node = (IVariableNode) getNode(
+                 "import custom.TestProxy; public class TestProxyMemberNegate { public function TestProxyMemberNegate() { var p:TestProxy = new TestProxy();var n:int = -(p['something']); } }", IUnaryOperatorNode.class, WRAP_LEVEL_PACKAGE).getParent();
+         asBlockWalker.visitVariable(node);
+         assertOut("var /** @type {number} */ n = (-(p.getProperty('something'))) >> 0");
+     }
 
     protected IBackend createBackend()
     {

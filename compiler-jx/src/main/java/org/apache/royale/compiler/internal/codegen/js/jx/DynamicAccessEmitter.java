@@ -42,6 +42,7 @@ import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
+import org.apache.royale.compiler.utils.ASNodeUtils;
 import org.apache.royale.compiler.utils.NativeUtils;
 
 public class DynamicAccessEmitter extends JSSubEmitter implements
@@ -55,6 +56,9 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
     @Override
     public void emit(IDynamicAccessNode node)
     {
+		if (ASNodeUtils.hasParenOpen(node))
+			write(ASEmitterTokens.PAREN_OPEN);
+
         IExpressionNode leftOperandNode = node.getLeftOperandNode();
         getWalker().walk(leftOperandNode);
         if (leftOperandNode.getNodeID() == ASTNodeID.Op_AtID)
@@ -86,6 +90,8 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 					write(".child('' +");
 						getWalker().walk(rightOperandNode);
 					write(")");
+					if (ASNodeUtils.hasParenClose(node))
+						write(ASEmitterTokens.PAREN_CLOSE);
 					return;
 				}
 				if (type.isInstanceOf("String", getProject()))
@@ -98,24 +104,30 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 					}
 					else
 						write(".child(" + field + ")");
+					if (ASNodeUtils.hasParenClose(node))
+						write(ASEmitterTokens.PAREN_CLOSE);
 					return;
 				}
 				else if (type.isInstanceOf("QName", getProject()))
 				{
 					String field = fjs.stringifyNode(rightOperandNode);					
 					write(".child(" + field + ")");
+					if (ASNodeUtils.hasParenClose(node))
+						write(ASEmitterTokens.PAREN_CLOSE);
 					return;
 				}
 	    	}
         	else if (isProxy)
         	{
-        		boolean isLiteral = rightOperandNode instanceof ILiteralNode;
+        		boolean isNonStringLiteral = rightOperandNode instanceof ILiteralNode && ((ILiteralNode) rightOperandNode).getLiteralType() != ILiteralNode.LiteralType.STRING;
         		write(".getProperty(");
-        		if (isLiteral) write("'");
+        		if (isNonStringLiteral) write("'");
         		String s = fjs.stringifyNode(rightOperandNode);
         		write(s);
-        		if (isLiteral) write("'");
+        		if (isNonStringLiteral) write("'");
         		write(")");
+				if (ASNodeUtils.hasParenClose(node))
+					write(ASEmitterTokens.PAREN_CLOSE);
         		return;
         	}
     	}
@@ -174,5 +186,8 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         startMapping(node, rightOperandNode);
         write(ASEmitterTokens.SQUARE_CLOSE);
         endMapping(node);
+
+		if (ASNodeUtils.hasParenClose(node))
+			write(ASEmitterTokens.PAREN_CLOSE);
     }
 }
