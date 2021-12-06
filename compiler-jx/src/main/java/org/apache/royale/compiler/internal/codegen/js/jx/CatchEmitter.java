@@ -47,6 +47,10 @@ public class CatchEmitter extends JSSubEmitter implements
         startMapping(node, paramNode);
         writeToken(ASEmitterTokens.PAREN_CLOSE);
         endMapping(node);
+        if (TryEmitter.ROYALE_MULTI_CATCH_ERROR_NAME.equals(paramNode.getName())) {
+            //it is probably already obvious, but let's be explicit:
+            write("/* implicit multi-catch wrapper */ ");
+        }
         getWalker().walk(node.getStatementContentsNode());
     }
 }

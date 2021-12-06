@@ -1649,4 +1649,12 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
     }
 
+    @Override
+    public BinaryOperatorNodeBase getGeneratedTypeCheck(ExpressionNodeBase leftOperand, ExpressionNodeBase rightOperand) {
+        //using 'is' in this case for compiler-generated type-checks, because it is more robust with the framework support
+        BinaryOperatorIsNode check = new BinaryOperatorIsNode(null,leftOperand, rightOperand);
+        getModel().needLanguage = true;
+        return check;
+    }
+
 }

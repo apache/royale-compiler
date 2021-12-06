@@ -22,6 +22,9 @@ package org.apache.royale.compiler.utils;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.internal.codegen.js.jx.TryEmitter;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
+import org.apache.royale.compiler.internal.scopes.CatchScope;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
@@ -59,6 +62,18 @@ public class DefinitionUtils
             return definition.resolveAncestry(project).length - 1;
         }
         return ret;
+    }
+
+    /**
+     * Utility method for checking if an assigned definition represents the rewritten part of a
+     * multi-catch sequence - currently needed to avoid implicit coercions.
+     * This check ultimately relies on the TryEmitter.ROYALE_MULTI_CATCH_ERROR_NAME naming scheme.
+     */
+    public static final boolean isRewrittenMultiCatchParam(IDefinition definition) {
+        return (definition instanceof ParameterDefinition &&
+                definition.getContainingScope() instanceof CatchScope &&
+                definition.getBaseName().equals(TryEmitter.ROYALE_MULTI_CATCH_ERROR_NAME)
+                );
     }
 
 

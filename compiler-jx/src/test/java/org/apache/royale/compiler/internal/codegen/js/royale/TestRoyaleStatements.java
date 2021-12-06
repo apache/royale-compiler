@@ -37,6 +37,7 @@ import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.as.IWhileLoopNode;
 import org.apache.royale.compiler.tree.as.IWithNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -435,12 +436,11 @@ public class TestRoyaleStatements extends TestGoogStatements
     @Test
     public void testVisitTry_Catch_Catch_Finally()
     {
-        // TODO (erikdebruin) handle multiple 'catch' statements (FW in Wiki)
         ITryNode node = (ITryNode) getNode(
-                "try { a; } catch (e:Error) { b; } catch (f:Error) { c; } finally { d; }",
+                "try { a; } catch (e:ReferenceError) { b; } catch (f:Error) { c; } finally { d; }",
                 ITryNode.class);
         asBlockWalker.visitTry(node);
-        assertOut("try {\n  a;\n} catch (e) {\n  b;\n} catch (f) {\n  c;\n} finally {\n  d;\n}");
+        assertOut("try {\n  a;\n} catch ($$royaleMultiCatchErr) /* implicit multi-catch wrapper */ {\n  if (org.apache.royale.utils.Language.is($$royaleMultiCatchErr, ReferenceError)) {\n    var /** @type {ReferenceError} */ e = $$royaleMultiCatchErr;\n    b;\n  } else if (org.apache.royale.utils.Language.is($$royaleMultiCatchErr, Error)) {\n    var /** @type {Error} */ f = $$royaleMultiCatchErr;\n    c;\n  } else {\n    throw $$royaleMultiCatchErr;\n  }\n} finally {\n  d;\n}");
     }
 
     @Override
