@@ -575,6 +575,13 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
     }
 
+    private JSSessionModel getModel() {
+        if (emitter instanceof IJSEmitter) {
+            return ((IJSEmitter) emitter).getModel();
+        }
+        return null;
+    }
+
     protected void emitNoCollapse(IDefinitionNode node)
     {
         if (!node.hasModifier(ASModifier.STATIC)
@@ -582,6 +589,9 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 || IASKeywordConstants.PRIVATE.equals(node.getNamespace()))
         {
             return;
+        }
+        if (getModel() != null) {
+            if (getModel().suppressExports || getModel().suppressedExportNodes.contains(node)) return;
         }
         //dynamically getting/setting a static field won't
         //work properly if it is collapsed in a release build,
