@@ -8,7 +8,8 @@ Apache Royale Compiler 0.9.9
 - Added a boolean new compiler option 'compiler.mxml.force-local-id' - (short commandline form 'force-local-id'). This is a quick way to avoid propagating id attributes to browser DOM in JSRoyale. 
 - (JS) Fix for @royalesuppressexport feature which had stopped working
 - (JS) Fix for mx.managers.SystemManager subclass not being generated for applications that were not direct subclasses of the relevant application classes.
-
+- (JS) Improvement in output of locale properties files as ResourceBundles. Now using original Flex/SWF parsing approach for improved parity.
+- (JS) First implementation of multiple-catch support in Javascript
 
 Apache Royale Compiler 0.9.8
 =================
