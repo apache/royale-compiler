@@ -6,6 +6,7 @@ Apache Royale Compiler 0.9.9
 
 - **asformat** is a new command line code formatter for ActionScript and MXML, with a programmatic API for use in editors and IDEs.
 - Added a boolean new compiler option 'compiler.mxml.force-local-id' - (short commandline form 'force-local-id'). This is a quick way to avoid propagating id attributes to browser DOM in JSRoyale. 
+- Added new string compiler options 'js-getter-prefix' and 'js-setter-prefix' to optionally specify different prefixes to use instead of 'get_' and 'set_' for accessors in the generated JavaScript. Useful for integrating with JS libraries/languages that use a different naming convention.
 - (JS) Fix for @royalesuppressexport feature which had stopped working
 - (JS) Fix for mx.managers.SystemManager subclass not being generated for applications that were not direct subclasses of the relevant application classes.
 - (JS) Improvement in output of locale properties files as ResourceBundles. Now using original Flex/SWF parsing approach for improved parity.
