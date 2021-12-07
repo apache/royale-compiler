@@ -1306,11 +1306,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         for (MXMLDescriptorSpecifier instance : instances)
         {
-            if (instance.id != null)
+			String instanceId = instance.id != null ? instance.id : (instance.hasLocalId ? instance.effectiveId : null);
+            if (instanceId != null)
             {
 	        	PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
 	        	accessorData.add(data);
-	        	data.name = instance.id;
+	        	data.name = instanceId;
 	        	data.type = instance.name;
                 data.access = "readwrite";
 	    	    data.declaredBy = cdef.getQualifiedName();
