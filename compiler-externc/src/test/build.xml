@@ -63,11 +63,6 @@
         <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/html5.js" dest="${compiler.externc}/target/downloads/browser/html5.js" ignoreerrors="true" skipexisting="false"/>
 
         <antcall target="get-from-cache-if-needed" >
-            <param name="srcFile" value="svg.js" />
-            <param name="destFile" value="svg.js" />
-	    <param name="destDir" value="${basedir}/../../target/downloads/browser" />
-        </antcall>
-        <antcall target="get-from-cache-if-needed" >
             <param name="srcFile" value="es3.js" />
             <param name="destFile" value="es3.js" />
             <param name="destDir" value="${basedir}/../../target/downloads" />
@@ -105,10 +100,6 @@
         <antcall target="get-from-cache-if-needed" >
             <param name="srcFile" value="html5.js" />
             <param name="destFile" value="html5.js" />
-            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
-        </antcall>
-        <antcall target="fail-if-not-found" >
-            <param name="destFile" value="svg.js" />
             <param name="destDir" value="${basedir}/../../target/downloads/browser" />
         </antcall>
     </target>
