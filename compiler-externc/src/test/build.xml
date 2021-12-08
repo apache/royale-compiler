@@ -61,6 +61,56 @@
         <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/gecko_dom.js" dest="${compiler.externc}/target/downloads/browser/gecko_dom.js" ignoreerrors="true" skipexisting="false"/>
         <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/w3c_dom2.js" dest="${compiler.externc}/target/downloads/browser/w3c_dom2.js" ignoreerrors="true" skipexisting="false"/>
         <get src="https://raw.githubusercontent.com/royale-extras/closure-compiler/royale/externs/browser/html5.js" dest="${compiler.externc}/target/downloads/browser/html5.js" ignoreerrors="true" skipexisting="false"/>
+
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="svg.js" />
+            <param name="destFile" value="svg.js" />
+	    <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="es3.js" />
+            <param name="destFile" value="es3.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="es6.js" />
+            <param name="destFile" value="es6.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="w3c_composition_event.js" />
+            <param name="destFile" value="w3c_composition_event.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="w3c_css.js" />
+            <param name="destFile" value="w3c_css.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="gecko_dom.js" />
+            <param name="destFile" value="gecko_dom.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="ie_dom.js" />
+            <param name="destFile" value="ie_dom.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="w3c_dom2.js" />
+            <param name="destFile" value="w3c_dom2.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="html5.js" />
+            <param name="destFile" value="html5.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
+        <antcall target="fail-if-not-found" >
+            <param name="destFile" value="svg.js" />
+            <param name="destDir" value="${basedir}/../../target/downloads/browser" />
+        </antcall>
     </target>
 
     <target name="compile.unit.tests">
@@ -163,5 +213,28 @@
     <target name="wipe" depends="clean">
         <delete dir="${compiler.externc}/target"/>
     </target>
-
+    <target name="fail-if-not-found">
+        <fail message="${destDir}/${destFile} could not be downloaded or found in cache">
+            <condition>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+            </condition>
+        </fail>
+    </target>
+    <target name="double-check-file" >
+        <echo>${env.ROYALE_DOWNLOAD_CACHE}</echo>
+        <condition property="still-no-file" value="true">
+            <and>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+                <isset property="env.ROYALE_DOWNLOAD_CACHE" />
+            </and>
+        </condition>
+        <echo>Need file: ${still_no_file}</echo>
+    </target>
+    <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
+        <copy file="${env.ROYALE_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
+    </target>
 </project>
