@@ -29,13 +29,11 @@ import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
-import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
@@ -50,7 +48,6 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
-import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 import java.util.ArrayList;
@@ -525,7 +522,13 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 			{
 				IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
 				IDefinition resolvedDefinition = identifierNode.resolve(getProject());
-				emitDynamicAccess = resolvedDefinition == null;
+				if (resolvedDefinition == null) {
+					IExpressionNode expressionNode = node.getLeftOperandNode();
+					ITypeDefinition expressionType = expressionNode.resolveType(getProject());
+					if (!SemanticUtils.isXMLish(expressionType, getProject())) {
+						emitDynamicAccess = true;
+					}
+				}
 			}
 			if (emitDynamicAccess)
 			{
