@@ -551,8 +551,13 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline();
                     writeNewline();
                     writeNewline("/**");
-                    if (p.preventRename)
-                        writeNewline(" * @nocollapse");
+                    // like instance accessors, we should have if (p.preventRename)
+                    // here, but while Closure compiler seems to properly handle
+                    // renaming of instance accessors, it fails when we try the same
+                    // trick with static accessors, unless there's a nocollapse.
+                    // when we allow renaming, we don't want to break anything that
+                    // isn't dynamic access, so we always need nocollapse here.
+                    writeNewline(" * @nocollapse");
                     if (p.resolvedExport && !p.suppressExport)
                         writeNewline(" * @export");
                     if (p.type != null)
