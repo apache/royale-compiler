@@ -524,6 +524,10 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				IDefinition resolvedDefinition = identifierNode.resolve(getProject());
 				if (resolvedDefinition == null) {
 					IExpressionNode expressionNode = node.getLeftOperandNode();
+					while(expressionNode instanceof IMemberAccessExpressionNode) {
+						IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) expressionNode;
+						expressionNode = memberAccess.getLeftOperandNode();
+					}
 					ITypeDefinition expressionType = expressionNode.resolveType(getProject());
 					if (!SemanticUtils.isXMLish(expressionType, getProject())) {
 						emitDynamicAccess = true;
