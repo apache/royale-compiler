@@ -152,7 +152,7 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-controllers.MyController.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.royale.core.IDocument] };
+controllers.MyController.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }] };controllers.MyController.prototype.ROYALE_INTERFACE_INFO = { interfaces: [org.apache.royale.core.IDocument] };
 
 
 

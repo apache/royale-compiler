@@ -38,7 +38,7 @@ interfaces.IC = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IC.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IC', qName: 'interfaces.IC', kind: 'interface' }], interfaces: [interfaces.IB] };
+interfaces.IC.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'IC', qName: 'interfaces.IC', kind: 'interface' }] };interfaces.IC.prototype.ROYALE_INTERFACE_INFO = { interfaces: [interfaces.IB] };
 
 
 

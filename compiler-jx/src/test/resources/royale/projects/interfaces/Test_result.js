@@ -59,7 +59,7 @@ Test.prototype.doSomething = function(ic) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Test.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }], interfaces: [interfaces.IA, interfaces.IE] };
+Test.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }] };Test.prototype.ROYALE_INTERFACE_INFO = { interfaces: [interfaces.IA, interfaces.IE] };
 
 
 

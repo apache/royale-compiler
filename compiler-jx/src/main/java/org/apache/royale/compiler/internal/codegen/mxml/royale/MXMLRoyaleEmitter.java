@@ -1203,13 +1203,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         write(JSRoyaleEmitterTokens.ROYALE_CLASS_INFO_CLASS_KIND);
         writeToken(ASEmitterTokens.SINGLE_QUOTE);
         write(" }]");
+        write(" };");
         if (interfaceList != null)
         {
-        	write(", interfaces: [");
+            write(formatQualifiedName(cname) + ".prototype.ROYALE_INTERFACE_INFO = { interfaces: [");
         	write(interfaceList);
-        	write("]");
+        	write("]};");
         }
-        write(" };");
 
         emitReflectionData(cdef);
         writeNewline();

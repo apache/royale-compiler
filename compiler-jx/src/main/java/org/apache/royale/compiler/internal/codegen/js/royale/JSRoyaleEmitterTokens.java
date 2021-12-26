@@ -27,6 +27,7 @@ import org.apache.royale.compiler.codegen.IEmitterTokens;
 public enum JSRoyaleEmitterTokens implements IEmitterTokens
 {
     ROYALE_CLASS_INFO("ROYALE_CLASS_INFO"),
+    ROYALE_INTERFACE_INFO("ROYALE_INTERFACE_INFO"),
     ROYALE_REFLECTION_INFO("ROYALE_REFLECTION_INFO"),
     ROYALE_REFLECTION_INFO_GET_SET("get_set"),
     ROYALE_REFLECTION_INFO_INITIAL_STATICS("ROYALE_INITIAL_STATICS"),

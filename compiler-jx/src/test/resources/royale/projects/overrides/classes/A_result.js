@@ -56,7 +56,7 @@ classes.A.prototype.someOtherFunction = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'classes.A', kind: 'class' }], interfaces: [interfaces.IA] };
+classes.A.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'A', qName: 'classes.A', kind: 'class' }] };classes.A.prototype.ROYALE_INTERFACE_INFO = { interfaces: [interfaces.IA] };
 
 
 

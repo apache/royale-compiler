@@ -1092,7 +1092,7 @@ public class TestRoyalePackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
+				"foo.bar.baz.A.InternalClass.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };foo.bar.baz.A.InternalClass.prototype.ROYALE_INTERFACE_INFO = { interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
 				"\n" +
 				"\n" +
 				"\n" +

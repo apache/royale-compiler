@@ -407,7 +407,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.royale.core.IChrome] };\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };AppName.prototype.ROYALE_INTERFACE_INFO = { interfaces: [org.apache.royale.core.IChrome] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -498,7 +498,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.royale.core.IChrome, org.apache.royale.core.IPopUp] };\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };AppName.prototype.ROYALE_INTERFACE_INFO = { interfaces: [org.apache.royale.core.IChrome, org.apache.royale.core.IPopUp] };\n" +
           		"\n" +
         		"\n" +
         		"\n" +
