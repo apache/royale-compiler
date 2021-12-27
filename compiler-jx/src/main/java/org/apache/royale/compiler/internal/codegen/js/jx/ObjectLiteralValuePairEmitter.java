@@ -55,6 +55,22 @@ public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
         }
 
         IExpressionNode nameNode = node.getNameNode();
+        // First check for special cases
+        if(dynamicAccessUnknownMembers && nameNode instanceof IIdentifierNode)
+        {
+            IIdentifierNode identifierNode = (IIdentifierNode) nameNode;
+            switch(identifierNode.getName())
+            {
+                case "ROYALE_CLASS_INFO":
+                case "ROYALE_INTERFACE_INFO":
+                case "ROYALE_REFLECTION_INFO":
+                    dynamicAccessUnknownMembers = false;
+                    break;
+                default:
+                    break;
+
+            }
+        }
         if(dynamicAccessUnknownMembers && nameNode instanceof IIdentifierNode)
         {
             IIdentifierNode identifierNode = (IIdentifierNode) nameNode;

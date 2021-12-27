@@ -548,6 +548,20 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 							break;
 						}
 					}
+					// Special cases to avoid dynamic access
+					if(emitDynamicAccess)
+					{
+						switch(identifierNode.getName())
+						{
+							case "ROYALE_CLASS_INFO":
+     					case "ROYALE_INTERFACE_INFO":
+    					case "ROYALE_REFLECTION_INFO":
+								emitDynamicAccess = false;
+								break;
+							default:
+								break;
+						}
+					}
 				}
 			}
 			if (emitDynamicAccess)
