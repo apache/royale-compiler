@@ -517,7 +517,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 						}
 					}
 				}
-            }
+			}
 			if (dynamicAccessUnknownMembers && rightNode instanceof IIdentifierNode)
 			{
 				IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
@@ -554,8 +554,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 						switch(identifierNode.getName())
 						{
 							case "ROYALE_CLASS_INFO":
-     					case "ROYALE_INTERFACE_INFO":
-    					case "ROYALE_REFLECTION_INFO":
+							case "ROYALE_INTERFACE_INFO":
+							case "ROYALE_REFLECTION_INFO":
 								emitDynamicAccess = false;
 								break;
 							default:
@@ -668,5 +668,5 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         }
         return true;
     }
-    	
+
 }
