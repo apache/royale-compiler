@@ -391,7 +391,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             FileUtils.write(new File(new File(intermediateDir, "library/closure"),
                     closureSourceFile.getName()), closureSourceFile.getCode(), Charset.forName("utf8"));
         }
-        closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, "goog.events.EventTarget");
+        List<String> closureEntryPoints = new ArrayList<String>();
+        closureEntryPoints.add("goog.events.EventTarget");
+        closureEntryPoints.add("goog.html.sanitizer.HtmlSanitizer");
+        closureSourceFiles = closureFilesInOrder(intermediateDir + "/library/closure/", closureSourceFiles, closureEntryPoints);
 
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -618,7 +621,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         return true;
     }
 
-    protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, String entryPoint)
+    protected List<SourceFile> closureFilesInOrder(String path, List<SourceFile> files, List<String> entryPoints)
     {
     	ArrayList<String> sortedFiles = new ArrayList<String>();
     	HashMap<String, SourceFile> fileMap = new HashMap<String, SourceFile>();
@@ -657,7 +660,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             // nothing to see, move along...
         }
 
-        sortClosureFile(deps, entryPoint, sortedFiles);
+        sortClosureFile(deps, entryPoints, sortedFiles);
         
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
         ArrayList<String> seen = new ArrayList<String>();
@@ -763,16 +766,16 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         }
     }
     
-    private void sortClosureFile(List<String> deps, String entryPoint, List<String> sortedFiles)
+    private void sortClosureFile(List<String> deps, List<String> entryPoints, List<String> sortedFiles)
     {
-    	String provided = getProvidedFile(deps, entryPoint);
-        sortedFiles.add(provided);
-        List<String> reqs = getRequires(deps, entryPoint);
-        if (reqs == null) return;
-        for (String req : reqs)
-        {
-        	sortClosureFile(deps, req, sortedFiles);
-        }
+    	for (String entryPoint : entryPoints)
+    	{
+        	String provided = getProvidedFile(deps, entryPoint);
+            sortedFiles.add(provided);
+            List<String> reqs = getRequires(deps, entryPoint);
+            if (reqs != null)
+            	sortClosureFile(deps, reqs, sortedFiles);
+    	}
     }
     
     private String getProvidedFile(List<String> deps, String name)
