@@ -71,11 +71,14 @@ public class EmitterUtils
             else if (child.getNodeID() == ASTNodeID.ConfigBlockID)
             {
             	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)child;
-            	if (configNode.getChildCount() > 0)
+            	if (configNode.getEnabled() && configNode.getChildCount() > 0)
             	{
-            		child = configNode.getChild(0);
-                    if (child instanceof ITypeNode)
-                        return (ITypeNode) child;
+            		for (int j = 0; j < configNode.getChildCount(); j++)
+            		{
+                		child = configNode.getChild(j);
+                        if (child instanceof ITypeNode)
+                            return (ITypeNode) child;            			
+            		}
             	}
             }
         }

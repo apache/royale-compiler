@@ -47,6 +47,11 @@ public final class ConfigConditionBlockNode extends BlockNode
         this.setContainerType(ContainerType.CONFIG_BLOCK);
     }
 
+    public boolean getEnabled()
+    {
+    	return this.enabled;
+    }
+    
     /**
      * Disabled configuration condition block doesn't have children.
      */
