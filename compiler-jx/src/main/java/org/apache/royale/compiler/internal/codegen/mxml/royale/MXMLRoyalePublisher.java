@@ -354,10 +354,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             if (closureLibraryJar != null)
             {
                 // We don't want to add all files to the classpath, so we only output the
-                // resources contained in 'closure-whitelist.properites' to the output.
+                // resources contained in 'closure-whitelist.properties' to the output.
                 Properties whiteList = new Properties();
                 whiteList.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "royale/closure-whitelist.properites"));
+                        "royale/closure-whitelist.properties"));
 
                 // Add the closure files from classpath.
                 closureSourceFiles = getClasspathResources(closureLibraryJar, whiteList);
