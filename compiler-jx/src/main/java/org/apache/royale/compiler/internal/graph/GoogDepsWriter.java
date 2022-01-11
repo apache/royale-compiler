@@ -67,6 +67,7 @@ public class GoogDepsWriter {
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.moduleOutput = config.getModuleOutput();
 		this.mainName = mainClassName;
+		this.externsReporting = config.getExternsReport() != null;
 		removeCirculars = config.getRemoveCirculars();
 		sourceMaps = config.getSourceMap();
 		sourceMapsSourceRoot = config.getSourceMapSourceRoot();
@@ -81,8 +82,11 @@ public class GoogDepsWriter {
 				System.out.println("using SWC: " + swc.getSWCFile().getAbsolutePath());
 			}
 		}
+		preventRenameObjectKeys = config.getPreventRenameObjectKeys();
 	}
 	
+    private String preventRenameObjectKeys = null;
+    private boolean externsReporting = false;
 	private ProblemQuery problems;
 	private String moduleOutput;
 	private String outputFolderPath;
@@ -102,6 +106,7 @@ public class GoogDepsWriter {
 	private HashMap<String, GoogDep> depMap = new HashMap<String,GoogDep>();
 	private HashMap<String, ICompilationUnit> requireMap = new HashMap<String, ICompilationUnit>();
 	private HashMap<ICompilationUnit, String> requireMap2 = new HashMap<ICompilationUnit, String>();
+	public  HashMap<String, String> providedMap = new HashMap<String, String>();
 	
 	public boolean needCSS = false;
 	
@@ -712,6 +717,11 @@ public class GoogDepsWriter {
 					}
 				}
 			}
+			String[] preventRenameKeys = null;
+            if (preventRenameObjectKeys != null)
+            {
+            	preventRenameKeys = preventRenameObjectKeys.split(",");
+            }
 
 			// first scan requires in case this is a module and some have been externed
 			int j = main.fileInfo.googProvideLine + 1;
@@ -725,7 +735,7 @@ public class GoogDepsWriter {
 				int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 				int c2 = line.indexOf(")");
                 String s = line.substring(c + 14, c2 - 1);
-                if (!isGoogProvided(s))
+                if (!isGoogProvided(s) || isExternal(s))
                 {
                 	fileLines.remove(j);
 					sourceMapConsumer = SourceMapUtils.removeLineFromSourceMap(sourceMapConsumer, mainFile.getName(), j);
@@ -734,20 +744,58 @@ public class GoogDepsWriter {
 				{
 					j++;
 				}
+                if (preventRenameKeys != null)
+                {
+                	boolean lineChanged = false;
+                	for (String key : preventRenameKeys)
+                	{
+                		if (line.contains("." + key))
+                		{
+                			lineChanged = true;
+                			line = line.replaceAll("\\." + key, "[\"" + key + "\"]");
+                		}
+                		if (line.contains(" " + key + ":"))
+                		{
+                			lineChanged = true;
+                			line = line.replace(" " + key + ":", " '" + key + "':");
+                		}
+                	}
+                	if (lineChanged)
+                		fileLines.set(j, line);
+                }
 			}
 			
 			int n = restOfDeps.size();
 			for (int i = n - 1; i >= 0; i--)
 			{
 				String dep = restOfDeps.get(i);
-				StringBuilder lineBuilder = new StringBuilder();
-				lineBuilder.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken())
-					.append("('")
-					.append(dep)
-					.append("');");
-				fileLines.add(main.fileInfo.googProvideLine + 1, lineBuilder.toString());
-				sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
+				if (!isExternal(dep))
+				{
+					StringBuilder lineBuilder = new StringBuilder();
+					lineBuilder.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken())
+						.append("('")
+						.append(dep)
+						.append("');");
+					fileLines.add(main.fileInfo.googProvideLine + 1, lineBuilder.toString());
+					sourceMapConsumer = SourceMapUtils.addLineToSourceMap(sourceMapConsumer, mainFile.getName(), main.fileInfo.googProvideLine + 1);
+				}
 			}
+
+			if (externsReporting)
+			{
+				// Anything added here needs to be added to JSClosureCompilerWrapper.
+				// This exports it, but also needs to be in externs
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"] = org.apache.royale.utils.Language;");				
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"as\"] = org.apache.royale.utils.Language.as;");				
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"_int\"] = org.apache.royale.utils.Language._int;");				
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"string\"] = org.apache.royale.utils.Language.string;");				
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"is\"] = org.apache.royale.utils.Language.is;");		
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"uint\"] = org.apache.royale.utils.Language.uint;");				
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"closure\"] = org.apache.royale.utils.Language.closure;");				
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"sort\"] = org.apache.royale.utils.Language.sort;");		
+				fileLines.add("window[\"org\"][\"apache\"][\"royale\"][\"utils\"][\"Language\"][\"sortOn\"] = org.apache.royale.utils.Language.sortOn;");		
+			}
+			//fileLines.add("org.apache.royale.html.Group()");
 
 			FileUtils.writeLines(mainFile, "utf8", fileLines);
 
@@ -784,6 +832,7 @@ public class GoogDepsWriter {
 			fileLines = Files.readLines(new File(gd.filePath), Charset.forName("utf8"));
             FileInfo fi = getFileInfo(fileLines, className);
 			gd.fileInfo = fi;
+			providedMap.put(gd.filePath, className);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -864,12 +913,36 @@ public class GoogDepsWriter {
         	int lastRequireLine = -1;
             FileInfo fi = gd.fileInfo;
 //            int suppressCount = 0;
+			String[] preventRenameKeys = null;
+            if (preventRenameObjectKeys != null)
+            {
+            	preventRenameKeys = preventRenameObjectKeys.split(",");
+            }
             int i = 0;
             int stopLine = fi.constructorLine;
             if (fi.constructorLine == -1) // standalone functions
             	stopLine = fi.googProvideLine + 4; // search a few more lines after goog.provide
             for (String line : fileLines)
             {
+                if (preventRenameKeys != null)
+                {
+                	boolean lineChanged = false;
+                	for (String key : preventRenameKeys)
+                	{
+                		if (line.contains("." + key))
+                		{
+                			lineChanged = true;
+                			line = line.replaceAll("\\." + key, "[\"" + key + "\"]");
+                		}
+                		if (line.contains(" " + key + ":"))
+                		{
+                			lineChanged = true;
+                			line = line.replace(" " + key + ":", " '" + key + "':");
+                		}
+                	}
+                	if (lineChanged)
+                		fileLines.set(i, line);
+                }
             	if (i < stopLine)
             	{
                     int c = line.indexOf(JSGoogEmitterTokens.ROYALE_DEPENDENCY_LIST.getToken());
@@ -886,7 +959,7 @@ public class GoogDepsWriter {
                         String s = line.substring(c + 14, c2 - 1);
                         if (((gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s)) &&
                         		(gd.fileInfo.staticDeps == null || !gd.fileInfo.staticDeps.contains(s))) ||
-                        		!isGoogProvided(s))
+                        		!isGoogProvided(s) || isExternal(s))
                         {
                         	// don't remove the require if some class needs it at static initialization
                         	// time
