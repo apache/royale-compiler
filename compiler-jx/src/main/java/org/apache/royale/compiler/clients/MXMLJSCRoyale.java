@@ -426,9 +426,9 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                         ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
                         ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
 	                }
-	                File externsReportFile = googConfiguration.getExternsReport();
-	                if (externsReportFile != null)
-	                	generateExternsReport(externsReportFile, reachableCompilationUnits, problems);
+//	                File externsReportFile = googConfiguration.getExternsReport();
+//	                if (externsReportFile != null)
+//	                	generateExternsReport(externsReportFile, reachableCompilationUnits, problems);
                 }
                 
                 if (!config.getCreateTargetWithErrors())
