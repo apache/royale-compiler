@@ -22,6 +22,7 @@ package org.apache.royale.compiler.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import com.google.common.io.Files;
 import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
@@ -36,6 +38,7 @@ import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerMapFetcher;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
+import com.google.javascript.jscomp.CompilerOptions.PropertyCollapseLevel;
 import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DependencyOptions.DependencyMode;
 import com.google.javascript.jscomp.DiagnosticGroups;
@@ -51,10 +54,11 @@ import com.google.javascript.jscomp.WarningLevel;
 public class JSClosureCompilerWrapper
 {
 
-    public JSClosureCompilerWrapper(List<String> args) throws IOException
+    public JSClosureCompilerWrapper(List<String> args, boolean isModule) throws IOException
     {
         Compiler.setLoggingLevel(Level.INFO);
-
+        this.isModule = isModule;
+        
         compiler_ = new Compiler();
         jsSourceFiles_ = new ArrayList<SourceFile>();
         jsExternsFiles_ = new ArrayList<SourceFile>();
@@ -95,7 +99,8 @@ public class JSClosureCompilerWrapper
     private boolean sourceMap = false;
     private boolean verbose = false;
     private boolean preventRenameMxmlSymbolReferences = true;
-    
+    private boolean isModule = false;
+    private String moduleExterns;
     public String targetFilePath;
     
     public void addJSExternsFile(String fileName)
@@ -143,6 +148,8 @@ public class JSClosureCompilerWrapper
         extraSymbolNamesToExport = names;
     }
     
+    private File externExport;
+    
     public boolean compile()
     {
         if (verbose)
@@ -186,7 +193,54 @@ public class JSClosureCompilerWrapper
         try
         {
             FileWriter targetFile = new FileWriter(targetFilePath);
-            targetFile.write(compiler_.toSource());
+            String output = compiler_.toSource();
+            if (isModule && moduleExterns != null) 
+            {
+                List<String> fileLines = null;
+                try
+                {
+                    fileLines = Files.readLines(new File(moduleExterns), Charset.forName("utf8"));
+                }
+                catch(IOException e)
+                {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+                }
+                List<String> packages = new ArrayList<String>();
+                if (fileLines != null)
+                {
+                    for (String line : fileLines) 
+                    {
+                    	if (line.contains(" = {}")) 
+                    	{
+                    		packages.add(line.substring(0, line.length() - 6));
+                    	}
+                    }                	
+                }
+                for (String pkg : packages) 
+                {
+                	// module output mistakenly contains
+                	// org.apache.royale.core={};
+                	output = output.replace(pkg+"={};", "");
+                	int c = pkg.lastIndexOf(".");
+                	int c2 = pkg.indexOf(".");
+                	while (c > c2)
+                	{
+                		pkg = pkg.substring(0, c);
+                    	output = output.replace(pkg+"={};", "");
+                    	c = pkg.lastIndexOf(".");
+                	}
+                	if (c != -1)
+                	{
+                    	// module output mistakenly contains
+                    	// var org={apache:{}};
+                		String root = pkg.substring(0, c);
+                		String next = pkg.substring(c + 1);
+                		output = output.replace("var "+root+"={"+next+":{}};", "");
+                	}
+                }
+            }
+            targetFile.write(output);
             targetFile.close();
 
             if (sourceMap)
@@ -201,6 +255,82 @@ public class JSClosureCompilerWrapper
             System.out.println(error);
         }
         
+        if (externExport != null && result.externExport != null) {
+            try
+            {
+                FileWriter targetFile = new FileWriter(externExport.getAbsolutePath());
+                String report = result.externExport;
+				// Anything added here needs to be added to GoogDepsWriter.
+				// This exports it, but also needs to be in externs
+                report += "\n\n" +
+                		"/**\n" + 
+                		" * @constructor\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language = function() {\n" + 
+                		"};\n" + 
+                		"/**\n" + 
+                		" * @param {Object} left\n" + 
+                		" * @param {Object} right\n" + 
+                		" * @param {boolean} coercion\n" + 
+                		" * @return {Object}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language.as = function(left, right, coercion) {\n" + 
+                		"};\n" +
+                		"/**\n" + 
+                		" * @param {number} value\n" + 
+                		" * @return {number}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language._int = function(value) {\n" + 
+                		"};\n" +
+                		"/**\n" + 
+                		" * @param {Object} value\n" + 
+                		" * @return {string}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language.string = function(value) {\n" + 
+                		"};\n" +
+                		"/**\n" + 
+                		" * @param {Object} left\n" + 
+                		" * @param {Object} right\n" + 
+                		" * @return {boolean}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language.is = function(left, right) {\n" + 
+                		"};\n" +
+                		"/**\n" + 
+                		" * @param {number} value\n" + 
+                		" * @return {number}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language.uint = function(value) {\n" + 
+                		"};\n" +
+                		"/**\n" + 
+                		" * @param {Function} fn\n" + 
+                		" * @param {Object} obj\n" + 
+                		" * @param {string} boundMethodName\n" + 
+                		" * @return {Function}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language.closure = function(fn, obj, boundMethodName) {\n" + 
+                		"};\n" +
+                		"/**\n" + 
+                		" * @param {Object} arr\n" + 
+                		" * @return {Object}\n" + 
+                		" */\n" + 
+                		"org.apache.royale.utils.Language.sort = function(arr, args) {\n" + 
+                		"};\n" +
+		        		"/**\n" + 
+		        		" * @param {Object} arr\n" + 
+		        		" * @param {Object} names\n" + 
+		        		" * @param {Object} opt\n" + 
+		        		" * @return {Object}\n" + 
+		        		" */\n" + 
+		        		"org.apache.royale.utils.Language.sortOn = function(arr, names, opt) {\n" + 
+		        		"};\n";
+                targetFile.write(report);
+                targetFile.close();
+            }        	
+            catch (IOException error)
+            {
+                System.out.println(error);
+            }
+        }
         if (variableMapOutputPath != null)
         {
         	File outputFile = new File(outputFolder, variableMapOutputPath);
@@ -314,6 +444,7 @@ public class JSClosureCompilerWrapper
     			String fileName = s.substring(EXTERNS.length());
     			addJSExternsFile(fileName);
     			removeArgs.add(s);
+    			moduleExterns = fileName;
     		}    			
     	}
     	if (varEntry != null)
@@ -392,7 +523,7 @@ public class JSClosureCompilerWrapper
     }
     
     @SuppressWarnings("deprecation")
-	public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName)
+	public void setOptions(String sourceMapPath, boolean useStrictPublishing, boolean manageDependencies, String projectName, File externsReport)
     {
         if (useStrictPublishing)
         {
@@ -426,12 +557,20 @@ public class JSClosureCompilerWrapper
             options_.setInlineProperties(false);
             options_.setInlineVariables(true);
             options_.setSmartNameRemoval(true);
+            options_.setExtraSmartNameRemoval(true);
             options_.setRemoveDeadCode(true);
+            options_.setRewritePolyfills(true);
             options_.setExtractPrototypeMemberDeclarations(true);
             options_.setRemoveUnusedPrototypeProperties(true);
             options_.setRemoveUnusedPrototypePropertiesInExterns(false);
             options_.setRemoveUnusedClassProperties(true);
+            options_.setRemoveUnusedConstructorProperties(true);
             options_.setRemoveUnusedVariables(CompilerOptions.Reach.ALL);
+            if (isModule)
+            {
+            	options_.setRenamePrefix("A_A");
+            	options_.setCollapsePropertiesLevel(PropertyCollapseLevel.NONE);
+            }
             options_.setCollapseVariableDeclarations(true);
             options_.setCollapseAnonymousFunctions(true);
             options_.setAliasAllStrings(true);
@@ -444,6 +583,11 @@ public class JSClosureCompilerWrapper
             options_.addWarningsGuard(new ShowByPathWarningsGuard(
                     new String[] { "goog/", "externs/svg.js" },
                     ShowByPathWarningsGuard.ShowType.EXCLUDE));
+            if (externsReport != null) {
+            	externExport = externsReport;
+                options_.setExternExports(true);
+                options_.setExternExportsPath(externsReport.getAbsolutePath());            	
+            }
             
             ArrayList<String> entryPoints = new ArrayList<String>();
             if (manageDependencies)
