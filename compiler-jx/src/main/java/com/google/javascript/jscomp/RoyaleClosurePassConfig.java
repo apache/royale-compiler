@@ -1358,13 +1358,20 @@ public final class RoyaleClosurePassConfig extends PassConfig {
 		@Override
         protected HotSwapCompilerPass create(final AbstractCompiler compiler) {
           preprocessorSymbolTableFactory.maybeInitialize(compiler);
+          /*
           final ProcessClosurePrimitivesWithModuleSupport pass =
               new ProcessClosurePrimitivesWithModuleSupport(
                   compiler,
                   preprocessorSymbolTableFactory.getInstanceOrNull(),
                   options.brokenClosureRequiresLevel,
                   options.shouldPreservesGoogProvidesAndRequires());
-
+		  */
+          final ProcessClosurePrimitives pass =
+                  new ProcessClosurePrimitives(
+                      compiler,
+                      preprocessorSymbolTableFactory.getInstanceOrNull(),
+                      options.brokenClosureRequiresLevel,
+                      options.shouldPreservesGoogProvidesAndRequires());
           return new HotSwapCompilerPass() {
             @Override
             public void process(Node externs, Node root) {
@@ -2472,7 +2479,8 @@ public final class RoyaleClosurePassConfig extends PassConfig {
       new PassFactory(PassNames.COLLAPSE_PROPERTIES, true) {
         @Override
         protected CompilerPass create(AbstractCompiler compiler) {
-          return new CollapsePropertiesWithModuleSupport(compiler, options.getPropertyCollapseLevel(), sourceFileName, varRenameMapFile);
+          //return new CollapsePropertiesWithModuleSupport(compiler, options.getPropertyCollapseLevel(), sourceFileName, varRenameMapFile);
+          return new CollapseProperties(compiler, options.getPropertyCollapseLevel());
         }
 
         @Override
@@ -3099,6 +3107,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
           return new CompilerPass() {
             @Override
             public void process(Node externs, Node root) {
+              /*
               RenamePropertiesWithModuleSupport rprop =
                   new RenamePropertiesWithModuleSupport(
                       compiler,
@@ -3108,6 +3117,12 @@ public final class RoyaleClosurePassConfig extends PassConfig {
                       options.getPropertyReservedNamingNonFirstChars(),
                       options.nameGenerator,
                       null);
+              */
+              RenameProperties rprop = 
+            		  new RenameProperties(
+            				  compiler,
+            				  options.generatePseudoNames,
+                              options.nameGenerator);
               rprop.process(externs, root);
               compiler.setPropertyMap(rprop.getPropertyMap());
             }
@@ -3152,6 +3167,7 @@ public final class RoyaleClosurePassConfig extends PassConfig {
     }
     reservedNames.addAll(compiler.getExportedNames());
     reservedNames.addAll(ParserRunner.getReservedVars());
+    /*
     RenameVarsWithModuleSupport rn = new RenameVarsWithModuleSupport(
         compiler,
         options.renamePrefix,
@@ -3164,6 +3180,19 @@ public final class RoyaleClosurePassConfig extends PassConfig {
         reservedChars,
         reservedNames,
         options.nameGenerator);
+    */
+    RenameVars rn = new RenameVars(
+            compiler,
+            options.renamePrefix,
+            options.variableRenaming == VariableRenamingPolicy.LOCAL,
+            preserveAnonymousFunctionNames,
+            options.generatePseudoNames,
+            options.shadowVariables,
+            options.preferStableNames,
+            prevVariableMap,
+            reservedChars,
+            reservedNames,
+    		options.nameGenerator);
     rn.process(externs, root);
     return rn.getVariableMap();
   }
