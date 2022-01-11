@@ -391,6 +391,30 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
             FileUtils.write(new File(new File(intermediateDir, "library/closure"),
                     closureSourceFile.getName()), closureSourceFile.getCode(), Charset.forName("utf8"));
         }
+        if ((googConfiguration.getExternsReport() != null) ||
+        		project.isModule(mainClassQName))
+        {
+        	File baseJS = new File(intermediateDir, "library/closure/goog/base.js");
+            String input = readCode(baseJS);
+            input = input.replaceAll("\\.superClass_", "[\"superClass_\"]");
+            FileUtils.write(baseJS, input);
+            int n = closureSourceFiles.size();
+            for (int i = 0; i < n; i++)
+            {
+            	SourceFile sf = closureSourceFiles.get(i);
+            	String name = sf.getName();
+            	if (name.contains("base.js"))
+            	{
+                    //String relative = new File(intermediateDir, "closure").toURI().relativize(baseJS.toURI()).getPath();
+                    //String code = FileUtils.readFileToString(baseJS, "UTF-8");
+                    SourceFile sourceFile = new JarSourceFile(sf.getName(), input, false);
+            		//SourceFile sourceFile = SourceFile.fromFile(baseJS.getAbsolutePath());
+                    closureSourceFiles.set(i, sourceFile);
+                    break;
+            	}
+            }
+        }
+        
         List<String> closureEntryPoints = new ArrayList<String>();
         closureEntryPoints.add("goog.events.EventTarget");
         closureEntryPoints.add("goog.html.sanitizer.HtmlSanitizer");
@@ -404,7 +428,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         JSClosureCompilerWrapper compilerWrapper = null;
         if (configuration.release())
         {
-            compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
+            compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions(), project.isModule(mainClassQName));
             compilerWrapper.setPropertyNamesToKeep(closurePropertyNamesToKeep);
             if (closureSymbolNamesToExport == null) {
                 closureSymbolNamesToExport = new HashSet<String>();
@@ -497,8 +521,32 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         }
         if (compilerWrapper != null)
         {
+        	Set<String> externs = googConfiguration.getExterns();
             for (String file : fileList)
             {
+            	if (externs.size() > 0)
+            	{
+            		if (gdw.providedMap.containsKey(file))
+        			{
+            			String provided = gdw.providedMap.get(file);
+            			if (externs.contains(provided))
+            			{
+                            if (googConfiguration.isVerbose())
+                            {            
+                                System.out.println("skipping extern source file: " + file);
+                            }
+            				continue;
+            			}
+        			}
+            		if (file.endsWith("Language.js"))
+            		{
+                        if (googConfiguration.isVerbose())
+                        {            
+                            System.out.println("skipping extern source file: " + file);
+                        }
+        				continue;            			
+            		}
+            	}
                 compilerWrapper.addJSSourceFile(file);
                 if (googConfiguration.isVerbose())
                 {            
@@ -594,7 +642,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         if (compilerWrapper != null) {
             boolean ok = true;
             final File projectReleaseMainFile = new File(releaseDir, outputFileName);
-            compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName);
+            compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, !googConfiguration.getRemoveCirculars(), projectName, googConfiguration.getExternsReport());
             compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
             compilerWrapper.setSourceMap(googConfiguration.getSourceMap());
             compilerWrapper.setVerbose(googConfiguration.isVerbose());
