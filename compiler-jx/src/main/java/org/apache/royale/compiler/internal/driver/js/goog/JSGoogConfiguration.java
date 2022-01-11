@@ -884,6 +884,25 @@ public class JSGoogConfiguration extends JSConfiguration
 
     
     //
+    // 'prevent-rename-object-keys'
+    //
+
+    private String preventRenameObjectKeys = null;
+
+    public String getPreventRenameObjectKeys()
+    {
+        return preventRenameObjectKeys;
+    }
+
+    @Config
+    @Mapping("prevent-rename-object-keys")
+    public void setPreventRenameObjectKeys(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+    	preventRenameObjectKeys = value;
+    }
+
+    //
     // 'allow-dynamic-bindings'
     //
 
