@@ -272,7 +272,12 @@ public class EmitterUtils
     }
 
     public static void removeExcludedImports(List<String> list) {
-        list.removeIf(EmitterUtils::shouldExcludeImport);
+        for (String listItem:list) {
+            if (shouldExcludeImport(listItem)) {
+                list.remove(listItem);
+            }
+        }
+        // list.removeIf(EmitterUtils::shouldExcludeImport);
     }
 
     public static IClassDefinition getClassDefinition(IDefinitionNode node)
