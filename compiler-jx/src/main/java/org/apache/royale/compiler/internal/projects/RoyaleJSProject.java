@@ -457,8 +457,13 @@ public class RoyaleJSProject extends RoyaleProject
             HashMap<String, DependencyType> map = requires.get(from);
             ArrayList<String> arr = new ArrayList<String>();
             Set<String> cus = map.keySet();
-            for (String s : cus)
+            for (String s : cus) {
+                //automatic exclusions:
+                if (EmitterUtils.shouldExcludeImport(s)) {
+                    continue;
+                }
                 arr.add(s);
+            }
             return arr;
         }
         return null;

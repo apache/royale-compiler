@@ -11,6 +11,7 @@ Apache Royale Compiler 0.9.9
 - (JS) Fix for mx.managers.SystemManager subclass not being generated for applications that were not direct subclasses of the relevant application classes.
 - (JS) Improvement in output of locale properties files as ResourceBundles. Now using original Flex/SWF parsing approach for improved parity.
 - (JS) First implementation of multiple-catch support in Javascript
+- (JS) Added unsafe option for outputting literal javascript (via externally defined jsUnsafeNativeInline function)
 
 Apache Royale Compiler 0.9.8
 =================
