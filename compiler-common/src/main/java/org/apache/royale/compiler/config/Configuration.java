@@ -2632,9 +2632,9 @@ public class Configuration
     @Config
     @Mapping({ "compiler", "mxml", "force-local-id" })
     @RoyaleOnly
-    public void setCompilerMxmlMxmlForceLocalId(ConfigurationValue cv, Boolean asData) throws ConfigurationException
+    public void setCompilerMxmlForceLocalId(ConfigurationValue cv, Boolean force) throws ConfigurationException
     {
-        forceLocalId = asData;
+        forceLocalId = force;
     }
 
     //

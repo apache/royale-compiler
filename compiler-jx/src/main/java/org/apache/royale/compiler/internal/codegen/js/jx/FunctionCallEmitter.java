@@ -27,6 +27,7 @@ import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
@@ -39,6 +40,7 @@ import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.problems.ProjectSpecificErrorProblem;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
 import org.apache.royale.compiler.problems.TooManyFunctionParametersProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -369,6 +371,36 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (def != null)
                 {
+                    if (((def.getParent() instanceof IPackageDefinition //this is not within a class definition
+                            && (def.getParent()).getBaseName().equals(""))//top level package)
+                            || def.getParent() == null)
+                            && JSRoyaleEmitterTokens.JS_UNSAFE_INLINE_FUNCTION_NAME.getToken().equals(def.getBaseName()))
+                    {
+                        //we can only have one argument node, and we will enforce here that it must be a String Literal
+                        //@todo consider supporting Constant String expressions or some form of String interpolation.
+                        IExpressionNode arg = node.getArgumentNodes()[0];
+
+                        if (!(arg instanceof ILiteralNode) || ((ILiteralNode) arg).getLiteralType() != ILiteralNode.LiteralType.STRING) {
+                            // this is probably a little late, but at least provides clear feedback to user
+                            String err = "Invalid use of "+JSRoyaleEmitterTokens.JS_UNSAFE_INLINE_FUNCTION_NAME.getToken() +", the function argument must be a simple String literal";
+                            getProject().getProblems().add(
+                                new ProjectSpecificErrorProblem(arg,err, "Javascript output")
+                            );
+                            startMapping(node);
+                            write( "/* " + err + " */ null");
+                            endMapping(node);
+                        } else {
+                            //arg is a String LiteralNode
+                            ILiteralNode inlineCode = ((ILiteralNode) arg);
+                            //provide a clue in the output
+                            write("/* " + JSRoyaleEmitterTokens.JS_UNSAFE_INLINE_FUNCTION_NAME.getToken() + " code follows */ ");
+                            startMapping(arg);
+                            write(inlineCode.getValue());
+                            endMapping(arg);
+                        }
+                        return;
+                    }
+
                     boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
                     boolean isTrace = def.getParent() == null && def.getBaseName().equals(IASGlobalFunctionConstants.trace);
                     if (isInt || isTrace

@@ -24,6 +24,7 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
 import org.apache.royale.compiler.internal.scopes.ASScope;
@@ -160,7 +161,7 @@ public class TryEmitter extends JSSubEmitter implements
         name.setSourceLocation(parameterNode.getNameExpressionNode());
         ExpressionNodeBase type = parameterNode.getTypeNode().copyForInitializer(originalCatch);
         
-        VariableNode varNode = new VariableNode(name,type);
+        VariableNode varNode = new ReplacementCatchParam(name,type);
         varNode.setAssignedValue(null, assignedValue);
 
         content.addChild(varNode);
@@ -178,7 +179,6 @@ public class TryEmitter extends JSSubEmitter implements
         check.setParent(conditionalNode);
 
         addVarStartToRewrittenCatch(parameterNode, hoistedError, conditionalNode, (PseudoCatchBlock)conditionalNode.getContentsNode(), originalCatch );
-
         return conditionalNode;
     }
 
@@ -219,8 +219,9 @@ public class TryEmitter extends JSSubEmitter implements
 
 
 /**
- * The following mainly exists because the original catch scope allows for multiple 'same name' catch parameter definitions
- * that would otherwise clash if they were hoisted to the containing scope.
+ * The following mainly exists because the original catch scope allows for multiple 'same name' catch parameter definitions,
+ * when considered from within the containing scope of the catch clauses.
+ * Those names would otherwise clash if they were hoisted to the containing scope.
  * This serves to simulate the same thing for the rewritten catch parameter definitions.
  */
 class PseudoCatchBlock extends BlockNode implements IScopedNode {
@@ -281,5 +282,41 @@ class PseudoCatchAllParam extends TerminalNode{
     public PseudoCatchAllParam(CatchScope scope){
         super(TryEmitter.getElseToken());
         this.contentsNode = new PseudoCatchBlock(scope);
+    }
+}
+
+class ReplacementCatchParam extends VariableNode{
+
+
+    public ReplacementCatchParam(IdentifierNode nameNode, ExpressionNodeBase typeNode) {
+        super(nameNode, typeNode);
+    }
+
+
+    @Override
+    protected void analyze(EnumSet<PostProcessStep> set, ASScope scope, Collection<ICompilerProblem> problems)
+    {
+        if (set.contains(PostProcessStep.POPULATE_SCOPE))
+        {
+
+            String definitionName = ((IdentifierNode) nameNode).getName();
+
+            VariableDefinition definition =
+                    new VariableDefinition(definitionName);
+
+            fillinDefinition(definition);
+
+            definition.setDeclaredInControlFlow(true);
+
+            definition.setInitializer(this.getAssignedValueNode());
+
+            setDefinition(definition);
+            ((CatchScope) scope).displaceParameter(definition);
+            //don't run the super's POPULATE_SCOPE:
+            set = set.clone();
+            set.remove(PostProcessStep.POPULATE_SCOPE);
+        }
+
+        super.analyze(set, scope, problems);
     }
 }
