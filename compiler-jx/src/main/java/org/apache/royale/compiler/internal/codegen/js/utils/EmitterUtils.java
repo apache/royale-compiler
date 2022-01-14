@@ -819,7 +819,9 @@ public class EmitterUtils
             IDefinition rightDef = rightNode.resolveType(project);
             if (rightDef != null)
             {
-                if (SemanticUtils.isXMLish(rightDef, project))
+                //we can have an identifier of '*' which resolves to ANY_TYPE ClassDefinition and does not resolve as isXMLish, but the Member access expression is if the leftNode is xmlish
+                boolean isAny = rightID == ASTNodeID.IdentifierID && ((IIdentifierNode) rightNode).getName().equals("*");
+                if (isAny || SemanticUtils.isXMLish(rightDef, project))
                 {
                     return isLeftNodeXMLish(leftNode, project);
                 }
