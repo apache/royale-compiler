@@ -44,6 +44,8 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
+import java.util.ArrayList;
+
 public class BinaryOperatorEmitter extends JSSubEmitter implements
         ISubEmitter<IBinaryOperatorNode>
 {
@@ -562,8 +564,12 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			}
             else getWalker().walk(node.getLeftOperandNode());
             startMapping(node, node.getLeftOperandNode());
-            
-            if (id != ASTNodeID.Op_CommaID)
+			boolean xmlAdd = false;
+            if (id == ASTNodeID.Op_AddID && SemanticUtils.isXMLish(node.getLeftOperandNode(),getProject()) && SemanticUtils.isXMLish(node.getRightOperandNode(),getProject())) {
+				//we need to use 'plus' method instead of '+'
+				xmlAdd = true;
+			}
+            if (id != ASTNodeID.Op_CommaID && !xmlAdd)
                 write(ASEmitterTokens.SPACE);
 
             // (erikdebruin) rewrite 'a &&= b' to 'a = a && b'
@@ -585,7 +591,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
             else
             {
-                write(node.getOperator().getOperatorText());
+				if (xmlAdd) {
+					write(".plus(");
+				} else {
+					write(node.getOperator().getOperatorText());
+				}
             }
 
             write(ASEmitterTokens.SPACE);
@@ -611,6 +621,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					//@todo: add loop target null safety (see changes in ForEachEmitter)
 					write(".propertyNames()");
 				}
+			}
+			if (xmlAdd) {
+				write(")");
 			}
         }
 

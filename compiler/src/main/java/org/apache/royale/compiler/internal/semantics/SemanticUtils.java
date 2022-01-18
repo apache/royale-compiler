@@ -1002,6 +1002,9 @@ public class SemanticUtils
                         //method call on XML or XMLList instance
                         return resolvedDef;
                     }
+                } else {
+                    resolvedDef = functionCall.resolveType(project);
+                    if (resolvedDef != null && isXMLish(resolvedDef, project)) return resolvedDef;
                 }
             }
             return null;
@@ -1016,6 +1019,11 @@ public class SemanticUtils
                 if (resolvedDef.isPrivate() || resolvedDef.isProtected())
                 {
                     //private/protected member inside the XML or XMLList class
+                    return resolvedDef;
+                }
+            } else {
+                resolvedDef = identifierNode.resolveType(project);
+                if (resolvedDef != null && isXMLish(resolvedDef, project)) {
                     return resolvedDef;
                 }
             }
@@ -1033,6 +1041,19 @@ public class SemanticUtils
      * Determine if the definition passed in is one of the XML types (XML or
      * XMLList) These classes are unrelated, but behave in similar manners.
      * 
+     * @param iNode the {@link IExpressionNode} to check
+     * @param project the {@link ICompilerProject} in which to look up types
+     * @return true if definition is the built-in XML or XMLList type.
+     */
+    public static boolean isXMLish(IExpressionNode iNode, ICompilerProject project)
+    {
+        return isXMLish(resolveXML(iNode, project), project);
+    }
+
+    /**
+     * Determine if the definition passed in is one of the XML types (XML or
+     * XMLList) These classes are unrelated, but behave in similar manners.
+     *
      * @param def the {@link IDefinition} to check
      * @param project the {@link ICompilerProject} in which to look up types
      * @return true if definition is the built-in XML or XMLList type.
@@ -1042,7 +1063,7 @@ public class SemanticUtils
         IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
         IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
         return (xmlDef != null && def == xmlDef) ||
-               (xmlListDef != null && def == xmlListDef);
+                (xmlListDef != null && def == xmlListDef);
     }
     
     /**
