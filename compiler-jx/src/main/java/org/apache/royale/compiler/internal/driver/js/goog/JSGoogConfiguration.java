@@ -318,6 +318,18 @@ public class JSGoogConfiguration extends JSConfiguration
     public void setJSCompilerOptions(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
     {
+    	String externs = "--externs ";
+    	for (int i = 0; i < value.size(); i++)
+    	{
+    		String item = value.get(i);
+    		if (item.startsWith(externs))
+    		{
+    			String filePath = item.substring(externs.length());
+    			filePath = resolvePathStrict(filePath, cv);
+    			item = externs + filePath;
+    			value.set(i,  item);
+    		}
+    	}
     	jsCompilerOptions.addAll(value);
     }
 
