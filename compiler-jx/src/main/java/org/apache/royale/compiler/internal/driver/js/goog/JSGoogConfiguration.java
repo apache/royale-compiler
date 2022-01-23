@@ -899,19 +899,23 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'prevent-rename-object-keys'
     //
 
-    private String preventRenameObjectKeys = null;
+    private List<String> preventRenameObjectKeys = new ArrayList<String>();
 
-    public String getPreventRenameObjectKeys()
+    public List<String> getPreventRenameObjectKeys()
     {
         return preventRenameObjectKeys;
     }
 
-    @Config
+    @Config(allowMultiple = true, isPath = false)
     @Mapping("prevent-rename-object-keys")
-    public void setPreventRenameObjectKeys(ConfigurationValue cv, String value)
+    @Arguments("key")
+    @InfiniteArguments
+    public void setPreventRenameObjectKeys(ConfigurationValue cv, String[] keys)
             throws ConfigurationException
     {
-    	preventRenameObjectKeys = value;
+    	preventRenameObjectKeys.clear();
+    	for (String key : keys)
+    		preventRenameObjectKeys.add(key);
     }
 
     //

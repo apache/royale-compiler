@@ -85,7 +85,7 @@ public class GoogDepsWriter {
 		preventRenameObjectKeys = config.getPreventRenameObjectKeys();
 	}
 	
-    private String preventRenameObjectKeys = null;
+    private List<String> preventRenameObjectKeys = null;
     private boolean externsReporting = false;
 	private ProblemQuery problems;
 	private String moduleOutput;
@@ -717,11 +717,6 @@ public class GoogDepsWriter {
 					}
 				}
 			}
-			String[] preventRenameKeys = null;
-            if (preventRenameObjectKeys != null)
-            {
-            	preventRenameKeys = preventRenameObjectKeys.split(",");
-            }
 
 			// first scan requires in case this is a module and some have been externed
 			int j = main.fileInfo.googProvideLine + 1;
@@ -744,10 +739,10 @@ public class GoogDepsWriter {
 				{
 					j++;
 				}
-                if (preventRenameKeys != null)
+                if (preventRenameObjectKeys != null && preventRenameObjectKeys.size() > 0)
                 {
                 	boolean lineChanged = false;
-                	for (String key : preventRenameKeys)
+                	for (String key : preventRenameObjectKeys)
                 	{
                 		if (line.contains("." + key))
                 		{
@@ -913,21 +908,16 @@ public class GoogDepsWriter {
         	int lastRequireLine = -1;
             FileInfo fi = gd.fileInfo;
 //            int suppressCount = 0;
-			String[] preventRenameKeys = null;
-            if (preventRenameObjectKeys != null)
-            {
-            	preventRenameKeys = preventRenameObjectKeys.split(",");
-            }
             int i = 0;
             int stopLine = fi.constructorLine;
             if (fi.constructorLine == -1) // standalone functions
             	stopLine = fi.googProvideLine + 4; // search a few more lines after goog.provide
             for (String line : fileLines)
             {
-                if (preventRenameKeys != null)
+                if (preventRenameObjectKeys != null && preventRenameObjectKeys.size() > 0)
                 {
                 	boolean lineChanged = false;
-                	for (String key : preventRenameKeys)
+                	for (String key : preventRenameObjectKeys)
                 	{
                 		if (line.contains("." + key))
                 		{
