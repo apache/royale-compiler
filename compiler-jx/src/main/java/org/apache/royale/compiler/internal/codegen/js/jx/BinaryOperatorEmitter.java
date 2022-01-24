@@ -255,15 +255,6 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
                 	}
-                	else if (node.getNodeID() == ASTNodeID.Op_EqualID &&
-                			node.getRightOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID)
-                	{
-                		getWalker().walk(xmlNode);
-                		write(" == '");
-	                    getWalker().walk(node.getRightOperandNode());
-                		write("'");
-                		return;
-                	}
                 }
                 else if (isDynamicAccess && ((JSRoyaleEmitter)getEmitter()).isXMLish((IExpressionNode)lnode))
                 {
@@ -480,12 +471,13 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             	}
             }
             
-			if (id == ASTNodeID.Op_EqualID) {
+			if (id == ASTNodeID.Op_EqualID || id ==ASTNodeID.Op_NotEqualID) {
 				//QName == QName
 				if (leftDef != null && leftDef.getQualifiedName().equals("QName")) {
 					IDefinition rightDef = node.getRightOperandNode().resolveType(getProject());
 					if (rightDef != null && rightDef.getQualifiedName().equals("QName")) {
-						//handle non-strict equality a little differently
+						//handle non-strict equality/inequality a little differently
+						if (id == ASTNodeID.Op_NotEqualID) write("!");
 						write("QName.equality(");
 						getWalker().walk(node.getLeftOperandNode());
 						write(",");
@@ -493,6 +485,38 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						write(")");
 						return;
 					}
+				} else if (leftDef != null && getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(leftDef) && SemanticUtils.isXMLish(node.getRightOperandNode(), getProject())) {
+					boolean literalBool = node.getLeftOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID;
+					//note, this only covers boolean ==/!= xmlish, not: xmlish ==/!= boolean
+					if (literalBool) {
+						write("'");
+					}
+					else write("('' + ");
+						getWalker().walk(node.getLeftOperandNode());
+					if (literalBool) {
+						write("'");
+					}
+					else write(")");
+					write(" " + node.getOperator().getOperatorText() + " ");
+
+					getWalker().walk(node.getRightOperandNode());
+					return;
+				} else if ((((leftDef == null || getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(leftDef)) && SemanticUtils.isXMLish(node.getLeftOperandNode(), getProject())) || SemanticUtils.isXMLish(leftDef, getProject())) && getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(node.getRightOperandNode().resolveType(getProject()))) {
+					boolean literalBool = node.getRightOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID;
+
+					//note, this only covers xmlish ==/!= boolean, not: boolean ==/!= xmlish
+					getWalker().walk(node.getLeftOperandNode());
+					write(" " + node.getOperator().getOperatorText() + " ");
+					if (literalBool) {
+						write("'");
+					}
+					else write("('' + ");
+					getWalker().walk(node.getRightOperandNode());
+					if (literalBool) {
+						write("'");
+					}
+					else write(")");
+					return;
 				}
 			}
 			
