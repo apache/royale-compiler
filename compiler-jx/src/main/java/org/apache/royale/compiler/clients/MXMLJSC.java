@@ -174,7 +174,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 if (text.equalsIgnoreCase(jsTargetType.text))
                     return jsTargetType;
             }
-            return JS_ROYALE;
+            return null;
         }
     }
 
@@ -926,6 +926,23 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             {
                 processHelp(helpVar);
                 return false;
+            }
+
+            for(String target : config.getCompilerTargets())
+            {
+                JSTargetType jsTargetType = JSTargetType.fromString(target);
+                if (jsTargetType == null)
+                {
+                    String message = "configuration variable 'targets' must be one of the following: ";
+                    for (JSTargetType type : JSTargetType.values())
+                    {
+                        message += "'" + type.text + "', ";
+                    }
+                    message += "got '" + target + "'";
+                    final ICompilerProblem problem = new ConfigurationProblem(null, -1,
+                            -1, -1, -1, message);
+                    problems.add(problem);
+                }
             }
 
             if (problems.hasErrors())
