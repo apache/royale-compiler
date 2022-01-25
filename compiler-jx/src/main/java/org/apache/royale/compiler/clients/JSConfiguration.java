@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.royale.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.ConfigurationValue;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.CannotOpen;
@@ -111,6 +112,25 @@ public class JSConfiguration extends Configuration
     	if (targets.size() > 0) return;
         targets.clear();
         targets.add(value);
+    }
+
+    //
+    // 'watch'
+    //
+
+    private boolean watch = false;
+
+    public boolean getWatch()
+    {
+        return watch;
+    }
+
+    @Config
+    @Mapping("watch")
+    public void setWatch(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        watch = value;
     }
 
     //
@@ -633,4 +653,16 @@ public class JSConfiguration extends Configuration
         jsxFactory = value;
     }
     
+    @Override
+    public void validate(ConfigurationBuffer configurationBuffer) throws ConfigurationException
+    {
+        super.validate(configurationBuffer);
+
+        if (getWatch() && !debug())
+        {
+            List<ConfigurationValue> values = configurationBuffer.getVar("watch");
+            throw new ConfigurationException.VariableMissingRequirement("debug=true", values.get(0).getVar(), values.get(0).getSource(),
+                    values.get(0).getLine());
+        }
+    }
 }

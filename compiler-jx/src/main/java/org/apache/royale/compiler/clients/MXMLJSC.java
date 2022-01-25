@@ -554,73 +554,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                ((RoyaleJSTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
-	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
-	
-	                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
-	                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
-	                    {
-	                        final File outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-                            if (config.isVerbose())
-                            {
-                                System.out.println("Compiling file: " + outputClassFile);
-                            }
-
-	                        ICompilationUnit unit = cu;
-	
-	                        IJSWriter writer;
-	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
-	                        {
-	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    errors, unit, false);
-	                        }
-	                        else
-	                        {
-	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, errors, unit, false);
-	                        }
-	
-	                        BufferedOutputStream out = new BufferedOutputStream(
-	                                new FileOutputStream(outputClassFile));
-	
-                            BufferedOutputStream sourceMapOut = null;
-	                        File outputSourceMapFile = null;
-	                        if (project.config.getSourceMap())
-	                        {
-	                            outputSourceMapFile = getOutputSourceMapFile(
-	                                    cu.getQualifiedNames().get(0), outputFolder);
-                                sourceMapOut = new BufferedOutputStream(
-                                        new FileOutputStream(outputSourceMapFile));
-	                        }
-	                        
-	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
-	                        out.flush();
-                            out.close();
-                            if (sourceMapOut != null)
-                            {
-                                sourceMapOut.flush();
-                                sourceMapOut.close();
-                            }
-	                        writer.close();
-	                        long fileDate = 0;
-	                    	String metadataDate = targetSettings.getSWFMetadataDate();
-	                    	if (metadataDate != null)
-	                    	{
-	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
-	                    		try {
-	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                                    fileDate = sdf.parse(metadataDate).getTime();
-	                    		} catch (ParseException e) {
-	                				// TODO Auto-generated catch block
-	                				e.printStackTrace();
-	                			} catch (IllegalArgumentException e1) {
-	                				e1.printStackTrace();
-	                			}
-	                    		outputClassFile.setLastModified(fileDate);
-	                    	}
-	                    }
+                        writeCompilationUnit(cu, outputFolder);
                         ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
                         ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
 	                }
@@ -645,6 +579,78 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
 
         return compilationSuccess;
+    }
+
+    protected void writeCompilationUnit(ICompilationUnit cu, File outputFolder) throws InterruptedException, IOException
+    {
+        ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+	    if (cuType != ICompilationUnit.UnitType.AS_UNIT
+                && cuType != ICompilationUnit.UnitType.MXML_UNIT)
+        {
+            return;
+        }
+
+        final File outputClassFile = getOutputClassFile(
+                cu.getQualifiedNames().get(0), outputFolder);
+
+        if (config.isVerbose())
+        {
+            System.out.println("Compiling file: " + outputClassFile);
+        }
+
+        ICompilationUnit unit = cu;
+
+        IJSWriter writer;
+        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+        {
+            writer = (IJSWriter) project.getBackend().createWriter(project,
+                    problems.getProblems(), unit, false);
+        }
+        else
+        {
+            writer = (IJSWriter) project.getBackend().createMXMLWriter(
+                    project, problems.getProblems(), unit, false);
+        }
+
+        BufferedOutputStream out = new BufferedOutputStream(
+                new FileOutputStream(outputClassFile));
+
+        BufferedOutputStream sourceMapOut = null;
+        File outputSourceMapFile = null;
+        if (project.config.getSourceMap())
+        {
+            outputSourceMapFile = getOutputSourceMapFile(
+                    cu.getQualifiedNames().get(0), outputFolder);
+            sourceMapOut = new BufferedOutputStream(
+                    new FileOutputStream(outputSourceMapFile));
+        }
+        
+        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
+        out.flush();
+        out.close();
+        if (sourceMapOut != null)
+        {
+            sourceMapOut.flush();
+            sourceMapOut.close();
+        }
+        writer.close();
+        long fileDate = 0;
+        String metadataDate = targetSettings.getSWFMetadataDate();
+        if (metadataDate != null)
+        {
+            String metadataFormat = targetSettings.getSWFMetadataDateFormat();
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                fileDate = sdf.parse(metadataDate).getTime();
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IllegalArgumentException e1) {
+                e1.printStackTrace();
+            }
+            outputClassFile.setLastModified(fileDate);
+        }
     }
 
     /**
