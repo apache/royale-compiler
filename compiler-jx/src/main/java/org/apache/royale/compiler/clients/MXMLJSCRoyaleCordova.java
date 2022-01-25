@@ -167,7 +167,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
-    protected Configuration config;
+    protected JSConfiguration config;
     protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
@@ -670,7 +670,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
             projectConfigurator.applyToProject(project);
             project.config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
 
-            config = projectConfigurator.getConfiguration();
+            config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
 
             problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
@@ -702,7 +702,7 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
         {
             if (config == null)
             {
-                config = new Configuration();
+                config = new JSConfiguration();
                 configBuffer = new ConfigurationBuffer(Configuration.class,
                         Configuration.getAliases());
             }

@@ -164,7 +164,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
-    protected Configuration config;
+    protected JSConfiguration config;
     protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
@@ -667,7 +667,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
             projectConfigurator.applyToProject(project);
             project.config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
 
-            config = projectConfigurator.getConfiguration();
+            config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
 
             problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
@@ -699,7 +699,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
         {
             if (config == null)
             {
-                config = new Configuration();
+                config = new JSConfiguration();
                 configBuffer = new ConfigurationBuffer(Configuration.class,
                         Configuration.getAliases());
             }
