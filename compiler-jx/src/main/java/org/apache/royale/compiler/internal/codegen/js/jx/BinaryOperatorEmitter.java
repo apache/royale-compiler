@@ -81,6 +81,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
         else if (id == ASTNodeID.Op_InstanceOfID)
         {
+			if (ASNodeUtils.hasParenOpen(node)) {
+				write(ASEmitterTokens.PAREN_OPEN);
+			}
             getWalker().walk(node.getLeftOperandNode());
 
             startMapping(node, node.getLeftOperandNode());
@@ -127,6 +130,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			else
 			{
 				getWalker().walk(node.getRightOperandNode());
+			}
+			if (ASNodeUtils.hasParenClose(node)) {
+				write(ASEmitterTokens.PAREN_CLOSE);
 			}
         }
         else
