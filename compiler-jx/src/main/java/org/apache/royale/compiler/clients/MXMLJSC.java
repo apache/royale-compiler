@@ -167,10 +167,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(0),
-        FAILED_WITH_ERRORS(3),
-        FAILED_WITH_EXCEPTIONS(4),
-        FAILED_WITH_CONFIG_PROBLEMS(5);
+        FAILED_WITH_ERRORS(2),
+        FAILED_WITH_EXCEPTIONS(3),
+        FAILED_WITH_CONFIG_PROBLEMS(4);
 
         ExitCode(int code)
         {
@@ -332,7 +331,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
 	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
-	                    if (result != 0 && result != 2)
+                        if (result != MXMLC.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	problems.addAll(mxmlc.problems.getProblems());
 	                    	break targetloop;
@@ -342,7 +341,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCRoyale royale = new MXMLJSCRoyale();
 	                	lastCompiler = royale;
 	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0 && result != 2)
+                        if (result != MXMLJSCRoyale.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -351,7 +350,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCRoyaleCordova royaleCordova = new MXMLJSCRoyaleCordova();
 	                	lastCompiler = royaleCordova;
 	                    result = royaleCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0 && result != 2)
+                        if (result != MXMLJSCRoyaleCordova.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -360,7 +359,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         MXMLJSCNode node = new MXMLJSCNode();
                         lastCompiler = node;
                         result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != 0 && result != 2)
+                        if (result != MXMLJSCNode.ExitCode.SUCCESS.getCode())
                         {
                             break targetloop;
                         }
@@ -369,7 +368,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         MXMLJSCNodeModule nodeModule = new MXMLJSCNodeModule();
                         lastCompiler = nodeModule;
                         result = nodeModule.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != 0 && result != 2)
+                        if (result != MXMLJSCNodeModule.ExitCode.SUCCESS.getCode())
                         {
                             break targetloop;
                         }
@@ -378,7 +377,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0 && result != 2)
+                        if (result != MXMLJSCNative.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -391,8 +390,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 {
                     if (problems.hasErrors())
                         exitCode = ExitCode.FAILED_WITH_ERRORS;
-                    else
-                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                    // no exit code for warnings because anything except 0 is
+                    // detected as a failure by various build tools
                 }
             }
             else if (problems.hasFilteredProblems())

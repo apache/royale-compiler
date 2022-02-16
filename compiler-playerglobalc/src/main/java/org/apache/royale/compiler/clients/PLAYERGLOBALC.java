@@ -51,13 +51,18 @@ import org.dom4j.io.SAXReader;
 class PLAYERGLOBALC implements FlexTool {
 
 	static enum ExitCode {
-		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
+		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_ERRORS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
 
 		ExitCode(int code) {
 			this.code = code;
 		}
 
 		final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
 	}
 
 	private static final List<String> VECTOR_SUFFIXES = Arrays.asList("$double", "$int", "$uint", "$object");
@@ -252,7 +257,7 @@ class PLAYERGLOBALC implements FlexTool {
 			printer.printProblems(problems.getFilteredProblems());
 		}
 
-		return exitCode.code;
+		return exitCode.getCode();
 	}
 
 	public void generateSources() throws Exception {

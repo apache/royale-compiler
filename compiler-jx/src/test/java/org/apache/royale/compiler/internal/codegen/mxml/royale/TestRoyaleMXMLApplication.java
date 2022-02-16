@@ -2946,7 +2946,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         args[18] = new File(testAdapter.getUnitTestBaseDir(), "royale/files/RoyaleTest_again_Flash.mxml").getPath();
 
         int result = mxmlc.mainNoExit(args, errors, true);
-        assertThat(result, is(3));
+        assertThat(result, is(2));
         assertErrors("Access of possibly undefined property scrollRect.");
     }
 

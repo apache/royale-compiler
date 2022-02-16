@@ -121,10 +121,9 @@ public class MXMLC implements FlexTool
         // Therefore the following enum values must be non-negative.
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(0),
-        FAILED_WITH_ERRORS(3),
-        FAILED_WITH_EXCEPTIONS(4),
-        FAILED_WITH_CONFIG_ERRORS(5);
+        FAILED_WITH_ERRORS(2),
+        FAILED_WITH_EXCEPTIONS(3),
+        FAILED_WITH_CONFIG_ERRORS(4);
 
         ExitCode(int code)
         {
@@ -351,7 +350,9 @@ public class MXMLC implements FlexTool
             if (printer.printProblems(problems.getFilteredProblems()) > 0)
             {
                 if (problems.hasErrors())
-                    exitCode = ExitCode.FAILED_WITH_ERRORS;       
+                    exitCode = ExitCode.FAILED_WITH_ERRORS;      
+                // no exit code for warnings because anything except 0 is
+                // detected as a failure by various build tools 
             }
         }
         else
@@ -391,6 +392,8 @@ public class MXMLC implements FlexTool
             
             if (errorCount > 0)
                 exitCode = ExitCode.FAILED_WITH_ERRORS;
+            // no exit code for warnings because anything except 0 is
+            // detected as a failure by various build tools
         }
         
         return exitCode;

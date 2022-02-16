@@ -47,7 +47,7 @@ public class COMPJSC extends MXMLJSC
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
         FAILED_WITH_CONFIG_PROBLEMS(4);
 
@@ -57,6 +57,11 @@ public class COMPJSC extends MXMLJSC
         }
 
         final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
     }
 
     @Override
@@ -177,7 +182,7 @@ public class COMPJSC extends MXMLJSC
                         compc.workspace.setASDocDelegate(new RoyaleASDocDelegate(true));
 	                    compc.configurationClass = JSGoogCompcConfiguration.class;
 	                    result = compc.mainNoExit(removeJSArgs(args));
-	                    if (result != 0)
+	                    if (result != COMPC.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	problems.addAll(compc.problems.getProblems());
 	                    	break targetloop;
@@ -188,7 +193,7 @@ public class COMPJSC extends MXMLJSC
 	                	COMPJSCRoyale royale = new COMPJSCRoyale();
 	                	lastCompiler = royale;
 	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != COMPJSCRoyale.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -198,7 +203,7 @@ public class COMPJSC extends MXMLJSC
 	                	COMPJSCNative jsc = new COMPJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != 0)
+	                    if (result != COMPJSCNative.ExitCode.SUCCESS.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -210,9 +215,9 @@ public class COMPJSC extends MXMLJSC
                 if (problems.hasFilteredProblems())
                 {
                     if (problems.hasErrors())
-                        exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
-                    else
-                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                        exitCode = ExitCode.FAILED_WITH_ERRORS;
+                    // no exit code for warnings because anything except 0 is
+                    // detected as a failure by various build tools
                 }
             }
             else if (problems.hasFilteredProblems())

@@ -83,13 +83,18 @@ public class FORMATTER {
 	private static final String FORMATTER_TAG_ON = "@formatter:on";
 
 	static enum ExitCode {
-		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_PROBLEMS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
+		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_ERRORS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
 
 		ExitCode(int code) {
 			this.code = code;
 		}
 
 		final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
 	}
 
 	/**
@@ -193,7 +198,7 @@ public class FORMATTER {
 				printer.printProblems(problems.getFilteredProblems());
 			}
 		}
-		return exitCode.code;
+		return exitCode.getCode();
 	}
 
 	public String formatFile(File file, Collection<ICompilerProblem> problems) throws IOException {

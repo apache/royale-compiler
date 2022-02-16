@@ -48,7 +48,7 @@ public class EXTERNC implements FlexTool
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
         FAILED_WITH_CONFIG_PROBLEMS(4);
 
@@ -58,6 +58,11 @@ public class EXTERNC implements FlexTool
         }
 
         final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
     }
 
     public ProblemQuery problems;

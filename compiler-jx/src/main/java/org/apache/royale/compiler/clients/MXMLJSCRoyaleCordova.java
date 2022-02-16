@@ -103,10 +103,9 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(0),
-        FAILED_WITH_ERRORS(3),
-        FAILED_WITH_EXCEPTIONS(4),
-        FAILED_WITH_CONFIG_PROBLEMS(5);
+        FAILED_WITH_ERRORS(2),
+        FAILED_WITH_EXCEPTIONS(3),
+        FAILED_WITH_CONFIG_PROBLEMS(4);
 
         ExitCode(int code)
         {
@@ -114,6 +113,11 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
         }
 
         final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
     }
 
     public static MXMLJSC.JSOutputType jsOutputType;
@@ -246,8 +250,8 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
                 {
                     if (problems.hasErrors())
                         exitCode = ExitCode.FAILED_WITH_ERRORS;
-                    else
-                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                    // no exit code for warnings because anything except 0 is
+                    // detected as a failure by various build tools
                 }
             }
             else if (problems.hasFilteredProblems())

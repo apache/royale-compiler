@@ -85,7 +85,7 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
     {
         SUCCESS(0),
         PRINT_HELP(1),
-        FAILED_WITH_PROBLEMS(2),
+        FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
         FAILED_WITH_CONFIG_PROBLEMS(4);
 
@@ -95,6 +95,11 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
         }
 
         final int code;
+        
+        int getCode()
+        {
+        	return code;
+        }
     }
 
     @Override
