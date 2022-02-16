@@ -6395,4 +6395,22 @@ public class Configuration
         this.strictXML = strictXML;
     }
 
+    //
+    // 'watch'
+    //
+
+    private boolean watch = false;
+
+    public boolean getWatch()
+    {
+        return watch;
+    }
+
+    @Config
+    @Mapping("watch")
+    public void setWatch(ConfigurationValue cv, boolean b)
+    {
+        watch = b;
+    }
+
 }

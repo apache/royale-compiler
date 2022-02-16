@@ -169,7 +169,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         PRINT_HELP(1),
         FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_PROBLEMS(4);
+        FAILED_WITH_CONFIG_PROBLEMS(4),
+        WATCHING(1000);
 
         ExitCode(int code)
         {
@@ -217,7 +218,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public static void main(final String[] args)
     {
         int exitCode = staticMainNoExit(args);
-        System.exit(exitCode);
+        if (exitCode != ExitCode.WATCHING.getCode())
+        {
+            System.exit(exitCode);
+        }
     }
 
     /**
@@ -262,7 +266,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     
     public MXMLJSC()
     {
-        DefinitionBase.setPerformanceCachingEnabled(true);
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
         project = new RoyaleJSProject(workspace, null);
@@ -331,7 +334,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	result = mxmlc.mainCompileOnly(removeJSArgs(args), err);
 	                    else
 	                    	result = mxmlc.mainNoExit(removeJSArgs(args));
-                        if (result != MXMLC.ExitCode.SUCCESS.getCode())
+                        if (result != MXMLC.ExitCode.SUCCESS.getCode() && result != MXMLC.ExitCode.WATCHING.getCode())
 	                    {
 	                    	problems.addAll(mxmlc.problems.getProblems());
 	                    	break targetloop;
@@ -341,7 +344,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCRoyale royale = new MXMLJSCRoyale();
 	                	lastCompiler = royale;
 	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != MXMLJSCRoyale.ExitCode.SUCCESS.getCode())
+                        if (result != MXMLJSCRoyale.ExitCode.SUCCESS.getCode() && result != MXMLJSCRoyale.ExitCode.WATCHING.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -350,7 +353,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCRoyaleCordova royaleCordova = new MXMLJSCRoyaleCordova();
 	                	lastCompiler = royaleCordova;
 	                    result = royaleCordova.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != MXMLJSCRoyaleCordova.ExitCode.SUCCESS.getCode())
+                        if (result != MXMLJSCRoyaleCordova.ExitCode.SUCCESS.getCode() && result != MXMLJSCRoyaleCordova.ExitCode.WATCHING.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -359,7 +362,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         MXMLJSCNode node = new MXMLJSCNode();
                         lastCompiler = node;
                         result = node.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != MXMLJSCNode.ExitCode.SUCCESS.getCode())
+                        if (result != MXMLJSCNode.ExitCode.SUCCESS.getCode() && result != MXMLJSCNode.ExitCode.WATCHING.getCode())
                         {
                             break targetloop;
                         }
@@ -368,7 +371,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                         MXMLJSCNodeModule nodeModule = new MXMLJSCNodeModule();
                         lastCompiler = nodeModule;
                         result = nodeModule.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != MXMLJSCNodeModule.ExitCode.SUCCESS.getCode())
+                        if (result != MXMLJSCNodeModule.ExitCode.SUCCESS.getCode() && result != MXMLJSCNodeModule.ExitCode.WATCHING.getCode())
                         {
                             break targetloop;
                         }
@@ -377,7 +380,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                	MXMLJSCNative jsc = new MXMLJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-                        if (result != MXMLJSCNative.ExitCode.SUCCESS.getCode())
+                        if (result != MXMLJSCNative.ExitCode.SUCCESS.getCode() && result != MXMLJSCNative.ExitCode.WATCHING.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -417,7 +420,10 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
         finally
         {
-            waitAndClose();
+            if (!config.getWatch() || !ExitCode.SUCCESS.equals(exitCode))
+            {
+                waitAndClose();
+            }
 
             if (outProblems != null && problems.hasFilteredProblems())
             {
@@ -427,7 +433,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 }
             }
         }
-        return exitCode.code;
+        if (config.getWatch() && ExitCode.SUCCESS.equals(exitCode))
+        {
+            exitCode = ExitCode.WATCHING;
+        }
+        return exitCode.getCode();
     }
     
     protected String[] removeJSArgs(String[] args)
@@ -618,6 +628,13 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 return false;
             }
 
+            if (config.getWatch() && !config.debug())
+            {
+                final ICompilerProblem problem = new ConfigurationProblem(null, -1,
+                        -1, -1, -1, "configuration variable 'debug' must be true if configuration variable 'watch' is true");
+                problems.add(problem);
+            }
+
             for(String target : config.getCompilerTargets())
             {
                 JSTargetType jsTargetType = JSTargetType.fromString(target);
@@ -637,6 +654,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
             if (problems.hasErrors())
                 return false;
+
+            DefinitionBase.setPerformanceCachingEnabled(!config.getWatch());
             
             return true;
         }

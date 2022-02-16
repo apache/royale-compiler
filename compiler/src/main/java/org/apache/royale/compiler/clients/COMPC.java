@@ -34,11 +34,14 @@ import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.SWFTarget;
+import org.apache.royale.compiler.internal.watcher.WatchThread;
+import org.apache.royale.compiler.internal.watcher.WatchThread.IWatchWriter;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MissingRequirementConfigurationProblem;
 import org.apache.royale.compiler.targets.ISWCTarget;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
+import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.io.ISWCWriter;
 import org.apache.royale.swc.io.SWCDirectoryWriter;
@@ -125,6 +128,42 @@ public class COMPC extends MXMLC implements FlexTool
         String message = "Apache Royale SWC Component Compiler (compc)" + NEWLINE +
             VersionInfo.buildMessage() + NEWLINE;
         return message;
+    }
+
+    @Override
+    protected void setupWatcher()
+    {
+        if (!config.getWatch())
+        {
+            return;
+        }
+        IWatchWriter writer = new IWatchWriter()
+        {
+            public void rebuild(Collection<ICompilationUnit> units, Collection<ICompilerProblem> problems) throws InterruptedException, IOException
+            {
+                startTime = System.nanoTime();
+                workspace.startBuilding();
+                try
+                {
+                    if (!setupTargetFile())
+                    {
+                        throw new IOException("Failed to setup target file.");
+                    }
+                    buildArtifact();
+                }
+                finally
+                {
+                    workspace.doneBuilding();
+                }
+            }
+    
+            public void write(Collection<ICompilationUnit> units) throws InterruptedException, IOException
+            {
+                reportTargetCompletion();
+            }
+        };
+        WatchThread watcherThread = new WatchThread("SWF", writer, config, project, workspace, problems);
+        watcherThread.start();
     }
 
     /**

@@ -63,6 +63,7 @@ import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.common.Counter;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
+import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.graph.GraphMLWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.projects.DefinitionPriority.BasePriority;
@@ -73,6 +74,8 @@ import org.apache.royale.compiler.internal.targets.Target;
 import org.apache.royale.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.royale.compiler.internal.units.StyleModuleCompilationUnit;
+import org.apache.royale.compiler.internal.watcher.WatchThread;
+import org.apache.royale.compiler.internal.watcher.WatchThread.IWatchWriter;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.FileIOProblem;
@@ -123,7 +126,8 @@ public class MXMLC implements FlexTool
         PRINT_HELP(1),
         FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_ERRORS(4);
+        FAILED_WITH_CONFIG_ERRORS(4),
+        WATCHING(1000);
 
         ExitCode(int code)
         {
@@ -147,7 +151,10 @@ public class MXMLC implements FlexTool
     public static void main(final String[] args)
     {
         final int exitCode = staticMainNoExit(args);
-        System.exit(exitCode);
+        if (exitCode != ExitCode.WATCHING.getCode())
+        {
+            System.exit(exitCode);
+        }
     }
     
     /**
@@ -258,7 +265,10 @@ public class MXMLC implements FlexTool
         }
         finally
         {
-            waitAndClose();
+            if (!config.getWatch() || !ExitCode.SUCCESS.equals(exitCode))
+            {
+                waitAndClose();
+            }
             
             if (Counter.COUNT_TOKENS || Counter.COUNT_NODES ||
                 Counter.COUNT_DEFINITIONS || Counter.COUNT_SCOPES)
@@ -266,7 +276,65 @@ public class MXMLC implements FlexTool
                 Counter.getInstance().dumpCounts();
             }
         }
-        return exitCode.code;
+        if (config.getWatch() && ExitCode.SUCCESS.equals(exitCode))
+        {
+            setupWatcher();
+            exitCode = ExitCode.WATCHING;
+        }
+        return exitCode.getCode();
+    }
+
+    protected void setupWatcher()
+    {
+        if (!config.getWatch())
+        {
+            return;
+        }
+        IWatchWriter writer = new IWatchWriter()
+        {
+            public void rebuild(Collection<ICompilationUnit> units, Collection<ICompilerProblem> problems) throws InterruptedException, IOException
+            {
+                startTime = System.nanoTime();
+                workspace.startBuilding();
+                try
+                {
+                    if (!setupTargetFile())
+                    {
+                        throw new IOException("Failed to setup target file.");
+                    }
+                    buildArtifact();
+                }
+                finally
+                {
+                    workspace.doneBuilding();
+                }
+            }
+    
+            public void write(Collection<ICompilationUnit> units) throws InterruptedException, IOException
+            {
+                workspace.startBuilding();
+                try
+                {
+                    final File outputFile = new File(getOutputFilePath());
+                    final int swfSize = writeSWF(swfTarget, outputFile);
+                    long endTime = System.nanoTime();
+                    String seconds = String.format("%5.3f", (endTime - startTime) / 1e9);
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    params.put("byteCount", swfSize);
+                    params.put("path", outputFile.getCanonicalPath());
+                    params.put("seconds", seconds);
+                    swfOutputMessage = Messages.getString("MXMLC.bytes_written_to_file_in_seconds_format",
+                            params);
+                    reportTargetCompletion();
+                }
+                finally
+                {
+                    workspace.doneBuilding();
+                }
+            }
+        };
+        WatchThread watcherThread = new WatchThread("SWF", writer, config, project, workspace, problems);
+        watcherThread.start();
     }
     
     /**
@@ -331,7 +399,7 @@ public class MXMLC implements FlexTool
                 Counter.getInstance().dumpCounts();
             }
         }
-        return exitCode.code;
+        return exitCode.getCode();
     }
 
     /** 
@@ -559,6 +627,9 @@ public class MXMLC implements FlexTool
                 return false;
             
             validateTargetFile();
+
+            DefinitionBase.setPerformanceCachingEnabled(!config.getWatch());
+
             return true;
         }
         catch (ConfigurationException e)

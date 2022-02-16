@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.royale.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
@@ -62,6 +63,8 @@ import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
+import org.apache.royale.compiler.internal.watcher.WatchThread;
+import org.apache.royale.compiler.internal.watcher.WatchThread.IWatchWriter;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -95,7 +98,6 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
         return problems;
     }
 
-
     /*
      * Exit code enumerations.
      */
@@ -105,7 +107,8 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
         PRINT_HELP(1),
         FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_PROBLEMS(4);
+        FAILED_WITH_CONFIG_PROBLEMS(4),
+        WATCHING(1000);
 
         ExitCode(int code)
         {
@@ -141,7 +144,10 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
     public static void main(final String[] args)
     {
         int exitCode = staticMainNoExit(args);
-        System.exit(exitCode);
+        if (exitCode != ExitCode.WATCHING.getCode())
+        {
+            System.exit(exitCode);
+        }
     }
 
     /**
@@ -182,7 +188,6 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
     {
         IBackend backend = new JSCBackend();
 
-        DefinitionBase.setPerformanceCachingEnabled(true);
         workspace = new Workspace();
         workspace.setASDocDelegate(new RoyaleASDocDelegate());
         project = new RoyaleJSProject(workspace, backend);
@@ -272,7 +277,10 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
         }
         finally
         {
-            waitAndClose();
+            if (!config.getWatch() || !ExitCode.SUCCESS.equals(exitCode))
+            {
+                waitAndClose();
+            }
 
             if (outProblems != null && problems.hasFilteredProblems())
             {
@@ -282,7 +290,62 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                 }
             }
         }
-        return exitCode.code;
+        if (config.getWatch() && ExitCode.SUCCESS.equals(exitCode))
+        {
+            setupWatcher();
+            exitCode = ExitCode.WATCHING;
+        }
+        return exitCode.getCode();
+    }
+
+    protected void setupWatcher()
+    {
+        if (!config.getWatch())
+        {
+            return;
+        }
+        IWatchWriter writer = new IWatchWriter()
+        {
+            private long startTime;
+
+            public void rebuild(Collection<ICompilationUnit> units, Collection<ICompilerProblem> problems) throws InterruptedException, IOException
+            {
+                startTime = System.nanoTime();
+                workspace.startBuilding();
+                try
+                {
+                    target = project.getBackend().createTarget(project,
+                            getTargetSettings(), null);
+                    ((JSTarget) target).build(mainCU, problems);
+                }
+                finally
+                {
+                    workspace.doneBuilding();
+                }
+            }
+    
+            public void write(Collection<ICompilationUnit> units) throws InterruptedException, IOException
+            {
+                workspace.startBuilding();
+                try
+                {
+                    File outputFolder = jsPublisher.getOutputFolder();
+                    for (ICompilationUnit unit : units)
+                    {
+                        writeCompilationUnit(unit, outputFolder);
+                    }
+
+                    long endTime = System.nanoTime();
+                    System.out.println((endTime - startTime) / 1e9 + " seconds");
+                }
+                finally
+                {
+                    workspace.doneBuilding();
+                }
+            }
+        };
+        WatchThread watcherThread = new WatchThread(JSTargetType.JS_NATIVE.getText(), writer, config, project, workspace, problems);
+        watcherThread.start();
     }
 
     /**
@@ -682,6 +745,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                 return false;
 
             validateTargetFile();
+            DefinitionBase.setPerformanceCachingEnabled(!config.getWatch());
             return true;
         }
         catch (ConfigurationException e)

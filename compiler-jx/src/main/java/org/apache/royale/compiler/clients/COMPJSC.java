@@ -24,9 +24,6 @@ import java.util.*;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
-import org.apache.royale.compiler.exceptions.ConfigurationException;
-import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
-import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogCompcConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -49,7 +46,8 @@ public class COMPJSC extends MXMLJSC
         PRINT_HELP(1),
         FAILED_WITH_ERRORS(2),
         FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_PROBLEMS(4);
+        FAILED_WITH_CONFIG_PROBLEMS(4),
+        WATCHING(1000);
 
         ExitCode(int code)
         {
@@ -84,7 +82,10 @@ public class COMPJSC extends MXMLJSC
     public static void main(final String[] args)
     {
         int exitCode = staticMainNoExit(args);
-        System.exit(exitCode);
+        if (exitCode != ExitCode.WATCHING.getCode())
+        {
+            System.exit(exitCode);
+        }
     }
 
     /**
@@ -162,9 +163,6 @@ public class COMPJSC extends MXMLJSC
 
             if (continueCompilation)
             {
-                List<String> targets = config.getCompilerTargets();
-                for (String target : targets)
-                    System.out.println("target:" + target);
             	targetloop:
             	for (String target : config.getCompilerTargets())
             	{
@@ -182,7 +180,7 @@ public class COMPJSC extends MXMLJSC
                         compc.workspace.setASDocDelegate(new RoyaleASDocDelegate(true));
 	                    compc.configurationClass = JSGoogCompcConfiguration.class;
 	                    result = compc.mainNoExit(removeJSArgs(args));
-	                    if (result != COMPC.ExitCode.SUCCESS.getCode())
+	                    if (result != COMPC.ExitCode.SUCCESS.getCode() && result != COMPC.ExitCode.WATCHING.getCode())
 	                    {
 	                    	problems.addAll(compc.problems.getProblems());
 	                    	break targetloop;
@@ -193,7 +191,7 @@ public class COMPJSC extends MXMLJSC
 	                	COMPJSCRoyale royale = new COMPJSCRoyale();
 	                	lastCompiler = royale;
 	                    result = royale.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != COMPJSCRoyale.ExitCode.SUCCESS.getCode())
+	                    if (result != COMPJSCRoyale.ExitCode.SUCCESS.getCode() && result != COMPJSCRoyale.ExitCode.WATCHING.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -203,7 +201,7 @@ public class COMPJSC extends MXMLJSC
 	                	COMPJSCNative jsc = new COMPJSCNative();
 	                	lastCompiler = jsc;
 	                    result = jsc.mainNoExit(removeASArgs(args), problems.getProblems(), false);
-	                    if (result != COMPJSCNative.ExitCode.SUCCESS.getCode())
+	                    if (result != COMPJSCNative.ExitCode.SUCCESS.getCode() && result != COMPJSCNative.ExitCode.WATCHING.getCode())
 	                    {
 	                    	break targetloop;
 	                    }
@@ -243,7 +241,10 @@ public class COMPJSC extends MXMLJSC
         }
         finally
         {
-            waitAndClose();
+            if (!config.getWatch() || !ExitCode.SUCCESS.equals(exitCode))
+            {
+                waitAndClose();
+            }
 
             if (outProblems != null && problems.hasFilteredProblems())
             {
@@ -253,7 +254,11 @@ public class COMPJSC extends MXMLJSC
                 }
             }
         }
-        return exitCode.code;
+        if (config.getWatch() && ExitCode.SUCCESS.equals(exitCode))
+        {
+            exitCode = ExitCode.WATCHING;
+        }
+        return exitCode.getCode();
     }
 
     public COMPJSC()

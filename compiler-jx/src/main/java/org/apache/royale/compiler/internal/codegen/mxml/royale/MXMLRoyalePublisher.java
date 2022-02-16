@@ -131,10 +131,10 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         // If the output path is specified using the config-xml or the commandline.
         else if (outputPathParameter != null)
         {
+            outputParentFolder = new File(outputPathParameter);
             // FB usually specified -output <project-path>/bin-release/app.swf
-            if (outputPathParameter.contains(".swf")) {
-            	if (outputParentFolder == null)
-            		outputParentFolder = new File(outputPathParameter);
+            if (outputPathParameter.contains(".swf"))
+            {
                 if (moduleOutput != null && outputPathParameter.contains(moduleOutput))
                 {
                 	String rootFolder = outputPathParameter.substring(0, outputPathParameter.indexOf(moduleOutput));
@@ -146,9 +146,9 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
                         outputParentFolder = new File(rootFolder).getParentFile();
                 }
                 else
+                {
                 	outputParentFolder = outputParentFolder.getParentFile().getParentFile();
-            } else {
-                outputParentFolder = new File(outputPathParameter);
+                }
             }
         }
         else
