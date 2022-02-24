@@ -44,6 +44,8 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
+import java.util.ArrayList;
+
 public class BinaryOperatorEmitter extends JSSubEmitter implements
         ISubEmitter<IBinaryOperatorNode>
 {
@@ -79,6 +81,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
         else if (id == ASTNodeID.Op_InstanceOfID)
         {
+			if (ASNodeUtils.hasParenOpen(node)) {
+				write(ASEmitterTokens.PAREN_OPEN);
+			}
             getWalker().walk(node.getLeftOperandNode());
 
             startMapping(node, node.getLeftOperandNode());
@@ -125,6 +130,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			else
 			{
 				getWalker().walk(node.getRightOperandNode());
+			}
+			if (ASNodeUtils.hasParenClose(node)) {
+				write(ASEmitterTokens.PAREN_CLOSE);
 			}
         }
         else
@@ -252,15 +260,6 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
-                	}
-                	else if (node.getNodeID() == ASTNodeID.Op_EqualID &&
-                			node.getRightOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID)
-                	{
-                		getWalker().walk(xmlNode);
-                		write(" == '");
-	                    getWalker().walk(node.getRightOperandNode());
-                		write("'");
-                		return;
                 	}
                 }
                 else if (isDynamicAccess && ((JSRoyaleEmitter)getEmitter()).isXMLish((IExpressionNode)lnode))
@@ -478,12 +477,13 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             	}
             }
             
-			if (id == ASTNodeID.Op_EqualID) {
+			if (id == ASTNodeID.Op_EqualID || id ==ASTNodeID.Op_NotEqualID) {
 				//QName == QName
 				if (leftDef != null && leftDef.getQualifiedName().equals("QName")) {
 					IDefinition rightDef = node.getRightOperandNode().resolveType(getProject());
 					if (rightDef != null && rightDef.getQualifiedName().equals("QName")) {
-						//handle non-strict equality a little differently
+						//handle non-strict equality/inequality a little differently
+						if (id == ASTNodeID.Op_NotEqualID) write("!");
 						write("QName.equality(");
 						getWalker().walk(node.getLeftOperandNode());
 						write(",");
@@ -491,6 +491,38 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						write(")");
 						return;
 					}
+				} else if (leftDef != null && getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(leftDef) && SemanticUtils.isXMLish(node.getRightOperandNode(), getProject())) {
+					boolean literalBool = node.getLeftOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID;
+					//note, this only covers boolean ==/!= xmlish, not: xmlish ==/!= boolean
+					if (literalBool) {
+						write("'");
+					}
+					else write("('' + ");
+						getWalker().walk(node.getLeftOperandNode());
+					if (literalBool) {
+						write("'");
+					}
+					else write(")");
+					write(" " + node.getOperator().getOperatorText() + " ");
+
+					getWalker().walk(node.getRightOperandNode());
+					return;
+				} else if ((((leftDef == null || getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(leftDef)) && SemanticUtils.isXMLish(node.getLeftOperandNode(), getProject())) || SemanticUtils.isXMLish(leftDef, getProject())) && getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(node.getRightOperandNode().resolveType(getProject()))) {
+					boolean literalBool = node.getRightOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID;
+
+					//note, this only covers xmlish ==/!= boolean, not: boolean ==/!= xmlish
+					getWalker().walk(node.getLeftOperandNode());
+					write(" " + node.getOperator().getOperatorText() + " ");
+					if (literalBool) {
+						write("'");
+					}
+					else write("('' + ");
+					getWalker().walk(node.getRightOperandNode());
+					if (literalBool) {
+						write("'");
+					}
+					else write(")");
+					return;
 				}
 			}
 			
@@ -562,8 +594,12 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			}
             else getWalker().walk(node.getLeftOperandNode());
             startMapping(node, node.getLeftOperandNode());
-            
-            if (id != ASTNodeID.Op_CommaID)
+			boolean xmlAdd = false;
+            if (id == ASTNodeID.Op_AddID && SemanticUtils.isXMLish(node.getLeftOperandNode(),getProject()) && SemanticUtils.isXMLish(node.getRightOperandNode(),getProject())) {
+				//we need to use 'plus' method instead of '+'
+				xmlAdd = true;
+			}
+            if (id != ASTNodeID.Op_CommaID && !xmlAdd)
                 write(ASEmitterTokens.SPACE);
 
             // (erikdebruin) rewrite 'a &&= b' to 'a = a && b'
@@ -585,7 +621,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
             else
             {
-                write(node.getOperator().getOperatorText());
+				if (xmlAdd) {
+					write(".plus(");
+				} else {
+					write(node.getOperator().getOperatorText());
+				}
             }
 
             write(ASEmitterTokens.SPACE);
@@ -611,6 +651,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					//@todo: add loop target null safety (see changes in ForEachEmitter)
 					write(".propertyNames()");
 				}
+			}
+			if (xmlAdd) {
+				write(")");
 			}
         }
 

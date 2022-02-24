@@ -164,7 +164,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
 
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
-    protected Configuration config;
+    protected JSConfiguration config;
     protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
@@ -339,56 +339,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                ((RoyaleJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
-	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
-	
-	                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
-	                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
-	                    {
-	                        final File outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-                            if (config.isVerbose())
-                            {
-                                System.out.println("Compiling file: " + outputClassFile);
-                            }
-	
-	                        ICompilationUnit unit = cu;
-	
-	                        IJSWriter writer;
-	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
-	                        {
-	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    errors, unit, false);
-	                        }
-	                        else
-	                        {
-	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, errors, unit, false);
-	                        }
-	
-	                        BufferedOutputStream out = new BufferedOutputStream(
-	                                new FileOutputStream(outputClassFile));
-	
-                            BufferedOutputStream sourceMapOut = null;
-	                        File outputSourceMapFile = null;
-	                        if (project.config.getSourceMap())
-	                        {
-	                            outputSourceMapFile = getOutputSourceMapFile(
-	                                    cu.getQualifiedNames().get(0), outputFolder);
-                                sourceMapOut = new BufferedOutputStream(
-                                        new FileOutputStream(outputSourceMapFile));
-	                        }
-	                        
-	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
-	                        out.flush();
-	                        out.close();
-                            if (sourceMapOut != null)
-                            {
-                                sourceMapOut.flush();
-                                sourceMapOut.close();
-                            }
-	                        writer.close();
-	                    }
+	                    writeCompilationUnit(cu, outputFolder);
                         ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
                         ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
 	                }
@@ -413,6 +364,61 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
 
         return compilationSuccess;
+    }
+
+    protected void writeCompilationUnit(ICompilationUnit cu, File outputFolder) throws InterruptedException, IOException
+    {
+        ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+        if (cuType != ICompilationUnit.UnitType.AS_UNIT
+                && cuType != ICompilationUnit.UnitType.MXML_UNIT)
+        {
+            return;
+        }
+
+        final File outputClassFile = getOutputClassFile(
+                cu.getQualifiedNames().get(0), outputFolder);
+
+        if (config.isVerbose())
+        {
+            System.out.println("Compiling file: " + outputClassFile);
+        }
+
+        ICompilationUnit unit = cu;
+
+        IJSWriter writer;
+        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+        {
+            writer = (IJSWriter) project.getBackend().createWriter(project,
+                    problems.getProblems(), unit, false);
+        }
+        else
+        {
+            writer = (IJSWriter) project.getBackend().createMXMLWriter(
+                    project, problems.getProblems(), unit, false);
+        }
+
+        BufferedOutputStream out = new BufferedOutputStream(
+                new FileOutputStream(outputClassFile));
+
+        BufferedOutputStream sourceMapOut = null;
+        File outputSourceMapFile = null;
+        if (project.config.getSourceMap())
+        {
+            outputSourceMapFile = getOutputSourceMapFile(
+                    cu.getQualifiedNames().get(0), outputFolder);
+            sourceMapOut = new BufferedOutputStream(
+                    new FileOutputStream(outputSourceMapFile));
+        }
+        
+        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
+        out.flush();
+        out.close();
+        if (sourceMapOut != null)
+        {
+            sourceMapOut.flush();
+            sourceMapOut.close();
+        }
+        writer.close();
     }
 
     /**
@@ -661,7 +667,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
             projectConfigurator.applyToProject(project);
             project.config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
 
-            config = projectConfigurator.getConfiguration();
+            config = (JSGoogConfiguration) projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
 
             problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
@@ -693,7 +699,7 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
         {
             if (config == null)
             {
-                config = new Configuration();
+                config = new JSConfiguration();
                 configBuffer = new ConfigurationBuffer(Configuration.class,
                         Configuration.getAliases());
             }
