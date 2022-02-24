@@ -692,6 +692,11 @@ public class FORMATTER {
 						if (prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
 							newLinesInExtra++;
 						}
+						boolean oneLineBlock = prevToken != null && prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
+								&& nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
+						if (oneLineBlock && collapseEmptyBlocks) {
+							newLinesInExtra = 0;
+						}
 						numRequiredNewLines = Math.max(numRequiredNewLines, newLinesInExtra);
 						if (!indentedStatement && numRequiredNewLines > 0 && prevTokenNotComment != null
 								&& prevTokenNotComment.getType() != ASTokenTypes.TOKEN_SEMICOLON
@@ -749,12 +754,14 @@ public class FORMATTER {
 								indentedStatement = false;
 								indent = decreaseIndent(indent);
 							}
-							boolean oneLineBlock = nextToken != null
-									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
+							boolean oneLineBlock = nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
 							boolean needsNewLine = placeOpenBraceOnNewLine && (!collapseEmptyBlocks || !oneLineBlock);
 							if (needsNewLine) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 							} else {
+								if (oneLineBlock && collapseEmptyBlocks) {
+									numRequiredNewLines = 0;
+								}
 								requiredSpace = true;
 							}
 						} else {
@@ -788,7 +795,8 @@ public class FORMATTER {
 							if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_SWITCH) {
 								SwitchBlockStackItem switchStackItem = (SwitchBlockStackItem) stackItem;
 								if (switchStackItem.clauseCount > 0
-										&& (prevToken == null || prevToken.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE)) {
+										&& (prevToken == null
+												|| prevToken.getType() != ASTokenTypes.TOKEN_BLOCK_CLOSE)) {
 									indent = decreaseIndent(indent);
 								}
 							}
@@ -953,7 +961,8 @@ public class FORMATTER {
 			switch (token.getType()) {
 				case ASTokenTypes.TOKEN_BLOCK_OPEN: {
 					if (blockOpenPending) {
-						boolean oneLineBlock = nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
+						boolean oneLineBlock = nextToken != null
+								&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
 						if (placeOpenBraceOnNewLine && (!collapseEmptyBlocks || !oneLineBlock)) {
 							indent = increaseIndent(indent);
 						}
@@ -1008,8 +1017,9 @@ public class FORMATTER {
 							}
 						}
 						if (!inControlFlowStatement) {
-							if (nextToken != null && (nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-									|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+							if (nextToken != null
+									&& (nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+											|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
 								requiredSpace = true;
 							} else {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
@@ -1138,7 +1148,8 @@ public class FORMATTER {
 						break;
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_ELSE: {
-						if (nextTokenNotComment != null && nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_IF) {
+						if (nextTokenNotComment != null
+								&& nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_IF) {
 							requiredSpace = true;
 						} else {
 							blockStack.add(new BlockStackItem(token));
@@ -1179,8 +1190,9 @@ public class FORMATTER {
 								inCaseOrDefaultClause = false;
 								caseOrDefaultBlockOpenPending = true;
 								indent = increaseIndent(indent);
-								if (nextToken != null && (nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-									|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+								if (nextToken != null && (nextToken
+										.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+										|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
 									requiredSpace = true;
 								} else {
 									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
@@ -1918,7 +1930,7 @@ public class FORMATTER {
 					if (nextToken != null && nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
 						attributeIndent = getAttributeIndent(token);
-						if(nextToken.getType() != TOKEN_TYPE_EXTRA) {
+						if (nextToken.getType() != TOKEN_TYPE_EXTRA) {
 							requiredSpace = true;
 						}
 					}

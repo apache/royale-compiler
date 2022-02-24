@@ -138,4 +138,30 @@ public class TestMethodDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testCollapseEmptyBlock() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.collapseEmptyBlocks = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"class ClassWithMethod\n" +
+			"{\n" +
+			"\tfunction myFunction() {\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class ClassWithMethod {\n" +
+				"\tfunction myFunction() {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

@@ -320,4 +320,24 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testCollapseEmptyBlock() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.collapseEmptyBlocks = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"function myFunction() {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"function myFunction() {}",
+				// @formatter:on
+				result);
+	}
 }

@@ -346,4 +346,24 @@ public class TestForStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testCollapseEmptyBlock() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.collapseEmptyBlocks = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"for (var i:int = 0; i < 3; i++) {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"for (var i:int = 0; i < 3; i++) {}",
+				// @formatter:on
+				result);
+	}
 }

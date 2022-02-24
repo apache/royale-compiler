@@ -167,4 +167,24 @@ public class TestInterfaceDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testCollapseEmptyBlock() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.collapseEmptyBlocks = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"interface MyInterface {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"interface MyInterface {}",
+				// @formatter:on
+				result);
+	}
 }
