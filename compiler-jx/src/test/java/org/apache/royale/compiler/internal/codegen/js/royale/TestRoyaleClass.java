@@ -276,7 +276,7 @@ public class TestRoyaleClass extends TestGoogClass
         IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
         String expected = "/**\n * @constructor\n * @extends {org.apache.royale.A}\n */\norg.apache.royale.B = function() {\n  org.apache.royale.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.B, org.apache.royale.A);\n\n\n" +
-                "org.apache.royale.B.prototype.set__foo = function(value) {\n  org.apache.royale.B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\n" +
+                "org.apache.royale.B.prototype.set__foo = function(value) {\n  org.apache.royale.B.superClass_.set__foo.apply(this, [value] );\n};\n\n\n" +
                 "Object.defineProperties(org.apache.royale.B.prototype, /** @lends {org.apache.royale.B.prototype} */ {\n/**\n * @type {Object}\n */\nfoo: {\nset: org.apache.royale.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }

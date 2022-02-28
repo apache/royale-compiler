@@ -170,7 +170,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.PAREN_OPEN);
                         write(ASEmitterTokens.THIS);
                         writeToken(ASEmitterTokens.COMMA);
-                        writeToken(ASEmitterTokens.SQUARE_OPEN);
+                        write(ASEmitterTokens.SQUARE_OPEN);
                         if (op.length() > 1) // += and things like that
                         {
                             write(getEmitter().formatQualifiedName(

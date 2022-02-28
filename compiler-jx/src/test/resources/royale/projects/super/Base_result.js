@@ -42,7 +42,7 @@ Base.prototype.get__text = function() {
 
 Base.prototype.set__text = function(value) {
   if (value != Base.superClass_.get__text.apply(this)) {
-    Base.superClass_.set__text.apply(this, [ "B" + value] );
+    Base.superClass_.set__text.apply(this, ["B" + value] );
   }
 };
 
