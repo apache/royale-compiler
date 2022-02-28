@@ -138,7 +138,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("RoyaleTest_A.prototype.foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.foo.apply(this, [ a, b, c] );\n}");
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.foo.apply(this, [a, b, c] );\n}");
     }
     
     @Test
@@ -147,7 +147,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
         IFunctionNode node = (IFunctionNode)getNode("import custom.TestProxy;import custom.custom_namespace;use namespace custom_namespace;public class RoyaleTest_A extends TestProxy { custom_namespace function foo(){if (a) super.setProperty(a, b);}}",
         					IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.http_$$ns_apache_org$2017$custom$namespace__setProperty.apply(this, [ a, b] );\n}");
+        assertOut("/**\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = function() {\n  if (a)\n    RoyaleTest_A.superClass_.http_$$ns_apache_org$2017$custom$namespace__setProperty.apply(this, [a, b] );\n}");
     }
 
     @Test

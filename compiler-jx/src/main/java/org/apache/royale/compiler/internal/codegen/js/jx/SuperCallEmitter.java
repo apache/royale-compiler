@@ -280,7 +280,7 @@ public class SuperCallEmitter extends JSSubEmitter
         	if (usingApply)
         	{
                 writeToken(ASEmitterTokens.COMMA);
-                writeToken(ASEmitterTokens.SQUARE_OPEN);
+                write(ASEmitterTokens.SQUARE_OPEN);
         	}
 
             int len = anodes.length;
