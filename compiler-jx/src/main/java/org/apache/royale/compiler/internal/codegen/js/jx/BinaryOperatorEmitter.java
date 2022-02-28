@@ -188,7 +188,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         }
 
                         getWalker().walk(node.getRightOperandNode());
-                        writeToken(ASEmitterTokens.SQUARE_CLOSE);
+                        write(ASEmitterTokens.SQUARE_CLOSE);
                         write(ASEmitterTokens.PAREN_CLOSE);
                         return;
                     }

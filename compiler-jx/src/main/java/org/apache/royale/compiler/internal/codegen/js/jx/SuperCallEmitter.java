@@ -292,7 +292,7 @@ public class SuperCallEmitter extends JSSubEmitter
                 getWalker().walk(anodes[i]);
             }
         	if (usingApply)
-                writeToken(ASEmitterTokens.SQUARE_CLOSE);
+                write(ASEmitterTokens.SQUARE_CLOSE);
         }
 
         write(ASEmitterTokens.PAREN_CLOSE);

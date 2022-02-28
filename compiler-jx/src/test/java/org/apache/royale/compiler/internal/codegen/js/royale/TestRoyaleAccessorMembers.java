@@ -152,7 +152,7 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
-        "B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [value] );\n};\n\n\n" +
+        "B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [value]);\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nset: B.prototype.set__foo}}\n);");
     }
 
@@ -176,7 +176,7 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
-        "B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [value] );\n};\n\n\n" +
+        "B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [value]);\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
     }
     
