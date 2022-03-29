@@ -1,5 +1,25 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
+Apache Royale Compiler 0.9.9
+
+=================
+
+- **asformat** is a new command line code formatter for ActionScript and MXML, with a programmatic API for use in editors and IDEs.
+- Added a boolean new compiler option `compiler.mxml.force-local-id` - (short commandline form `force-local-id`). This is a quick way to avoid propagating id attributes to browser DOM in JSRoyale. 
+- (JS) Added new string compiler options `js-getter-prefix` and `js-setter-prefix` to optionally specify different prefixes to use instead of 'get_' and 'set_' for accessors in the generated JavaScript. Useful for integrating with JS libraries/languages that use a different naming convention.
+- (JS) Fix for `@royalesuppressexport` feature which had stopped working
+- (JS) Fix for `mx.managers.SystemManager` subclass not being generated for applications that were not direct subclasses of the relevant application classes.
+- (JS) Improvement in output of locale properties files as ResourceBundles. Now using original Flex/SWF parsing approach for improved parity.
+- (JS) First implementation of multiple-catch support in Javascript
+- (JS) Added unsafe option for outputting literal javascript (via externally defined jsUnsafeNativeInline function)
+- Fixed `<!---->` in MXML being incorrectly detected as an unclosed ASDoc comment, instead of an empty regular comment.
+- (JS) Improved the generated JavaScript for `if`, `else if`, and `else` statements that contained only a semicolon and no braces.
+- (JS) Generated JavaScript for `parseInt()` passes `0` instead of `undefined` for radix argument to avoid number format exception.
+- (JS) Fixed several issues with generated JavaScript for E4X expressions when using `js-dynamic-access-unknown-members` compiler option.
+- (JS) Fixed a couple of issues with generated JavaScript when using custom namespaces.
+- Fixed missing `[Event]` metadata in playerglobal.swc classes generated from documentation.
+- Fixed parse exception when binding to XML.
+
 Apache Royale Compiler 0.9.8
 =================
 

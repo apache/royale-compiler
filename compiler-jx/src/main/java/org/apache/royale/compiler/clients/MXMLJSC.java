@@ -19,14 +19,8 @@
 
 package org.apache.royale.compiler.clients;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
@@ -35,8 +29,6 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.codegen.js.IJSWriter;
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.config.CommandLineConfigurator;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
@@ -47,35 +39,25 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerProblemSettings;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
-import org.apache.royale.compiler.exceptions.ConfigurationException;
-import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
-import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
-import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
-import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
-import org.apache.royale.compiler.internal.targets.JSTarget;
-import org.apache.royale.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.InternalCompilerProblem;
-import org.apache.royale.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.targets.ITarget;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
-import org.apache.royale.compiler.utils.ClosureUtils;
 import org.apache.royale.swf.ISWF;
 import org.apache.royale.swf.SWF;
 import org.apache.royale.swf.types.RGB;
@@ -174,7 +156,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 if (text.equalsIgnoreCase(jsTargetType.text))
                     return jsTargetType;
             }
-            return JS_ROYALE;
+            return null;
         }
     }
 
@@ -273,7 +255,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
-    private IJSGoogPublisher jsPublisher;
     protected MXMLC mxmlc;
     protected JSCompilerEntryPoint lastCompiler;
     public boolean noLink;
@@ -495,290 +476,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     	}
     	return list.toArray(new String[0]);
     }
-    
-    /**
-     * Main body of this program. This method is called from the public static
-     * method's for this program.
-     * 
-     * @return true if compiler succeeds
-     * @throws IOException
-     * @throws InterruptedException
-     */
-    protected boolean compile()
-    {
-        JSGoogConfiguration googConfiguration = (JSGoogConfiguration) config;
-        boolean compilationSuccess = false;
-
-        try
-        {
-            project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-
-            if (!googConfiguration.getSkipTranspile())
-            {
-	            if (!setupTargetFile()) {
-                    return false;
-                }
-
-	            buildArtifact();
-            }
-            if (jsTarget != null || googConfiguration.getSkipTranspile())
-            {
-                List<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
-                List<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
-
-                if (!config.getCreateTargetWithErrors())
-                {
-                    problems.getErrorsAndWarnings(errors, warnings);
-                    if (errors.size() > 0)
-                        return false;
-                }
-
-                Set<String> closurePropNamesToKeep = new HashSet<String>();
-                //use a LinkedHashSet because the order of the exported names matters -JT
-                LinkedHashSet<String> closureSymbolNamesToExport = new LinkedHashSet<String>();
-                jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
-                        project, errors, config);
-
-                File outputFolder = jsPublisher.getOutputFolder();
-
-                if (!googConfiguration.getSkipTranspile())
-                {
-	                ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
-	                roots.add(mainCU);
-	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
-	                roots.addAll(incs);
-	                project.mixinClassNames = new TreeSet<String>();
-	                project.remoteClassAliasMap = new HashMap<String, String>();
-	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
-	                ((RoyaleJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
-	                ((RoyaleJSTarget)target).collectRemoteClassMetaData(project.remoteClassAliasMap, reachableCompilationUnits);
-	                for (final ICompilationUnit cu : reachableCompilationUnits)
-	                {
-	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
-	
-	                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
-	                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
-	                    {
-	                        final File outputClassFile = getOutputClassFile(
-	                                cu.getQualifiedNames().get(0), outputFolder);
-	
-                            if (config.isVerbose())
-                            {
-                                System.out.println("Compiling file: " + outputClassFile);
-                            }
-
-	                        ICompilationUnit unit = cu;
-	
-	                        IJSWriter writer;
-	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
-	                        {
-	                            writer = (IJSWriter) project.getBackend().createWriter(project,
-	                                    errors, unit, false);
-	                        }
-	                        else
-	                        {
-	                            writer = (IJSWriter) project.getBackend().createMXMLWriter(
-	                                    project, errors, unit, false);
-	                        }
-	
-	                        BufferedOutputStream out = new BufferedOutputStream(
-	                                new FileOutputStream(outputClassFile));
-	
-                            BufferedOutputStream sourceMapOut = null;
-	                        File outputSourceMapFile = null;
-	                        if (project.config.getSourceMap())
-	                        {
-	                            outputSourceMapFile = getOutputSourceMapFile(
-	                                    cu.getQualifiedNames().get(0), outputFolder);
-                                sourceMapOut = new BufferedOutputStream(
-                                        new FileOutputStream(outputSourceMapFile));
-	                        }
-	                        
-	                        writer.writeTo(out, sourceMapOut, outputSourceMapFile);
-	                        out.flush();
-                            out.close();
-                            if (sourceMapOut != null)
-                            {
-                                sourceMapOut.flush();
-                                sourceMapOut.close();
-                            }
-	                        writer.close();
-	                        long fileDate = 0;
-	                    	String metadataDate = targetSettings.getSWFMetadataDate();
-	                    	if (metadataDate != null)
-	                    	{
-	                    		String metadataFormat = targetSettings.getSWFMetadataDateFormat();
-	                    		try {
-	                    			SimpleDateFormat sdf = new SimpleDateFormat(metadataFormat);
-                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                                    fileDate = sdf.parse(metadataDate).getTime();
-	                    		} catch (ParseException e) {
-	                				// TODO Auto-generated catch block
-	                				e.printStackTrace();
-	                			} catch (IllegalArgumentException e1) {
-	                				e1.printStackTrace();
-	                			}
-	                    		outputClassFile.setLastModified(fileDate);
-	                    	}
-	                    }
-                        ClosureUtils.collectPropertyNamesToKeep(cu, project, closurePropNamesToKeep);
-                        ClosureUtils.collectSymbolNamesToExport(cu, project, closureSymbolNamesToExport);
-	                }
-                }
-                
-                if (jsPublisher != null)
-                {
-                    jsPublisher.setClosurePropertyNamesToKeep(closurePropNamesToKeep);
-                    jsPublisher.setClosureSymbolNamesToExport(closureSymbolNamesToExport);
-                    compilationSuccess = jsPublisher.publish(problems);
-                }
-                else
-                {
-                    compilationSuccess = true;
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            final ICompilerProblem problem = new InternalCompilerProblem(e);
-            problems.add(problem);
-        }
-
-        return compilationSuccess;
-    }
-
-    /**
-     * Build target artifact.
-     * 
-     * @throws InterruptedException threading error
-     * @throws IOException IO error
-     * @throws ConfigurationException
-     */
-    protected void buildArtifact() throws InterruptedException, IOException,
-            ConfigurationException
-    {
-        jsTarget = buildJSTarget();
-    }
-
-    private IJSApplication buildJSTarget() throws InterruptedException,
-            FileNotFoundException, ConfigurationException
-    {
-        final List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
-
-        project.mainCU = mainCU;
-        final IJSApplication app = buildApplication(project,
-                config.getMainDefinition(), mainCU, problemsBuildingSWF);
-        problems.addAll(problemsBuildingSWF);
-        if (app == null)
-        {
-            ICompilerProblem problem = new UnableToBuildSWFProblem(
-                    getOutputFilePath());
-            problems.add(problem);
-        }
-
-        return app;
-    }
-
-    /**
-     * Replaces RoyaleApplicationProject::buildSWF()
-     * 
-     * @param applicationProject
-     * @param rootClassName
-     * @param problems
-     * @return
-     * @throws InterruptedException
-     */
-
-    private IJSApplication buildApplication(CompilerProject applicationProject,
-            String rootClassName, ICompilationUnit mainCU,
-            Collection<ICompilerProblem> problems) throws InterruptedException,
-            ConfigurationException, FileNotFoundException
-    {
-        Collection<ICompilerProblem> fatalProblems = applicationProject.getFatalProblems();
-        if (!fatalProblems.isEmpty())
-        {
-            problems.addAll(fatalProblems);
-            return null;
-        }
-
-        return ((JSTarget) target).build(mainCU, problems);
-    }
-
-    /**
-     * Get the output file path. If {@code -output} is specified, use its value;
-     * otherwise, use the same base name as the target file.
-     * 
-     * @return output file path
-     */
-    private String getOutputFilePath()
-    {
-        if (config.getOutput() == null)
-        {
-            final String extension = "." + project.getBackend().getOutputExtension();
-            return FilenameUtils.removeExtension(config.getTargetFile()).concat(
-                    extension);
-        }
-        else
-            return config.getOutput();
-    }
-
-    /**
-     * @author Erik de Bruin
-     * 
-     *         Get the output class file. This includes the (sub)directory in
-     *         which the original class file lives. If the directory structure
-     *         doesn't exist, it is created.
-     * 
-     * @param qname
-     * @param outputFolder
-     * @return output class file path
-     */
-    private File getOutputClassFile(String qname, File outputFolder)
-    {
-        String[] cname = qname.split("\\.");
-        String sdirPath = outputFolder + File.separator;
-        if (cname.length > 0)
-        {
-            for (int i = 0, n = cname.length - 1; i < n; i++)
-            {
-                sdirPath += cname[i] + File.separator;
-            }
-
-            File sdir = new File(sdirPath);
-            if (!sdir.exists())
-                sdir.mkdirs();
-
-            qname = cname[cname.length - 1];
-        }
-
-        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension());
-    }
-
-    /**
-     * @param qname
-     * @param outputFolder
-     * @return output source map file path
-     */
-    private File getOutputSourceMapFile(String qname, File outputFolder)
-    {
-        String[] cname = qname.split("\\.");
-        String sdirPath = outputFolder + File.separator;
-        if (cname.length > 0)
-        {
-            for (int i = 0, n = cname.length - 1; i < n; i++)
-            {
-                sdirPath += cname[i] + File.separator;
-            }
-
-            File sdir = new File(sdirPath);
-            if (!sdir.exists())
-                sdir.mkdirs();
-
-            qname = cname[cname.length - 1];
-        }
-
-        return new File(sdirPath + qname + "." + project.getBackend().getOutputExtension() + ".map");
-    }
 
     /**
      * Mxmlc uses target file as the main compilation unit and derive the output
@@ -922,6 +619,23 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 return false;
             }
 
+            for(String target : config.getCompilerTargets())
+            {
+                JSTargetType jsTargetType = JSTargetType.fromString(target);
+                if (jsTargetType == null)
+                {
+                    String message = "configuration variable 'targets' must be one of the following: ";
+                    for (JSTargetType type : JSTargetType.values())
+                    {
+                        message += "'" + type.text + "', ";
+                    }
+                    message += "got '" + target + "'";
+                    final ICompilerProblem problem = new ConfigurationProblem(null, -1,
+                            -1, -1, -1, message);
+                    problems.add(problem);
+                }
+            }
+
             if (problems.hasErrors())
                 return false;
             
@@ -1014,26 +728,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected TargetType getTargetType()
     {
         return TargetType.SWF;
-    }
-
-    /**
-     * Validate target file.
-     * 
-     * @throws MustSpecifyTarget
-     * @throws IOError
-     */
-    protected void validateTargetFile() throws ConfigurationException
-    {
-        if (mainCU instanceof ResourceModuleCompilationUnit)
-            return; //when compiling a Resource Module, no target file is defined.
-
-        final String targetFile = config.getTargetFile();
-        if (targetFile == null)
-            throw new ConfigurationException.MustSpecifyTarget(null, null, -1);
-
-        final File file = new File(targetFile);
-        if (!file.exists())
-            throw new ConfigurationException.IOError(targetFile);
     }
 
     /**

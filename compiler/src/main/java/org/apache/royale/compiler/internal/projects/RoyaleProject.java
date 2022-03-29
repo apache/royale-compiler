@@ -290,6 +290,15 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
      * Currently this is "mx.core.IMXMLObject".
      */
     private String mxmlObjectInterface;
+
+    /**
+     * Whether localId behavior should be 'forced'
+     * for the current compilation target. This has the
+     * effect of treating all mxml id="name" specifications
+     * as localId="name" for the current compilation target.
+     * This is false by default and is managed via Configuration
+     */
+    private Boolean mxmlForceLocalId;
     
     /**
      * The fully-qualified name of the runtime interface
@@ -763,6 +772,16 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     public void setMXMLObjectInterface(String mxmlObjectInterface)
     {
         this.mxmlObjectInterface = mxmlObjectInterface;
+    }
+
+    public Boolean getMXMLForceLocalId()
+    {
+        return mxmlForceLocalId;
+    }
+
+    public void setMXMLForceLocalId(Boolean mxmlForceLocalId)
+    {
+        this.mxmlForceLocalId = mxmlForceLocalId;
     }
 
     public String getProxyBaseClass()

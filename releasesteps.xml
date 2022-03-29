@@ -323,6 +323,12 @@
             <param name="jarname" value="debugger" />
         </antcall>
         <antcall target="sign-jar-artifacts" >
+            <param name="jarname" value="formatter" />
+        </antcall>
+        <antcall target="sign-file" >
+            <param name="file" value="${artifactfolder}/artifacts/archive/target/local-release-dir/org/apache/royale/compiler/formatter/${release.version}/formatter-${release.version}-tests.jar" />
+        </antcall>
+        <antcall target="sign-jar-artifacts" >
             <param name="jarname" value="flex-compiler-oem" />
         </antcall>
         <antcall target="sign-jar-artifacts" >

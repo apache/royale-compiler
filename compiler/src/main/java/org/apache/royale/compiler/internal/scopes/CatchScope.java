@@ -19,13 +19,16 @@
 
 package org.apache.royale.compiler.internal.scopes;
 
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
-import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+
+import java.util.Objects;
 
 /**
  * {@link ASScope} subclass for Catch block scopes.
  */
-public final class CatchScope extends NoDefinitionScope implements IASScope
+public final class CatchScope extends NoDefinitionScope
 {
     /**
      * 
@@ -44,5 +47,50 @@ public final class CatchScope extends NoDefinitionScope implements IASScope
     public void setParameterDefinition(IParameterDefinition param)
     {
         this.addDefinitionToThisScope(param);
+        parameterDefinition = param;
+    }
+
+    private IParameterDefinition parameterDefinition;
+
+    @Override
+    public void addDefinition(IDefinition d)
+    {
+        if (Objects.equals(d.getBaseName(), parameterDefinition.getBaseName())) {
+            //this should ensure that declarations inside a catch clause that conflict with the parameter definition (i.e. create ambiguity) cause a compiler error
+            this.addDefinitionToThisScope(d);
+        } else {
+            super.addDefinition(d);
+        }
+    }
+
+
+    /**
+     * Advanced use only
+     * Used only for implementations that require 're-writing' of the default behavior (for example in runtimes that don't
+     * have native support for multiple catch clauses).
+     * This removes a potential conflicting name definition from the local catch scope (which is usually only reserved for the
+     * parameter definition).
+     * @param d
+     */
+    public void displaceParameter(IDefinition d)
+    {
+        this.removeDefinition(parameterDefinition);
+        this.addDefinitionToThisScope(d);
+    }
+
+
+    @Override
+    public IDefinitionSet getLocalDefinitionSetByName(String baseName)
+    {
+        //overrides the base class to return baseName definition(s) from the local set when the catch param is being requested, otherwise get the definitions from the containing scope.
+        IDefinitionSet returnSet;
+        IDefinitionSet localSet = super.getLocalDefinitionSetByName(baseName);
+        if (localSet != null && !localSet.isEmpty()) {
+            returnSet = localSet;
+        } else {
+            returnSet = getContainingScope().getLocalDefinitionSetByName(baseName);
+        }
+
+        return returnSet;
     }
 }

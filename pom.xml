@@ -27,7 +27,7 @@
 
   <groupId>org.apache.royale.compiler</groupId>
   <artifactId>royale-compiler-parent</artifactId>
-  <version>0.9.8</version>
+  <version>0.9.9</version>
   <packaging>pom</packaging>
 
   <name>Apache Royale: Compiler: Parent</name>
@@ -37,7 +37,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
     <url>https://github.com/apache/royale-compiler</url>
-    <tag>org.apache.royale.compiler-0.9.8-rc7</tag>
+    <tag>org.apache.royale.compiler-0.9.9-rc3</tag>
   </scm>
 
   <properties>
@@ -64,7 +64,7 @@
     <maven.wagon.http.retryHandler.class>standard</maven.wagon.http.retryHandler.class>
     <!-- Try at most 6 times to deploy every artifact -->
     <maven.wagon.http.retryHandler.count>6</maven.wagon.http.retryHandler.count>
-    <project.build.outputTimestamp>2021-08-27T11:57:25Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2022-03-10T14:55:27Z</project.build.outputTimestamp>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -106,6 +106,7 @@
     <module>compiler-test-utils</module>
     <module>swfutils</module>
     <module>debugger</module>
+    <module>formatter</module>
     <module>flex-compiler-oem</module>
     <module>royale-ant-tasks</module>
     <module>royaleunit-ant-tasks</module>

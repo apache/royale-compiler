@@ -24,6 +24,8 @@ import java.io.Writer;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorNodeBase;
+import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
@@ -49,4 +51,6 @@ public interface IJSEmitter extends IASEmitter, IMappingEmitter
     void emitClosureEnd(IASNode node, IDefinition nodeDef);
 
     void emitAssignmentCoercion(IExpressionNode assignedNode, IDefinition definition);
+
+    BinaryOperatorNodeBase getGeneratedTypeCheck(ExpressionNodeBase leftOperand, ExpressionNodeBase rightOperand);
 }

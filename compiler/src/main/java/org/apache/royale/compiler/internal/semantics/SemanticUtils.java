@@ -33,17 +33,8 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.royale.compiler.definitions.IAccessorDefinition;
-import org.apache.royale.compiler.definitions.IClassDefinition;
-import org.apache.royale.compiler.definitions.IConstantDefinition;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
-import org.apache.royale.compiler.definitions.IInterfaceDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.IParameterDefinition;
-import org.apache.royale.compiler.definitions.IScopedDefinition;
-import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.references.IReference;
@@ -110,28 +101,10 @@ import org.apache.royale.compiler.problems.ScopedToDefaultNamespaceProblem;
 import org.apache.royale.compiler.problems.UnknownSuperclassProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IClassNode;
-import org.apache.royale.compiler.tree.as.ICommonClassNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFileNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.IImportNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
-import org.apache.royale.compiler.tree.as.ILiteralNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.royale.compiler.tree.as.INumericLiteralNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IScopedNode;
-import org.apache.royale.compiler.tree.as.ITryNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
@@ -981,13 +954,18 @@ public class SemanticUtils
      */
     public static IDefinition resolveXML(IExpressionNode iNode, ICompilerProject project)
     {
+        if (iNode.getNodeID().equals(ASTNodeID.E4XFilterID)) {
+            // return XMLList, we can be certain
+            return project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        }
         if (iNode instanceof IFunctionCallNode)
         {
             IFunctionCallNode functionCall = (IFunctionCallNode) iNode;
             IExpressionNode nameNode = functionCall.getNameNode();
+            IMemberAccessExpressionNode memberAccess = null;
             if (nameNode instanceof IMemberAccessExpressionNode)
             {
-                IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) nameNode;
+                memberAccess = (IMemberAccessExpressionNode) nameNode;
                 nameNode = memberAccess.getRightOperandNode();
             }
             if (nameNode instanceof IIdentifierNode)
@@ -1000,39 +978,113 @@ public class SemanticUtils
                             && !(resolvedDef instanceof IAccessorDefinition))
                     {
                         //method call on XML or XMLList instance
+                        resolvedDef = methodXMLishReturnType((IFunctionDefinition)resolvedDef,project);
                         return resolvedDef;
                     }
+                } else {
+                    resolvedDef = functionCall.resolveType(project);
+                    if (resolvedDef != null && isXMLish(resolvedDef, project)) return resolvedDef;
                 }
+                if (memberAccess !=null) {
+                    //try left
+                    IDefinition leftDef = resolveXML(memberAccess.getLeftOperandNode(), project);
+                    if (leftDef != null) {
+                        IClassDefinition xmlish = (IClassDefinition) leftDef;
+                        IDefinitionSet funcDefs = xmlish.getContainedScope().getLocalDefinitionSetByName(identifierNode.getName());
+
+                        if (funcDefs != null){
+                            if (funcDefs.getSize() == 1) {
+                                IFunctionDefinition funcDef = (IFunctionDefinition)funcDefs.getDefinition(0);
+                                resolvedDef = methodXMLishReturnType(funcDef, project);//.resolveReturnType(project);
+                                if (resolvedDef != null) return resolvedDef;
+                            } //there should be no competing definitions on XMLish classes
+                        } 
+                    }
+                }
+
             }
+
             return null;
         }
 
-        if (iNode instanceof IIdentifierNode)
+        else if (iNode instanceof IIdentifierNode)
         {
             IIdentifierNode identifierNode = (IIdentifierNode) iNode;
             IDefinition resolvedDef = identifierNode.resolve(project);
-            if (resolvedDef != null && isXMLish(resolvedDef.getParent(), project))
-            {
-                if (resolvedDef.isPrivate() || resolvedDef.isProtected())
-                {
-                    //private/protected member inside the XML or XMLList class
+            if (resolvedDef instanceof IVariableDefinition) {
+                resolvedDef = resolvedDef.resolveType(project);
+                if (resolvedDef != null && isXMLish(resolvedDef, project)) {
+                    return resolvedDef;
+                }
+            }
+            else {
+                resolvedDef = identifierNode.resolveType(project);
+                if (resolvedDef != null && isXMLish(resolvedDef, project)) {
                     return resolvedDef;
                 }
             }
         }
-        if (iNode instanceof IMemberAccessExpressionNode)
+        else if (iNode instanceof IMemberAccessExpressionNode)
         {
             IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) iNode;
             IExpressionNode nameNode = memberAccess.getRightOperandNode();
-            return resolveXML(nameNode, project);
+            IDefinition resolvedDef = resolveXML(nameNode, project);
+            if (resolvedDef == null) {
+                IDefinition lhs = resolveXML(memberAccess.getLeftOperandNode(), project);
+                if (lhs != null) {
+                    if ((nameNode instanceof IUnaryOperatorNode && nameNode.getNodeID().equals(ASTNodeID.Op_AtID)) ||
+                        nameNode instanceof IIdentifierNode) {
+                        return project.getBuiltinType(BuiltinType.XMLLIST);
+                    }
+                }
+            }
+            return resolvedDef;
+        }
+        else if (iNode instanceof IDynamicAccessNode) {
+            IDynamicAccessNode dynAccess = (IDynamicAccessNode) iNode;
+            boolean isNumericAccess = SemanticUtils.isNumericType(dynAccess.getRightOperandNode().resolveType(project), project);
+            IExpressionNode leftSideExpressioNode = dynAccess.getLeftOperandNode();
+            if (!isNumericAccess && leftSideExpressioNode.getNodeID().equals(ASTNodeID.Op_AtID)) {
+                if (dynAccess.getParent() instanceof IMemberAccessExpressionNode) {
+                    IMemberAccessExpressionNode mae = (IMemberAccessExpressionNode) (dynAccess.getParent());
+                    leftSideExpressioNode = mae.getLeftOperandNode();
+                }
+            }
+            IDefinition lhs = resolveXML(leftSideExpressioNode, project);
+            if (lhs != null) {
+                //if the type is numeric, then assume it is XML, if it is non-numeric, then XMLList
+                return isNumericAccess ? project.getBuiltinType(BuiltinType.XML) : project.getBuiltinType(BuiltinType.XMLLIST);
+            }
+        }
+        else if (iNode instanceof IBinaryOperatorNode) {
+            IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) iNode;
+            if (binaryOperatorNode.getNodeID().equals(ASTNodeID.Op_AddID)) {
+                //System.out.println("Op_AddID");
+                if (resolveXML(binaryOperatorNode.getLeftOperandNode(),project)!= null && resolveXML(binaryOperatorNode.getRightOperandNode(), project)!=null) {
+                    return project.getBuiltinType(BuiltinType.XMLLIST);
+                }
+            }
         }
         return null;
     }
 
     /**
      * Determine if the definition passed in is one of the XML types (XML or
-     * XMLList) These classes are unrelated, but behave in similar manners.
+     * XMLList) These classes are distinct classes, without shared ancestry or interfaces, but behave in similar manners.
      * 
+     * @param iNode the {@link IExpressionNode} to check
+     * @param project the {@link ICompilerProject} in which to look up types
+     * @return true if definition is the built-in XML or XMLList type.
+     */
+    public static boolean isXMLish(IExpressionNode iNode, ICompilerProject project)
+    {
+        return isXMLish(resolveXML(iNode, project), project);
+    }
+
+    /**
+     * Determine if the definition passed in is one of the XML types (XML or
+     * XMLList) These classes are unrelated, but behave in similar manners.
+     *
      * @param def the {@link IDefinition} to check
      * @param project the {@link ICompilerProject} in which to look up types
      * @return true if definition is the built-in XML or XMLList type.
@@ -1042,7 +1094,31 @@ public class SemanticUtils
         IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
         IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
         return (xmlDef != null && def == xmlDef) ||
-               (xmlListDef != null && def == xmlListDef);
+                (xmlListDef != null && def == xmlListDef);
+    }
+
+    /**
+     * For an unresolved return type, special case the checking of it.
+     * in XML, parent():* and insertChildAfter are some examples
+     * @param method
+     * @param project
+     * @return
+     */
+    private static IDefinition methodXMLishReturnType(IFunctionDefinition method, ICompilerProject project){
+
+        IDefinition returnType = method.resolveReturnType(project);
+        if (returnType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE)) && project.getBuiltinType(BuiltinType.XML).equals(method.getParent())) {
+            //method names which can be considered to return XML instead of '*'
+            //these are either XML or undefined (as opposed to null)
+            //3 methods that can be considered having XMLish return types : "parent", "insertChildAfter", "insertChildBefore"
+            if (method.getBaseName().matches("parent|insertChildAfter|insertChildBefore")) {
+                return project.getBuiltinType(BuiltinType.XML);
+            }
+        }
+        if (isXMLish(returnType,project)) {
+            return returnType;
+        }
+        return null;
     }
     
     /**
@@ -1326,7 +1402,7 @@ public class SemanticUtils
 
     /**
      *  Is this function node contained within another function node?
-     *  @param iNode - the node of interest.
+     *  @param functionNode - the node of interest.
      *  @return true if the function node is a closure
      */
     public static boolean isFunctionClosure(IFunctionNode functionNode)

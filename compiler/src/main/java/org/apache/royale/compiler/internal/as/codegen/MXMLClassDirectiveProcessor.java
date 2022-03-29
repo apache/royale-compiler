@@ -3153,7 +3153,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                     {
                         final IASNode child = arrayNode.getChild(i);
                         ASTNodeID nodeID = child.getNodeID();
-                        if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID)
+                        if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID || nodeID ==ASTNodeID.MXMLObjectID)
                         {
                             isSimple = false;
                             break;

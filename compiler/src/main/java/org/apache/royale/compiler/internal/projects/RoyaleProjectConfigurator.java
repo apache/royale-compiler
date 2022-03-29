@@ -190,6 +190,8 @@ public class RoyaleProjectConfigurator extends Configurator
         project.setRepeaterClass(IMXMLTypeConstants.Repeater);
         
         project.setNamedColors(NAMED_COLORS);
+
+        project.setMXMLForceLocalId(false);
         
         if (configuration != null)
         {
@@ -260,6 +262,8 @@ public class RoyaleProjectConfigurator extends Configurator
 
             configValue = configuration.getProxyBaseClass();
             project.setProxyBaseClass(configValue);
+
+            project.setMXMLForceLocalId(configuration.getCompilerMxmlForceLocalId());
 
             project.setStrictXML(configuration.isStrictXML());
             project.setAllowPrivateNameConflicts(configuration.getCompilerAllowPrivateNameConflicts());

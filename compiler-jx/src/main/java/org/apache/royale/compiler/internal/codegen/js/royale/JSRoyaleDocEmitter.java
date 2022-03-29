@@ -31,9 +31,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
-import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
@@ -49,6 +47,7 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.utils.ASNodeUtils;
 
 public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 {
@@ -227,6 +226,13 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 override = node.hasModifier(ASModifier.OVERRIDE);
 
                 String ns = node.getNamespace();
+
+                if (ASNodeUtils.hasExportSuppressed(node)) {
+                    emitExports = false;
+                    if (IASKeywordConstants.PUBLIC.equals(ns)) // suppress it for reflection data checks:
+                        ((JSRoyaleEmitter) (emitter)).getModel().suppressedExportNodes.add(node);
+                }
+
                 if (ns != null)
                 {
                     if (asDoc != null && keepASDoc)
@@ -264,13 +270,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     
                         if (docText.contains(suppressClosureToken))
                             suppressClosure = true;
-                        
-                        String suppressExport = JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken();
-                        if (docText.contains(suppressExport)) {
-                            emitExports = false;
-                            if (IASKeywordConstants.PUBLIC.equals(ns)) // suppress it for reflection data checks:
-                                ((JSRoyaleEmitter) (emitter)).getModel().suppressedExportNodes.add(node);
-                        }
                         
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
@@ -576,6 +575,13 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
     }
 
+    private JSSessionModel getModel() {
+        if (emitter instanceof IJSEmitter) {
+            return ((IJSEmitter) emitter).getModel();
+        }
+        return null;
+    }
+
     protected void emitNoCollapse(IDefinitionNode node)
     {
         if (!node.hasModifier(ASModifier.STATIC)
@@ -583,6 +589,9 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                 || IASKeywordConstants.PRIVATE.equals(node.getNamespace()))
         {
             return;
+        }
+        if (getModel() != null) {
+            if (getModel().suppressExports || getModel().suppressedExportNodes.contains(node)) return;
         }
         //dynamically getting/setting a static field won't
         //work properly if it is collapsed in a release build,
@@ -662,9 +671,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
                             node.getEndLine(), node.getEndColumn()));
                 }
             }
-            boolean avoidExport = (node.getASDocComment() instanceof ASDocComment
-                    && ((ASDocComment)node.getASDocComment()).commentNoEnd()
-                    .contains(JSRoyaleEmitterTokens.SUPPRESS_EXPORT.getToken()));
+            boolean avoidExport = ASNodeUtils.hasExportSuppressed(node);
             
             if (!avoidExport) {
                 if (ns.equals(IASKeywordConstants.PUBLIC))

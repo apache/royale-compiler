@@ -296,6 +296,7 @@ public class FindRoyaleMXMLPropertyNamesToKeep extends AbstractPostOrderCallback
 					String propName = nameNode.getString();
 					propertyNamesToKeep.add(propName);
 					i++; //skip binding indices\
+					break;
 				}
 				default: { //unknown!
 					throwParseException(watcherTypeNode);

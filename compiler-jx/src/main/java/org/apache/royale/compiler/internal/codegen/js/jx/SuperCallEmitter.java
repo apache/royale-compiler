@@ -53,6 +53,7 @@ public class SuperCallEmitter extends JSSubEmitter
 
     public void emit(IASNode node, String type)
     {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
                 : null;
         IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node
@@ -102,10 +103,13 @@ public class SuperCallEmitter extends JSSubEmitter
                 write(JSGoogEmitterTokens.SUPERCLASS);
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 if (fnode.getNodeID() == ASTNodeID.GetterID)
-                    write(JSRoyaleEmitterTokens.GETTER_PREFIX);
+                {
+                    write(fjs.formatGetter(fnode.getName()));
+                }
                 else
-                    write(JSRoyaleEmitterTokens.SETTER_PREFIX);
-                write(fnode.getName());
+                {
+                    write(fjs.formatSetter(fnode.getName()));
+                }
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.APPLY);
                 write(ASEmitterTokens.PAREN_OPEN);
@@ -276,7 +280,7 @@ public class SuperCallEmitter extends JSSubEmitter
         	if (usingApply)
         	{
                 writeToken(ASEmitterTokens.COMMA);
-                writeToken(ASEmitterTokens.SQUARE_OPEN);
+                write(ASEmitterTokens.SQUARE_OPEN);
         	}
 
             int len = anodes.length;
@@ -288,7 +292,7 @@ public class SuperCallEmitter extends JSSubEmitter
                 getWalker().walk(anodes[i]);
             }
         	if (usingApply)
-                writeToken(ASEmitterTokens.SQUARE_CLOSE);
+                write(ASEmitterTokens.SQUARE_CLOSE);
         }
 
         write(ASEmitterTokens.PAREN_CLOSE);

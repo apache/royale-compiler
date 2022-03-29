@@ -115,7 +115,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:Number = parseInt('1.8');");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = parseInt('1.8', undefined)");
+        assertOut("var /** @type {number} */ a = parseInt('1.8', 0)");
     }
 
     @Test

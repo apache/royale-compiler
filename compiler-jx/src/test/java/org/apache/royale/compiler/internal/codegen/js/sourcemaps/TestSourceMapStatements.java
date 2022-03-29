@@ -28,6 +28,10 @@ import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.as.IWithNode;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestSourceMapStatements extends SourceMapTestBase
@@ -344,26 +348,28 @@ public class TestSourceMapStatements extends SourceMapTestBase
     public void testVisitTry_Catch_Catch_Finally()
     {
         ITryNode node = (ITryNode) getNode(
-                "try { a; } catch (e:Error) { b; } catch (f:Error) { c; } finally { d; }",
+                "try { a; } catch (e:ReferenceError) { b; } catch (f:Error) { c; } finally { d; }",
                 ITryNode.class);
         asBlockWalker.visitTry(node);
-        //try {\n  a;\n} catch (e) {\n  b;\n} catch (f) {\n  c;\n} finally {\n  d;\n}
+        //try {\n  a;\n} catch ($$royaleMultiCatchErr) /* implicit multi-catch wrapper */ {\n  if (org.apache.royale.utils.Language.is($$royaleMultiCatchErr, ReferenceError)) {\n    var /** @type {ReferenceError} */ e = $$royaleMultiCatchErr;\n    b;\n  } else if (org.apache.royale.utils.Language.is($$royaleMultiCatchErr, Error)) {\n    var /** @type {Error} */ f = $$royaleMultiCatchErr;\n    c;\n  } else {\n    throw $$royaleMultiCatchErr;\n  }\n} finally {\n  d;\n}
         assertMapping(node, 0, 0, 0, 0, 0, 4);     // try
         assertMapping(node, 0, 4, 0, 4, 0, 5);     // {
         assertMapping(node, 0, 9, 2, 0, 2, 1);     // }
-        assertMapping(node, 0, 11, 2, 1, 2, 9);    // catch(
-        assertMapping(node, 0, 18, 2, 9, 2, 10);   // e
-        assertMapping(node, 0, 25, 2, 10, 2, 12);  // )
-        assertMapping(node, 0, 27, 2, 12, 2, 13);  // {
-        assertMapping(node, 0, 32, 4, 0, 4, 1);    // }
-        assertMapping(node, 0, 34, 4, 1, 4, 9);    // catch(
-        assertMapping(node, 0, 41, 4, 9, 4, 10);   // f
-        assertMapping(node, 0, 48, 4, 10, 4, 12);  // )
-        assertMapping(node, 0, 50, 4, 12, 4, 13);  // {
-        assertMapping(node, 0, 55, 6, 0, 6, 1);    // }
-        assertMapping(node, 0, 57, 6, 1, 6, 10);   // finally
-        assertMapping(node, 0, 65, 6, 10, 6, 11);  // {
-        assertMapping(node, 0, 70, 8, 0, 8, 1);    // }
+        assertMapping(node, 0, 11, 3, 2, 3, 6);    // catch( --> if (
+        assertMapping(node, 0, 18, 4, 38, 4, 39);  // e
+        assertMapping(node, 0, 20, 3, 65, 3, 79);  // ReferenceError
+        assertMapping(node, 0, 34, 3, 80, 3, 82);  // )
+        assertMapping(node, 0, 36, 3, 82, 3, 83);  // {
+        assertMapping(node, 0, 41, 6, 2, 6, 3);    // }
+        assertMapping(node, 0, 43, 6, 4, 6, 13);   // catch( --> else if (
+        assertMapping(node, 0, 50, 7, 29, 7, 30);  // f
+        assertMapping(node, 0, 52, 6, 72, 6, 77);  // Error
+        assertMapping(node, 0, 57, 6, 78, 6, 80);  // )
+        assertMapping(node, 0, 59, 6, 80, 6, 81);  // {
+        assertMapping(node, 0, 64, 9, 2, 9, 3);    // }
+        assertMapping(node, 0, 66, 12, 1, 12, 10); // finally
+        assertMapping(node, 0, 74, 12, 10, 12, 11);// {
+        assertMapping(node, 0, 79, 14, 0, 14, 1);  // }
     }
 
     @Test

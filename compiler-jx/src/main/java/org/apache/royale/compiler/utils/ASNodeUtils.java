@@ -22,13 +22,7 @@ package org.apache.royale.compiler.utils;
 import java.util.ArrayList;
 
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IBlockNode;
-import org.apache.royale.compiler.tree.as.IConditionalNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IOperatorNode;
-import org.apache.royale.compiler.tree.as.ISwitchNode;
-import org.apache.royale.compiler.tree.as.ITerminalNode;
+import org.apache.royale.compiler.tree.as.*;
 
 /**
  * @author Michael Schmalle
@@ -89,5 +83,15 @@ public class ASNodeUtils
     public static boolean isString(IExpressionNode node)
     {
         return node.getNodeID() == ASTNodeID.LiteralStringID;
+    }
+
+    /**
+     * Method for checking if a node has been marked to be suppressed for export by Closure, via its definition.
+     * The implementation is to check for [JSRoyaleSuppressExport] Metadata in the definition.
+     * This metadata is typically added by compiler-jx internally based on the @royalesuppressexport doc-comment directive.
+     * @param node the IDocumentableDefinitionNode instance to inspect as being suppressed for export
+     */
+    public static boolean hasExportSuppressed(IDocumentableDefinitionNode node) {
+        return node != null && node.getDefinition() != null && DefinitionUtils.hasExportSuppressed(node.getDefinition());
     }
 }

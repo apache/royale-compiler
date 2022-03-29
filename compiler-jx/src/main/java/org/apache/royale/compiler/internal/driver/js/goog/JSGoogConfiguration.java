@@ -1008,4 +1008,42 @@ public class JSGoogConfiguration extends JSConfiguration
     	inlineConstants = value;
     }
 
+    //
+    // 'js-getter-prefix'
+    //
+
+    protected String jsGetterPrefix = "";
+
+    public String getJsGetterPrefix()
+    {
+        return jsGetterPrefix;
+    }
+
+    @Config
+    @Mapping("js-getter-prefix")
+    public void setJsGetterPrefix(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        jsGetterPrefix = value;
+    }
+
+    //
+    // 'js-setter-prefix'
+    //
+
+    protected String jsSetterPrefix = "";
+
+    public String getJsSetterPrefix()
+    {
+        return jsSetterPrefix;
+    }
+
+    @Config
+    @Mapping("js-setter-prefix")
+    public void setJsSetterPrefix(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        jsSetterPrefix = value;
+    }
+
 }

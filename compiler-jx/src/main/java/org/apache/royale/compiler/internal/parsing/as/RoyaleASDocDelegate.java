@@ -31,7 +31,12 @@ import org.apache.royale.compiler.asdoc.IPackageDITAParser;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.definitions.IDocumentableDefinition;
+import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
+import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.BasicMetaTagNode;
+import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
+import org.apache.royale.compiler.utils.DefinitionUtils;
 
 /**
  * Default implementation of {@link IASDocDelegate} that does not have any code
@@ -51,14 +56,31 @@ public final class RoyaleASDocDelegate implements IASDocDelegate
         return INSTANCE;
     }
 
+    private boolean noDoc = false;
+
     public RoyaleASDocDelegate()
     {
+    }
+
+    /**
+     * Passing true as constructor argument allows for processing of comments, without returning
+     * the parsed comment for storage.
+     * This option is included to provide outward behavior similar to NilASDocDelegate, whilst
+     * still allowing its use as a 'hook' in the 'afterDefinition' method, to 'process' comments
+     * during initial processing of AST nodes.
+     *
+     * @param noDocReturn
+     */
+    public RoyaleASDocDelegate(Boolean noDocReturn)
+    {
+        super();
+        this.noDoc = noDocReturn;
     }
 
     @Override
     public IASParserASDocDelegate getASParserASDocDelegate()
     {
-        return new ASDelegate();
+        return new ASDelegate(noDoc);
     }
 
     @Override
@@ -76,7 +98,13 @@ public final class RoyaleASDocDelegate implements IASDocDelegate
     private static final class ASDelegate implements IASParserASDocDelegate, IMetadataParserASDocDelegate
     {
         @SuppressWarnings("unused")
-		static final ASDelegate INSTANCE = new ASDelegate();
+		static final ASDelegate INSTANCE = new ASDelegate(false);
+
+        private boolean noDoc = false;
+        public ASDelegate(Boolean noDocReturn)
+        {
+            this.noDoc = noDocReturn;
+        }
 
         @Override
         public void beforeVariable()
@@ -103,8 +131,18 @@ public final class RoyaleASDocDelegate implements IASDocDelegate
                 return null;
             
             ASDocComment comment = new ASDocComment(currentToken);
+            if (definitionNode instanceof BaseDefinitionNode && DocEmitterUtils.hasSuppressExport(comment.commentNoEnd())) {
+                MetaTagsNode tags = (MetaTagsNode)definitionNode.getMetaTags();
+                if (tags == null) {
+                    tags = new MetaTagsNode();
+                    ((BaseDefinitionNode) definitionNode).setMetaTags(tags);
+                }
+                if (!tags.hasTagByName(DefinitionUtils.JSROYALE_SUPPRESS_EXPORT)) {
+                    tags.addTag(new BasicMetaTagNode(DefinitionUtils.JSROYALE_SUPPRESS_EXPORT));
+                }
+           }
             currentToken = null;
-            return comment;
+            return !noDoc ? comment : null;
         }
 
         @Override

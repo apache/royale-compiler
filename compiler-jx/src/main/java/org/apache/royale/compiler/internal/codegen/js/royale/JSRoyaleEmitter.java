@@ -305,6 +305,34 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     	return Joiner.on("\n").join(finalLines);
     }
 
+    public String formatGetter(String name) {
+        String prefix = JSRoyaleEmitterTokens.GETTER_PREFIX.getToken();
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project.config != null)
+        {
+            String configPrefix = project.config.getJsGetterPrefix();
+            if(configPrefix != null && configPrefix.length() > 0)
+            {
+                prefix = configPrefix;
+            }
+        }
+        return prefix + name;
+    }
+
+    public String formatSetter(String name) {
+        String prefix = JSRoyaleEmitterTokens.SETTER_PREFIX.getToken();
+        RoyaleJSProject project = (RoyaleJSProject) getWalker().getProject();
+        if (project.config != null)
+        {
+            String configPrefix = project.config.getJsSetterPrefix();
+            if(configPrefix != null && configPrefix.length() > 0)
+            {
+                prefix = configPrefix;
+            }
+        }
+        return prefix + name;
+    }
+
     public BindableEmitter getBindableEmitter()
     {
         return bindableEmitter;
@@ -976,7 +1004,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                     if (nameNode instanceof IdentifierNode)
                     {
                         //see FLEX-35283
-                        LiteralNode appendedArgument = new NumericLiteralNode("undefined");
+                        LiteralNode appendedArgument = new NumericLiteralNode("0");
                         appendedArgument.setSynthetic(true);
                         newNode = EmitterUtils.insertArgumentsAfter(node, appendedArgument);
                     }
@@ -1563,6 +1591,14 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
 
     }
+
+    @Override
+    public void emitNamespaceAccessExpression(
+            INamespaceAccessExpressionNode node)
+    {
+        // the namespace will be handled by the emitter for the right operand
+        getWalker().walk(node.getRightOperandNode());
+    }
     
 	boolean isGoogProvided(String className)
 	{
@@ -1611,6 +1647,14 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                 requiresList.add(formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
             }
         }
+    }
+
+    @Override
+    public BinaryOperatorNodeBase getGeneratedTypeCheck(ExpressionNodeBase leftOperand, ExpressionNodeBase rightOperand) {
+        //using 'is' in this case for compiler-generated type-checks, because it is more robust with the framework support
+        BinaryOperatorIsNode check = new BinaryOperatorIsNode(null,leftOperand, rightOperand);
+        getModel().needLanguage = true;
+        return check;
     }
 
 }

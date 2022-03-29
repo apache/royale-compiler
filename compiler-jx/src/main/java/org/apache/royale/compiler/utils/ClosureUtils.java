@@ -22,18 +22,15 @@ package org.apache.royale.compiler.utils;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.scopes.IFileScope;
@@ -84,6 +81,9 @@ public class ClosureUtils
                         IPackageDefinition packageDef = (IPackageDefinition) def;
                         def = packageDef.getContainedScope().getAllLocalDefinitions().iterator().next();
                     }
+                    if (DefinitionUtils.hasExportSuppressed(def)) {
+                        continue;
+                    }
                     if(scope instanceof IFileScope && def.isPrivate())
                     {
                         //file-private symbols are emitted like static variables
@@ -108,6 +108,9 @@ public class ClosureUtils
                         {
                             if (localDef.isImplicit() || localDef.isPrivate())
                             {
+                                continue;
+                            }
+                            if (DefinitionUtils.hasExportSuppressed(localDef)) {
                                 continue;
                             }
                             INamespaceReference nsRef = localDef.getNamespaceReference();
@@ -281,7 +284,9 @@ public class ClosureUtils
                     {
                         continue;
                     }
-
+                    if (DefinitionUtils.hasExportSuppressed(def)) {
+                        continue;
+                    }
                     String qualifiedName = def.getQualifiedName();
                     boolean isFilePrivate = false;
                     if(scope instanceof IFileScope && def.isPrivate())
@@ -304,16 +309,14 @@ public class ClosureUtils
                     if (def instanceof ITypeDefinition)
                     {
                         ITypeDefinition typeDef = (ITypeDefinition) def;
-                        ASDocComment asDoc = (ASDocComment) typeDef.getExplicitSourceComment();
-                        if (asDoc != null && DocEmitterUtils.hasSuppressExport(null, asDoc.commentNoEnd()))
-                        {
-                            continue;
-                        }
 
                         for(IDefinition localDef : typeDef.getContainedScope().getAllLocalDefinitions())
                         {
                             if (localDef.isImplicit())
                             {
+                                continue;
+                            }
+                            if (DefinitionUtils.hasExportSuppressed(localDef)) {
                                 continue;
                             }
                             boolean isMethod = localDef instanceof IFunctionDefinition

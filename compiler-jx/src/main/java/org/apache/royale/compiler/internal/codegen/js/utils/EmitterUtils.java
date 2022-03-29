@@ -19,11 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.js.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
@@ -35,7 +31,9 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
@@ -60,6 +58,18 @@ import org.apache.royale.compiler.utils.NativeUtils;
  */
 public class EmitterUtils
 {
+
+    private static final Set<String> alwaysExcludeImports;
+
+    static {
+        //initialize the 'always' excluded imports in alwaysExcludeImports
+        Set<String> temp = new HashSet<String>();
+        //if any others are needed to always be avoided, add them here:
+        temp.add(JSRoyaleEmitterTokens.JS_UNSAFE_INLINE_FUNCTION_NAME.getToken());
+
+        alwaysExcludeImports = Collections.unmodifiableSet(temp);
+    }
+
     public static ITypeNode findTypeNode(IPackageNode node)
     {
         IScopedNode scope = node.getScopedNode();
@@ -71,11 +81,14 @@ public class EmitterUtils
             else if (child.getNodeID() == ASTNodeID.ConfigBlockID)
             {
             	ConfigConditionBlockNode configNode = (ConfigConditionBlockNode)child;
-            	if (configNode.getChildCount() > 0)
+            	if (configNode.getEnabled() && configNode.getChildCount() > 0)
             	{
-            		child = configNode.getChild(0);
-                    if (child instanceof ITypeNode)
-                        return (ITypeNode) child;
+            		for (int j = 0; j < configNode.getChildCount(); j++)
+            		{
+                		child = configNode.getChild(j);
+                        if (child instanceof ITypeNode)
+                            return (ITypeNode) child;            			
+            		}
             	}
             }
         }
@@ -249,7 +262,22 @@ public class EmitterUtils
                 list.add(imp);
             }
         }
+        //automatic 'always' exclusions from imports:
+        removeExcludedImports(list);
         return list;
+    }
+
+    public static boolean shouldExcludeImport(String importString) {
+        return alwaysExcludeImports.contains(importString);
+    }
+
+    public static void removeExcludedImports(List<String> list) {
+        for (String listItem:list) {
+            if (shouldExcludeImport(listItem)) {
+                list.remove(listItem);
+            }
+        }
+        // list.removeIf(EmitterUtils::shouldExcludeImport);
     }
 
     public static IClassDefinition getClassDefinition(IDefinitionNode node)
@@ -791,7 +819,9 @@ public class EmitterUtils
             IDefinition rightDef = rightNode.resolveType(project);
             if (rightDef != null)
             {
-                if (SemanticUtils.isXMLish(rightDef, project))
+                //we can have an identifier of '*' which resolves to ANY_TYPE ClassDefinition and does not resolve as isXMLish, but the Member access expression is if the leftNode is xmlish
+                boolean isAny = rightID == ASTNodeID.IdentifierID && ((IIdentifierNode) rightNode).getName().equals("*");
+                if (isAny || SemanticUtils.isXMLish(rightDef, project))
                 {
                     return isLeftNodeXMLish(leftNode, project);
                 }

@@ -29,13 +29,11 @@ import org.apache.royale.compiler.definitions.*;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
-import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
@@ -50,7 +48,6 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
-import org.apache.royale.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
 import java.util.ArrayList;
@@ -83,6 +80,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
             write(propGetter.getFunctionName());
             write(ASEmitterTokens.PAREN_OPEN);
             write(ASEmitterTokens.PAREN_CLOSE);
+			if (ASNodeUtils.hasParenClose(node))
+				write(ASEmitterTokens.PAREN_CLOSE);
     		return;
         }
         IDefinition def = node.resolve(getProject());
@@ -253,6 +252,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 						write(s);
 						write(closeMethodCall);
 					}
+					if (ASNodeUtils.hasParenClose(node))
+						write(ASEmitterTokens.PAREN_CLOSE);
 					return;
 				}
         	}
@@ -521,7 +522,33 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 			{
 				IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
 				IDefinition resolvedDefinition = identifierNode.resolve(getProject());
-				emitDynamicAccess = resolvedDefinition == null;
+				if (resolvedDefinition == null) {
+					emitDynamicAccess = true; 
+					IExpressionNode expressionNode = node.getLeftOperandNode();
+					while (expressionNode != null)
+					{
+						ITypeDefinition expressionType = expressionNode.resolveType(getProject());
+						if (SemanticUtils.isXMLish(expressionType, getProject())) {
+							emitDynamicAccess = false;
+							break;
+						}
+						if (expressionNode instanceof IMemberAccessExpressionNode)
+						{
+							IMemberAccessExpressionNode memberAccess = (IMemberAccessExpressionNode) expressionNode;
+							expressionNode = memberAccess.getLeftOperandNode();
+						}
+						else if (expressionNode instanceof IDynamicAccessNode)
+						{
+							IDynamicAccessNode dynamicAccess = (IDynamicAccessNode) expressionNode;
+							expressionNode = dynamicAccess.getLeftOperandNode();
+						}
+						else
+						{
+							expressionNode = null;
+							break;
+						}
+					}
+				}
 			}
 			if (emitDynamicAccess)
 			{
@@ -563,6 +590,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 
     private boolean writeLeftSide(IMemberAccessExpressionNode node, IASNode leftNode, IASNode rightNode)
     {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
                 .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
         {
@@ -584,11 +612,14 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 					write(ASEmitterTokens.MEMBER_ACCESS);
 					write(JSGoogEmitterTokens.SUPERCLASS);
 					write(ASEmitterTokens.MEMBER_ACCESS);
-					write(JSRoyaleEmitterTokens.GETTER_PREFIX);
 					if (rightDef != null)
-						write(rightDef.getBaseName());
+					{
+						write(fjs.formatGetter(rightDef.getBaseName()));
+					}
 					else
-						write(((GetterNode) rightNode).getName());
+					{
+						write(fjs.formatGetter(((IGetterNode) rightNode).getName()));
+					}
 					write(ASEmitterTokens.MEMBER_ACCESS);
 					write(JSEmitterTokens.APPLY);
 					write(ASEmitterTokens.PAREN_OPEN);

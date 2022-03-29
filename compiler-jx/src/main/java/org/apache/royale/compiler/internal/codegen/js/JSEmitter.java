@@ -68,6 +68,7 @@ import org.apache.royale.compiler.internal.codegen.js.jx.WhileLoopEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WithEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
@@ -103,6 +104,7 @@ import org.apache.royale.compiler.tree.as.IWithNode;
 import com.google.debugging.sourcemap.FilePosition;
 
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.utils.DefinitionUtils;
 import org.apache.royale.compiler.utils.NativeUtils;
 
 /**
@@ -645,20 +647,22 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 if (project.getBuiltinType(BuiltinType.NUMBER).equals(dynamicAccessIndexDef))
                 {
                     IDefinition leftDef = dynamicAccess.getLeftOperandNode().resolveType(project);
-                    IMetaTag[] metas = leftDef.getAllMetaTags();
-                    for (IMetaTag meta : metas)
-                    {
-                        if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
+                    if (leftDef != null) {
+                        IMetaTag[] metas = leftDef.getAllMetaTags();
+                        for (IMetaTag meta : metas)
                         {
-                            IMetaTagAttribute[] attrs = meta.getAllAttributes();
-                            for (IMetaTagAttribute attr : attrs)
+                            if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_ARRAYELEMENTTYPE))
                             {
-                                String t = attr.getValue();
-                                if (t.equals(IASLanguageConstants.Number))
+                                IMetaTagAttribute[] attrs = meta.getAllAttributes();
+                                for (IMetaTagAttribute attr : attrs)
                                 {
-                                    needsCoercion = false;
-                                    //explicitly prevent other coercion detection rules from picking this up
-                                    avoidCoercion = true;
+                                    String t = attr.getValue();
+                                    if (t.equals(IASLanguageConstants.Number))
+                                    {
+                                        needsCoercion = false;
+                                        //explicitly prevent other coercion detection rules from picking this up
+                                        avoidCoercion = true;
+                                    }
                                 }
                             }
                         }
@@ -764,6 +768,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 ((RoyaleJSProject)project).needLanguage = true;
             getModel().needLanguage = true;
             return;
+        }
+        //special case for 'rewritten' multicatch support - we avoid coercion because it is assured via an injected 'is' check immediately prior to declaration/assignment
+        if (DefinitionUtils.isRewrittenMultiCatchParam(assignedDef)) {
+            avoidCoercion = true;
         }
         if (coercionStart == null
                 && !avoidCoercion
@@ -926,6 +934,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 				write(")");
 			}
 		}
+    }
+
+    public BinaryOperatorNodeBase getGeneratedTypeCheck(ExpressionNodeBase leftOperand, ExpressionNodeBase rightOperand) {
+        //default to using 'instanceof' for compiler-generated type-checks, because it is native JS
+        BinaryOperatorInstanceOfNode check = new BinaryOperatorInstanceOfNode(null,leftOperand, rightOperand);
+        return check;
     }
 
 }

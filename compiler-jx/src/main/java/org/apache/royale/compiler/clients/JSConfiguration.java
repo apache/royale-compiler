@@ -632,5 +632,4 @@ public class JSConfiguration extends Configuration
     {
         jsxFactory = value;
     }
-    
 }
