@@ -152,7 +152,18 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 {
                     if (isAssignment)
                     {
-                        IClassNode cnode = (IClassNode) node
+						boolean propagateAssignedValue = !(node.getParent() instanceof IBlockNode);
+						if (propagateAssignedValue)
+						{
+							write(ASEmitterTokens.PAREN_OPEN);
+							write(ASEmitterTokens.FUNCTION);
+							write(ASEmitterTokens.PAREN_OPEN);
+							write("$value");
+							write(ASEmitterTokens.PAREN_CLOSE);
+							write(ASEmitterTokens.BLOCK_OPEN);
+						}
+
+						IClassNode cnode = (IClassNode) node
                                 .getAncestorOfType(IClassNode.class);
                         if (cnode != null)
                         	write(getEmitter().formatQualifiedName(
@@ -187,6 +198,28 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                             write(op.substring(0, 1));
                         }
 
+						if (propagateAssignedValue)
+						{
+							write("$value");
+							write(ASEmitterTokens.SQUARE_CLOSE);
+							write(ASEmitterTokens.PAREN_CLOSE);
+							write(ASEmitterTokens.SEMICOLON);
+							// returning the original $value ensures that
+							// chained assignments work properly
+							// the getter should NOT be called!
+							// x = super.y = z;
+							writeToken(ASEmitterTokens.RETURN);
+							write("$value");
+							write(ASEmitterTokens.SEMICOLON);
+							write(ASEmitterTokens.BLOCK_CLOSE);
+							write(ASEmitterTokens.PAREN_CLOSE);
+							write(ASEmitterTokens.MEMBER_ACCESS);
+							write(JSEmitterTokens.APPLY);
+							write(ASEmitterTokens.PAREN_OPEN);
+							write(ASEmitterTokens.THIS);
+							writeToken(ASEmitterTokens.COMMA);
+							write(ASEmitterTokens.SQUARE_OPEN);
+						}
                         getWalker().walk(node.getRightOperandNode());
                         write(ASEmitterTokens.SQUARE_CLOSE);
                         write(ASEmitterTokens.PAREN_CLOSE);

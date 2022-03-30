@@ -179,6 +179,28 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         "B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [value]);\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
     }
+
+    @Test
+    public void testSetAccessorWithSuperSet()
+    {
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
+        "B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [value]);\n};\n\n\n" +
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
+    }
+
+    @Test
+    public void testSetAccessorWithSuperSetAndPropagatedValue()
+    {
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {var z:int = super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
+        "B.prototype.set__foo = function(value) {\n  var /** @type {number} */ z = (function($value){B.superClass_.set__foo.apply(this, [$value]);return $value;}).apply(this, [value]);\n};\n\n\n" +
+        		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
+    }
     
     @Override
     protected IBackend createBackend()
