@@ -121,9 +121,9 @@ public class WatchThread extends Thread
 	{
 		try
 		{
-			watchKeys = new HashMap<>();
+			watchKeys = new HashMap<WatchKey, Path>();
 			watchService = FileSystems.getDefault().newWatchService();
-			Set<Path> watchedPaths = new HashSet<>();
+			Set<Path> watchedPaths = new HashSet<Path>();
 			for (String sourcePath : config.getCompilerSourcePath())
 			{
 				sourcePath = FilenameNormalization.normalize(sourcePath);
@@ -160,7 +160,7 @@ public class WatchThread extends Thread
 		// for better performance
 		WatchKey watchKey = watchService.take();
 		
-		Set<ICompilationUnit> changedCUs = new HashSet<>();
+		Set<ICompilationUnit> changedCUs = new HashSet<ICompilationUnit>();
 		while (watchKey != null)
 		{
 			processWatchKey(watchKey, changedCUs);
