@@ -948,7 +948,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         int oldEventCounter;
         int oldIdCounter;
         boolean oldInMXMLContent;
+        String oldInterfaceList;
 
+        oldInterfaceList = interfaceList;
+        interfaceList = null;
         oldDescriptorTree = descriptorTree;
         descriptorTree = new ArrayList<MXMLDescriptorSpecifier>();
         oldPropertiesTree = propertiesTree;
@@ -1034,6 +1037,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         idCounter = oldIdCounter;
         inMXMLContent = oldInMXMLContent;
         classDefinition = oldClassDef;
+        interfaceList = oldInterfaceList;
         ((JSRoyaleEmitter) asEmitter).getModel().popClass();
         ((JSRoyaleEmitter) asEmitter).mxmlEmitter = null;
 
