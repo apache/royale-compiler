@@ -515,7 +515,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				if (leftDef != null && leftDef.getQualifiedName().equals("QName")) {
 					IDefinition rightDef = node.getRightOperandNode().resolveType(getProject());
 					if (rightDef != null && rightDef.getQualifiedName().equals("QName")) {
-						//handle non-strict equality/inequality a little differently
+						//handle non-strict equality/inequality a little differently via QName.equality method
 						if (id == ASTNodeID.Op_NotEqualID) write("!");
 						write("QName.equality(");
 						getWalker().walk(node.getLeftOperandNode());
@@ -524,38 +524,82 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						write(")");
 						return;
 					}
-				} else if (leftDef != null && getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(leftDef) && SemanticUtils.isXMLish(node.getRightOperandNode(), getProject())) {
-					boolean literalBool = node.getLeftOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID;
-					//note, this only covers boolean ==/!= xmlish, not: xmlish ==/!= boolean
-					if (literalBool) {
-						write("'");
+				} else {
+					IASNode codeContext = node.getAncestorOfType(IClassNode.class);
+					boolean isFrameworkXML = false;
+					if (codeContext instanceof IClassNode) {
+						if (((IClassNode) codeContext).getQualifiedName().equals("XML") || ((IClassNode) codeContext).getQualifiedName().equals("XMLList")) {
+							//we will ignore the internal code of the emulation support classes for these cases
+							isFrameworkXML = true;
+						}
 					}
-					else write("('' + ");
-						getWalker().walk(node.getLeftOperandNode());
-					if (literalBool) {
-						write("'");
-					}
-					else write(")");
-					write(" " + node.getOperator().getOperatorText() + " ");
+					if (!isFrameworkXML) {
+						boolean leftIsAny = (leftDef == null || getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(leftDef));
+						IDefinition rightDef = node.getRightOperandNode().resolveType(getProject());
+						boolean rightIsAny = (rightDef == null || getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(rightDef));
+						boolean leftIsXMLish = (leftIsAny && SemanticUtils.isXMLish(node.getLeftOperandNode(), getProject())) || SemanticUtils.isXMLish(leftDef, getProject());
+						boolean rightIsXMLish = (rightIsAny && SemanticUtils.isXMLish(node.getRightOperandNode(), getProject())) || SemanticUtils.isXMLish(rightDef, getProject());
 
-					getWalker().walk(node.getRightOperandNode());
-					return;
-				} else if ((((leftDef == null || getProject().getBuiltinType(BuiltinType.ANY_TYPE).equals(leftDef)) && SemanticUtils.isXMLish(node.getLeftOperandNode(), getProject())) || SemanticUtils.isXMLish(leftDef, getProject())) && getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(node.getRightOperandNode().resolveType(getProject()))) {
-					boolean literalBool = node.getRightOperandNode().getNodeID() == ASTNodeID.LiteralBooleanID;
 
-					//note, this only covers xmlish ==/!= boolean, not: boolean ==/!= xmlish
-					getWalker().walk(node.getLeftOperandNode());
-					write(" " + node.getOperator().getOperatorText() + " ");
-					if (literalBool) {
-						write("'");
+						if (leftIsXMLish && rightIsXMLish) {
+
+
+							startMapping(node, node.getLeftOperandNode());
+							//handle non-strict equality/inequality for XMLish comparisons a little differently
+							if (id == ASTNodeID.Op_NotEqualID) write("!");
+							write("XML.equality(");
+							endMapping(node);
+							getWalker().walk(node.getLeftOperandNode());
+							startMapping(node, node.getLeftOperandNode());
+							write(",");
+							endMapping(node);
+							getWalker().walk(node.getRightOperandNode());
+							startMapping(node, node.getLeftOperandNode());
+							write(")");
+							endMapping(node);
+							return;
+						} else {
+							if (leftIsXMLish || rightIsXMLish) {
+
+								IDefinition otherDef = leftIsXMLish ? rightDef : leftDef;
+								boolean otherIsBoolean = getProject().getBuiltinType(BuiltinType.BOOLEAN).equals(otherDef);
+
+
+								if (otherIsBoolean || (leftIsAny && rightIsXMLish) || (rightIsAny && leftIsXMLish)) {
+
+									if (otherIsBoolean) {
+										//cover xmlish ==/!= boolean and boolean ==/!= xmlish variations by converting the boolean value to string (xmlishBooleanEqualityOperand):
+										if (leftIsXMLish) getWalker().walk(node.getLeftOperandNode());
+										else xmlishBooleanEqualityOperand(node.getLeftOperandNode());
+										write(" " + node.getOperator().getOperatorText() + " ");
+										if (leftIsXMLish) xmlishBooleanEqualityOperand(node.getRightOperandNode());
+										else getWalker().walk(node.getRightOperandNode());
+										return;
+									} else {
+										//cover xmlish ==/!= * (typed) and * (typed) ==/!= xmlish variations:
+										IExpressionNode lhs = leftIsXMLish ? node.getLeftOperandNode() : node.getRightOperandNode();
+										IExpressionNode rhs = leftIsXMLish ? node.getRightOperandNode() : node.getLeftOperandNode();
+										//@todo check the source-mapping to the equality/inequality operator, this could probably be improved:
+										startMapping(node, node.getLeftOperandNode());
+										//handle non-strict equality/inequality for XMLish comparisons a little differently via XML.mixedEquality method
+										if (id == ASTNodeID.Op_NotEqualID) write("!");
+
+										write("XML.mixedEquality(");
+										endMapping(node);
+										getWalker().walk(lhs);
+										startMapping(node, node.getLeftOperandNode());
+										write(",");
+										endMapping(node);
+										getWalker().walk(rhs);
+										startMapping(node, node.getLeftOperandNode());
+										write(")");
+										endMapping(node);
+										return;
+									}
+								}
+							}
+						}
 					}
-					else write("('' + ");
-					getWalker().walk(node.getRightOperandNode());
-					if (literalBool) {
-						write("'");
-					}
-					else write(")");
-					return;
 				}
 			}
 			
@@ -563,6 +607,17 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			super_emitBinaryOperator(node, isAssignment);
         }
     }
+
+	private void xmlishBooleanEqualityOperand(IExpressionNode booleanOperandNode) {
+		boolean literalBool = booleanOperandNode.getNodeID() == ASTNodeID.LiteralBooleanID;
+		if (literalBool) {
+			write("'");
+		} else write("('' + ");
+		getWalker().walk(booleanOperandNode);
+		if (literalBool) {
+			write("'");
+		} else write(")");
+	}
     
 
     private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean isAssignment)
