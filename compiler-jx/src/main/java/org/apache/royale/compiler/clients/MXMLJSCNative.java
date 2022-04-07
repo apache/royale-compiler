@@ -335,6 +335,9 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                         writeCompilationUnit(unit, outputFolder);
                     }
 
+                    // ensures that the goog.addDependency() calls are updated
+                    jsPublisher.publish(problems);
+
                     long endTime = System.nanoTime();
                     System.out.println((endTime - startTime) / 1e9 + " seconds");
                 }
