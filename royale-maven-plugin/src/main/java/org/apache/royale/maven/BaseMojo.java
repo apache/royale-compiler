@@ -385,6 +385,9 @@ public abstract class BaseMojo
     }
 
     protected void handleExitCode(int exitCode) throws MojoExecutionException {
+        if(exitCode == 1000) {
+            throw new MojoExecutionException("The --watch compiler option is not supported by royale-maven-plugin");
+        }
         if(exitCode != 0) {
             throw new MojoExecutionException("There were errors during the build. Got return code " + exitCode);
         }
