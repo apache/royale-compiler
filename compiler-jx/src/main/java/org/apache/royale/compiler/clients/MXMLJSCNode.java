@@ -320,6 +320,12 @@ public class MXMLJSCNode implements JSCompilerEntryPoint, ProblemQueryProvider,
                     target = project.getBackend().createTarget(project,
                             getTargetSettings(), null);
                     ((JSTarget) target).build(mainCU, problems);
+                    for (ICompilationUnit unit : units)
+                    {
+                        // call waitForBuildFinish() to ensure that binding data
+                        // doesn't get lost when a new definition is created
+                        unit.waitForBuildFinish(problems, null);
+                    }
                 }
                 finally
                 {

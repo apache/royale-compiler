@@ -150,6 +150,12 @@ public class COMPC extends MXMLC implements FlexTool
                         throw new IOException("Failed to setup target file.");
                     }
                     buildArtifact();
+                    for (ICompilationUnit unit : units)
+                    {
+                        // call waitForBuildFinish() to ensure that binding data
+                        // doesn't get lost when a new definition is created
+                        unit.waitForBuildFinish(problems, null);
+                    }
                 }
                 finally
                 {
