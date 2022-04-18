@@ -19,17 +19,23 @@
 
 package org.apache.royale.maven;
 
-import org.apache.royale.maven.utils.DependencyHelper;
 import org.apache.flex.tools.FlexTool;
 import org.apache.flex.tools.FlexToolGroup;
 import org.apache.flex.tools.FlexToolRegistry;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.lifecycle.MavenExecutionPlan;
+import org.apache.maven.lifecycle.internal.LifecycleExecutionPlanCalculator;
+import org.apache.maven.lifecycle.internal.LifecycleTaskSegmentCalculator;
+import org.apache.maven.lifecycle.internal.TaskSegment;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.royale.maven.utils.DependencyHelper;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -100,6 +106,15 @@ public abstract class BaseMojo
 
     @Parameter
     private String additionalCompilerOptions = null;
+
+    @Parameter(defaultValue = "${session}", required = true, readonly = true)
+    private MavenSession session;
+
+    @Component
+    private LifecycleTaskSegmentCalculator lifecycleTaskSegmentCalculator;
+
+    @Component
+    private LifecycleExecutionPlanCalculator lifecycleExecutionPlanCalculator;
 
     @Component
     private ProjectDependenciesResolver projectDependenciesResolver;
@@ -385,8 +400,12 @@ public abstract class BaseMojo
     }
 
     protected void handleExitCode(int exitCode) throws MojoExecutionException {
-        // if the --watch compiler option was specified, don't continue
         if(exitCode == 1000) {
+            // if the compiler is watching for file changes, make sure that the
+            // user didn't request any goals or lifecycle phases after compile
+            checkForInvalidGoalOrPhaseAfterCompile();
+            // if the compiler is watching for file changes, pause this thread
+            // to prevent Maven from exiting while the watch thread is running
             try {
                 while(true) {
                     Thread.sleep(60000);
@@ -396,6 +415,34 @@ public abstract class BaseMojo
         }
         if(exitCode != 0) {
             throw new MojoExecutionException("There were errors during the build. Got return code " + exitCode);
+        }
+    }
+
+    protected void checkForInvalidGoalOrPhaseAfterCompile() throws MojoExecutionException {
+        List<TaskSegment> segments = null;
+        try {
+            segments = lifecycleTaskSegmentCalculator.calculateTaskSegments(session);
+        } catch(Exception e) {
+            throw new MojoExecutionException("Failed to calculate session task segments for --watch=true");
+        }
+        for (TaskSegment segment : segments) {
+            List<Object> tasks = segment.getTasks();
+            MavenExecutionPlan plan = null;
+            try {
+                plan = lifecycleExecutionPlanCalculator.calculateExecutionPlan(session, project, tasks, false);
+            } catch(Exception e) {
+                throw new MojoExecutionException("Failed to calculate execution plan for --watch=true");
+            }
+            boolean foundCompile = false;
+            for (MojoExecution exec : plan.getMojoExecutions()) {
+                String phase = exec.getLifecyclePhase();
+                if (foundCompile) {
+                    throw new MojoExecutionException("Additional goals or lifecycle phases after 'compile' are not allowed when using the --watch=true compiler option");
+                }
+                else if ("compile".equals(phase)) {
+                    foundCompile = true;
+                }
+            }
         }
     }
 
