@@ -142,7 +142,7 @@ public class FORMATTER {
 		problems = new ProblemQuery();
 
 		try {
-			boolean continueFormatting = configure(args);
+			boolean continueFormatting = configure(args, problems);
 			if (continueFormatting) {
 				if (inputFiles.size() == 0) {
 					StringBuilder builder = new StringBuilder();
@@ -294,10 +294,8 @@ public class FORMATTER {
 		System.out.println(usages);
 	}
 
-	private boolean configure(String[] args) {
+	private boolean configure(String[] args, ProblemQuery problems) {
 		try {
-			problems = new ProblemQuery();
-
 			Configurator configurator = new Configurator();
 			configurator.setConfiguration(args, "files");
 			configuration = configurator.getConfiguration();
@@ -317,8 +315,9 @@ public class FORMATTER {
 				return false;
 			}
 
-			if (problems.hasErrors())
+			if (problems.hasErrors()) {
 				return false;
+			}
 
 			collapseEmptyBlocks = configuration.getCollapseEmptyBlocks();
 			ignoreProblems = configuration.getIgnoreParsingProblems();
