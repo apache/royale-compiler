@@ -1764,6 +1764,10 @@ public class FORMATTER {
 	}
 
 	private String formatMXMLTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
+		if (problems == null) {
+			problems = new ArrayList<ICompilerProblem>();
+		}
+
 		StringReader textReader = new StringReader(text);
 		MXMLTokenizer mxmlTokenizer = new MXMLTokenizer();
 		IMXMLToken[] originalTokens = null;
