@@ -266,7 +266,7 @@ public class FORMATTER {
 	/**
 	 * Get my program name.
 	 * 
-	 * @return always "mxmlc".
+	 * @return always "asformat".
 	 */
 	protected String getProgramName() {
 		return "asformat";
