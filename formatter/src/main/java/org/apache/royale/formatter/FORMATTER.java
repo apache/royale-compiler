@@ -38,6 +38,7 @@ import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.clients.problems.ProblemFormatter;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
+import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
@@ -140,6 +141,7 @@ public class FORMATTER {
 	public int execute(String[] args) {
 		ExitCode exitCode = ExitCode.SUCCESS;
 		problems = new ProblemQuery();
+		problems.setShowWarnings(false);
 
 		try {
 			boolean continueFormatting = configure(args, problems);
@@ -156,7 +158,7 @@ public class FORMATTER {
 					}
 					String filePath = FilenameNormalization.normalize("stdin.as");
 					String fileText = builder.toString();
-					String formattedText = formatFileText(filePath, fileText);
+					String formattedText = formatFileText(filePath, fileText, problems.getProblems());
 					if (!fileText.equals(formattedText)) {
 						if (listChangedFiles) {
 							System.out.println(filePath);
@@ -169,7 +171,7 @@ public class FORMATTER {
 					for (File inputFile : inputFiles) {
 						String filePath = FilenameNormalization.normalize(inputFile.getAbsolutePath());
 						String fileText = FileUtils.readFileToString(inputFile, "utf8");
-						String formattedText = formatFileText(filePath, fileText);
+						String formattedText = formatFileText(filePath, fileText, problems.getProblems());
 						if (!fileText.equals(formattedText)) {
 							if (listChangedFiles) {
 								System.out.println(filePath);
@@ -194,7 +196,8 @@ public class FORMATTER {
 			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 		} finally {
 			if (problems.hasFilteredProblems()) {
-				final ProblemPrinter printer = new ProblemPrinter(ProblemFormatter.DEFAULT_FORMATTER);
+				final ProblemFormatter formatter = new WorkspaceProblemFormatter(new Workspace());
+				final ProblemPrinter printer = new ProblemPrinter(formatter);
 				printer.printProblems(problems.getFilteredProblems());
 			}
 		}
