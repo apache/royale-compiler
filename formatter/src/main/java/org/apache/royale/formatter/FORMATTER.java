@@ -818,6 +818,16 @@ public class FORMATTER {
 						}
 						break;
 					}
+					case ASTokenTypes.TOKEN_PAREN_CLOSE: {
+						if (!blockStack.isEmpty()) {
+							BlockStackItem item = blockStack.get(blockStack.size() - 1);
+							if (item.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
+								indent = decreaseIndent(indent);
+								blockStack.remove(item);
+							}
+						}
+						break;
+					}
 					case ASTokenTypes.TOKEN_KEYWORD_AS:
 					case ASTokenTypes.TOKEN_KEYWORD_IS:
 					case ASTokenTypes.TOKEN_KEYWORD_IN:
@@ -1072,6 +1082,38 @@ public class FORMATTER {
 						indent = increaseIndent(indent);
 						blockStack.add(new BlockStackItem(token));
 						break;
+					case ASTokenTypes.TOKEN_PAREN_OPEN: {
+						indent = increaseIndent(indent);
+						blockStack.add(new BlockStackItem(token));
+						if (inControlFlowStatement) {
+							controlFlowParenStack++;
+						}
+						break;
+					}
+					case ASTokenTypes.TOKEN_PAREN_CLOSE: {
+						if (inControlFlowStatement) {
+							controlFlowParenStack--;
+							if (controlFlowParenStack <= 0) {
+								inControlFlowStatement = false;
+								controlFlowParenStack = 0;
+								blockOpenPending = true;
+								if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
+									blockStack.remove(blockStack.size() - 1);
+									if (!skipWhitespaceBeforeSemicolon) {
+										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+									}
+								} else if (nextToken != null && nextToken.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
+										&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+										&& !skipWhitespaceBeforeSemicolon) {
+									indent = increaseIndent(indent);
+									BlockStackItem item = blockStack.get(blockStack.size() - 1);
+									item.braces = false;
+									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+								}
+							}
+						}
+						break;
+					}
 					case ASTokenTypes.TOKEN_OPERATOR_INCREMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_DECREMENT: {
 						if (!inControlFlowStatement && prevToken != null
@@ -1207,43 +1249,6 @@ public class FORMATTER {
 								requiredSpace = true;
 							} else {
 								requiredSpace = true;
-							}
-						}
-						break;
-					}
-					case ASTokenTypes.TOKEN_PAREN_OPEN: {
-						blockStack.add(new BlockStackItem(token));
-						if (inControlFlowStatement) {
-							controlFlowParenStack++;
-						}
-						break;
-					}
-					case ASTokenTypes.TOKEN_PAREN_CLOSE: {
-						if (!blockStack.isEmpty()) {
-							BlockStackItem item = blockStack.get(blockStack.size() - 1);
-							if (item.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
-								blockStack.remove(item);
-							}
-						}
-						if (inControlFlowStatement) {
-							controlFlowParenStack--;
-							if (controlFlowParenStack <= 0) {
-								inControlFlowStatement = false;
-								controlFlowParenStack = 0;
-								blockOpenPending = true;
-								if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
-									blockStack.remove(blockStack.size() - 1);
-									if (!skipWhitespaceBeforeSemicolon) {
-										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-									}
-								} else if (nextToken != null && nextToken.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
-										&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-										&& !skipWhitespaceBeforeSemicolon) {
-									indent = increaseIndent(indent);
-									BlockStackItem item = blockStack.get(blockStack.size() - 1);
-									item.braces = false;
-									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-								}
 							}
 						}
 						break;

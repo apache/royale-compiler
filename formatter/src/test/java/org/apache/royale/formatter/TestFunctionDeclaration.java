@@ -212,7 +212,7 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"function myFunction(p1:String,\n" +
-				"\tp2:Number):void\n" +
+				"\t\tp2:Number):void\n" +
 				"{\n" +
 				"\tstatement;\n" +
 				"\tstatement;\n" +
@@ -289,9 +289,9 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"(function myFunction(...rest)\n" +
-				"{\n" +
-				"\tstatement;\n" +
-				"});",
+				"\t{\n" +
+				"\t\tstatement;\n" +
+				"\t});",
 				// @formatter:on
 				result);
 	}
@@ -314,9 +314,9 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"identifier(function myFunction(...rest)\n" +
-				"{\n" +
-				"\tstatement;\n" +
-				"}, 123.4);",
+				"\t{\n" +
+				"\t\tstatement;\n" +
+				"\t}, 123.4);",
 				// @formatter:on
 				result);
 	}
