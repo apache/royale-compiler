@@ -393,7 +393,7 @@ public class FORMATTER {
 		}
 	}
 
-	private String formatMXMLScriptElement(String text, Collection<ICompilerProblem> problems) {
+	private String formatMXMLScriptElement(String filePath, int line, String text, Collection<ICompilerProblem> problems) {
 		String indent = "\t";
 		if (insertSpaces) {
 			indent = "";
@@ -418,7 +418,7 @@ public class FORMATTER {
 		String cdataText = scriptMatcher.group(3);
 		String scriptText = scriptMatcher.group(4);
 		boolean requireCdata = cdataText != null || "Script".equals(scriptTagName);
-		String formattedScriptText = formatAS3TextInternal("script.as", scriptText, problems);
+		String formattedScriptText = formatAS3TextInternal(filePath + "@Script[" + line + "]", scriptText, problems);
 		if (!ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
@@ -1860,7 +1860,7 @@ public class FORMATTER {
 					// need to return the original, unformatted text
 					problems = new ArrayList<ICompilerProblem>();
 				}
-				builder.append(formatMXMLScriptElement(scriptBuilder.toString(), problems));
+				builder.append(formatMXMLScriptElement(filePath, token.getLine(), scriptBuilder.toString(), problems));
 				if (hasErrors(problems)) {
 					return text;
 				}
