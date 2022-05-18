@@ -85,11 +85,11 @@
     </target>
     
     <target name="prebuild">
-        <mkdir dir="${formatter}/target/classes" />
-        <mkdir dir="${formatter}/target/classes/META-INF" />
+        <mkdir dir="${formatter}/target/classes"/>
+        <mkdir dir="${formatter}/target/classes/META-INF"/>
     </target>
-    
-    <target name="main" depends="prebuild,compile" >
+
+    <target name="jar" depends="prebuild,compile">
         <mkdir dir="${sdk}"/>
         <copy file="${basedir}/../LICENSE.base" tofile="${formatter}/target/classes/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.base" tofile="${formatter}/target/classes/META-INF/NOTICE"/>
@@ -101,19 +101,22 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Main-Class" value="org.apache.royale.formatter.FORMATTER" />
+                <attribute name="Main-Class" value="org.apache.royale.formatter.FORMATTER"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-        <antcall target="test" />
-        <antcall target="jar-test" />
-    </target>
-
-    <target name="test" >
-        <ant dir="src/test" />
     </target>
     
-    <target name="jar-test" >
+    <target name="main" depends="jar">
+        <antcall target="test"/>
+        <antcall target="jar-test"/>
+    </target>
+
+    <target name="test">
+        <ant dir="src/test"/>
+    </target>
+    
+    <target name="jar-test">
         <echo>using formatter.jar from ${sdk}</echo>
         <java jar="${sdk}/formatter.jar" fork="true" resultproperty="formatter.result"/>
         <fail message="Starting Failed">
