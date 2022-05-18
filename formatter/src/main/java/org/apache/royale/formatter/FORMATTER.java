@@ -1775,6 +1775,10 @@ public class FORMATTER {
 		}
 
 		if (mxmlTokenizer.hasTokenizationProblems()) {
+			problems.addAll(mxmlTokenizer.getTokenizationProblems());
+		}
+
+		if (!ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
