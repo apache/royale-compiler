@@ -116,6 +116,7 @@ public class RepairingTokenBuffer extends BaseRepairingTokenBuffer implements IR
                     tokenBeforeSemicolon.getLine(),
                     tokenBeforeSemicolon.getColumn() + 1,
                     ";");
+            semicolon.setSourcePath(tokenBeforeSemicolon.getSourcePath());
             adjust++;
             final int insertIndex = pos + adjust;
             tokens.add(insertIndex, semicolon);
