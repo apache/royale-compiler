@@ -322,6 +322,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         "label",
         "li",
         "main",
+        "mark",
         /*"menu", not cross-browser, and we want to use it in Royale */
         "nav",
         "ol",
