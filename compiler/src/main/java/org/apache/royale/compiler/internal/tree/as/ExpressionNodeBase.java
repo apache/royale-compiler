@@ -241,7 +241,7 @@ public abstract class ExpressionNodeBase extends FixedChildrenNode implements IE
             {
                 ASScope scope = getASScope();
 
-                if (scope.isPackageName(ref))
+                if (scope != null && scope.isPackageName(ref))
                     isPackage = true;
             }
         }
