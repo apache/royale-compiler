@@ -1188,7 +1188,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ b = org.apache.royale.utils.Language.string(a.attribute('attr1'))");
+        assertOut("var /** @type {string} */ b = String(a.attribute('attr1'))");
     }
     
     @Test
@@ -1196,7 +1196,7 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String; b = a.@attr1;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("b = org.apache.royale.utils.Language.string(a.attribute('attr1'))");
+        assertOut("b = String(a.attribute('attr1'))");
     }
     
     @Test

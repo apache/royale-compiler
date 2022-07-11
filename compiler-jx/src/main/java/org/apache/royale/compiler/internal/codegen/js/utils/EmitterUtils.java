@@ -975,4 +975,47 @@ public class EmitterUtils
         return base + "_" + DefinitionUtils.deltaFromObject(definition, project) +"_";
     }
 
+    public static final FunctionCallNode wrapXMLListStringCoercion(NodeBase orig) {
+        //create a call to XMLList.coerce_string(orig)
+        IdentifierNode xmllistClassRef = new IdentifierNode(IASLanguageConstants.XMLList);
+        IdentifierNode castMethod = new IdentifierNode("coerce_string");
+
+        MemberAccessExpressionNode castNode = new MemberAccessExpressionNode(xmllistClassRef,null, castMethod);
+        xmllistClassRef.setParent(castNode);
+        castMethod.setParent(castNode);
+        FunctionCallNode stringCast = new FunctionCallNode(castNode);
+        //explicit parent setting for name and arguments:
+        castNode.setParent(stringCast);
+        stringCast.getArgumentsNode().setParent(stringCast);
+        //wrap the original node
+        stringCast.getArgumentsNode().addItem((NodeBase) orig);
+        return stringCast;
+    }
+
+
+    public static final FunctionCallNode wrapSimpleStringCoercion(NodeBase orig) {
+        //create a call to String(orig)
+        IdentifierNode castNode = new IdentifierNode(IASLanguageConstants.String);
+        FunctionCallNode stringCast = new FunctionCallNode(castNode);
+        //explicit parent setting for name and arguments:
+        castNode.setParent(stringCast);
+        stringCast.getArgumentsNode().setParent(stringCast);
+        //wrap the original node
+        stringCast.getArgumentsNode().addItem((NodeBase) orig);
+        return stringCast;
+    }
+
+    public static final boolean xmlRequiresNullCheck(NodeBase orig, ICompilerProject project) {
+        boolean ret = false;
+        if (orig instanceof IIdentifierNode) {
+            ret = true;
+        } else if (orig instanceof IBinaryOperatorNode) {
+            //should cover IDynamicAccessNode and IMemberAccessExpressionNode
+            //if the left node is xmlish, then we don't need null check
+            ret = !isLeftNodeXMLish(((IBinaryOperatorNode) orig).getLeftOperandNode(),project);
+        }
+
+        return ret;
+    }
+
 }

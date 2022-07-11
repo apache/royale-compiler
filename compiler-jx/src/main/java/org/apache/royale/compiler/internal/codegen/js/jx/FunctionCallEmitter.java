@@ -39,6 +39,7 @@ import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.*;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.ProjectSpecificErrorProblem;
 import org.apache.royale.compiler.problems.TooFewFunctionParametersProblem;
@@ -68,6 +69,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             cnode = cnode.getChild(0);
         String postCallAppend = null;
         ASTNodeID id = cnode.getNodeID();
+        boolean numericCast = false;
         if (id != ASTNodeID.SuperID)
         {
             IDefinition def = null;
@@ -97,6 +99,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 )
                 {
                     omitNew = true;
+                    numericCast = ((IdentifierNode) nameNode).getName().equals(IASLanguageConstants.Number);
                 }
                 
                 if (!((node.getChild(1) instanceof VectorLiteralNode)))
@@ -221,7 +224,10 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         && !(NativeUtils.isJSNative(def.getBaseName()))
                         && !def.getBaseName().equals(IASLanguageConstants.XML)
                         && !def.getBaseName().equals(IASLanguageConstants.XMLList);
-                
+
+                if (!isClassCast && def != null && def.getQualifiedName().equals( IASLanguageConstants.Number)){
+                    numericCast = true;
+                }
             }
             
             if (node.isNewExpression())
@@ -244,6 +250,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             write(JSRoyaleEmitterTokens.UNDERSCORE);
                         write(def.getQualifiedName());
                         endMapping(nameNode);
+                        numericCast = true;
                     } else if( def.getQualifiedName().equals("QName")
                             && getModel().defaultXMLNamespaceActive
                             //is the execution context relevant
@@ -416,6 +423,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         if (isInt)
                             write(JSRoyaleEmitterTokens.UNDERSCORE);
                         endMapping(node.getNameNode());
+                        numericCast = true;
                     }
                     else if (def.getBaseName().equals("sortOn"))
                 	{
@@ -721,6 +729,26 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     getWalker().walk(node.getNameNode());
                 }
 
+                if (numericCast ) {
+                    if (node.getArgumentsNode().getChildCount() == 1  && SemanticUtils.isXMLish((IExpressionNode) node.getArgumentsNode().getChild(0), getProject())) {
+                        //"patch" the argument node by wrapping in string coercion
+                        ContainerNode args = node.getArgumentsNode();
+                        NodeBase origArg = (NodeBase) args.getChild(0);
+                        args.removeItem(origArg);
+
+                        FunctionCallNode stringCast;
+
+                        if (EmitterUtils.xmlRequiresNullCheck(origArg, getProject())) {
+                            //if it is a simple identifier, then it could be a null reference so use the XMLList.coerce_string method, which retains null
+                            stringCast = EmitterUtils.wrapXMLListStringCoercion(origArg);
+                        } else {
+                            //if it is a member access expression or something else then assume we don't have to check for null
+                            stringCast = EmitterUtils.wrapSimpleStringCoercion(origArg);
+                        }
+
+                        args.addItemAfterNormalization(stringCast);
+                    }
+                }
 
                 getEmitter().emitArguments(node.getArgumentsNode());
     

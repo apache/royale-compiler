@@ -34,6 +34,7 @@ import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
@@ -601,6 +602,61 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 						}
 					}
 				}
+			} else if (id == ASTNodeID.Op_AddID) {
+				IDefinition rightDef = node.getRightOperandNode().resolveType(getProject());
+				boolean leftIsXMLish = (SemanticUtils.isXMLish(node.getLeftOperandNode(), getProject())) || SemanticUtils.isXMLish(leftDef, getProject());
+				boolean rightIsXMLish = (SemanticUtils.isXMLish(node.getRightOperandNode(), getProject())) || SemanticUtils.isXMLish(rightDef, getProject());
+				boolean process;
+				if (leftIsXMLish) {
+					process = !rightIsXMLish;
+				} else {
+					process = rightIsXMLish;
+				}
+				if (process) {
+					IASNode codeContext = node.getAncestorOfType(IClassNode.class);
+					boolean isFrameworkXML = false;
+					if (codeContext instanceof IClassNode) {
+						if (((IClassNode) codeContext).getQualifiedName().equals("XML") || ((IClassNode) codeContext).getQualifiedName().equals("XMLList")) {
+							//we will ignore the internal code of the emulation support classes for these cases
+							isFrameworkXML = true;
+						}
+					}
+					if (!isFrameworkXML) {
+						IExpressionNode leftOperand = node.getLeftOperandNode();
+						IExpressionNode rightOperand = node.getRightOperandNode();
+						FunctionCallNode functionCallNode;
+						if (leftIsXMLish) {
+							//wrap in string coercion
+							if (EmitterUtils.xmlRequiresNullCheck((NodeBase) leftOperand, getProject())) {
+								//if it is a simple identifier, then it could be a null reference so use the XMLList.coerce_string method, which retains null
+								functionCallNode = EmitterUtils.wrapXMLListStringCoercion((NodeBase) leftOperand);
+							} else {
+								//if it is a member access expression or something else then assume we don't have to check for null
+								functionCallNode = EmitterUtils.wrapSimpleStringCoercion((NodeBase) leftOperand);
+							}
+							functionCallNode.setParent((NodeBase) node);
+							leftOperand = functionCallNode;
+						} else {
+							//wrap in string coercion
+							if (EmitterUtils.xmlRequiresNullCheck((NodeBase) rightOperand, getProject())) {
+								//if it is a simple identifier, then it could be a null reference so use the XMLList.coerce_string method, which retains null
+								functionCallNode = EmitterUtils.wrapXMLListStringCoercion((NodeBase) rightOperand);
+							} else {
+								//if it is a member access expression or something else then assume we don't have to check for null
+								functionCallNode = EmitterUtils.wrapSimpleStringCoercion((NodeBase) rightOperand);
+							}
+							functionCallNode.setParent((NodeBase) node);
+							rightOperand = functionCallNode;
+						}
+						getWalker().walk(leftOperand);
+						write(ASEmitterTokens.SPACE);
+						writeToken(ASEmitterTokens.PLUS);
+						write(ASEmitterTokens.SPACE);
+						getWalker().walk(rightOperand);
+						return;
+					}
+				}
+
 			}
 			
 		

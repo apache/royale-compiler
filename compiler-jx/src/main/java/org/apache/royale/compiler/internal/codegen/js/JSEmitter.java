@@ -68,38 +68,13 @@ import org.apache.royale.compiler.internal.codegen.js.jx.WhileLoopEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.WithEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.ICatchNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IDefinitionNode;
-import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IForLoopNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
-import org.apache.royale.compiler.tree.as.IIfNode;
-import org.apache.royale.compiler.tree.as.IImportNode;
-import org.apache.royale.compiler.tree.as.IIterationFlowNode;
-import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.ILiteralContainerNode;
-import org.apache.royale.compiler.tree.as.INumericLiteralNode;
-import org.apache.royale.compiler.tree.as.IObjectLiteralValuePairNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IReturnNode;
-import org.apache.royale.compiler.tree.as.ISwitchNode;
-import org.apache.royale.compiler.tree.as.ITernaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IThrowNode;
-import org.apache.royale.compiler.tree.as.ITryNode;
-import org.apache.royale.compiler.tree.as.ITypeNode;
-import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IWhileLoopNode;
-import org.apache.royale.compiler.tree.as.IWithNode;
+import org.apache.royale.compiler.tree.as.*;
 
 import com.google.debugging.sourcemap.FilePosition;
 
@@ -549,18 +524,22 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         IDefinition assignedDef = null;
         IDefinition assignedTypeDef = null;
         ICompilerProject project = getWalker().getProject();
+        boolean isXML = false;
         if (assignedNode != null)
         {
             assignedDef = assignedNode.resolve(project);
             assignedTypeDef = assignedNode.resolveType(project);
-            if (project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef))
+            if (assignedTypeDef == null || project.getBuiltinType(BuiltinType.ANY_TYPE).equals(assignedTypeDef))
             {
                 IDefinition resolvedXMLDef = SemanticUtils.resolveXML(assignedNode, project);
                 if (resolvedXMLDef != null)
                 {
                     assignedDef = resolvedXMLDef;
                     assignedTypeDef = SemanticUtils.resolveTypeXML(assignedNode, project);
+                    isXML = true;
                 }
+            } else if (SemanticUtils.isXMLish(assignedTypeDef, project)) {
+                isXML = true;
             }
         }
 		String coercionStart = null;
@@ -724,7 +703,15 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
             if (emitStringCoercion)
             {
-                coercionStart = "org.apache.royale.utils.Language.string(";
+                if (isXML) {
+                    if (EmitterUtils.xmlRequiresNullCheck((NodeBase) assignedNode, project)) {
+                        //if it could be a null reference use the XMLList.coerce_string method, which retains null
+                        coercionStart = "XMLList.coerce_string(";
+                    } else {
+                        coercionStart = "String(";
+                    }
+                }
+                else coercionStart = "org.apache.royale.utils.Language.string(";
             }
         }
         if ( assignedDef != null

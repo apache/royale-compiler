@@ -472,7 +472,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("var var1:String;var var2:XML;var1 = var2.child");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("var1 = org.apache.royale.utils.Language.string(var2.child('child'))");
+        assertOut("var1 = String(var2.child('child'))");
     }
 
     @Test
@@ -1976,7 +1976,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IReturnNode node = (IReturnNode) getNode("function():String { var a:XML; return a.child; }", IReturnNode.class);
         asBlockWalker.visitReturn(node);
-        assertOut("return org.apache.royale.utils.Language.string(a.child('child'))");
+        assertOut("return String(a.child('child'))");
     }
 
     @Test
@@ -2144,7 +2144,7 @@ public class TestRoyaleExpressions extends TestGoogExpressions
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode("function a(foo:String):void {}; var b:XML; a(b.child);", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
-        assertOut("a(org.apache.royale.utils.Language.string(b.child('child')))");
+        assertOut("a(String(b.child('child')))");
     }
 
     @Test
