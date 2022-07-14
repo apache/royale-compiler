@@ -91,11 +91,10 @@ public class FORMATTER {
 		}
 
 		final int code;
-        
-        int getCode()
-        {
-        	return code;
-        }
+
+		int getCode() {
+			return code;
+		}
 	}
 
 	/**
@@ -393,7 +392,8 @@ public class FORMATTER {
 		}
 	}
 
-	private String formatMXMLScriptElement(String filePath, int line, String text, Collection<ICompilerProblem> problems) {
+	private String formatMXMLScriptElement(String filePath, int line, String text,
+			Collection<ICompilerProblem> problems) {
 		String indent = "\t";
 		if (insertSpaces) {
 			indent = "";
@@ -761,7 +761,8 @@ public class FORMATTER {
 								indentedStatement = false;
 								indent = decreaseIndent(indent);
 							}
-							boolean oneLineBlock = nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
+							boolean oneLineBlock = nextToken != null
+									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
 							boolean needsNewLine = placeOpenBraceOnNewLine && (!collapseEmptyBlocks || !oneLineBlock);
 							if (needsNewLine) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
@@ -1238,7 +1239,22 @@ public class FORMATTER {
 							if (inCaseOrDefaultClause) {
 								inCaseOrDefaultClause = false;
 								caseOrDefaultBlockOpenPending = true;
-								indent = increaseIndent(indent);
+								boolean nextIsBlock = nextTokenNotComment != null
+										&& nextTokenNotComment.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN;
+								if (nextIsBlock) {
+									IASToken afterBlockClose = findTokenAfterBlock(nextTokenNotComment, tokens);
+									if (afterBlockClose != null) {
+										if (afterBlockClose.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE
+												|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
+												|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT) {
+											blockOpenPending = true;
+											blockStack.remove(blockStack.size() - 1);
+										}
+									}
+								}
+								if (!nextIsBlock || !blockOpenPending) {
+									indent = increaseIndent(indent);
+								}
 								if (nextToken != null && (nextToken
 										.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
 										|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
@@ -1406,6 +1422,23 @@ public class FORMATTER {
 			throw new Exception("Block stack size too large");
 		}
 		return builder.toString();
+	}
+
+	private IASToken findTokenAfterBlock(IASToken tokenBlockOpen, List<IASToken> tokens) {
+		List<IASToken> stack = new ArrayList<IASToken>();
+		int startIndex = tokens.indexOf(tokenBlockOpen) + 1;
+		for (int i = startIndex; i < tokens.size(); i++) {
+			IASToken current = tokens.get(i);
+			if (current.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN) {
+				stack.add(current);
+			} else if (current.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE) {
+				if (stack.size() == 0) {
+					return getNextTokenSkipExtraAndComments(tokens, i + 1);
+				}
+				stack.remove(stack.size() - 1);
+			}
+		}
+		return null;
 	}
 
 	private int countNewLinesInExtra(IASToken tokenOrExtra) {

@@ -146,8 +146,8 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"switch (condition)\n" +
 				"{\n" +
 				"\tcase condition:\n" +
-				"\t\t{\n" +
-				"\t\t}\n" +
+				"\t{\n" +
+				"\t}\n" +
 				"}",
 				// @formatter:on
 				result);
@@ -176,9 +176,9 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"switch (condition)\n" +
 				"{\n" +
 				"\tcase condition:\n" +
-				"\t\t{\n" +
-				"\t\t\tbreak;\n" +
-				"\t\t}\n" +
+				"\t{\n" +
+				"\t\tbreak;\n" +
+				"\t}\n" +
 				"}",
 				// @formatter:on
 				result);
@@ -295,8 +295,8 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"switch (condition)\n" +
 				"{\n" +
 				"\tdefault:\n" +
-				"\t\t{\n" +
-				"\t\t}\n" +
+				"\t{\n" +
+				"\t}\n" +
 				"}",
 				// @formatter:on
 				result);
@@ -325,9 +325,9 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"switch (condition)\n" +
 				"{\n" +
 				"\tdefault:\n" +
-				"\t\t{\n" +
-				"\t\t\tbreak;\n" +
-				"\t\t}\n" +
+				"\t{\n" +
+				"\t\tbreak;\n" +
+				"\t}\n" +
 				"}",
 				// @formatter:on
 				result);
@@ -549,8 +549,8 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"\tswitch (condition)\n" +
 				"\t{\n" +
 				"\t\tcase clause:\n" +
-				"\t\t\t{\n" +
-				"\t\t\t}\n" +
+				"\t\t{\n" +
+				"\t\t}\n" +
 				"\t}\n" +
 				"\tstatement;\n" +
 				"}",
@@ -585,9 +585,9 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"\tswitch (condition)\n" +
 				"\t{\n" +
 				"\t\tcase clause:\n" +
-				"\t\t\t{\n" +
-				"\t\t\t\tbreak;\n" +
-				"\t\t\t}\n" +
+				"\t\t{\n" +
+				"\t\t\tbreak;\n" +
+				"\t\t}\n" +
 				"\t}\n" +
 				"\tstatement;\n" +
 				"}",
@@ -654,8 +654,8 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"\tswitch (condition)\n" +
 				"\t{\n" +
 				"\t\tdefault:\n" +
-				"\t\t\t{\n" +
-				"\t\t\t}\n" +
+				"\t\t{\n" +
+				"\t\t}\n" +
 				"\t}\n" +
 				"\tstatement;\n" +
 				"}",
@@ -690,9 +690,9 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"\tswitch (condition)\n" +
 				"\t{\n" +
 				"\t\tdefault:\n" +
-				"\t\t\t{\n" +
-				"\t\t\t\tbreak;\n" +
-				"\t\t\t}\n" +
+				"\t\t{\n" +
+				"\t\t\tbreak;\n" +
+				"\t\t}\n" +
 				"\t}\n" +
 				"\tstatement;\n" +
 				"}",
