@@ -498,6 +498,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         tokenizer = new RawASTokenizer();
         tokenizer.yyreset(reader);
         tokenizer.setCollectComments(config.collectComments);
+        tokenizer.setSourcePath(sourcePath);
         setSourcePositionAdjustment(offset, line, column);
     }
 
