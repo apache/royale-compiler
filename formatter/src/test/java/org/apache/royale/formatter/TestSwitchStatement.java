@@ -125,7 +125,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithCaseClauseAndEmptyBlock() {
+	public void testWithCaseClauseAndEmptyBlockEnablePlaceOpenBraceOnNewLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -154,7 +154,34 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithCaseClauseAndBlockWithStatement() {
+	public void testWithCaseClauseAndEmptyBlockDisablePlaceOpenBraceOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tcase condition:\n" +
+			"\t{\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {\n" +
+				"\tcase condition: {\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithCaseClauseAndBlockWithStatementEnablePlaceOpenBraceOnNewLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -185,7 +212,36 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithCaseClauseAndStatementAfterBlock() {
+	public void testWithCaseClauseAndBlockWithStatementDisablePlaceOpenBraceOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tcase condition:\n" +
+			"\t{\n" +
+			"\t\tbreak;\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {\n" +
+				"\tcase condition: {\n" +
+				"\t\tbreak;\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithCaseClauseAndStatementAfterBlockEnablePlaceOpenBraceOnNewLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -205,8 +261,47 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		);
 		assertEquals(
 		// @formatter:off
+				// notice that the break statement is outside the curly braces,
+				// so the curly braces aren't considered a "body" for the case
+				// clause and they get indented an extra level.
 				"switch (condition)\n" +
 				"{\n" +
+				"\tcase condition:\n" +
+				"\t\t{\n" +
+				"\t\t\tstatement;\n" +
+				"\t\t}\n" +
+				"\t\tbreak;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithCaseClauseAndStatementAfterBlockDisablePlaceOpenBraceOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tcase condition:\n" +
+			"\t{\n" +
+			"\t\tstatement;\n" +
+			"\t}\n" +
+			"\tbreak;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				// notice that the break statement is outside the curly braces,
+				// so the curly braces aren't considered a "body" for the case
+				// clause, and they get indented an extra level. the opening
+				// brace also doesn't appear on the same line as the case.
+				"switch (condition) {\n" +
 				"\tcase condition:\n" +
 				"\t\t{\n" +
 				"\t\t\tstatement;\n" +
@@ -274,7 +369,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithDefaultClauseAndEmptyBlock() {
+	public void testWithDefaultClauseAndEmptyBlockEnablePlaceOpenBraceOnNewLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -303,7 +398,34 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithDefaultClauseAndBlockWithStatement() {
+	public void testWithDefaultClauseAndEmptyBlockDisablePlaceOpenBraceOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tdefault:\n" +
+			"\t{\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {\n" +
+				"\tdefault: {\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithDefaultClauseAndBlockWithStatementEnablePlaceOpenBraceOnNewLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -334,7 +456,36 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithDefaultClauseAndStatementAfterBlock() {
+	public void testWithDefaultClauseAndBlockWithStatementDisablePlaceOpenBraceOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tdefault:\n" +
+			"\t{\n" +
+			"\t\tbreak;\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {\n" +
+				"\tdefault: {\n" +
+				"\t\tbreak;\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithDefaultClauseAndStatementAfterBlockEnablePlaceOpenBraceOnNewLine() {
 		FORMATTER formatter = new FORMATTER();
 		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		formatter.placeOpenBraceOnNewLine = true;
@@ -354,8 +505,47 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		);
 		assertEquals(
 		// @formatter:off
+				// notice that the break statement is outside the curly braces,
+				// so the curly braces aren't considered a "body" for the
+				// default clause and they get indented an extra level.
 				"switch (condition)\n" +
 				"{\n" +
+				"\tdefault:\n" +
+				"\t\t{\n" +
+				"\t\t\tstatement;\n" +
+				"\t\t}\n" +
+				"\t\tbreak;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithDefaultClauseAndStatementAfterBlockDisablePlaceOpenBraceOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = false;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tdefault:\n" +
+			"\t{\n" +
+			"\t\tstatement;\n" +
+			"\t}\n" +
+			"\tbreak;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				// notice that the break statement is outside the curly braces,
+				// so the curly braces aren't considered a "body" for the
+				// default clause and they get indented an extra level. the
+				// opening brace also doesn't appear on the same line as default.
+				"switch (condition) {\n" +
 				"\tdefault:\n" +
 				"\t\t{\n" +
 				"\t\t\tstatement;\n" +

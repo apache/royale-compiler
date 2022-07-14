@@ -1250,19 +1250,20 @@ public class FORMATTER {
 												|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
 												|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT) {
 											blockOpenPending = true;
+											requiredSpace = true;
 											blockStack.remove(blockStack.size() - 1);
 										}
 									}
 								}
 								if (!nextIsBlock || !blockOpenPending) {
 									indent = increaseIndent(indent);
-								}
-								if (nextToken != null && (nextToken
-										.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-										|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
-									requiredSpace = true;
-								} else {
-									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+									if (nextToken != null && (nextToken
+											.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+											|| nextToken.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+										requiredSpace = true;
+									} else {
+										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+									}
 								}
 							} else if (ternaryStack > 0) {
 								ternaryStack--;
