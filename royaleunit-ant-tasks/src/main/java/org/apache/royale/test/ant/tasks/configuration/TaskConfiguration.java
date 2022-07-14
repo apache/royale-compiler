@@ -93,6 +93,11 @@ public class TaskConfiguration
             testRunConfiguration.setCommand(project.resolveFile(commandPath));
         }
     }
+
+    public void setCommandArgs(String[] commandArgs)
+    {
+        testRunConfiguration.setCommandArgs(commandArgs);
+    }
     
     public void setDisplay(int display)
     {

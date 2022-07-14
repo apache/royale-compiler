@@ -17,6 +17,7 @@
 package org.apache.royale.test.ant.tasks.configuration;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.royale.test.ant.LoggingUtil;
@@ -29,6 +30,7 @@ public class TestRunConfiguration implements StepConfiguration
 
     private String player;
     private File command = null;
+    private String[] commandArgs = null;
     private int display = 99;
     private boolean failOnTestFailure = false;
     private String failureProperty = "royaleunit.failed";
@@ -52,6 +54,16 @@ public class TestRunConfiguration implements StepConfiguration
     public void setCommand(File command)
     {
         this.command = command;
+    }
+    
+    public String[] getCommandArgs()
+    {
+        return commandArgs;
+    }
+
+    public void setCommandArgs(String[] commandArgs)
+    {
+        this.commandArgs = commandArgs;
     }
     
     public boolean isCustomCommand()
@@ -268,6 +280,10 @@ public class TestRunConfiguration implements StepConfiguration
         if(isCustomCommand())
         {
             LoggingUtil.log("\tcommand: [" + command + "]");
+            if (commandArgs != null)
+            {
+                LoggingUtil.log("\tcommandArgs: [" + Arrays.toString(commandArgs) + "]");
+            }
         }
         
         LoggingUtil.log("\tport: [" + port + "]");

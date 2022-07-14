@@ -104,6 +104,7 @@ public class TestRun
                 configuration.getOs(), 
                 configuration.getPlayer(), 
                 configuration.getCommand(), 
+                configuration.getCommandArgs(),
                 configuration.isLocalTrusted());
         
         command.setProject(project);

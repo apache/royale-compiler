@@ -35,7 +35,7 @@ public class PlayerCommandFactory
      * @param localTrusted
      * @return Desired player command with platform defaults possibly wrapped in a custom command
      */
-    public static PlayerCommand createPlayer(OperatingSystem os, String player, File customCommand, boolean localTrusted)
+    public static PlayerCommand createPlayer(OperatingSystem os, String player, File customCommand, String[] customCommandArgs, boolean localTrusted)
     {
         PlayerCommand newInstance = null;
 
@@ -73,6 +73,7 @@ public class PlayerCommandFactory
             CustomPlayerCommand customInstance = new CustomPlayerCommand();
             customInstance.setProxiedCommand(defaultInstance);
             customInstance.setExecutable(customCommand);
+            customInstance.setExecutableArgs(customCommandArgs);
             newInstance = customInstance;
         }
         else

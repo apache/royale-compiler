@@ -28,6 +28,7 @@ public class CustomPlayerCommand implements PlayerCommand
 {
     private DefaultPlayerCommand proxiedCommand;
     private File executable;
+    private String[] executableArgs;
 
     public PlayerCommand getProxiedCommand()
     {
@@ -47,6 +48,16 @@ public class CustomPlayerCommand implements PlayerCommand
     public void setExecutable(File executable)
     {
         this.executable = executable;
+    }
+
+    public String[] getExecutableArgs()
+    {
+        return executableArgs;
+    }
+    
+    public void setExecutableArgs(String[] executableArgs)
+    {
+        this.executableArgs = executableArgs;
     }
     
     public void setProject(Project project)
@@ -79,15 +90,21 @@ public class CustomPlayerCommand implements PlayerCommand
         proxiedCommand.getCommandLine().setExecutable(executable.getAbsolutePath());
         proxiedCommand.getCommandLine().clearArgs();
         
+        int customArgsCount = executableArgs != null ? executableArgs.length : 0;
+        String[] args = new String[customArgsCount + 1];
+        if (executableArgs != null)
+        {
+            System.arraycopy(executableArgs, 0, args, 0, executableArgs.length);
+        }
         if(getUrl() != null)
         {    	  
-           proxiedCommand.getCommandLine().addArguments(new String[]{getUrl()});
+            args[args.length - 1] = getUrl();
         } 
         else 
         {  
-           proxiedCommand.getCommandLine().addArguments(new String[]{getFileToExecute().getAbsolutePath()});
+            args[args.length - 1] = getFileToExecute().getAbsolutePath();
         }
-
+        proxiedCommand.getCommandLine().addArguments(args);
     }
     
     public Process launch() throws IOException

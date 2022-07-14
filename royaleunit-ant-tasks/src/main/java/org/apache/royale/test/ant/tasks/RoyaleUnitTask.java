@@ -16,16 +16,25 @@
  */
 package org.apache.royale.test.ant.tasks;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.royale.test.ant.tasks.configuration.TaskConfiguration;
+import org.apache.royale.test.ant.tasks.types.LoadConfig;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DynamicAttribute;
 import org.apache.tools.ant.DynamicElement;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.royale.test.ant.tasks.configuration.TaskConfiguration;
-import org.apache.royale.test.ant.tasks.types.LoadConfig;
 
-public class RoyaleUnitTask extends Task implements DynamicElement
+public class RoyaleUnitTask extends Task implements DynamicElement, DynamicAttribute
 {
+	private static final Pattern COMMAND_ARGS_PATTERN = Pattern.compile(
+			"([\\-+]([^\\s]+\\+?=)(('([^'])*')|(\"([^\"])*\")|([^\\s\"',]+))(,(('([^'])*')|(\"([^\"])*\")|([^\\s\"']+)))*)|('([^'])*')|(\"([^\"])*\")|([^\\s\"']+)");
+
     private TaskConfiguration configuration;
 
     public RoyaleUnitTask()
@@ -142,6 +151,11 @@ public class RoyaleUnitTask extends Task implements DynamicElement
         configuration.setCommand(executableFilePath);
     }
 
+    public void setCommandArgs(String[] customArgs)
+    {
+        configuration.setCommandArgs(customArgs);
+    }
+
     public void setHeadless(boolean headless)
     {
         configuration.setHeadless(headless);
@@ -204,11 +218,36 @@ public class RoyaleUnitTask extends Task implements DynamicElement
             LoadConfig loadconfig = new LoadConfig();
             configuration.setLoadConfig(loadconfig);
             return loadconfig;
-        } 
+        }
         else
         {
-            throw new BuildException( "The <royaleUnit> type doesn't support the " + arg0 + "nested element");
+            throw new BuildException( "The <royaleUnit> type doesn't support the " + arg0 + " nested element");
         }
     }
+
+	private String[] parseCommandArgs(String combined)
+    {
+		List<String> result = new ArrayList<String>();
+		Matcher matcher = COMMAND_ARGS_PATTERN.matcher(combined);
+		while (matcher.find())
+    {
+			String option = matcher.group();
+			result.add(option);
+		}
+        return result.toArray(new String[0]);
+	}
+
+    public void setDynamicAttribute(String arg0, String arg1)
+           throws BuildException {
+       if("commandargs".equals(arg0))
+       {
+            String[] commandArgs = parseCommandArgs(arg1);
+            configuration.setCommandArgs(commandArgs);
+       }
+       else
+       {	
+            throw new BuildException( "The <royaleUnit> type doesn't support the " + arg0 + " attribute");
+       }
+   }
 
 }
