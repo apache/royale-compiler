@@ -130,7 +130,7 @@ public class FORMATTER {
 	public boolean mxmlAlignAttributes = false;
 	public boolean mxmlInsertNewLineBetweenAttributes = false;
 
-	private ProblemQuery problems;
+	private ProblemQuery problemQuery;
 	private List<File> inputFiles = new ArrayList<File>();
 	private boolean writeBackToInputFiles = false;
 	private boolean listChangedFiles = false;
@@ -139,11 +139,11 @@ public class FORMATTER {
 
 	public int execute(String[] args) {
 		ExitCode exitCode = ExitCode.SUCCESS;
-		problems = new ProblemQuery();
-		problems.setShowWarnings(false);
+		problemQuery = new ProblemQuery();
+		problemQuery.setShowWarnings(false);
 
 		try {
-			boolean continueFormatting = configure(args, problems);
+			boolean continueFormatting = configure(args, problemQuery);
 			if (continueFormatting) {
 				if (inputFiles.size() == 0) {
 					StringBuilder builder = new StringBuilder();
@@ -157,7 +157,7 @@ public class FORMATTER {
 					}
 					String filePath = FilenameNormalization.normalize("stdin.as");
 					String fileText = builder.toString();
-					String formattedText = formatFileText(filePath, fileText, problems.getProblems());
+					String formattedText = formatFileText(filePath, fileText, problemQuery.getProblems());
 					if (!fileText.equals(formattedText)) {
 						if (listChangedFiles) {
 							System.out.println(filePath);
@@ -170,7 +170,7 @@ public class FORMATTER {
 					for (File inputFile : inputFiles) {
 						String filePath = FilenameNormalization.normalize(inputFile.getAbsolutePath());
 						String fileText = FileUtils.readFileToString(inputFile, "utf8");
-						String formattedText = formatFileText(filePath, fileText, problems.getProblems());
+						String formattedText = formatFileText(filePath, fileText, problemQuery.getProblems());
 						if (!fileText.equals(formattedText)) {
 							if (listChangedFiles) {
 								System.out.println(filePath);
@@ -184,20 +184,22 @@ public class FORMATTER {
 						}
 					}
 				}
-			} else if (problems.hasFilteredProblems()) {
+			} else if (problemQuery.hasFilteredProblems()) {
 				exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
 			} else {
 				exitCode = ExitCode.PRINT_HELP;
 			}
 		} catch (Exception e) {
-			problems.add(new UnexpectedExceptionProblem(e));
+			problemQuery.add(new UnexpectedExceptionProblem(e));
 			System.err.println(e.getMessage());
 			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 		} finally {
-			if (problems.hasFilteredProblems()) {
-				final ProblemFormatter formatter = new WorkspaceProblemFormatter(new Workspace());
+			if (problemQuery.hasFilteredProblems()) {
+				final Workspace workspace = new Workspace();
+				final CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer();
+				final ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer);
 				final ProblemPrinter printer = new ProblemPrinter(formatter);
-				printer.printProblems(problems.getFilteredProblems());
+				printer.printProblems(problemQuery.getFilteredProblems());
 			}
 		}
 		return exitCode.getCode();
