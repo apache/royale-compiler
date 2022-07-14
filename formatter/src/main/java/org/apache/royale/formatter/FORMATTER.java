@@ -41,6 +41,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
@@ -169,7 +170,8 @@ public class FORMATTER {
 				} else {
 					for (File inputFile : inputFiles) {
 						String filePath = FilenameNormalization.normalize(inputFile.getAbsolutePath());
-						String fileText = FileUtils.readFileToString(inputFile, "utf8");
+						FileSpecification fileSpec = new FileSpecification(filePath);
+						String fileText = IOUtils.toString(fileSpec.createReader());
 						String formattedText = formatFileText(filePath, fileText, problemQuery.getProblems());
 						if (!fileText.equals(formattedText)) {
 							if (listChangedFiles) {
@@ -206,8 +208,9 @@ public class FORMATTER {
 	}
 
 	public String formatFile(File file, Collection<ICompilerProblem> problems) throws IOException {
-		String fileText = FileUtils.readFileToString(file, "utf8");
-		String filePath = file.getAbsolutePath();
+		String filePath = FilenameNormalization.normalize(file.getAbsolutePath());
+		FileSpecification fileSpec = new FileSpecification(filePath);
+		String fileText = IOUtils.toString(fileSpec.createReader());
 		return formatFileText(filePath, fileText, problems);
 	}
 
