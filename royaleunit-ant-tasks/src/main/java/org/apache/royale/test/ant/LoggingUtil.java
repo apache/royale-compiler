@@ -32,4 +32,17 @@ public class LoggingUtil
             System.out.println(message);
         }
     }
+    
+    public static void error(String message)
+    {
+        error(message, false);
+    }
+    
+    public static void error(String message, boolean force)
+    {
+        if(VERBOSE || force)
+        {
+            System.err.println(message);
+        }
+    }
 }
