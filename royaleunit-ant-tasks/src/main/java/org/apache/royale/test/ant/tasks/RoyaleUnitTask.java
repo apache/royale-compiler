@@ -151,11 +151,6 @@ public class RoyaleUnitTask extends Task implements DynamicElement, DynamicAttri
         configuration.setCommand(executableFilePath);
     }
 
-    public void setCommandArgs(String[] customArgs)
-    {
-        configuration.setCommandArgs(customArgs);
-    }
-
     public void setHeadless(boolean headless)
     {
         configuration.setHeadless(headless);
@@ -225,29 +220,35 @@ public class RoyaleUnitTask extends Task implements DynamicElement, DynamicAttri
         }
     }
 
-	private String[] parseCommandArgs(String combined)
+    public void setDynamicAttribute(String arg0, String arg1) throws BuildException
     {
-		List<String> result = new ArrayList<String>();
-		Matcher matcher = COMMAND_ARGS_PATTERN.matcher(combined);
-		while (matcher.find())
-    {
-			String option = matcher.group();
-			result.add(option);
-		}
-        return result.toArray(new String[0]);
-	}
-
-    public void setDynamicAttribute(String arg0, String arg1)
-           throws BuildException {
-       if("commandargs".equals(arg0))
-       {
-            String[] commandArgs = parseCommandArgs(arg1);
-            configuration.setCommandArgs(commandArgs);
-       }
-       else
-       {	
+        if("commandargs".equals(arg0))
+        {
+            if (arg1.length() > 0)
+            {
+                String[] commandArgs = parseCommandArgs(arg1);
+                configuration.setCommandArgs(commandArgs);
+            }
+            else
+            {
+                configuration.setCommandArgs(null);
+            }
+        }
+        else
+        {	
             throw new BuildException( "The <royaleUnit> type doesn't support the " + arg0 + " attribute");
-       }
-   }
+        }
+    }
 
+    private String[] parseCommandArgs(String combined)
+    {
+        List<String> result = new ArrayList<String>();
+        Matcher matcher = COMMAND_ARGS_PATTERN.matcher(combined);
+        while (matcher.find())
+        {
+            String option = matcher.group();
+            result.add(option);
+        }
+        return result.toArray(new String[0]);
+    }
 }
