@@ -71,7 +71,7 @@
 
     <target name="swf" depends="sdk, javadoc, tests" description="Builds SWF compiler, builds Royale Javadoc, and runs SWF compiler tests."/>
 
-    <target name="main" depends="swf, jx, oem, debugger, formatter, anttasks, royaleunit.anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
+    <target name="main" depends="swf, jx, oem, debugger, formatter, linter, anttasks, royaleunit.anttasks" description="Builds Royale SWF compiler, then Royale JS Transpiler"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds Royale JS Transpiler" />
     
@@ -103,6 +103,10 @@
 
     <target name="formatter" description="Builds formatter JAR">
         <ant dir="formatter" target="main"/>
+    </target>
+
+    <target name="linter" description="Builds linter JAR">
+        <ant dir="linter" target="main"/>
     </target>
     
     <target name="compiler.jx" description="Builds Royale JS Transpiler.">
@@ -147,6 +151,7 @@
         <ant dir="royaleunit-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
         <ant dir="formatter" target="clean"/>
+        <ant dir="linter" target="clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
@@ -177,6 +182,7 @@
         <ant dir="royaleunit-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
         <ant dir="formatter" target="clean"/>
+        <ant dir="linter" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
         <!-- remove legacy folders if they exist -->
@@ -296,6 +302,9 @@
         
         <!-- formatter -->
         <antcall target="stage-formatter"/>
+        
+        <!-- linter -->
+        <antcall target="stage-linter"/>
         
         <!-- flex-compiler-oem and fdb -->
         <antcall target="stage-fb-integration"/>
@@ -455,6 +464,24 @@
     <target name="stage-formatter">
         <copy todir="${staging-dir}/formatter" includeEmptyDirs="false">
             <fileset dir="${basedir}/formatter">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="stage-linter">
+        <copy todir="${staging-dir}/linter" includeEmptyDirs="false">
+            <fileset dir="${basedir}/linter">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />

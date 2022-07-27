@@ -107,6 +107,7 @@
     <module>swfutils</module>
     <module>debugger</module>
     <module>formatter</module>
+    <module>linter</module>
     <module>flex-compiler-oem</module>
     <module>royale-ant-tasks</module>
     <module>royaleunit-ant-tasks</module>
