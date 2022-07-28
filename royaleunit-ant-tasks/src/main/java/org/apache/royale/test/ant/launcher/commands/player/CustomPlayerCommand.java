@@ -20,17 +20,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
+import org.apache.royale.test.ant.LoggingUtil;
+import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Execute;
-import org.apache.royale.test.ant.LoggingUtil;
 
-public class CustomPlayerCommand implements PlayerCommand
+public class CustomPlayerCommand implements ProcessCommand
 {
     private DefaultPlayerCommand proxiedCommand;
     private File executable;
     private String[] executableArgs;
 
-    public PlayerCommand getProxiedCommand()
+    public ProcessCommand getProxiedCommand()
     {
         return proxiedCommand;
     }

@@ -18,20 +18,40 @@ package org.apache.royale.test.ant.launcher.contexts;
 
 import java.io.IOException;
 
+import org.apache.royale.test.ant.launcher.commands.playwright.PlaywrightCommand;
 import org.apache.tools.ant.Project;
 
-/**
- * Basis for executing a test run command.
- */
-public interface ExecutionContext
+import com.microsoft.playwright.Playwright;
+
+public class DefaultPlaywrightContext implements PlaywrightExecutionContext
 {
-    public void setProject(Project project);
+    private PlaywrightCommand command;
     
-    /**
-     * Starts the execution context and any work associated with the individual
-     * implementations.
-     * 
-     * @throws IOException
-     */
-    public void start() throws IOException;
+    @SuppressWarnings("unused")
+    private Project project;
+    
+    public void setProject(Project project)
+    {
+        this.project = project;
+    }
+
+    public void setCommand(PlaywrightCommand command)
+    {
+        this.command = command;
+    }
+
+    public void start() throws IOException
+    {
+        //prep anything the command needs to run
+        command.prepare();
+    }
+
+    public void stop(Playwright playwright) throws IOException
+    {
+        //destroy the playwright instance, if it exists
+        if(playwright != null)
+        {
+			playwright.close();
+        }
+    }
 }

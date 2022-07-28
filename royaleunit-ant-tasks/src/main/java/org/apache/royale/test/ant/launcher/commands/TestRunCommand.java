@@ -14,11 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.royale.test.ant.launcher.commands.player;
+package org.apache.royale.test.ant.launcher.commands;
 
-import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
+import java.io.File;
 
-@Deprecated
-public interface PlayerCommand extends ProcessCommand
+import org.apache.tools.ant.Project;
+
+/**
+ * Class that has its own handle to a {@link Project} and can setup context for
+ * using the project
+ */
+public interface TestRunCommand
 {
+    public void setProject(Project project);
+    public void setEnvironment(String[] variables);
+    public void setUrl(String url);
+    public void setSwf(File swf);
+    public void prepare();
 }

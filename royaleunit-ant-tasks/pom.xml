@@ -39,7 +39,7 @@
           <archive>
             <manifestEntries>
               <!-- These paths are all defined the way the layout will be in the distribution -->
-              <Class-Path>dom4j.jar java-websocket.jar slf4j-api.jar</Class-Path>
+              <Class-Path>royaleunit/dom4j.jar royaleunit/java-websocket.jar royaleunit/slf4j-api.jar royaleunit/playwright.jar royaleunit/driver.jar royaleunit/driver-bundle.jar royaleunit/gson.jar</Class-Path>
             </manifestEntries>
           </archive>
         </configuration>
@@ -77,6 +77,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.25</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <version>1.23.0</version>
     </dependency>
   </dependencies>
 

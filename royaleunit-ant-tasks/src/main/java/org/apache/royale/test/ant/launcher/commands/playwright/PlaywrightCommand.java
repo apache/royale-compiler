@@ -14,11 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.royale.test.ant.launcher.commands.player;
+package org.apache.royale.test.ant.launcher.commands.playwright;
 
-import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
+import java.io.IOException;
 
-@Deprecated
-public interface PlayerCommand extends ProcessCommand
+import org.apache.royale.test.ant.launcher.commands.TestRunCommand;
+import org.apache.tools.ant.Project;
+
+import com.microsoft.playwright.Playwright;
+
+/**
+ * Class used to abstract {@link Playwright} that has its own handle to a {@link Project}
+ * and can setup context for using the project
+ */
+public interface PlaywrightCommand extends TestRunCommand
 {
+    public void setBrowser(String browser);
+    public Playwright launch() throws IOException;
 }

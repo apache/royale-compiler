@@ -47,7 +47,7 @@
   <!-- Options for <javac> tasks -->
   <property name="javac.debug" value="true"/>
   <property name="javac.deprecation" value="false"/>
-  <property name="javac.src" value="1.6"/>
+  <property name="javac.src" value="1.8"/>
 
   <!-- JAR manifest entries -->
   <property name="manifest.sealed" value="false"/>
@@ -112,7 +112,7 @@
         <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
         <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
         <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-        <attribute name="Class-Path" value="dom4j.jar java-websocket.jar slf4j-api.jar"/>
+        <attribute name="Class-Path" value="royaleunit/dom4j.jar royaleunit/java-websocket.jar royaleunit/slf4j-api.jar royaleunit/gson.jar royaleunit/driver.jar royaleunit/driver-bundle.jar royaleunit/playwright.jar"/>
       </manifest>
       <fileset dir="${royaleunittasks}/src/main/resources" includes="royaleUnitTasks.tasks"/>
       <fileset dir="${royaleunittasks}/src/main/resources" includes="TestRunner.template"/>

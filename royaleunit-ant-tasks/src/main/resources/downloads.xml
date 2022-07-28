@@ -80,10 +80,60 @@
       <param name="src.folder" value="dom4j/dom4j/${dom4j.version}"/>
       <param name="src.filename" value="dom4j-${dom4j.version}.jar"/>
       <param name="src.checksum" value="4d8f51d3fe3900efc6e395be48030d6d"/>
-      <param name="dest.folder" value=""/>
+      <param name="dest.folder" value="royaleunit"/>
       <param name="dest.filename" value="${dom4j.name}.jar"/>
       <param name="license.use.url" value="https://raw.githubusercontent.com/dom4j/dom4j/master/LICENSE"/>
       <param name="license.cacheName" value="dom4j-LICENSE.txt"/>
+    </antcall>
+
+    <!--  Playwright -->
+    <property name="gson.name" value="gson"/>
+    <property name="gson.version" value="2.9.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${gson.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="com/google/code/gson/gson/${gson.version}"/>
+      <param name="src.filename" value="gson-${gson.version}.jar"/>
+      <param name="src.checksum" value="53fa3e6753e90d931d62cb89580fde2f"/>
+      <param name="dest.folder" value="royaleunit"/>
+      <param name="dest.filename" value="${gson.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/Google/gson/master/LICENSE"/>
+      <param name="license.cacheName" value="${gson.name}-LICENSE.txt"/>
+    </antcall>
+
+    <!--  Playwright -->
+    <property name="playwright.name" value="playwright"/>
+    <property name="playwright.version" value="1.23.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${playwright.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="com/microsoft/playwright/playwright/${playwright.version}"/>
+      <param name="src.filename" value="playwright-${playwright.version}.jar"/>
+      <param name="src.checksum" value="9e6ef31572b5ac7e21ff7937ce1c1a82"/>
+      <param name="dest.folder" value="royaleunit"/>
+      <param name="dest.filename" value="${playwright.name}.jar"/>
+      <param name="license.use.url" value="https://raw.githubusercontent.com/Microsoft/playwright-java/main/LICENSE"/>
+      <param name="license.cacheName" value="${playwright.name}-LICENSE.txt"/>
+    </antcall>
+    <property name="playwrightdriver.name" value="driver"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${playwrightdriver.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="com/microsoft/playwright/driver/${playwright.version}"/>
+      <param name="src.filename" value="driver-${playwright.version}.jar"/>
+      <param name="src.checksum" value="1d433a1eee72d15f96fbffc2b400813c"/>
+      <param name="dest.folder" value="royaleunit"/>
+      <param name="dest.filename" value="${playwrightdriver.name}.jar"/>
+    </antcall>
+    <property name="playwrightdriverbundle.name" value="driver-bundle"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${playwrightdriverbundle.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="com/microsoft/playwright/driver-bundle/${playwright.version}"/>
+      <param name="src.filename" value="driver-bundle-${playwright.version}.jar"/>
+      <param name="src.checksum" value="080af38649fb1dca134c3c459bb78eb9"/>
+      <param name="dest.folder" value="royaleunit"/>
+      <param name="dest.filename" value="${playwrightdriverbundle.name}.jar"/>
     </antcall>
 
     <!--  Java-WebSocket -->
@@ -95,7 +145,7 @@
       <param name="src.folder" value="org/java-websocket/Java-WebSocket/${javawebsocket.version}"/>
       <param name="src.filename" value="Java-WebSocket-${javawebsocket.version}.jar"/>
       <param name="src.checksum" value="59c1134b8c50ace9e074e9f1d5da4aaa"/>
-      <param name="dest.folder" value=""/>
+      <param name="dest.folder" value="royaleunit"/>
       <param name="dest.filename" value="${javawebsocket.name}.jar"/>
       <param name="license.use.url" value="https://raw.githubusercontent.com/TooTallNate/Java-WebSocket/master/LICENSE"/>
       <param name="license.cacheName" value="${javawebsocket.name}-LICENSE.txt"/>
@@ -110,7 +160,7 @@
       <param name="src.folder" value="org/slf4j/slf4j-api/${slf4j.version}"/>
       <param name="src.filename" value="slf4j-api-${slf4j.version}.jar"/>
       <param name="src.checksum" value="caafe376afb7086dcbee79f780394ca3"/>
-      <param name="dest.folder" value=""/>
+      <param name="dest.folder" value="royaleunit"/>
       <param name="dest.filename" value="${slf4j.name}.jar"/>
       <param name="license.use.url" value="https://raw.githubusercontent.com/qos-ch/slf4j/master/LICENSE.txt"/>
       <param name="license.cacheName" value="${slf4j.name}-LICENSE.txt"/>

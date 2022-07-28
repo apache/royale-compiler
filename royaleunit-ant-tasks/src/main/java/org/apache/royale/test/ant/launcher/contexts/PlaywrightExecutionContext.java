@@ -14,11 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.royale.test.ant.launcher.commands.player;
+package org.apache.royale.test.ant.launcher.contexts;
 
-import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
+import java.io.IOException;
 
-@Deprecated
-public interface PlayerCommand extends ProcessCommand
+import org.apache.royale.test.ant.launcher.commands.playwright.PlaywrightCommand;
+
+import com.microsoft.playwright.Playwright;
+
+/**
+ * Basis for executing a Playwright command.
+ */
+public interface PlaywrightExecutionContext extends ExecutionContext
 {
+    public void setCommand(PlaywrightCommand command);
+
+    /**
+     * Stops the execution context and manages the Playwright instnace as well as any work associated
+     * with the individual implementations.
+     * 
+     * @param playwright
+     * @throws IOException
+     */
+    public void stop(Playwright playwright) throws IOException;
 }

@@ -14,11 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.royale.test.ant.launcher.commands.player;
+package org.apache.royale.test.ant.launcher.contexts;
+
+import java.io.IOException;
 
 import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
+import org.apache.tools.ant.Project;
 
-@Deprecated
-public interface PlayerCommand extends ProcessCommand
+public class DefaultProcessContext implements ProcessExecutionContext
 {
+    private ProcessCommand command;
+    
+    @SuppressWarnings("unused")
+    private Project project;
+    
+    public void setProject(Project project)
+    {
+        this.project = project;
+    }
+
+    public void setCommand(ProcessCommand command)
+    {
+        this.command = command;
+    }
+
+    public void start() throws IOException
+    {
+        //prep anything the command needs to run
+        command.prepare();
+    }
+
+    public void stop(Process process) throws IOException
+    {
+        //destroy the process related to the runtime, if it exists
+        if(process != null)
+        {
+            process.destroy();
+        }
+    }
 }

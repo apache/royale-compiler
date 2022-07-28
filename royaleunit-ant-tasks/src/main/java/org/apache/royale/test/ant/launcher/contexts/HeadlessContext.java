@@ -23,15 +23,15 @@ import org.apache.royale.test.ant.LoggingUtil;
 import org.apache.royale.test.ant.launcher.commands.headless.XvncException;
 import org.apache.royale.test.ant.launcher.commands.headless.XvncStartCommand;
 import org.apache.royale.test.ant.launcher.commands.headless.XvncStopCommand;
-import org.apache.royale.test.ant.launcher.commands.player.PlayerCommand;
+import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
 
 /**
  * Context used to wrap a call to the player command in a start and stop of a vncserver.
  * All vncserver commands are blocking.
  */
-public class HeadlessContext implements ExecutionContext
+public class HeadlessContext implements ProcessExecutionContext
 {
-    private PlayerCommand playerCommand;
+    private ProcessCommand playerCommand;
     private int startDisplay;
     private int finalDisplay;
     private Project project;
@@ -46,7 +46,7 @@ public class HeadlessContext implements ExecutionContext
         this.project = project;
     }
     
-    public void setCommand(PlayerCommand command)
+    public void setCommand(ProcessCommand command)
     {
         this.playerCommand = command;
     }

@@ -17,6 +17,9 @@
 package org.apache.royale.test.ant.launcher.contexts;
 
 import org.apache.royale.test.ant.launcher.OperatingSystem;
+import org.apache.royale.test.ant.launcher.commands.TestRunCommand;
+import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
+import org.apache.royale.test.ant.launcher.commands.playwright.PlaywrightCommand;
 
 public class ExecutionContextFactory
 {
@@ -41,8 +44,50 @@ public class ExecutionContextFactory
         }
         else
         {
-            context = new DefaultContext();
+            context = new DefaultProcessContext();
         }
+        
+        return context;
+    }
+
+    /**
+     * Used to generate new instances of an execution context based on the test
+     * run command, the OS, and whether the build should run headlessly.
+     * 
+     * @param os Current OS.
+     * @param headless Should the build run headlessly.
+     * @param display The vnc display number to use if headless
+     * @param command The test run command the context is for
+     * 
+     * @return
+     */
+    public static ExecutionContext createContext(TestRunCommand command,
+        OperatingSystem os, boolean headless, int display)
+    {
+        ExecutionContext context = null;
+
+        if (command instanceof PlaywrightCommand)
+        {
+            PlaywrightExecutionContext playwrightContext = new DefaultPlaywrightContext();
+            playwrightContext.setCommand((PlaywrightCommand)command);
+            context = playwrightContext;
+        }
+        else
+        {
+            ProcessExecutionContext processContext = null;
+            boolean trulyHeadless = headless && (os == OperatingSystem.LINUX);
+            if(trulyHeadless)
+            {
+                processContext = new HeadlessContext(display); 
+            }
+            else
+            {
+                processContext = new DefaultProcessContext();
+            }
+            processContext.setCommand((ProcessCommand)command);
+            context = processContext;
+        }
+        
         
         return context;
     }

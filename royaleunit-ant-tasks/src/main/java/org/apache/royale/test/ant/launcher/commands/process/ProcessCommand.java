@@ -14,11 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.royale.test.ant.launcher.commands.player;
+package org.apache.royale.test.ant.launcher.commands.process;
 
-import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
+import java.io.File;
+import java.io.IOException;
 
-@Deprecated
-public interface PlayerCommand extends ProcessCommand
+import org.apache.royale.test.ant.launcher.commands.TestRunCommand;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Execute;
+
+/**
+ * Class used to abstract an extension of {@link Execute} that has its own
+ * handle to a {@link Project} and can setup context for using the project
+ */
+public interface ProcessCommand extends TestRunCommand
 {
+    public File getFileToExecute();
+    public Process launch() throws IOException;
 }

@@ -20,9 +20,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.royale.test.ant.launcher.commands.Command;
+import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
 import org.apache.royale.test.ant.launcher.platforms.PlatformDefaults;
 
-public abstract class DefaultPlayerCommand extends Command implements PlayerCommand
+public abstract class DefaultPlayerCommand extends Command implements ProcessCommand
 {
     private String url;
     private File swf;

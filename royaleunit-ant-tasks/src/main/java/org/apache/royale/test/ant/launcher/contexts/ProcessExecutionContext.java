@@ -14,11 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.royale.test.ant.launcher.commands.player;
+package org.apache.royale.test.ant.launcher.contexts;
+
+import java.io.IOException;
 
 import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
 
-@Deprecated
-public interface PlayerCommand extends ProcessCommand
+/**
+ * Basis for executing a process command.
+ */
+public interface ProcessExecutionContext extends ExecutionContext
 {
+    public void setCommand(ProcessCommand command);
+
+    /**
+     * Stops the execution context and manages the Process as well as any work
+     * associated with the individual implementations.
+     * 
+     * @param process
+     * @throws IOException
+     */
+    public void stop(Process process) throws IOException;
 }

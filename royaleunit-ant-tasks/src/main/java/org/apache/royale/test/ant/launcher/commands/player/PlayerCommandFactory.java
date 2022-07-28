@@ -19,6 +19,7 @@ package org.apache.royale.test.ant.launcher.commands.player;
 import java.io.File;
 
 import org.apache.royale.test.ant.launcher.OperatingSystem;
+import org.apache.royale.test.ant.launcher.commands.process.ProcessCommand;
 import org.apache.royale.test.ant.launcher.platforms.LinuxDefaults;
 import org.apache.royale.test.ant.launcher.platforms.MacOSXDefaults;
 import org.apache.royale.test.ant.launcher.platforms.WindowsDefaults;
@@ -35,9 +36,9 @@ public class PlayerCommandFactory
      * @param localTrusted
      * @return Desired player command with platform defaults possibly wrapped in a custom command
      */
-    public static PlayerCommand createPlayer(OperatingSystem os, String player, File customCommand, String[] customCommandArgs, boolean localTrusted)
+    public static ProcessCommand createPlayer(OperatingSystem os, String player, File customCommand, String[] customCommandArgs, boolean localTrusted)
     {
-        PlayerCommand newInstance = null;
+        ProcessCommand newInstance = null;
 
         DefaultPlayerCommand defaultInstance = null;
         
