@@ -24,13 +24,13 @@ import java.util.Collection;
 import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.formatter.FORMATTER;
+import org.apache.royale.formatter.FormatterSettings;
 
 public abstract class BaseTokenFormatter {
-	protected FORMATTER formatter;
+	protected FormatterSettings settings;
 
-	protected BaseTokenFormatter(FORMATTER formatter) {
-		this.formatter = formatter;
+	protected BaseTokenFormatter(FormatterSettings settings) {
+		this.settings = settings;
 	}
 
 	protected boolean hasErrors(Collection<ICompilerProblem> problems) {
@@ -53,9 +53,9 @@ public abstract class BaseTokenFormatter {
 	}
 
 	protected String getIndent() {
-		if (formatter.insertSpaces) {
+		if (settings.insertSpaces) {
 			String result = "";
-			for (int j = 0; j < formatter.tabSize; j++) {
+			for (int j = 0; j < settings.tabSize; j++) {
 				result += " ";
 			}
 			return result;
@@ -71,8 +71,8 @@ public abstract class BaseTokenFormatter {
 	}
 
 	protected void appendNewLines(StringBuilder builder, int numRequiredNewLines) {
-		if (formatter.maxPreserveNewLines != 0) {
-			numRequiredNewLines = Math.min(formatter.maxPreserveNewLines, numRequiredNewLines);
+		if (settings.maxPreserveNewLines != 0) {
+			numRequiredNewLines = Math.min(settings.maxPreserveNewLines, numRequiredNewLines);
 		}
 		for (int j = 0; j < numRequiredNewLines; j++) {
 			builder.append('\n');

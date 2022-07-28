@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package org.apache.royale.formatter.internal;
+package org.apache.royale.formatter;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
-import org.apache.royale.formatter.FORMATTER;
 import org.apache.royale.formatter.config.Semicolons;
+import org.apache.royale.formatter.internal.BaseTokenFormatter;
 
 public class ASTokenFormatter extends BaseTokenFormatter {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
@@ -51,8 +51,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 	private static final String FORMATTER_TAG_OFF = "@formatter:off";
 	private static final String FORMATTER_TAG_ON = "@formatter:on";
 
-	public ASTokenFormatter(FORMATTER formatter) {
-		super(formatter);
+	public ASTokenFormatter(FormatterSettings settings) {
+		super(settings);
 	}
 
 	private int indent;
@@ -104,7 +104,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			problems.addAll(tokenizer.getTokenizationProblems());
 		}
 
-		if (!formatter.ignoreProblems && hasErrors(problems)) {
+		if (!settings.ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -142,7 +142,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			problems.addAll(parser.getSyntaxProblems());
 		}
 
-		if (!formatter.ignoreProblems && hasErrors(problems)) {
+		if (!settings.ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -229,7 +229,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						}
 						boolean oneLineBlock = prevToken != null && prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
 								&& nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-						if (oneLineBlock && formatter.collapseEmptyBlocks) {
+						if (oneLineBlock && settings.collapseEmptyBlocks) {
 							newLinesInExtra = 0;
 						}
 						numRequiredNewLines = Math.max(numRequiredNewLines, newLinesInExtra);
@@ -291,11 +291,11 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							}
 							boolean oneLineBlock = nextToken != null
 									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-							boolean needsNewLine = formatter.placeOpenBraceOnNewLine && (!formatter.collapseEmptyBlocks || !oneLineBlock);
+							boolean needsNewLine = settings.placeOpenBraceOnNewLine && (!settings.collapseEmptyBlocks || !oneLineBlock);
 							if (needsNewLine) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 							} else {
-								if (oneLineBlock && formatter.collapseEmptyBlocks) {
+								if (oneLineBlock && settings.collapseEmptyBlocks) {
 									numRequiredNewLines = 0;
 								}
 								requiredSpace = true;
@@ -315,7 +315,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							if (stackItem.blockDepth <= 1) {
 								boolean oneLineBlock = prevToken != null
 										&& prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN;
-								if (!formatter.collapseEmptyBlocks || !oneLineBlock) {
+								if (!settings.collapseEmptyBlocks || !oneLineBlock) {
 									indent = decreaseIndent(indent);
 								}
 								if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
@@ -402,7 +402,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_BITWISE_XOR_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
-						if (formatter.insertSpaceBeforeAndAfterBinaryOperators) {
+						if (settings.insertSpaceBeforeAndAfterBinaryOperators) {
 							requiredSpace = true;
 						}
 						break;
@@ -410,7 +410,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_STAR: {
 						boolean isAnyType = checkTokenBeforeAnyType(prevTokenNotComment);
 						boolean isAnyVectorType = checkTokensForAnyVectorType(prevTokenNotComment, nextTokenNotComment);
-						if (!isAnyType && !isAnyVectorType && formatter.insertSpaceBeforeAndAfterBinaryOperators
+						if (!isAnyType && !isAnyVectorType && settings.insertSpaceBeforeAndAfterBinaryOperators
 								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
@@ -419,21 +419,21 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
 						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
-						if (!isUnary && formatter.insertSpaceBeforeAndAfterBinaryOperators) {
+						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators) {
 							requiredSpace = true;
 						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_ASSIGNMENT: {
 						inVarOrConstDeclaration = false;
-						if (formatter.insertSpaceBeforeAndAfterBinaryOperators) {
+						if (settings.insertSpaceBeforeAndAfterBinaryOperators) {
 							requiredSpace = true;
 						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_TERNARY: {
 						ternaryStack++;
-						if (formatter.insertSpaceBeforeAndAfterBinaryOperators) {
+						if (settings.insertSpaceBeforeAndAfterBinaryOperators) {
 							requiredSpace = true;
 						}
 						break;
@@ -509,7 +509,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					if (blockOpenPending) {
 						boolean oneLineBlock = nextToken != null
 								&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-						if (formatter.placeOpenBraceOnNewLine && (!formatter.collapseEmptyBlocks || !oneLineBlock)) {
+						if (settings.placeOpenBraceOnNewLine && (!settings.collapseEmptyBlocks || !oneLineBlock)) {
 							indent = increaseIndent(indent);
 						}
 					}
@@ -540,7 +540,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				switch (token.getType()) {
 					case ASTokenTypes.TOKEN_SEMICOLON: {
 						if (inControlFlowStatement && isInForStatement(blockStack)) {
-							if (formatter.insertSpaceAfterSemicolonInForStatements) {
+							if (settings.insertSpaceAfterSemicolonInForStatements) {
 								requiredSpace = true;
 							}
 							// else no space
@@ -582,8 +582,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							}
 							boolean oneLineBlock = nextToken != null
 									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-							if (!formatter.collapseEmptyBlocks || !oneLineBlock) {
-								if (!formatter.placeOpenBraceOnNewLine) {
+							if (!settings.collapseEmptyBlocks || !oneLineBlock) {
+								if (!settings.placeOpenBraceOnNewLine) {
 									indent = increaseIndent(indent);
 								}
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
@@ -683,7 +683,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_FUNCTION: {
 						blockStack.add(new BlockStackItem(token));
 						inFunctionDeclaration = true;
-						boolean skipSpace = !formatter.insertSpaceAfterFunctionKeywordForAnonymousFunctions
+						boolean skipSpace = !settings.insertSpaceAfterFunctionKeywordForAnonymousFunctions
 								&& (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_PAREN_OPEN);
 						if (!skipSpace) {
 							requiredSpace = true;
@@ -704,7 +704,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_WITH: {
 						inControlFlowStatement = true;
 						blockStack.add(new BlockStackItem(token));
-						if (formatter.insertSpaceAfterKeywordsInControlFlowStatements && !skipWhitespaceBeforeSemicolon) {
+						if (settings.insertSpaceAfterKeywordsInControlFlowStatements && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -712,7 +712,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_SWITCH: {
 						inControlFlowStatement = true;
 						blockStack.add(new SwitchBlockStackItem(token));
-						if (formatter.insertSpaceAfterKeywordsInControlFlowStatements && !skipWhitespaceBeforeSemicolon) {
+						if (settings.insertSpaceAfterKeywordsInControlFlowStatements && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -876,7 +876,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_BITWISE_XOR_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
-						if (formatter.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
+						if (settings.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -884,7 +884,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_STAR: {
 						boolean isAnyType = checkTokenBeforeAnyType(prevTokenNotComment);
 						boolean isAnyVectorType = checkTokensForAnyVectorType(prevTokenNotComment, nextTokenNotComment);
-						if (!isAnyType && !isAnyVectorType && formatter.insertSpaceBeforeAndAfterBinaryOperators
+						if (!isAnyType && !isAnyVectorType && settings.insertSpaceBeforeAndAfterBinaryOperators
 								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
@@ -893,7 +893,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
 						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
-						if (!isUnary && formatter.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
+						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -902,7 +902,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						if (varOrConstChainLevel == blockStack.size()) {
 							inVarOrConstDeclaration = true;
 						}
-						if (formatter.insertSpaceAfterCommaDelimiter && !skipWhitespaceBeforeSemicolon) {
+						if (settings.insertSpaceAfterCommaDelimiter && !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -1006,8 +1006,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					if (skipFormatting) {
 						return token.isImplicit() ? "" : token.getText();
 					}
-					boolean skipSemicolon = Semicolons.REMOVE.equals(formatter.semicolons)
-							|| (Semicolons.IGNORE.equals(formatter.semicolons) && token.isImplicit());
+					boolean skipSemicolon = Semicolons.REMOVE.equals(settings.semicolons)
+							|| (Semicolons.IGNORE.equals(settings.semicolons) && token.isImplicit());
 					if (!skipSemicolon) {
 						return token.getText();
 					}
@@ -1047,7 +1047,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				case MetadataTokenTypes.TOKEN_ATTR_OPERATOR_NS_QUALIFIER: {
 					if (needsComma) {
 						builder.append(",");
-						if (formatter.insertSpaceBetweenMetadataAttributes) {
+						if (settings.insertSpaceBetweenMetadataAttributes) {
 							builder.append(" ");
 						}
 					}
@@ -1066,7 +1066,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				case MetadataTokenTypes.TOKEN_STRING: {
 					if (needsComma) {
 						builder.append(",");
-						if (formatter.insertSpaceBetweenMetadataAttributes) {
+						if (settings.insertSpaceBetweenMetadataAttributes) {
 							builder.append(" ");
 						}
 					}
@@ -1088,7 +1088,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		comment = comment.substring(2).trim();
 		StringBuilder builder = new StringBuilder();
 		builder.append("//");
-		if (formatter.insertSpaceAtStartOfLineComment) {
+		if (settings.insertSpaceAtStartOfLineComment) {
 			builder.append(" ");
 		}
 		builder.append(comment);

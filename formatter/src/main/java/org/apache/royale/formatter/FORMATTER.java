@@ -49,8 +49,6 @@ import org.apache.royale.formatter.config.ConfigurationBuffer;
 import org.apache.royale.formatter.config.ConfigurationValue;
 import org.apache.royale.formatter.config.Configurator;
 import org.apache.royale.formatter.config.Semicolons;
-import org.apache.royale.formatter.internal.ASTokenFormatter;
-import org.apache.royale.formatter.internal.MXMLTokenFormatter;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**
@@ -199,11 +197,9 @@ public class FORMATTER {
 		filePath = FilenameNormalization.normalize(filePath);
 		String result = null;
 		if (filePath.endsWith(".mxml")) {
-			MXMLTokenFormatter mxmlFormatter = new MXMLTokenFormatter(this);
-			result = mxmlFormatter.format(filePath, text, problems);
+			result = formatMXMLTokens(filePath, text, problems);
 		} else {
-			ASTokenFormatter asFormatter = new ASTokenFormatter(this);
-			result = asFormatter.format(filePath, text, problems);
+			result = formatASTokens(filePath, text, problems);
 		}
 		if (insertFinalNewLine && result.charAt(result.length() - 1) != '\n') {
 			return result + '\n';
@@ -217,8 +213,7 @@ public class FORMATTER {
 
 	public String formatActionScriptText(String text, Collection<ICompilerProblem> problems) {
 		String filePath = FilenameNormalization.normalize("stdin.as");
-		ASTokenFormatter asFormatter = new ASTokenFormatter(this);
-		return asFormatter.format(filePath, text, problems);
+		return formatASTokens(filePath, text, problems);
 	}
 
 	public String formatActionScriptText(String text) {
@@ -227,12 +222,43 @@ public class FORMATTER {
 
 	public String formatMXMLText(String text, Collection<ICompilerProblem> problems) {
 		String filePath = FilenameNormalization.normalize("stdin.mxml");
-		MXMLTokenFormatter mxmlFormatter = new MXMLTokenFormatter(this);
-		return mxmlFormatter.format(filePath, text, problems);
+		return formatMXMLTokens(filePath, text, problems);
 	}
 
 	public String formatMXMLText(String text) {
 		return formatMXMLText(text, null);
+	}
+
+	private String formatASTokens(String filePath, String text, Collection<ICompilerProblem> problems) {
+		ASTokenFormatter asFormatter = new ASTokenFormatter(getFormatterSettings());
+		return asFormatter.format(filePath, text, problems);
+	}
+
+	private String formatMXMLTokens(String filePath, String text, Collection<ICompilerProblem> problems) {
+		MXMLTokenFormatter mxmlFormatter = new MXMLTokenFormatter(getFormatterSettings());
+		return mxmlFormatter.format(filePath, text, problems);
+	}
+
+	private FormatterSettings getFormatterSettings() {
+		FormatterSettings result = new FormatterSettings();
+		result.tabSize = tabSize;
+		result.insertSpaces = insertSpaces;
+		result.insertFinalNewLine = insertFinalNewLine;
+		result.placeOpenBraceOnNewLine = placeOpenBraceOnNewLine;
+		result.insertSpaceAfterSemicolonInForStatements = insertSpaceAfterSemicolonInForStatements;
+		result.insertSpaceAfterKeywordsInControlFlowStatements = insertSpaceAfterKeywordsInControlFlowStatements;
+		result.insertSpaceAfterFunctionKeywordForAnonymousFunctions = insertSpaceAfterFunctionKeywordForAnonymousFunctions;
+		result.insertSpaceBeforeAndAfterBinaryOperators = insertSpaceBeforeAndAfterBinaryOperators;
+		result.insertSpaceAfterCommaDelimiter = insertSpaceAfterCommaDelimiter;
+		result.insertSpaceBetweenMetadataAttributes = insertSpaceBetweenMetadataAttributes;
+		result.insertSpaceAtStartOfLineComment = insertSpaceAtStartOfLineComment;
+		result.maxPreserveNewLines = maxPreserveNewLines;
+		result.semicolons = semicolons;
+		result.ignoreProblems = ignoreProblems;
+		result.collapseEmptyBlocks = collapseEmptyBlocks;
+		result.mxmlAlignAttributes = mxmlAlignAttributes;
+		result.mxmlInsertNewLineBetweenAttributes = mxmlInsertNewLineBetweenAttributes;
+		return result;
 	}
 
 	/**

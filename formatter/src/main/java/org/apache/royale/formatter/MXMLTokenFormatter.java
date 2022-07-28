@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package org.apache.royale.formatter.internal;
+package org.apache.royale.formatter;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import org.apache.royale.compiler.parsing.IMXMLToken;
 import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
-import org.apache.royale.formatter.FORMATTER;
+import org.apache.royale.formatter.internal.BaseTokenFormatter;
 
 public class MXMLTokenFormatter extends BaseTokenFormatter {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
@@ -41,8 +41,8 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 	private static final String FORMATTER_TAG_OFF = "@formatter:off";
 	private static final String FORMATTER_TAG_ON = "@formatter:on";
 
-	public MXMLTokenFormatter(FORMATTER formatter) {
-		super(formatter);
+	public MXMLTokenFormatter(FormatterSettings settings) {
+		super(settings);
 	}
 
 	private int indent;
@@ -77,7 +77,7 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 			problems.addAll(mxmlTokenizer.getTokenizationProblems());
 		}
 
-		if (!formatter.ignoreProblems && hasErrors(problems)) {
+		if (!settings.ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 
@@ -302,7 +302,7 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 					break;
 				}
 				case MXMLTokenTypes.TOKEN_STRING: {
-					if (inOpenTag && formatter.mxmlInsertNewLineBetweenAttributes && nextToken != null
+					if (inOpenTag && settings.mxmlInsertNewLineBetweenAttributes && nextToken != null
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_TAG_END
 							&& nextToken.getType() != MXMLTokenTypes.TOKEN_EMPTY_TAG_END) {
 						numRequiredNewLines = Math.max(numRequiredNewLines, 1);
@@ -331,9 +331,9 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 	private String formatMXMLScriptElement(String filePath, int line, String text,
 			Collection<ICompilerProblem> problems) {
 		String indent = "\t";
-		if (formatter.insertSpaces) {
+		if (settings.insertSpaces) {
 			indent = "";
-			for (int i = 0; i < formatter.tabSize; i++) {
+			for (int i = 0; i < settings.tabSize; i++) {
 				indent += " ";
 			}
 		}
@@ -354,9 +354,9 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 		String cdataText = scriptMatcher.group(3);
 		String scriptText = scriptMatcher.group(4);
 		boolean requireCdata = cdataText != null || "Script".equals(scriptTagName);
-		ASTokenFormatter asFormatter = new ASTokenFormatter(formatter);
+		ASTokenFormatter asFormatter = new ASTokenFormatter(settings);
 		String formattedScriptText = asFormatter.format(filePath + "@Script[" + line + "]", scriptText, problems);
-		if (!formatter.ignoreProblems && hasErrors(problems)) {
+		if (!settings.ignoreProblems && hasErrors(problems)) {
 			return text;
 		}
 		if (formattedScriptText.length() > 0) {
@@ -443,14 +443,14 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 	}
 
 	private String getAttributeIndent(IMXMLToken openTagToken) {
-		if (!formatter.mxmlAlignAttributes) {
+		if (!settings.mxmlAlignAttributes) {
 			return getIndent();
 		}
 		int indentSize = openTagToken.getText().length() + 1;
 		String result = "";
-		while (indentSize >= formatter.tabSize) {
+		while (indentSize >= settings.tabSize) {
 			result += getIndent();
-			indentSize -= formatter.tabSize;
+			indentSize -= settings.tabSize;
 		}
 		for (int i = 0; i < indentSize; i++) {
 			result += " ";
