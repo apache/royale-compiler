@@ -408,7 +408,7 @@ public class FORMATTER {
 		}
 		StringBuilder builder = new StringBuilder();
 		Pattern scriptPattern = Pattern.compile(
-				"^<((?:mx|fx):(\\w+))>\\s*(<!\\[CDATA\\[)?((?:.|\\n)*?)(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:\\w+)>$");
+				"^<((?:mx|fx):(\\w+))>\\s*(<!\\[CDATA\\[)?((?:.|(?:\\r?\\n))*?)(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:\\w+)>$");
 		Matcher scriptMatcher = scriptPattern.matcher(text);
 		if (!scriptMatcher.matches()) {
 			return text;
