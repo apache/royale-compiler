@@ -694,8 +694,9 @@ public class FORMATTER {
 					builder.append(token.getText());
 				} else {
 					if (i == (tokens.size() - 1)) {
-						// if the last token is whitespace, include new lines
-						numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
+						// if the last token is whitespace, include at most one
+						// new line, but strip the rest
+						numRequiredNewLines = Math.min(1, Math.max(0, countNewLinesInExtra(token)));
 						appendNewLines(builder, numRequiredNewLines);
 						break;
 					}
@@ -1853,8 +1854,9 @@ public class FORMATTER {
 					builder.append(token.getText());
 				} else {
 					if (i == (tokens.size() - 1)) {
-						// if the last token is whitespace, include new lines
-						numRequiredNewLines = Math.max(0, countNewLinesInExtra(token));
+						// if the last token is whitespace, include at most one
+						// new line, but strip the rest
+						numRequiredNewLines = Math.min(1, Math.max(0, countNewLinesInExtra(token)));
 						appendNewLines(builder, numRequiredNewLines);
 						break;
 					}
@@ -1878,7 +1880,9 @@ public class FORMATTER {
 						builder.append(token.getText());
 					}
 					if (i == (tokens.size() - 1)) {
-						// if the last token is whitespace, append new lines
+						// if the last token is whitespace, include at most one
+						// new line, but strip the rest
+						numRequiredNewLines = Math.min(1, numRequiredNewLines);
 						appendNewLines(builder, numRequiredNewLines);
 					}
 				}
