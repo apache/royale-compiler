@@ -19,6 +19,7 @@ package org.apache.royale.test.ant.launcher.contexts;
 import java.io.IOException;
 
 import org.apache.royale.test.ant.launcher.commands.playwright.PlaywrightCommand;
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.Project;
 
 import com.microsoft.playwright.Playwright;
@@ -51,7 +52,11 @@ public class DefaultPlaywrightContext implements PlaywrightExecutionContext
         //destroy the playwright instance, if it exists
         if(playwright != null)
         {
-			playwright.close();
+            // setThreadContextLoader() was called in DefaultPlaywrightCommand,
+            // and this is the matching call to resetThreadContextLoader()
+            ((AntClassLoader)getClass().getClassLoader()).resetThreadContextLoader();
+
+            playwright.close();
         }
     }
 }

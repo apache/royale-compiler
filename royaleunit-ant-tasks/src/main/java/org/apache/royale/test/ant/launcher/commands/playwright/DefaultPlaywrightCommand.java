@@ -82,6 +82,8 @@ public class DefaultPlaywrightCommand implements PlaywrightCommand
     
     public void prepare()
     {
+        // must also call resetThreadContextLoader() after test run completes.
+        // that happens in stop() method of DefaultPlaywrightContext
         ((AntClassLoader)getClass().getClassLoader()).setThreadContextLoader();
 
         CreateOptions createOptions = new CreateOptions();
