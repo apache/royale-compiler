@@ -20,13 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 import java.util.function.Consumer;
 
 import org.apache.royale.test.ant.LoggingUtil;
-import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Execute;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
@@ -82,10 +79,6 @@ public class DefaultPlaywrightCommand implements PlaywrightCommand
     
     public void prepare()
     {
-        // must also call resetThreadContextLoader() after test run completes.
-        // that happens in stop() method of DefaultPlaywrightContext
-        ((AntClassLoader)getClass().getClassLoader()).setThreadContextLoader();
-
         CreateOptions createOptions = new CreateOptions();
         createOptions.setEnv(getEnvironmentMap());
         playwright = PlaywrightImpl.create(createOptions);

@@ -43,6 +43,9 @@ public class DefaultPlaywrightContext implements PlaywrightExecutionContext
 
     public void start() throws IOException
     {
+        // calls resetThreadContextLoader() in stop() after test run completes
+        ((AntClassLoader)getClass().getClassLoader()).setThreadContextLoader();
+       
         //prep anything the command needs to run
         command.prepare();
     }
@@ -52,8 +55,7 @@ public class DefaultPlaywrightContext implements PlaywrightExecutionContext
         //destroy the playwright instance, if it exists
         if(playwright != null)
         {
-            // setThreadContextLoader() was called in DefaultPlaywrightCommand,
-            // and this is the matching call to resetThreadContextLoader()
+            // setThreadContextLoader() was called in start()
             ((AntClassLoader)getClass().getClassLoader()).resetThreadContextLoader();
 
             playwright.close();
