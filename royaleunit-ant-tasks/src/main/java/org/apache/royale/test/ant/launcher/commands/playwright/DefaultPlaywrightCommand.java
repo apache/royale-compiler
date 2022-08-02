@@ -87,7 +87,7 @@ public class DefaultPlaywrightCommand implements PlaywrightCommand
         ((AntClassLoader)getClass().getClassLoader()).setThreadContextLoader();
 
         CreateOptions createOptions = new CreateOptions();
-        createOptions.setEnv(getJointEnvironment());
+        createOptions.setEnv(getEnvironmentMap());
         playwright = PlaywrightImpl.create(createOptions);
     }
     
@@ -150,30 +150,18 @@ public class DefaultPlaywrightCommand implements PlaywrightCommand
         environment = variables;
     }
 
-    /**
-     * Combine process environment variables and command's environment to emulate the default
-     * behavior of the Execute task.  Needed especially when user expects environment to be 
-     * available to custom command (e.g. - xvnc with player not on path).
-     */
     @SuppressWarnings("unchecked")
-    private Map<String,String> getJointEnvironment()
+    private Map<String,String> getEnvironmentMap()
     {
-        Map<String, String> jointEnvironment = new HashMap<String, String>();
-        Vector<String> executeProcEnvironment = Execute.getProcEnvironment();
-        String[] procEnvironment = executeProcEnvironment.toArray(new String[0]);
-        for (String envVar : procEnvironment)
-        {
-            String[] parts = envVar.split("=");
-            jointEnvironment.put(parts[0].trim(), parts.length > 1 ? parts[1].trim() : "");
-        }
+        Map<String, String> result = new HashMap<String, String>();
         if (environment != null)
         {
             for (String envVar : environment)
             {
                 String[] parts = envVar.split("=");
-                jointEnvironment.put(parts[0].trim(), parts.length > 1 ? parts[1].trim() : "");
+                result.put(parts[0].trim(), parts.length > 1 ? parts[1].trim() : "");
             }
         }
-        return jointEnvironment;
+        return result;
     }
 }
