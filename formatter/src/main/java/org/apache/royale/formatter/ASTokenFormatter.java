@@ -243,8 +243,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 									|| (!blockStack.isEmpty() && blockStack
 											.get(blockStack.size() - 1) instanceof ObjectLiteralBlockStackItem);
 							if (needsIndent) {
-								indentedStatement = true;
-								indent = increaseIndent(indent);
+								startIndentedStatement();
 							}
 						}
 					}
@@ -285,13 +284,10 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							}
 						}
 						if (blockOpenPending) {
-							if (indentedStatement) {
-								indentedStatement = false;
-								indent = decreaseIndent(indent);
-							}
 							boolean oneLineBlock = nextToken != null
 									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-							boolean needsNewLine = settings.placeOpenBraceOnNewLine && (!settings.collapseEmptyBlocks || !oneLineBlock);
+							boolean needsNewLine = settings.placeOpenBraceOnNewLine
+									&& (!settings.collapseEmptyBlocks || !oneLineBlock);
 							if (needsNewLine) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 							} else {
@@ -303,7 +299,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						} else {
 							// probably an object literal
 							blockStack.add(new ObjectLiteralBlockStackItem(token));
-							indent = increaseIndent(indent);
+							// we will indent, but after appending the token
 						}
 						requiredSpace = true;
 						break;
@@ -341,20 +337,20 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_SQUARE_CLOSE: {
 						if (!blockStack.isEmpty()) {
-							BlockStackItem item = blockStack.get(blockStack.size() - 1);
-							if (item.token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN) {
+							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+							if (stackItem.token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN) {
 								indent = decreaseIndent(indent);
-								blockStack.remove(item);
+								blockStack.remove(blockStack.size() - 1);
 							}
 						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_PAREN_CLOSE: {
 						if (!blockStack.isEmpty()) {
-							BlockStackItem item = blockStack.get(blockStack.size() - 1);
-							if (item.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
+							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+							if (stackItem.token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN) {
 								indent = decreaseIndent(indent);
-								blockStack.remove(item);
+								blockStack.remove(blockStack.size() - 1);
 							}
 						}
 						break;
@@ -477,10 +473,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						break;
 					}
 					case ASTokenTypes.TOKEN_SEMICOLON: {
-						if (indentedStatement) {
-							indentedStatement = false;
-							indent = decreaseIndent(indent);
-						}
+						endIndentedStatement();
 						inVarOrConstDeclaration = false;
 						varOrConstChainLevel = -1;
 						break;
@@ -574,11 +567,17 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						break;
 					}
 					case ASTokenTypes.TOKEN_BLOCK_OPEN: {
+						if (!blockStack.isEmpty()) {
+							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+							if (stackItem instanceof ObjectLiteralBlockStackItem) {
+								indent = increaseIndent(indent);
+							}
+						}
 						if (blockOpenPending) {
 							blockOpenPending = false;
 							if (!blockStack.isEmpty()) {
-								BlockStackItem item = blockStack.get(blockStack.size() - 1);
-								item.blockDepth++;
+								BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+								stackItem.blockDepth++;
 							}
 							boolean oneLineBlock = nextToken != null
 									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
@@ -593,12 +592,12 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_BLOCK_CLOSE: {
 						if (!blockStack.isEmpty()) {
-							BlockStackItem item = blockStack.get(blockStack.size() - 1);
-							item.blockDepth--;
-							if (item.blockDepth <= 0) {
+							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+							stackItem.blockDepth--;
+							if (stackItem.blockDepth <= 0) {
 								blockStack.remove(blockStack.size() - 1);
 							}
-							if (!(item instanceof ObjectLiteralBlockStackItem)
+							if (!(stackItem instanceof ObjectLiteralBlockStackItem)
 									&& (nextToken == null || (nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON
 											&& nextToken.getType() != ASTokenTypes.TOKEN_PAREN_CLOSE
 											&& nextToken.getType() != ASTokenTypes.TOKEN_COMMA
@@ -609,13 +608,14 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						}
 						break;
 					}
-					case ASTokenTypes.TOKEN_SQUARE_OPEN:
-						indent = increaseIndent(indent);
+					case ASTokenTypes.TOKEN_SQUARE_OPEN: {
 						blockStack.add(new BlockStackItem(token));
+						indent = increaseIndent(indent);
 						break;
+					}
 					case ASTokenTypes.TOKEN_PAREN_OPEN: {
-						indent = increaseIndent(indent);
 						blockStack.add(new BlockStackItem(token));
+						indent = increaseIndent(indent);
 						if (inControlFlowStatement) {
 							controlFlowParenStack++;
 						}
@@ -625,6 +625,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						if (inControlFlowStatement) {
 							controlFlowParenStack--;
 							if (controlFlowParenStack <= 0) {
+								endIndentedStatement();
 								inControlFlowStatement = false;
 								controlFlowParenStack = 0;
 								blockOpenPending = true;
@@ -637,8 +638,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 										&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
 										&& !skipWhitespaceBeforeSemicolon) {
 									indent = increaseIndent(indent);
-									BlockStackItem item = blockStack.get(blockStack.size() - 1);
-									item.braces = false;
+									BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+									stackItem.braces = false;
 									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 								}
 							}
@@ -703,8 +704,11 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_WHILE:
 					case ASTokenTypes.TOKEN_KEYWORD_WITH: {
 						inControlFlowStatement = true;
-						blockStack.add(new BlockStackItem(token));
-						if (settings.insertSpaceAfterKeywordsInControlFlowStatements && !skipWhitespaceBeforeSemicolon) {
+						BlockStackItem stackItem = new BlockStackItem(token);
+						stackItem.controlFlow = true;
+						blockStack.add(stackItem);
+						if (settings.insertSpaceAfterKeywordsInControlFlowStatements
+								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -712,7 +716,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_SWITCH: {
 						inControlFlowStatement = true;
 						blockStack.add(new SwitchBlockStackItem(token));
-						if (settings.insertSpaceAfterKeywordsInControlFlowStatements && !skipWhitespaceBeforeSemicolon) {
+						if (settings.insertSpaceAfterKeywordsInControlFlowStatements
+								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -893,7 +898,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
 						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
-						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolon) {
+						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators
+								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
 						}
 						break;
@@ -934,6 +940,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			if ((inPackageDeclaration || inClassDeclaration || inInterfaceDeclaration || inFunctionDeclaration)
 					&& nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN) {
 				blockOpenPending = true;
+				endIndentedStatement();
 				inPackageDeclaration = false;
 				inClassDeclaration = false;
 				inInterfaceDeclaration = false;
@@ -973,6 +980,129 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			}
 		}
 		return null;
+	}
+
+	private void startIndentedStatement() {
+		for (int i = blockStack.size() - 1; i >= 0; i--) {
+			BlockStackItem stackItem = blockStack.get(i);
+			if (inPackageDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE) {
+					if (!stackItem.indentedStatement) {
+						stackItem.indentedStatement = true;
+						indent = increaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inClassDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_CLASS) {
+					if (!stackItem.indentedStatement) {
+						stackItem.indentedStatement = true;
+						indent = increaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inInterfaceDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_INTERFACE) {
+					if (!stackItem.indentedStatement) {
+						stackItem.indentedStatement = true;
+						indent = increaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inFunctionDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_FUNCTION) {
+					if (!stackItem.indentedStatement) {
+						stackItem.indentedStatement = true;
+						indent = increaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inControlFlowStatement) {
+				if (stackItem.controlFlow) {
+					if (!stackItem.indentedStatement) {
+						stackItem.indentedStatement = true;
+						indent = increaseIndent(indent);
+					}
+					return;
+				}
+			} else if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_FUNCTION) {
+				if (!stackItem.indentedStatement) {
+					stackItem.indentedStatement = true;
+					indent = increaseIndent(indent);
+				}
+				return;
+			}
+		}
+		if (inPackageDeclaration || inClassDeclaration || inInterfaceDeclaration || inFunctionDeclaration
+				|| inControlFlowStatement) {
+			// this shouldn't happen
+			return;
+		}
+		if (!indentedStatement) {
+			indentedStatement = true;
+			indent = increaseIndent(indent);
+		}
+	}
+
+	private void endIndentedStatement() {
+		for (int i = blockStack.size() - 1; i >= 0; i--) {
+			BlockStackItem stackItem = blockStack.get(i);
+			if (inPackageDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE) {
+					if (stackItem.indentedStatement) {
+						stackItem.indentedStatement = false;
+						indent = decreaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inClassDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_CLASS) {
+					if (stackItem.indentedStatement) {
+						stackItem.indentedStatement = false;
+						indent = decreaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inInterfaceDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_INTERFACE) {
+					if (stackItem.indentedStatement) {
+						stackItem.indentedStatement = false;
+						indent = decreaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inFunctionDeclaration) {
+				if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_FUNCTION) {
+					if (stackItem.indentedStatement) {
+						stackItem.indentedStatement = false;
+						indent = decreaseIndent(indent);
+					}
+					return;
+				}
+			} else if (inControlFlowStatement) {
+				if (stackItem.controlFlow) {
+					if (stackItem.indentedStatement) {
+						stackItem.indentedStatement = false;
+						indent = decreaseIndent(indent);
+					}
+					return;
+				}
+			} else if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_FUNCTION) {
+				if (stackItem.indentedStatement) {
+					stackItem.indentedStatement = false;
+					indent = decreaseIndent(indent);
+				}
+				return;
+			}
+		}
+		if (inClassDeclaration || inInterfaceDeclaration || inFunctionDeclaration || inControlFlowStatement) {
+			// this shouldn't happen
+			return;
+		}
+		if (indentedStatement) {
+			indentedStatement = false;
+			indent = decreaseIndent(indent);
+		}
 	}
 
 	private String getTokenText(IASToken token, int indent, boolean skipFormatting) {
@@ -1211,8 +1341,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 
 	private boolean isInForStatement(List<BlockStackItem> blockStack) {
 		for (int i = blockStack.size() - 1; i >= 0; i--) {
-			BlockStackItem item = blockStack.get(i);
-			switch (item.token.getType()) {
+			BlockStackItem stackItem = blockStack.get(i);
+			switch (stackItem.token.getType()) {
 				case ASTokenTypes.TOKEN_BLOCK_OPEN:
 				case ASTokenTypes.TOKEN_SQUARE_OPEN:
 				case ASTokenTypes.TOKEN_PAREN_OPEN: {
@@ -1310,6 +1440,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		public IASToken token;
 		public int blockDepth = 0;
 		public boolean braces = true;
+		public boolean indentedStatement = false;
+		public boolean controlFlow = false;
 	}
 
 	private static class ObjectLiteralBlockStackItem extends BlockStackItem {
@@ -1321,6 +1453,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 	private static class SwitchBlockStackItem extends BlockStackItem {
 		public SwitchBlockStackItem(IASToken token) {
 			super(token);
+			controlFlow = true;
 		}
 
 		public int clauseCount = 0;

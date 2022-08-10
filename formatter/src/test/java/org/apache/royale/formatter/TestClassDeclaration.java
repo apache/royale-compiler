@@ -134,4 +134,120 @@ public class TestClassDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testExtends() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"class MyClass extends MyOtherClass {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass extends MyOtherClass\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testExtendsOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"class MyClass\n" +
+			"\textends MyOtherClass {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass\n" +
+				"\textends MyOtherClass\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testImplements() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"class MyClass implements MyInterface {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass implements MyInterface\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testImplementsMultiple() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"class MyClass implements MyInterface, MyOtherInterface {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass implements MyInterface, MyOtherInterface\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testExtendsAndImplementsOnMultipleLines() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"class MyClass\n" +
+			"\textends MyOtherClass\n" +
+			"\timplements MyInterface {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass\n" +
+				"\textends MyOtherClass\n" +
+				"\timplements MyInterface\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

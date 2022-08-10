@@ -187,4 +187,72 @@ public class TestInterfaceDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testExtends() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"interface MyInterface extends MyOtherInterface {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"interface MyInterface extends MyOtherInterface\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testExtendsOnNewLine() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"interface MyInterface\n" +
+			"\textends MyOtherInterface {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"interface MyInterface\n" +
+				"\textends MyOtherInterface\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testExtendsMultiple() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"interface MyInterface extends MyOtherInterface, MyOtherInterface2 {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"interface MyInterface extends MyOtherInterface, MyOtherInterface2\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

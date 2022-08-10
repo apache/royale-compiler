@@ -141,4 +141,95 @@ public class TestArrayLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testFunction() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"var array:Array = [\n" +
+			"\tfunction():void {\n" + 
+			"\t\tif (condition1\n" +
+			"\t\t\t&& condition2) {\n" + 
+			"\t\t\tstatement;\n" +
+			"\t\t}\n" +
+			"\t}\n" +
+			"];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array = [\n" +
+				"\t\tfunction():void\n" + 
+				"\t\t{\n" +
+				"\t\t\tif (condition1\n" +
+				"\t\t\t\t&& condition2)\n" +
+				"\t\t\t{\n" + 
+				"\t\t\t\tstatement;\n" +
+				"\t\t\t}\n" +
+				"\t\t}\n" +
+				"\t];",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testObjectLiteral() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"var array:Array = [\n" +
+			"\t{\n" + 
+			"\t\tvalue: 123.4\n" +
+			"\t}\n" +
+			"];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array = [\n" +
+				"\t\t{\n" + 
+				"\t\t\tvalue: 123.4\n" +
+				"\t\t}\n" +
+				"\t];",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNested() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"var array:Array = [\n" +
+			"\t[1, 2, 3],\n" +
+			"\t['one',\n" +
+			"\t\t'two', 'three'],\n" +
+			"\t[\n" +
+			"\t\t123.4,\n" +
+			"\t\t567.8\n" +
+			"\t]\n" +
+			"];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array = [\n" +
+				"\t\t[1, 2, 3],\n" +
+				"\t\t['one',\n" +
+				"\t\t\t'two', 'three'],\n" +
+				"\t\t[\n" +
+				"\t\t\t123.4,\n" +
+				"\t\t\t567.8\n" +
+				"\t\t]\n" +
+				"\t];",
+				// @formatter:on
+				result);
+	}
 }

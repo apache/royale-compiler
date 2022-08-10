@@ -340,4 +340,35 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testNested() {
+		FORMATTER formatter = new FORMATTER();
+		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		formatter.placeOpenBraceOnNewLine = true;
+		formatter.insertSpaces = false;
+		String result = formatter.formatActionScriptText(
+		// @formatter:off
+			"function myFunction(param:String):void\n" +
+			"{\n" +
+			"\tfunction myOtherFunction(param:Number):void\n" +
+			"\t{\n" +
+			"\t\tstatement;\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"function myFunction(param:String):void\n" +
+				"{\n" +
+				"\tfunction myOtherFunction(param:Number):void\n" +
+				"\t{\n" +
+				"\t\tstatement;\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }
