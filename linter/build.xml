@@ -53,7 +53,7 @@
     <!-- Options for <javac> tasks -->
     <property name="javac.debug" value="true"/>
     <property name="javac.deprecation" value="false"/>
-    <property name="linter.javac.src" value="1.8"/>
+    <property name="javac.src" value="1.8"/>
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
@@ -75,7 +75,7 @@
     <target name="compile">
         <mkdir dir="${linter}/target/classes"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${linter}/target/classes" includeAntRuntime="true" includes="**/*.java"
-            source="${linter.javac.src}" target="${linter.javac.src}">
+            source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${linter}/src/main/java"/>
             <classpath>

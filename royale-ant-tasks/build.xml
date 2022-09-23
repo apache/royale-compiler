@@ -54,7 +54,7 @@
     <!-- Options for <javac> tasks -->
     <property name="javac.debug" value="true"/>
     <property name="javac.deprecation" value="false"/>
-    <property name="javac.src" value="1.6"/>
+    <property name="javac.src" value="1.8"/>
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
