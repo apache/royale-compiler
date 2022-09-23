@@ -315,6 +315,9 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             if (!jarEntry.getName().endsWith("/"))
             {
                 File file = new File(outputDir, jarEntry.getName());
+              if (!file.toPath().normalize().startsWith(outputDir.toPath().normalize())) {
+                throw new IOException("Bad zip entry");
+              }
 
                 // Check if the parent directory exists. If not -> create it.
                 File dir = file.getParentFile();
