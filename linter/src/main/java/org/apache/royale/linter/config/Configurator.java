@@ -428,7 +428,7 @@ public class Configurator implements Cloneable
                                     cfgbuf,
                                     configFile,
                                     new File(configFile.getPath()).getParent(),
-                                    "royale-config",
+                                    "aslint-config",
                                     false))
                            {
                                success = false;
@@ -465,7 +465,7 @@ public class Configurator implements Cloneable
                     cfgbuf,
                     projectFile,
                     new File(project).getParent(),
-                    "royale-config",
+                    "aslint-config",
                     false))
             {
                 success = false;
