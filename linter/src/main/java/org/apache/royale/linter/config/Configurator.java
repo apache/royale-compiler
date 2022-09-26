@@ -359,6 +359,9 @@ public class Configurator implements Cloneable
             if (!loadConfig())
                 success = false;
             
+            if (!loadLocalConfig())
+                success = false;
+            
             // The command line needs to take precedence over all defaults and config files.
             // By simply re-merging the command line back on top,
             // we will get the behavior we want.
@@ -441,6 +444,34 @@ public class Configurator implements Cloneable
             success = false;
         }
 
+        return success;
+    }
+
+    /**
+     * Load project specific configuration. The configuration XML file is at the
+     * project root with naming convention of aslint-config.xml.
+     * 
+     * @return true if successful, false otherwise.
+     */
+    protected boolean loadLocalConfig()
+    {
+        boolean success = true;
+        
+        String project = "aslint-config.xml";
+        File projectFile = configurationPathResolver.resolve(project);
+        if (projectFile.exists())
+        {
+            if (!loadConfigFromFile(
+                    cfgbuf,
+                    projectFile,
+                    new File(project).getParent(),
+                    "royale-config",
+                    false))
+            {
+                success = false;
+            }
+        }
+        
         return success;
     }
 

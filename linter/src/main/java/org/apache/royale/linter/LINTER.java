@@ -214,10 +214,6 @@ public class LINTER {
 
 	private boolean configure(String[] args, ProblemQuery problems) {
 		try {
-			if (args.length == 0) {
-				System.out.println(getStartMessage());
-				return false;
-			}
 			Configurator configurator = new Configurator();
             ConfigurationPathResolver resolver = new ConfigurationPathResolver(System.getProperty("user.dir")); 
             configurator.setConfigurationPathResolver(resolver);
@@ -234,7 +230,7 @@ public class LINTER {
 
 			// // Print help if "-help" is present.
 			final List<ConfigurationValue> helpVar = configBuffer.getVar("help");
-			if (helpVar != null || args.length == 0) {
+			if (helpVar != null || (args.length == 0 && configuration.getFiles().size() == 0)) {
 				processHelp(helpVar);
 				return false;
 			}
