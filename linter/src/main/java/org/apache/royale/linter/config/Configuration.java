@@ -200,6 +200,30 @@ public class Configuration {
     }
 
     //
+    // 'recommended' option
+    //
+
+    private boolean recommended = false;
+
+    public boolean getRecommended() {
+        return recommended;
+    }
+
+    @Config
+    @Mapping("recommended")
+    public void setRecommended(ConfigurationValue cv, boolean b) {
+        this.recommended = b;
+        duplicateObjectKeys = recommended;
+        emptyStatement = recommended;
+        ifBoolean = recommended;
+        leadingZero = recommended;
+        sparseArray = recommended;
+        unsafeNegation = recommended;
+        validTypeof = recommended;
+        with = recommended;
+    }
+
+    //
     // 'ignore-parsing-problems' option
     //
 
