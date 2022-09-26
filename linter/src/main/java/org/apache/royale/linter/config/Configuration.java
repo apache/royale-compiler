@@ -715,6 +715,22 @@ public class Configuration {
     }
 
     //
+    // 'sparse-array' option
+    //
+
+    private boolean sparseArray = false;
+
+    public boolean getSparseArray() {
+        return sparseArray;
+    }
+
+    @Config
+    @Mapping("sparse-array")
+    public void setSparseArray(ConfigurationValue cv, boolean b) {
+        this.sparseArray = b;
+    }
+
+    //
     // 'static-constants' option
     //
 

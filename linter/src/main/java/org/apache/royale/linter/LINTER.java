@@ -79,6 +79,7 @@ import org.apache.royale.linter.rules.MissingTypeRule;
 import org.apache.royale.linter.rules.NumericLeadingZeroesRule;
 import org.apache.royale.linter.rules.OverrideContainsOnlySuperCallRule;
 import org.apache.royale.linter.rules.PackageNameRule;
+import org.apache.royale.linter.rules.SparseArrayRule;
 import org.apache.royale.linter.rules.StaticConstantsRule;
 import org.apache.royale.linter.rules.StrictEqualityRule;
 import org.apache.royale.linter.rules.StringEventNameRule;
@@ -346,6 +347,9 @@ public class LINTER {
 			}
 			if (configuration.getPackageName()) {
 				rules.add(new PackageNameRule());
+			}
+			if (configuration.getSparseArray()) {
+				rules.add(new SparseArrayRule());
 			}
 			if (configuration.getStaticConstants()) {
 				rules.add(new StaticConstantsRule());
