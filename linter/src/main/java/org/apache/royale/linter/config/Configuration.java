@@ -200,6 +200,22 @@ public class Configuration {
     }
 
     //
+    // 'skip-local-config-file' option
+    //
+
+    private boolean skipLocalConfigFile = false;
+
+    public boolean getSkipLocalConfigFile() {
+        return skipLocalConfigFile;
+    }
+
+    @Config
+    @Mapping("skip-local-config-file")
+    public void setSkipLocalConfigFile(ConfigurationValue cv, boolean b) {
+        this.skipLocalConfigFile = b;
+    }
+
+    //
     // 'recommended' option
     //
 
