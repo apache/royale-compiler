@@ -86,6 +86,7 @@ import org.apache.royale.linter.rules.StringEventNameRule;
 import org.apache.royale.linter.rules.SwitchWithoutDefaultRule;
 import org.apache.royale.linter.rules.ThisInClosureRule;
 import org.apache.royale.linter.rules.TraceRule;
+import org.apache.royale.linter.rules.UnsafeNegationRule;
 import org.apache.royale.linter.rules.ValidTypeofRule;
 import org.apache.royale.linter.rules.WildcardImportRule;
 import org.apache.royale.linter.rules.WithRule;
@@ -366,6 +367,9 @@ public class LINTER {
 			}
 			if (configuration.getTrace()) {
 				rules.add(new TraceRule());
+			}
+			if (configuration.getUnsafeNegation()) {
+				rules.add(new UnsafeNegationRule());
 			}
 			if (configuration.getValidTypeof()) {
 				rules.add(new ValidTypeofRule());

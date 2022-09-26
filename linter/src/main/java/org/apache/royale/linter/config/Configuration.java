@@ -827,6 +827,22 @@ public class Configuration {
     }
 
     //
+    // 'unsafe-negation' option
+    //
+
+    private boolean unsafeNegation = false;
+
+    public boolean getUnsafeNegation() {
+        return unsafeNegation;
+    }
+
+    @Config
+    @Mapping("unsafe-negation")
+    public void setUnsafeNegation(ConfigurationValue cv, boolean b) {
+        this.unsafeNegation = b;
+    }
+
+    //
     // 'valid-typeof' option
     //
 
