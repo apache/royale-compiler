@@ -875,6 +875,22 @@ public class Configuration {
     }
 
     //
+    // 'void-operator' option
+    //
+
+    private boolean voidOperator = false;
+
+    public boolean getVoidOperator() {
+        return voidOperator;
+    }
+
+    @Config
+    @Mapping("void-operator")
+    public void setVoidOperator(ConfigurationValue cv, boolean b) {
+        this.voidOperator = b;
+    }
+
+    //
     // 'wildcard-import' option
     //
 
