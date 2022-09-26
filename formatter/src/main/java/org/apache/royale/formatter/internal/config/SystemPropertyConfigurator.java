@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.formatter.config;
+package org.apache.royale.formatter.internal.config;
 
 import java.util.Properties;
 import java.util.Enumeration;
@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.formatter.config.ConfigurationBuffer;
 
 /**
  * A utility class, which is used to load configuration options via

@@ -36,6 +36,7 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
+import org.apache.royale.compiler.config.ConfigurationPathResolver;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
@@ -311,6 +312,8 @@ public class FORMATTER {
 	private boolean configure(String[] args, ProblemQuery problems) {
 		try {
 			Configurator configurator = new Configurator();
+			ConfigurationPathResolver resolver = new ConfigurationPathResolver(System.getProperty("user.dir")); 
+			configurator.setConfigurationPathResolver(resolver);
 			configurator.setConfiguration(args, "files");
 			configuration = configurator.getConfiguration();
 			configBuffer = configurator.getConfigurationBuffer();
@@ -324,7 +327,7 @@ public class FORMATTER {
 
 			// Print help if "-help" is present.
 			final List<ConfigurationValue> helpVar = configBuffer.getVar("help");
-			if (helpVar != null || args.length == 0) {
+			if (helpVar != null || (args.length == 0 && configuration.getFiles().size() == 0)) {
 				processHelp(helpVar);
 				return false;
 			}

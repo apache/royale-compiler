@@ -19,13 +19,16 @@
 
 package org.apache.royale.formatter.config;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.royale.compiler.common.IPathResolver;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.exceptions.ConfigurationException.CannotOpen;
 import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
@@ -33,6 +36,9 @@ import org.apache.royale.compiler.internal.config.annotations.Mapping;
 import org.apache.royale.compiler.problems.DeprecatedConfigurationOptionProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.RemovedConfigurationOptionProblem;
+import org.apache.royale.utils.FilenameNormalization;
+
+import com.google.common.collect.ImmutableList;
 
 public class Configuration {
 
@@ -48,6 +54,23 @@ public class Configuration {
             aliases.put("l", "list-files");
         }
         return aliases;
+    }
+
+    //
+    // PathResolver
+    //
+    private IPathResolver pathResolver;
+
+    /**
+     * Set a path resolver to resolver files relative to a configuration. Files inside of configuration files are
+     * resolved relative to those configuration files and files on the command line are resolved relative to the root
+     * directory of the compile.
+     * 
+     * @param pathResolver a path resolver for this configuration. May not be null.
+     */
+    public void setPathResolver(IPathResolver pathResolver)
+    {
+        this.pathResolver = pathResolver;
     }
 	
     /**
@@ -141,6 +164,31 @@ public class Configuration {
     @Config
     public void setVersion(ConfigurationValue cv, boolean value)
     {
+    }
+
+    //
+    // 'load-config' option from CommandLineConfiguration
+    //
+
+    private String configFile = null;
+
+    /**
+     * @return Normalized path to a Flex configuration file.
+     */
+    public String getLoadConfig()
+    {
+        return configFile;
+    }
+
+    /**
+     * Since {@link ConfigurationBuffer} loads the "load-config" files, the value of this configuration option isn't
+     * intersting to the rest part of the compiler.
+     */
+    @Config(allowMultiple = true)
+    @Arguments("filename")
+    public void setLoadConfig(ConfigurationValue cv, String filename) throws ConfigurationException
+    {
+        configFile = resolvePathStrict(filename, cv);   
     }
 
     //
@@ -506,5 +554,105 @@ public class Configuration {
     public void setMxmlInsertNewLineBetweenAttributes(ConfigurationValue cv, boolean b)
     {
         this.mxmlInsertNewLineBetweenAttributes = b;
+    }
+
+    /**
+     * 
+     * @param path A path to resolve.
+     * @param cv Configuration context.
+     * @return A single normalized resolved file. If the path could be expanded into more than one path, then use
+     *         {@link resolvePathsStrict}
+     * @throws CannotOpen
+     */
+    protected String resolvePathStrict(final String path, final ConfigurationValue cv) throws CannotOpen
+    {
+        return resolvePathStrict(path, cv, false);
+    }
+
+    /**
+     * Resolve a single path. This is a more strict version of {@link #resolvePaths()} in that it throws
+     * {@link CannotOpen} exception when a file path element can't be resolved.
+     * 
+     * @param path A path to resolve.
+     * @param cv Configuration context.
+     * @param returnMissingFiles Determines if the CannotOpen exception is thrown if a file does not exist. Pass true to
+     *        disable exceptions and return files that do not exist. Pass false to throw exceptions.
+     * @return A single normalized resolved file. If the path could be expanded into more than one path, then use
+     *         {@link resolvePathsStrict}.
+     * @throws CannotOpen error
+     * @see #resolvePaths(ImmutableList, ConfigurationValue)
+     */
+    private String resolvePathStrict(final String path, final ConfigurationValue cv, final boolean returnMissingFiles)
+            throws CannotOpen
+    {
+        ImmutableList<String> singletonPath = ImmutableList.of(path);
+        ImmutableList<String> results = resolvePathsStrict(singletonPath, cv, returnMissingFiles);
+        return results.get(0);
+    }
+
+    /**
+     * Resolve a list of paths. This is a more strict version of {@link #resolvePaths()} in that it throws
+     * {@link CannotOpen} exception when a file path element can't be resolved.
+     * 
+     * @param paths A list of paths to resolve.
+     * @param cv Configuration context.
+     * @return A list of normalized resolved file paths.
+     * @throws CannotOpen error
+     * @see #resolvePaths(ImmutableList, ConfigurationValue)
+     */
+    private ImmutableList<String> resolvePathsStrict(final ImmutableList<String> paths, final ConfigurationValue cv)
+            throws CannotOpen
+    {
+        return resolvePathsStrict(paths, cv, false);
+    }
+
+    /**
+     * Resolve a list of paths. This is a more strict version of {@link #resolvePaths()} in that it throws
+     * {@link CannotOpen} exception when a file path element can't be resolved.
+     * 
+     * @param paths A list of paths to resolve.
+     * @param cv Configuration context.
+     * @param returnMissingFiles Determines if the CannotOpen exception is thrown if a file does not exist. Pass true to
+     *        disable exceptions and return files that do not exist. Pass false to throw exceptions.
+     * @return A list of normalized resolved file paths.
+     * @throws CannotOpen error
+     * @see #resolvePaths(ImmutableList, ConfigurationValue)
+     */
+    private ImmutableList<String> resolvePathsStrict(final ImmutableList<String> paths, final ConfigurationValue cv,
+            final boolean returnMissingFiles) throws CannotOpen
+    {
+        assert paths != null : "Expected paths";
+        assert cv != null : "Require ConfigurationValue as context.";
+
+        final ImmutableList.Builder<String> resolvedPathsBuilder = new ImmutableList.Builder<String>();
+        for (String processedPath : paths)
+        {
+            if (cv.getContext() != null)
+            {
+                boolean isAbsolute = new File(processedPath).isAbsolute();
+                if (!isAbsolute)
+                    processedPath = new File(cv.getContext(), processedPath).getAbsolutePath();
+            }
+            if (processedPath.contains("*"))
+            {
+                // if contains wild card, just prove the part before the wild card is valid
+                int c = processedPath.lastIndexOf(File.separator, processedPath.indexOf("*"));
+                if (c != -1)
+                    processedPath = processedPath.substring(0, c);
+            }
+            if (!processedPath.contains(".swc:"))
+            {
+	            final File fileSpec = pathResolver.resolve(processedPath);
+	            if (!returnMissingFiles && !fileSpec.exists())
+	            {
+	                throw new CannotOpen(FilenameNormalization.normalize(processedPath), cv.getVar(), cv.getSource(),
+	                        cv.getLine());
+	            }
+	            resolvedPathsBuilder.add(fileSpec.getAbsolutePath());
+            }
+            else
+                resolvedPathsBuilder.add(processedPath);
+        }
+        return resolvedPathsBuilder.build();
     }
 }
