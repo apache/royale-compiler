@@ -216,30 +216,6 @@ public class Configuration {
     }
 
     //
-    // 'recommended' option
-    //
-
-    private boolean recommended = false;
-
-    public boolean getRecommended() {
-        return recommended;
-    }
-
-    @Config
-    @Mapping("recommended")
-    public void setRecommended(ConfigurationValue cv, boolean b) {
-        this.recommended = b;
-        duplicateObjectKeys = recommended;
-        emptyStatement = recommended;
-        ifBoolean = recommended;
-        leadingZero = recommended;
-        sparseArray = recommended;
-        unsafeNegation = recommended;
-        validTypeof = recommended;
-        with = recommended;
-    }
-
-    //
     // 'ignore-parsing-problems' option
     //
 
@@ -323,7 +299,7 @@ public class Configuration {
     // 'duplicate-object-keys' option
     //
 
-    private boolean duplicateObjectKeys = false;
+    private boolean duplicateObjectKeys = true;
 
     public boolean getDuplicateObjectKeys() {
         return duplicateObjectKeys;
@@ -435,7 +411,7 @@ public class Configuration {
     // 'empty-statement' option
     //
 
-    private boolean emptyStatement = false;
+    private boolean emptyStatement = true;
 
     public boolean getEmptyStatement() {
         return emptyStatement;
@@ -483,7 +459,7 @@ public class Configuration {
     // 'if-boolean' option
     //
 
-    private boolean ifBoolean = false;
+    private boolean ifBoolean = true;
 
     public boolean getIfBoolean() {
         return ifBoolean;
@@ -710,7 +686,7 @@ public class Configuration {
     // 'leading-zero' option
     //
 
-    private boolean leadingZero = false;
+    private boolean leadingZero = true;
 
     public boolean getLeadingZero() {
         return leadingZero;
@@ -758,7 +734,7 @@ public class Configuration {
     // 'sparse-array' option
     //
 
-    private boolean sparseArray = false;
+    private boolean sparseArray = true;
 
     public boolean getSparseArray() {
         return sparseArray;
@@ -870,7 +846,7 @@ public class Configuration {
     // 'unsafe-negation' option
     //
 
-    private boolean unsafeNegation = false;
+    private boolean unsafeNegation = true;
 
     public boolean getUnsafeNegation() {
         return unsafeNegation;
@@ -886,7 +862,7 @@ public class Configuration {
     // 'valid-typeof' option
     //
 
-    private boolean validTypeof = false;
+    private boolean validTypeof = true;
 
     public boolean getValidTypeof() {
         return validTypeof;
@@ -950,7 +926,7 @@ public class Configuration {
     // 'with' option
     //
 
-    private boolean with = false;
+    private boolean with = true;
 
     public boolean getWith() {
         return with;
