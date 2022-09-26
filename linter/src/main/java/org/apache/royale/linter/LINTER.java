@@ -88,6 +88,7 @@ import org.apache.royale.linter.rules.ThisInClosureRule;
 import org.apache.royale.linter.rules.TraceRule;
 import org.apache.royale.linter.rules.UnsafeNegationRule;
 import org.apache.royale.linter.rules.ValidTypeofRule;
+import org.apache.royale.linter.rules.VariablesOnTopRule;
 import org.apache.royale.linter.rules.WildcardImportRule;
 import org.apache.royale.linter.rules.WithRule;
 import org.apache.royale.utils.FilenameNormalization;
@@ -373,6 +374,9 @@ public class LINTER {
 			}
 			if (configuration.getValidTypeof()) {
 				rules.add(new ValidTypeofRule());
+			}
+			if (configuration.getVarsOnTop()) {
+				rules.add(new VariablesOnTopRule());
 			}
 			if (configuration.getWildcardImport()) {
 				rules.add(new WildcardImportRule());

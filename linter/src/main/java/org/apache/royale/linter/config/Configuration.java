@@ -859,6 +859,22 @@ public class Configuration {
     }
 
     //
+    // 'vars-on-top' option
+    //
+
+    private boolean varsOnTop = false;
+
+    public boolean getVarsOnTop() {
+        return varsOnTop;
+    }
+
+    @Config
+    @Mapping("vars-on-top")
+    public void setVarsOnTop(ConfigurationValue cv, boolean b) {
+        this.varsOnTop = b;
+    }
+
+    //
     // 'wildcard-import' option
     //
 
