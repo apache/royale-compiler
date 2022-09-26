@@ -34,7 +34,7 @@ import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.common.VersionInfo;
-import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.config.ConfigurationPathResolver;
 import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -219,6 +219,8 @@ public class LINTER {
 				return false;
 			}
 			Configurator configurator = new Configurator();
+            ConfigurationPathResolver resolver = new ConfigurationPathResolver(System.getProperty("user.dir")); 
+            configurator.setConfigurationPathResolver(resolver);
 			configurator.setConfiguration(args, ILinterSettingsConstants.FILES);
 			configuration = configurator.getConfiguration();
 			configBuffer = configurator.getConfigurationBuffer();

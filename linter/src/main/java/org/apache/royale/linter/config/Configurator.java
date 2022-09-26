@@ -22,17 +22,22 @@ package org.apache.royale.linter.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.royale.compiler.common.IPathResolver;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
+import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.config.localization.ResourceBundleLocalizer;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.linter.internal.config.FileConfigurator;
+import org.apache.royale.linter.internal.config.SystemPropertyConfigurator;
 import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.Trace;
 
@@ -134,16 +139,31 @@ public class Configurator implements Cloneable
     private Map<String, Object> args, more;
     private String[] extras;
     private String configurationDefaultVariable;
+    private List<String> loadedConfigFiles;
+    private List<String> missingConfigFiles;
     
     private Map<String, String> tokens;
     
     private boolean isConfigurationDirty;
     private boolean configurationSuccess;
     protected Collection<ICompilerProblem> configurationProblems;
+    private IPathResolver configurationPathResolver;
 
     // 
     // IConfigurator related methods
     //
+    
+    public List<String> getLoadedConfigurationFiles()
+    {
+        return loadedConfigFiles != null ? loadedConfigFiles :
+            Collections.<String>emptyList();
+    }
+    
+    public List<String> getMissingConfigurationFiles()
+    {
+        return missingConfigFiles != null ? missingConfigFiles :
+            Collections.<String>emptyList();
+    }
 
     public Collection<ICompilerProblem> validateConfiguration(String[] args)
     {
@@ -176,6 +196,14 @@ public class Configurator implements Cloneable
         problems.addAll(configurationProblems);
         problems.addAll(configuration.getConfigurationProblems()); 
         return problems;
+    }
+
+    public void setConfigurationPathResolver(IPathResolver pathResolver)
+    {
+        if (pathResolver == null)
+            throw new NullPointerException("pathResolver may not be null");
+        
+        this.configurationPathResolver = pathResolver;
     }
 
     public Configuration getConfiguration()
@@ -238,6 +266,8 @@ public class Configurator implements Cloneable
         // Create a clean configuration and configuration buffer
         configuration = createConfiguration();
         cfgbuf = createConfigurationBuffer(configuration.getClass());
+        assert configurationPathResolver != null : "No configuration path resolver was set.";
+        configuration.setPathResolver(configurationPathResolver);
     }
 
     /**
@@ -325,6 +355,10 @@ public class Configurator implements Cloneable
             if (helpVar != null)
                 return false;
             
+            // Load configurations from files.
+            if (!loadConfig())
+                success = false;
+            
             // The command line needs to take precedence over all defaults and config files.
             // By simply re-merging the command line back on top,
             // we will get the behavior we want.
@@ -354,6 +388,97 @@ public class Configurator implements Cloneable
      */
     protected void overrideDefaults() throws ConfigurationException
     {
+    }
+
+    /**
+     * Load configuration XML file specified in {@code -load-config} option on
+     * command-line.
+     * 
+     * @return true if successful, false otherwise.
+     */
+    protected boolean loadConfig()
+    {
+        boolean success = true;
+        
+        List<ConfigurationValue> configs;
+        try
+        {
+            configs = cfgbuf.peekConfigurationVar("load-config");
+            if (configs != null)
+            {
+                for (ConfigurationValue cv : configs)
+                {
+                    for (String path : cv.getArgs())
+                    {
+                        File configFile = configurationPathResolver.resolve(path);
+                        if (!configFile.exists())
+                        {
+                            success = false;
+                            if (missingConfigFiles == null)
+                                missingConfigFiles = new ArrayList<String>();
+                            
+                            missingConfigFiles.add(path);
+                        }
+                        else 
+                        {
+                           if (!loadConfigFromFile(
+                                    cfgbuf,
+                                    configFile,
+                                    new File(configFile.getPath()).getParent(),
+                                    "royale-config",
+                                    false))
+                           {
+                               success = false;
+                           }
+                        }
+                    }
+                }
+            }
+        }
+        catch (ConfigurationException e)
+        {
+            reportConfigurationException(e);
+            success = false;
+        }
+
+        return success;
+    }
+
+    /**
+     * Load a configuration from file. {@code FileConfigurator.load()} is
+     * wrapped in this method because we want to print a message after loading
+     * using MXMLC#println(String).
+     * 
+     * @return true if successful, false otherwise.
+     */
+    protected final boolean loadConfigFromFile(final ConfigurationBuffer buffer,
+                                          final File fileSpec,
+                                          final String context,
+                                          final String rootElement,
+                                          final boolean ignoreUnknownItems)
+    {
+        boolean success = true;
+        
+        try
+        {
+            FileConfigurator.load(buffer, 
+                    new FileSpecification(fileSpec.getAbsolutePath()),
+                    context, rootElement, ignoreUnknownItems);
+        }
+        catch (ConfigurationException e)
+        {
+            // record exception
+            reportConfigurationException(e);
+            success = false;
+            
+        }
+
+        if (loadedConfigFiles == null)
+            loadedConfigFiles = new ArrayList<String>();
+        
+        loadedConfigFiles.add(fileSpec.getPath());
+        
+        return success;
     }
 
     /**
