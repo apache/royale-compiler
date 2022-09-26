@@ -827,6 +827,22 @@ public class Configuration {
     }
 
     //
+    // 'valid-typeof' option
+    //
+
+    private boolean validTypeof = false;
+
+    public boolean getValidTypeof() {
+        return validTypeof;
+    }
+
+    @Config
+    @Mapping("valid-typeof")
+    public void setValidTypeof(ConfigurationValue cv, boolean b) {
+        this.validTypeof = b;
+    }
+
+    //
     // 'wildcard-import' option
     //
 
