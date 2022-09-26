@@ -359,7 +359,8 @@ public class Configurator implements Cloneable
             if (!loadConfig())
                 success = false;
 
-            if (!loadLocalConfig())
+            String skipLocal = cfgbuf.peekSimpleConfigurationVar("skip-local-config-file");
+            if (!"true".equals(skipLocal) && !loadLocalConfig())
                 success = false;
             
             // The command line needs to take precedence over all defaults and config files.
