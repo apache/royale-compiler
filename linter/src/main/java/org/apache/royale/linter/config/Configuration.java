@@ -555,6 +555,22 @@ public class Configuration {
     }
 
     //
+    // 'missing-constructor-super' option
+    //
+
+    private boolean missingConstructorSuper = false;
+
+    public boolean getMissingConstructorSuper() {
+        return missingConstructorSuper;
+    }
+
+    @Config
+    @Mapping("missing-constructor-super")
+    public void setMissingConstructorSuper(ConfigurationValue cv, boolean b) {
+        this.missingConstructorSuper = b;
+    }
+
+    //
     // 'missing-namespace' option
     //
 

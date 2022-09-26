@@ -71,6 +71,7 @@ import org.apache.royale.linter.rules.MXMLIDRule;
 import org.apache.royale.linter.rules.MaxBlockDepthRule;
 import org.apache.royale.linter.rules.MaxParametersRule;
 import org.apache.royale.linter.rules.MissingASDocRule;
+import org.apache.royale.linter.rules.MissingConstructorSuperRule;
 import org.apache.royale.linter.rules.MissingNamespaceRule;
 import org.apache.royale.linter.rules.MissingSemicolonRule;
 import org.apache.royale.linter.rules.MissingTypeRule;
@@ -320,6 +321,9 @@ public class LINTER {
 			}
 			if (configuration.getMissingAsdoc()) {
 				rules.add(new MissingASDocRule());
+			}
+			if (configuration.getMissingConstructorSuper()) {
+				rules.add(new MissingConstructorSuperRule());
 			}
 			if (configuration.getMissingNamespace()) {
 				rules.add(new MissingNamespaceRule());
