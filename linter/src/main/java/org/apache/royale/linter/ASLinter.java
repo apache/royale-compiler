@@ -180,6 +180,7 @@ public class ASLinter extends BaseLinter {
 	private void visitNode(IASNode node, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
 		ASTNodeID nodeID = node.getNodeID();
 		IASToken prevComment = tokenQuery.getPreviousComment(node);
+		boolean linterOn = true;
 		while (prevComment != null) {
 			String commentText = null;
 			if (prevComment.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
@@ -193,22 +194,23 @@ public class ASLinter extends BaseLinter {
 				continue;
 			}
 			if (LINTER_TAG_ON.equals(commentText)) {
-				// linter is on
+				linterOn = true;
 				break;
 			}
 			if (LINTER_TAG_OFF.equals(commentText)) {
-				// linter is off
-				return;
+				linterOn = false;
+				break;
 			}
 			prevComment = tokenQuery.getPreviousComment(prevComment);
 		}
-		for (LinterRule rule : settings.rules) {
-			Map<ASTNodeID, NodeVisitor> nodeHandlers = rule.getNodeVisitors();
-			if (nodeHandlers != null && nodeHandlers.containsKey(nodeID)) {
-				nodeHandlers.get(nodeID).visit(node, tokenQuery, problems);
+		if (linterOn) {
+			for (LinterRule rule : settings.rules) {
+				Map<ASTNodeID, NodeVisitor> nodeHandlers = rule.getNodeVisitors();
+				if (nodeHandlers != null && nodeHandlers.containsKey(nodeID)) {
+					nodeHandlers.get(nodeID).visit(node, tokenQuery, problems);
+				}
 			}
 		}
-
 		for (int i = 0; i < node.getChildCount(); i++) {
 			IASNode child = node.getChild(i);
 			visitNode(child, tokenQuery, problems);
