@@ -54,6 +54,7 @@ import org.apache.royale.linter.rules.ClassNameRule;
 import org.apache.royale.linter.rules.ConstantNameRule;
 import org.apache.royale.linter.rules.ConstructorDispatchEventRule;
 import org.apache.royale.linter.rules.ConstructorReturnTypeRule;
+import org.apache.royale.linter.rules.DuplicateObjectKeysRule;
 import org.apache.royale.linter.rules.DynamicClassRule;
 import org.apache.royale.linter.rules.EmptyCommentRule;
 import org.apache.royale.linter.rules.EmptyFunctionBodyRule;
@@ -261,6 +262,9 @@ public class LINTER {
 			}
 			if (configuration.getConstructorDispatchEvent()) {
 				rules.add(new ConstructorDispatchEventRule());
+			}
+			if (configuration.getDuplicateObjectKeys()) {
+				rules.add(new DuplicateObjectKeysRule());
 			}
 			if (configuration.getDynamicClass()) {
 				rules.add(new DynamicClassRule());

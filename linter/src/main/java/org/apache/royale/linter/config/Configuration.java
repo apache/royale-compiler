@@ -280,6 +280,22 @@ public class Configuration {
     }
 
     //
+    // 'duplicate-object-keys' option
+    //
+
+    private boolean duplicateObjectKeys = false;
+
+    public boolean getDuplicateObjectKeys() {
+        return duplicateObjectKeys;
+    }
+
+    @Config
+    @Mapping("duplicate-object-keys")
+    public void setDuplicateObjectKeys(ConfigurationValue cv, boolean b) {
+        this.duplicateObjectKeys = b;
+    }
+
+    //
     // 'constructor-dispatch-event' option
     //
 
