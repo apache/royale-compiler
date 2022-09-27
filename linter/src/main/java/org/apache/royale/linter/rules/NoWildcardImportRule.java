@@ -19,34 +19,44 @@
 
 package org.apache.royale.linter.rules;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CompilerProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.linter.LinterRule;
-import org.apache.royale.linter.TokenVisitor;
+import org.apache.royale.linter.NodeVisitor;
+import org.apache.royale.linter.TokenQuery;
 
 /**
- * Checks for uses of 'with(x)'.
+ * Check for import statements that import the entire package.
  */
-public class WithRule extends LinterRule {
+public class NoWildcardImportRule extends LinterRule {
 	@Override
-	public Map<Integer, TokenVisitor> getTokenVisitors() {
-		Map<Integer, TokenVisitor> result = new HashMap<>();
-		result.put(ASTokenTypes.TOKEN_KEYWORD_WITH, (token, tokenQuery, problems) -> {
-			problems.add(new WithLinterProblem(token));
+	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
+		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
+		result.put(ASTNodeID.ImportID, (node, tokenQuery, problems) -> {
+			checkImportNode((IImportNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	public static class WithLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Must not use 'with' statement";
+	private void checkImportNode(IImportNode importNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+		if (!importNode.isWildcardImport()) {
+			return;
+		}
+		problems.add(new NoWildcardImportLinterProblem(importNode));
+	}
 
-		public WithLinterProblem(IASToken token)
+	public static class NoWildcardImportLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Must not use wildcard import";
+
+		public NoWildcardImportLinterProblem(IImportNode node)
 		{
-			super(token);
+			super(node);
 		}
 	}
 }

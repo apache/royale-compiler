@@ -26,37 +26,41 @@ import java.util.Map;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Checks for uses of 'void' operator. Using 'void' as return type is allowed.
+ * Check for calls to the 'trace()' function.
  */
-public class VoidOperatorRule extends LinterRule {
+public class NoTraceRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.Op_VoidID, (node, tokenQuery, problems) -> {
-			checkUnaryOperatorNode((IUnaryOperatorNode) node, tokenQuery, problems);
+		result.put(ASTNodeID.FunctionCallID, (node, tokenQuery, problems) -> {
+			checkFunctionCallNode((IFunctionCallNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	private void checkUnaryOperatorNode(IUnaryOperatorNode unaryOperatorNode, TokenQuery tokenQuery,
-			Collection<ICompilerProblem> problems) {
-		if (!OperatorType.VOID.equals(unaryOperatorNode.getOperator())) {
+	private void checkFunctionCallNode(IFunctionCallNode functionCallNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+		if (!"trace".equals(functionCallNode.getFunctionName())) {
 			return;
 		}
-		problems.add(new VoidOperatorLinterProblem(unaryOperatorNode));
+		IASNode parentNode = functionCallNode.getParent();
+		if (parentNode instanceof IMemberAccessExpressionNode) {
+			return;
+		}
+		problems.add(new NoTraceLinterProblem(functionCallNode));
 	}
 
-	public static class VoidOperatorLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Must not use 'void' operator";
+	public static class NoTraceLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Must not call trace() function";
 
-		public VoidOperatorLinterProblem(IUnaryOperatorNode node)
+		public NoTraceLinterProblem(IFunctionCallNode node)
 		{
 			super(node);
 		}

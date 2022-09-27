@@ -26,48 +26,50 @@ import java.util.Map;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IIfNode;
-import org.apache.royale.compiler.tree.as.ILiteralNode;
-import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Check that a boolean literal value is not used as an 'if' condition.
+ * Checks for redundant equality comparisons with 'true' and 'false' boolean
+ * literals using the '==' and '!=' operators.
+ * 
+ * Does not check for strict equality using the '===' and '!==' operators
+ * because these operators do not type coerce the two sides to determine if they
+ * are 'truthy' or 'falsy'.
  */
-public class IfBooleanLiteralRule extends LinterRule {
+public class NoBooleanEqualityRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.IfStatementID, (node, tokenQuery, problems) -> {
-			checkIfNode((IIfNode) node, tokenQuery, problems);
+		result.put(ASTNodeID.Op_EqualID, (node, tokenQuery, problems) -> {
+			checkBinaryOperatorNode((IBinaryOperatorNode) node, tokenQuery, problems);
+		});
+		result.put(ASTNodeID.Op_NotEqualID, (node, tokenQuery, problems) -> {
+			checkBinaryOperatorNode((IBinaryOperatorNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	private void checkIfNode(IIfNode ifNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		IExpressionNode conditionalNode = ifNode.getConditionalExpressionNode();
-		if (!(conditionalNode instanceof ILiteralNode)) {
-			return;
+	private void checkBinaryOperatorNode(IBinaryOperatorNode operatorNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+		IExpressionNode leftOperandNode = operatorNode.getLeftOperandNode();
+		if (ASTNodeID.LiteralBooleanID.equals(leftOperandNode.getNodeID())) {
+			problems.add(new NoBooleanEqualityLinterProblem(leftOperandNode));
 		}
-		ILiteralNode literalNode = (ILiteralNode) conditionalNode;
-		if (!LiteralType.BOOLEAN.equals(literalNode.getLiteralType())) {
-			return;
+		IExpressionNode rightOperandNode = operatorNode.getRightOperandNode();
+		if (ASTNodeID.LiteralBooleanID.equals(rightOperandNode.getNodeID())) {
+			problems.add(new NoBooleanEqualityLinterProblem(rightOperandNode));
 		}
-		problems.add(new IfBooleanLiteralLinterProblem(literalNode));
 	}
 
-	public static class IfBooleanLiteralLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Condition is always '${value}'";
+	public static class NoBooleanEqualityLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Must simplify statement to remove redundant comparison with true or false";
 
-		public IfBooleanLiteralLinterProblem(ILiteralNode node)
+		public NoBooleanEqualityLinterProblem(IExpressionNode node)
 		{
 			super(node);
-			value = node.getValue();
 		}
-
-		public String value;
 	}
 }

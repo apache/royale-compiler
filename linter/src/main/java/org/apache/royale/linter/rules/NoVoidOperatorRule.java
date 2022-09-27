@@ -26,35 +26,37 @@ import java.util.Map;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Check for import statements that import the entire package.
+ * Checks for uses of 'void' operator. Using 'void' as return type is allowed.
  */
-public class WildcardImportRule extends LinterRule {
+public class NoVoidOperatorRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.ImportID, (node, tokenQuery, problems) -> {
-			checkImportNode((IImportNode) node, tokenQuery, problems);
+		result.put(ASTNodeID.Op_VoidID, (node, tokenQuery, problems) -> {
+			checkUnaryOperatorNode((IUnaryOperatorNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	private void checkImportNode(IImportNode importNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		if (!importNode.isWildcardImport()) {
+	private void checkUnaryOperatorNode(IUnaryOperatorNode unaryOperatorNode, TokenQuery tokenQuery,
+			Collection<ICompilerProblem> problems) {
+		if (!OperatorType.VOID.equals(unaryOperatorNode.getOperator())) {
 			return;
 		}
-		problems.add(new WildcardImportLinterProblem(importNode));
+		problems.add(new NoVoidOperatorLinterProblem(unaryOperatorNode));
 	}
 
-	public static class WildcardImportLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Must not use wildcard import";
+	public static class NoVoidOperatorLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Must not use 'void' operator";
 
-		public WildcardImportLinterProblem(IImportNode node)
+		public NoVoidOperatorLinterProblem(IUnaryOperatorNode node)
 		{
 			super(node);
 		}

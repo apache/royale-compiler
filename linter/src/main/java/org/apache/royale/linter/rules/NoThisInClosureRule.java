@@ -23,53 +23,64 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.ILiteralContainerNode;
-import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.royale.compiler.tree.as.IBlockNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Check that an array literal contains no empty slots (multiple repeating commas with no values).
+ * Checks for use of the 'this' keyword in closures.
  */
-public class SparseArrayRule extends LinterRule {
+public class NoThisInClosureRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.ArrayLiteralID, (node, tokenQuery, problems) -> {
-			checkLiteralContainerNode((ILiteralContainerNode) node, tokenQuery, problems);
+		result.put(ASTNodeID.FunctionID, (node, tokenQuery, problems) -> {
+			checkFunctionNode((IFunctionNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	private void checkLiteralContainerNode(ILiteralContainerNode arrayLiteralNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		if (!LiteralType.ARRAY.equals(arrayLiteralNode.getLiteralType())) {
+	private void checkFunctionNode(IFunctionNode functionNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+		IFunctionNode ancestorFunction = (IFunctionNode) functionNode.getAncestorOfType(IFunctionNode.class);
+		if (ancestorFunction == null) {
 			return;
 		}
-		ContainerNode contentsNode = arrayLiteralNode.getContentsNode();
-		if (contentsNode == null) {
+		IBlockNode blockNode = getBody(functionNode);
+		if (blockNode == null) {
 			return;
 		}
-		for (int i = 0; i < contentsNode.getChildCount(); i++) {
-			IASNode child = contentsNode.getChild(i);
-			if (ASTNodeID.NilID.equals(child.getNodeID())) {
-				problems.add(new SparseArrayLinterProblem(arrayLiteralNode));
-				return;
+		for(IASToken token : tokenQuery.getTokens(blockNode)) {
+			if (token.getType() == ASTokenTypes.TOKEN_KEYWORD_THIS) {
+				problems.add(new NoThisInClosureLinterProblem(token));
 			}
 		}
 	}
 
-	public static class SparseArrayLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Array literals must not be sparse";
+	private IBlockNode getBody(IFunctionNode functionNode) {
+		if (functionNode.getChildCount() == 0) {
+			return null;
+		}
+		IASNode lastChild = functionNode.getChild(functionNode.getChildCount() - 1);
+		if (lastChild instanceof IBlockNode) {
+			return (IBlockNode) lastChild;
+		}
+		return null;
+	}
 
-		public SparseArrayLinterProblem(ILiteralContainerNode node)
+	public static class NoThisInClosureLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Closure must not contain 'this' keyword";
+
+		public NoThisInClosureLinterProblem(IASToken token)
 		{
-			super(node);
+			super(token);
 		}
 	}
 }

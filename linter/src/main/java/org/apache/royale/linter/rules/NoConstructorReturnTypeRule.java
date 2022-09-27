@@ -23,22 +23,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IBlockNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Checks for use of the 'this' keyword in closures.
+ * Check that a constructor does not specify a return type (not even `void`).
  */
-public class ThisInClosureRule extends LinterRule {
+public class NoConstructorReturnTypeRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
@@ -49,38 +46,27 @@ public class ThisInClosureRule extends LinterRule {
 	}
 
 	private void checkFunctionNode(IFunctionNode functionNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		IFunctionNode ancestorFunction = (IFunctionNode) functionNode.getAncestorOfType(IFunctionNode.class);
-		if (ancestorFunction == null) {
+		if (!functionNode.isConstructor()) {
 			return;
 		}
-		IBlockNode blockNode = getBody(functionNode);
-		if (blockNode == null) {
+		IExpressionNode returnTypeNode = functionNode.getReturnTypeNode();
+		if (returnTypeNode == null) {
 			return;
 		}
-		for(IASToken token : tokenQuery.getTokens(blockNode)) {
-			if (token.getType() == ASTokenTypes.TOKEN_KEYWORD_THIS) {
-				problems.add(new ThisInClosureLinterProblem(token));
-			}
-		}
+		problems.add(new NoConstructorReturnTypeLinterProblem(functionNode));
 	}
 
-	private IBlockNode getBody(IFunctionNode functionNode) {
-		if (functionNode.getChildCount() == 0) {
-			return null;
-		}
-		IASNode lastChild = functionNode.getChild(functionNode.getChildCount() - 1);
-		if (lastChild instanceof IBlockNode) {
-			return (IBlockNode) lastChild;
-		}
-		return null;
-	}
+	public static class NoConstructorReturnTypeLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Constructor '${functionName}' must not specify '${returnType}' return type";
 
-	public static class ThisInClosureLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Closure must not contain 'this' keyword";
-
-		public ThisInClosureLinterProblem(IASToken token)
+		public NoConstructorReturnTypeLinterProblem(IFunctionNode node)
 		{
-			super(token);
+			super(node.getNameExpressionNode());
+			functionName = node.getName();
+			returnType = node.getReturnType();
 		}
+
+		public String functionName;
+		public String returnType;
 	}
 }

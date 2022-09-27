@@ -48,21 +48,21 @@ import org.apache.royale.linter.config.ConfigurationValue;
 import org.apache.royale.linter.config.Configurator;
 import org.apache.royale.linter.config.ILinterSettingsConstants;
 import org.apache.royale.linter.config.LineCommentPosition;
-import org.apache.royale.linter.rules.AnyTypeRule;
-import org.apache.royale.linter.rules.BooleanEqualityRule;
+import org.apache.royale.linter.rules.NoAnyTypeRule;
+import org.apache.royale.linter.rules.NoBooleanEqualityRule;
 import org.apache.royale.linter.rules.ClassNameRule;
 import org.apache.royale.linter.rules.ConstantNameRule;
-import org.apache.royale.linter.rules.ConstructorDispatchEventRule;
-import org.apache.royale.linter.rules.ConstructorReturnTypeRule;
-import org.apache.royale.linter.rules.DuplicateObjectKeysRule;
-import org.apache.royale.linter.rules.DynamicClassRule;
+import org.apache.royale.linter.rules.NoConstructorDispatchEventRule;
+import org.apache.royale.linter.rules.NoConstructorReturnTypeRule;
+import org.apache.royale.linter.rules.NoDuplicateObjectKeysRule;
+import org.apache.royale.linter.rules.NoDynamicClassRule;
 import org.apache.royale.linter.rules.EmptyCommentRule;
 import org.apache.royale.linter.rules.EmptyFunctionBodyRule;
 import org.apache.royale.linter.rules.EmptyNestedBlockRule;
 import org.apache.royale.linter.rules.EmptyStatementRule;
 import org.apache.royale.linter.rules.FieldNameRule;
 import org.apache.royale.linter.rules.FunctionNameRule;
-import org.apache.royale.linter.rules.IfBooleanLiteralRule;
+import org.apache.royale.linter.rules.NoIfBooleanLiteralRule;
 import org.apache.royale.linter.rules.InterfaceNameRule;
 import org.apache.royale.linter.rules.LineCommentPositionRule;
 import org.apache.royale.linter.rules.LocalVarAndParameterNameRule;
@@ -76,22 +76,22 @@ import org.apache.royale.linter.rules.MissingConstructorSuperRule;
 import org.apache.royale.linter.rules.MissingNamespaceRule;
 import org.apache.royale.linter.rules.MissingSemicolonRule;
 import org.apache.royale.linter.rules.MissingTypeRule;
-import org.apache.royale.linter.rules.NumericLeadingZeroesRule;
+import org.apache.royale.linter.rules.NoLeadingZeroesRule;
 import org.apache.royale.linter.rules.OverrideContainsOnlySuperCallRule;
 import org.apache.royale.linter.rules.PackageNameRule;
-import org.apache.royale.linter.rules.SparseArrayRule;
+import org.apache.royale.linter.rules.NoSparseArrayRule;
 import org.apache.royale.linter.rules.StaticConstantsRule;
 import org.apache.royale.linter.rules.StrictEqualityRule;
-import org.apache.royale.linter.rules.StringEventNameRule;
+import org.apache.royale.linter.rules.NoStringEventNameRule;
 import org.apache.royale.linter.rules.SwitchWithoutDefaultRule;
-import org.apache.royale.linter.rules.ThisInClosureRule;
-import org.apache.royale.linter.rules.TraceRule;
+import org.apache.royale.linter.rules.NoThisInClosureRule;
+import org.apache.royale.linter.rules.NoTraceRule;
 import org.apache.royale.linter.rules.UnsafeNegationRule;
 import org.apache.royale.linter.rules.ValidTypeofRule;
 import org.apache.royale.linter.rules.VariablesOnTopRule;
-import org.apache.royale.linter.rules.VoidOperatorRule;
-import org.apache.royale.linter.rules.WildcardImportRule;
-import org.apache.royale.linter.rules.WithRule;
+import org.apache.royale.linter.rules.NoVoidOperatorRule;
+import org.apache.royale.linter.rules.NoWildcardImportRule;
+import org.apache.royale.linter.rules.NoWithRule;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**
@@ -250,32 +250,11 @@ public class LINTER {
 			settings.ignoreProblems = configuration.getIgnoreParsingProblems();
 
 			List<LinterRule> rules = new ArrayList<LinterRule>();
-			if (configuration.getAnyType()) {
-				rules.add(new AnyTypeRule());
-			}
-			if (configuration.getBooleanEquality()) {
-				rules.add(new BooleanEqualityRule());
-			}
 			if (configuration.getClassName()) {
 				rules.add(new ClassNameRule());
 			}
 			if (configuration.getConstantName()) {
 				rules.add(new ConstantNameRule());
-			}
-			if (configuration.getConstructorReturnType()) {
-				rules.add(new ConstructorReturnTypeRule());
-			}
-			if (configuration.getConstructorDispatchEvent()) {
-				rules.add(new ConstructorDispatchEventRule());
-			}
-			if (configuration.getDuplicateObjectKeys()) {
-				rules.add(new DuplicateObjectKeysRule());
-			}
-			if (configuration.getDynamicClass()) {
-				rules.add(new DynamicClassRule());
-			}
-			if (configuration.getThisClosure()) {
-				rules.add(new ThisInClosureRule());
 			}
 			if (configuration.getEmptyFunctionBody()) {
 				rules.add(new EmptyFunctionBodyRule());
@@ -298,14 +277,8 @@ public class LINTER {
 			if (configuration.getEmptyStatement()) {
 				rules.add(new EmptyStatementRule());
 			}
-			if (configuration.getIfBoolean()) {
-				rules.add(new IfBooleanLiteralRule());
-			}
 			if (configuration.getInterfaceName()) {
 				rules.add(new InterfaceNameRule());
-			}
-			if (configuration.getLeadingZero()) {
-				rules.add(new NumericLeadingZeroesRule());
 			}
 			if (configuration.getLineCommentPosition() != null) {
 				LineCommentPositionRule rule = new LineCommentPositionRule();
@@ -349,11 +322,53 @@ public class LINTER {
 			if (configuration.getMxmlEmptyAttr()) {
 				rules.add(new MXMLEmptyAttributeRule());
 			}
+			if (configuration.getNoAnyType()) {
+				rules.add(new NoAnyTypeRule());
+			}
+			if (configuration.getNoBooleanEquality()) {
+				rules.add(new NoBooleanEqualityRule());
+			}
+			if (configuration.getNoConstructorDispatch()) {
+				rules.add(new NoConstructorDispatchEventRule());
+			}
+			if (configuration.getNoConstructorReturnType()) {
+				rules.add(new NoConstructorReturnTypeRule());
+			}
+			if (configuration.getNoDuplicateKeys()) {
+				rules.add(new NoDuplicateObjectKeysRule());
+			}
+			if (configuration.getNoDynamicClass()) {
+				rules.add(new NoDynamicClassRule());
+			}
+			if (configuration.getNoIfBoolean()) {
+				rules.add(new NoIfBooleanLiteralRule());
+			}
+			if (configuration.getNoLeadingZero()) {
+				rules.add(new NoLeadingZeroesRule());
+			}
+			if (configuration.getNoSparseArray()) {
+				rules.add(new NoSparseArrayRule());
+			}
+			if (configuration.getNoStringEvent()) {
+				rules.add(new NoStringEventNameRule());
+			}
+			if (configuration.getNoThisClosure()) {
+				rules.add(new NoThisInClosureRule());
+			}
+			if (configuration.getNoTrace()) {
+				rules.add(new NoTraceRule());
+			}
+			if (configuration.getNoVoidOperator()) {
+				rules.add(new NoVoidOperatorRule());
+			}
+			if (configuration.getNoWildcardImport()) {
+				rules.add(new NoWildcardImportRule());
+			}
+			if (configuration.getNoWith()) {
+				rules.add(new NoWithRule());
+			}
 			if (configuration.getPackageName()) {
 				rules.add(new PackageNameRule());
-			}
-			if (configuration.getSparseArray()) {
-				rules.add(new SparseArrayRule());
 			}
 			if (configuration.getStaticConstants()) {
 				rules.add(new StaticConstantsRule());
@@ -361,14 +376,8 @@ public class LINTER {
 			if (configuration.getStrictEquality()) {
 				rules.add(new StrictEqualityRule());
 			}
-			if (configuration.getStringEvent()) {
-				rules.add(new StringEventNameRule());
-			}
 			if (configuration.getSwitchDefault()) {
 				rules.add(new SwitchWithoutDefaultRule());
-			}
-			if (configuration.getTrace()) {
-				rules.add(new TraceRule());
 			}
 			if (configuration.getUnsafeNegation()) {
 				rules.add(new UnsafeNegationRule());
@@ -378,15 +387,6 @@ public class LINTER {
 			}
 			if (configuration.getVarsOnTop()) {
 				rules.add(new VariablesOnTopRule());
-			}
-			if (configuration.getVoidOperator()) {
-				rules.add(new VoidOperatorRule());
-			}
-			if (configuration.getWildcardImport()) {
-				rules.add(new WildcardImportRule());
-			}
-			if (configuration.getWith()) {
-				rules.add(new WithRule());
 			}
 			settings.rules = rules;
 			if (rules.size() == 0) {

@@ -40,7 +40,7 @@ import org.apache.royale.linter.TokenQuery;
 /**
  * Checks for uses of the * type.
  */
-public class AnyTypeRule extends LinterRule {
+public class NoAnyTypeRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
@@ -58,14 +58,14 @@ public class AnyTypeRule extends LinterRule {
 		if (!isAnyType(typeNode)) {
 			return;
 		}
-		problems.add(new AnyTypeOnVariableLinterProblem(variableNode));
+		problems.add(new NoAnyTypeOnVariableLinterProblem(variableNode));
 	}
 
 	private void checkFunctionNode(IFunctionNode functionNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
 		for (IParameterNode paramNode : functionNode.getParameterNodes()) {
 			IExpressionNode typeNode = paramNode.getVariableTypeNode();
 			if (isAnyType(typeNode)) {
-				problems.add(new AnyTypeOnParameterLinterProblem(paramNode));
+				problems.add(new NoAnyTypeOnParameterLinterProblem(paramNode));
 			}
 		}
 		if (functionNode.isConstructor()) {
@@ -73,7 +73,7 @@ public class AnyTypeRule extends LinterRule {
 		}
 		IExpressionNode typeNode = functionNode.getReturnTypeNode();
 		if (isAnyType(typeNode)) {
-			problems.add(new AnyTypeReturnLinterProblem(functionNode));
+			problems.add(new NoAnyTypeReturnLinterProblem(functionNode));
 		}
 	}
 
@@ -92,10 +92,10 @@ public class AnyTypeRule extends LinterRule {
 		return true;
 	}
 
-	public static class AnyTypeOnVariableLinterProblem extends CompilerProblem {
+	public static class NoAnyTypeOnVariableLinterProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Must not use the * type for variable '${varName}'";
 
-		public AnyTypeOnVariableLinterProblem(IVariableNode node)
+		public NoAnyTypeOnVariableLinterProblem(IVariableNode node)
 		{
 			super(node.getVariableTypeNode());
 			varName = node.getName();
@@ -104,10 +104,10 @@ public class AnyTypeRule extends LinterRule {
 		public String varName;
 	}
 
-	public static class AnyTypeOnParameterLinterProblem extends CompilerProblem {
+	public static class NoAnyTypeOnParameterLinterProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Must not use the * type for function parameter '${paramName}'";
 
-		public AnyTypeOnParameterLinterProblem(IParameterNode node)
+		public NoAnyTypeOnParameterLinterProblem(IParameterNode node)
 		{
 			super(node.getVariableTypeNode());
 			paramName = node.getName();
@@ -116,10 +116,10 @@ public class AnyTypeRule extends LinterRule {
 		public String paramName;
 	}
 
-	public static class AnyTypeReturnLinterProblem extends CompilerProblem {
+	public static class NoAnyTypeReturnLinterProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Must not use the * type for function return type";
 
-		public AnyTypeReturnLinterProblem(IFunctionNode node)
+		public NoAnyTypeReturnLinterProblem(IFunctionNode node)
 		{
 			super(node.getReturnTypeNode());
 		}

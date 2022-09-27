@@ -23,50 +23,53 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.royale.compiler.internal.tree.as.ContainerNode;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.ILiteralContainerNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Check that a constructor does not specify a return type (not even `void`).
+ * Check that an array literal contains no empty slots (multiple repeating commas with no values).
  */
-public class ConstructorReturnTypeRule extends LinterRule {
+public class NoSparseArrayRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.FunctionID, (node, tokenQuery, problems) -> {
-			checkFunctionNode((IFunctionNode) node, tokenQuery, problems);
+		result.put(ASTNodeID.ArrayLiteralID, (node, tokenQuery, problems) -> {
+			checkLiteralContainerNode((ILiteralContainerNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	private void checkFunctionNode(IFunctionNode functionNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		if (!functionNode.isConstructor()) {
+	private void checkLiteralContainerNode(ILiteralContainerNode arrayLiteralNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+		if (!LiteralType.ARRAY.equals(arrayLiteralNode.getLiteralType())) {
 			return;
 		}
-		IExpressionNode returnTypeNode = functionNode.getReturnTypeNode();
-		if (returnTypeNode == null) {
+		ContainerNode contentsNode = arrayLiteralNode.getContentsNode();
+		if (contentsNode == null) {
 			return;
 		}
-		problems.add(new ConstructorReturnTypeLinterProblem(functionNode));
+		for (int i = 0; i < contentsNode.getChildCount(); i++) {
+			IASNode child = contentsNode.getChild(i);
+			if (ASTNodeID.NilID.equals(child.getNodeID())) {
+				problems.add(new NoSparseArrayLinterProblem(arrayLiteralNode));
+				return;
+			}
+		}
 	}
 
-	public static class ConstructorReturnTypeLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Constructor '${functionName}' must not specify '${returnType}' return type";
+	public static class NoSparseArrayLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Array literals must not be sparse";
 
-		public ConstructorReturnTypeLinterProblem(IFunctionNode node)
+		public NoSparseArrayLinterProblem(ILiteralContainerNode node)
 		{
-			super(node.getNameExpressionNode());
-			functionName = node.getName();
-			returnType = node.getReturnType();
+			super(node);
 		}
-
-		public String functionName;
-		public String returnType;
 	}
 }

@@ -38,7 +38,7 @@ import org.apache.royale.linter.TokenQuery;
  * 
  * Designed to prevent confusion with ECMAScript's deprecated octal notation.
  */
-public class NumericLeadingZeroesRule extends LinterRule {
+public class NoLeadingZeroesRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
@@ -62,13 +62,13 @@ public class NumericLeadingZeroesRule extends LinterRule {
 		if (stringValue.startsWith("0x")) {
 			return;
 		}
-		problems.add(new NumericLeadingZeroesLinterProblem(numberNode));
+		problems.add(new NoLeadingZeroesLinterProblem(numberNode));
 	}
 
-	public static class NumericLeadingZeroesLinterProblem extends CompilerProblem {
+	public static class NoLeadingZeroesLinterProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Must remove leading zeros from numeric literal '${value}'";
 
-		public NumericLeadingZeroesLinterProblem(INumericLiteralNode node)
+		public NoLeadingZeroesLinterProblem(INumericLiteralNode node)
 		{
 			super((ISourceLocation) node);
 			value = node.getNumericValue().toString();

@@ -232,38 +232,6 @@ public class Configuration {
     }
 
     //
-    // 'any-type' option
-    //
-
-    private boolean anyType = false;
-
-    public boolean getAnyType() {
-        return anyType;
-    }
-
-    @Config
-    @Mapping("any-type")
-    public void setAnyType(ConfigurationValue cv, boolean b) {
-        this.anyType = b;
-    }
-
-    //
-    // 'boolean-equality' option
-    //
-
-    private boolean booleanEquality = false;
-
-    public boolean getBooleanEquality() {
-        return booleanEquality;
-    }
-
-    @Config
-    @Mapping("boolean-equality")
-    public void setBooleanEquality(ConfigurationValue cv, boolean b) {
-        this.booleanEquality = b;
-    }
-
-    //
     // 'class-name' option
     //
 
@@ -293,70 +261,6 @@ public class Configuration {
     @Mapping("constant-name")
     public void setConstantName(ConfigurationValue cv, boolean b) {
         this.constantName = b;
-    }
-
-    //
-    // 'duplicate-object-keys' option
-    //
-
-    private boolean duplicateObjectKeys = true;
-
-    public boolean getDuplicateObjectKeys() {
-        return duplicateObjectKeys;
-    }
-
-    @Config
-    @Mapping("duplicate-object-keys")
-    public void setDuplicateObjectKeys(ConfigurationValue cv, boolean b) {
-        this.duplicateObjectKeys = b;
-    }
-
-    //
-    // 'constructor-dispatch-event' option
-    //
-
-    private boolean constructorDispatchEvent = false;
-
-    public boolean getConstructorDispatchEvent() {
-        return constructorDispatchEvent;
-    }
-
-    @Config
-    @Mapping("constructor-dispatch-event")
-    public void setConstructorDispatchEvent(ConfigurationValue cv, boolean b) {
-        this.constructorDispatchEvent = b;
-    }
-
-    //
-    // 'constructor-return-type' option
-    //
-
-    private boolean constructorReturnType = false;
-
-    public boolean getConstructorReturnType() {
-        return constructorReturnType;
-    }
-
-    @Config
-    @Mapping("constructor-return-type")
-    public void setConstructorReturnType(ConfigurationValue cv, boolean b) {
-        this.constructorReturnType = b;
-    }
-
-    //
-    // 'dynamic-class' option
-    //
-
-    private boolean dynamicClass = false;
-
-    public boolean getDynamicClass() {
-        return dynamicClass;
-    }
-
-    @Config
-    @Mapping("dynamic-class")
-    public void setDynamicClass(ConfigurationValue cv, boolean b) {
-        this.dynamicClass = b;
     }
 
     //
@@ -453,22 +357,6 @@ public class Configuration {
     @Mapping("function-name")
     public void setFunctionName(ConfigurationValue cv, boolean b) {
         this.functionName = b;
-    }
-
-    //
-    // 'if-boolean' option
-    //
-
-    private boolean ifBoolean = true;
-
-    public boolean getIfBoolean() {
-        return ifBoolean;
-    }
-
-    @Config
-    @Mapping("if-boolean")
-    public void setIfBoolean(ConfigurationValue cv, boolean b) {
-        this.ifBoolean = b;
     }
 
     //
@@ -683,19 +571,243 @@ public class Configuration {
     }
 
     //
-    // 'leading-zero' option
+    // 'no-any-type' option
     //
 
-    private boolean leadingZero = true;
+    private boolean noAnyType = false;
 
-    public boolean getLeadingZero() {
-        return leadingZero;
+    public boolean getNoAnyType() {
+        return noAnyType;
     }
 
     @Config
-    @Mapping("leading-zero")
-    public void setLeadingZero(ConfigurationValue cv, boolean b) {
-        this.leadingZero = b;
+    @Mapping("no-any-type")
+    public void setNoAnyType(ConfigurationValue cv, boolean b) {
+        this.noAnyType = b;
+    }
+
+    //
+    // 'no-boolean-equality' option
+    //
+
+    private boolean noBooleanEquality = false;
+
+    public boolean getNoBooleanEquality() {
+        return noBooleanEquality;
+    }
+
+    @Config
+    @Mapping("no-boolean-equality")
+    public void setNoBooleanEquality(ConfigurationValue cv, boolean b) {
+        this.noBooleanEquality = b;
+    }
+
+    //
+    // 'no-constructor-dispatch' option
+    //
+
+    private boolean noConstructorDispatch = false;
+
+    public boolean getNoConstructorDispatch() {
+        return noConstructorDispatch;
+    }
+
+    @Config
+    @Mapping("no-constructor-dispatch")
+    public void setNoConstructorDispatch(ConfigurationValue cv, boolean b) {
+        this.noConstructorDispatch = b;
+    }
+
+    //
+    // 'no-constructor-return-type' option
+    //
+
+    private boolean noConstructorReturnType = false;
+
+    public boolean getNoConstructorReturnType() {
+        return noConstructorReturnType;
+    }
+
+    @Config
+    @Mapping("no-constructor-return-type")
+    public void setNoConstructorReturnType(ConfigurationValue cv, boolean b) {
+        this.noConstructorReturnType = b;
+    }
+
+    //
+    // 'no-duplicate-keys' option
+    //
+
+    private boolean noDuplicateKeys = true;
+
+    public boolean getNoDuplicateKeys() {
+        return noDuplicateKeys;
+    }
+
+    @Config
+    @Mapping("no-duplicate-keys")
+    public void setNoDuplicateKeys(ConfigurationValue cv, boolean b) {
+        this.noDuplicateKeys = b;
+    }
+
+    //
+    // 'no-dynamic-class' option
+    //
+
+    private boolean noDynamicClass = false;
+
+    public boolean getNoDynamicClass() {
+        return noDynamicClass;
+    }
+
+    @Config
+    @Mapping("no-dynamic-class")
+    public void setNoDynamicClass(ConfigurationValue cv, boolean b) {
+        this.noDynamicClass = b;
+    }
+
+    //
+    // 'no-if-boolean' option
+    //
+
+    private boolean noIfBoolean = true;
+
+    public boolean getNoIfBoolean() {
+        return noIfBoolean;
+    }
+
+    @Config
+    @Mapping("no-if-boolean")
+    public void setNoIfBoolean(ConfigurationValue cv, boolean b) {
+        this.noIfBoolean = b;
+    }
+
+    //
+    // 'no-leading-zero' option
+    //
+
+    private boolean noLeadingZero = true;
+
+    public boolean getNoLeadingZero() {
+        return noLeadingZero;
+    }
+
+    @Config
+    @Mapping("no-leading-zero")
+    public void setNoLeadingZero(ConfigurationValue cv, boolean b) {
+        this.noLeadingZero = b;
+    }
+
+    //
+    // 'no-sparse-array' option
+    //
+
+    private boolean noSparseArray = true;
+
+    public boolean getNoSparseArray() {
+        return noSparseArray;
+    }
+
+    @Config
+    @Mapping("no-sparse-array")
+    public void setNoSparseArray(ConfigurationValue cv, boolean b) {
+        this.noSparseArray = b;
+    }
+
+    //
+    // 'no-string-event' option
+    //
+
+    private boolean noStringEvent = false;
+
+    public boolean getNoStringEvent() {
+        return noStringEvent;
+    }
+
+    @Config
+    @Mapping("no-string-event")
+    public void setNoStringEvent(ConfigurationValue cv, boolean b) {
+        this.noStringEvent = b;
+    }
+
+    //
+    // 'no-this-closure' option
+    //
+
+    private boolean noThisClosure = false;
+
+    public boolean getNoThisClosure() {
+        return noThisClosure;
+    }
+
+    @Config
+    @Mapping("no-this-closure")
+    public void setNoThisClosure(ConfigurationValue cv, boolean b) {
+        this.noThisClosure = b;
+    }
+
+    //
+    // 'no-trace' option
+    //
+
+    private boolean noTrace = false;
+
+    public boolean getNoTrace() {
+        return noTrace;
+    }
+
+    @Config
+    @Mapping("no-trace")
+    public void setNoTrace(ConfigurationValue cv, boolean b) {
+        this.noTrace = b;
+    }
+
+    //
+    // 'no-void-operator' option
+    //
+
+    private boolean noVoidOperator = false;
+
+    public boolean getNoVoidOperator() {
+        return noVoidOperator;
+    }
+
+    @Config
+    @Mapping("no-void-operator")
+    public void setNoVoidOperator(ConfigurationValue cv, boolean b) {
+        this.noVoidOperator = b;
+    }
+
+    //
+    // 'no-wildcard-import' option
+    //
+
+    private boolean noWildcardImport = false;
+
+    public boolean getNoWildcardImport() {
+        return noWildcardImport;
+    }
+
+    @Config
+    @Mapping("no-wildcard-import")
+    public void setNoWildcardImport(ConfigurationValue cv, boolean b) {
+        this.noWildcardImport = b;
+    }
+
+    //
+    // 'no-with' option
+    //
+
+    private boolean noWith = true;
+
+    public boolean getNoWith() {
+        return noWith;
+    }
+
+    @Config
+    @Mapping("with")
+    public void setNoWith(ConfigurationValue cv, boolean b) {
+        this.noWith = b;
     }
 
     //
@@ -731,22 +843,6 @@ public class Configuration {
     }
 
     //
-    // 'sparse-array' option
-    //
-
-    private boolean sparseArray = true;
-
-    public boolean getSparseArray() {
-        return sparseArray;
-    }
-
-    @Config
-    @Mapping("sparse-array")
-    public void setSparseArray(ConfigurationValue cv, boolean b) {
-        this.sparseArray = b;
-    }
-
-    //
     // 'static-constants' option
     //
 
@@ -779,22 +875,6 @@ public class Configuration {
     }
 
     //
-    // 'string-event' option
-    //
-
-    private boolean stringEvent = false;
-
-    public boolean getStringEvent() {
-        return stringEvent;
-    }
-
-    @Config
-    @Mapping("string-event")
-    public void setStringEvent(ConfigurationValue cv, boolean b) {
-        this.stringEvent = b;
-    }
-
-    //
     // 'switch-default' option
     //
 
@@ -808,38 +888,6 @@ public class Configuration {
     @Mapping("switch-default")
     public void setSwitchDefault(ConfigurationValue cv, boolean b) {
         this.switchDefault = b;
-    }
-
-    //
-    // 'this-closure' option
-    //
-
-    private boolean thisClosure = false;
-
-    public boolean getThisClosure() {
-        return thisClosure;
-    }
-
-    @Config
-    @Mapping("this-closure")
-    public void setThisClosure(ConfigurationValue cv, boolean b) {
-        this.thisClosure = b;
-    }
-
-    //
-    // 'trace' option
-    //
-
-    private boolean trace = false;
-
-    public boolean getTrace() {
-        return trace;
-    }
-
-    @Config
-    @Mapping("trace")
-    public void setTrace(ConfigurationValue cv, boolean b) {
-        this.trace = b;
     }
 
     //
@@ -888,54 +936,6 @@ public class Configuration {
     @Mapping("vars-on-top")
     public void setVarsOnTop(ConfigurationValue cv, boolean b) {
         this.varsOnTop = b;
-    }
-
-    //
-    // 'void-operator' option
-    //
-
-    private boolean voidOperator = false;
-
-    public boolean getVoidOperator() {
-        return voidOperator;
-    }
-
-    @Config
-    @Mapping("void-operator")
-    public void setVoidOperator(ConfigurationValue cv, boolean b) {
-        this.voidOperator = b;
-    }
-
-    //
-    // 'wildcard-import' option
-    //
-
-    private boolean wildcardImport = false;
-
-    public boolean getWildcardImport() {
-        return wildcardImport;
-    }
-
-    @Config
-    @Mapping("wildcard-import")
-    public void setWildcardImport(ConfigurationValue cv, boolean b) {
-        this.wildcardImport = b;
-    }
-
-    //
-    // 'with' option
-    //
-
-    private boolean with = true;
-
-    public boolean getWith() {
-        return with;
-    }
-
-    @Config
-    @Mapping("with")
-    public void setWith(ConfigurationValue cv, boolean b) {
-        this.with = b;
     }
 
     /**

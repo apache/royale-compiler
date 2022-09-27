@@ -43,7 +43,7 @@ import org.apache.royale.linter.TokenQuery;
 /**
  * Check that each key in an object literal is unique.
  */
-public class DuplicateObjectKeysRule extends LinterRule {
+public class NoDuplicateObjectKeysRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
@@ -82,7 +82,7 @@ public class DuplicateObjectKeysRule extends LinterRule {
 			}
 			if (keyName != null) {
 				if (keyNames.contains(keyName)) {
-					problems.add(new DuplicateObjectKeysLinterProblem(nameNode, keyName));
+					problems.add(new NoDuplicateObjectKeysLinterProblem(nameNode, keyName));
 				} else {
 					keyNames.add(keyName);
 				}
@@ -90,10 +90,10 @@ public class DuplicateObjectKeysRule extends LinterRule {
 		}
 	}
 
-	public static class DuplicateObjectKeysLinterProblem extends CompilerProblem {
+	public static class NoDuplicateObjectKeysLinterProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Object literal contains duplicate key '${keyName}'";
 
-		public DuplicateObjectKeysLinterProblem(IExpressionNode node, String keyName)
+		public NoDuplicateObjectKeysLinterProblem(IExpressionNode node, String keyName)
 		{
 			super(node);
 			this.keyName = keyName;

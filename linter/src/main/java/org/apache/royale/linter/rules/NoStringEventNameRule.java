@@ -41,7 +41,7 @@ import org.apache.royale.linter.TokenQuery;
  * Check that calls to event dispatcher methods don't use string values for
  * event names.
  */
-public class StringEventNameRule extends LinterRule {
+public class NoStringEventNameRule extends LinterRule {
 	private static final String[] EVENT_DISPATCHER_FUNCTION_NAMES = {
 		"addEventListener",
 		"removeEventListener",
@@ -90,13 +90,13 @@ public class StringEventNameRule extends LinterRule {
 		if (!LiteralType.STRING.equals(literalNode.getLiteralType())) {
 			return;
 		}
-		problems.add(new StringEventNameProblem(functionCallNode, functionName));
+		problems.add(new NoStringEventNameProblem(functionCallNode, functionName));
 	}
 
-	public static class StringEventNameProblem extends CompilerProblem {
+	public static class NoStringEventNameProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Calls to '${functionName}' must use constant value instead of string literal for event name";
 
-		public StringEventNameProblem(IFunctionCallNode node, String functionName)
+		public NoStringEventNameProblem(IFunctionCallNode node, String functionName)
 		{
 			super(node.getArgumentNodes()[0]);
 			this.functionName = functionName;

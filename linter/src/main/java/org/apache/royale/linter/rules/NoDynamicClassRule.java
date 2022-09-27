@@ -23,46 +23,44 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
 
 /**
- * Check for calls to the 'trace()' function.
+ * Check that symbols in package or class scopes have a namespace.
  */
-public class TraceRule extends LinterRule {
+public class NoDynamicClassRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.FunctionCallID, (node, tokenQuery, problems) -> {
-			checkFunctionCallNode((IFunctionCallNode) node, tokenQuery, problems);
+		result.put(ASTNodeID.ClassID, (node, tokenQuery, problems) -> {
+			checkClassNode((IClassNode) node, tokenQuery, problems);
 		});
 		return result;
 	}
 
-	private void checkFunctionCallNode(IFunctionCallNode functionCallNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		if (!"trace".equals(functionCallNode.getFunctionName())) {
+	private void checkClassNode(IClassNode classNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+		if (!classNode.hasModifier(ASModifier.DYNAMIC)) {
 			return;
 		}
-		IASNode parentNode = functionCallNode.getParent();
-		if (parentNode instanceof IMemberAccessExpressionNode) {
-			return;
-		}
-		problems.add(new TraceLinterProblem(functionCallNode));
+		problems.add(new NoDynamicClassLinterProblem(classNode));
 	}
 
-	public static class TraceLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Must not call trace() function";
+	public static class NoDynamicClassLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Class '${className}' must not be dynamic";
 
-		public TraceLinterProblem(IFunctionCallNode node)
+		public NoDynamicClassLinterProblem(IClassNode node)
 		{
 			super(node);
+			className = node.getName();
 		}
+
+		public String className;
 	}
 }

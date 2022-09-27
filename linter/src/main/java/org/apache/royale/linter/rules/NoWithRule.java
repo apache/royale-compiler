@@ -19,48 +19,34 @@
 
 package org.apache.royale.linter.rules;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.royale.compiler.common.ASModifier;
+import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
+import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CompilerProblem;
-import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.linter.LinterRule;
-import org.apache.royale.linter.NodeVisitor;
-import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.TokenVisitor;
 
 /**
- * Check that symbols in package or class scopes have a namespace.
+ * Checks for uses of 'with(x)'.
  */
-public class DynamicClassRule extends LinterRule {
+public class NoWithRule extends LinterRule {
 	@Override
-	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
-		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
-		result.put(ASTNodeID.ClassID, (node, tokenQuery, problems) -> {
-			checkClassNode((IClassNode) node, tokenQuery, problems);
+	public Map<Integer, TokenVisitor> getTokenVisitors() {
+		Map<Integer, TokenVisitor> result = new HashMap<>();
+		result.put(ASTokenTypes.TOKEN_KEYWORD_WITH, (token, tokenQuery, problems) -> {
+			problems.add(new NoWithLinterProblem(token));
 		});
 		return result;
 	}
 
-	private void checkClassNode(IClassNode classNode, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		if (!classNode.hasModifier(ASModifier.DYNAMIC)) {
-			return;
-		}
-		problems.add(new DynamicClassLinterProblem(classNode));
-	}
+	public static class NoWithLinterProblem extends CompilerProblem {
+		public static final String DESCRIPTION = "Must not use 'with' statement";
 
-	public static class DynamicClassLinterProblem extends CompilerProblem {
-		public static final String DESCRIPTION = "Class '${className}' must not be dynamic";
-
-		public DynamicClassLinterProblem(IClassNode node)
+		public NoWithLinterProblem(IASToken token)
 		{
-			super(node);
-			className = node.getName();
+			super(token);
 		}
-
-		public String className;
 	}
 }

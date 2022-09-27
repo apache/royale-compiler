@@ -41,7 +41,7 @@ import org.apache.royale.linter.TokenQuery;
  * Check that a constructor does not call `dispatchEvent` because it's likely
  * that no listeners have been added yet.
  */
-public class ConstructorDispatchEventRule extends LinterRule {
+public class NoConstructorDispatchEventRule extends LinterRule {
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
 		Map<ASTNodeID, NodeVisitor> result = new HashMap<>();
@@ -60,7 +60,7 @@ public class ConstructorDispatchEventRule extends LinterRule {
 		if (nameNode instanceof IIdentifierNode) {
 			IIdentifierNode identifierNode = (IIdentifierNode) nameNode;
 			if ("dispatchEvent".equals(identifierNode.getName())) {
-				problems.add(new ConstructorDispatchEventLinterProblem(functionNode, identifierNode));
+				problems.add(new NoConstructorDispatchEventLinterProblem(functionNode, identifierNode));
 				return;
 			}
 			return;
@@ -74,7 +74,7 @@ public class ConstructorDispatchEventRule extends LinterRule {
 						ILanguageIdentifierNode langIdentifierNode = (ILanguageIdentifierNode) memberAccess.getLeftOperandNode();
 						if (LanguageIdentifierKind.THIS.equals(langIdentifierNode.getKind())
 								|| LanguageIdentifierKind.SUPER.equals(langIdentifierNode.getKind())) {
-							problems.add(new ConstructorDispatchEventLinterProblem(functionNode, identifierNode));
+							problems.add(new NoConstructorDispatchEventLinterProblem(functionNode, identifierNode));
 							return;
 						}
 					}
@@ -84,10 +84,10 @@ public class ConstructorDispatchEventRule extends LinterRule {
 		}
 	}
 
-	public static class ConstructorDispatchEventLinterProblem extends CompilerProblem {
+	public static class NoConstructorDispatchEventLinterProblem extends CompilerProblem {
 		public static final String DESCRIPTION = "Constructor '${functionName}' must not call 'dispatchEvent'";
 
-		public ConstructorDispatchEventLinterProblem(IFunctionNode functionNode, IExpressionNode dispatchEventNode) {
+		public NoConstructorDispatchEventLinterProblem(IFunctionNode functionNode, IExpressionNode dispatchEventNode) {
 			super(dispatchEventNode);
 			functionName = functionNode.getName();
 		}
