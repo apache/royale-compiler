@@ -1,5 +1,20 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
+Apache Royale Compiler 0.9.10
+
+=================
+
+- **aslint** is a new command line code linter for ActionScript and MXML, with a programmatic API for use in editors and IDEs.
+- Added `--watch` compiler option that keeps compiler active and incrementally compiles when changes to _.as_ and _.mxml_ files are detected. You may exit with Ctrl+C.
+- The `<royaleunit>` Ant Task can now use Playwright to run headless tests in HTML/JS. Set the `player` to chromium, webkit, or firefox.
+- Added a new `commandArgs` attribute to the `<royaleunit>` Ant Task. It may be used to pass extra command line arguments to the executable specified in the `command` attribute.
+- formatter: Fix issue where more than one new line might appear at the end of a file.
+- formatter: Fix intentation between opening and closing parentheses/brackets on separate lines.
+- formatter: Fix detection of `Script` elements in MXML when line endings are CRLF.
+- formatter: Fix exception when file starts with UTF BOM character.
+- formatter: If a case or default clause in a `switch` contains only a block, indent is not increased.
+- formatter: If formatting is skipped because compiler errors are found, display those compiler errors.
+
 Apache Royale Compiler 0.9.9
 
 =================
