@@ -89,23 +89,109 @@ public class FORMATTER {
 
 	}
 
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public int tabSize = 4;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaces = false;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertFinalNewLine = false;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean placeOpenBraceOnNewLine = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceAfterSemicolonInForStatements = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceAfterKeywordsInControlFlowStatements = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceAfterFunctionKeywordForAnonymousFunctions = false;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceBeforeAndAfterBinaryOperators = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceAfterCommaDelimiter = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceBetweenMetadataAttributes = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean insertSpaceAtStartOfLineComment = true;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public int maxPreserveNewLines = 2;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public Semicolons semicolons = Semicolons.INSERT;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean ignoreProblems = false;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean collapseEmptyBlocks = false;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean mxmlAlignAttributes = false;
+
+	/**
+	 * @deprecated Use an FormatterSettings instead
+	 */
+	@Deprecated
 	public boolean mxmlInsertNewLineBetweenAttributes = false;
+
+	private FormatterSettings settings = new FormatterSettings();
 
 	private ProblemQuery problemQuery;
 	private List<File> inputFiles = new ArrayList<File>();
@@ -183,6 +269,10 @@ public class FORMATTER {
 		return exitCode.getCode();
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatFile(File file, Collection<ICompilerProblem> problems) throws IOException {
 		String filePath = FilenameNormalization.normalize(file.getAbsolutePath());
 		FileSpecification fileSpec = new FileSpecification(filePath);
@@ -190,11 +280,20 @@ public class FORMATTER {
 		return formatFileText(filePath, fileText, problems);
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatFile(File file) throws IOException {
 		return formatFile(file, null);
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatFileText(String filePath, String text, Collection<ICompilerProblem> problems) {
+		settings = getLegacyFormatterSettings();
 		filePath = FilenameNormalization.normalize(filePath);
 		String result = null;
 		if (filePath.endsWith(".mxml")) {
@@ -208,39 +307,61 @@ public class FORMATTER {
 		return result;
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatFileText(String filePath, String text) {
 		return formatFileText(filePath, text, null);
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatActionScriptText(String text, Collection<ICompilerProblem> problems) {
+		settings = getLegacyFormatterSettings();
 		String filePath = FilenameNormalization.normalize("stdin.as");
 		return formatASTokens(filePath, text, problems);
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatActionScriptText(String text) {
 		return formatActionScriptText(text, null);
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatMXMLText(String text, Collection<ICompilerProblem> problems) {
+		settings = getLegacyFormatterSettings();
 		String filePath = FilenameNormalization.normalize("stdin.mxml");
 		return formatMXMLTokens(filePath, text, problems);
 	}
 
+	/**
+	 * @deprecated Use an ASTokenFormatter or MXMLTokenFormatter instead
+	 */
+	@Deprecated
 	public String formatMXMLText(String text) {
 		return formatMXMLText(text, null);
 	}
 
 	private String formatASTokens(String filePath, String text, Collection<ICompilerProblem> problems) {
-		ASTokenFormatter asFormatter = new ASTokenFormatter(getFormatterSettings());
+		ASTokenFormatter asFormatter = new ASTokenFormatter(settings);
 		return asFormatter.format(filePath, text, problems);
 	}
 
 	private String formatMXMLTokens(String filePath, String text, Collection<ICompilerProblem> problems) {
-		MXMLTokenFormatter mxmlFormatter = new MXMLTokenFormatter(getFormatterSettings());
+		MXMLTokenFormatter mxmlFormatter = new MXMLTokenFormatter(settings);
 		return mxmlFormatter.format(filePath, text, problems);
 	}
 
-	private FormatterSettings getFormatterSettings() {
+	private FormatterSettings getLegacyFormatterSettings() {
 		FormatterSettings result = new FormatterSettings();
 		result.tabSize = tabSize;
 		result.insertSpaces = insertSpaces;
@@ -336,26 +457,8 @@ public class FORMATTER {
 				return false;
 			}
 
-			collapseEmptyBlocks = configuration.getCollapseEmptyBlocks();
-			ignoreProblems = configuration.getIgnoreParsingProblems();
-			insertFinalNewLine = configuration.getInsertFinalNewLine();
-			insertSpaceAfterCommaDelimiter = configuration.getInsertSpaceAfterCommaDelimiter();
-			insertSpaceBetweenMetadataAttributes = configuration.getInsertSpaceBetweenMetadataAttributes();
-			insertSpaceAfterFunctionKeywordForAnonymousFunctions = configuration
-					.getInsertSpaceAfterFunctionKeywordForAnonymousFunctions();
-			insertSpaceAfterKeywordsInControlFlowStatements = configuration
-					.getInsertSpaceAfterKeywordsInControlFlowStatements();
-			insertSpaceAfterSemicolonInForStatements = configuration.getInsertSpaceAfterSemicolonInForStatements();
-			insertSpaceBeforeAndAfterBinaryOperators = configuration.getInsertSpaceBeforeAndAfterBinaryOperators();
-			insertSpaceAtStartOfLineComment = configuration.getInsertSpaceAtStartOfLineComment();
-			insertSpaces = configuration.getInsertSpaces();
-			mxmlInsertNewLineBetweenAttributes = configuration.getMxmlInsertNewLineBetweenAttributes();
-			mxmlAlignAttributes = configuration.getMxmlAlignAttributes();
+			settings = FormatterUtils.configurationToFormatterSettings(configuration);
 			listChangedFiles = configuration.getListFiles();
-			maxPreserveNewLines = configuration.getMaxPreserveNewLines();
-			placeOpenBraceOnNewLine = configuration.getPlaceOpenBraceOnNewLine();
-			semicolons = Semicolons.valueOf(configuration.getSemicolons().toUpperCase());
-			tabSize = configuration.getTabSize();
 			writeBackToInputFiles = configuration.getWriteFiles();
 			for (String filePath : configuration.getFiles()) {
 				File inputFile = new File(filePath);
