@@ -805,7 +805,7 @@ public class Configuration {
     }
 
     @Config
-    @Mapping("with")
+    @Mapping("no-with")
     public void setNoWith(ConfigurationValue cv, boolean b) {
         this.noWith = b;
     }
